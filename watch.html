@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Watch & Earn</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #222;
+}
+
+nav {
+    background: #182848;
+    padding: 12px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 8px;
+    font-weight: bold;
+}
+
+header {
+    background: #182848;
+    color: white;
+    text-align: center;
+    padding: 25px 15px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+.container {
+    max-width: 700px;
+    margin: auto;
+    padding: 15px;
+}
+
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    margin: 15px 0;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.points {
+    text-align: center;
+}
+
+.points-number {
+    font-size: 40px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.video-box {
+    background: #111;
+    color: white;
+    border-radius: 10px;
+    padding: 30px 15px;
+    text-align: center;
+    margin: 15px 0;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #182848;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:disabled {
+    background: #999;
+    cursor: not-allowed;
+}
+
+.message {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 12px;
+}
+
+.limit {
+    text-align: center;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #666;
+    font-size: 14px;
+}
+
+</style>
+</head>
+
+<body>
+
+<nav>
+
+<a href="index.html">Home</a>
+
+<a href="earn.html">Earn Points</a>
+
+<a href="watch.html">Watch & Earn</a>
+
+<a href="balance.html">My Balance</a>
+
+<a href="rewards.html">Rewards</a>
+
+</nav>
+
+<header>
+
+<h1>📺 Watch & Earn</h1>
+
+<p>Complete videos and earn points.</p>
+
+</header>
+
+<div class="container">
+
+<div class="card points">
+
+<h2>💰 Your Points</h2>
+
+<div
+class="points-number"
+id="points">
+0
+</div>
+
+<p>points available</p>
+
+</div>
+
+
+<div class="card">
+
+<h2>📺 Today's Videos</h2>
+
+<p>
+Complete up to <strong>3 videos</strong>
+per day.
+</p>
+
+<p>
+Each completed video earns
+<strong>10 points</strong>.
+</p>
+
+<div
+class="limit"
+id="dailyLimit">
+0 / 3 completed
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>🎬 Video 1</h2>
+
+<p>Required viewing time: <strong>20 seconds</strong></p>
+
+<div class="video-box">
+
+▶️ Test Video 1
+
+</div>
+
+<button
+id="videoBtn1"
+onclick="startVideo(1,20)">
+
+Start Video
+
+</button>
+
+<div
+id="videoMessage1"
+class="message">
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>🎬 Video 2</h2>
+
+<p>Required viewing time: <strong>35 seconds</strong></p>
+
+<div class="video-box">
+
+▶️ Test Video 2
+
+</div>
+
+<button
+id="videoBtn2"
+onclick="startVideo(2,35)">
+
+Start Video
+
+</button>
+
+<div
+id="videoMessage2"
+class="message">
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>🎬 Video 3</h2>
+
+<p>Required viewing time: <strong>60 seconds</strong></p>
+
+<div class="video-box">
+
+▶️ Test Video 3
+
+</div>
+
+<button
+id="videoBtn3"
+onclick="startVideo(3,60)">
+
+Start Video
+
+</button>
+
+<div
+id="videoMessage3"
+class="message">
+</div>
+
+</div>
+
+</div>
+
+<footer>
+
+Reward Platform — Prototype
+
+</footer>
+
+
+<script>
+
+/* =========================
+   POINTS
+========================= */
+
+let points =
+    Number(
+        localStorage.getItem(
+            "rewardPoints"
+        )
+    ) || 0;
+
+let history =
+    JSON.parse(
+        localStorage.getItem(
+            "rewardHistory"
+        )
+    ) || [];
+
+
+/* =========================
+   TODAY
+========================= */
+
+const today =
+    new Date().toDateString();
+
+
+/* =========================
+   DISPLAY POINTS
+========================= */
+
+function updateDisplay() {
+
+    document.getElementById(
+        "points"
+    ).textContent = points;
+
+}
+
+
+/* =========================
+   ADD POINTS
+========================= */
+
+function addPoints(
+    amount,
+    activity
+) {
+
+    points += amount;
+
+    history.push({
+
+        activity: activity,
+
+        points: amount,
+
+        date:
+            new Date()
+            .toLocaleString()
+
+    });
+
+    localStorage.setItem(
+        "rewardPoints",
+        points
+    );
+
+    localStorage.setItem(
+        "rewardHistory",
+        JSON.stringify(history)
+    );
+
+    updateDisplay();
+
+}
+
+
+/* =========================
+   VIDEO STATUS
+========================= */
+
+function getCompletedVideos() {
+
+    const saved =
+        localStorage.getItem(
+            "completedVideosDate"
+        );
+
+    if (saved !== today) {
+
+        localStorage.removeItem(
+            "completedVideos"
+        );
+
+        localStorage.setItem(
+            "completedVideosDate",
+            today
+        );
+
+        return [];
+
+    }
+
+    return JSON.parse(
+        localStorage.getItem(
+            "completedVideos"
+        )
+    ) || [];
+
+}
+
+
+/* =========================
+   START VIDEO
+========================= */
+
+function startVideo(
+    videoNumber,
+    duration
+) {
+
+    let completed =
+        getCompletedVideos();
+
+
+    if (
+        completed.includes(
+            videoNumber
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        completed.length >= 3
+    ) {
+
+        return;
+
+    }
+
+
+    const button =
+        document.getElementById(
+            "videoBtn" +
+            videoNumber
+        );
+
+    const message =
+        document.getElementById(
+            "videoMessage" +
+            videoNumber
+        );
+
+
+    button.disabled = true;
+
+    let remaining =
+        duration;
+
+
+    message.textContent =
+        "⏳ Watching... " +
+        remaining +
+        " seconds remaining.";
+
+
+    const timer =
+        setInterval(
+            function() {
+
+                remaining--;
+
+                message.textContent =
+                    "⏳ Watching... " +
+                    remaining +
+                    " seconds remaining.";
+
+
+                if (
+                    remaining <= 0
+                ) {
+
+                    clearInterval(
+                        timer
+                    );
+
+
+                    completed.push(
+                        videoNumber
+                    );
+
+
+                    localStorage.setItem(
+                        "completedVideos",
+                        JSON.stringify(
+                            completed
+                        )
+                    );
+
+
+                    addPoints(
+                        10,
+                        "Completed Video " +
+                        videoNumber
+                    );
+
+
+                    message.textContent =
+                        "🎉 Video completed! You earned 10 points.";
+
+
+                    button.textContent =
+                        "✅ Completed";
+
+
+                    updateVideoStatus();
+
+                }
+
+            },
+            1000
+        );
+
+}
+
+
+/* =========================
+   UPDATE VIDEO STATUS
+========================= */
+
+function updateVideoStatus() {
+
+    const completed =
+        getCompletedVideos();
+
+
+    document.getElementById(
+        "dailyLimit"
+    ).textContent =
+        completed.length +
+        " / 3 completed";
+
+
+    for (
+        let i = 1;
+        i <= 3;
+        i++
+    ) {
+
+        const button =
+            document.getElementById(
+                "videoBtn" + i
+            );
+
+
+        if (
+            completed.includes(i)
+        ) {
+
+            button.disabled =
+                true;
+
+            button.textContent =
+                "✅ Completed";
+
+        }
+
+    }
+
+
+    if (
+        completed.length >= 3
+    ) {
+
+        for (
+            let i = 1;
+            i <= 3;
+            i++
+        ) {
+
+            document.getElementById(
+                "videoBtn" + i
+            ).disabled = true;
+
+        }
+
+    }
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+updateDisplay();
+
+updateVideoStatus();
+
+</script>
+
+</body>
+</html>
