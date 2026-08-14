@@ -70,10 +70,6 @@ header p {
     margin: 10px 0;
 }
 
-.activity {
-    margin-top: 15px;
-}
-
 button {
     width: 100%;
     padding: 14px;
@@ -90,10 +86,21 @@ button:hover {
     opacity: 0.9;
 }
 
+button:disabled {
+    background: #999;
+    cursor: not-allowed;
+}
+
 .message {
     text-align: center;
     font-weight: bold;
     margin-top: 12px;
+}
+
+.day {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
 }
 
 footer {
@@ -116,70 +123,82 @@ footer {
 
 <header>
     <h1>Earn Points</h1>
-    <p>Complete activities and increase your balance.</p>
+    <p>Complete today's activities and increase your balance.</p>
 </header>
 
 <div class="container">
 
     <div class="card points">
-        <h2>Your Points</h2>
+
+        <h2>💰 Your Points</h2>
 
         <div class="points-number" id="points">
             0
         </div>
 
         <p>points available</p>
+
     </div>
 
 
+    <div class="day" id="dayDisplay"></div>
+
+
+    <!-- DAILY CHECK-IN -->
+
     <div class="card">
+
         <h2>🎁 Daily Check-in</h2>
 
         <p>
-            Visit the platform every day and earn
+            Visit every day and earn
             <strong>10 points</strong>.
         </p>
 
-        <button onclick="dailyCheckIn()">
+        <button
+            id="checkinBtn"
+            onclick="dailyCheckIn()">
             Claim 10 Points
         </button>
 
-        <div id="checkinMessage" class="message"></div>
+        <div
+            id="checkinMessage"
+            class="message">
+        </div>
+
     </div>
 
 
+    <!-- DAILY QUIZ -->
+
     <div class="card">
-        <h2>🧠 Quick Quiz</h2>
+
+        <h2>🧠 Daily Quiz</h2>
 
         <p>
-            Answer the question correctly and earn
+            Answer today's question correctly and earn
             <strong>20 points</strong>.
         </p>
 
         <p>
-            <strong>
-                What is the capital city of Rwanda?
-            </strong>
+            <strong id="quizQuestion"></strong>
         </p>
 
-        <button onclick="answerQuiz('Kigali')">
-            Kigali
-        </button>
+        <div id="quizOptions"></div>
 
-        <button onclick="answerQuiz('Nairobi')">
-            Nairobi
-        </button>
+        <div
+            id="quizMessage"
+            class="message">
+        </div>
 
-        <button onclick="answerQuiz('Kampala')">
-            Kampala
-        </button>
-
-        <div id="quizMessage" class="message"></div>
     </div>
 
 
+    <!-- DAILY GAME -->
+
     <div class="card">
-        <h2>🎮 Simple Game</h2>
+
+        <h2>🎮 Daily Number Game</h2>
 
         <p>
             Choose a number between 1 and 3.
@@ -199,7 +218,11 @@ footer {
             Choose 3
         </button>
 
-        <div id="gameMessage" class="message"></div>
+        <div
+            id="gameMessage"
+            class="message">
+        </div>
+
     </div>
 
 </div>
@@ -211,31 +234,70 @@ footer {
 
 <script>
 
+/* =========================
+   DATE
+========================= */
+
+const today =
+    new Date().toDateString();
+
+document.getElementById(
+    "dayDisplay"
+).textContent =
+    "Today's Activities — " + today;
+
+
+/* =========================
+   POINTS
+========================= */
+
 let points =
-    Number(localStorage.getItem("rewardPoints")) || 0;
+    Number(
+        localStorage.getItem(
+            "rewardPoints"
+        )
+    ) || 0;
 
 let history =
-    JSON.parse(localStorage.getItem("rewardHistory")) || [];
+    JSON.parse(
+        localStorage.getItem(
+            "rewardHistory"
+        )
+    ) || [];
 
 
 function updateDisplay() {
 
     points =
-        Number(localStorage.getItem("rewardPoints")) || 0;
+        Number(
+            localStorage.getItem(
+                "rewardPoints"
+            )
+        ) || 0;
 
-    document.getElementById("points").textContent =
-        points;
+    document.getElementById(
+        "points"
+    ).textContent = points;
 }
 
 
-function addPoints(amount, activity) {
+function addPoints(
+    amount,
+    activity
+) {
 
     points += amount;
 
     history.push({
+
         activity: activity,
+
         points: amount,
-        date: new Date().toLocaleString()
+
+        date:
+            new Date()
+            .toLocaleString()
+
     });
 
     localStorage.setItem(
@@ -252,15 +314,20 @@ function addPoints(amount, activity) {
 }
 
 
+/* =========================
+   DAILY CHECK-IN
+========================= */
+
 function dailyCheckIn() {
 
-    const today =
-        new Date().toDateString();
-
     const lastCheckIn =
-        localStorage.getItem("lastCheckIn");
+        localStorage.getItem(
+            "lastCheckIn"
+        );
 
-    if (lastCheckIn === today) {
+    if (
+        lastCheckIn === today
+    ) {
 
         document.getElementById(
             "checkinMessage"
@@ -284,8 +351,133 @@ function dailyCheckIn() {
         "checkinMessage"
     ).textContent =
         "🎉 You earned 10 points!";
+
+    document.getElementById(
+        "checkinBtn"
+    ).disabled = true;
 }
 
+
+/* =========================
+   DAILY QUIZ DATA
+========================= */
+
+const quizzes = [
+
+    {
+        question:
+            "What is the capital city of Rwanda?",
+
+        options:
+            ["Kigali", "Nairobi", "Kampala"],
+
+        answer:
+            "Kigali"
+    },
+
+    {
+        question:
+            "Which planet is known as the Red Planet?",
+
+        options:
+            ["Earth", "Mars", "Jupiter"],
+
+        answer:
+            "Mars"
+    },
+
+    {
+        question:
+            "How many days are there in a week?",
+
+        options:
+            ["5", "7", "10"],
+
+        answer:
+            "7"
+    },
+
+    {
+        question:
+            "Which animal is known as the king of the jungle?",
+
+        options:
+            ["Lion", "Elephant", "Zebra"],
+
+        answer:
+            "Lion"
+    },
+
+    {
+        question:
+            "What is 5 + 7?",
+
+        options:
+            ["10", "12", "14"],
+
+        answer:
+            "12"
+    }
+
+];
+
+
+/* =========================
+   SELECT DAILY QUIZ
+========================= */
+
+const dayNumber =
+    Math.floor(
+        new Date().getTime()
+        / (1000 * 60 * 60 * 24)
+    );
+
+const quizIndex =
+    dayNumber % quizzes.length;
+
+const todayQuiz =
+    quizzes[quizIndex];
+
+
+document.getElementById(
+    "quizQuestion"
+).textContent =
+    todayQuiz.question;
+
+
+const quizOptions =
+    document.getElementById(
+        "quizOptions"
+    );
+
+
+todayQuiz.options.forEach(
+    function(option) {
+
+        const button =
+            document.createElement(
+                "button"
+            );
+
+        button.textContent =
+            option;
+
+        button.onclick =
+            function() {
+
+                answerQuiz(option);
+            };
+
+        quizOptions.appendChild(
+            button
+        );
+    }
+);
+
+
+/* =========================
+   DAILY QUIZ ANSWER
+========================= */
 
 function answerQuiz(answer) {
 
@@ -294,10 +486,13 @@ function answerQuiz(answer) {
             "quizMessage"
         );
 
-    if (
+    const completedDate =
         localStorage.getItem(
-            "quizCompleted"
-        ) === "yes"
+            "quizCompletedDate"
+        );
+
+    if (
+        completedDate === today
     ) {
 
         message.textContent =
@@ -306,11 +501,13 @@ function answerQuiz(answer) {
         return;
     }
 
-    if (answer === "Kigali") {
+    if (
+        answer === todayQuiz.answer
+    ) {
 
         addPoints(
             20,
-            "Correct Quiz Answer"
+            "Daily Quiz"
         );
 
         message.textContent =
@@ -319,33 +516,54 @@ function answerQuiz(answer) {
     } else {
 
         message.textContent =
-            "❌ Not correct. Try another activity.";
+            "❌ Not correct. You can try another activity.";
     }
 
     localStorage.setItem(
-        "quizCompleted",
-        "yes"
+        "quizCompletedDate",
+        today
     );
 }
 
 
+/* =========================
+   DAILY GAME
+========================= */
+
 function playGame(choice) {
 
-    const winningNumber =
-        Math.floor(
-            Math.random() * 3
-        ) + 1;
+    const completedDate =
+        localStorage.getItem(
+            "gameCompletedDate"
+        );
 
     const message =
         document.getElementById(
             "gameMessage"
         );
 
-    if (choice === winningNumber) {
+    if (
+        completedDate === today
+    ) {
+
+        message.textContent =
+            "You already completed today's game.";
+
+        return;
+    }
+
+    const winningNumber =
+        Math.floor(
+            Math.random() * 3
+        ) + 1;
+
+    if (
+        choice === winningNumber
+    ) {
 
         addPoints(
             5,
-            "Simple Game"
+            "Daily Number Game"
         );
 
         message.textContent =
@@ -354,10 +572,62 @@ function playGame(choice) {
     } else {
 
         message.textContent =
-            "Try again! The winning number was "
+            "Try again tomorrow. The winning number was "
             + winningNumber
             + ".";
     }
+
+    localStorage.setItem(
+        "gameCompletedDate",
+        today
+    );
+}
+
+
+/* =========================
+   CHECK TODAY'S STATUS
+========================= */
+
+if (
+    localStorage.getItem(
+        "lastCheckIn"
+    ) === today
+) {
+
+    document.getElementById(
+        "checkinBtn"
+    ).disabled = true;
+
+    document.getElementById(
+        "checkinMessage"
+    ).textContent =
+        "You already claimed today's points.";
+}
+
+
+if (
+    localStorage.getItem(
+        "quizCompletedDate"
+    ) === today
+) {
+
+    document.getElementById(
+        "quizMessage"
+    ).textContent =
+        "You already completed today's quiz.";
+}
+
+
+if (
+    localStorage.getItem(
+        "gameCompletedDate"
+    ) === today
+) {
+
+    document.getElementById(
+        "gameMessage"
+    ).textContent =
+        "You already completed today's game.";
 }
 
 
