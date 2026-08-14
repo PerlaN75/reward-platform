@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My Balance - Reward Platform</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #222;
+}
+
+nav {
+    background: #182848;
+    padding: 14px 10px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 8px;
+    font-weight: bold;
+}
+
+header {
+    background: #182848;
+    color: white;
+    padding: 25px 15px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header p {
+    margin: 8px 0 0;
+}
+
+.container {
+    max-width: 700px;
+    margin: auto;
+    padding: 15px;
+}
+
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    margin: 15px 0;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.balance {
+    text-align: center;
+}
+
+.points-number {
+    font-size: 42px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.activity {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.activity:last-child {
+    border-bottom: none;
+}
+
+.activity-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.date {
+    font-size: 12px;
+    color: #777;
+    margin-top: 4px;
+}
+
+.earned {
+    font-weight: bold;
+}
+
+.empty {
+    text-align: center;
+    color: #777;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #666;
+    font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="earn.html">Earn Points</a>
+    <a href="balance.html">My Balance</a>
+</nav>
+
+<header>
+    <h1>My Balance</h1>
+    <p>View your points and activity history.</p>
+</header>
+
+<div class="container">
+
+    <div class="card balance">
+
+        <h2>💰 Current Balance</h2>
+
+        <div class="points-number" id="points">
+            0
+        </div>
+
+        <p>points</p>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>📊 Points Summary</h2>
+
+        <p>
+            Total points earned:
+            <strong id="totalEarned">0</strong>
+        </p>
+
+        <p>
+            Activities completed:
+            <strong id="activityCount">0</strong>
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>📜 Activity History</h2>
+
+        <div id="history">
+            <p class="empty">No activities yet.</p>
+        </div>
+
+    </div>
+
+</div>
+
+<footer>
+    Reward Platform — Prototype
+</footer>
+
+
+<script>
+
+const points =
+    Number(localStorage.getItem("rewardPoints")) || 0;
+
+const history =
+    JSON.parse(localStorage.getItem("rewardHistory")) || [];
+
+
+document.getElementById("points").textContent =
+    points;
+
+
+const totalEarned =
+    history.reduce(
+        (total, item) =>
+            total + Number(item.points || 0),
+        0
+    );
+
+
+document.getElementById("totalEarned").textContent =
+    totalEarned;
+
+
+document.getElementById("activityCount").textContent =
+    history.length;
+
+
+const historyDiv =
+    document.getElementById("history");
+
+
+if (history.length === 0) {
+
+    historyDiv.innerHTML =
+        '<p class="empty">No activities yet.</p>';
+
+} else {
+
+    historyDiv.innerHTML =
+        history
+            .slice()
+            .reverse()
+            .map(item => `
+                <div class="activity">
+
+                    <div class="activity-info">
+
+                        <strong>
+                            ${item.activity}
+                        </strong>
+
+                        <span class="date">
+                            ${item.date || ""}
+                        </span>
+
+                    </div>
+
+                    <span class="earned">
+                        +${item.points}
+                    </span>
+
+                </div>
+            `)
+            .join("");
+}
+
+</script>
+
+</body>
+</html>
