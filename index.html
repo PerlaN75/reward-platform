@@ -1,1 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reward Platform</title>
 
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #222;
+}
+
+header {
+    background: #182848;
+    color: white;
+    padding: 25px 15px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+header p {
+    margin: 8px 0 0;
+    opacity: 0.9;
+}
+
+.container {
+    max-width: 700px;
+    margin: auto;
+    padding: 15px;
+}
+
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    margin: 15px 0;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.points {
+    text-align: center;
+}
+
+.points-number {
+    font-size: 42px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #182848;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+button:disabled {
+    background: #999;
+}
+
+.activity {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.quiz-option {
+    background: #eef2f7;
+    color: #222;
+}
+
+.quiz-option:hover {
+    background: #dce5f0;
+}
+
+.message {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 12px;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #666;
+    font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Reward Platform</h1>
+    <p>Complete activities. Collect points.</p>
+</header>
+
+<div class="container">
+
+    <div class="card points">
+        <h2>Your Points</h2>
+        <div class="points-number" id="points">0</div>
+        <p>points</p>
+    </div>
+
+    <div class="card">
+        <h2>📅 Daily Check-in</h2>
+        <p>Visit every day and collect points.</p>
+        <button id="checkinBtn" onclick="dailyCheckIn()">
+            Claim Daily Points
+        </button>
+        <div id="checkinMessage" class="message"></div>
+    </div>
+
+    <div class="card">
+        <h2>🧠 Quick Quiz</h2>
+        <p>What is the capital city of Rwanda?</p>
+
+        <button class="quiz-option" onclick="answerQuiz('Kigali')">
+            Kigali
+        </button>
+
+        <button class="quiz-option" onclick="answerQuiz('Nairobi')">
+            Nairobi
+        </button>
+
+        <button class="quiz-option" onclick="answerQuiz('Kampala')">
+            Kampala
+        </button>
+
+        <div id="quizMessage" class="message"></div>
+    </div>
+
+    <div class="card">
+        <h2>🎮 Simple Game</h2>
+        <p>Choose a number between 1 and 3.</p>
+
+        <button onclick="playGame(1)">Choose 1</button>
+        <button onclick="playGame(2)">Choose 2</button>
+        <button onclick="playGame(3)">Choose 3</button>
+
+        <div id="gameMessage" class="message"></div>
+    </div>
+
+    <div class="card">
+        <h2>📊 Activity History</h2>
+        <div id="history">
+            <p>No activities yet.</p>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    Reward Platform — Prototype
+</footer>
+
+<script>
+
+let points = Number(localStorage.getItem("rewardPoints")) || 0;
+let history = JSON.parse(localStorage.getItem("rewardHistory")) || [];
+
+function updateDisplay() {
+    document.getElementById("points").textContent = points;
+
+    const historyDiv = document.getElementById("history");
+
+    if (history.length === 0) {
+        historyDiv.innerHTML = "<p>No activities yet.</p>";
+        return;
+    }
+
+    historyDiv.innerHTML = history
+        .slice()
+        .reverse()
+        .map(item => `
+            <div class="activity">
+                <span>${item.activity}</span>
+                <strong>+${item.points}</strong>
+            </div>
+        `)
+        .join("");
+}
+
+function addPoints(amount, activity) {
+    points += amount;
+
+    history.push({
+        activity: activity,
+        points: amount,
+        date: new Date().toLocaleString()
+    });
+
+    localStorage.setItem("rewardPoints", points);
+    localStorage.setItem("rewardHistory", JSON.stringify(history));
+
+    updateDisplay();
+}
+
+function dailyCheckIn() {
+
+    const today = new Date().toDateString();
+    const lastCheckIn = localStorage.getItem("lastCheckIn");
+
+    if (lastCheckIn === today) {
+        document.getElementById("checkinMessage").textContent =
+            "You already claimed today's points.";
+        return;
+    }
+
+    addPoints(10, "Daily Check-in");
+
+    localStorage.setItem("lastCheckIn", today);
+
+    document.getElementById("checkinMessage").textContent =
+        "🎉 You earned 10 points!";
+}
+
+function answerQuiz(answer) {
+
+    const message = document.getElementById("quizMessage");
+
+    if (localStorage.getItem("quizCompleted") === "yes") {
+        message.textContent = "You already completed today's quiz.";
+        return;
+    }
+
+    if (answer === "Kigali") {
+        addPoints(20, "Correct Quiz Answer");
+        message.textContent = "✅ Correct! You earned 20 points.";
+    } else {
+        message.textContent = "❌ Not correct. Try another activity.";
+    }
+
+    localStorage.setItem("quizCompleted", "yes");
+}
+
+function playGame(choice) {
+
+    const winningNumber = Math.floor(Math.random() * 3) + 1;
+    const message = document.getElementById("gameMessage");
+
+    if (choice === winningNumber) {
+        addPoints(5, "Simple Game");
+        message.textContent = "🎉 You won 5 points!";
+    } else {
+        message.textContent =
+            "Try again! The winning number was " + winningNumber + ".";
+    }
+}
+
+updateDisplay();
+
+</script>
+
+</body>
+</html>
