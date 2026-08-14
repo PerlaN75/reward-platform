@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Daily Spin</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #222;
+}
+
+nav {
+    background: #182848;
+    padding: 12px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 8px;
+    font-weight: bold;
+}
+
+header {
+    background: #182848;
+    color: white;
+    text-align: center;
+    padding: 25px 15px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+.container {
+    max-width: 700px;
+    margin: auto;
+    padding: 15px;
+}
+
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    margin: 15px 0;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+.points-number {
+    font-size: 40px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.wheel {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    margin: 20px auto;
+    background: conic-gradient(
+        #182848 0deg 72deg,
+        #36558a 72deg 144deg,
+        #182848 144deg 216deg,
+        #36558a 216deg 288deg,
+        #182848 288deg 360deg
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 8px solid white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.wheel span {
+    background: white;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #182848;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:disabled {
+    background: #999;
+    cursor: not-allowed;
+}
+
+.message {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 15px;
+    min-height: 24px;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #666;
+    font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+
+<a href="index.html">Home</a>
+
+<a href="earn.html">Earn Points</a>
+
+<a href="watch.html">Watch & Earn</a>
+
+<a href="spin.html">Daily Spin</a>
+
+<a href="balance.html">My Balance</a>
+
+<a href="rewards.html">Rewards</a>
+
+</nav>
+
+<header>
+
+<h1>🎡 Daily Spin</h1>
+
+<p>Spin once a day for a chance to earn bonus points.</p>
+
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>💰 Your Points</h2>
+
+<div
+class="points-number"
+id="points">
+0
+</div>
+
+<p>points available</p>
+
+</div>
+
+
+<div class="card">
+
+<h2>🎡 Spin the Wheel</h2>
+
+<p>
+You get <strong>1 free spin per day</strong>.
+</p>
+
+<div class="wheel">
+
+<span>SPIN</span>
+
+</div>
+
+<button
+id="spinButton"
+onclick="spinWheel()">
+
+🎡 Spin Now
+
+</button>
+
+<div
+id="spinMessage"
+class="message">
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>🎁 Possible Rewards</h2>
+
+<p>Try Again — 0 points</p>
+<p>Small Reward — 2 points</p>
+<p>Good Reward — 5 points</p>
+<p>Great Reward — 10 points</p>
+<p>Bonus Reward — 15 points</p>
+
+</div>
+
+</div>
+
+<footer>
+
+Reward Platform — Prototype
+
+</footer>
+
+
+<script>
+
+/* =========================
+   POINTS
+========================= */
+
+let points =
+    Number(
+        localStorage.getItem(
+            "rewardPoints"
+        )
+    ) || 0;
+
+let history =
+    JSON.parse(
+        localStorage.getItem(
+            "rewardHistory"
+        )
+    ) || [];
+
+
+/* =========================
+   TODAY
+========================= */
+
+const today =
+    new Date().toDateString();
+
+
+/* =========================
+   DISPLAY POINTS
+========================= */
+
+function updateDisplay() {
+
+    document.getElementById(
+        "points"
+    ).textContent = points;
+
+}
+
+
+/* =========================
+   ADD POINTS
+========================= */
+
+function addPoints(
+    amount,
+    activity
+) {
+
+    points += amount;
+
+    history.push({
+
+        activity: activity,
+
+        points: amount,
+
+        date:
+            new Date()
+            .toLocaleString()
+
+    });
+
+    localStorage.setItem(
+        "rewardPoints",
+        points
+    );
+
+    localStorage.setItem(
+        "rewardHistory",
+        JSON.stringify(history)
+    );
+
+    updateDisplay();
+
+}
+
+
+/* =========================
+   CHECK SPIN STATUS
+========================= */
+
+function updateSpinStatus() {
+
+    const completedDate =
+        localStorage.getItem(
+            "spinCompletedDate"
+        );
+
+    const button =
+        document.getElementById(
+            "spinButton"
+        );
+
+    const message =
+        document.getElementById(
+            "spinMessage"
+        );
+
+
+    if (
+        completedDate === today
+    ) {
+
+        button.disabled = true;
+
+        button.textContent =
+            "✅ Spin Completed Today";
+
+        message.textContent =
+            "You already used today's spin.";
+
+    }
+
+}
+
+
+/* =========================
+   SPIN WHEEL
+========================= */
+
+function spinWheel() {
+
+    const completedDate =
+        localStorage.getItem(
+            "spinCompletedDate"
+        );
+
+    const message =
+        document.getElementById(
+            "spinMessage"
+        );
+
+    const button =
+        document.getElementById(
+            "spinButton"
+        );
+
+
+    if (
+        completedDate === today
+    ) {
+
+        message.textContent =
+            "You already used today's spin.";
+
+        button.disabled = true;
+
+        return;
+
+    }
+
+
+    button.disabled = true;
+
+    button.textContent =
+        "⏳ Spinning...";
+
+
+    const rewards = [
+        0,
+        2,
+        5,
+        10,
+        15
+    ];
+
+
+    const reward =
+        rewards[
+            Math.floor(
+                Math.random() *
+                rewards.length
+            )
+        ];
+
+
+    setTimeout(
+        function() {
+
+            localStorage.setItem(
+                "spinCompletedDate",
+                today
+            );
+
+
+            if (
+                reward > 0
+            ) {
+
+                addPoints(
+                    reward,
+                    "Daily Spin"
+                );
+
+                message.textContent =
+                    "🎉 You won " +
+                    reward +
+                    " points!";
+
+            } else {
+
+                message.textContent =
+                    "Try again tomorrow! You won 0 points.";
+
+            }
+
+
+            button.textContent =
+                "✅ Spin Completed Today";
+
+        },
+        1500
+    );
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+updateDisplay();
+
+updateSpinStatus();
+
+</script>
+
+</body>
+</html>
