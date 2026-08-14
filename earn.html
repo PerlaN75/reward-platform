@@ -206,17 +206,17 @@ footer {
             <strong>5 points</strong>.
         </p>
 
-        <button onclick="playGame(1)">
-            Choose 1
-        </button>
+        <button class="game-option" onclick="playGame(1)">
+    Choose 1
+</button>
 
-        <button onclick="playGame(2)">
-            Choose 2
-        </button>
+<button class="game-option" onclick="playGame(2)">
+    Choose 2
+</button>
 
-        <button onclick="playGame(3)">
-            Choose 3
-        </button>
+<button class="game-option" onclick="playGame(3)">
+    Choose 3
+</button>
 
         <div
             id="gameMessage"
@@ -787,7 +787,6 @@ if (
         "You already claimed today's points.";
 }
 
-
 if (
     localStorage.getItem(
         "quizCompletedDate"
@@ -798,8 +797,13 @@ if (
         "quizMessage"
     ).textContent =
         "You already completed today's quiz.";
-}
 
+    document
+        .querySelectorAll("#quizOptions button")
+        .forEach(function(button) {
+            button.disabled = true;
+        });
+}
 
 if (
     localStorage.getItem(
@@ -811,8 +815,13 @@ if (
         "gameMessage"
     ).textContent =
         "You already completed today's game.";
-}
 
+    document
+        .querySelectorAll(".game-option")
+        .forEach(function(button) {
+            button.disabled = true;
+        });
+}
 
 updateDisplay();
 
