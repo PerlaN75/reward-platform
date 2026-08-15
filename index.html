@@ -14,234 +14,564 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: #f4f7fb;
-    color: #222;
+    color: white;
+    background:
+        radial-gradient(circle at 50% 45%, #40156b 0%, #12082d 35%, #050719 75%);
+    min-height: 100vh;
 }
 
+/* =========================
+   NAVIGATION
+========================= */
+
 nav {
-    background: #182848;
-    padding: 14px 10px;
-    text-align: center;
+    margin: 18px;
+    padding: 14px 12px;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 18px;
+    background: rgba(5,8,35,0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    overflow-x: auto;
+    white-space: nowrap;
 }
 
 nav a {
-    color: white;
+    color: #ddd;
     text-decoration: none;
-    margin: 0 8px;
+    font-size: 13px;
     font-weight: bold;
+    padding: 11px 13px;
+    border-radius: 10px;
 }
 
-header {
-    background: #182848;
+nav a:hover {
+    background: linear-gradient(90deg,#4531d6,#a52ce8);
     color: white;
-    padding: 30px 15px;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+    margin: 20px;
+    padding: 55px 20px 35px;
+    text-align: center;
+    border-radius: 25px;
+    border: 1px solid rgba(255,255,255,0.12);
+
+    background:
+        radial-gradient(circle at 50% 80%, rgba(255,125,54,0.45), transparent 30%),
+        radial-gradient(circle at 50% 50%, rgba(137,42,211,0.45), transparent 55%),
+        linear-gradient(135deg,#080b35,#160b3d,#08091d);
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,0.45);
+}
+
+.badge {
+    display: inline-block;
+    padding: 9px 18px;
+    border: 1px solid #b448e8;
+    border-radius: 25px;
+    color: #ffd45a;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.hero h1 {
+    font-size: clamp(38px, 9vw, 70px);
+    margin: 0;
+    line-height: 1.05;
+}
+
+.hero h1 span {
+    background: linear-gradient(90deg,#ffd02f,#ff6b63,#b83cff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero p {
+    max-width: 600px;
+    margin: 22px auto;
+    color: #ddd;
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+.start-button {
+    display: inline-block;
+    padding: 15px 28px;
+    border-radius: 14px;
+    background: linear-gradient(90deg,#8c24ff,#238cff);
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 17px;
+    box-shadow: 0 8px 30px rgba(108,38,255,0.45);
+}
+
+/* =========================
+   STATS
+========================= */
+
+.stats {
+    max-width: 950px;
+    margin: 25px auto;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 12px;
+    padding: 0 15px;
+}
+
+.stat {
+    background: rgba(8,12,40,0.9);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 18px;
+    padding: 20px 10px;
     text-align: center;
 }
 
-header h1 {
-    margin: 0;
-    font-size: 30px;
+.stat-icon {
+    font-size: 28px;
 }
 
-header p {
-    margin: 10px 0 0;
+.stat-title {
+    color: #aaa;
+    font-size: 13px;
+    margin-top: 8px;
 }
 
-.container {
-    max-width: 700px;
-    margin: auto;
-    padding: 15px;
+.stat-number {
+    font-size: 25px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* =========================
+   FEATURE CARDS
+========================= */
+
+.features {
+    max-width: 1100px;
+    margin: 25px auto;
+    padding: 0 15px;
+
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 15px;
 }
 
 .card {
-    background: white;
-    border-radius: 14px;
-    padding: 20px;
-    margin: 15px 0;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-}
-
-.points {
+    min-height: 185px;
+    padding: 22px;
+    border-radius: 20px;
+    background: rgba(8,12,40,0.92);
+    border: 1px solid rgba(255,255,255,0.1);
     text-align: center;
+    transition: transform 0.2s;
 }
 
-.points-number {
-    font-size: 44px;
-    font-weight: bold;
-    margin: 10px 0;
-    color: #182848;
+.card:hover {
+    transform: translateY(-4px);
 }
 
-.button {
-    display: block;
-    width: 100%;
-    padding: 14px;
-    margin-top: 12px;
-    border-radius: 10px;
-    background: #182848;
-    color: white;
-    text-decoration: none;
-    text-align: center;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.button:hover {
-    opacity: 0.9;
-}
-
-.summary {
+.card-icon {
+    width: 60px;
+    height: 60px;
+    margin: auto;
+    border-radius: 50%;
     display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    text-align: center;
+    align-items: center;
+    justify-content: center;
+    font-size: 29px;
+    background: rgba(80,50,150,0.4);
 }
 
-.summary-item {
-    flex: 1;
-    background: #eef2f7;
-    border-radius: 10px;
-    padding: 15px 8px;
+.card h2 {
+    font-size: 18px;
+    margin: 15px 0 8px;
 }
 
-.summary-number {
-    font-size: 24px;
+.card p {
+    color: #aaa;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.card a {
+    display: inline-block;
+    margin-top: 8px;
+    text-decoration: none;
     font-weight: bold;
+    color: #ffd34d;
 }
+
+/* =========================
+   FOOTER
+========================= */
 
 footer {
+    margin: 20px;
+    padding: 18px;
+    border-radius: 15px;
+    background: rgba(8,12,40,0.85);
     text-align: center;
-    padding: 25px;
-    color: #666;
-    font-size: 14px;
+    color: #aaa;
+    font-size: 13px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+
+    nav {
+        justify-content: flex-start;
+    }
+
+    .hero {
+        margin: 10px;
+        padding: 45px 18px 30px;
+    }
+
+    .hero p {
+        font-size: 16px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .features {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 430px) {
+
+    .features {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        min-height: 160px;
+    }
 }
 </style>
 </head>
 
 <body>
 
+<!-- =========================
+     NAVIGATION
+========================= -->
+
 <nav>
     <a href="index.html">Home</a>
     <a href="earn.html">Earn Points</a>
     <a href="watch.html">Watch & Earn</a>
     <a href="spin.html">Daily Spin</a>
+    <a href="challenges.html">Challenges</a>
+    <a href="buy-points.html">Buy Points</a>
     <a href="balance.html">My Balance</a>
     <a href="rewards.html">Rewards</a>
 </nav>
 
-<header>
-    <h1>Reward Platform</h1>
-    <p>Complete activities. Collect points.</p>
-</header>
 
-<div class="container">
+<!-- =========================
+     WELCOME
+========================= -->
 
-    <div class="card points">
+<section class="hero">
 
-        <h2>💰 Your Points</h2>
+    <div class="badge">
+        ⭐ WELCOME TO THE PLATFORM
+    </div>
 
-        <div class="points-number" id="points">
+    <h1>
+        Welcome to<br>
+        <span>Reward Platform</span>
+    </h1>
+
+    <p>
+        Complete activities, earn points,
+        and discover exciting rewards.
+    </p>
+
+    <a class="start-button" href="earn.html">
+        🚀 Start Earning Now
+    </a>
+
+</section>
+
+
+<!-- =========================
+     STATISTICS
+========================= -->
+
+<section class="stats">
+
+    <div class="stat">
+
+        <div class="stat-icon">💰</div>
+
+        <div class="stat-title">
+            Your Balance
+        </div>
+
+        <div
+            class="stat-number"
+            id="balance">
             0
         </div>
 
-        <p>points available</p>
-
-    </div>
-
-
-    <div class="card">
-
-        <h2>🚀 Start Earning</h2>
-
-        <p>
-            Complete activities and collect points.
-            Visit the Earn Points page to see available opportunities.
-        </p>
-
-        <a class="button" href="earn.html">
-            Earn Points
-        </a>
-
-    </div>
-
-
-    <div class="card">
-
-        <h2>📊 Your Activity</h2>
-
-        <div class="summary">
-
-            <div class="summary-item">
-
-                <div
-                    class="summary-number"
-                    id="totalEarned">
-                    0
-                </div>
-
-                <div>
-                    Total Earned
-                </div>
-
-            </div>
-
-
-            <div class="summary-item">
-
-                <div
-                    class="summary-number"
-                    id="activityCount">
-                    0
-                </div>
-
-                <div>
-                    Activities
-                </div>
-
-            </div>
-
+        <div class="stat-title">
+            Points
         </div>
 
-        <a class="button" href="balance.html">
-            View My Balance
+    </div>
+
+
+    <div class="stat">
+
+        <div class="stat-icon">🎯</div>
+
+        <div class="stat-title">
+            Activities Completed
+        </div>
+
+        <div
+            class="stat-number"
+            id="activities">
+            0
+        </div>
+
+        <div class="stat-title">
+            Total
+        </div>
+
+    </div>
+
+
+    <div class="stat">
+
+        <div class="stat-icon">🏆</div>
+
+        <div class="stat-title">
+            Weekly Challenge
+        </div>
+
+        <div
+            class="stat-number"
+            id="challenge">
+            0 / 5
+        </div>
+
+        <div class="stat-title">
+            Progress
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     FEATURES
+========================= -->
+
+<section class="features">
+
+    <div class="card">
+
+        <div class="card-icon">
+            🏆
+        </div>
+
+        <h2>Earn Points</h2>
+
+        <p>
+            Complete tasks and earn
+            points through daily activities.
+        </p>
+
+        <a href="earn.html">
+            Explore →
         </a>
 
     </div>
 
-</div>
+
+    <div class="card">
+
+        <div class="card-icon">
+            ▶️
+        </div>
+
+        <h2>Watch & Earn</h2>
+
+        <p>
+            Watch qualifying videos
+            and earn points.
+        </p>
+
+        <a href="watch.html">
+            Watch →
+        </a>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="card-icon">
+            🎡
+        </div>
+
+        <h2>Daily Spin</h2>
+
+        <p>
+            Spin once each day
+            and collect points.
+        </p>
+
+        <a href="spin.html">
+            Spin →
+        </a>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="card-icon">
+            🚩
+        </div>
+
+        <h2>Challenges</h2>
+
+        <p>
+            Complete weekly challenges
+            for bonus points.
+        </p>
+
+        <a href="challenges.html">
+            View →
+        </a>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="card-icon">
+            💳
+        </div>
+
+        <h2>Buy Points</h2>
+
+        <p>
+            Increase your balance
+            with available point packages.
+        </p>
+
+        <a href="buy-points.html">
+            View Packages →
+        </a>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="card-icon">
+            🎁
+        </div>
+
+        <h2>Rewards</h2>
+
+        <p>
+            Use your points toward
+            available rewards.
+        </p>
+
+        <a href="rewards.html">
+            View Rewards →
+        </a>
+
+    </div>
+
+</section>
+
 
 <footer>
-    Reward Platform — Prototype
+    🛡️ Safe • Fun • Rewarding
+    <br><br>
+    Your time. Your effort. Your rewards.
 </footer>
 
 
 <script>
 
-const points =
-    Number(localStorage.getItem("rewardPoints")) || 0;
+/* =========================
+   BALANCE
+========================= */
+
+const balance =
+    Number(
+        localStorage.getItem(
+            "rewardPoints"
+        )
+    ) || 0;
+
+document.getElementById(
+    "balance"
+).textContent =
+    balance.toLocaleString();
+
+
+/* =========================
+   ACTIVITY HISTORY
+========================= */
 
 const history =
-    JSON.parse(localStorage.getItem("rewardHistory")) || [];
+    JSON.parse(
+        localStorage.getItem(
+            "rewardHistory"
+        )
+    ) || [];
 
-
-document.getElementById("points").textContent =
-    points;
-
-
-const totalEarned =
-    history.reduce(
-        (total, item) =>
-            total + Number(item.points || 0),
-        0
-    );
-
-
-document.getElementById("totalEarned").textContent =
-    totalEarned;
-
-
-document.getElementById("activityCount").textContent =
+document.getElementById(
+    "activities"
+).textContent =
     history.length;
+
+
+/* =========================
+   CHALLENGE
+========================= */
+
+const challengeProgress =
+    Number(
+        localStorage.getItem(
+            "challengeProgress"
+        )
+    ) || 0;
+
+document.getElementById(
+    "challenge"
+).textContent =
+    Math.min(
+        challengeProgress,
+        5
+    ) + " / 5";
 
 </script>
 
