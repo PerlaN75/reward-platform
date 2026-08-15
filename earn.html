@@ -297,6 +297,106 @@ function addPoints(
     );
 
     updateDisplay();
+
+    /* =========================
+       WEEKLY CHALLENGE
+    ========================= */
+
+    updateChallenge(activity);
+}
+
+
+/* =========================
+   UPDATE WEEKLY CHALLENGE
+========================= */
+
+function updateChallenge(activity) {
+
+    const completed =
+        localStorage.getItem(
+            "challengeCompleted"
+        ) === "true";
+
+    if (completed) {
+        return;
+    }
+
+    let progress =
+        Number(
+            localStorage.getItem(
+                "challengeProgress"
+            )
+        ) || 0;
+
+    progress++;
+
+    if (progress >= 5) {
+
+        progress = 5;
+
+        localStorage.setItem(
+            "challengeProgress",
+            progress
+        );
+
+        /* Award challenge reward */
+
+        let currentPoints =
+            Number(
+                localStorage.getItem(
+                    "rewardPoints"
+                )
+            ) || 0;
+
+        currentPoints += 50;
+
+        localStorage.setItem(
+            "rewardPoints",
+            currentPoints
+        );
+
+        /* Record the bonus */
+
+        let rewardHistory =
+            JSON.parse(
+                localStorage.getItem(
+                    "rewardHistory"
+                )
+            ) || [];
+
+        rewardHistory.push({
+
+            activity:
+                "Weekly Challenge Reward",
+
+            points: 50,
+
+            date:
+                new Date()
+                .toLocaleString()
+
+        });
+
+        localStorage.setItem(
+            "rewardHistory",
+            JSON.stringify(
+                rewardHistory
+            )
+        );
+
+        localStorage.setItem(
+            "challengeCompleted",
+            "true"
+        );
+
+    } else {
+
+        localStorage.setItem(
+            "challengeProgress",
+            progress
+        );
+    }
+
 }
 
 
