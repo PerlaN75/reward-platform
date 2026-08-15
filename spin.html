@@ -21,15 +21,30 @@ body {
 
 nav {
     background: #182848;
-    padding: 12px;
-    text-align: center;
+    padding: 14px 10px;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+nav::-webkit-scrollbar {
+    display: none;
 }
 
 nav a {
     color: white;
     text-decoration: none;
-    margin: 0 8px;
+    margin: 0;
+    padding: 11px 14px;
     font-weight: bold;
+    flex: 0 0 auto;
+    border-radius: 10px;
 }
 
 header {
@@ -41,6 +56,31 @@ header {
 
 header h1 {
     margin: 0;
+    animation: headerHeadingInvert 3s infinite alternate;
+}
+
+.card h2 {
+    animation: cardHeadingInvert 3s infinite alternate;
+}
+
+@keyframes headerHeadingInvert {
+    0% {
+        color: white;
+    }
+
+    100% {
+        color: #00bfff;
+    }
+}
+
+@keyframes cardHeadingInvert {
+    0% {
+        color: #182848;
+    }
+
+    100% {
+        color: #00bfff;
+    }
 }
 
 .container {
