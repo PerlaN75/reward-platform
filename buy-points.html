@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Buy Points - Reward Platform</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #222;
+}
+
+nav {
+    background: #182848;
+    padding: 14px 10px;
+    text-align: center;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 7px;
+    font-weight: bold;
+}
+
+header {
+    background: #182848;
+    color: white;
+    padding: 25px 15px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header p {
+    margin: 8px 0 0;
+}
+
+.container {
+    max-width: 700px;
+    margin: auto;
+    padding: 15px;
+}
+
+.balance {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    margin: 15px 0;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.balance-number {
+    font-size: 38px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+.package {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    margin: 15px 0;
+    text-align: center;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.package h2 {
+    margin-top: 0;
+    color: #182848;
+}
+
+.points {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.price {
+    font-size: 20px;
+    margin: 10px 0;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #182848;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.message {
+    background: #eaf7ea;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+    margin: 15px 0;
+    display: none;
+}
+
+.notice {
+    background: #fff8df;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #666;
+    font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="earn.html">Earn Points</a>
+    <a href="watch.html">Watch & Earn</a>
+    <a href="spin.html">Daily Spin</a>
+    <a href="challenges.html">Challenges</a>
+    <a href="buy-points.html">Buy Points</a>
+    <a href="balance.html">My Balance</a>
+    <a href="rewards.html">Rewards</a>
+</nav>
+
+<header>
+    <h1>💰 Buy Points</h1>
+    <p>Increase your points balance</p>
+</header>
+
+<div class="container">
+
+    <div class="balance">
+        <h2>Your Current Balance</h2>
+        <div class="balance-number" id="balance">
+            0 points
+        </div>
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <!-- PACKAGE 1 -->
+
+    <div class="package">
+
+        <h2>Starter Package</h2>
+
+        <div class="points">
+            100 Points
+        </div>
+
+        <div class="price">
+            Price: $1
+        </div>
+
+        <button onclick="testPurchase(100)">
+            Test Purchase
+        </button>
+
+    </div>
+
+
+    <!-- PACKAGE 2 -->
+
+    <div class="package">
+
+        <h2>Standard Package</h2>
+
+        <div class="points">
+            500 Points
+        </div>
+
+        <div class="price">
+            Price: $4
+        </div>
+
+        <button onclick="testPurchase(500)">
+            Test Purchase
+        </button>
+
+    </div>
+
+
+    <!-- PACKAGE 3 -->
+
+    <div class="package">
+
+        <h2>Premium Package</h2>
+
+        <div class="points">
+            1,000 Points
+        </div>
+
+        <div class="price">
+            Price: $7
+        </div>
+
+        <button onclick="testPurchase(1000)">
+            Test Purchase
+        </button>
+
+    </div>
+
+
+    <div class="notice">
+        <strong>Prototype Notice:</strong>
+        <p>
+            These buttons are for testing the points system only.
+            They do not process real payments.
+        </p>
+    </div>
+
+</div>
+
+<footer>
+    Reward Platform — Prototype
+</footer>
+
+
+<script>
+
+/* =========================
+   BALANCE
+========================= */
+
+function getBalance() {
+
+    return Number(
+        localStorage.getItem(
+            "rewardPoints"
+        )
+    ) || 0;
+}
+
+
+function updateBalanceDisplay() {
+
+    document.getElementById(
+        "balance"
+    ).textContent =
+        getBalance() + " points";
+}
+
+
+/* =========================
+   TEST PURCHASE
+========================= */
+
+function testPurchase(pointsBought) {
+
+    let balance =
+        getBalance();
+
+    balance += pointsBought;
+
+    localStorage.setItem(
+        "rewardPoints",
+        balance
+    );
+
+
+    /* Record purchase */
+
+    let history =
+        JSON.parse(
+            localStorage.getItem(
+                "rewardHistory"
+            )
+        ) || [];
+
+
+    history.push({
+
+        activity:
+            "Test Points Purchase",
+
+        points:
+            pointsBought,
+
+        date:
+            new Date()
+            .toLocaleString()
+
+    });
+
+
+    localStorage.setItem(
+        "rewardHistory",
+        JSON.stringify(
+            history
+        )
+    );
+
+
+    updateBalanceDisplay();
+
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    message.textContent =
+        "✅ Test purchase successful! " +
+        pointsBought +
+        " points were added.";
+
+    message.style.display =
+        "block";
+}
+
+
+/* =========================
+   INITIAL DISPLAY
+========================= */
+
+updateBalanceDisplay();
+
+</script>
+
+</body>
+</html>
