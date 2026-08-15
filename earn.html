@@ -18,42 +18,90 @@ body {
     color: #222;
 }
 
-nav {
+.top-nav {
     background: #182848;
-    padding: 14px 10px;
+    padding: 12px 10px;
     display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    gap: 4px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    align-items: center;
+    gap: 8px;
 }
 
-nav::-webkit-scrollbar {
+.top-nav a,
+.menu-button {
+    color: white;
+    text-decoration: none;
+    padding: 11px 14px;
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+.menu-button {
+    background: transparent;
+    border: none;
+    width: auto;
+    margin: 0;
+    font-size: 16px;
+}
+
+.home-button {
+    background: rgba(255,255,255,0.12);
+}
+
+/* SIDE MENU */
+
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 270px;
+    height: 100%;
+    background: #182848;
+    z-index: 1000;
+    padding-top: 60px;
+    transition: left 0.3s ease;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.25);
+}
+
+.side-menu.open {
+    left: 0;
+}
+
+.side-menu a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 16px 20px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.side-menu a:hover {
+    background: #0066ff;
+}
+
+.close-menu {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: auto;
+    margin: 0;
+    padding: 8px 12px;
+    background: transparent;
+    font-size: 20px;
+}
+
+.menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 999;
     display: none;
 }
 
-nav a {
-    color: white;
-    text-decoration: none;
-    margin: 0;
-    padding: 11px 14px;
-    font-weight: bold;
-    flex: 0 0 auto;
-    border-radius: 10px;
+.menu-overlay.open {
+    display: block;
 }
-}
-nav a.active {
-    background: linear-gradient(
-        90deg,
-        #0066ff,
-        #00bfff
-    );
-    color: white;
-}
+    
 header {
     background: #182848;
     color: white;
@@ -1273,6 +1321,21 @@ if (
 
 updateDisplay();
 
+/* =========================
+   SIDE MENU
+========================= */
+
+function toggleMenu() {
+
+    const menu =
+        document.getElementById("sideMenu");
+
+    const overlay =
+        document.getElementById("menuOverlay");
+
+    menu.classList.toggle("open");
+    overlay.classList.toggle("open");
+}
 </script>
 
 </body>
