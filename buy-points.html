@@ -282,8 +282,28 @@ function updateBalanceDisplay() {
 
 function testPurchase(pointsBought) {
 
-    let balance =
-        getBalance();
+    const purchased =
+        getTodayPurchaseTotal();
+
+    const remaining =
+        DAILY_PURCHASE_LIMIT - purchased;
+
+    if (pointsBought > remaining) {
+
+        const message =
+            document.getElementById("message");
+
+        message.textContent =
+            "⚠️ Purchase denied. You have only " +
+            remaining +
+            " points remaining in today's purchase limit.";
+
+        message.style.display = "block";
+
+        return;
+    }
+
+    let balance = getBalance();
 
     balance += pointsBought;
 
@@ -292,8 +312,18 @@ function testPurchase(pointsBought) {
         balance
     );
 
+    const newTotal =
+        purchased + pointsBought;
 
-    /* Record purchase */
+    localStorage.setItem(
+        "dailyPurchasedPoints",
+        newTotal
+    );
+
+    localStorage.setItem(
+        "purchaseDate",
+        today
+    );
 
     let history =
         JSON.parse(
@@ -301,7 +331,6 @@ function testPurchase(pointsBought) {
                 "rewardHistory"
             )
         ) || [];
-
 
     history.push({
 
@@ -312,36 +341,26 @@ function testPurchase(pointsBought) {
             pointsBought,
 
         date:
-            new Date()
-            .toLocaleString()
+            new Date().toLocaleString()
 
     });
 
-
     localStorage.setItem(
         "rewardHistory",
-        JSON.stringify(
-            history
-        )
+        JSON.stringify(history)
     );
-
 
     updateBalanceDisplay();
 
-
     const message =
-        document.getElementById(
-            "message"
-        );
-
+        document.getElementById("message");
 
     message.textContent =
         "✅ Test purchase successful! " +
         pointsBought +
         " points were added.";
 
-    message.style.display =
-        "block";
+    message.style.display = "block";
 }
 
 
