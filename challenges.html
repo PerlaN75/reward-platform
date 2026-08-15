@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Challenges - Reward Platform</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f7fb;
+      color: #222;
+    }
+
+    header {
+      background: #1f4e79;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    nav {
+      background: white;
+      padding: 12px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    nav a {
+      color: #1f4e79;
+      text-decoration: none;
+      font-weight: bold;
+      margin: 0 8px;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 25px auto;
+      padding: 0 15px;
+    }
+
+    .balance {
+      background: #fff;
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .challenge {
+      background: white;
+      padding: 22px;
+      border-radius: 15px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .challenge h2 {
+      margin-top: 0;
+      color: #1f4e79;
+    }
+
+    .progress-box {
+      background: #e9eef5;
+      height: 22px;
+      border-radius: 20px;
+      overflow: hidden;
+      margin: 15px 0;
+    }
+
+    .progress {
+      width: 0%;
+      height: 100%;
+      background: #1f4e79;
+      transition: width 0.3s ease;
+    }
+
+    .reward {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+
+    .status {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .info {
+      background: #fff8df;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>🏆 Challenges</h1>
+  <p>Complete challenges and earn bonus points!</p>
+</header>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="earn.html">Earn Points</a>
+  <a href="watch.html">Watch & Earn</a>
+  <a href="spin.html">Daily Spin</a>
+  <a href="challenges.html">Challenges</a>
+  <a href="balance.html">My Balance</a>
+  <a href="rewards.html">Rewards</a>
+</nav>
+
+<div class="container">
+
+  <div class="balance">
+    <h3>Current Balance</h3>
+    <div id="balance">0 points</div>
+  </div>
+
+  <div class="challenge">
+
+    <h2>🎯 Weekly Challenge</h2>
+
+    <p>
+      Complete <strong>5 qualifying activities</strong> this week
+      and receive a bonus reward.
+    </p>
+
+    <p>
+      Progress: <strong><span id="progressText">0 / 5</span></strong>
+    </p>
+
+    <div class="progress-box">
+      <div class="progress" id="progressBar"></div>
+    </div>
+
+    <div class="reward">
+      🏆 Reward: +50 points
+    </div>
+
+    <div class="status" id="status">
+      Challenge in progress
+    </div>
+
+  </div>
+
+  <div class="info">
+    <strong>How it works:</strong>
+    <p>
+      Your qualifying activities contribute toward this weekly challenge.
+      Once you reach 5 activities, the 50-point bonus will be awarded
+      automatically.
+    </p>
+    <p>
+      The challenge is limited to one completion per week.
+    </p>
+  </div>
+
+</div>
+
+<script>
+  const TARGET = 5;
+  const REWARD = 50;
+
+  function getBalance() {
+    return parseInt(localStorage.getItem("points") || "0", 10);
+  }
+
+  function setBalance(value) {
+    localStorage.setItem("points", value);
+  }
+
+  function getChallengeProgress() {
+    return parseInt(
+      localStorage.getItem("challengeProgress") || "0",
+      10
+    );
+  }
+
+  function setChallengeProgress(value) {
+    localStorage.setItem("challengeProgress", value);
+  }
+
+  function isCompleted() {
+    return localStorage.getItem("challengeCompleted") === "true";
+  }
+
+  function updatePage() {
+    const balance = getBalance();
+    let progress = getChallengeProgress();
+
+    if (progress > TARGET) {
+      progress = TARGET;
+      setChallengeProgress(TARGET);
+    }
+
+    document.getElementById("balance").textContent =
+      balance + " points";
+
+    document.getElementById("progressText").textContent =
+      progress + " / " + TARGET;
+
+    document.getElementById("progressBar").style.width =
+      (progress / TARGET * 100) + "%";
+
+    if (isCompleted()) {
+      document.getElementById("status").textContent =
+        "✅ Challenge completed! Reward received.";
+    } else {
+      document.getElementById("status").textContent =
+        "Challenge in progress";
+    }
+  }
+
+  updatePage();
+</script>
+
+</body>
+</html>
