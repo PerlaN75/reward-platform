@@ -373,10 +373,7 @@ function updateDisplay() {
 }
 
 
-function addPoints(
-    amount,
-    activity
-) {
+function addPoints(amount, activity) {
 
     points += amount;
 
@@ -402,7 +399,81 @@ function addPoints(
         JSON.stringify(history)
     );
 
+
+    /* =========================
+       UPDATE WEEKLY CHALLENGE
+    ========================= */
+
+    let challengeProgress =
+        Number(
+            localStorage.getItem(
+                "challengeProgress"
+            )
+        ) || 0;
+
+    let challengeCompleted =
+        localStorage.getItem(
+            "challengeCompleted"
+        ) === "true";
+
+
+    if (
+        !challengeCompleted &&
+        challengeProgress < 5
+    ) {
+
+        challengeProgress++;
+
+        localStorage.setItem(
+            "challengeProgress",
+            challengeProgress
+        );
+
+
+        /* =========================
+           5/5 REWARD
+        ========================= */
+
+        if (challengeProgress >= 5) {
+
+            points += 50;
+
+            localStorage.setItem(
+                "rewardPoints",
+                points
+            );
+
+            history.push({
+
+                activity:
+                    "5-Day Streak Challenge",
+
+                points: 50,
+
+                date:
+                    new Date()
+                    .toLocaleString()
+
+            });
+
+            localStorage.setItem(
+                "rewardHistory",
+                JSON.stringify(history)
+            );
+
+            localStorage.setItem(
+                "challengeCompleted",
+                "true"
+            );
+
+        }
+
+    }
+
+
     updateDisplay();
+
+}
 
     /* =========================
        WEEKLY CHALLENGE
