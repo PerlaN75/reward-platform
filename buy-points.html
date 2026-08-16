@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
 <title>Buy Points - Reward Platform</title>
 
 <style>
+
 * {
     box-sizing: border-box;
 }
@@ -18,35 +20,114 @@ body {
     color: #222;
 }
 
-nav {
+/* =========================
+   TOP NAVIGATION
+========================= */
+
+.top-nav {
     background: #182848;
-    padding: 14px 10px;
-    text-align: center;
-    overflow-x: auto;
-    white-space: nowrap;
+    padding: 12px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-nav a {
+.top-nav a,
+.menu-button {
     color: white;
     text-decoration: none;
-    margin: 0 7px;
+    padding: 11px 14px;
     font-weight: bold;
+    border-radius: 10px;
 }
+
+.menu-button {
+    background: transparent;
+    border: none;
+    width: auto;
+    margin: 0;
+    font-size: 16px;
+}
+
+.home-button {
+    background: rgba(255,255,255,0.12);
+}
+
+/* =========================
+   SIDE MENU
+========================= */
+
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 270px;
+    height: 100%;
+    background: #182848;
+    z-index: 1000;
+    padding-top: 60px;
+    transition: left 0.3s ease;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.25);
+}
+
+.side-menu.open {
+    left: 0;
+}
+
+.side-menu a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 16px 20px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.side-menu a:hover {
+    background: #0066ff;
+}
+
+.close-menu {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: auto;
+    margin: 0;
+    padding: 8px 12px;
+    background: transparent;
+    font-size: 20px;
+}
+
+.menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 999;
+    display: none;
+}
+
+.menu-overlay.open {
+    display: block;
+}
+
+/* =========================
+   HEADER
+========================= */
 
 header {
     background: #182848;
     color: white;
-    padding: 25px 15px;
     text-align: center;
+    padding: 25px 15px;
 }
 
 header h1 {
     margin: 0;
 }
 
-header p {
-    margin: 8px 0 0;
-}
+/* =========================
+   CONTAINER
+========================= */
 
 .container {
     max-width: 700px;
@@ -54,42 +135,56 @@ header p {
     padding: 15px;
 }
 
-.balance {
+/* =========================
+   CARDS
+========================= */
+
+.card {
     background: white;
     border-radius: 14px;
     padding: 20px;
-    text-align: center;
     margin: 15px 0;
     box-shadow: 0 3px 12px rgba(0,0,0,0.08);
 }
 
-.balance-number {
-    font-size: 38px;
-    font-weight: bold;
-    margin-top: 8px;
+/* =========================
+   BALANCE
+========================= */
+
+.points {
+    text-align: center;
 }
+
+.points-number {
+    font-size: 40px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+/* =========================
+   PACKAGES
+========================= */
 
 .package {
-    background: white;
-    border-radius: 14px;
-    padding: 20px;
+    border: 2px solid #e3e7ef;
+    border-radius: 12px;
+    padding: 18px;
     margin: 15px 0;
     text-align: center;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
 }
 
 .package h2 {
     margin-top: 0;
-    color: #182848;
 }
 
-.points {
+.package-points {
     font-size: 30px;
     font-weight: bold;
 }
 
-.price {
+.package-price {
     font-size: 20px;
+    font-weight: bold;
     margin: 10px 0;
 }
 
@@ -101,7 +196,6 @@ button {
     background: #182848;
     color: white;
     font-size: 16px;
-    font-weight: bold;
     cursor: pointer;
     margin-top: 10px;
 }
@@ -111,22 +205,67 @@ button:hover {
 }
 
 .message {
-    background: #eaf7ea;
-    padding: 15px;
-    border-radius: 10px;
     text-align: center;
     font-weight: bold;
-    margin: 15px 0;
-    display: none;
+    margin-top: 15px;
+}
+
+/* =========================
+   INFORMATION
+========================= */
+
+.info {
+    line-height: 1.6;
 }
 
 .notice {
-    background: #fff8df;
-    border-radius: 10px;
-    padding: 15px;
-    margin-top: 20px;
-    font-size: 14px;
+    background: #fff8e1;
+    border-left: 5px solid #ffb300;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
 }
+
+/* =========================
+   ANIMATED HEADINGS
+========================= */
+
+h1,
+h2 {
+    background: linear-gradient(
+        90deg,
+        #ffb300,
+        #ff4d8d,
+        #8a2be2,
+        #2196f3,
+        #ffb300
+    );
+
+    background-size: 300% 100%;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+
+    animation:
+        headingSlide 8s linear infinite;
+}
+
+@keyframes headingSlide {
+
+    from {
+        background-position: 0% 50%;
+    }
+
+    to {
+        background-position: 300% 50%;
+    }
+}
+
+/* =========================
+   FOOTER
+========================= */
 
 footer {
     text-align: center;
@@ -134,61 +273,165 @@ footer {
     color: #666;
     font-size: 14px;
 }
+
 </style>
 </head>
 
 <body>
 
-<nav>
-    <a href="index.html">Home</a>
-    <a href="earn.html">Earn Points</a>
-    <a href="watch.html">Watch & Earn</a>
-    <a href="spin.html">Daily Spin</a>
-    <a href="challenges.html">Challenges</a>
-    <a href="buy-points.html">Buy Points</a>
-    <a href="balance.html">My Balance</a>
-    <a href="rewards.html">Rewards</a>
+<!-- =========================
+     TOP NAVIGATION
+========================= -->
+
+<nav class="top-nav">
+
+    <button
+        class="menu-button"
+        onclick="toggleMenu()">
+        ☰ Menu
+    </button>
+
+    <a
+        href="index.html"
+        class="home-button">
+        🏠 Home
+    </a>
+
 </nav>
 
+
+<!-- =========================
+     SIDE MENU
+========================= -->
+
+<div
+    id="sideMenu"
+    class="side-menu">
+
+    <button
+        class="close-menu"
+        onclick="toggleMenu()">
+        ✕
+    </button>
+
+    <a href="earn.html">
+        💰 Earn Points
+    </a>
+
+    <a href="watch.html">
+        📺 Watch & Earn
+    </a>
+
+    <a href="spin.html">
+        🎡 Daily Spin
+    </a>
+
+    <a href="challenges.html">
+        🏆 Challenges
+    </a>
+
+    <a href="buy.html">
+        💳 Buy Points
+    </a>
+
+    <a href="balance.html">
+        💰 My Balance
+    </a>
+
+    <a href="rewards.html">
+        🎁 Rewards
+    </a>
+
+</div>
+
+
+<div
+    id="menuOverlay"
+    class="menu-overlay"
+    onclick="toggleMenu()">
+</div>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
 <header>
-    <h1>💰 Buy Points</h1>
-    <p>Increase your points balance</p>
+
+    <h1>💳 Buy Points</h1>
+
+    <p>
+        Increase your points balance.
+    </p>
+
 </header>
+
+
+<!-- =========================
+     MAIN CONTENT
+========================= -->
 
 <div class="container">
 
-    <div class="balance">
-        <h2>Your Current Balance</h2>
-        <div class="balance-number" id="balance">
-            0 points
+
+    <!-- CURRENT BALANCE -->
+
+    <div class="card points">
+
+        <h2>💰 Your Current Balance</h2>
+
+        <div
+            class="points-number"
+            id="points">
+            0
         </div>
+
+        <p>
+            points available
+        </p>
+
     </div>
 
-    <div class="notice">
-    <strong>Daily Purchase Limit</strong>
-    <p id="purchaseStatus">
-        Today's purchase limit: 1,000 points
-    </p>
-</div>
 
-    <div id="message" class="message"></div>
+    <!-- INFORMATION -->
+
+    <div class="card info">
+
+        <h2>ℹ️ About Buying Points</h2>
+
+        <p>
+            Choose a points package below.
+        </p>
+
+        <div class="notice">
+
+            <strong>Prototype:</strong>
+            Point purchases are currently
+            simulated for testing. No real
+            payment is processed on this page.
+
+        </div>
+
+    </div>
+
 
     <!-- PACKAGE 1 -->
 
-    <div class="package">
+    <div class="card package">
 
-        <h2>Starter Package</h2>
+        <h2>🌱 Starter</h2>
 
-        <div class="points">
+        <div class="package-points">
             100 Points
         </div>
 
-        <div class="price">
-            Price: $1
+        <div class="package-price">
+            Demo Package
         </div>
 
-        <button onclick="testPurchase(100)">
-            Test Purchase
+        <button
+            onclick="selectPackage(100)">
+            Select 100 Points
         </button>
 
     </div>
@@ -196,20 +439,21 @@ footer {
 
     <!-- PACKAGE 2 -->
 
-    <div class="package">
+    <div class="card package">
 
-        <h2>Standard Package</h2>
+        <h2>⭐ Standard</h2>
 
-        <div class="points">
-            500 Points
+        <div class="package-points">
+            250 Points
         </div>
 
-        <div class="price">
-            Price: $4
+        <div class="package-price">
+            Demo Package
         </div>
 
-        <button onclick="testPurchase(500)">
-            Test Purchase
+        <button
+            onclick="selectPackage(250)">
+            Select 250 Points
         </button>
 
     </div>
@@ -217,158 +461,115 @@ footer {
 
     <!-- PACKAGE 3 -->
 
-    <div class="package">
+    <div class="card package">
 
-        <h2>Premium Package</h2>
+        <h2>🚀 Premium</h2>
 
-        <div class="points">
-            1,000 Points
+        <div class="package-points">
+            500 Points
         </div>
 
-        <div class="price">
-            Price: $7
+        <div class="package-price">
+            Demo Package
         </div>
 
-        <button onclick="testPurchase(1000)">
-            Test Purchase
+        <button
+            onclick="selectPackage(500)">
+            Select 500 Points
         </button>
 
     </div>
 
 
-    <div class="notice">
-        <strong>Prototype Notice:</strong>
-        <p>
-            These buttons are for testing the points system only.
-            They do not process real payments.
-        </p>
+    <div
+        id="message"
+        class="message">
     </div>
+
 
 </div>
 
+
 <footer>
+
     Reward Platform — Prototype
+
 </footer>
 
 
 <script>
 
 /* =========================
-   BALANCE
+   POINTS
 ========================= */
 
-function getBalance() {
+function updateDisplay() {
 
-    return Number(
-        localStorage.getItem(
-            "rewardPoints"
-        )
-    ) || 0;
-}
-
-
-function updateBalanceDisplay() {
+    const points =
+        Number(
+            localStorage.getItem(
+                "rewardPoints"
+            )
+        ) || 0;
 
     document.getElementById(
-        "balance"
-    ).textContent =
-        getBalance() + " points";
+        "points"
+    ).textContent = points;
+
 }
 
 
 /* =========================
-   TEST PURCHASE
+   SELECT PACKAGE
 ========================= */
 
-function testPurchase(pointsBought) {
-
-    const purchased =
-        getTodayPurchaseTotal();
-
-    const remaining =
-        DAILY_PURCHASE_LIMIT - purchased;
-
-    if (pointsBought > remaining) {
-
-        const message =
-            document.getElementById("message");
-
-        message.textContent =
-            "⚠️ Purchase denied. You have only " +
-            remaining +
-            " points remaining in today's purchase limit.";
-
-        message.style.display = "block";
-
-        return;
-    }
-
-    let balance = getBalance();
-
-    balance += pointsBought;
-
-    localStorage.setItem(
-        "rewardPoints",
-        balance
-    );
-
-    const newTotal =
-        purchased + pointsBought;
-
-    localStorage.setItem(
-        "dailyPurchasedPoints",
-        newTotal
-    );
-
-    localStorage.setItem(
-        "purchaseDate",
-        today
-    );
-
-    let history =
-        JSON.parse(
-            localStorage.getItem(
-                "rewardHistory"
-            )
-        ) || [];
-
-    history.push({
-
-        activity:
-            "Test Points Purchase",
-
-        points:
-            pointsBought,
-
-        date:
-            new Date().toLocaleString()
-
-    });
-
-    localStorage.setItem(
-        "rewardHistory",
-        JSON.stringify(history)
-    );
-
-    updateBalanceDisplay();
+function selectPackage(amount) {
 
     const message =
-        document.getElementById("message");
+        document.getElementById(
+            "message"
+        );
 
     message.textContent =
-        "✅ Test purchase successful! " +
-        pointsBought +
-        " points were added.";
+        "You selected " +
+        amount +
+        " points. Payment integration will be added later.";
 
-    message.style.display = "block";
 }
 
 
 /* =========================
-   INITIAL DISPLAY
+   SIDE MENU
 ========================= */
 
-updateBalanceDisplay();
+function toggleMenu() {
+
+    const menu =
+        document.getElementById(
+            "sideMenu"
+        );
+
+    const overlay =
+        document.getElementById(
+            "menuOverlay"
+        );
+
+    menu.classList.toggle(
+        "open"
+    );
+
+    overlay.classList.toggle(
+        "open"
+    );
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+updateDisplay();
 
 </script>
 
