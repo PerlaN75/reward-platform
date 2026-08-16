@@ -413,7 +413,7 @@ function addPoints(
 
 
 /* =========================
-   UPDATE WEEKLY CHALLENGE
+   DAILY STREAK CHALLENGE
 ========================= */
 
 function updateChallenge(activity) {
@@ -427,6 +427,14 @@ function updateChallenge(activity) {
         return;
     }
 
+    const today =
+        new Date().toDateString();
+
+    const lastChallengeDay =
+        localStorage.getItem(
+            "lastChallengeDay"
+        );
+
     let progress =
         Number(
             localStorage.getItem(
@@ -434,7 +442,57 @@ function updateChallenge(activity) {
             )
         ) || 0;
 
-    progress++;
+
+    /* Already counted today */
+
+    if (lastChallengeDay === today) {
+        return;
+    }
+
+
+    /* Calculate yesterday */
+
+    const yesterdayDate =
+        new Date();
+
+    yesterdayDate.setDate(
+        yesterdayDate.getDate() - 1
+    );
+
+    const yesterday =
+        yesterdayDate.toDateString();
+
+
+    /*
+       Continue streak if yesterday
+       was the previous qualifying day.
+    */
+
+    if (
+        lastChallengeDay === yesterday
+    ) {
+
+        progress++;
+
+    } else {
+
+        /*
+           New streak or missed day
+        */
+
+        progress = 1;
+    }
+
+
+    /* Save today's streak day */
+
+    localStorage.setItem(
+        "lastChallengeDay",
+        today
+    );
+
+
+    /* Complete challenge */
 
     if (progress >= 5) {
 
@@ -445,7 +503,8 @@ function updateChallenge(activity) {
             progress
         );
 
-        /* Award challenge reward */
+
+        /* Award 50 points */
 
         let currentPoints =
             Number(
@@ -461,7 +520,8 @@ function updateChallenge(activity) {
             currentPoints
         );
 
-        /* Record the bonus */
+
+        /* Record reward */
 
         let rewardHistory =
             JSON.parse(
@@ -473,7 +533,7 @@ function updateChallenge(activity) {
         rewardHistory.push({
 
             activity:
-                "Weekly Challenge Reward",
+                "5-Day Streak Challenge",
 
             points: 50,
 
@@ -483,12 +543,14 @@ function updateChallenge(activity) {
 
         });
 
+
         localStorage.setItem(
             "rewardHistory",
             JSON.stringify(
                 rewardHistory
             )
         );
+
 
         localStorage.setItem(
             "challengeCompleted",
@@ -502,7 +564,6 @@ function updateChallenge(activity) {
             progress
         );
     }
-
 }
 
 
