@@ -1,231 +1,639 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Challenges - Reward Platform</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #f4f7fb;
-      color: #222;
+<title>Challenges - Reward Platform</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #222;
+}
+
+/* =========================
+   TOP NAVIGATION
+========================= */
+
+.top-nav {
+    background: #182848;
+    padding: 12px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.top-nav a,
+.menu-button {
+    color: white;
+    text-decoration: none;
+    padding: 11px 14px;
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+.menu-button {
+    background: transparent;
+    border: none;
+    width: auto;
+    margin: 0;
+    font-size: 16px;
+}
+
+.home-button {
+    background: rgba(255,255,255,0.12);
+}
+
+/* =========================
+   SIDE MENU
+========================= */
+
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 270px;
+    height: 100%;
+    background: #182848;
+    z-index: 1000;
+    padding-top: 60px;
+    transition: left 0.3s ease;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.25);
+}
+
+.side-menu.open {
+    left: 0;
+}
+
+.side-menu a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 16px 20px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.side-menu a:hover {
+    background: #0066ff;
+}
+
+.close-menu {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: auto;
+    margin: 0;
+    padding: 8px 12px;
+    background: transparent;
+    font-size: 20px;
+}
+
+.menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 999;
+    display: none;
+}
+
+.menu-overlay.open {
+    display: block;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    background: #182848;
+    color: white;
+    text-align: center;
+    padding: 25px 15px;
+}
+
+header h1 {
+    margin: 0;
+    animation: headerHeadingInvert 3s infinite alternate;
+}
+
+header p {
+    margin: 8px 0 0;
+}
+
+.challenge h2 {
+    animation: cardHeadingInvert 3s infinite alternate;
+}
+
+@keyframes headerHeadingInvert {
+
+    0% {
+        color: white;
     }
 
-    header {
-      background: #1f4e79;
-      color: white;
-      padding: 20px;
-      text-align: center;
+    100% {
+        color: #00bfff;
     }
 
-    nav {
-      background: white;
-      padding: 12px;
-      text-align: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      overflow-x: auto;
-      white-space: nowrap;
+}
+
+@keyframes cardHeadingInvert {
+
+    0% {
+        color: #182848;
     }
 
-    nav a {
-      color: #1f4e79;
-      text-decoration: none;
-      font-weight: bold;
-      margin: 0 8px;
+    100% {
+        color: #00bfff;
     }
 
-    nav a:hover {
-      text-decoration: underline;
-    }
+}
 
-    .container {
-      max-width: 700px;
-      margin: 25px auto;
-      padding: 0 15px;
-    }
+/* =========================
+   CONTAINER
+========================= */
 
-    .balance {
-      background: #fff;
-      padding: 15px;
-      border-radius: 12px;
-      text-align: center;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
+.container {
+    max-width: 700px;
+    margin: auto;
+    padding: 15px;
+}
 
-    .challenge {
-      background: white;
-      padding: 22px;
-      border-radius: 15px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-    }
+/* =========================
+   CARDS
+========================= */
 
-    .challenge h2 {
-      margin-top: 0;
-      color: #1f4e79;
-    }
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    margin: 15px 0;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
 
-    .progress-box {
-      background: #e9eef5;
-      height: 22px;
-      border-radius: 20px;
-      overflow: hidden;
-      margin: 15px 0;
-    }
+.balance {
+    text-align: center;
+}
 
-    .progress {
-      width: 0%;
-      height: 100%;
-      background: #1f4e79;
-      transition: width 0.3s ease;
-    }
+.balance-number {
+    font-size: 40px;
+    font-weight: bold;
+    margin: 10px 0;
+}
 
-    .reward {
-      font-size: 20px;
-      font-weight: bold;
-      margin: 15px 0;
-    }
+/* =========================
+   CHALLENGE
+========================= */
 
-    .status {
-      font-weight: bold;
-      margin-top: 10px;
-    }
+.challenge {
+    text-align: center;
+}
 
-    .info {
-      background: #fff8df;
-      padding: 15px;
-      border-radius: 10px;
-      margin-top: 20px;
-    }
-  </style>
+.challenge h2 {
+    margin-top: 0;
+}
+
+.streak {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+.progress-box {
+    background: #e5eaf2;
+    height: 25px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 18px 0;
+}
+
+.progress {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        #0066ff,
+        #00bfff
+    );
+    transition: width 0.5s ease;
+}
+
+.progress-text {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.reward {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 18px 0;
+}
+
+.status {
+    font-weight: bold;
+    margin-top: 12px;
+    min-height: 24px;
+}
+
+/* =========================
+   INFO
+========================= */
+
+.info {
+    background: #fff8df;
+    padding: 18px;
+    border-radius: 12px;
+    margin: 15px 0;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #666;
+    font-size: 14px;
+}
+
+</style>
 </head>
 
 <body>
 
-<nav>
-  <a href="index.html">Home</a>
-  <a href="earn.html">Earn Points</a>
-  <a href="watch.html">Watch & Earn</a>
-  <a href="spin.html">Daily Spin</a>
-  <a href="challenges.html">Challenges</a>
-  <a href="balance.html">My Balance</a>
-  <a href="rewards.html">Rewards</a>
+<!-- TOP NAV -->
+
+<nav class="top-nav">
+
+    <button
+        class="menu-button"
+        onclick="toggleMenu()">
+        ☰ Menu
+    </button>
+
+    <a
+        href="index.html"
+        class="home-button">
+        🏠 Home
+    </a>
+
 </nav>
 
-<header>
-  <h1>🏆 Challenges</h1>
-  <p>Complete challenges and earn bonus points!</p>
-</header>
 
-<div class="container">
+<!-- SIDE MENU -->
 
-  <div class="balance">
-    <h3>Current Balance</h3>
-    <div id="balance">0 points</div>
-  </div>
+<div
+    id="sideMenu"
+    class="side-menu">
 
-  <div class="challenge">
+    <button
+        class="close-menu"
+        onclick="toggleMenu()">
+        ✕
+    </button>
 
-    <h2>🎯 Weekly Challenge</h2>
+    <a href="earn.html">
+        💰 Earn Points
+    </a>
 
-    <p>
-      Complete <strong>5 qualifying activities</strong> this week
-      and receive a bonus reward.
-    </p>
+    <a href="watch.html">
+        📺 Watch & Earn
+    </a>
 
-    <p>
-      Progress: <strong><span id="progressText">0 / 5</span></strong>
-    </p>
+    <a href="spin.html">
+        🎡 Daily Spin
+    </a>
 
-    <div class="progress-box">
-      <div class="progress" id="progressBar"></div>
-    </div>
+    <a href="challenges.html">
+        🏆 Challenges
+    </a>
 
-    <div class="reward">
-      🏆 Reward: +50 points
-    </div>
+    <a href="balance.html">
+        💳 Buy Points
+    </a>
 
-    <div class="status" id="status">
-      Challenge in progress
-    </div>
+    <a href="balance.html">
+        💰 My Balance
+    </a>
 
-  </div>
-
-  <div class="info">
-    <strong>How it works:</strong>
-    <p>
-      Your qualifying activities contribute toward this weekly challenge.
-      Once you reach 5 activities, the 50-point bonus will be awarded
-      automatically.
-    </p>
-    <p>
-      The challenge is limited to one completion per week.
-    </p>
-  </div>
+    <a href="rewards.html">
+        🎁 Rewards
+    </a>
 
 </div>
 
-<script>
-  const TARGET = 5;
-  const REWARD = 50;
 
-  function getBalance() {
-  return parseInt(
-    localStorage.getItem("rewardPoints") || "0",
-    10
-  );
+<div
+    id="menuOverlay"
+    class="menu-overlay"
+    onclick="toggleMenu()">
+</div>
+
+
+<!-- HEADER -->
+
+<header>
+
+    <h1>🏆 Challenges</h1>
+
+    <p>
+        Build your streak and earn bonus points!
+    </p>
+
+</header>
+
+
+<div class="container">
+
+
+<!-- BALANCE -->
+
+<div class="card balance">
+
+    <h2>💰 Your Points</h2>
+
+    <div
+        class="balance-number"
+        id="balance">
+        0
+    </div>
+
+    <p>points available</p>
+
+</div>
+
+
+<!-- 5 DAY STREAK -->
+
+<div class="card challenge">
+
+    <h2>🔥 5-Day Streak Challenge</h2>
+
+    <p>
+        Complete qualifying activities on
+        <strong>5 consecutive days</strong>
+        to earn your bonus reward.
+    </p>
+
+    <div
+        class="streak"
+        id="streak">
+        🔥 Day 0 of 5
+    </div>
+
+    <div class="progress-box">
+
+        <div
+            class="progress"
+            id="progressBar">
+        </div>
+
+    </div>
+
+    <div class="progress-text">
+
+        Progress:
+        <span id="progressText">
+            0 / 5
+        </span>
+
+    </div>
+
+    <div class="reward">
+        🏆 Reward: +50 points
+    </div>
+
+    <div
+        class="status"
+        id="status">
+
+        Challenge in progress
+
+    </div>
+
+</div>
+
+
+<!-- INFORMATION -->
+
+<div class="info">
+
+    <strong>How it works:</strong>
+
+    <p>
+        Complete at least one qualifying activity
+        each day to increase your streak by 1.
+    </p>
+
+    <p>
+        Keep the streak for
+        <strong>5 consecutive days</strong>
+        and receive the
+        <strong>50-point bonus</strong>.
+    </p>
+
+    <p>
+        The challenge can be completed once
+        during the current challenge period.
+    </p>
+
+</div>
+
+
+</div>
+
+
+<footer>
+
+Reward Platform — Prototype
+
+</footer>
+
+
+<script>
+
+/* =========================
+   SETTINGS
+========================= */
+
+const TARGET = 5;
+const REWARD = 50;
+
+
+/* =========================
+   BALANCE
+========================= */
+
+function getBalance() {
+
+    return Number(
+        localStorage.getItem(
+            "rewardPoints"
+        )
+    ) || 0;
+
 }
 
-  function setBalance(value) {
-    localStorage.setItem("points", value);
-  }
 
-  function getChallengeProgress() {
-    return parseInt(
-      localStorage.getItem("challengeProgress") || "0",
-      10
-    );
-  }
+/* =========================
+   CHALLENGE PROGRESS
+========================= */
 
-  function setChallengeProgress(value) {
-    localStorage.setItem("challengeProgress", value);
-  }
+function getChallengeProgress() {
 
-  function isCompleted() {
-    return localStorage.getItem("challengeCompleted") === "true";
-  }
+    return Number(
+        localStorage.getItem(
+            "challengeProgress"
+        )
+    ) || 0;
 
-  function updatePage() {
-    const balance = getBalance();
-    let progress = getChallengeProgress();
+}
+
+
+/* =========================
+   COMPLETION
+========================= */
+
+function isCompleted() {
+
+    return localStorage.getItem(
+        "challengeCompleted"
+    ) === "true";
+
+}
+
+
+/* =========================
+   UPDATE PAGE
+========================= */
+
+function updatePage() {
+
+    let balance =
+        getBalance();
+
+    let progress =
+        getChallengeProgress();
+
 
     if (progress > TARGET) {
-      progress = TARGET;
-      setChallengeProgress(TARGET);
+
+        progress = TARGET;
+
+        localStorage.setItem(
+            "challengeProgress",
+            TARGET
+        );
+
     }
 
-    document.getElementById("balance").textContent =
-      balance + " points";
 
-    document.getElementById("progressText").textContent =
-      progress + " / " + TARGET;
+    document.getElementById(
+        "balance"
+    ).textContent =
+        balance;
 
-    document.getElementById("progressBar").style.width =
-      (progress / TARGET * 100) + "%";
+
+    document.getElementById(
+        "progressText"
+    ).textContent =
+        progress +
+        " / " +
+        TARGET;
+
+
+    document.getElementById(
+        "streak"
+    ).textContent =
+        "🔥 Day " +
+        progress +
+        " of " +
+        TARGET;
+
+
+    document.getElementById(
+        "progressBar"
+    ).style.width =
+        (
+            progress /
+            TARGET *
+            100
+        ) + "%";
+
 
     if (isCompleted()) {
-      document.getElementById("status").textContent =
-        "✅ Challenge completed! Reward received.";
-    } else {
-      document.getElementById("status").textContent =
-        "Challenge in progress";
-    }
-  }
 
-  updatePage();
+        document.getElementById(
+            "status"
+        ).textContent =
+            "🏆 5-Day Streak completed! +50 points received.";
+
+    }
+
+    else if (progress > 0) {
+
+        document.getElementById(
+            "status"
+        ).textContent =
+            "🔥 Keep going! Your streak is active.";
+
+    }
+
+    else {
+
+        document.getElementById(
+            "status"
+        ).textContent =
+            "Challenge in progress";
+
+    }
+
+}
+
+
+/* =========================
+   SIDE MENU
+========================= */
+
+function toggleMenu() {
+
+    const menu =
+        document.getElementById(
+            "sideMenu"
+        );
+
+    const overlay =
+        document.getElementById(
+            "menuOverlay"
+        );
+
+    menu.classList.toggle(
+        "open"
+    );
+
+    overlay.classList.toggle(
+        "open"
+    );
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+updatePage();
+
 </script>
 
 </body>
