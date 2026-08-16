@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
 <title>My Balance - Reward Platform</title>
 
 <style>
+
 * {
     box-sizing: border-box;
 }
@@ -18,87 +20,131 @@ body {
     color: #222;
 }
 
-nav {
+/* =========================
+   TOP NAVIGATION
+========================= */
+
+.top-nav {
     background: #182848;
-    padding: 14px 10px;
+    padding: 12px 10px;
     display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    gap: 4px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    align-items: center;
+    gap: 8px;
 }
 
-nav::-webkit-scrollbar {
+.top-nav a,
+.menu-button {
+    color: white;
+    text-decoration: none;
+    padding: 11px 14px;
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+.menu-button {
+    background: transparent;
+    border: none;
+    width: auto;
+    margin: 0;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.home-button {
+    background: rgba(255,255,255,0.12);
+}
+
+/* =========================
+   SIDE MENU
+========================= */
+
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 270px;
+    height: 100%;
+    background: #182848;
+    z-index: 1000;
+    padding-top: 60px;
+    transition: left 0.3s ease;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.25);
+}
+
+.side-menu.open {
+    left: 0;
+}
+
+.side-menu a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 16px 20px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.side-menu a:hover {
+    background: #0066ff;
+}
+
+.close-menu {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: auto;
+    margin: 0;
+    padding: 8px 12px;
+    background: transparent;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* =========================
+   MENU OVERLAY
+========================= */
+
+.menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 999;
     display: none;
 }
 
-nav a {
-    color: white;
-    text-decoration: none;
-    margin: 0;
-    padding: 11px 14px;
-    font-weight: bold;
-    flex: 0 0 auto;
-    border-radius: 10px;
+.menu-overlay.open {
+    display: block;
 }
+
+/* =========================
+   HEADER
+========================= */
 
 header {
     background: #182848;
     color: white;
-    padding: 25px 15px;
     text-align: center;
+    padding: 25px 15px;
 }
 
 header h1 {
     margin: 0;
-    animation: balanceHeader 3s infinite alternate;
 }
 
-.card h2 {
-    animation: balanceHeading 3s infinite alternate;
-}
-
-@keyframes balanceHeader {
-    0% {
-        color: white;
-    }
-
-    50% {
-        color: #ff9800;
-    }
-
-    100% {
-        color: #4caf50;
-    }
-}
-
-@keyframes balanceHeading {
-    0% {
-        color: #ff9800;
-    }
-
-    50% {
-        color: #ffd600;
-    }
-
-    100% {
-        color: #4caf50;
-    }
-}
-
-header p {
-    margin: 8px 0 0;
-}
+/* =========================
+   CONTAINER
+========================= */
 
 .container {
     max-width: 700px;
     margin: auto;
     padding: 15px;
 }
+
+/* =========================
+   CARDS
+========================= */
 
 .card {
     background: white;
@@ -108,46 +154,142 @@ header p {
     box-shadow: 0 3px 12px rgba(0,0,0,0.08);
 }
 
-.balance {
+/* =========================
+   BALANCE
+========================= */
+
+.balance-card {
     text-align: center;
 }
 
-.points-number {
-    font-size: 42px;
+.balance-number {
+    font-size: 48px;
     font-weight: bold;
-    margin: 10px 0;
+    margin: 12px 0;
 }
 
-.activity {
+.balance-label {
+    color: #666;
+}
+
+/* =========================
+   SUMMARY
+========================= */
+
+.summary {
     display: flex;
-    justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid #eee;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
-.activity:last-child {
+.summary-box {
+    flex: 1;
+    min-width: 140px;
+    background: #f4f7fb;
+    border-radius: 12px;
+    padding: 18px;
+    text-align: center;
+}
+
+.summary-number {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* =========================
+   HISTORY
+========================= */
+
+.history-item {
+    padding: 14px 0;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.history-item:last-child {
     border-bottom: none;
 }
 
-.activity-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.date {
-    font-size: 12px;
-    color: #777;
-    margin-top: 4px;
-}
-
-.earned {
+.history-activity {
     font-weight: bold;
 }
 
-.empty {
+.history-details {
+    color: #666;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+/* =========================
+   EMPTY HISTORY
+========================= */
+
+.empty-history {
     text-align: center;
     color: #777;
+    padding: 20px 0;
 }
+
+/* =========================
+   BUTTONS
+========================= */
+
+.action-button {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    margin-top: 12px;
+    border-radius: 10px;
+    background: #182848;
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    font-weight: bold;
+}
+
+.action-button:hover {
+    opacity: 0.9;
+}
+
+/* =========================
+   ANIMATED HEADINGS
+========================= */
+
+h1,
+h2 {
+    background: linear-gradient(
+        90deg,
+        #ffb300,
+        #ff4d8d,
+        #8a2be2,
+        #2196f3,
+        #ffb300
+    );
+
+    background-size: 300% 100%;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+
+    animation: headingSlide 8s linear infinite;
+}
+
+@keyframes headingSlide {
+
+    from {
+        background-position: 0% 50%;
+    }
+
+    to {
+        background-position: 300% 50%;
+    }
+}
+
+/* =========================
+   FOOTER
+========================= */
 
 footer {
     text-align: center;
@@ -155,143 +297,387 @@ footer {
     color: #666;
     font-size: 14px;
 }
+
 </style>
 </head>
 
+
 <body>
 
-<nav>
-    <a href="index.html">Home</a>
-    <a href="earn.html">Earn Points</a>
-    <a href="watch.html">Watch & Earn</a>
-    <a href="spin.html">Daily Spin</a>
-    <a href="challenges.html">Challenges</a>
-    <a href="buy-points.html">Buy Points</a>
-    <a href="balance.html">My Balance</a>
-    <a href="rewards.html">Rewards</a>
+<!-- =========================
+     TOP NAVIGATION
+========================= -->
+
+<nav class="top-nav">
+
+    <button
+        type="button"
+        class="menu-button"
+        onclick="toggleMenu()">
+        ☰ Menu
+    </button>
+
+    <a
+        href="index.html"
+        class="home-button">
+        🏠 Home
+    </a>
+
 </nav>
 
+
+<!-- =========================
+     SIDE MENU
+========================= -->
+
+<div
+    id="sideMenu"
+    class="side-menu">
+
+    <button
+        type="button"
+        class="close-menu"
+        onclick="toggleMenu()">
+        ✕
+    </button>
+
+    <a href="earn.html">
+        💰 Earn Points
+    </a>
+
+    <a href="watch.html">
+        📺 Watch & Earn
+    </a>
+
+    <a href="spin.html">
+        🎡 Daily Spin
+    </a>
+
+    <a href="challenges.html">
+        🏆 Challenges
+    </a>
+
+    <a href="buy-points.html">
+        💳 Buy Points
+    </a>
+
+    <a href="balance.html">
+        💰 My Balance
+    </a>
+
+    <a href="rewards.html">
+        🎁 Rewards
+    </a>
+
+</div>
+
+
+<!-- =========================
+     MENU OVERLAY
+========================= -->
+
+<div
+    id="menuOverlay"
+    class="menu-overlay"
+    onclick="toggleMenu()">
+</div>
+
+
+<!-- =========================
+     PAGE HEADER
+========================= -->
+
 <header>
-    <h1>My Balance</h1>
-    <p>View your points and activity history.</p>
+
+    <h1>💰 My Balance</h1>
+
+    <p>
+        View your points and activity history.
+    </p>
+
 </header>
+
+
+<!-- =========================
+     PAGE CONTENT
+========================= -->
 
 <div class="container">
 
-    <div class="card balance">
+
+    <!-- CURRENT BALANCE -->
+
+    <div class="card balance-card">
 
         <h2>💰 Current Balance</h2>
 
-        <div class="points-number" id="points">
+        <div
+            id="balance"
+            class="balance-number">
             0
         </div>
 
-        <p>points</p>
+        <div class="balance-label">
+            points available
+        </div>
 
     </div>
 
+
+    <!-- POINTS SUMMARY -->
 
     <div class="card">
 
         <h2>📊 Points Summary</h2>
 
-        <p>
-            Total points earned:
-            <strong id="totalEarned">0</strong>
-        </p>
+        <div class="summary">
 
-        <p>
-            Activities completed:
-            <strong id="activityCount">0</strong>
-        </p>
+            <div class="summary-box">
+
+                <div
+                    id="totalEarned"
+                    class="summary-number">
+                    0
+                </div>
+
+                <div>
+                    Total Points
+                </div>
+
+            </div>
+
+
+            <div class="summary-box">
+
+                <div
+                    id="activityCount"
+                    class="summary-number">
+                    0
+                </div>
+
+                <div>
+                    Activities
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
 
+
+    <!-- QUICK ACTIONS -->
+
+    <div class="card">
+
+        <h2>⚡ Quick Actions</h2>
+
+        <a
+            href="earn.html"
+            class="action-button">
+            💰 Earn More Points
+        </a>
+
+        <a
+            href="buy-points.html"
+            class="action-button">
+            💳 Buy Points
+        </a>
+
+        <a
+            href="rewards.html"
+            class="action-button">
+            🎁 View Rewards
+        </a>
+
+    </div>
+
+
+    <!-- ACTIVITY HISTORY -->
 
     <div class="card">
 
         <h2>📜 Activity History</h2>
 
         <div id="history">
-            <p class="empty">No activities yet.</p>
         </div>
 
     </div>
 
+
 </div>
 
+
+<!-- =========================
+     FOOTER
+========================= -->
+
 <footer>
+
     Reward Platform — Prototype
+
 </footer>
 
 
 <script>
 
-const points =
-    Number(localStorage.getItem("rewardPoints")) || 0;
+/* =========================
+   LOAD POINTS
+========================= */
 
-const history =
-    JSON.parse(localStorage.getItem("rewardHistory")) || [];
+function loadBalance() {
+
+    const points =
+        Number(
+            localStorage.getItem(
+                "rewardPoints"
+            )
+        ) || 0;
+
+    document.getElementById(
+        "balance"
+    ).textContent = points;
+
+    document.getElementById(
+        "totalEarned"
+    ).textContent = points;
+
+}
 
 
-document.getElementById("points").textContent =
-    points;
+/* =========================
+   LOAD HISTORY
+========================= */
+
+function loadHistory() {
+
+    const historyContainer =
+        document.getElementById(
+            "history"
+        );
+
+    const history =
+        JSON.parse(
+            localStorage.getItem(
+                "rewardHistory"
+            )
+        ) || [];
 
 
-const totalEarned =
-    history.reduce(
-        (total, item) =>
-            total + Number(item.points || 0),
-        0
+    document.getElementById(
+        "activityCount"
+    ).textContent =
+        history.length;
+
+
+    if (history.length === 0) {
+
+        historyContainer.innerHTML =
+            '<div class="empty-history">' +
+            'No activities recorded yet.' +
+            '</div>';
+
+        return;
+
+    }
+
+
+    historyContainer.innerHTML = "";
+
+
+    /* Show newest activity first */
+
+    const reversedHistory =
+        [...history].reverse();
+
+
+    reversedHistory.forEach(
+        function(item) {
+
+            const historyItem =
+                document.createElement(
+                    "div"
+                );
+
+            historyItem.className =
+                "history-item";
+
+
+            const activity =
+                item.activity ||
+                "Activity";
+
+
+            const earned =
+                item.points ||
+                0;
+
+
+            const date =
+                item.date ||
+                "";
+
+
+            historyItem.innerHTML =
+
+                '<div class="history-activity">' +
+                '🎉 ' +
+                activity +
+                ' — +' +
+                earned +
+                ' points' +
+                '</div>' +
+
+                '<div class="history-details">' +
+                date +
+                '</div>';
+
+
+            historyContainer.appendChild(
+                historyItem
+            );
+
+        }
     );
 
-
-document.getElementById("totalEarned").textContent =
-    totalEarned;
-
-
-document.getElementById("activityCount").textContent =
-    history.length;
-
-
-const historyDiv =
-    document.getElementById("history");
-
-
-if (history.length === 0) {
-
-    historyDiv.innerHTML =
-        '<p class="empty">No activities yet.</p>';
-
-} else {
-
-    historyDiv.innerHTML =
-        history
-            .slice()
-            .reverse()
-            .map(item => `
-                <div class="activity">
-
-                    <div class="activity-info">
-
-                        <strong>
-                            ${item.activity}
-                        </strong>
-
-                        <span class="date">
-                            ${item.date || ""}
-                        </span>
-
-                    </div>
-
-                    <span class="earned">
-                        +${item.points}
-                    </span>
-
-                </div>
-            `)
-            .join("");
 }
+
+
+/* =========================
+   SIDE MENU
+========================= */
+
+function toggleMenu() {
+
+    const menu =
+        document.getElementById(
+            "sideMenu"
+        );
+
+    const overlay =
+        document.getElementById(
+            "menuOverlay"
+        );
+
+
+    menu.classList.toggle(
+        "open"
+    );
+
+    overlay.classList.toggle(
+        "open"
+    );
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+loadBalance();
+
+loadHistory();
 
 </script>
 
