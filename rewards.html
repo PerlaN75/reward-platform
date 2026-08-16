@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
 <title>Rewards - Reward Platform</title>
 
 <style>
+
 * {
     box-sizing: border-box;
 }
@@ -18,91 +20,131 @@ body {
     color: #222;
 }
 
-nav {
+/* =========================
+   TOP NAVIGATION
+========================= */
+
+.top-nav {
     background: #182848;
-    padding: 14px 10px;
+    padding: 12px 10px;
     display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    gap: 4px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    align-items: center;
+    gap: 8px;
 }
 
-nav::-webkit-scrollbar {
+.top-nav a,
+.menu-button {
+    color: white;
+    text-decoration: none;
+    padding: 11px 14px;
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+.menu-button {
+    background: transparent;
+    border: none;
+    width: auto;
+    margin: 0;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.home-button {
+    background: rgba(255,255,255,0.12);
+}
+
+/* =========================
+   SIDE MENU
+========================= */
+
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 270px;
+    height: 100%;
+    background: #182848;
+    z-index: 1000;
+    padding-top: 60px;
+    transition: left 0.3s ease;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.25);
+}
+
+.side-menu.open {
+    left: 0;
+}
+
+.side-menu a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 16px 20px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.side-menu a:hover {
+    background: #0066ff;
+}
+
+.close-menu {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: auto;
+    margin: 0;
+    padding: 8px 12px;
+    background: transparent;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* =========================
+   MENU OVERLAY
+========================= */
+
+.menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 999;
     display: none;
 }
 
-nav a {
-    color: white;
-    text-decoration: none;
-    margin: 0;
-    padding: 11px 14px;
-    font-weight: bold;
-    flex: 0 0 auto;
-    border-radius: 10px;
+.menu-overlay.open {
+    display: block;
 }
+
+/* =========================
+   HEADER
+========================= */
 
 header {
     background: #182848;
     color: white;
-    padding: 25px 15px;
     text-align: center;
+    padding: 25px 15px;
 }
 
 header h1 {
     margin: 0;
-    animation: rewardsHeader 4s infinite alternate;
 }
 
-.card h2 {
-    animation: rewardsHeading 4s infinite alternate;
-}
-
-@keyframes rewardsHeader {
-    0% {
-        color: white;
-    }
-
-    33% {
-        color: #9c27b0;
-    }
-
-    66% {
-        color: #ff4081;
-    }
-
-    100% {
-        color: #ff9800;
-    }
-}
-
-@keyframes rewardsHeading {
-    0% {
-        color: #9c27b0;
-    }
-
-    33% {
-        color: #ff4081;
-    }
-
-    66% {
-        color: #ff9800;
-    }
-
-    100% {
-        color: #2196f3;
-    }
-}
+/* =========================
+   CONTAINER
+========================= */
 
 .container {
     max-width: 700px;
     margin: auto;
     padding: 15px;
 }
+
+/* =========================
+   CARDS
+========================= */
 
 .card {
     background: white;
@@ -112,7 +154,11 @@ header h1 {
     box-shadow: 0 3px 12px rgba(0,0,0,0.08);
 }
 
-.balance {
+/* =========================
+   BALANCE
+========================= */
+
+.points {
     text-align: center;
 }
 
@@ -122,17 +168,39 @@ header h1 {
     margin: 10px 0;
 }
 
+/* =========================
+   REWARD CARDS
+========================= */
+
 .reward {
-    border-top: 1px solid #eee;
-    padding-top: 15px;
-    margin-top: 15px;
+    border: 2px solid #e3e7ef;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 15px 0;
+    text-align: center;
 }
 
-.reward h3 {
-    margin-bottom: 5px;
+.reward-icon {
+    font-size: 48px;
+    margin-bottom: 10px;
 }
 
-button {
+.reward h2 {
+    margin-top: 5px;
+}
+
+.reward-cost {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 12px 0;
+}
+
+.reward-description {
+    color: #666;
+    line-height: 1.5;
+}
+
+.reward button {
     width: 100%;
     padding: 14px;
     border: none;
@@ -141,19 +209,80 @@ button {
     color: white;
     font-size: 16px;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 12px;
 }
 
-button:disabled {
+.reward button:hover {
+    opacity: 0.9;
+}
+
+.reward button:disabled {
     background: #999;
     cursor: not-allowed;
 }
 
+/* =========================
+   MESSAGE
+========================= */
+
 .message {
     text-align: center;
     font-weight: bold;
-    margin-top: 12px;
+    margin-top: 15px;
+    line-height: 1.5;
 }
+
+/* =========================
+   NOTICE
+========================= */
+
+.notice {
+    background: #fff8e1;
+    border-left: 5px solid #ffb300;
+    padding: 12px;
+    border-radius: 8px;
+    line-height: 1.5;
+}
+
+/* =========================
+   ANIMATED HEADINGS
+========================= */
+
+h1,
+h2 {
+    background: linear-gradient(
+        90deg,
+        #ffb300,
+        #ff4d8d,
+        #8a2be2,
+        #2196f3,
+        #ffb300
+    );
+
+    background-size: 300% 100%;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+
+    animation: headingSlide 8s linear infinite;
+}
+
+@keyframes headingSlide {
+
+    from {
+        background-position: 0% 50%;
+    }
+
+    to {
+        background-position: 300% 50%;
+    }
+}
+
+/* =========================
+   FOOTER
+========================= */
 
 footer {
     text-align: center;
@@ -161,141 +290,426 @@ footer {
     color: #666;
     font-size: 14px;
 }
+
 </style>
 </head>
 
+
 <body>
 
-<nav>
-    <a href="index.html">Home</a>
-    <a href="earn.html">Earn Points</a>
-    <a href="watch.html">Watch & Earn</a>
-    <a href="spin.html">Daily Spin</a>
-    <a href="challenges.html">Challenges</a>
-    <a href="balance.html">My Balance</a>
-    <a href="rewards.html">Rewards</a>
+<!-- =========================
+     TOP NAVIGATION
+========================= -->
+
+<nav class="top-nav">
+
+    <button
+        type="button"
+        class="menu-button"
+        onclick="toggleMenu()">
+        ☰ Menu
+    </button>
+
+    <a
+        href="index.html"
+        class="home-button">
+        🏠 Home
+    </a>
+
 </nav>
 
-<header>
-    <h1>Rewards</h1>
-    <p>Use your points to unlock rewards.</p>
-</header>
 
-<div class="container">
+<!-- =========================
+     SIDE MENU
+========================= -->
 
-    <div class="card balance">
+<div
+    id="sideMenu"
+    class="side-menu">
 
-        <h2>💰 Your Balance</h2>
+    <button
+        type="button"
+        class="close-menu"
+        onclick="toggleMenu()">
+        ✕
+    </button>
 
-        <div class="points-number" id="points">
-            0
-        </div>
+    <a href="earn.html">
+        💰 Earn Points
+    </a>
 
-        <p>points</p>
+    <a href="watch.html">
+        📺 Watch & Earn
+    </a>
 
-    </div>
+    <a href="spin.html">
+        🎡 Daily Spin
+    </a>
 
+    <a href="challenges.html">
+        🏆 Challenges
+    </a>
 
-    <div class="card">
+    <a href="buy-points.html">
+        💳 Buy Points
+    </a>
 
-        <h2>🎁 Available Rewards</h2>
+    <a href="balance.html">
+        💰 My Balance
+    </a>
 
-        <div class="reward">
-
-            <h3>🎟️ Reward Voucher</h3>
-
-            <p>
-                Prototype reward — 50 points
-            </p>
-
-            <button onclick="redeemReward(50, 'Reward Voucher')">
-                Redeem for 50 Points
-            </button>
-
-        </div>
-
-
-        <div class="reward">
-
-            <h3>⭐ Premium Reward</h3>
-
-            <p>
-                Prototype reward — 100 points
-            </p>
-
-            <button onclick="redeemReward(100, 'Premium Reward')">
-                Redeem for 100 Points
-            </button>
-
-        </div>
-
-        <div id="message" class="message"></div>
-
-    </div>
+    <a href="rewards.html">
+        🎁 Rewards
+    </a>
 
 </div>
 
+
+<!-- =========================
+     MENU OVERLAY
+========================= -->
+
+<div
+    id="menuOverlay"
+    class="menu-overlay"
+    onclick="toggleMenu()">
+</div>
+
+
+<!-- =========================
+     PAGE HEADER
+========================= -->
+
+<header>
+
+    <h1>🎁 Rewards</h1>
+
+    <p>
+        Use your points to redeem rewards.
+    </p>
+
+</header>
+
+
+<!-- =========================
+     PAGE CONTENT
+========================= -->
+
+<div class="container">
+
+
+    <!-- CURRENT BALANCE -->
+
+    <div class="card points">
+
+        <h2>💰 Your Points</h2>
+
+        <div
+            id="points"
+            class="points-number">
+            0
+        </div>
+
+        <p>
+            points available
+        </p>
+
+    </div>
+
+
+    <!-- INFORMATION -->
+
+    <div class="card">
+
+        <h2>🎁 How Rewards Work</h2>
+
+        <div class="notice">
+
+            Select a reward that you can
+            afford with your current points.
+
+            <br><br>
+
+            <strong>Prototype:</strong>
+            Reward redemption is currently
+            simulated for testing.
+
+        </div>
+
+    </div>
+
+
+    <!-- REWARD 1 -->
+
+    <div class="card reward">
+
+        <div class="reward-icon">
+            🎟️
+        </div>
+
+        <h2>
+            Reward Voucher
+        </h2>
+
+        <div class="reward-cost">
+            50 Points
+        </div>
+
+        <p class="reward-description">
+            Redeem 50 points for a
+            demonstration reward voucher.
+        </p>
+
+        <button
+            id="rewardBtn50"
+            type="button"
+            onclick="redeemReward(50, 'Reward Voucher')">
+
+            Redeem for 50 Points
+
+        </button>
+
+    </div>
+
+
+    <!-- REWARD 2 -->
+
+    <div class="card reward">
+
+        <div class="reward-icon">
+            🎁
+        </div>
+
+        <h2>
+            Premium Reward
+        </h2>
+
+        <div class="reward-cost">
+            100 Points
+        </div>
+
+        <p class="reward-description">
+            Redeem 100 points for a
+            demonstration premium reward.
+        </p>
+
+        <button
+            id="rewardBtn100"
+            type="button"
+            onclick="redeemReward(100, 'Premium Reward')">
+
+            Redeem for 100 Points
+
+        </button>
+
+    </div>
+
+
+    <!-- REWARD 3 -->
+
+    <div class="card reward">
+
+        <div class="reward-icon">
+            🏆
+        </div>
+
+        <h2>
+            Special Reward
+        </h2>
+
+        <div class="reward-cost">
+            250 Points
+        </div>
+
+        <p class="reward-description">
+            Redeem 250 points for a
+            demonstration special reward.
+        </p>
+
+        <button
+            id="rewardBtn250"
+            type="button"
+            onclick="redeemReward(250, 'Special Reward')">
+
+            Redeem for 250 Points
+
+        </button>
+
+    </div>
+
+
+    <!-- MESSAGE -->
+
+    <div
+        id="message"
+        class="message">
+    </div>
+
+
+</div>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
 <footer>
+
     Reward Platform — Prototype
+
 </footer>
 
 
 <script>
 
-let points =
-    Number(localStorage.getItem("rewardPoints")) || 0;
-
-let history =
-    JSON.parse(localStorage.getItem("rewardHistory")) || [];
-
+/* =========================
+   DISPLAY POINTS
+========================= */
 
 function updateDisplay() {
 
-    points =
-        Number(localStorage.getItem("rewardPoints")) || 0;
+    const points =
+        Number(
+            localStorage.getItem(
+                "rewardPoints"
+            )
+        ) || 0;
 
-    document.getElementById("points").textContent =
-        points;
+    document.getElementById(
+        "points"
+    ).textContent = points;
+
 }
 
 
-function redeemReward(cost, rewardName) {
+/* =========================
+   REDEEM REWARD
+========================= */
+
+function redeemReward(
+    cost,
+    rewardName
+) {
+
+    let points =
+        Number(
+            localStorage.getItem(
+                "rewardPoints"
+            )
+        ) || 0;
+
 
     const message =
-        document.getElementById("message");
+        document.getElementById(
+            "message"
+        );
+
+
+    /* Check balance */
 
     if (points < cost) {
 
         message.textContent =
-            "❌ You do not have enough points.";
+            "❌ You need " +
+            (cost - points) +
+            " more points to redeem this reward.";
 
         return;
+
     }
+
+
+    /* Deduct points */
 
     points -= cost;
 
-    history.push({
-        activity: "Redeemed: " + rewardName,
-        points: -cost,
-        date: new Date().toLocaleString()
-    });
 
     localStorage.setItem(
         "rewardPoints",
         points
     );
 
+
+    /* Load existing history */
+
+    let history =
+        JSON.parse(
+            localStorage.getItem(
+                "rewardHistory"
+            )
+        ) || [];
+
+
+    /* Add redemption to history */
+
+    history.push({
+
+        activity:
+            "Redeemed " +
+            rewardName,
+
+        points:
+            -cost,
+
+        date:
+            new Date()
+            .toLocaleString()
+
+    });
+
+
     localStorage.setItem(
         "rewardHistory",
         JSON.stringify(history)
     );
 
+
+    /* Update display */
+
     updateDisplay();
 
+
     message.textContent =
-        "🎉 Reward redeemed successfully!";
+        "🎉 Congratulations! You redeemed " +
+        rewardName +
+        " for " +
+        cost +
+        " points.";
+
 }
 
+
+/* =========================
+   SIDE MENU
+========================= */
+
+function toggleMenu() {
+
+    const menu =
+        document.getElementById(
+            "sideMenu"
+        );
+
+    const overlay =
+        document.getElementById(
+            "menuOverlay"
+        );
+
+
+    menu.classList.toggle(
+        "open"
+    );
+
+    overlay.classList.toggle(
+        "open"
+    );
+
+}
+
+
+/* =========================
+   START
+========================= */
 
 updateDisplay();
 
