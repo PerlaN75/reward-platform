@@ -371,7 +371,199 @@ function updateDisplay() {
         "points"
     ).textContent = points;
 }
+function addPoints(amount, activity) {
 
+    points += amount;
+
+    history.push({
+
+        activity: activity,
+
+        points: amount,
+
+        date:
+            new Date().toLocaleString()
+
+    });
+
+    localStorage.setItem(
+        "rewardPoints",
+        points
+    );
+
+    localStorage.setItem(
+        "rewardHistory",
+        JSON.stringify(history)
+    );
+
+
+    /* =========================
+       UPDATE DAILY CHALLENGE
+    ========================= */
+
+    updateChallenge();
+
+
+    updateDisplay();
+}
+
+
+/* =========================
+   DAILY STREAK CHALLENGE
+========================= */
+
+function updateChallenge() {
+
+    const completed =
+        localStorage.getItem(
+            "challengeCompleted"
+        ) === "true";
+
+    if (completed) {
+        return;
+    }
+
+
+    const today =
+        new Date().toDateString();
+
+
+    const lastChallengeDay =
+        localStorage.getItem(
+            "lastChallengeDay"
+        );
+
+
+    let progress =
+        Number(
+            localStorage.getItem(
+                "challengeProgress"
+            )
+        ) || 0;
+
+
+    /* =========================
+       ONLY COUNT ONCE PER DAY
+    ========================= */
+
+    if (lastChallengeDay === today) {
+        return;
+    }
+
+
+    /* =========================
+       YESTERDAY
+    ========================= */
+
+    const yesterdayDate =
+        new Date();
+
+    yesterdayDate.setDate(
+        yesterdayDate.getDate() - 1
+    );
+
+
+    const yesterday =
+        yesterdayDate.toDateString();
+
+
+    /* =========================
+       CONTINUE STREAK
+    ========================= */
+
+    if (
+        lastChallengeDay === yesterday
+    ) {
+
+        progress++;
+
+    } else {
+
+        progress = 1;
+
+    }
+
+
+    /* Maximum 5 */
+
+    if (progress > 5) {
+        progress = 5;
+    }
+
+
+    /* Save challenge progress */
+
+    localStorage.setItem(
+        "challengeProgress",
+        progress
+    );
+
+    localStorage.setItem(
+        "lastChallengeDay",
+        today
+    );
+
+
+    /* =========================
+       5/5 REWARD
+    ========================= */
+
+    if (progress === 5) {
+
+        let currentPoints =
+            Number(
+                localStorage.getItem(
+                    "rewardPoints"
+                )
+            ) || 0;
+
+
+        currentPoints += 50;
+
+
+        localStorage.setItem(
+            "rewardPoints",
+            currentPoints
+        );
+
+
+        let rewardHistory =
+            JSON.parse(
+                localStorage.getItem(
+                    "rewardHistory"
+                )
+            ) || [];
+
+
+        rewardHistory.push({
+
+            activity:
+                "5-Day Streak Challenge",
+
+            points: 50,
+
+            date:
+                new Date().toLocaleString()
+
+        });
+
+
+        localStorage.setItem(
+            "rewardHistory",
+            JSON.stringify(
+                rewardHistory
+            )
+        );
+
+
+        localStorage.setItem(
+            "challengeCompleted",
+            "true"
+        );
+
+    }
+
+}
 function addPoints(amount, activity) {
 
     points += amount;
@@ -779,48 +971,6 @@ function updateChallenge(activity) {
         /* Record reward */
 
         let rewardHistory =
-            JSON.parse(
-                localStorage.getItem(
-                    "rewardHistory"
-                )
-            ) || [];
-
-        rewardHistory.push({
-
-            activity:
-                "5-Day Streak Challenge",
-
-            points: 50,
-
-            date:
-                new Date()
-                .toLocaleString()
-
-        });
-
-
-        localStorage.setItem(
-            "rewardHistory",
-            JSON.stringify(
-                rewardHistory
-            )
-        );
-
-
-        localStorage.setItem(
-            "challengeCompleted",
-            "true"
-        );
-
-    } else {
-
-        localStorage.setItem(
-            "challengeProgress",
-            progress
-        );
-    }
-}
-
 
 /* =========================
    DAILY CHECK-IN
