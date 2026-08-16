@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Buy Points - Reward Platform</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #222;
+}
+
+/* =========================
+   TOP NAVIGATION
+========================= */
+
+.top-nav {
+    background: #182848;
+    padding: 12px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.top-nav a,
+.menu-button {
+    color: white;
+    text-decoration: none;
+    padding: 11px 14px;
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+.menu-button {
+    background: transparent;
+    border: none;
+    width: auto;
+    margin: 0;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.home-button {
+    background: rgba(255,255,255,0.12);
+}
+
+/* =========================
+   SIDE MENU
+========================= */
+
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 270px;
+    height: 100%;
+    background: #182848;
+    z-index: 1000;
+    padding-top: 60px;
+    transition: left 0.3s ease;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.25);
+}
+
+.side-menu.open {
+    left: 0;
+}
+
+.side-menu a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 16px 20px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.side-menu a:hover {
+    background: #0066ff;
+}
+
+.close-menu {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: auto;
+    margin: 0;
+    padding: 8px 12px;
+    background: transparent;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* =========================
+   OVERLAY
+========================= */
+
+.menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 999;
+    display: none;
+}
+
+.menu-overlay.open {
+    display: block;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    background: #182848;
+    color: white;
+    text-align: center;
+    padding: 25px 15px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+/* =========================
+   CONTENT
+========================= */
+
+.container {
+    max-width: 700px;
+    margin: auto;
+    padding: 15px;
+}
+
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    margin: 15px 0;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+/* =========================
+   BALANCE
+========================= */
+
+.points {
+    text-align: center;
+}
+
+.points-number {
+    font-size: 40px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+/* =========================
+   PACKAGES
+========================= */
+
+.package {
+    text-align: center;
+    border: 2px solid #e3e7ef;
+}
+
+.package-points {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 12px 0;
+}
+
+.package-price {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.package button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #182848;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.package button:hover {
+    background: #0066ff;
+}
+
+/* =========================
+   NOTICE
+========================= */
+
+.notice {
+    background: #fff8e1;
+    border-left: 5px solid #ffb300;
+    padding: 12px;
+    border-radius: 8px;
+    line-height: 1.5;
+}
+
+/* =========================
+   MESSAGE
+========================= */
+
+.message {
+    text-align: center;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+/* =========================
+   ANIMATED HEADINGS
+========================= */
+
+h1,
+h2 {
+    background: linear-gradient(
+        90deg,
+        #ffb300,
+        #ff4d8d,
+        #8a2be2,
+        #2196f3,
+        #ffb300
+    );
+
+    background-size: 300% 100%;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+
+    animation: headingSlide 8s linear infinite;
+}
+
+@keyframes headingSlide {
+
+    from {
+        background-position: 0% 50%;
+    }
+
+    to {
+        background-position: 300% 50%;
+    }
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #666;
+    font-size: 14px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- =========================
+     TOP BAR
+========================= -->
+
+<nav class="top-nav">
+
+    <button
+        type="button"
+        class="menu-button"
+        onclick="toggleMenu()">
+
+        ☰ Menu
+
+    </button>
+
+    <a
+        href="index.html"
+        class="home-button">
+
+        🏠 Home
+
+    </a>
+
+</nav>
+
+
+<!-- =========================
+     SIDE MENU
+========================= -->
+
+<div
+    id="sideMenu"
+    class="side-menu">
+
+    <button
+        type="button"
+        class="close-menu"
+        onclick="toggleMenu()">
+
+        ✕
+
+    </button>
+
+
+    <a href="earn.html">
+        💰 Earn Points
+    </a>
+
+    <a href="watch.html">
+        📺 Watch & Earn
+    </a>
+
+    <a href="spin.html">
+        🎡 Daily Spin
+    </a>
+
+    <a href="challenges.html">
+        🏆 Challenges
+    </a>
+
+    <a href="buy-points.html">
+        💳 Buy Points
+    </a>
+
+    <a href="balance.html">
+        💰 My Balance
+    </a>
+
+    <a href="rewards.html">
+        🎁 Rewards
+    </a>
+
+</div>
+
+
+<!-- =========================
+     OVERLAY
+========================= -->
+
+<div
+    id="menuOverlay"
+    class="menu-overlay"
+    onclick="toggleMenu()">
+</div>
+
+
+<!-- =========================
+     PAGE HEADER
+========================= -->
+
+<header>
+
+    <h1>💳 Buy Points</h1>
+
+    <p>
+        Increase your points balance.
+    </p>
+
+</header>
+
+
+<!-- =========================
+     PAGE CONTENT
+========================= -->
+
+<div class="container">
+
+
+    <!-- CURRENT BALANCE -->
+
+    <div class="card points">
+
+        <h2>💰 Your Current Balance</h2>
+
+        <div
+            id="points"
+            class="points-number">
+
+            0
+
+        </div>
+
+        <p>
+            points available
+        </p>
+
+    </div>
+
+
+    <!-- INFORMATION -->
+
+    <div class="card">
+
+        <h2>ℹ️ About Buying Points</h2>
+
+        <p>
+            Choose a points package below.
+        </p>
+
+        <div class="notice">
+
+            <strong>Prototype:</strong>
+
+            Point purchases are currently
+            simulated for testing.
+
+            No real payment is processed
+            on this page.
+
+        </div>
+
+    </div>
+
+
+    <!-- STARTER -->
+
+    <div class="card package">
+
+        <h2>🌱 Starter</h2>
+
+        <div class="package-points">
+            100 Points
+        </div>
+
+        <div class="package-price">
+            Demo Package
+        </div>
+
+        <button
+            type="button"
+            onclick="selectPackage(100)">
+
+            Select 100 Points
+
+        </button>
+
+    </div>
+
+
+    <!-- STANDARD -->
+
+    <div class="card package">
+
+        <h2>⭐ Standard</h2>
+
+        <div class="package-points">
+            250 Points
+        </div>
+
+        <div class="package-price">
+            Demo Package
+        </div>
+
+        <button
+            type="button"
+            onclick="selectPackage(250)">
+
+            Select 250 Points
+
+        </button>
+
+    </div>
+
+
+    <!-- PREMIUM -->
+
+    <div class="card package">
+
+        <h2>🚀 Premium</h2>
+
+        <div class="package-points">
+            500 Points
+        </div>
+
+        <div class="package-price">
+            Demo Package
+        </div>
+
+        <button
+            type="button"
+            onclick="selectPackage(500)">
+
+            Select 500 Points
+
+        </button>
+
+    </div>
+
+
+    <div
+        id="message"
+        class="message">
+    </div>
+
+
+</div>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    Reward Platform — Prototype
+
+</footer>
+
+
+<script>
+
+/* =========================
+   DISPLAY BALANCE
+========================= */
+
+function updateDisplay() {
+
+    const points =
+        Number(
+            localStorage.getItem("rewardPoints")
+        ) || 0;
+
+    document.getElementById("points")
+        .textContent = points;
+
+}
+
+
+/* =========================
+   SELECT PACKAGE
+========================= */
+
+function selectPackage(amount) {
+
+    const message =
+        document.getElementById("message");
+
+    message.textContent =
+        "You selected " +
+        amount +
+        " points. Payment integration will be added later.";
+
+}
+
+
+/* =========================
+   OPEN / CLOSE MENU
+========================= */
+
+function toggleMenu() {
+
+    const menu =
+        document.getElementById("sideMenu");
+
+    const overlay =
+        document.getElementById("menuOverlay");
+
+    menu.classList.toggle("open");
+
+    overlay.classList.toggle("open");
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+updateDisplay();
+
+</script>
+
+</body>
+
+</html>
