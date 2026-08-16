@@ -47,6 +47,7 @@ body {
     width: auto;
     margin: 0;
     font-size: 16px;
+    cursor: pointer;
 }
 
 .home-button {
@@ -95,7 +96,10 @@ body {
     margin: 0;
     padding: 8px 12px;
     background: transparent;
+    color: white;
+    border: none;
     font-size: 20px;
+    cursor: pointer;
 }
 
 .menu-overlay {
@@ -271,7 +275,9 @@ footer {
 
 <body>
 
-<!-- TOP NAV -->
+<!-- =========================
+     TOP NAVIGATION
+========================= -->
 
 <nav class="top-nav">
 
@@ -290,7 +296,9 @@ footer {
 </nav>
 
 
-<!-- SIDE MENU -->
+<!-- =========================
+     SIDE MENU
+========================= -->
 
 <div
     id="sideMenu"
@@ -340,7 +348,9 @@ footer {
 </div>
 
 
-<!-- HEADER -->
+<!-- =========================
+     HEADER
+========================= -->
 
 <header>
 
@@ -356,7 +366,9 @@ footer {
 <div class="container">
 
 
-<!-- BALANCE -->
+<!-- =========================
+     BALANCE
+========================= -->
 
 <div class="card balance">
 
@@ -373,7 +385,9 @@ footer {
 </div>
 
 
-<!-- 5 DAY STREAK -->
+<!-- =========================
+     5 DAY CHALLENGE
+========================= -->
 
 <div class="card challenge">
 
@@ -391,6 +405,7 @@ footer {
         🔥 Day 0 of 5
     </div>
 
+
     <div class="progress-box">
 
         <div
@@ -399,6 +414,7 @@ footer {
         </div>
 
     </div>
+
 
     <div class="progress-text">
 
@@ -409,9 +425,11 @@ footer {
 
     </div>
 
+
     <div class="reward">
         🏆 Reward: +50 points
     </div>
+
 
     <div
         class="status"
@@ -424,7 +442,9 @@ footer {
 </div>
 
 
-<!-- INFORMATION -->
+<!-- =========================
+     INFORMATION
+========================= -->
 
 <div class="info">
 
@@ -467,11 +487,10 @@ Reward Platform — Prototype
 ========================= */
 
 const TARGET = 5;
-const REWARD = 50;
 
 
 /* =========================
-   BALANCE
+   GET BALANCE
 ========================= */
 
 function getBalance() {
@@ -486,22 +505,52 @@ function getBalance() {
 
 
 /* =========================
-   CHALLENGE PROGRESS
+   GET CHALLENGE PROGRESS
 ========================= */
 
 function getChallengeProgress() {
 
-    return Number(
-        localStorage.getItem(
-            "challengeProgress"
-        )
-    ) || 0;
+    let progress =
+        Number(
+            localStorage.getItem(
+                "challengeProgress"
+            )
+        ) || 0;
+
+
+    /* Never allow progress above 5 */
+
+    if (progress > TARGET) {
+
+        progress = TARGET;
+
+        localStorage.setItem(
+            "challengeProgress",
+            TARGET
+        );
+
+    }
+
+
+    if (progress < 0) {
+
+        progress = 0;
+
+        localStorage.setItem(
+            "challengeProgress",
+            0
+        );
+
+    }
+
+
+    return progress;
 
 }
 
 
 /* =========================
-   COMPLETION
+   CHECK COMPLETION
 ========================= */
 
 function isCompleted() {
@@ -519,30 +568,22 @@ function isCompleted() {
 
 function updatePage() {
 
-    let balance =
+    const balance =
         getBalance();
 
-    let progress =
+    const progress =
         getChallengeProgress();
 
 
-    if (progress > TARGET) {
-
-        progress = TARGET;
-
-        localStorage.setItem(
-            "challengeProgress",
-            TARGET
-        );
-
-    }
-
+    /* Balance */
 
     document.getElementById(
         "balance"
     ).textContent =
         balance;
 
+
+    /* Progress text */
 
     document.getElementById(
         "progressText"
@@ -552,6 +593,8 @@ function updatePage() {
         TARGET;
 
 
+    /* Streak text */
+
     document.getElementById(
         "streak"
     ).textContent =
@@ -560,6 +603,8 @@ function updatePage() {
         " of " +
         TARGET;
 
+
+    /* Progress bar */
 
     document.getElementById(
         "progressBar"
@@ -571,12 +616,23 @@ function updatePage() {
         ) + "%";
 
 
+    /* Status */
+
     if (isCompleted()) {
 
         document.getElementById(
             "status"
         ).textContent =
             "🏆 5-Day Streak completed! +50 points received.";
+
+    }
+
+    else if (progress >= TARGET) {
+
+        document.getElementById(
+            "status"
+        ).textContent =
+            "🏆 Challenge completed!";
 
     }
 
@@ -617,6 +673,7 @@ function toggleMenu() {
             "menuOverlay"
         );
 
+
     menu.classList.toggle(
         "open"
     );
@@ -626,6 +683,59 @@ function toggleMenu() {
     );
 
 }
+
+
+/* =========================
+   REFRESH WHEN RETURNING
+   TO THIS PAGE
+========================= */
+
+window.addEventListener(
+    "pageshow",
+    function() {
+
+        updatePage();
+
+    }
+);
+
+
+/* =========================
+   REFRESH WHEN STORAGE
+   CHANGES
+========================= */
+
+window.addEventListener(
+    "storage",
+    function(event) {
+
+        if (
+            event.key ===
+            "rewardPoints" ||
+
+            event.key ===
+            "challengeProgress" ||
+
+            event.key ===
+            "challengeCompleted"
+        ) {
+
+            updatePage();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   AUTOMATIC REFRESH
+========================= */
+
+setInterval(
+    updatePage,
+    1000
+);
 
 
 /* =========================
