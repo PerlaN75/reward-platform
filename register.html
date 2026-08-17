@@ -20,6 +20,10 @@ body {
     color: #222;
 }
 
+/* =========================
+   TOP NAVIGATION
+========================= */
+
 .top-nav {
     background: #182848;
     padding: 12px 10px;
@@ -40,6 +44,10 @@ body {
     background: rgba(255,255,255,0.12);
 }
 
+/* =========================
+   HEADER
+========================= */
+
 header {
     background: #182848;
     color: white;
@@ -51,90 +59,31 @@ header h1 {
     margin: 0;
 }
 
+/* =========================
+   CONTAINER
+========================= */
+
 .container {
-    max-width: 600px;
+    max-width: 650px;
     margin: auto;
-    padding: 15px;
+    padding: 20px 15px;
 }
+
+/* =========================
+   CARD
+========================= */
 
 .card {
     background: white;
-    border-radius: 14px;
+    border-radius: 16px;
     padding: 25px;
-    margin: 20px 0;
+    margin-top: 15px;
     box-shadow: 0 3px 12px rgba(0,0,0,0.08);
 }
 
-.form-group {
-    margin-bottom: 18px;
-}
-
-label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 8px;
-}
-
-input {
-    width: 100%;
-    padding: 14px;
-    border: 1px solid #ccd3df;
-    border-radius: 10px;
-    font-size: 16px;
-}
-
-input:focus {
-    outline: none;
-    border-color: #182848;
-}
-
-button {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 10px;
-    background: #182848;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-button:hover {
-    opacity: 0.9;
-}
-
-.message {
-    text-align: center;
-    font-weight: bold;
-    margin-top: 15px;
-    line-height: 1.5;
-}
-
-.login-link {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.login-link a {
-    color: #182848;
-    font-weight: bold;
-}
-
-.notice {
-    background: #fff8e1;
-    border-left: 5px solid #ffb300;
-    padding: 12px;
-    border-radius: 8px;
-    line-height: 1.5;
-}
-
-footer {
-    text-align: center;
-    padding: 25px;
-    color: #666;
-    font-size: 14px;
-}
+/* =========================
+   HEADINGS
+========================= */
 
 h1,
 h2 {
@@ -166,13 +115,116 @@ h2 {
     to {
         background-position: 300% 50%;
     }
+}
 
+/* =========================
+   NOTICE
+========================= */
+
+.notice {
+    background: #fff8e1;
+    border-left: 5px solid #ffb300;
+    padding: 14px;
+    border-radius: 8px;
+    line-height: 1.5;
+    margin-bottom: 22px;
+}
+
+/* =========================
+   FORM
+========================= */
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 17px;
+}
+
+input {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #d7dce5;
+    border-radius: 10px;
+    font-size: 16px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #2196f3;
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+.create-button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background: #182848;
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.create-button:hover {
+    opacity: 0.9;
+}
+
+/* =========================
+   MESSAGE
+========================= */
+
+.message {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 18px;
+    line-height: 1.5;
+}
+
+/* =========================
+   LOGIN
+========================= */
+
+.login-link {
+    text-align: center;
+    margin-top: 22px;
+    font-size: 17px;
+}
+
+.login-link a {
+    color: #182848;
+    font-weight: bold;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #666;
+    font-size: 14px;
 }
 
 </style>
 </head>
 
+
 <body>
+
+<!-- =========================
+     TOP NAVIGATION
+========================= -->
 
 <nav class="top-nav">
 
@@ -185,6 +237,10 @@ h2 {
 </nav>
 
 
+<!-- =========================
+     PAGE HEADER
+========================= -->
+
 <header>
 
     <h1>👤 Create Account</h1>
@@ -195,6 +251,10 @@ h2 {
 
 </header>
 
+
+<!-- =========================
+     PAGE CONTENT
+========================= -->
 
 <div class="container">
 
@@ -211,72 +271,97 @@ h2 {
 
         </div>
 
-        <br>
+
+        <!-- REGISTRATION FORM -->
+
+        <form
+            id="registerForm"
+            onsubmit="registerUser(event)">
+
+            <div class="form-group">
+
+                <label for="fullName">
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    id="fullName"
+                    placeholder="Enter your name"
+                    required>
+
+            </div>
 
 
-        <div class="form-group">
+            <div class="form-group">
 
-            <label for="name">
-                Full Name
-            </label>
+                <label for="email">
+                    Email
+                </label>
 
-            <input
-                type="text"
-                id="name"
-                placeholder="Enter your name">
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    required>
 
-        </div>
-
-
-        <div class="form-group">
-
-            <label for="email">
-                Email
-            </label>
-
-            <input
-                type="email"
-                id="email"
-                placeholder="Enter your email">
-
-        </div>
+            </div>
 
 
-        <div class="form-group">
+            <div class="form-group">
 
-            <label for="username">
-                Username
-            </label>
+                <label for="username">
+                    Username
+                </label>
 
-            <input
-                type="text"
-                id="username"
-                placeholder="Choose a username">
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Choose a username"
+                    required>
 
-        </div>
-
-
-        <div class="form-group">
-
-            <label for="password">
-                Password
-            </label>
-
-            <input
-                type="password"
-                id="password"
-                placeholder="Create a password">
-
-        </div>
+            </div>
 
 
-        <button
-            type="button"
-            onclick="registerUser()">
+            <div class="form-group">
 
-            🚀 Create Account
+                <label for="password">
+                    Password
+                </label>
 
-        </button>
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Create a password"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="confirmPassword">
+                    Confirm Password
+                </label>
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Confirm your password"
+                    required>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="create-button">
+
+                🚀 Create Account
+
+            </button>
+
+        </form>
 
 
         <div
@@ -309,29 +394,63 @@ h2 {
 
 <script>
 
-function registerUser() {
+/* =========================
+   REGISTER USER
+========================= */
 
-    const name =
-        document.getElementById("name")
-        .value.trim();
+function registerUser(event) {
+
+    event.preventDefault();
+
+
+    const fullName =
+        document.getElementById(
+            "fullName"
+        ).value.trim();
+
 
     const email =
-        document.getElementById("email")
-        .value.trim();
+        document.getElementById(
+            "email"
+        ).value.trim();
+
 
     const username =
-        document.getElementById("username")
-        .value.trim();
+        document.getElementById(
+            "username"
+        ).value.trim()
+        .toLowerCase();
+
 
     const password =
-        document.getElementById("password")
-        .value;
+        document.getElementById(
+            "password"
+        ).value;
+
+
+    const confirmPassword =
+        document.getElementById(
+            "confirmPassword"
+        ).value;
+
 
     const message =
-        document.getElementById("message");
+        document.getElementById(
+            "message"
+        );
 
 
-    if (!name || !email || !username || !password) {
+    /* =========================
+       VALIDATION
+    ========================= */
+
+    if (
+        !fullName ||
+        !email ||
+        !username ||
+        !password ||
+        !confirmPassword
+    ) {
 
         message.textContent =
             "❌ Please complete all fields.";
@@ -351,25 +470,109 @@ function registerUser() {
     }
 
 
+    if (password !== confirmPassword) {
+
+        message.textContent =
+            "❌ Passwords do not match.";
+
+        return;
+
+    }
+
+
+    /* =========================
+       CHECK EXISTING ACCOUNT
+    ========================= */
+
+    const existingUser =
+        JSON.parse(
+            localStorage.getItem(
+                "rewardUser"
+            )
+        );
+
+
+    if (
+        existingUser &&
+        existingUser.username === username
+    ) {
+
+        message.textContent =
+            "❌ This username is already registered.";
+
+        return;
+
+    }
+
+
+    /* =========================
+       SAVE PROTOTYPE ACCOUNT
+    ========================= */
+
     const user = {
 
-        name: name,
+        fullName: fullName,
 
         email: email,
 
-        username: username
+        username: username,
+
+        password: password,
+
+        registeredAt:
+            new Date()
+            .toLocaleString()
 
     };
 
 
     localStorage.setItem(
-        "prototypeUser",
+        "rewardUser",
         JSON.stringify(user)
     );
 
 
+    /* =========================
+       INITIAL ACCOUNT STATE
+    ========================= */
+
+    if (
+        !localStorage.getItem(
+            "rewardPoints"
+        )
+    ) {
+
+        localStorage.setItem(
+            "rewardPoints",
+            "0"
+        );
+
+    }
+
+
+    /* =========================
+       SUCCESS
+    ========================= */
+
     message.textContent =
-        "🎉 Account created successfully! You can now login.";
+        "🎉 Account created successfully!";
+
+    
+    /*
+       Give the browser a moment to
+       display the success message,
+       then open Earn Points.
+    */
+
+    setTimeout(
+        function() {
+
+            window.location.href =
+                "earn.html";
+
+        },
+        800
+    );
 
 }
 
