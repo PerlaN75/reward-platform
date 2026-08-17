@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Login - Reward Platform</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #222;
+}
+
+/* =========================
+   TOP NAVIGATION
+========================= */
+
+.top-nav {
+    background: #182848;
+    padding: 12px 10px;
+    display: flex;
+    align-items: center;
+}
+
+.top-nav a {
+    color: white;
+    text-decoration: none;
+    padding: 11px 14px;
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+.home-button {
+    background: rgba(255,255,255,0.12);
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    background: #182848;
+    color: white;
+    text-align: center;
+    padding: 25px 15px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+/* =========================
+   CONTAINER
+========================= */
+
+.container {
+    max-width: 650px;
+    margin: auto;
+    padding: 20px 15px;
+}
+
+/* =========================
+   CARD
+========================= */
+
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    margin-top: 15px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+/* =========================
+   HEADINGS
+========================= */
+
+h1,
+h2 {
+    background: linear-gradient(
+    90deg,
+    #00a86b,
+    #00c9a7,
+    #2196f3,
+    #0066cc,
+    #00a86b
+);
+    background-size: 300% 100%;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+
+    animation: headingSlide 8s linear infinite;
+}
+
+@keyframes headingSlide {
+
+    from {
+        background-position: 0% 50%;
+    }
+
+    to {
+        background-position: 300% 50%;
+    }
+}
+
+/* =========================
+   NOTICE
+========================= */
+
+.notice {
+    background: #fff8e1;
+    border-left: 5px solid #ffb300;
+    padding: 14px;
+    border-radius: 8px;
+    line-height: 1.5;
+    margin-bottom: 22px;
+}
+
+/* =========================
+   FORM
+========================= */
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 17px;
+}
+
+input {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #d7dce5;
+    border-radius: 10px;
+    font-size: 16px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #2196f3;
+}
+
+/* =========================
+   LOGIN BUTTON
+========================= */
+
+.login-button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background: #182848;
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.login-button:hover {
+    opacity: 0.9;
+}
+
+/* =========================
+   MESSAGE
+========================= */
+
+.message {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 18px;
+    line-height: 1.5;
+}
+
+/* =========================
+   REGISTER LINK
+========================= */
+
+.register-link {
+    text-align: center;
+    margin-top: 22px;
+    font-size: 17px;
+}
+
+.register-link a {
+    color: #182848;
+    font-weight: bold;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #666;
+    font-size: 14px;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<!-- =========================
+     TOP NAVIGATION
+========================= -->
+
+<nav class="top-nav">
+
+    <a
+        href="index.html"
+        class="home-button">
+
+        🏠 Home
+
+    </a>
+
+</nav>
+
+
+<!-- =========================
+     PAGE HEADER
+========================= -->
+
+<header>
+
+    <h1>🔐 Login</h1>
+
+    <p>
+        Welcome back to the Reward Platform
+    </p>
+
+</header>
+
+
+<!-- =========================
+     PAGE CONTENT
+========================= -->
+
+<div class="container">
+
+    <div class="card">
+
+        <h2>👤 Sign In</h2>
+
+        <div class="notice">
+
+            <strong>Prototype:</strong>
+            This login system is currently
+            for testing only.
+
+        </div>
+
+
+        <!-- LOGIN FORM -->
+
+        <form
+            id="loginForm"
+            onsubmit="loginUser(event)">
+
+
+            <div class="form-group">
+
+                <label for="username">
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Enter your username"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter your password"
+                    required>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="login-button">
+
+                🔐 Login
+
+            </button>
+
+        </form>
+
+
+        <div
+            id="message"
+            class="message">
+        </div>
+
+
+        <div class="register-link">
+
+            Don't have an account?
+
+            <a href="register.html">
+                Create Account
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<footer>
+
+    Reward Platform — Prototype
+
+</footer>
+
+
+<script>
+
+/* =========================
+   LOGIN USER
+========================= */
+
+function loginUser(event) {
+
+    event.preventDefault();
+
+
+    const username =
+        document.getElementById(
+            "username"
+        ).value.trim().toLowerCase();
+
+
+    const password =
+        document.getElementById(
+            "password"
+        ).value;
+
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    /* =========================
+       LOAD REGISTERED ACCOUNT
+    ========================= */
+
+    const savedUser =
+        JSON.parse(
+            localStorage.getItem(
+                "rewardUser"
+            )
+        );
+
+
+    /* =========================
+       NO ACCOUNT
+    ========================= */
+
+    if (!savedUser) {
+
+        message.textContent =
+            "❌ No registered account found. Please create an account first.";
+
+        return;
+
+    }
+
+
+    /* =========================
+       CHECK LOGIN
+    ========================= */
+
+    if (
+        username !== savedUser.username ||
+        password !== savedUser.password
+    ) {
+
+        message.textContent =
+            "❌ Incorrect username or password.";
+
+        return;
+
+    }
+
+
+    /* =========================
+       LOGIN SUCCESS
+    ========================= */
+
+    localStorage.setItem(
+        "loggedIn",
+        "true"
+    );
+
+
+    message.textContent =
+        "🎉 Login successful!";
+
+
+    /* =========================
+       OPEN EARN PAGE
+    ========================= */
+
+    setTimeout(
+        function() {
+
+            window.location.href =
+                "earn.html";
+
+        },
+        800
+    );
+
+}
+
+</script>
+
+</body>
+</html>
