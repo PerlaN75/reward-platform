@@ -206,7 +206,7 @@ input:focus {
 }
 
 /* =========================
-   PASSWORD RESET
+   PASSWORD RESET LINK
 ========================= */
 
 .reset-link {
@@ -255,6 +255,10 @@ input:focus {
     margin-top: 0;
 }
 
+/* =========================
+   RESET PASSWORD BUTTON
+========================= */
+
 .reset-button {
     width: 100%;
     padding: 13px;
@@ -265,6 +269,37 @@ input:focus {
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
+}
+
+.reset-button:hover {
+    opacity: 0.9;
+}
+
+/* =========================
+   PASSWORD RULES
+========================= */
+
+.password-rules {
+    background: white;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 18px;
+    font-size: 14px;
+    border: 1px solid #d7dce5;
+}
+
+.password-rules strong {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.password-rules ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.password-rules li {
+    margin-bottom: 4px;
 }
 
 /* =========================
@@ -343,8 +378,6 @@ footer {
             onsubmit="loginUser(event)">
 
 
-            <!-- USERNAME -->
-
             <div class="form-group">
 
                 <label for="username">
@@ -359,8 +392,6 @@ footer {
 
             </div>
 
-
-            <!-- PASSWORD -->
 
             <div class="form-group">
 
@@ -377,8 +408,6 @@ footer {
             </div>
 
 
-            <!-- LOGIN -->
-
             <button
                 type="submit"
                 id="loginButton"
@@ -391,7 +420,7 @@ footer {
         </form>
 
 
-        <!-- MESSAGE -->
+        <!-- LOGIN MESSAGE -->
 
         <div
             id="message"
@@ -436,6 +465,9 @@ footer {
                 Enter your registered email address.
             </p>
 
+
+            <!-- RESET EMAIL -->
+
             <div class="form-group">
 
                 <label for="resetEmail">
@@ -449,14 +481,80 @@ footer {
 
             </div>
 
+
+            <!-- NEW PASSWORD -->
+
+            <div class="form-group">
+
+                <label for="newPassword">
+                    New Password
+                </label>
+
+                <input
+                    type="password"
+                    id="newPassword"
+                    placeholder="Enter your new password">
+
+            </div>
+
+
+            <!-- CONFIRM PASSWORD -->
+
+            <div class="form-group">
+
+                <label for="confirmNewPassword">
+                    Confirm New Password
+                </label>
+
+                <input
+                    type="password"
+                    id="confirmNewPassword"
+                    placeholder="Enter your new password again">
+
+            </div>
+
+
+            <!-- PASSWORD RULES -->
+
+            <div class="password-rules">
+
+                <strong>
+                    New password must:
+                </strong>
+
+                <ul>
+
+                    <li>
+                        Be 6–15 characters long
+                    </li>
+
+                    <li>
+                        Contain at least one capital letter (A–Z)
+                    </li>
+
+                    <li>
+                        Contain at least one lowercase letter (a–z)
+                    </li>
+
+                    <li>
+                        Contain at least one special character:
+                        ? ! % & $ # =
+                    </li>
+
+                </ul>
+
+            </div>
+
+
             <button
                 type="button"
                 class="reset-button"
                 onclick="resetPassword()">
 
-                Reset Password
+                🔄 Reset Password
 
             </button>
+
 
             <div
                 id="resetMessage"
@@ -535,10 +633,6 @@ function loginUser(event) {
         );
 
 
-    /* =========================
-       LOAD REGISTERED ACCOUNT
-    ========================= */
-
     const savedUser =
         JSON.parse(
             localStorage.getItem(
@@ -587,7 +681,7 @@ function loginUser(event) {
 
 
     /* =========================
-       CLEAR OLD BLOCK
+       CLEAR EXPIRED BLOCK
     ========================= */
 
     if (
@@ -722,10 +816,6 @@ function loginUser(event) {
         "";
 
 
-    /* =========================
-       OPEN EARN PAGE
-    ========================= */
-
     setTimeout(
         function() {
 
@@ -808,7 +898,7 @@ function disableLogin() {
 
 
 /* =========================
-   PASSWORD RESET BOX
+   SHOW RESET BOX
 ========================= */
 
 function showResetBox() {
@@ -844,6 +934,18 @@ function resetPassword() {
         document.getElementById(
             "resetEmail"
         ).value.trim().toLowerCase();
+
+
+    const newPassword =
+        document.getElementById(
+            "newPassword"
+        ).value;
+
+
+    const confirmNewPassword =
+        document.getElementById(
+            "confirmNewPassword"
+        ).value;
 
 
     const resetMessage =
@@ -891,26 +993,7 @@ function resetPassword() {
 
 
     /* =========================
-       PROTOTYPE RESET
-    ========================= */
-
-    const newPassword =
-        prompt(
-            "Enter your new password:"
-        );
-
-
-    if (
-        newPassword === null
-    ) {
-
-        return;
-
-    }
-
-
-    /* =========================
-       PASSWORD LENGTH
+       CHECK PASSWORD LENGTH
     ========================= */
 
     if (
@@ -968,6 +1051,22 @@ function resetPassword() {
 
         resetMessage.textContent =
             "❌ Password must contain at least one special character: ? ! % & $ # =";
+
+        return;
+
+    }
+
+
+    /* =========================
+       CONFIRM PASSWORD
+    ========================= */
+
+    if (
+        newPassword !== confirmNewPassword
+    ) {
+
+        resetMessage.textContent =
+            "❌ Passwords do not match. Please enter the same password in both fields.";
 
         return;
 
