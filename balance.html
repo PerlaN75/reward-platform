@@ -155,7 +155,7 @@ header h1 {
 }
 
 /* =========================
-   CURRENT BALANCE
+   BALANCE
 ========================= */
 
 .balance-card {
@@ -197,12 +197,8 @@ header h1 {
     margin-bottom: 5px;
 }
 
-.earned-number {
-    color: #16803c;
-}
-
-.redeemed-number {
-    color: #c62828;
+.summary-label {
+    color: #555;
 }
 
 /* =========================
@@ -218,20 +214,8 @@ header h1 {
     border-bottom: none;
 }
 
-.history-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    align-items: center;
-}
-
 .history-activity {
     font-weight: bold;
-}
-
-.history-points {
-    font-weight: bold;
-    white-space: nowrap;
 }
 
 .earned {
@@ -245,7 +229,7 @@ header h1 {
 .history-details {
     color: #666;
     font-size: 14px;
-    margin-top: 5px;
+    margin-top: 4px;
 }
 
 /* =========================
@@ -259,7 +243,7 @@ header h1 {
 }
 
 /* =========================
-   QUICK ACTIONS
+   BUTTONS
 ========================= */
 
 .action-button {
@@ -460,35 +444,42 @@ footer {
 
         <div class="summary">
 
+
+            <!-- TOTAL EARNED -->
+
             <div class="summary-box">
 
                 <div
                     id="totalEarned"
-                    class="summary-number earned-number">
+                    class="summary-number">
                     0
                 </div>
 
-                <div>
+                <div class="summary-label">
                     Total Earned
                 </div>
 
             </div>
 
 
+            <!-- TOTAL REDEEMED -->
+
             <div class="summary-box">
 
                 <div
                     id="totalRedeemed"
-                    class="summary-number redeemed-number">
+                    class="summary-number">
                     0
                 </div>
 
-                <div>
+                <div class="summary-label">
                     Total Redeemed
                 </div>
 
             </div>
 
+
+            <!-- ACTIVITIES -->
 
             <div class="summary-box">
 
@@ -498,7 +489,7 @@ footer {
                     0
                 </div>
 
-                <div>
+                <div class="summary-label">
                     Activities
                 </div>
 
@@ -536,7 +527,7 @@ footer {
     </div>
 
 
-    <!-- ACTIVITY HISTORY -->
+    <!-- TRANSACTION HISTORY -->
 
     <div class="card">
 
@@ -565,7 +556,7 @@ footer {
 <script>
 
 /* =========================
-   LOAD BALANCE
+   LOAD BALANCE AND SUMMARY
 ========================= */
 
 function loadBalance() {
@@ -577,23 +568,6 @@ function loadBalance() {
             )
         ) || 0;
 
-    document.getElementById(
-        "balance"
-    ).textContent = points;
-
-}
-
-
-/* =========================
-   LOAD HISTORY
-========================= */
-
-function loadHistory() {
-
-    const historyContainer =
-        document.getElementById(
-            "history"
-        );
 
     const history =
         JSON.parse(
@@ -604,11 +578,9 @@ function loadHistory() {
 
 
     let totalEarned = 0;
+
     let totalRedeemed = 0;
-    let activityCount = 0;
 
-
-    /* Calculate totals */
 
     history.forEach(
         function(item) {
@@ -620,8 +592,6 @@ function loadHistory() {
             if (amount > 0) {
 
                 totalEarned += amount;
-
-                activityCount++;
 
             }
 
@@ -637,27 +607,48 @@ function loadHistory() {
     );
 
 
-    /* Display summary */
+    document.getElementById(
+        "balance"
+    ).textContent = points;
+
 
     document.getElementById(
         "totalEarned"
-    ).textContent =
-        totalEarned;
+    ).textContent = totalEarned;
 
 
     document.getElementById(
         "totalRedeemed"
-    ).textContent =
-        totalRedeemed;
+    ).textContent = totalRedeemed;
 
 
     document.getElementById(
         "activityCount"
     ).textContent =
-        activityCount;
+        history.length;
+
+}
 
 
-    /* Empty history */
+/* =========================
+   LOAD TRANSACTION HISTORY
+========================= */
+
+function loadHistory() {
+
+    const historyContainer =
+        document.getElementById(
+            "history"
+        );
+
+
+    const history =
+        JSON.parse(
+            localStorage.getItem(
+                "rewardHistory"
+            )
+        ) || [];
+
 
     if (history.length === 0) {
 
@@ -702,63 +693,67 @@ function loadHistory() {
 
 
             const date =
-                item.date ||
-                "";
+                item.date || "";
 
 
-            let pointsText;
-            let pointsClass;
-            let icon;
-
+            /* EARNED */
 
             if (amount > 0) {
 
-                pointsText =
-                    "+" + amount + " points";
+                historyItem.innerHTML =
 
-                pointsClass =
-                    "earned";
+                    '<div class="history-activity earned">' +
+                    '🎉 ' +
+                    activity +
+                    ' — +' +
+                    amount +
+                    ' points' +
+                    '</div>' +
 
-                icon =
-                    "🎉";
-
-            } else {
-
-                pointsText =
-                    "−" +
-                    Math.abs(amount) +
-                    " points";
-
-                pointsClass =
-                    "redeemed";
-
-                icon =
-                    "🎁";
+                    '<div class="history-details">' +
+                    date +
+                    '</div>';
 
             }
 
 
-            historyItem.innerHTML =
+            /* REDEEMED */
 
-                '<div class="history-row">' +
+            else if (amount < 0) {
+
+                historyItem.innerHTML =
+
+                    '<div class="history-activity redeemed">' +
+                    '🎁 ' +
+                    activity +
+                    ' — −' +
+                    Math.abs(amount) +
+                    ' points' +
+                    '</div>' +
+
+                    '<div class="history-details">' +
+                    date +
+                    '</div>';
+
+            }
+
+
+            /* OTHER */
+
+            else {
+
+                historyItem.innerHTML =
 
                     '<div class="history-activity">' +
-                        icon +
-                        " " +
-                        activity +
+                    activity +
+                    ' — 0 points' +
                     '</div>' +
 
-                    '<div class="history-points ' +
-                    pointsClass +
-                    '">' +
-                        pointsText +
-                    '</div>' +
-
-                '</div>' +
-
-                '<div class="history-details">' +
+                    '<div class="history-details">' +
                     date +
-                '</div>';
+                    '</div>';
+
+            }
 
 
             historyContainer.appendChild(
