@@ -97,9 +97,6 @@ body {
     background: transparent;
     font-size: 20px;
 }
-    <a href="login.html" onclick="logoutUser(event)" class="logout-button">
-    🚪 Logout
-</a>
     
 /* =========================
    LOGOUT BUTTON
@@ -335,20 +332,15 @@ footer {
     <a href="rewards.html">
         🎁 Rewards
     </a>
-
-    <a href="#" onclick="logoutUser(); return false;" class="logout-button">
+    <a href="login.html" onclick="logoutUser(event)" class="logout-button">
     🚪 Logout
     </a>
-    
-</div>
-
 
 <div
     id="menuOverlay"
     class="menu-overlay"
     onclick="toggleMenu()">
 </div>
-
 
 <!-- =========================
      HEADER
@@ -469,10 +461,6 @@ footer {
     </div>
 
 </div>
-
-
-</div>
-
 
 <footer>
     Reward Platform — Prototype
@@ -1710,9 +1698,7 @@ if (
 
             }
         );
-
 }
-
 
 /* =====================================================
    INITIAL DISPLAY
@@ -1749,10 +1735,13 @@ function toggleMenu() {
     );
 
 }
+    /* =====================================================
+   LOGOUT
+===================================================== */
 
-</script>
+function logoutUser(event) {
 
-function logoutUser() {
+    event.preventDefault();
 
     localStorage.setItem(
         "loggedIn",
@@ -1761,9 +1750,8 @@ function logoutUser() {
 
     window.location.href =
         "login.html";
-}
 
-</script>
+}
     
 </body>
     
