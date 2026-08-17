@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Create Account - Reward Platform</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #222;
+}
+
+.top-nav {
+    background: #182848;
+    padding: 12px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.top-nav a {
+    color: white;
+    text-decoration: none;
+    padding: 11px 14px;
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+.home-button {
+    background: rgba(255,255,255,0.12);
+}
+
+header {
+    background: #182848;
+    color: white;
+    text-align: center;
+    padding: 25px 15px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding: 15px;
+}
+
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 25px;
+    margin: 20px 0;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ccd3df;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #182848;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #182848;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.message {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 15px;
+    line-height: 1.5;
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.login-link a {
+    color: #182848;
+    font-weight: bold;
+}
+
+.notice {
+    background: #fff8e1;
+    border-left: 5px solid #ffb300;
+    padding: 12px;
+    border-radius: 8px;
+    line-height: 1.5;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #666;
+    font-size: 14px;
+}
+
+h1,
+h2 {
+    background: linear-gradient(
+        90deg,
+        #ffb300,
+        #ff4d8d,
+        #8a2be2,
+        #2196f3,
+        #ffb300
+    );
+
+    background-size: 300% 100%;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+
+    animation: headingSlide 8s linear infinite;
+}
+
+@keyframes headingSlide {
+
+    from {
+        background-position: 0% 50%;
+    }
+
+    to {
+        background-position: 300% 50%;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<nav class="top-nav">
+
+    <a
+        href="index.html"
+        class="home-button">
+        🏠 Home
+    </a>
+
+</nav>
+
+
+<header>
+
+    <h1>👤 Create Account</h1>
+
+    <p>
+        Join the Reward Platform
+    </p>
+
+</header>
+
+
+<div class="container">
+
+    <div class="card">
+
+        <h2>📝 Register</h2>
+
+        <div class="notice">
+
+            <strong>Prototype:</strong>
+            This registration system is currently
+            for testing. Do not enter sensitive
+            information or real passwords.
+
+        </div>
+
+        <br>
+
+
+        <div class="form-group">
+
+            <label for="name">
+                Full Name
+            </label>
+
+            <input
+                type="text"
+                id="name"
+                placeholder="Enter your name">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="email">
+                Email
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter your email">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="username">
+                Username
+            </label>
+
+            <input
+                type="text"
+                id="username"
+                placeholder="Choose a username">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="password">
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Create a password">
+
+        </div>
+
+
+        <button
+            type="button"
+            onclick="registerUser()">
+
+            🚀 Create Account
+
+        </button>
+
+
+        <div
+            id="message"
+            class="message">
+        </div>
+
+
+        <div class="login-link">
+
+            Already have an account?
+
+            <a href="login.html">
+                Login
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<footer>
+
+    Reward Platform — Prototype
+
+</footer>
+
+
+<script>
+
+function registerUser() {
+
+    const name =
+        document.getElementById("name")
+        .value.trim();
+
+    const email =
+        document.getElementById("email")
+        .value.trim();
+
+    const username =
+        document.getElementById("username")
+        .value.trim();
+
+    const password =
+        document.getElementById("password")
+        .value;
+
+    const message =
+        document.getElementById("message");
+
+
+    if (!name || !email || !username || !password) {
+
+        message.textContent =
+            "❌ Please complete all fields.";
+
+        return;
+
+    }
+
+
+    if (password.length < 6) {
+
+        message.textContent =
+            "❌ Password must contain at least 6 characters.";
+
+        return;
+
+    }
+
+
+    const user = {
+
+        name: name,
+
+        email: email,
+
+        username: username
+
+    };
+
+
+    localStorage.setItem(
+        "prototypeUser",
+        JSON.stringify(user)
+    );
+
+
+    message.textContent =
+        "🎉 Account created successfully! You can now login.";
+
+}
+
+</script>
+
+</body>
+</html>
