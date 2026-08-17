@@ -97,7 +97,27 @@ body {
     background: transparent;
     font-size: 20px;
 }
+    
+/* =========================
+   LOGOUT BUTTON
+========================= */
 
+.logout-button {
+    display: block;
+    background: #c62828 !important;
+    color: white;
+    text-decoration: none;
+    padding: 16px 20px;
+    margin-top: 15px;
+    font-weight: bold;
+    border-radius: 10px;
+    border-bottom: none !important;
+}
+
+.logout-button:hover {
+    background: #e53935 !important;
+}
+    
 /* =========================
    MENU OVERLAY
 ========================= */
@@ -313,6 +333,10 @@ footer {
         🎁 Rewards
     </a>
 
+    <a href="#" onclick="logoutUser(); return false;" class="logout-button">
+    🚪 Logout
+    </a>
+    
 </div>
 
 
@@ -1725,5 +1749,19 @@ function toggleMenu() {
 
 </script>
 
+function logoutUser() {
+
+    localStorage.setItem(
+        "loggedIn",
+        "false"
+    );
+
+    window.location.href =
+        "login.html";
+}
+
+</script>
+    
 </body>
+    
 </html>
