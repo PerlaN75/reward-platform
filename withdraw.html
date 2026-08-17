@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Withdraw Points - Reward Platform</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #222;
+}
+
+/* =========================
+   TOP NAVIGATION
+========================= */
+
+.top-nav {
+    background: #182848;
+    padding: 12px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.top-nav a,
+.menu-button {
+    color: white;
+    text-decoration: none;
+    padding: 11px 14px;
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+.menu-button {
+    background: transparent;
+    border: none;
+    width: auto;
+    margin: 0;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.home-button {
+    background: rgba(255,255,255,0.12);
+}
+
+
+/* =========================
+   SIDE MENU
+========================= */
+
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 270px;
+    height: 100%;
+    background: #182848;
+    z-index: 1000;
+    padding-top: 60px;
+    transition: left 0.3s ease;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.25);
+}
+
+.side-menu.open {
+    left: 0;
+}
+
+.side-menu a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 16px 20px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.side-menu a:hover {
+    background: #0066ff;
+}
+
+.close-menu {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: auto;
+    margin: 0;
+    padding: 8px 12px;
+    background: transparent;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+
+/* =========================
+   MENU OVERLAY
+========================= */
+
+.menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 999;
+    display: none;
+}
+
+.menu-overlay.open {
+    display: block;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    background: #182848;
+    color: white;
+    text-align: center;
+    padding: 25px 15px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+
+/* =========================
+   CONTAINER
+========================= */
+
+.container {
+    max-width: 700px;
+    margin: auto;
+    padding: 15px;
+}
+
+
+/* =========================
+   CARDS
+========================= */
+
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    margin: 15px 0;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+
+/* =========================
+   BALANCE
+========================= */
+
+.balance-card {
+    text-align: center;
+}
+
+.balance-number {
+    font-size: 48px;
+    font-weight: bold;
+    margin: 12px 0;
+}
+
+.balance-label {
+    color: #666;
+}
+
+
+/* =========================
+   INFORMATION
+========================= */
+
+.notice {
+    background: #fff8e1;
+    border-left: 5px solid #ffb300;
+    padding: 14px;
+    border-radius: 8px;
+    line-height: 1.6;
+}
+
+
+/* =========================
+   FORM
+========================= */
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ccd3df;
+    border-radius: 10px;
+    font-size: 16px;
+    background: white;
+}
+
+
+/* =========================
+   WITHDRAW BUTTON
+========================= */
+
+.withdraw-button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background: #182848;
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.withdraw-button:hover {
+    opacity: 0.9;
+}
+
+.withdraw-button:disabled {
+    background: #999;
+    cursor: not-allowed;
+}
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+.message {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 15px;
+    line-height: 1.6;
+}
+
+
+/* =========================
+   WITHDRAWAL HISTORY
+========================= */
+
+.withdrawal-item {
+    padding: 14px 0;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.withdrawal-item:last-child {
+    border-bottom: none;
+}
+
+.withdrawal-title {
+    font-weight: bold;
+}
+
+.withdrawal-details {
+    color: #666;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.pending {
+    color: #d68900;
+}
+
+.empty-history {
+    text-align: center;
+    color: #777;
+    padding: 20px 0;
+}
+
+
+/* =========================
+   ANIMATED HEADINGS
+========================= */
+
+h1,
+h2 {
+    background: linear-gradient(
+        90deg,
+        #ffb300,
+        #ff4d8d,
+        #8a2be2,
+        #2196f3,
+        #ffb300
+    );
+
+    background-size: 300% 100%;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+
+    animation: headingSlide 8s linear infinite;
+}
+
+@keyframes headingSlide {
+
+    from {
+        background-position: 0% 50%;
+    }
+
+    to {
+        background-position: 300% 50%;
+    }
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #666;
+    font-size: 14px;
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     TOP NAVIGATION
+========================= -->
+
+<nav class="top-nav">
+
+    <button
+        type="button"
+        class="menu-button"
+        onclick="toggleMenu()">
+        ☰ Menu
+    </button>
+
+    <a
+        href="index.html"
+        class="home-button">
+        🏠 Home
+    </a>
+
+</nav>
+
+
+<!-- =========================
+     SIDE MENU
+========================= -->
+
+<div
+    id="sideMenu"
+    class="side-menu">
+
+    <button
+        type="button"
+        class="close-menu"
+        onclick="toggleMenu()">
+        ✕
+    </button>
+
+
+    <a href="earn.html">
+        💰 Earn Points
+    </a>
+
+    <a href="watch.html">
+        📺 Watch & Earn
+    </a>
+
+    <a href="spin.html">
+        🎡 Daily Spin
+    </a>
+
+    <a href="challenges.html">
+        🏆 Challenges
+    </a>
+
+    <a href="buy-points.html">
+        💳 Buy Points
+    </a>
+
+    <a href="balance.html">
+        💰 My Balance
+    </a>
+
+    <a href="rewards.html">
+        🎁 Rewards
+    </a>
+
+    <a href="withdraw.html">
+        💸 Withdraw
+    </a>
+
+</div>
+
+
+<!-- =========================
+     MENU OVERLAY
+========================= -->
+
+<div
+    id="menuOverlay"
+    class="menu-overlay"
+    onclick="toggleMenu()">
+</div>
+
+
+<!-- =========================
+     PAGE HEADER
+========================= -->
+
+<header>
+
+    <h1>💸 Withdraw Points</h1>
+
+    <p>
+        Convert your points into a withdrawal request.
+    </p>
+
+</header>
+
+
+<!-- =========================
+     PAGE CONTENT
+========================= -->
+
+<div class="container">
+
+
+    <!-- CURRENT BALANCE -->
+
+    <div class="card balance-card">
+
+        <h2>💰 Current Balance</h2>
+
+        <div
+            id="balance"
+            class="balance-number">
+            0
+        </div>
+
+        <div class="balance-label">
+            points available
+        </div>
+
+    </div>
+
+
+    <!-- WITHDRAWAL INFORMATION -->
+
+    <div class="card">
+
+        <h2>ℹ️ Withdrawal Information</h2>
+
+        <div class="notice">
+
+            <strong>Prototype:</strong>
+            Withdrawals are currently simulated.
+
+            <br><br>
+
+            No real money is transferred from
+            this page.
+
+            <br><br>
+
+            <strong>Minimum withdrawal:</strong>
+            100 points.
+
+        </div>
+
+    </div>
+
+
+    <!-- WITHDRAWAL FORM -->
+
+    <div class="card">
+
+        <h2>💸 Request Withdrawal</h2>
+
+
+        <div class="form-group">
+
+            <label for="amount">
+                Withdrawal Amount (Points)
+            </label>
+
+            <input
+                type="number"
+                id="amount"
+                min="100"
+                placeholder="Enter points">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="method">
+                Withdrawal Method
+            </label>
+
+            <select id="method">
+
+                <option value="">
+                    Select a method
+                </option>
+
+                <option value="Mobile Money">
+                    📱 Mobile Money
+                </option>
+
+                <option value="Bank Transfer">
+                    🏦 Bank Transfer
+                </option>
+
+                <option value="Other">
+                    💳 Other
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="account">
+                Account / Destination
+            </label>
+
+            <input
+                type="text"
+                id="account"
+                placeholder="Enter destination">
+
+        </div>
+
+
+        <button
+            type="button"
+            class="withdraw-button"
+            onclick="requestWithdrawal()">
+
+            💸 Submit Withdrawal Request
+
+        </button>
+
+
+        <div
+            id="message"
+            class="message">
+        </div>
+
+    </div>
+
+
+    <!-- WITHDRAWAL HISTORY -->
+
+    <div class="card">
+
+        <h2>📜 Withdrawal History</h2>
+
+        <div id="withdrawalHistory">
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    Reward Platform — Prototype
+
+</footer>
+
+
+<script>
+
+/* =========================
+   CONSTANTS
+========================= */
+
+const MIN_WITHDRAWAL = 100;
+
+
+/* =========================
+   DISPLAY BALANCE
+========================= */
+
+function updateBalance() {
+
+    const points =
+        Number(
+            localStorage.getItem(
+                "rewardPoints"
+            )
+        ) || 0;
+
+
+    document.getElementById(
+        "balance"
+    ).textContent = points;
+
+}
+
+
+/* =========================
+   REQUEST WITHDRAWAL
+========================= */
+
+function requestWithdrawal() {
+
+    const amountInput =
+        document.getElementById(
+            "amount"
+        );
+
+    const method =
+        document.getElementById(
+            "method"
+        ).value;
+
+    const account =
+        document.getElementById(
+            "account"
+        ).value.trim();
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    const amount =
+        Number(
+            amountInput.value
+        );
+
+
+    const currentBalance =
+        Number(
+            localStorage.getItem(
+                "rewardPoints"
+            )
+        ) || 0;
+
+
+    /* =========================
+       VALIDATE AMOUNT
+    ========================= */
+
+    if (!amount || amount <= 0) {
+
+        message.textContent =
+            "❌ Please enter a valid withdrawal amount.";
+
+        return;
+
+    }
+
+
+    if (amount < MIN_WITHDRAWAL) {
+
+        message.textContent =
+            "❌ The minimum withdrawal is " +
+            MIN_WITHDRAWAL +
+            " points.";
+
+        return;
+
+    }
+
+
+    if (amount > currentBalance) {
+
+        message.textContent =
+            "❌ You do not have enough points.";
+
+        return;
+
+    }
+
+
+    /* =========================
+       VALIDATE METHOD
+    ========================= */
+
+    if (!method) {
+
+        message.textContent =
+            "❌ Please select a withdrawal method.";
+
+        return;
+
+    }
+
+
+    /* =========================
+       VALIDATE DESTINATION
+    ========================= */
+
+    if (!account) {
+
+        message.textContent =
+            "❌ Please enter your account or destination.";
+
+        return;
+
+    }
+
+
+    /* =========================
+       CREATE REQUEST
+    ========================= */
+
+    let withdrawals =
+        JSON.parse(
+            localStorage.getItem(
+                "withdrawalHistory"
+            )
+        ) || [];
+
+
+    const request = {
+
+        amount: amount,
+
+        method: method,
+
+        account: account,
+
+        status: "Pending",
+
+        date:
+            new Date()
+            .toLocaleString()
+
+    };
+
+
+    withdrawals.push(request);
+
+
+    localStorage.setItem(
+        "withdrawalHistory",
+        JSON.stringify(
+            withdrawals
+        )
+    );
+
+
+    /* =========================
+       DEDUCT POINTS
+    ========================= */
+
+    const newBalance =
+        currentBalance - amount;
+
+
+    localStorage.setItem(
+        "rewardPoints",
+        newBalance
+    );
+
+
+    /* =========================
+       ADD TRANSACTION HISTORY
+    ========================= */
+
+    let history =
+        JSON.parse(
+            localStorage.getItem(
+                "rewardHistory"
+            )
+        ) || [];
+
+
+    history.push({
+
+        activity:
+            "Withdrawal Request",
+
+        points:
+            -amount,
+
+        date:
+            new Date()
+            .toLocaleString()
+
+    });
+
+
+    localStorage.setItem(
+        "rewardHistory",
+        JSON.stringify(
+            history
+        )
+    );
+
+
+    /* =========================
+       CLEAR FORM
+    ========================= */
+
+    amountInput.value = "";
+
+    document.getElementById(
+        "method"
+    ).value = "";
+
+    document.getElementById(
+        "account"
+    ).value = "";
+
+
+    /* =========================
+       UPDATE PAGE
+    ========================= */
+
+    updateBalance();
+
+    loadWithdrawalHistory();
+
+
+    message.textContent =
+        "✅ Withdrawal request submitted successfully. " +
+        amount +
+        " points are now pending.";
+
+}
+
+
+/* =========================
+   LOAD WITHDRAWAL HISTORY
+========================= */
+
+function loadWithdrawalHistory() {
+
+    const container =
+        document.getElementById(
+            "withdrawalHistory"
+        );
+
+
+    const withdrawals =
+        JSON.parse(
+            localStorage.getItem(
+                "withdrawalHistory"
+            )
+        ) || [];
+
+
+    if (withdrawals.length === 0) {
+
+        container.innerHTML =
+            '<div class="empty-history">' +
+            'No withdrawal requests yet.' +
+            '</div>';
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    const reversed =
+        [...withdrawals].reverse();
+
+
+    reversed.forEach(
+        function(item) {
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+            div.className =
+                "withdrawal-item";
+
+
+            div.innerHTML =
+
+                '<div class="withdrawal-title pending">' +
+                '💸 ' +
+                item.amount +
+                ' points — ' +
+                item.status +
+                '</div>' +
+
+                '<div class="withdrawal-details">' +
+                'Method: ' +
+                item.method +
+                '<br>' +
+                'Destination: ' +
+                item.account +
+                '<br>' +
+                item.date +
+                '</div>';
+
+
+            container.appendChild(
+                div
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================
+   SIDE MENU
+========================= */
+
+function toggleMenu() {
+
+    const menu =
+        document.getElementById(
+            "sideMenu"
+        );
+
+    const overlay =
+        document.getElementById(
+            "menuOverlay"
+        );
+
+
+    menu.classList.toggle(
+        "open"
+    );
+
+    overlay.classList.toggle(
+        "open"
+    );
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+updateBalance();
+
+loadWithdrawalHistory();
+
+</script>
+
+</body>
+</html>
