@@ -155,7 +155,7 @@ header h1 {
 }
 
 /* =========================
-   BALANCE
+   CURRENT BALANCE
 ========================= */
 
 .balance-card {
@@ -197,6 +197,14 @@ header h1 {
     margin-bottom: 5px;
 }
 
+.earned-number {
+    color: #16803c;
+}
+
+.redeemed-number {
+    color: #c62828;
+}
+
 /* =========================
    HISTORY
 ========================= */
@@ -210,14 +218,34 @@ header h1 {
     border-bottom: none;
 }
 
+.history-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+}
+
 .history-activity {
     font-weight: bold;
+}
+
+.history-points {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.earned {
+    color: #16803c;
+}
+
+.redeemed {
+    color: #c62828;
 }
 
 .history-details {
     color: #666;
     font-size: 14px;
-    margin-top: 4px;
+    margin-top: 5px;
 }
 
 /* =========================
@@ -231,7 +259,7 @@ header h1 {
 }
 
 /* =========================
-   BUTTONS
+   QUICK ACTIONS
 ========================= */
 
 .action-button {
@@ -392,7 +420,7 @@ footer {
     <h1>💰 My Balance</h1>
 
     <p>
-        View your points and activity history.
+        View your points and complete transaction history.
     </p>
 
 </header>
@@ -436,12 +464,27 @@ footer {
 
                 <div
                     id="totalEarned"
-                    class="summary-number">
+                    class="summary-number earned-number">
                     0
                 </div>
 
                 <div>
-                    Total Points
+                    Total Earned
+                </div>
+
+            </div>
+
+
+            <div class="summary-box">
+
+                <div
+                    id="totalRedeemed"
+                    class="summary-number redeemed-number">
+                    0
+                </div>
+
+                <div>
+                    Total Redeemed
                 </div>
 
             </div>
@@ -497,7 +540,7 @@ footer {
 
     <div class="card">
 
-        <h2>📜 Activity History</h2>
+        <h2>📜 Transaction History</h2>
 
         <div id="history">
         </div>
@@ -522,7 +565,7 @@ footer {
 <script>
 
 /* =========================
-   LOAD POINTS
+   LOAD BALANCE
 ========================= */
 
 function loadBalance() {
@@ -536,10 +579,6 @@ function loadBalance() {
 
     document.getElementById(
         "balance"
-    ).textContent = points;
-
-    document.getElementById(
-        "totalEarned"
     ).textContent = points;
 
 }
@@ -564,17 +603,67 @@ function loadHistory() {
         ) || [];
 
 
+    let totalEarned = 0;
+    let totalRedeemed = 0;
+    let activityCount = 0;
+
+
+    /* Calculate totals */
+
+    history.forEach(
+        function(item) {
+
+            const amount =
+                Number(item.points) || 0;
+
+
+            if (amount > 0) {
+
+                totalEarned += amount;
+
+                activityCount++;
+
+            }
+
+
+            if (amount < 0) {
+
+                totalRedeemed +=
+                    Math.abs(amount);
+
+            }
+
+        }
+    );
+
+
+    /* Display summary */
+
+    document.getElementById(
+        "totalEarned"
+    ).textContent =
+        totalEarned;
+
+
+    document.getElementById(
+        "totalRedeemed"
+    ).textContent =
+        totalRedeemed;
+
+
     document.getElementById(
         "activityCount"
     ).textContent =
-        history.length;
+        activityCount;
 
+
+    /* Empty history */
 
     if (history.length === 0) {
 
         historyContainer.innerHTML =
             '<div class="empty-history">' +
-            'No activities recorded yet.' +
+            'No transactions recorded yet.' +
             '</div>';
 
         return;
@@ -585,7 +674,7 @@ function loadHistory() {
     historyContainer.innerHTML = "";
 
 
-    /* Show newest activity first */
+    /* Newest transaction first */
 
     const reversedHistory =
         [...history].reverse();
@@ -608,9 +697,8 @@ function loadHistory() {
                 "Activity";
 
 
-            const earned =
-                item.points ||
-                0;
+            const amount =
+                Number(item.points) || 0;
 
 
             const date =
@@ -618,18 +706,58 @@ function loadHistory() {
                 "";
 
 
+            let pointsText;
+            let pointsClass;
+            let icon;
+
+
+            if (amount > 0) {
+
+                pointsText =
+                    "+" + amount + " points";
+
+                pointsClass =
+                    "earned";
+
+                icon =
+                    "🎉";
+
+            } else {
+
+                pointsText =
+                    "−" +
+                    Math.abs(amount) +
+                    " points";
+
+                pointsClass =
+                    "redeemed";
+
+                icon =
+                    "🎁";
+
+            }
+
+
             historyItem.innerHTML =
 
-                '<div class="history-activity">' +
-                '🎉 ' +
-                activity +
-                ' — +' +
-                earned +
-                ' points' +
+                '<div class="history-row">' +
+
+                    '<div class="history-activity">' +
+                        icon +
+                        " " +
+                        activity +
+                    '</div>' +
+
+                    '<div class="history-points ' +
+                    pointsClass +
+                    '">' +
+                        pointsText +
+                    '</div>' +
+
                 '</div>' +
 
                 '<div class="history-details">' +
-                date +
+                    date +
                 '</div>';
 
 
