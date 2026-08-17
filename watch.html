@@ -20,6 +20,10 @@ body {
     color: #222;
 }
 
+/* =========================
+   TOP NAVIGATION
+========================= */
+
 .top-nav {
     background: #182848;
     padding: 12px 10px;
@@ -43,13 +47,16 @@ body {
     width: auto;
     margin: 0;
     font-size: 16px;
+    cursor: pointer;
 }
 
 .home-button {
     background: rgba(255,255,255,0.12);
 }
 
-/* SIDE MENU */
+/* =========================
+   SIDE MENU
+========================= */
 
 .side-menu {
     position: fixed;
@@ -89,8 +96,14 @@ body {
     margin: 0;
     padding: 8px 12px;
     background: transparent;
+    color: white;
     font-size: 20px;
+    cursor: pointer;
 }
+
+/* =========================
+   MENU OVERLAY
+========================= */
 
 .menu-overlay {
     position: fixed;
@@ -104,6 +117,10 @@ body {
     display: block;
 }
 
+/* =========================
+   HEADER
+========================= */
+
 header {
     background: #182848;
     color: white;
@@ -115,11 +132,19 @@ header h1 {
     margin: 0;
 }
 
+/* =========================
+   CONTAINER
+========================= */
+
 .container {
     max-width: 700px;
     margin: auto;
     padding: 15px;
 }
+
+/* =========================
+   CARDS
+========================= */
 
 .card {
     background: white;
@@ -128,6 +153,10 @@ header h1 {
     margin: 15px 0;
     box-shadow: 0 3px 12px rgba(0,0,0,0.08);
 }
+
+/* =========================
+   POINTS
+========================= */
 
 .points {
     text-align: center;
@@ -139,6 +168,10 @@ header h1 {
     margin: 10px 0;
 }
 
+/* =========================
+   VIDEO
+========================= */
+
 .video-box {
     background: #111;
     color: white;
@@ -147,6 +180,10 @@ header h1 {
     text-align: center;
     margin: 15px 0;
 }
+
+/* =========================
+   BUTTONS
+========================= */
 
 button {
     width: 100%;
@@ -160,10 +197,25 @@ button {
     margin-top: 10px;
 }
 
+button:hover {
+    opacity: 0.9;
+}
+
 button:disabled {
     background: #999;
     cursor: not-allowed;
 }
+
+/* Keep menu buttons their own size */
+
+.menu-button,
+.close-menu {
+    width: auto;
+}
+
+/* =========================
+   MESSAGE
+========================= */
 
 .message {
     text-align: center;
@@ -177,13 +229,17 @@ button:disabled {
     margin: 15px 0;
 }
 
+/* =========================
+   FOOTER
+========================= */
+
 footer {
     text-align: center;
     padding: 25px;
     color: #666;
     font-size: 14px;
 }
-    
+
 /* =========================
    ANIMATED HEADINGS
 ========================= */
@@ -206,8 +262,7 @@ h2 {
 
     color: transparent;
 
-    animation:
-        headingSlide 8s linear infinite;
+    animation: headingSlide 8s linear infinite;
 }
 
 @keyframes headingSlide {
@@ -220,168 +275,288 @@ h2 {
         background-position: 300% 50%;
     }
 }
+
 </style>
 </head>
 
+
 <body>
 
+<!-- =========================
+     TOP NAVIGATION
+========================= -->
+
 <nav class="top-nav">
-    <button class="menu-button" onclick="toggleMenu()">☰ Menu</button>
-    <a href="index.html" class="home-button">🏠 Home</a>
+
+    <button
+        type="button"
+        class="menu-button"
+        onclick="toggleMenu()">
+
+        ☰ Menu
+
+    </button>
+
+    <a
+        href="index.html"
+        class="home-button">
+
+        🏠 Home
+
+    </a>
+
 </nav>
 
-<div id="sideMenu" class="side-menu">
-    <button class="close-menu" onclick="toggleMenu()">✕</button>
 
-    <a href="earn.html">💰 Earn Points</a>
-    <a href="watch.html">📺 Watch & Earn</a>
-    <a href="spin.html">🎡 Daily Spin</a>
-    <a href="challenges.html">🏆 Challenges</a>
-    <a href="buy-points.html">💳 Buy Points</a>
-    <a href="balance.html">💰 My Balance</a>
-    <a href="rewards.html">🎁 Rewards</a>
+<!-- =========================
+     SIDE MENU
+========================= -->
+
+<div
+    id="sideMenu"
+    class="side-menu">
+
+    <button
+        type="button"
+        class="close-menu"
+        onclick="toggleMenu()">
+
+        ✕
+
+    </button>
+
+
+    <a href="earn.html">
+        💰 Earn Points
+    </a>
+
+
+    <a href="watch.html">
+        📺 Watch & Earn
+    </a>
+
+
+    <a href="spin.html">
+        🎡 Daily Spin
+    </a>
+
+
+    <a href="challenges.html">
+        🏆 Challenges
+    </a>
+
+
+    <a href="buy-points.html">
+        💳 Buy Points
+    </a>
+
+
+    <a href="balance.html">
+        💰 My Balance
+    </a>
+
+
+    <a href="rewards.html">
+        🎁 Rewards
+    </a>
+
 </div>
 
-<div id="menuOverlay" class="menu-overlay" onclick="toggleMenu()"></div>
 
-<div id="menuOverlay" class="menu-overlay" onclick="toggleMenu()"></div>
+<!-- =========================
+     MENU OVERLAY
+========================= -->
+
+<div
+    id="menuOverlay"
+    class="menu-overlay"
+    onclick="toggleMenu()">
+</div>
+
+
+<!-- =========================
+     HEADER
+========================= -->
 
 <header>
 
-<h1>📺 Watch & Earn</h1>
+    <h1>📺 Watch & Earn</h1>
 
-<p>Complete videos and earn points.</p>
+    <p>
+        Complete videos and earn points.
+    </p>
 
 </header>
 
+
+<!-- =========================
+     MAIN CONTENT
+========================= -->
+
 <div class="container">
 
-<div class="card points">
 
-<h2>💰 Your Points</h2>
+    <!-- CURRENT POINTS -->
 
-<div
-class="points-number"
-id="points">
-0
+    <div class="card points">
+
+        <h2>💰 Your Points</h2>
+
+        <div
+            class="points-number"
+            id="points">
+
+            0
+
+        </div>
+
+        <p>
+            points available
+        </p>
+
+    </div>
+
+
+    <!-- DAILY VIDEO INFORMATION -->
+
+    <div class="card">
+
+        <h2>📺 Today's Videos</h2>
+
+        <p>
+            Complete up to
+            <strong>3 videos</strong>
+            per day.
+        </p>
+
+        <p>
+            Each completed video earns
+            <strong>10 points</strong>.
+        </p>
+
+        <div
+            class="limit"
+            id="dailyLimit">
+
+            0 / 3 completed
+
+        </div>
+
+    </div>
+
+
+    <!-- VIDEO 1 -->
+
+    <div class="card">
+
+        <h2>🎬 Video 1</h2>
+
+        <p>
+            Required viewing time:
+            <strong>20 seconds</strong>
+        </p>
+
+        <div class="video-box">
+
+            ▶️ Test Video 1
+
+        </div>
+
+        <button
+            type="button"
+            id="videoBtn1"
+            onclick="startVideo(1,20)">
+
+            Start Video
+
+        </button>
+
+        <div
+            id="videoMessage1"
+            class="message">
+        </div>
+
+    </div>
+
+
+    <!-- VIDEO 2 -->
+
+    <div class="card">
+
+        <h2>🎬 Video 2</h2>
+
+        <p>
+            Required viewing time:
+            <strong>35 seconds</strong>
+        </p>
+
+        <div class="video-box">
+
+            ▶️ Test Video 2
+
+        </div>
+
+        <button
+            type="button"
+            id="videoBtn2"
+            onclick="startVideo(2,35)">
+
+            Start Video
+
+        </button>
+
+        <div
+            id="videoMessage2"
+            class="message">
+        </div>
+
+    </div>
+
+
+    <!-- VIDEO 3 -->
+
+    <div class="card">
+
+        <h2>🎬 Video 3</h2>
+
+        <p>
+            Required viewing time:
+            <strong>60 seconds</strong>
+        </p>
+
+        <div class="video-box">
+
+            ▶️ Test Video 3
+
+        </div>
+
+        <button
+            type="button"
+            id="videoBtn3"
+            onclick="startVideo(3,60)">
+
+            Start Video
+
+        </button>
+
+        <div
+            id="videoMessage3"
+            class="message">
+        </div>
+
+    </div>
+
+
 </div>
 
-<p>points available</p>
 
-</div>
-
-
-<div class="card">
-
-<h2>📺 Today's Videos</h2>
-
-<p>
-Complete up to <strong>3 videos</strong>
-per day.
-</p>
-
-<p>
-Each completed video earns
-<strong>10 points</strong>.
-</p>
-
-<div
-class="limit"
-id="dailyLimit">
-0 / 3 completed
-</div>
-
-</div>
-
-
-<div class="card">
-
-<h2>🎬 Video 1</h2>
-
-<p>Required viewing time: <strong>20 seconds</strong></p>
-
-<div class="video-box">
-
-▶️ Test Video 1
-
-</div>
-
-<button
-id="videoBtn1"
-onclick="startVideo(1,20)">
-
-Start Video
-
-</button>
-
-<div
-id="videoMessage1"
-class="message">
-</div>
-
-</div>
-
-
-<div class="card">
-
-<h2>🎬 Video 2</h2>
-
-<p>Required viewing time: <strong>35 seconds</strong></p>
-
-<div class="video-box">
-
-▶️ Test Video 2
-
-</div>
-
-<button
-id="videoBtn2"
-onclick="startVideo(2,35)">
-
-Start Video
-
-</button>
-
-<div
-id="videoMessage2"
-class="message">
-</div>
-
-</div>
-
-
-<div class="card">
-
-<h2>🎬 Video 3</h2>
-
-<p>Required viewing time: <strong>60 seconds</strong></p>
-
-<div class="video-box">
-
-▶️ Test Video 3
-
-</div>
-
-<button
-id="videoBtn3"
-onclick="startVideo(3,60)">
-
-Start Video
-
-</button>
-
-<div
-id="videoMessage3"
-class="message">
-</div>
-
-</div>
-
-</div>
+<!-- =========================
+     FOOTER
+========================= -->
 
 <footer>
 
-Reward Platform — Prototype
+    Reward Platform — Prototype
 
 </footer>
 
@@ -398,6 +573,7 @@ let points =
             "rewardPoints"
         )
     ) || 0;
+
 
 let history =
     JSON.parse(
@@ -439,6 +615,7 @@ function addPoints(
 
     points += amount;
 
+
     history.push({
 
         activity: activity,
@@ -451,15 +628,18 @@ function addPoints(
 
     });
 
+
     localStorage.setItem(
         "rewardPoints",
         points
     );
 
+
     localStorage.setItem(
         "rewardHistory",
         JSON.stringify(history)
     );
+
 
     updateDisplay();
 
@@ -467,30 +647,38 @@ function addPoints(
 
 
 /* =========================
-   VIDEO STATUS
+   GET TODAY'S COMPLETED VIDEOS
 ========================= */
 
 function getCompletedVideos() {
 
-    const saved =
+    const savedDate =
         localStorage.getItem(
             "completedVideosDate"
         );
 
-    if (saved !== today) {
 
-        localStorage.removeItem(
-            "completedVideos"
-        );
+    /*
+       If this is a new day,
+       create a fresh daily video list.
+    */
+
+    if (savedDate !== today) {
 
         localStorage.setItem(
             "completedVideosDate",
             today
         );
 
+        localStorage.setItem(
+            "completedVideos",
+            JSON.stringify([])
+        );
+
         return [];
 
     }
+
 
     return JSON.parse(
         localStorage.getItem(
@@ -514,6 +702,8 @@ function startVideo(
         getCompletedVideos();
 
 
+    /* Already completed today */
+
     if (
         completed.includes(
             videoNumber
@@ -524,6 +714,8 @@ function startVideo(
 
     }
 
+
+    /* Daily limit */
 
     if (
         completed.length >= 3
@@ -540,6 +732,7 @@ function startVideo(
             videoNumber
         );
 
+
     const message =
         document.getElementById(
             "videoMessage" +
@@ -547,7 +740,13 @@ function startVideo(
         );
 
 
+    /*
+       Prevent double-clicking
+       while the video is running.
+    */
+
     button.disabled = true;
+
 
     let remaining =
         duration;
@@ -565,6 +764,7 @@ function startVideo(
 
                 remaining--;
 
+
                 message.textContent =
                     "⏳ Watching... " +
                     remaining +
@@ -580,7 +780,39 @@ function startVideo(
                     );
 
 
-                    completed.push(
+                    /*
+                       Get the latest list again.
+                       This prevents another
+                       activity from overwriting
+                       the completion state.
+                    */
+
+                    let latestCompleted =
+                        getCompletedVideos();
+
+
+                    /*
+                       Safety check:
+                       never award the same
+                       video twice.
+                    */
+
+                    if (
+                        latestCompleted.includes(
+                            videoNumber
+                        )
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    /*
+                       Record completion.
+                    */
+
+                    latestCompleted.push(
                         videoNumber
                     );
 
@@ -588,10 +820,14 @@ function startVideo(
                     localStorage.setItem(
                         "completedVideos",
                         JSON.stringify(
-                            completed
+                            latestCompleted
                         )
                     );
 
+
+                    /*
+                       Award 10 points.
+                    */
 
                     addPoints(
                         10,
@@ -663,6 +899,12 @@ function updateVideoStatus() {
     }
 
 
+    /*
+       If all three videos
+       are completed, disable
+       every video.
+    */
+
     if (
         completed.length >= 3
     ) {
@@ -685,28 +927,43 @@ function updateVideoStatus() {
 
 
 /* =========================
-   START
-========================= */
-
-updateDisplay();
-
-updateVideoStatus();
-
-/* =========================
    SIDE MENU
 ========================= */
 
 function toggleMenu() {
 
     const menu =
-        document.getElementById("sideMenu");
+        document.getElementById(
+            "sideMenu"
+        );
+
 
     const overlay =
-        document.getElementById("menuOverlay");
+        document.getElementById(
+            "menuOverlay"
+        );
 
-    menu.classList.toggle("open");
-    overlay.classList.toggle("open");
+
+    menu.classList.toggle(
+        "open"
+    );
+
+
+    overlay.classList.toggle(
+        "open"
+    );
+
 }
+
+
+/* =========================
+   START PAGE
+========================= */
+
+updateDisplay();
+
+updateVideoStatus();
+
 </script>
 
 </body>
