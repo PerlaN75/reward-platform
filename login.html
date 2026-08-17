@@ -178,6 +178,11 @@ input:focus {
     opacity: 0.9;
 }
 
+.login-button:disabled {
+    background: #999;
+    cursor: not-allowed;
+}
+
 /* =========================
    MESSAGE
 ========================= */
@@ -187,6 +192,36 @@ input:focus {
     font-weight: bold;
     margin-top: 18px;
     line-height: 1.5;
+}
+
+/* =========================
+   ATTEMPTS
+========================= */
+
+.attempts {
+    text-align: center;
+    margin-top: 12px;
+    color: #666;
+    font-size: 14px;
+}
+
+/* =========================
+   PASSWORD RESET
+========================= */
+
+.reset-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.reset-link button {
+    border: none;
+    background: none;
+    color: #2196f3;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 /* =========================
@@ -202,6 +237,34 @@ input:focus {
 .register-link a {
     color: #182848;
     font-weight: bold;
+}
+
+/* =========================
+   RESET BOX
+========================= */
+
+.reset-box {
+    display: none;
+    margin-top: 25px;
+    padding: 20px;
+    background: #f4f7fb;
+    border-radius: 12px;
+}
+
+.reset-box h3 {
+    margin-top: 0;
+}
+
+.reset-button {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 10px;
+    background: #00a86b;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 /* =========================
@@ -265,9 +328,10 @@ footer {
 
         <div class="notice">
 
-            <strong>Prototype:</strong>
-            This login system is currently
-            for testing only.
+            <strong>Security:</strong>
+            You have a maximum of 3 incorrect
+            login attempts. After 3 failed attempts,
+            your account will be blocked for 30 minutes.
 
         </div>
 
@@ -278,6 +342,8 @@ footer {
             id="loginForm"
             onsubmit="loginUser(event)">
 
+
+            <!-- USERNAME -->
 
             <div class="form-group">
 
@@ -294,6 +360,8 @@ footer {
             </div>
 
 
+            <!-- PASSWORD -->
+
             <div class="form-group">
 
                 <label for="password">
@@ -309,8 +377,11 @@ footer {
             </div>
 
 
+            <!-- LOGIN -->
+
             <button
                 type="submit"
+                id="loginButton"
                 class="login-button">
 
                 🔐 Login
@@ -320,11 +391,82 @@ footer {
         </form>
 
 
+        <!-- MESSAGE -->
+
         <div
             id="message"
             class="message">
         </div>
 
+
+        <!-- ATTEMPTS -->
+
+        <div
+            id="attempts"
+            class="attempts">
+        </div>
+
+
+        <!-- PASSWORD RESET -->
+
+        <div class="reset-link">
+
+            <button
+                type="button"
+                onclick="showResetBox()">
+
+                🔑 Forgot Password?
+
+            </button>
+
+        </div>
+
+
+        <!-- RESET BOX -->
+
+        <div
+            id="resetBox"
+            class="reset-box">
+
+            <h3>
+                🔑 Password Reset
+            </h3>
+
+            <p>
+                Enter your registered email address.
+            </p>
+
+            <div class="form-group">
+
+                <label for="resetEmail">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="resetEmail"
+                    placeholder="Enter your registered email">
+
+            </div>
+
+            <button
+                type="button"
+                class="reset-button"
+                onclick="resetPassword()">
+
+                Reset Password
+
+            </button>
+
+            <div
+                id="resetMessage"
+                class="message">
+            </div>
+
+        </div>
+
+
+        <!-- REGISTER -->
 
         <div class="register-link">
 
@@ -351,6 +493,16 @@ footer {
 <script>
 
 /* =========================
+   SETTINGS
+========================= */
+
+const MAX_ATTEMPTS = 3;
+
+const BLOCK_TIME =
+    30 * 60 * 1000;
+
+
+/* =========================
    LOGIN USER
 ========================= */
 
@@ -374,6 +526,12 @@ function loginUser(event) {
     const message =
         document.getElementById(
             "message"
+        );
+
+
+    const attemptsDisplay =
+        document.getElementById(
+            "attempts"
         );
 
 
@@ -404,12 +562,56 @@ function loginUser(event) {
 
 
     /* =========================
-       CHECK LOGIN
+       CHECK BLOCK
+    ========================= */
+
+    const blockedUntil =
+        Number(
+            localStorage.getItem(
+                "loginBlockedUntil"
+            )
+        ) || 0;
+
+
+    if (
+        blockedUntil > Date.now()
+    ) {
+
+        showBlockMessage(
+            blockedUntil
+        );
+
+        return;
+
+    }
+
+
+    /* =========================
+       CLEAR OLD BLOCK
     ========================= */
 
     if (
-        username !== savedUser.username ||
-        password !== savedUser.password
+        blockedUntil > 0 &&
+        blockedUntil <= Date.now()
+    ) {
+
+        localStorage.removeItem(
+            "loginBlockedUntil"
+        );
+
+        localStorage.removeItem(
+            "loginAttempts"
+        );
+
+    }
+
+
+    /* =========================
+       CHECK USERNAME
+    ========================= */
+
+    if (
+        username !== savedUser.username
     ) {
 
         message.textContent =
@@ -421,8 +623,90 @@ function loginUser(event) {
 
 
     /* =========================
+       CHECK PASSWORD
+    ========================= */
+
+    if (
+        password !== savedUser.password
+    ) {
+
+        let attempts =
+            Number(
+                localStorage.getItem(
+                    "loginAttempts"
+                )
+            ) || 0;
+
+
+        attempts++;
+
+
+        localStorage.setItem(
+            "loginAttempts",
+            attempts
+        );
+
+
+        const remaining =
+            MAX_ATTEMPTS - attempts;
+
+
+        if (
+            attempts >= MAX_ATTEMPTS
+        ) {
+
+            const blockUntil =
+                Date.now() + BLOCK_TIME;
+
+
+            localStorage.setItem(
+                "loginBlockedUntil",
+                blockUntil
+            );
+
+
+            message.textContent =
+                "🔒 Account blocked for 30 minutes because of 3 incorrect login attempts.";
+
+
+            attemptsDisplay.textContent =
+                "Please try again later.";
+
+
+            disableLogin();
+
+            return;
+
+        }
+
+
+        message.textContent =
+            "❌ Incorrect username or password.";
+
+
+        attemptsDisplay.textContent =
+            "⚠️ " +
+            remaining +
+            " login attempt(s) remaining.";
+
+        return;
+
+    }
+
+
+    /* =========================
        LOGIN SUCCESS
     ========================= */
+
+    localStorage.removeItem(
+        "loginAttempts"
+    );
+
+
+    localStorage.removeItem(
+        "loginBlockedUntil"
+    );
+
 
     localStorage.setItem(
         "loggedIn",
@@ -432,6 +716,10 @@ function loginUser(event) {
 
     message.textContent =
         "🎉 Login successful!";
+
+
+    attemptsDisplay.textContent =
+        "";
 
 
     /* =========================
@@ -447,6 +735,279 @@ function loginUser(event) {
         },
         800
     );
+
+}
+
+
+/* =========================
+   SHOW BLOCK MESSAGE
+========================= */
+
+function showBlockMessage(
+    blockedUntil
+) {
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    const attemptsDisplay =
+        document.getElementById(
+            "attempts"
+        );
+
+
+    const remaining =
+        blockedUntil - Date.now();
+
+
+    const minutes =
+        Math.ceil(
+            remaining / 60000
+        );
+
+
+    message.textContent =
+        "🔒 Account is temporarily blocked.";
+
+
+    attemptsDisplay.textContent =
+        "Please try again in " +
+        minutes +
+        " minute(s).";
+
+
+    disableLogin();
+
+}
+
+
+/* =========================
+   DISABLE LOGIN
+========================= */
+
+function disableLogin() {
+
+    document.getElementById(
+        "loginButton"
+    ).disabled = true;
+
+
+    document.getElementById(
+        "username"
+    ).disabled = true;
+
+
+    document.getElementById(
+        "password"
+    ).disabled = true;
+
+}
+
+
+/* =========================
+   PASSWORD RESET BOX
+========================= */
+
+function showResetBox() {
+
+    const box =
+        document.getElementById(
+            "resetBox"
+        );
+
+
+    if (
+        box.style.display === "block"
+    ) {
+
+        box.style.display = "none";
+
+    } else {
+
+        box.style.display = "block";
+
+    }
+
+}
+
+
+/* =========================
+   PASSWORD RESET
+========================= */
+
+function resetPassword() {
+
+    const email =
+        document.getElementById(
+            "resetEmail"
+        ).value.trim().toLowerCase();
+
+
+    const resetMessage =
+        document.getElementById(
+            "resetMessage"
+        );
+
+
+    const savedUser =
+        JSON.parse(
+            localStorage.getItem(
+                "rewardUser"
+            )
+        );
+
+
+    /* =========================
+       NO ACCOUNT
+    ========================= */
+
+    if (!savedUser) {
+
+        resetMessage.textContent =
+            "❌ No registered account found.";
+
+        return;
+
+    }
+
+
+    /* =========================
+       CHECK EMAIL
+    ========================= */
+
+    if (
+        email !== savedUser.email
+    ) {
+
+        resetMessage.textContent =
+            "❌ Email address not found.";
+
+        return;
+
+    }
+
+
+    /* =========================
+       PROTOTYPE RESET
+    ========================= */
+
+    const newPassword =
+        prompt(
+            "Enter your new password:"
+        );
+
+
+    if (
+        newPassword === null
+    ) {
+
+        return;
+
+    }
+
+
+    /* =========================
+       PASSWORD LENGTH
+    ========================= */
+
+    if (
+        newPassword.length < 6 ||
+        newPassword.length > 15
+    ) {
+
+        resetMessage.textContent =
+            "❌ Password must be 6–15 characters long.";
+
+        return;
+
+    }
+
+
+    /* =========================
+       CAPITAL LETTER
+    ========================= */
+
+    if (
+        !/[A-Z]/.test(newPassword)
+    ) {
+
+        resetMessage.textContent =
+            "❌ Password must contain at least one capital letter.";
+
+        return;
+
+    }
+
+
+    /* =========================
+       LOWERCASE LETTER
+    ========================= */
+
+    if (
+        !/[a-z]/.test(newPassword)
+    ) {
+
+        resetMessage.textContent =
+            "❌ Password must contain at least one lowercase letter.";
+
+        return;
+
+    }
+
+
+    /* =========================
+       SPECIAL CHARACTER
+    ========================= */
+
+    if (
+        !/[?!%&$#=]/.test(newPassword)
+    ) {
+
+        resetMessage.textContent =
+            "❌ Password must contain at least one special character: ? ! % & $ # =";
+
+        return;
+
+    }
+
+
+    /* =========================
+       SAVE NEW PASSWORD
+    ========================= */
+
+    savedUser.password =
+        newPassword;
+
+
+    localStorage.setItem(
+        "rewardUser",
+        JSON.stringify(savedUser)
+    );
+
+
+    /* =========================
+       CLEAR LOGIN BLOCK
+    ========================= */
+
+    localStorage.removeItem(
+        "loginAttempts"
+    );
+
+
+    localStorage.removeItem(
+        "loginBlockedUntil"
+    );
+
+
+    /* =========================
+       SUCCESS
+    ========================= */
+
+    resetMessage.textContent =
+        "✅ Password reset successfully. You can now login.";
 
 }
 
