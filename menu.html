@@ -9,7 +9,8 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0">
 
-<title>Menu</title>
+<title>Menu - Reward Platform</title>
+
 
 <style>
 
@@ -22,40 +23,50 @@
 }
 
 body {
+
     margin: 0;
+
     font-family: Arial, sans-serif;
+
     background: #f4f7fb;
+
     color: #222;
+
 }
 
 
 /* =========================
-   HEADER
+   TOP BAR
 ========================= */
 
-header {
-    position: relative;
+.top-bar {
 
     background: #182848;
-    color: white;
 
-    padding: 22px 15px;
+    min-height: 70px;
 
-    text-align: center;
+    padding: 10px 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    position: relative;
+
 }
 
 
 /* =========================
-   MENU HEADING
+   MENU TITLE
 ========================= */
 
-header h1 {
+.menu-title {
 
-    margin: 0;
+    font-size: 30px;
 
-    font-size: 34px;
-
-    text-align: center;
+    font-weight: bold;
 
     background: linear-gradient(
         90deg,
@@ -63,29 +74,36 @@ header h1 {
         #ff4d8d,
         #8a2be2,
         #2196f3,
+        #00c9a7,
         #ffb300
     );
 
     background-size: 300% 100%;
 
     -webkit-background-clip: text;
+
     background-clip: text;
 
     color: transparent;
 
     animation:
         headingSlide 8s linear infinite;
+
 }
 
 
 @keyframes headingSlide {
 
     from {
+
         background-position: 0% 50%;
+
     }
 
     to {
+
         background-position: 300% 50%;
+
     }
 
 }
@@ -101,34 +119,86 @@ header h1 {
 
     right: 12px;
 
-    top: 50%;
-
-    transform:
-        translateY(-50%);
-
-    background:
-        rgba(255,255,255,0.12);
-
-    color: white;
+    top: 15px;
 
     border: none;
 
     border-radius: 8px;
 
-    padding: 8px 10px;
+    padding: 10px 13px;
 
-    font-size: 13px;
+    background: #36558a;
+
+    color: white;
+
+    font-size: 14px;
 
     font-weight: bold;
 
     cursor: pointer;
+
 }
 
 
 .more-button:hover {
 
-    background:
-        rgba(255,255,255,0.22);
+    opacity: 0.9;
+
+}
+
+
+/* =========================
+   MORE PANEL
+========================= */
+
+.more-panel {
+
+    display: none;
+
+    position: absolute;
+
+    top: 62px;
+
+    right: 12px;
+
+    width: 220px;
+
+    background: white;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 5px 20px rgba(0,0,0,0.2);
+
+    z-index: 1000;
+
+    overflow: hidden;
+
+}
+
+
+.more-panel.open {
+
+    display: block;
+
+}
+
+
+.more-panel div {
+
+    padding: 13px 15px;
+
+    border-bottom:
+        1px solid #eeeeee;
+
+    font-weight: bold;
+
+}
+
+
+.more-panel div:last-child {
+
+    border-bottom: none;
 
 }
 
@@ -139,12 +209,60 @@ header h1 {
 
 .container {
 
-    max-width: 750px;
+    max-width: 850px;
 
     margin: auto;
 
-    padding:
-        20px 15px 30px;
+    padding: 25px 15px 35px;
+
+}
+
+
+/* =========================
+   INTRODUCTION
+========================= */
+
+.intro {
+
+    text-align: center;
+
+    margin-bottom: 25px;
+
+}
+
+
+.intro h2 {
+
+    margin: 0 0 8px;
+
+    background: linear-gradient(
+        90deg,
+        #182848,
+        #2196f3,
+        #00a86b,
+        #182848
+    );
+
+    background-size: 300% 100%;
+
+    -webkit-background-clip: text;
+
+    background-clip: text;
+
+    color: transparent;
+
+    animation:
+        headingSlide 8s linear infinite;
+
+}
+
+
+.intro p {
+
+    margin: 0;
+
+    color: #666;
+
 }
 
 
@@ -157,32 +275,30 @@ header h1 {
     display: grid;
 
     grid-template-columns:
-        repeat(2, 1fr);
+        repeat(3, 1fr);
 
-    gap: 18px;
+    gap: 15px;
 
 }
 
 
 /* =========================
-   FEATURE KEYS
+   KEYBOARD-STYLE FEATURE
 ========================= */
 
-.feature-button {
+.feature-key {
 
-    min-height: 125px;
+    min-height: 120px;
 
     background: white;
 
-    border:
-        2px solid #d7dce5;
+    border: 1px solid #d8dee9;
 
-    border-radius: 14px;
+    border-radius: 12px;
 
     box-shadow:
-        0 6px 0 #c3c9d4,
-        0 10px 18px
-        rgba(0,0,0,0.08);
+        0 4px 0 #c5cad3,
+        0 6px 12px rgba(0,0,0,0.08);
 
     text-decoration: none;
 
@@ -196,13 +312,38 @@ header h1 {
 
     justify-content: center;
 
-    gap: 8px;
+    text-align: center;
 
-    font-weight: bold;
+    padding: 15px;
 
     transition:
-        transform 0.1s ease,
-        box-shadow 0.1s ease;
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+
+}
+
+
+.feature-key:hover {
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 6px 0 #b7bdc8,
+        0 8px 15px rgba(0,0,0,0.12);
+
+}
+
+
+.feature-key:active {
+
+    transform:
+        translateY(3px);
+
+    box-shadow:
+        0 2px 0 #b7bdc8,
+        0 3px 7px rgba(0,0,0,0.10);
+
 }
 
 
@@ -212,7 +353,9 @@ header h1 {
 
 .feature-icon {
 
-    font-size: 34px;
+    font-size: 32px;
+
+    margin-bottom: 10px;
 
 }
 
@@ -221,26 +364,11 @@ header h1 {
    FEATURE NAME
 ========================= */
 
-.feature-label {
+.feature-name {
 
-    font-size: 17px;
+    font-size: 16px;
 
-}
-
-
-/* =========================
-   PRESS EFFECT
-========================= */
-
-.feature-button:active {
-
-    transform:
-        translateY(5px);
-
-    box-shadow:
-        0 1px 0 #c3c9d4,
-        0 4px 8px
-        rgba(0,0,0,0.08);
+    font-weight: bold;
 
 }
 
@@ -249,15 +377,30 @@ header h1 {
    SEPARATOR
 ========================= */
 
-.separator {
+.logout-separator {
 
-    margin:
-        35px 0 25px;
+    margin: 35px 0 25px;
 
-    border: none;
+    height: 2px;
 
-    border-top:
-        2px solid #d0d5df;
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #b8bec9,
+            transparent
+        );
+
+}
+
+
+/* =========================
+   LOGOUT AREA
+========================= */
+
+.logout-area {
+
+    text-align: center;
 
 }
 
@@ -268,46 +411,52 @@ header h1 {
 
 .logout-button {
 
-    width: 100%;
+    display: inline-flex;
 
-    max-width: 420px;
+    align-items: center;
 
-    display: block;
+    justify-content: center;
 
-    margin: auto;
+    gap: 10px;
 
-    padding: 16px;
+    min-width: 220px;
+
+    padding: 15px 25px;
 
     border: none;
 
-    border-radius: 12px;
+    border-radius: 11px;
 
     background: #c62828;
 
     color: white;
 
-    font-size: 18px;
+    font-size: 17px;
 
     font-weight: bold;
 
     cursor: pointer;
 
     box-shadow:
-        0 5px 0 #8e1c1c;
+        0 4px 0 #8e1b1b;
 
-    transition:
-        transform 0.1s ease,
-        box-shadow 0.1s ease;
+}
+
+
+.logout-button:hover {
+
+    background: #b71c1c;
+
 }
 
 
 .logout-button:active {
 
     transform:
-        translateY(4px);
+        translateY(3px);
 
     box-shadow:
-        0 1px 0 #8e1c1c;
+        0 1px 0 #8e1b1b;
 
 }
 
@@ -320,9 +469,9 @@ footer {
 
     text-align: center;
 
-    padding: 25px;
+    padding: 20px;
 
-    color: #666;
+    color: #777;
 
     font-size: 14px;
 
@@ -333,41 +482,54 @@ footer {
    MOBILE
 ========================= */
 
-@media (
-    max-width: 500px
-) {
-
-    header h1 {
-
-        font-size: 30px;
-
-    }
-
+@media (max-width: 650px) {
 
     .feature-grid {
 
-        gap: 14px;
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 12px;
 
     }
 
 
-    .feature-button {
+    .feature-key {
 
-        min-height: 115px;
+        min-height: 110px;
+
+    }
+
+
+    .menu-title {
+
+        font-size: 26px;
+
+    }
+
+}
+
+
+@media (max-width: 380px) {
+
+    .feature-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
 
     }
 
 
     .feature-icon {
 
-        font-size: 30px;
+        font-size: 28px;
 
     }
 
 
-    .feature-label {
+    .feature-name {
 
-        font-size: 15px;
+        font-size: 14px;
 
     }
 
@@ -382,34 +544,105 @@ footer {
 
 
 <!-- =========================
-     HEADER
+     PAGE PROTECTION
 ========================= -->
 
-<header>
+<script>
 
-    <h1>
-        MENU
-    </h1>
+if (
+    localStorage.getItem("loggedIn")
+    !== "true"
+) {
+
+    window.location.href =
+        "login.html";
+
+}
+
+</script>
+
+
+<!-- =========================
+     TOP BAR
+========================= -->
+
+<header class="top-bar">
+
+    <div class="menu-title">
+
+        Menu
+
+    </div>
 
 
     <button
         type="button"
         class="more-button"
-        onclick="showMoreMessage()">
+        onclick="toggleMore()">
 
-        More ▾
+        More ⋮
 
     </button>
+
+
+    <!-- MORE PANEL -->
+
+    <div
+        id="morePanel"
+        class="more-panel">
+
+        <div>
+            ⚙️ Settings
+        </div>
+
+        <div>
+            👤 Profile
+        </div>
+
+        <div>
+            📜 History
+        </div>
+
+        <div>
+            🔔 Notifications
+        </div>
+
+        <div>
+            🎁 Referrals
+        </div>
+
+        <div>
+            ❓ Help / Support
+        </div>
+
+    </div>
 
 </header>
 
 
 <!-- =========================
-     MAIN MENU
+     MAIN
 ========================= -->
 
-<div class="container">
+<main class="container">
 
+
+    <div class="intro">
+
+        <h2>
+            Choose an Activity
+        </h2>
+
+        <p>
+            Select what you would like to do.
+        </p>
+
+    </div>
+
+
+    <!-- =========================
+         FEATURES
+    ========================= -->
 
     <div class="feature-grid">
 
@@ -418,20 +651,14 @@ footer {
 
         <a
             href="earn.html"
-            class="feature-button">
+            class="feature-key">
 
-            <span
-                class="feature-icon">
-
+            <span class="feature-icon">
                 💰
-
             </span>
 
-            <span
-                class="feature-label">
-
+            <span class="feature-name">
                 Earn Points
-
             </span>
 
         </a>
@@ -441,20 +668,14 @@ footer {
 
         <a
             href="watch.html"
-            class="feature-button">
+            class="feature-key">
 
-            <span
-                class="feature-icon">
-
+            <span class="feature-icon">
                 📺
-
             </span>
 
-            <span
-                class="feature-label">
-
+            <span class="feature-name">
                 Watch & Earn
-
             </span>
 
         </a>
@@ -464,20 +685,14 @@ footer {
 
         <a
             href="spin.html"
-            class="feature-button">
+            class="feature-key">
 
-            <span
-                class="feature-icon">
-
+            <span class="feature-icon">
                 🎡
-
             </span>
 
-            <span
-                class="feature-label">
-
+            <span class="feature-name">
                 Daily Spin
-
             </span>
 
         </a>
@@ -487,20 +702,14 @@ footer {
 
         <a
             href="challenges.html"
-            class="feature-button">
+            class="feature-key">
 
-            <span
-                class="feature-icon">
-
+            <span class="feature-icon">
                 🏆
-
             </span>
 
-            <span
-                class="feature-label">
-
+            <span class="feature-name">
                 Challenges
-
             </span>
 
         </a>
@@ -510,43 +719,31 @@ footer {
 
         <a
             href="buy-points.html"
-            class="feature-button">
+            class="feature-key">
 
-            <span
-                class="feature-icon">
-
+            <span class="feature-icon">
                 💳
-
             </span>
 
-            <span
-                class="feature-label">
-
+            <span class="feature-name">
                 Buy Points
-
             </span>
 
         </a>
 
 
-        <!-- MY BALANCE -->
+        <!-- BALANCE -->
 
         <a
             href="balance.html"
-            class="feature-button">
+            class="feature-key">
 
-            <span
-                class="feature-icon">
-
+            <span class="feature-icon">
                 💰
-
             </span>
 
-            <span
-                class="feature-label">
-
+            <span class="feature-name">
                 My Balance
-
             </span>
 
         </a>
@@ -556,20 +753,14 @@ footer {
 
         <a
             href="withdraw.html"
-            class="feature-button">
+            class="feature-key">
 
-            <span
-                class="feature-icon">
-
+            <span class="feature-icon">
                 💸
-
             </span>
 
-            <span
-                class="feature-label">
-
+            <span class="feature-name">
                 Withdraw
-
             </span>
 
         </a>
@@ -579,20 +770,14 @@ footer {
 
         <a
             href="rewards.html"
-            class="feature-button">
+            class="feature-key">
 
-            <span
-                class="feature-icon">
-
+            <span class="feature-icon">
                 🎁
-
             </span>
 
-            <span
-                class="feature-label">
-
+            <span class="feature-name">
                 Rewards
-
             </span>
 
         </a>
@@ -602,28 +787,32 @@ footer {
 
 
     <!-- =========================
-         SEPARATOR
+         LOGOUT SEPARATOR
     ========================= -->
 
-    <hr
-        class="separator">
+    <div class="logout-separator">
+    </div>
 
 
     <!-- =========================
          LOGOUT
     ========================= -->
 
-    <button
-        type="button"
-        class="logout-button"
-        onclick="logoutUser()">
+    <div class="logout-area">
 
-        🚪 Logout
+        <button
+            type="button"
+            class="logout-button"
+            onclick="logoutUser()">
 
-    </button>
+            ⏻ Logout
+
+        </button>
+
+    </div>
 
 
-</div>
+</main>
 
 
 <!-- =========================
@@ -640,15 +829,19 @@ footer {
 <script>
 
 /* =========================
-   PAGE PROTECTION
+   MORE PANEL
 ========================= */
 
-if (
-    localStorage.getItem("loggedIn") !== "true"
-) {
+function toggleMore() {
 
-    window.location.href =
-        "login.html";
+    const panel =
+        document.getElementById(
+            "morePanel"
+        );
+
+    panel.classList.toggle(
+        "open"
+    );
 
 }
 
@@ -663,6 +856,7 @@ function logoutUser() {
         "loggedIn"
     );
 
+
     window.location.href =
         "index.html";
 
@@ -670,16 +864,39 @@ function logoutUser() {
 
 
 /* =========================
-   MORE
+   CLOSE MORE PANEL
+   WHEN CLICKING OUTSIDE
 ========================= */
 
-function showMoreMessage() {
+document.addEventListener(
+    "click",
+    function(event) {
 
-    alert(
-        "More features will be available here soon."
-    );
+        const panel =
+            document.getElementById(
+                "morePanel"
+            );
 
-}
+        const button =
+            document.querySelector(
+                ".more-button"
+            );
+
+
+        if (
+            panel.classList.contains("open") &&
+            !panel.contains(event.target) &&
+            !button.contains(event.target)
+        ) {
+
+            panel.classList.remove(
+                "open"
+            );
+
+        }
+
+    }
+);
 
 </script>
 
