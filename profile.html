@@ -35,8 +35,41 @@ body {
 .top-nav {
     background: #182848;
     padding: 12px 10px;
+
     display: flex;
     align-items: center;
+    gap: 10px;
+
+    overflow-x: auto;
+}
+
+
+/* =========================
+   NAVIGATION LINKS
+========================= */
+
+.nav-link {
+    display: inline-block;
+
+    padding: 11px 16px;
+
+    background: rgba(255,255,255,0.12);
+
+    color: white;
+
+    text-decoration: none;
+
+    border-radius: 10px;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    white-space: nowrap;
+}
+
+.nav-link:hover {
+    background: rgba(255,255,255,0.22);
 }
 
 
@@ -63,6 +96,8 @@ body {
     font-weight: bold;
 
     cursor: pointer;
+
+    white-space: nowrap;
 }
 
 .back-button:hover {
@@ -349,6 +384,10 @@ footer {
         max-width: 55%;
     }
 
+    .top-nav {
+        flex-wrap: nowrap;
+    }
+
 }
 
 </style>
@@ -372,6 +411,17 @@ footer {
         ← Back
 
     </button>
+
+
+    <!-- PROFILE LINK -->
+
+    <a
+        href="profile.html"
+        class="nav-link">
+
+        👤 Profile
+
+    </a>
 
 </nav>
 
@@ -404,6 +454,7 @@ footer {
         👤
     </div>
 
+
     <div
         class="profile-name"
         id="profileName">
@@ -411,6 +462,7 @@ footer {
         User
 
     </div>
+
 
     <div
         class="profile-email"
@@ -557,6 +609,7 @@ footer {
     <div
         class="message"
         id="message">
+
     </div>
 
 </div>
@@ -594,12 +647,6 @@ if (
 /* =====================================================
    GET USER INFORMATION
 ===================================================== */
-
-/*
-   We check several possible storage names so
-   the Profile page can work with the registration
-   system we have been building.
-*/
 
 const username =
     localStorage.getItem("username") ||
@@ -646,9 +693,7 @@ document.getElementById(
 ===================================================== */
 
 let memberSince =
-    localStorage.getItem(
-        "memberSince"
-    );
+    localStorage.getItem("memberSince");
 
 
 if (!memberSince) {
@@ -656,13 +701,17 @@ if (!memberSince) {
     memberSince =
         new Date().toLocaleDateString();
 
+    localStorage.setItem(
+        "memberSince",
+        memberSince
+    );
+
 }
 
 
 document.getElementById(
     "memberSince"
-).textContent =
-    memberSince;
+).textContent = memberSince;
 
 
 /* =====================================================
@@ -671,9 +720,7 @@ document.getElementById(
 
 const points =
     Number(
-        localStorage.getItem(
-            "rewardPoints"
-        )
+        localStorage.getItem("rewardPoints")
     ) || 0;
 
 
