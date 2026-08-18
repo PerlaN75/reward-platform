@@ -816,18 +816,35 @@ function loginUser(event) {
         "";
 
 
-    setTimeout(
-        function() {
+   setTimeout(
+    function() {
+
+        const returnPage =
+            localStorage.getItem(
+                "loginReturnPage"
+            );
+
+        localStorage.removeItem(
+            "loginReturnPage"
+        );
+
+        if (returnPage) {
+
+            window.location.href =
+                returnPage;
+
+        } else {
 
             window.location.href =
                 "earn.html";
 
-        },
-        800
-    );
+        }
 
+    },
+    800
+); 
+    
 }
-
 
 /* =========================
    SHOW BLOCK MESSAGE
