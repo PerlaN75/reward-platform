@@ -2,12 +2,19 @@
 <html lang="en">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
 <title>Rewards - Reward Platform</title>
 
 <style>
+
+/* =====================================================
+   GENERAL
+===================================================== */
 
 * {
     box-sizing: border-box;
@@ -20,121 +27,77 @@ body {
     color: #222;
 }
 
-/* =========================
+
+/* =====================================================
    TOP NAVIGATION
-========================= */
+===================================================== */
 
 .top-nav {
     background: #182848;
     padding: 12px 10px;
     display: flex;
     align-items: center;
-    gap: 8px;
 }
 
-.top-nav a,
-.menu-button {
-    color: white;
-    text-decoration: none;
-    padding: 11px 14px;
-    font-weight: bold;
-    border-radius: 10px;
-}
 
-.menu-button {
-    background: transparent;
-    border: none;
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+.back-button {
     width: auto;
     margin: 0;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.home-button {
+    padding: 11px 16px;
     background: rgba(255,255,255,0.12);
-}
-
-/* =========================
-   SIDE MENU
-========================= */
-
-.side-menu {
-    position: fixed;
-    top: 0;
-    left: -280px;
-    width: 270px;
-    height: 100%;
-    background: #182848;
-    z-index: 1000;
-    padding-top: 60px;
-    transition: left 0.3s ease;
-    box-shadow: 4px 0 15px rgba(0,0,0,0.25);
-}
-
-.side-menu.open {
-    left: 0;
-}
-
-.side-menu a {
-    display: block;
     color: white;
-    text-decoration: none;
-    padding: 16px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
     font-weight: bold;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-.side-menu a:hover {
-    background: #0066ff;
-}
-
-.close-menu {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: auto;
-    margin: 0;
-    padding: 8px 12px;
-    background: transparent;
-    color: white;
-    font-size: 20px;
     cursor: pointer;
 }
 
-/* =========================
-   MENU OVERLAY
-========================= */
-
-.menu-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
-    z-index: 999;
-    display: none;
+.back-button:hover {
+    background: rgba(255,255,255,0.22);
 }
 
-.menu-overlay.open {
-    display: block;
-}
 
-/* =========================
+/* =====================================================
    HEADER
-========================= */
+===================================================== */
 
 header {
     background: #182848;
     color: white;
-    text-align: center;
     padding: 25px 15px;
+    text-align: center;
 }
 
 header h1 {
     margin: 0;
+    animation: headingAnimation 3s infinite alternate;
 }
 
-/* =========================
+header p {
+    margin: 8px 0 0;
+}
+
+@keyframes headingAnimation {
+
+    0% {
+        color: white;
+    }
+
+    100% {
+        color: #00bfff;
+    }
+
+}
+
+
+/* =====================================================
    CONTAINER
-========================= */
+===================================================== */
 
 .container {
     max-width: 700px;
@@ -142,147 +105,210 @@ header h1 {
     padding: 15px;
 }
 
-/* =========================
+
+/* =====================================================
    CARDS
-========================= */
+===================================================== */
 
 .card {
     background: white;
     border-radius: 14px;
     padding: 20px;
     margin: 15px 0;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    box-shadow:
+        0 3px 12px rgba(0,0,0,0.08);
 }
 
-/* =========================
+.card h2 {
+    margin-top: 0;
+    animation: cardHeadingAnimation 3s infinite alternate;
+}
+
+@keyframes cardHeadingAnimation {
+
+    0% {
+        color: #182848;
+    }
+
+    100% {
+        color: #00bfff;
+    }
+
+}
+
+
+/* =====================================================
    BALANCE
-========================= */
+===================================================== */
 
-.points {
+.balance-card {
     text-align: center;
 }
 
-.points-number {
-    font-size: 42px;
+.balance-number {
+    font-size: 44px;
     font-weight: bold;
-    margin: 10px 0;
-}
-
-/* =========================
-   REWARD CARDS
-========================= */
-
-.reward {
-    border: 2px solid #e3e7ef;
-    border-radius: 12px;
-    padding: 20px;
-    margin: 15px 0;
-    text-align: center;
-}
-
-.reward-icon {
-    font-size: 48px;
-    margin-bottom: 10px;
-}
-
-.reward h2 {
-    margin-top: 5px;
-}
-
-.reward-cost {
-    font-size: 24px;
-    font-weight: bold;
+    color: #182848;
     margin: 12px 0;
 }
 
-.reward-description {
+.balance-label {
     color: #666;
-    line-height: 1.5;
 }
 
-.reward button {
+
+/* =====================================================
+   REWARD GRID
+===================================================== */
+
+.reward-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+
+/* =====================================================
+   REWARD CARD
+===================================================== */
+
+.reward-item {
+    border: 1px solid #e3e7ee;
+    border-radius: 14px;
+    padding: 18px;
+    text-align: center;
+    background: #fafcff;
+}
+
+.reward-icon {
+    font-size: 40px;
+    margin-bottom: 8px;
+}
+
+.reward-item h3 {
+    margin: 8px 0;
+    color: #182848;
+}
+
+.reward-item p {
+    font-size: 14px;
+    color: #666;
+    min-height: 40px;
+}
+
+.reward-cost {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 12px 0;
+    color: #182848;
+}
+
+
+/* =====================================================
+   BUTTON
+===================================================== */
+
+.redeem-button {
     width: 100%;
-    padding: 14px;
+    padding: 12px;
     border: none;
     border-radius: 10px;
     background: #182848;
     color: white;
-    font-size: 16px;
+    font-size: 15px;
+    font-weight: bold;
     cursor: pointer;
-    margin-top: 12px;
 }
 
-.reward button:hover {
+.redeem-button:hover {
     opacity: 0.9;
 }
 
-.reward button:disabled {
+.redeem-button:disabled {
     background: #999;
     cursor: not-allowed;
 }
 
-/* =========================
+
+/* =====================================================
    MESSAGE
-========================= */
+===================================================== */
 
 .message {
     text-align: center;
     font-weight: bold;
     margin-top: 15px;
-    line-height: 1.5;
 }
 
-/* =========================
+
+/* =====================================================
    NOTICE
-========================= */
+===================================================== */
 
 .notice {
-    background: #fff8e1;
-    border-left: 5px solid #ffb300;
+    background: #eef6ff;
+    border-left: 4px solid #182848;
     padding: 12px;
     border-radius: 8px;
+    font-size: 14px;
     line-height: 1.5;
 }
 
-/* =========================
-   ANIMATED HEADINGS
-========================= */
 
-h1,
-h2 {
-    background: linear-gradient(
-        90deg,
-        #ffb300,
-        #ff4d8d,
-        #8a2be2,
-        #2196f3,
-        #ffb300
-    );
+/* =====================================================
+   REDEMPTION HISTORY
+===================================================== */
 
-    background-size: 300% 100%;
-
-    -webkit-background-clip: text;
-    background-clip: text;
-
-    color: transparent;
-
-    animation: headingSlide 8s linear infinite;
+.history-item {
+    padding: 15px 0;
+    border-bottom: 1px solid #e5e5e5;
 }
 
-@keyframes headingSlide {
-
-    from {
-        background-position: 0% 50%;
-    }
-
-    to {
-        background-position: 300% 50%;
-    }
+.history-item:last-child {
+    border-bottom: none;
 }
 
-/* =========================
+.history-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.history-name {
+    font-weight: bold;
+}
+
+.history-cost {
+    font-weight: bold;
+}
+
+.history-details {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #666;
+}
+
+.status {
+    display: inline-block;
+    margin-top: 7px;
+    padding: 5px 9px;
+    border-radius: 8px;
+    background: #fff3cd;
+    color: #856404;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.empty-history {
+    text-align: center;
+    color: #777;
+    padding: 20px 0;
+}
+
+
+/* =====================================================
    FOOTER
-========================= */
+===================================================== */
 
 footer {
     text-align: center;
@@ -291,271 +317,302 @@ footer {
     font-size: 14px;
 }
 
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 520px) {
+
+    .reward-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
 </style>
+
 </head>
 
 
 <body>
 
-<!-- =========================
+
+<!-- =====================================================
+     LOGIN PROTECTION
+===================================================== -->
+
+<script>
+
+if (
+    localStorage.getItem("loggedIn")
+    !== "true"
+) {
+
+    window.location.href = "login.html";
+
+}
+
+</script>
+
+
+<!-- =====================================================
      TOP NAVIGATION
-========================= -->
+===================================================== -->
 
 <nav class="top-nav">
 
     <button
-        type="button"
-        class="menu-button"
-        onclick="toggleMenu()">
-        ☰ Menu
-    </button>
+        class="back-button"
+        onclick="goBack()">
 
-    <a
-        href="index.html"
-        class="home-button">
-        🏠 Home
-    </a>
+        ← Back
+
+    </button>
 
 </nav>
 
 
-<!-- =========================
-     SIDE MENU
-========================= -->
-
-<div
-    id="sideMenu"
-    class="side-menu">
-
-    <button
-        type="button"
-        class="close-menu"
-        onclick="toggleMenu()">
-        ✕
-    </button>
-
-    <a href="earn.html">
-        💰 Earn Points
-    </a>
-
-    <a href="watch.html">
-        📺 Watch & Earn
-    </a>
-
-    <a href="spin.html">
-        🎡 Daily Spin
-    </a>
-
-    <a href="challenges.html">
-        🏆 Challenges
-    </a>
-
-    <a href="buy-points.html">
-        💳 Buy Points
-    </a>
-
-    <a href="balance.html">
-        💰 My Balance
-    </a>
-
-     <a href="withdraw.html">
-        💸 Withdraw
-    </a>
-    
-    <a href="rewards.html">
-        🎁 Rewards
-    </a>
-
-</div>
-
-
-<!-- =========================
-     MENU OVERLAY
-========================= -->
-
-<div
-    id="menuOverlay"
-    class="menu-overlay"
-    onclick="toggleMenu()">
-</div>
-
-
-<!-- =========================
-     PAGE HEADER
-========================= -->
+<!-- =====================================================
+     HEADER
+===================================================== -->
 
 <header>
 
     <h1>🎁 Rewards</h1>
 
     <p>
-        Use your points to redeem rewards.
+        Use your points to request available rewards.
     </p>
 
 </header>
 
 
-<!-- =========================
-     PAGE CONTENT
-========================= -->
-
 <div class="container">
 
 
-    <!-- CURRENT BALANCE -->
+<!-- =====================================================
+     CURRENT BALANCE
+===================================================== -->
 
-    <div class="card points">
+<div class="card balance-card">
 
-        <h2>💰 Your Points</h2>
+    <h2>💰 Your Points</h2>
 
-        <div
-            id="points"
-            class="points-number">
-            0
-        </div>
+    <div
+        class="balance-number"
+        id="balance">
 
-        <p>
-            points available
-        </p>
+        0
 
     </div>
 
+    <div class="balance-label">
 
-    <!-- INFORMATION -->
-
-    <div class="card">
-
-        <h2>🎁 How Rewards Work</h2>
-
-        <div class="notice">
-
-            Select a reward that you can
-            afford with your current points.
-
-            <br><br>
-
-            <strong>Prototype:</strong>
-            Reward redemption is currently
-            simulated for testing.
-
-        </div>
+        Points Available
 
     </div>
 
+</div>
 
-    <!-- REWARD 1 -->
 
-    <div class="card reward">
+<!-- =====================================================
+     NOTICE
+===================================================== -->
 
-        <div class="reward-icon">
-            🎟️
-        </div>
+<div class="card">
 
-        <h2>
-            Reward Voucher
-        </h2>
+    <div class="notice">
 
-        <div class="reward-cost">
-            50 Points
-        </div>
-
-        <p class="reward-description">
-            Redeem 50 points for a
-            demonstration reward voucher.
-        </p>
-
-        <button
-            id="rewardBtn50"
-            type="button"
-            onclick="redeemReward(50, 'Reward Voucher')">
-
-            Redeem for 50 Points
-
-        </button>
+        Rewards are currently part of the platform
+        prototype. Redemption requests are recorded
+        for later processing.
 
     </div>
 
+</div>
 
-    <!-- REWARD 2 -->
 
-    <div class="card reward">
+<!-- =====================================================
+     AVAILABLE REWARDS
+===================================================== -->
 
-        <div class="reward-icon">
-            🎁
+<div class="card">
+
+    <h2>🎁 Available Rewards</h2>
+
+    <div class="reward-grid">
+
+
+        <!-- REWARD 1 -->
+
+        <div class="reward-item">
+
+            <div class="reward-icon">
+                🎫
+            </div>
+
+            <h3>
+                Reward Voucher
+            </h3>
+
+            <p>
+                Redeem your points for a reward voucher.
+            </p>
+
+            <div class="reward-cost">
+                50 Points
+            </div>
+
+            <button
+                class="redeem-button"
+                onclick="redeemReward(
+                    'Reward Voucher',
+                    50
+                )">
+
+                Redeem
+
+            </button>
+
         </div>
 
-        <h2>
-            Premium Reward
-        </h2>
 
-        <div class="reward-cost">
-            100 Points
+        <!-- REWARD 2 -->
+
+        <div class="reward-item">
+
+            <div class="reward-icon">
+                ⭐
+            </div>
+
+            <h3>
+                Premium Reward
+            </h3>
+
+            <p>
+                A higher-value reward for active users.
+            </p>
+
+            <div class="reward-cost">
+                100 Points
+            </div>
+
+            <button
+                class="redeem-button"
+                onclick="redeemReward(
+                    'Premium Reward',
+                    100
+                )">
+
+                Redeem
+
+            </button>
+
         </div>
 
-        <p class="reward-description">
-            Redeem 100 points for a
-            demonstration premium reward.
-        </p>
 
-        <button
-            id="rewardBtn100"
-            type="button"
-            onclick="redeemReward(100, 'Premium Reward')">
+        <!-- REWARD 3 -->
 
-            Redeem for 100 Points
+        <div class="reward-item">
 
-        </button>
+            <div class="reward-icon">
+                🏆
+            </div>
+
+            <h3>
+                Gold Reward
+            </h3>
+
+            <p>
+                A special reward for users with more points.
+            </p>
+
+            <div class="reward-cost">
+                250 Points
+            </div>
+
+            <button
+                class="redeem-button"
+                onclick="redeemReward(
+                    'Gold Reward',
+                    250
+                )">
+
+                Redeem
+
+            </button>
+
+        </div>
+
+
+        <!-- REWARD 4 -->
+
+        <div class="reward-item">
+
+            <div class="reward-icon">
+                💎
+            </div>
+
+            <h3>
+                Diamond Reward
+            </h3>
+
+            <p>
+                Our highest-value prototype reward.
+            </p>
+
+            <div class="reward-cost">
+                500 Points
+            </div>
+
+            <button
+                class="redeem-button"
+                onclick="redeemReward(
+                    'Diamond Reward',
+                    500
+                )">
+
+                Redeem
+
+            </button>
+
+        </div>
+
 
     </div>
 
-
-    <!-- REWARD 3 -->
-
-    <div class="card reward">
-
-        <div class="reward-icon">
-            🏆
-        </div>
-
-        <h2>
-            Special Reward
-        </h2>
-
-        <div class="reward-cost">
-            250 Points
-        </div>
-
-        <p class="reward-description">
-            Redeem 250 points for a
-            demonstration special reward.
-        </p>
-
-        <button
-            id="rewardBtn250"
-            type="button"
-            onclick="redeemReward(250, 'Special Reward')">
-
-            Redeem for 250 Points
-
-        </button>
-
-    </div>
-
-
-    <!-- MESSAGE -->
 
     <div
         id="message"
         class="message">
+
     </div>
+
+</div>
+
+
+<!-- =====================================================
+     REDEMPTION HISTORY
+===================================================== -->
+
+<div class="card">
+
+    <h2>📜 Redemption History</h2>
+
+    <div id="history">
+
+    </div>
+
+</div>
 
 
 </div>
 
 
-<!-- =========================
+<!-- =====================================================
      FOOTER
-========================= -->
+===================================================== -->
 
 <footer>
 
@@ -566,42 +623,91 @@ footer {
 
 <script>
 
-/* =========================
-   DISPLAY POINTS
-========================= */
+/* =====================================================
+   GET BALANCE
+===================================================== */
 
-function updateDisplay() {
+function getBalance() {
 
-    const points =
-        Number(
-            localStorage.getItem(
-                "rewardPoints"
-            )
-        ) || 0;
-
-    document.getElementById(
-        "points"
-    ).textContent = points;
+    return Number(
+        localStorage.getItem(
+            "rewardPoints"
+        )
+    ) || 0;
 
 }
 
 
-/* =========================
+/* =====================================================
+   DISPLAY BALANCE
+===================================================== */
+
+function displayBalance() {
+
+    document.getElementById(
+        "balance"
+    ).textContent =
+        getBalance();
+
+}
+
+
+/* =====================================================
+   GET REDEMPTION HISTORY
+===================================================== */
+
+function getRedemptions() {
+
+    try {
+
+        const data =
+            JSON.parse(
+                localStorage.getItem(
+                    "rewardRedemptions"
+                )
+            );
+
+        if (Array.isArray(data)) {
+
+            return data;
+
+        }
+
+        return [];
+
+    }
+
+    catch (error) {
+
+        return [];
+
+    }
+
+}
+
+
+/* =====================================================
+   SAVE REDEMPTIONS
+===================================================== */
+
+function saveRedemptions(data) {
+
+    localStorage.setItem(
+        "rewardRedemptions",
+        JSON.stringify(data)
+    );
+
+}
+
+
+/* =====================================================
    REDEEM REWARD
-========================= */
+===================================================== */
 
 function redeemReward(
-    cost,
-    rewardName
+    rewardName,
+    cost
 ) {
-
-    let points =
-        Number(
-            localStorage.getItem(
-                "rewardPoints"
-            )
-        ) || 0;
-
 
     const message =
         document.getElementById(
@@ -609,55 +715,120 @@ function redeemReward(
         );
 
 
-    /* Check balance */
+    const balance =
+        getBalance();
 
-    if (points < cost) {
+
+    /* CHECK BALANCE */
+
+    if (balance < cost) {
 
         message.textContent =
-            "❌ You need " +
-            (cost - points) +
-            " more points to redeem this reward.";
+            "❌ You do not have enough points for this reward.";
 
         return;
 
     }
 
 
-    /* Deduct points */
+    /* =================================================
+       CREATE REDEMPTION
+    ================================================= */
 
-    points -= cost;
+    const redemption = {
+
+        id:
+            "RW-" +
+            Date.now(),
+
+        reward:
+            rewardName,
+
+        points:
+            cost,
+
+        status:
+            "Pending",
+
+        date:
+            new Date().toLocaleString()
+
+    };
+
+
+    /* =================================================
+       SAVE REDEMPTION
+    ================================================= */
+
+    const redemptions =
+        getRedemptions();
+
+
+    redemptions.push(
+        redemption
+    );
+
+
+    saveRedemptions(
+        redemptions
+    );
+
+
+    /* =================================================
+       DEDUCT POINTS
+    ================================================= */
+
+    const newBalance =
+        balance - cost;
 
 
     localStorage.setItem(
         "rewardPoints",
-        points
+        newBalance
     );
 
 
-    /* Load existing history */
+    /* =================================================
+       ADD TO MAIN HISTORY
+    ================================================= */
 
-    let history =
-        JSON.parse(
-            localStorage.getItem(
-                "rewardHistory"
-            )
-        ) || [];
+    let history;
 
+    try {
 
-    /* Add redemption to history */
+        history =
+            JSON.parse(
+                localStorage.getItem(
+                    "rewardHistory"
+                )
+            ) || [];
+
+        if (!Array.isArray(history)) {
+
+            history = [];
+
+        }
+
+    }
+
+    catch (error) {
+
+        history = [];
+
+    }
+
 
     history.push({
 
         activity:
-            "Redeemed " +
+            "Reward Redemption - " +
             rewardName,
 
         points:
             -cost,
 
         date:
-            new Date()
-            .toLocaleString()
+            new Date().toLocaleString()
 
     });
 
@@ -668,56 +839,168 @@ function redeemReward(
     );
 
 
-    /* Update display */
-
-    updateDisplay();
-
+    /* =================================================
+       MESSAGE
+    ================================================= */
 
     message.textContent =
-        "🎉 Congratulations! You redeemed " +
-        rewardName +
-        " for " +
-        cost +
-        " points.";
+        "🎉 Redemption request submitted successfully!";
+
+
+    /* =================================================
+       REFRESH
+    ================================================= */
+
+    displayBalance();
+
+    displayHistory();
 
 }
 
 
-/* =========================
-   SIDE MENU
-========================= */
+/* =====================================================
+   DISPLAY HISTORY
+===================================================== */
 
-function toggleMenu() {
+function displayHistory() {
 
-    const menu =
+    const container =
         document.getElementById(
-            "sideMenu"
-        );
-
-    const overlay =
-        document.getElementById(
-            "menuOverlay"
+            "history"
         );
 
 
-    menu.classList.toggle(
-        "open"
-    );
+    const history =
+        getRedemptions();
 
-    overlay.classList.toggle(
-        "open"
+
+    container.innerHTML = "";
+
+
+    if (
+        history.length === 0
+    ) {
+
+        container.innerHTML =
+
+            '<div class="empty-history">' +
+
+            'No reward redemptions yet.' +
+
+            '</div>';
+
+        return;
+
+    }
+
+
+    const reversed =
+        [...history].reverse();
+
+
+    reversed.forEach(
+        function(item) {
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.className =
+                "history-item";
+
+
+            row.innerHTML =
+
+                '<div class="history-top">' +
+
+                    '<div class="history-name">' +
+
+                        escapeHTML(item.reward) +
+
+                    '</div>' +
+
+                    '<div class="history-cost">' +
+
+                        item.points +
+
+                        ' points' +
+
+                    '</div>' +
+
+                '</div>' +
+
+                '<div class="history-details">' +
+
+                    'Request ID: ' +
+
+                    escapeHTML(item.id) +
+
+                    '<br>' +
+
+                    escapeHTML(item.date) +
+
+                '</div>' +
+
+                '<span class="status">' +
+
+                    escapeHTML(item.status) +
+
+                '</span>';
+
+
+            container.appendChild(
+                row
+            );
+
+        }
     );
 
 }
 
 
-/* =========================
-   START
-========================= */
+/* =====================================================
+   SAFE TEXT DISPLAY
+===================================================== */
 
-updateDisplay();
+function escapeHTML(value) {
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+    div.textContent =
+        value;
+
+    return div.innerHTML;
+
+}
+
+
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+function goBack() {
+
+    window.history.back();
+
+}
+
+
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
+
+displayBalance();
+
+displayHistory();
 
 </script>
 
+
 </body>
+
 </html>
