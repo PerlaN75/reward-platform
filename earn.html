@@ -311,67 +311,6 @@ if (localStorage.getItem("loggedIn") !== "true") {
     background: rgba(255,255,255,0.22);
 }
 
-
-<!-- =========================
-     SIDE MENU
-========================= -->
-
-<div id="sideMenu" class="side-menu">
-
-    <button
-        type="button"
-        class="close-menu"
-        onclick="toggleMenu()">
-        ✕
-    </button>
-
-    <a href="earn.html">
-        💰 Earn Points
-    </a>
-
-    <a href="watch.html">
-        📺 Watch & Earn
-    </a>
-
-    <a href="spin.html">
-        🎡 Daily Spin
-    </a>
-
-    <a href="challenges.html">
-        🏆 Challenges
-    </a>
-
-    <a href="buy-points.html">
-        💳 Buy Points
-    </a>
-
-    <a href="balance.html">
-        💰 My Balance
-    </a>
-
-    <a href="withdraw.html">
-        💸 Withdraw
-    </a>
-
-    <a href="rewards.html">
-        🎁 Rewards
-    </a>
-
-    <a href="login.html"
-       onclick="logoutUser(event)"
-       class="logout-button">
-        🚪 Logout
-    </a>
-
-</div>
-
-<!-- MENU OVERLAY -->
-<div
-    id="menuOverlay"
-    class="menu-overlay"
-    onclick="toggleMenu()">
-</div>
-
 <!-- =========================
      HEADER
 ========================= -->
@@ -1736,54 +1675,16 @@ if (
 
 updateDisplay();
 
-
 /* =====================================================
-   SIDE MENU
+   BACK BUTTON
 ===================================================== */
 
-function toggleMenu() {
+function goBack() {
 
-    const menu =
-        document.getElementById(
-            "sideMenu"
-        );
-
-
-    const overlay =
-        document.getElementById(
-            "menuOverlay"
-        );
-
-
-    menu.classList.toggle(
-        "open"
-    );
-
-
-    overlay.classList.toggle(
-        "open"
-    );
+    window.history.back();
 
 }
 
-    /* =====================================================
-   LOGOUT
-===================================================== */
-
-function logoutUser(event) {
-
-    event.preventDefault();
-
-    localStorage.setItem(
-        "loggedIn",
-        "false"
-    );
-
-    window.location.href =
-        "login.html";
-
-}
-    
 </script>
 
 </body>
