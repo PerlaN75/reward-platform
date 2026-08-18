@@ -2,12 +2,21 @@
 <html lang="en">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
 <title>Challenges - Reward Platform</title>
 
 <style>
+
+/* =====================================================
+   GENERAL
+===================================================== */
 
 * {
     box-sizing: border-box;
@@ -20,123 +29,67 @@ body {
     color: #222;
 }
 
-/* =========================
+
+/* =====================================================
    TOP NAVIGATION
-========================= */
+===================================================== */
 
 .top-nav {
     background: #182848;
     padding: 12px 10px;
     display: flex;
     align-items: center;
-    gap: 8px;
 }
 
-.top-nav a,
-.menu-button {
-    color: white;
-    text-decoration: none;
-    padding: 11px 14px;
-    font-weight: bold;
-    border-radius: 10px;
-}
 
-.menu-button {
-    background: transparent;
-    border: none;
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+.back-button {
     width: auto;
     margin: 0;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.home-button {
+    padding: 11px 16px;
     background: rgba(255,255,255,0.12);
-}
-
-/* =========================
-   SIDE MENU
-========================= */
-
-.side-menu {
-    position: fixed;
-    top: 0;
-    left: -280px;
-    width: 270px;
-    height: 100%;
-    background: #182848;
-    z-index: 1000;
-    padding-top: 60px;
-    transition: left 0.3s ease;
-    box-shadow: 4px 0 15px rgba(0,0,0,0.25);
-}
-
-.side-menu.open {
-    left: 0;
-}
-
-.side-menu a {
-    display: block;
-    color: white;
-    text-decoration: none;
-    padding: 16px 20px;
-    font-weight: bold;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-.side-menu a:hover {
-    background: #0066ff;
-}
-
-.close-menu {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: auto;
-    margin: 0;
-    padding: 8px 12px;
-    background: transparent;
     color: white;
     border: none;
-    font-size: 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
     cursor: pointer;
 }
 
-.menu-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
-    z-index: 999;
-    display: none;
+.back-button:hover {
+    background: rgba(255,255,255,0.22);
 }
 
-.menu-overlay.open {
-    display: block;
-}
 
-/* =========================
+/* =====================================================
    HEADER
-========================= */
+===================================================== */
 
 header {
     background: #182848;
     color: white;
-    text-align: center;
     padding: 25px 15px;
+    text-align: center;
 }
 
 header h1 {
     margin: 0;
-    animation: headerHeadingInvert 3s infinite alternate;
+    animation:
+        headerHeadingInvert
+        3s infinite alternate;
 }
 
 header p {
     margin: 8px 0 0;
 }
 
-.challenge h2 {
-    animation: cardHeadingInvert 3s infinite alternate;
-}
+
+/* =====================================================
+   HEADER ANIMATION
+===================================================== */
 
 @keyframes headerHeadingInvert {
 
@@ -150,6 +103,43 @@ header p {
 
 }
 
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.container {
+    max-width: 700px;
+    margin: auto;
+    padding: 15px;
+}
+
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    margin: 15px 0;
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.08);
+}
+
+.card h2 {
+    animation:
+        cardHeadingInvert
+        3s infinite alternate;
+}
+
+
+/* =====================================================
+   CARD HEADING ANIMATION
+===================================================== */
+
 @keyframes cardHeadingInvert {
 
     0% {
@@ -162,198 +152,254 @@ header p {
 
 }
 
-/* =========================
-   CONTAINER
-========================= */
 
-.container {
-    max-width: 700px;
-    margin: auto;
-    padding: 15px;
-}
-
-/* =========================
-   CARDS
-========================= */
-
-.card {
-    background: white;
-    border-radius: 14px;
-    padding: 20px;
-    margin: 15px 0;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-}
+/* =====================================================
+   BALANCE
+===================================================== */
 
 .balance {
     text-align: center;
 }
 
 .balance-number {
-    font-size: 40px;
+    font-size: 42px;
     font-weight: bold;
     margin: 10px 0;
 }
 
-/* =========================
-   CHALLENGE
-========================= */
 
-.challenge {
+/* =====================================================
+   CHALLENGE TITLE
+===================================================== */
+
+.challenge-title {
     text-align: center;
 }
 
-.challenge h2 {
-    margin-top: 0;
+.challenge-icon {
+    font-size: 55px;
 }
 
-.streak {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 15px 0;
-}
 
-.progress-box {
-    background: #e5eaf2;
+/* =====================================================
+   PROGRESS
+===================================================== */
+
+.progress-container {
+    width: 100%;
     height: 25px;
+
+    background: #e5e7eb;
+
     border-radius: 20px;
+
     overflow: hidden;
-    margin: 18px 0;
+
+    margin: 20px 0 10px;
 }
 
-.progress {
-    width: 0%;
+.progress-bar {
     height: 100%;
-    background: linear-gradient(
-        90deg,
-        #0066ff,
-        #00bfff
-    );
-    transition: width 0.5s ease;
+
+    width: 0%;
+
+    background: #182848;
+
+    border-radius: 20px;
+
+    transition:
+        width 0.5s ease;
 }
 
 .progress-text {
-    font-weight: bold;
-    font-size: 18px;
-}
-
-.reward {
-    font-size: 20px;
-    font-weight: bold;
-    margin: 18px 0;
-}
-
-.status {
-    font-weight: bold;
-    margin-top: 12px;
-    min-height: 24px;
-}
-
-/* =========================
-   INFO
-========================= */
-
-.info {
-    background: #fff8df;
-    padding: 18px;
-    border-radius: 12px;
-    margin: 15px 0;
-}
-
-/* =========================
-   FOOTER
-========================= */
-
-footer {
     text-align: center;
-    padding: 25px;
-    color: #666;
+
+    font-weight: bold;
+
+    margin-bottom: 15px;
+}
+
+
+/* =====================================================
+   DAYS
+===================================================== */
+
+.days {
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, 1fr);
+
+    gap: 8px;
+
+    margin-top: 20px;
+}
+
+.day-box {
+    text-align: center;
+
+    padding: 12px 5px;
+
+    background: #f0f2f5;
+
+    border-radius: 10px;
+
+    font-weight: bold;
+
     font-size: 14px;
 }
 
+.day-box.completed {
+    background: #182848;
+
+    color: white;
+}
+
+.day-box.current {
+    border:
+        3px solid #00bfff;
+}
+
+
+/* =====================================================
+   REWARD
+===================================================== */
+
+.reward-box {
+    text-align: center;
+
+    background: #f8fafc;
+
+    border-radius: 12px;
+
+    padding: 18px;
+
+    margin-top: 20px;
+}
+
+.reward-number {
+    font-size: 30px;
+
+    font-weight: bold;
+
+    margin: 8px 0;
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.status {
+    text-align: center;
+
+    font-weight: bold;
+
+    margin-top: 15px;
+
+    min-height: 24px;
+}
+
+
+/* =====================================================
+   INFORMATION
+===================================================== */
+
+.info-list {
+    padding-left: 20px;
+
+    line-height: 1.7;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer {
+    text-align: center;
+
+    padding: 25px;
+
+    color: #666;
+
+    font-size: 14px;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 450px) {
+
+    .days {
+        gap: 5px;
+    }
+
+    .day-box {
+        padding: 10px 3px;
+
+        font-size: 12px;
+    }
+
+}
+
 </style>
+
 </head>
+
 
 <body>
 
-<!-- =========================
+
+<!-- =====================================================
+     LOGIN PROTECTION
+===================================================== -->
+
+<script>
+
+if (
+    localStorage.getItem("loggedIn")
+    !==
+    "true"
+) {
+
+    window.location.href =
+        "login.html";
+
+}
+
+</script>
+
+
+<!-- =====================================================
      TOP NAVIGATION
-========================= -->
+===================================================== -->
 
 <nav class="top-nav">
 
     <button
-        class="menu-button"
-        onclick="toggleMenu()">
-        ☰ Menu
-    </button>
+        class="back-button"
+        onclick="goBack()">
 
-    <a
-        href="index.html"
-        class="home-button">
-        🏠 Home
-    </a>
+        ← Back
+
+    </button>
 
 </nav>
 
 
-<!-- =========================
-     SIDE MENU
-========================= -->
-
-<div
-    id="sideMenu"
-    class="side-menu">
-
-    <button
-        class="close-menu"
-        onclick="toggleMenu()">
-        ✕
-    </button>
-
-    <a href="earn.html">
-        💰 Earn Points
-    </a>
-
-    <a href="watch.html">
-        📺 Watch & Earn
-    </a>
-
-    <a href="spin.html">
-        🎡 Daily Spin
-    </a>
-
-    <a href="challenges.html">
-        🏆 Challenges
-    </a>
-
-    <a href="buy-points.html">
-        💳 Buy Points
-    </a>
-
-    <a href="balance.html">
-        💰 My Balance
-    </a>
-
-    <a href="withdraw.html">
-        💸 Withdraw
-    </a>
-
-    <a href="rewards.html">
-        🎁 Rewards
-    </a>
-    
-</div>
-
-<!-- =========================
+<!-- =====================================================
      HEADER
-========================= -->
+===================================================== -->
 
 <header>
 
     <h1>🏆 Challenges</h1>
 
     <p>
-        Build your streak and earn bonus points!
+        Complete activities and build your streak.
     </p>
 
 </header>
@@ -362,9 +408,9 @@ footer {
 <div class="container">
 
 
-<!-- =========================
+<!-- =====================================================
      BALANCE
-========================= -->
+===================================================== -->
 
 <div class="card balance">
 
@@ -372,58 +418,113 @@ footer {
 
     <div
         class="balance-number"
-        id="balance">
+        id="points">
+
         0
+
     </div>
 
-    <p>points available</p>
+    <p>
+        points available
+    </p>
 
 </div>
 
 
-<!-- =========================
-     5 DAY CHALLENGE
-========================= -->
+<!-- =====================================================
+     MAIN CHALLENGE
+===================================================== -->
 
-<div class="card challenge">
+<div class="card challenge-title">
 
-    <h2>🔥 5-Day Streak Challenge</h2>
-
-    <p>
-        Complete qualifying activities on
-        <strong>5 consecutive days</strong>
-        to earn your bonus reward.
-    </p>
-
-    <div
-        class="streak"
-        id="streak">
-        🔥 Day 0 of 5
+    <div class="challenge-icon">
+        🔥
     </div>
 
+    <h2>
+        5-Day Streak Challenge
+    </h2>
 
-    <div class="progress-box">
+    <p>
+        Complete at least one earning
+        activity every day for 5 consecutive days.
+    </p>
+
+</div>
+
+
+<!-- =====================================================
+     PROGRESS
+===================================================== -->
+
+<div class="card">
+
+    <h2>🎯 Your Progress</h2>
+
+    <div
+        class="progress-container">
 
         <div
-            class="progress"
+            class="progress-bar"
             id="progressBar">
         </div>
 
     </div>
 
 
-    <div class="progress-text">
+    <div
+        class="progress-text"
+        id="progressText">
 
-        Progress:
-        <span id="progressText">
-            0 / 5
-        </span>
+        0 / 5 Days
 
     </div>
 
 
-    <div class="reward">
-        🏆 Reward: +50 points
+    <!-- DAYS -->
+
+    <div class="days">
+
+        <div
+            class="day-box"
+            id="day1">
+
+            Day 1
+
+        </div>
+
+        <div
+            class="day-box"
+            id="day2">
+
+            Day 2
+
+        </div>
+
+        <div
+            class="day-box"
+            id="day3">
+
+            Day 3
+
+        </div>
+
+        <div
+            class="day-box"
+            id="day4">
+
+            Day 4
+
+        </div>
+
+        <div
+            class="day-box"
+            id="day5">
+
+            Day 5
+
+        </div>
+
     </div>
 
 
@@ -431,80 +532,119 @@ footer {
         class="status"
         id="status">
 
-        Challenge in progress
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     REWARD
+===================================================== -->
+
+<div class="card">
+
+    <h2>🎁 Challenge Reward</h2>
+
+    <div class="reward-box">
+
+        <p>
+            Complete all 5 days and receive:
+        </p>
+
+        <div class="reward-number">
+            +50 Points
+        </div>
+
+        <p>
+            Reward is automatically added
+            to your balance.
+        </p>
 
     </div>
 
 </div>
 
 
-<!-- =========================
-     INFORMATION
-========================= -->
+<!-- =====================================================
+     HOW IT WORKS
+===================================================== -->
 
-<div class="info">
+<div class="card">
 
-    <strong>How it works:</strong>
+    <h2>📋 How It Works</h2>
 
-    <p>
-        Complete at least one qualifying activity
-        each day to increase your streak by 1.
-    </p>
+    <ol class="info-list">
 
-    <p>
-        Keep the streak for
-        <strong>5 consecutive days</strong>
-        and receive the
-        <strong>50-point bonus</strong>.
-    </p>
+        <li>
+            Complete at least one earning
+            activity each day.
+        </li>
 
-    <p>
-        The challenge can be completed once
-        during the current challenge period.
-    </p>
+        <li>
+            Your streak increases automatically.
+        </li>
+
+        <li>
+            Continue for 5 consecutive days.
+        </li>
+
+        <li>
+            After Day 5, you receive
+            <strong>50 points</strong>.
+        </li>
+
+        <li>
+            Missing a day resets the streak.
+        </li>
+
+    </ol>
 
 </div>
 
 
 </div>
 
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
 
 <footer>
 
-Reward Platform — Prototype
+    Reward Platform — Prototype
 
 </footer>
 
 
 <script>
 
-/* =========================
-   SETTINGS
-========================= */
+/* =====================================================
+   UPDATE BALANCE
+===================================================== */
 
-const TARGET = 5;
+function updateBalance() {
+
+    const points =
+        Number(
+            localStorage.getItem(
+                "rewardPoints"
+            )
+        ) || 0;
 
 
-/* =========================
-   GET BALANCE
-========================= */
-
-function getBalance() {
-
-    return Number(
-        localStorage.getItem(
-            "rewardPoints"
-        )
-    ) || 0;
+    document.getElementById(
+        "points"
+    ).textContent =
+        points;
 
 }
 
 
-/* =========================
-   GET CHALLENGE PROGRESS
-========================= */
+/* =====================================================
+   UPDATE CHALLENGE
+===================================================== */
 
-function getChallengeProgress() {
+function updateChallengeDisplay() {
 
     let progress =
         Number(
@@ -514,233 +654,169 @@ function getChallengeProgress() {
         ) || 0;
 
 
-    /* Never allow progress above 5 */
+    const completed =
+        localStorage.getItem(
+            "challengeCompleted"
+        ) === "true";
 
-    if (progress > TARGET) {
 
-        progress = TARGET;
-
-        localStorage.setItem(
-            "challengeProgress",
-            TARGET
-        );
-
-    }
-
+    /*
+       Make sure progress stays
+       between 0 and 5.
+    */
 
     if (progress < 0) {
-
         progress = 0;
+    }
 
-        localStorage.setItem(
-            "challengeProgress",
-            0
-        );
-
+    if (progress > 5) {
+        progress = 5;
     }
 
 
-    return progress;
+    /* =================================================
+       PROGRESS BAR
+    ================================================= */
 
-}
+    const percentage =
+        (progress / 5) * 100;
 
-
-/* =========================
-   CHECK COMPLETION
-========================= */
-
-function isCompleted() {
-
-    return localStorage.getItem(
-        "challengeCompleted"
-    ) === "true";
-
-}
-
-
-/* =========================
-   UPDATE PAGE
-========================= */
-
-function updatePage() {
-
-    const balance =
-        getBalance();
-
-    const progress =
-        getChallengeProgress();
-
-
-    /* Balance */
-
-    document.getElementById(
-        "balance"
-    ).textContent =
-        balance;
-
-
-    /* Progress text */
-
-    document.getElementById(
-        "progressText"
-    ).textContent =
-        progress +
-        " / " +
-        TARGET;
-
-
-    /* Streak text */
-
-    document.getElementById(
-        "streak"
-    ).textContent =
-        "🔥 Day " +
-        progress +
-        " of " +
-        TARGET;
-
-
-    /* Progress bar */
 
     document.getElementById(
         "progressBar"
     ).style.width =
-        (
-            progress /
-            TARGET *
-            100
-        ) + "%";
+        percentage + "%";
 
 
-    /* Status */
+    /* =================================================
+       PROGRESS TEXT
+    ================================================= */
 
-    if (isCompleted()) {
-
-        document.getElementById(
-            "status"
-        ).textContent =
-            "🏆 5-Day Streak completed! +50 points received.";
-
-    }
-
-    else if (progress >= TARGET) {
-
-        document.getElementById(
-            "status"
-        ).textContent =
-            "🏆 Challenge completed!";
-
-    }
-
-    else if (progress > 0) {
-
-        document.getElementById(
-            "status"
-        ).textContent =
-            "🔥 Keep going! Your streak is active.";
-
-    }
-
-    else {
-
-        document.getElementById(
-            "status"
-        ).textContent =
-            "Challenge in progress";
-
-    }
-
-}
+    document.getElementById(
+        "progressText"
+    ).textContent =
+        progress + " / 5 Days";
 
 
-/* =========================
-   SIDE MENU
-========================= */
+    /* =================================================
+       DAY BOXES
+    ================================================= */
 
-function toggleMenu() {
+    for (
+        let i = 1;
+        i <= 5;
+        i++
+    ) {
 
-    const menu =
-        document.getElementById(
-            "sideMenu"
+        const box =
+            document.getElementById(
+                "day" + i
+            );
+
+
+        box.classList.remove(
+            "completed"
         );
 
-    const overlay =
-        document.getElementById(
-            "menuOverlay"
+        box.classList.remove(
+            "current"
         );
 
-
-    menu.classList.toggle(
-        "open"
-    );
-
-    overlay.classList.toggle(
-        "open"
-    );
-
-}
-
-
-/* =========================
-   REFRESH WHEN RETURNING
-   TO THIS PAGE
-========================= */
-
-window.addEventListener(
-    "pageshow",
-    function() {
-
-        updatePage();
-
-    }
-);
-
-
-/* =========================
-   REFRESH WHEN STORAGE
-   CHANGES
-========================= */
-
-window.addEventListener(
-    "storage",
-    function(event) {
 
         if (
-            event.key ===
-            "rewardPoints" ||
-
-            event.key ===
-            "challengeProgress" ||
-
-            event.key ===
-            "challengeCompleted"
+            i <= progress
         ) {
 
-            updatePage();
+            box.classList.add(
+                "completed"
+            );
 
         }
 
     }
-);
 
 
-/* =========================
-   AUTOMATIC REFRESH
-========================= */
+    /* =================================================
+       CURRENT DAY
+    ================================================= */
 
-setInterval(
-    updatePage,
-    1000
-);
+    if (
+        progress < 5
+        &&
+        !completed
+    ) {
+
+        const currentDay =
+            progress + 1;
 
 
-/* =========================
-   START
-========================= */
+        document.getElementById(
+            "day" + currentDay
+        ).classList.add(
+            "current"
+        );
 
-updatePage();
+    }
+
+
+    /* =================================================
+       STATUS
+    ================================================= */
+
+    const status =
+        document.getElementById(
+            "status"
+        );
+
+
+    if (completed) {
+
+        status.textContent =
+            "🏆 Challenge completed! You earned 50 points.";
+
+    }
+
+    else if (progress === 0) {
+
+        status.textContent =
+            "Start today to begin your 5-day streak.";
+
+    }
+
+    else if (progress < 5) {
+
+        status.textContent =
+            "🔥 Keep going! You are on Day " +
+            progress +
+            " of 5.";
+
+    }
+
+}
+
+
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+function goBack() {
+
+    window.history.back();
+
+}
+
+
+/* =====================================================
+   INITIAL DISPLAY
+===================================================== */
+
+updateBalance();
+
+updateChallengeDisplay();
 
 </script>
 
+
 </body>
+
 </html>
