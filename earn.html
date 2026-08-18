@@ -1,12 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
 <title>Earn Points - Reward Platform</title>
 
+
 <style>
+
+/* =====================================================
+   GENERAL
+===================================================== */
 
 * {
     box-sizing: border-box;
@@ -19,43 +30,10 @@ body {
     color: #222;
 }
 
-/* =========================
-   TOP NAVIGATION
-========================= */
 
-.top-nav {
-    background: #182848;
-    padding: 12px 10px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.top-nav a,
-.menu-button {
-    color: white;
-    text-decoration: none;
-    padding: 11px 14px;
-    font-weight: bold;
-    border-radius: 10px;
-}
-
-.menu-button {
-    background: transparent;
-    border: none;
-    width: auto;
-    margin: 0;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.home-button {
-    background: rgba(255,255,255,0.12);
-}
-
-/* =========================
+/* =====================================================
    HEADER
-========================= */
+===================================================== */
 
 header {
     background: #182848;
@@ -68,6 +46,15 @@ header h1 {
     margin: 0;
     animation: headerHeadingInvert 3s infinite alternate;
 }
+
+header p {
+    margin: 8px 0 0;
+}
+
+
+/* =====================================================
+   HEADER ANIMATION
+===================================================== */
 
 .card h2 {
     animation: cardHeadingInvert 3s infinite alternate;
@@ -97,19 +84,21 @@ header h1 {
 
 }
 
-header p {
-    margin: 8px 0 0;
-}
 
-/* =========================
+/* =====================================================
    CONTENT
-========================= */
+===================================================== */
 
 .container {
     max-width: 700px;
     margin: auto;
     padding: 15px;
 }
+
+
+/* =====================================================
+   CARDS
+===================================================== */
 
 .card {
     background: white;
@@ -118,6 +107,11 @@ header p {
     margin: 15px 0;
     box-shadow: 0 3px 12px rgba(0,0,0,0.08);
 }
+
+
+/* =====================================================
+   POINTS
+===================================================== */
 
 .points {
     text-align: center;
@@ -128,40 +122,22 @@ header p {
     font-weight: bold;
     margin: 10px 0;
 }
-/* =========================
-   TOP NAVIGATION
-========================= */
 
-.top-nav {
-    background: #182848;
-    padding: 12px 10px;
-    display: flex;
-    align-items: center;
-}
 
-/* =========================
-   BACK BUTTON
-========================= */
+/* =====================================================
+   DAY
+===================================================== */
 
-.back-button {
-    width: auto;
-    margin: 0;
-    padding: 11px 16px;
-    background: rgba(255,255,255,0.12);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
+.day {
+    text-align: center;
     font-weight: bold;
-    cursor: pointer;
+    margin-bottom: 20px;
 }
 
-.back-button:hover {
-    background: rgba(255,255,255,0.22);
-}
-/* =========================
+
+/* =====================================================
    BUTTONS
-========================= */
+===================================================== */
 
 button {
     width: 100%;
@@ -184,9 +160,10 @@ button:disabled {
     cursor: not-allowed;
 }
 
-/* =========================
+
+/* =====================================================
    MESSAGES
-========================= */
+===================================================== */
 
 .message {
     text-align: center;
@@ -194,15 +171,10 @@ button:disabled {
     margin-top: 12px;
 }
 
-.day {
-    text-align: center;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
 
-/* =========================
+/* =====================================================
    FOOTER
-========================= */
+===================================================== */
 
 footer {
     text-align: center;
@@ -212,23 +184,33 @@ footer {
 }
 
 </style>
+
 </head>
 
-<body>
-    
-<script>
-/* =========================
-   LOGIN PROTECTION
-========================= */
 
-if (localStorage.getItem("loggedIn") !== "true") {
+<body>
+
+
+<!-- =====================================================
+     LOGIN PROTECTION
+===================================================== -->
+
+<script>
+
+if (
+    localStorage.getItem("loggedIn") !== "true"
+) {
+
     window.location.href = "login.html";
+
 }
 
-<script>
-<!-- =========================
+</script>
+
+
+<!-- =====================================================
      HEADER
-========================= -->
+===================================================== -->
 
 <header>
 
@@ -241,115 +223,137 @@ if (localStorage.getItem("loggedIn") !== "true") {
 </header>
 
 
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
 <div class="container">
 
 
-<!-- =========================
-     POINTS
-========================= -->
+    <!-- =================================================
+         POINTS
+    ================================================== -->
 
-<div class="card points">
+    <div class="card points">
 
-    <h2>💰 Your Points</h2>
+        <h2>💰 Your Points</h2>
 
-    <div
-        class="points-number"
-        id="points">
-        0
+        <div
+            class="points-number"
+            id="points"
+        >
+            0
+        </div>
+
+        <p>
+            points available
+        </p>
+
     </div>
 
-    <p>
-        points available
-    </p>
 
-</div>
-
-
-<div
-    class="day"
-    id="dayDisplay">
-</div>
-
-
-<!-- =========================
-     DAILY CHECK-IN
-========================= -->
-
-<div class="card">
-
-    <h2>🎁 Daily Check-in</h2>
-
-    <p>
-        Visit every day and earn
-        <strong>10 points</strong>.
-    </p>
-
-    <button
-        id="checkinBtn"
-        onclick="dailyCheckIn()">
-
-        Claim 10 Points
-
-    </button>
+    <!-- =================================================
+         TODAY
+    ================================================== -->
 
     <div
-        id="checkinMessage"
-        class="message">
+        class="day"
+        id="dayDisplay"
+    >
     </div>
 
-</div>
 
+    <!-- =================================================
+         DAILY CHECK-IN
+    ================================================== -->
 
-<!-- =========================
-     DAILY QUIZ
-========================= -->
+    <div class="card">
 
-<div class="card">
+        <h2>🎁 Daily Check-in</h2>
 
-    <h2>🧠 Daily Quiz</h2>
+        <p>
+            Visit every day and earn
+            <strong>10 points</strong>.
+        </p>
 
-    <p>
-        Answer today's question correctly and earn
-        <strong>20 points</strong>.
-    </p>
+        <button
+            id="checkinBtn"
+            onclick="dailyCheckIn()"
+        >
+            Claim 10 Points
+        </button>
 
-    <p>
-        <strong id="quizQuestion"></strong>
-    </p>
+        <div
+            id="checkinMessage"
+            class="message"
+        >
+        </div>
 
-    <div id="quizOptions"></div>
-
-    <div
-        id="quizMessage"
-        class="message">
     </div>
 
-</div>
 
-<!-- =========================
-     DAILY GAME
-========================= -->
-<div class="card">
+    <!-- =================================================
+         DAILY QUIZ
+    ================================================== -->
 
-    <h2>🎮 Daily Game</h2>
+    <div class="card">
 
-    <p id="gameQuestion"></p>
+        <h2>🧠 Daily Quiz</h2>
 
-    <div id="gameArea"></div>
+        <p>
+            Answer today's question correctly and earn
+            <strong>20 points</strong>.
+        </p>
 
-    <div
-        id="gameMessage"
-        class="message">
+        <p>
+            <strong id="quizQuestion"></strong>
+        </p>
+
+        <div id="quizOptions"></div>
+
+        <div
+            id="quizMessage"
+            class="message"
+        >
+        </div>
+
     </div>
 
-</div>
+
+    <!-- =================================================
+         DAILY GAME
+    ================================================== -->
+
+    <div class="card">
+
+        <h2>🎮 Daily Game</h2>
+
+        <p id="gameQuestion"></p>
+
+        <div id="gameArea"></div>
+
+        <div
+            id="gameMessage"
+            class="message"
+        >
+        </div>
+
+    </div>
+
 
 </div>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
 
 <footer>
 
     Reward Platform — Prototype
+
 </footer>
+
 
 <script>
 
@@ -360,6 +364,7 @@ if (localStorage.getItem("loggedIn") !== "true") {
 const today =
     new Date().toDateString();
 
+
 document.getElementById(
     "dayDisplay"
 ).textContent =
@@ -367,7 +372,7 @@ document.getElementById(
 
 
 /* =====================================================
-   POINTS AND HISTORY
+   POINTS
 ===================================================== */
 
 let points =
@@ -376,28 +381,6 @@ let points =
             "rewardPoints"
         )
     ) || 0;
-
-
-let history;
-
-try {
-
-    history =
-        JSON.parse(
-            localStorage.getItem(
-                "rewardHistory"
-            )
-        ) || [];
-
-    if (!Array.isArray(history)) {
-        history = [];
-    }
-
-} catch (error) {
-
-    history = [];
-
-}
 
 
 /* =====================================================
@@ -413,9 +396,11 @@ function updateDisplay() {
             )
         ) || 0;
 
+
     document.getElementById(
         "points"
     ).textContent = points;
+
 }
 
 
@@ -423,11 +408,14 @@ function updateDisplay() {
    ADD POINTS
 ===================================================== */
 
-function addPoints(amount, activity) {
+function addPoints(
+    amount,
+    activity
+) {
 
-    /* Get latest balance */
+    /* Get current balance */
 
-    points =
+    let currentPoints =
         Number(
             localStorage.getItem(
                 "rewardPoints"
@@ -437,10 +425,10 @@ function addPoints(amount, activity) {
 
     /* Add points */
 
-    points += amount;
+    currentPoints += amount;
 
 
-    /* Get latest history */
+    /* Get history */
 
     let currentHistory;
 
@@ -453,8 +441,15 @@ function addPoints(amount, activity) {
                 )
             ) || [];
 
-        if (!Array.isArray(currentHistory)) {
+
+        if (
+            !Array.isArray(
+                currentHistory
+            )
+        ) {
+
             currentHistory = [];
+
         }
 
     } catch (error) {
@@ -482,7 +477,7 @@ function addPoints(amount, activity) {
 
     localStorage.setItem(
         "rewardPoints",
-        points
+        currentPoints
     );
 
 
@@ -498,10 +493,10 @@ function addPoints(amount, activity) {
 
     /* Update challenge */
 
-    updateChallenge(activity);
+    updateChallenge();
 
 
-    /* Refresh display */
+    /* Update screen */
 
     updateDisplay();
 
@@ -509,19 +504,23 @@ function addPoints(amount, activity) {
 
 
 /* =====================================================
-   DAILY STREAK CHALLENGE
+   FIVE-DAY STREAK CHALLENGE
 ===================================================== */
 
-function updateChallenge(activity) {
+function updateChallenge() {
 
-    const completed =
+    const challengeCompleted =
         localStorage.getItem(
             "challengeCompleted"
         ) === "true";
 
 
-    if (completed) {
+    if (
+        challengeCompleted
+    ) {
+
         return;
+
     }
 
 
@@ -543,10 +542,11 @@ function updateChallenge(activity) {
         ) || 0;
 
 
-    /* Do not count more than once per day */
+    /* Do not count twice on the same day */
 
     if (
-        lastChallengeDay === challengeToday
+        lastChallengeDay ===
+        challengeToday
     ) {
 
         return;
@@ -559,6 +559,7 @@ function updateChallenge(activity) {
     const yesterdayDate =
         new Date();
 
+
     yesterdayDate.setDate(
         yesterdayDate.getDate() - 1
     );
@@ -568,10 +569,11 @@ function updateChallenge(activity) {
         yesterdayDate.toDateString();
 
 
-    /* Continue streak or start again */
+    /* Continue or restart streak */
 
     if (
-        lastChallengeDay === yesterday
+        lastChallengeDay ===
+        yesterday
     ) {
 
         progress++;
@@ -583,19 +585,24 @@ function updateChallenge(activity) {
     }
 
 
-    /* Maximum progress is 5 */
+    /* Maximum progress */
 
-    if (progress > 5) {
+    if (
+        progress > 5
+    ) {
+
         progress = 5;
+
     }
 
 
-    /* Save challenge information */
+    /* Save progress */
 
     localStorage.setItem(
         "lastChallengeDay",
         challengeToday
     );
+
 
     localStorage.setItem(
         "challengeProgress",
@@ -604,10 +611,12 @@ function updateChallenge(activity) {
 
 
     /* =================================================
-       FIVE-DAY REWARD
-    ================================================= */
+       FIVE-DAY BONUS
+    ================================================== */
 
-    if (progress >= 5) {
+    if (
+        progress >= 5
+    ) {
 
         let currentPoints =
             Number(
@@ -626,6 +635,8 @@ function updateChallenge(activity) {
         );
 
 
+        /* Get history */
+
         let challengeHistory;
 
         try {
@@ -637,8 +648,15 @@ function updateChallenge(activity) {
                     )
                 ) || [];
 
-            if (!Array.isArray(challengeHistory)) {
+
+            if (
+                !Array.isArray(
+                    challengeHistory
+                )
+            ) {
+
                 challengeHistory = [];
+
             }
 
         } catch (error) {
@@ -647,6 +665,8 @@ function updateChallenge(activity) {
 
         }
 
+
+        /* Record bonus */
 
         challengeHistory.push({
 
@@ -661,6 +681,8 @@ function updateChallenge(activity) {
         });
 
 
+        /* Save history */
+
         localStorage.setItem(
             "rewardHistory",
             JSON.stringify(
@@ -669,11 +691,15 @@ function updateChallenge(activity) {
         );
 
 
+        /* Mark challenge completed */
+
         localStorage.setItem(
             "challengeCompleted",
             "true"
         );
 
+
+        /* Update display */
 
         updateDisplay();
 
@@ -694,6 +720,8 @@ function dailyCheckIn() {
         );
 
 
+    /* Already completed */
+
     if (
         lastCheckIn === today
     ) {
@@ -704,8 +732,11 @@ function dailyCheckIn() {
             "You already claimed today's points.";
 
         return;
+
     }
 
+
+    /* Award points */
 
     addPoints(
         10,
@@ -713,17 +744,23 @@ function dailyCheckIn() {
     );
 
 
+    /* Save completion date */
+
     localStorage.setItem(
         "lastCheckIn",
         today
     );
 
 
+    /* Message */
+
     document.getElementById(
         "checkinMessage"
     ).textContent =
         "🎉 You earned 10 points!";
 
+
+    /* Disable button */
 
     const button =
         document.getElementById(
@@ -733,6 +770,7 @@ function dailyCheckIn() {
 
     button.disabled = true;
 
+
     button.textContent =
         "✅ Completed Today";
 
@@ -740,250 +778,370 @@ function dailyCheckIn() {
 
 
 /* =====================================================
-   DAILY QUIZ
+   DAILY QUIZZES
 ===================================================== */
 
 const quizzes = [
 
-{
-question:"What is the capital city of Rwanda?",
-options:["Kigali","Nairobi","Kampala"],
-answer:"Kigali"
-},
+    {
+        question:
+            "What is the capital city of Rwanda?",
+        options:
+            ["Kigali", "Nairobi", "Kampala"],
+        answer:
+            "Kigali"
+    },
 
-{
-question:"What is 5 + 7?",
-options:["10","12","14"],
-answer:"12"
-},
+    {
+        question:
+            "What is 5 + 7?",
+        options:
+            ["10", "12", "14"],
+        answer:
+            "12"
+    },
 
-{
-question:"Which planet is known as the Red Planet?",
-options:["Earth","Mars","Jupiter"],
-answer:"Mars"
-},
+    {
+        question:
+            "Which planet is known as the Red Planet?",
+        options:
+            ["Earth", "Mars", "Jupiter"],
+        answer:
+            "Mars"
+    },
 
-{
-question:"How many days are there in a week?",
-options:["5","7","10"],
-answer:"7"
-},
+    {
+        question:
+            "How many days are there in a week?",
+        options:
+            ["5", "7", "10"],
+        answer:
+            "7"
+    },
 
-{
-question:"Which animal is the largest land animal?",
-options:["Elephant","Lion","Giraffe"],
-answer:"Elephant"
-},
+    {
+        question:
+            "Which animal is the largest land animal?",
+        options:
+            ["Elephant", "Lion", "Giraffe"],
+        answer:
+            "Elephant"
+    },
 
-{
-question:"What is 9 × 6?",
-options:["45","54","63"],
-answer:"54"
-},
+    {
+        question:
+            "What is 9 × 6?",
+        options:
+            ["45", "54", "63"],
+        answer:
+            "54"
+    },
 
-{
-question:"Which continent is Rwanda in?",
-options:["Africa","Asia","Europe"],
-answer:"Africa"
-},
+    {
+        question:
+            "Which continent is Rwanda in?",
+        options:
+            ["Africa", "Asia", "Europe"],
+        answer:
+            "Africa"
+    },
 
-{
-question:"How many months are in one year?",
-options:["10","12","14"],
-answer:"12"
-},
+    {
+        question:
+            "How many months are in one year?",
+        options:
+            ["10", "12", "14"],
+        answer:
+            "12"
+    },
 
-{
-question:"Which gas do humans need to breathe?",
-options:["Oxygen","Carbon dioxide","Hydrogen"],
-answer:"Oxygen"
-},
+    {
+        question:
+            "Which gas do humans need to breathe?",
+        options:
+            ["Oxygen", "Carbon dioxide", "Hydrogen"],
+        answer:
+            "Oxygen"
+    },
 
-{
-question:"What is 100 ÷ 10?",
-options:["5","10","20"],
-answer:"10"
-},
+    {
+        question:
+            "What is 100 ÷ 10?",
+        options:
+            ["5", "10", "20"],
+        answer:
+            "10"
+    },
 
-{
-question:"Which ocean is the largest?",
-options:["Atlantic Ocean","Indian Ocean","Pacific Ocean"],
-answer:"Pacific Ocean"
-},
+    {
+        question:
+            "Which ocean is the largest?",
+        options:
+            ["Atlantic Ocean", "Indian Ocean", "Pacific Ocean"],
+        answer:
+            "Pacific Ocean"
+    },
 
-{
-question:"What is the opposite of 'hot'?",
-options:["Warm","Cold","Dry"],
-answer:"Cold"
-},
+    {
+        question:
+            "What is the opposite of 'hot'?",
+        options:
+            ["Warm", "Cold", "Dry"],
+        answer:
+            "Cold"
+    },
 
-{
-question:"How many sides does a triangle have?",
-options:["3","4","5"],
-answer:"3"
-},
+    {
+        question:
+            "How many sides does a triangle have?",
+        options:
+            ["3", "4", "5"],
+        answer:
+            "3"
+    },
 
-{
-question:"Which organ pumps blood around the body?",
-options:["Lungs","Heart","Brain"],
-answer:"Heart"
-},
+    {
+        question:
+            "Which organ pumps blood around the body?",
+        options:
+            ["Lungs", "Heart", "Brain"],
+        answer:
+            "Heart"
+    },
 
-{
-question:"What is 15 + 25?",
-options:["30","40","50"],
-answer:"40"
-},
+    {
+        question:
+            "What is 15 + 25?",
+        options:
+            ["30", "40", "50"],
+        answer:
+            "40"
+    },
 
-{
-question:"Which country is famous for the Great Pyramid of Giza?",
-options:["Egypt","Kenya","Rwanda"],
-answer:"Egypt"
-},
+    {
+        question:
+            "Which country is famous for the Great Pyramid of Giza?",
+        options:
+            ["Egypt", "Kenya", "Rwanda"],
+        answer:
+            "Egypt"
+    },
 
-{
-question:"How many hours are there in one day?",
-options:["12","24","48"],
-answer:"24"
-},
+    {
+        question:
+            "How many hours are there in one day?",
+        options:
+            ["12", "24", "48"],
+        answer:
+            "24"
+    },
 
-{
-question:"Which part of a plant usually absorbs water from the soil?",
-options:["Flower","Roots","Fruit"],
-answer:"Roots"
-},
+    {
+        question:
+            "Which part of a plant usually absorbs water from the soil?",
+        options:
+            ["Flower", "Roots", "Fruit"],
+        answer:
+            "Roots"
+    },
 
-{
-question:"What is 7 × 8?",
-options:["54","56","64"],
-answer:"56"
-},
+    {
+        question:
+            "What is 7 × 8?",
+        options:
+            ["54", "56", "64"],
+        answer:
+            "56"
+    },
 
-{
-question:"Which direction does the sun appear to rise from?",
-options:["East","West","North"],
-answer:"East"
-},
+    {
+        question:
+            "Which direction does the sun appear to rise from?",
+        options:
+            ["East", "West", "North"],
+        answer:
+            "East"
+    },
 
-{
-question:"What is 50 - 18?",
-options:["30","32","34"],
-answer:"32"
-},
+    {
+        question:
+            "What is 50 - 18?",
+        options:
+            ["30", "32", "34"],
+        answer:
+            "32"
+    },
 
-{
-question:"Which is the largest planet in our solar system?",
-options:["Earth","Jupiter","Mars"],
-answer:"Jupiter"
-},
+    {
+        question:
+            "Which is the largest planet in our solar system?",
+        options:
+            ["Earth", "Jupiter", "Mars"],
+        answer:
+            "Jupiter"
+    },
 
-{
-question:"What is the main source of energy for Earth?",
-options:["The Moon","The Sun","The Stars"],
-answer:"The Sun"
-},
+    {
+        question:
+            "What is the main source of energy for Earth?",
+        options:
+            ["The Moon", "The Sun", "The Stars"],
+        answer:
+            "The Sun"
+    },
 
-{
-question:"How many legs does a spider have?",
-options:["6","8","10"],
-answer:"8"
-},
+    {
+        question:
+            "How many legs does a spider have?",
+        options:
+            ["6", "8", "10"],
+        answer:
+            "8"
+    },
 
-{
-question:"What is 12 × 4?",
-options:["36","48","52"],
-answer:"48"
-},
+    {
+        question:
+            "What is 12 × 4?",
+        options:
+            ["36", "48", "52"],
+        answer:
+            "48"
+    },
 
-{
-question:"Which country borders Rwanda to the east?",
-options:["Tanzania","Uganda","Burundi"],
-answer:"Tanzania"
-},
+    {
+        question:
+            "Which country borders Rwanda to the east?",
+        options:
+            ["Tanzania", "Uganda", "Burundi"],
+        answer:
+            "Tanzania"
+    },
 
-{
-question:"What do bees produce?",
-options:["Milk","Honey","Bread"],
-answer:"Honey"
-},
+    {
+        question:
+            "What do bees produce?",
+        options:
+            ["Milk", "Honey", "Bread"],
+        answer:
+            "Honey"
+    },
 
-{
-question:"Which sense organ is used for seeing?",
-options:["Ear","Eye","Nose"],
-answer:"Eye"
-},
+    {
+        question:
+            "Which sense organ is used for seeing?",
+        options:
+            ["Ear", "Eye", "Nose"],
+        answer:
+            "Eye"
+    },
 
-{
-question:"What is 81 ÷ 9?",
-options:["7","8","9"],
-answer:"9"
-},
+    {
+        question:
+            "What is 81 ÷ 9?",
+        options:
+            ["7", "8", "9"],
+        answer:
+            "9"
+    },
 
-{
-question:"Which is a renewable source of energy?",
-options:["Solar energy","Coal","Petroleum"],
-answer:"Solar energy"
-},
+    {
+        question:
+            "Which is a renewable source of energy?",
+        options:
+            ["Solar energy", "Coal", "Petroleum"],
+        answer:
+            "Solar energy"
+    },
 
-{
-question:"How many continents are commonly recognized?",
-options:["5","6","7"],
-answer:"7"
-},
+    {
+        question:
+            "How many continents are commonly recognized?",
+        options:
+            ["5", "6", "7"],
+        answer:
+            "7"
+    },
 
-{
-question:"What is 25 + 35?",
-options:["50","60","70"],
-answer:"60"
-},
+    {
+        question:
+            "What is 25 + 35?",
+        options:
+            ["50", "60", "70"],
+        answer:
+            "60"
+    },
 
-{
-question:"Which animal is known for having a long neck?",
-options:["Giraffe","Zebra","Hippo"],
-answer:"Giraffe"
-},
+    {
+        question:
+            "Which animal is known for having a long neck?",
+        options:
+            ["Giraffe", "Zebra", "Hippo"],
+        answer:
+            "Giraffe"
+    },
 
-{
-question:"What is the freezing point of water in Celsius?",
-options:["0°C","50°C","100°C"],
-answer:"0°C"
-},
+    {
+        question:
+            "What is the freezing point of water in Celsius?",
+        options:
+            ["0°C", "50°C", "100°C"],
+        answer:
+            "0°C"
+    },
 
-{
-question:"Which language is widely spoken in Rwanda?",
-options:["Kinyarwanda","Spanish","Japanese"],
-answer:"Kinyarwanda"
-},
+    {
+        question:
+            "Which language is widely spoken in Rwanda?",
+        options:
+            ["Kinyarwanda", "Spanish", "Japanese"],
+        answer:
+            "Kinyarwanda"
+    },
 
-{
-question:"What is 10 × 10?",
-options:["10","100","1,000"],
-answer:"100"
-},
+    {
+        question:
+            "What is 10 × 10?",
+        options:
+            ["10", "100", "1,000"],
+        answer:
+            "100"
+    },
 
-{
-question:"Which part of the body is mainly used for breathing?",
-options:["Lungs","Stomach","Bones"],
-answer:"Lungs"
-},
+    {
+        question:
+            "Which part of the body is mainly used for breathing?",
+        options:
+            ["Lungs", "Stomach", "Bones"],
+        answer:
+            "Lungs"
+    },
 
-{
-question:"Which planet is closest to the Sun?",
-options:["Venus","Mercury","Earth"],
-answer:"Mercury"
-},
+    {
+        question:
+            "Which planet is closest to the Sun?",
+        options:
+            ["Venus", "Mercury", "Earth"],
+        answer:
+            "Mercury"
+    },
 
-{
-question:"What is 72 ÷ 8?",
-options:["8","9","10"],
-answer:"9"
-},
+    {
+        question:
+            "What is 72 ÷ 8?",
+        options:
+            ["8", "9", "10"],
+        answer:
+            "9"
+    },
 
-{
-question:"Which direction is opposite to north?",
-options:["East","South","West"],
-answer:"South"
-}
+    {
+        question:
+            "Which direction is opposite to north?",
+        options:
+            ["East", "South", "West"],
+        answer:
+            "South"
+    }
 
 ];
 
@@ -1028,8 +1186,10 @@ todayQuiz.options.forEach(
                 "button"
             );
 
+
         button.textContent =
             option;
+
 
         button.onclick =
             function() {
@@ -1037,6 +1197,7 @@ todayQuiz.options.forEach(
                 answerQuiz(option);
 
             };
+
 
         quizOptions.appendChild(
             button
@@ -1064,6 +1225,8 @@ function answerQuiz(answer) {
         );
 
 
+    /* Already completed */
+
     if (
         completedDate === today
     ) {
@@ -1072,10 +1235,11 @@ function answerQuiz(answer) {
             "You already completed today's quiz.";
 
         return;
+
     }
 
 
-    /* Disable all answers immediately */
+    /* Disable answers */
 
     document
         .querySelectorAll(
@@ -1089,6 +1253,8 @@ function answerQuiz(answer) {
             }
         );
 
+
+    /* Check answer */
 
     if (
         answer === todayQuiz.answer
@@ -1111,6 +1277,8 @@ function answerQuiz(answer) {
     }
 
 
+    /* Save completion */
+
     localStorage.setItem(
         "quizCompletedDate",
         today
@@ -1125,245 +1293,365 @@ function answerQuiz(answer) {
 
 const games = [
 
-{
-question:"What is 8 + 6?",
-options:["12","14","16"],
-answer:"14"
-},
+    {
+        question:
+            "What is 8 + 6?",
+        options:
+            ["12", "14", "16"],
+        answer:
+            "14"
+    },
 
-{
-question:"Which number is even?",
-options:["7","11","8"],
-answer:"8"
-},
+    {
+        question:
+            "Which number is even?",
+        options:
+            ["7", "11", "8"],
+        answer:
+            "8"
+    },
 
-{
-question:"What is 20 - 7?",
-options:["11","13","15"],
-answer:"13"
-},
+    {
+        question:
+            "What is 20 - 7?",
+        options:
+            ["11", "13", "15"],
+        answer:
+            "13"
+    },
 
-{
-question:"Which number is the largest?",
-options:["18","25","21"],
-answer:"25"
-},
+    {
+        question:
+            "Which number is the largest?",
+        options:
+            ["18", "25", "21"],
+        answer:
+            "25"
+    },
 
-{
-question:"What is 6 × 5?",
-options:["25","30","35"],
-answer:"30"
-},
+    {
+        question:
+            "What is 6 × 5?",
+        options:
+            ["25", "30", "35"],
+        answer:
+            "30"
+    },
 
-{
-question:"Which number is odd?",
-options:["12","16","9"],
-answer:"9"
-},
+    {
+        question:
+            "Which number is odd?",
+        options:
+            ["12", "16", "9"],
+        answer:
+            "9"
+    },
 
-{
-question:"What is 36 ÷ 6?",
-options:["5","6","7"],
-answer:"6"
-},
+    {
+        question:
+            "What is 36 ÷ 6?",
+        options:
+            ["5", "6", "7"],
+        answer:
+            "6"
+    },
 
-{
-question:"Complete the pattern: 2, 4, 6, ?",
-options:["7","8","10"],
-answer:"8"
-},
+    {
+        question:
+            "Complete the pattern: 2, 4, 6, ?",
+        options:
+            ["7", "8", "10"],
+        answer:
+            "8"
+    },
 
-{
-question:"Which is smaller?",
-options:["15","9","12"],
-answer:"9"
-},
+    {
+        question:
+            "Which is smaller?",
+        options:
+            ["15", "9", "12"],
+        answer:
+            "9"
+    },
 
-{
-question:"What is 11 + 9?",
-options:["18","20","22"],
-answer:"20"
-},
+    {
+        question:
+            "What is 11 + 9?",
+        options:
+            ["18", "20", "22"],
+        answer:
+            "20"
+    },
 
-{
-question:"Which number is divisible by 5?",
-options:["13","20","27"],
-answer:"20"
-},
+    {
+        question:
+            "Which number is divisible by 5?",
+        options:
+            ["13", "20", "27"],
+        answer:
+            "20"
+    },
 
-{
-question:"What is 7 × 7?",
-options:["42","49","56"],
-answer:"49"
-},
+    {
+        question:
+            "What is 7 × 7?",
+        options:
+            ["42", "49", "56"],
+        answer:
+            "49"
+    },
 
-{
-question:"Complete: 5, 10, 15, ?",
-options:["18","20","25"],
-answer:"20"
-},
+    {
+        question:
+            "Complete: 5, 10, 15, ?",
+        options:
+            ["18", "20", "25"],
+        answer:
+            "20"
+    },
 
-{
-question:"Which number is closest to 50?",
-options:["42","48","61"],
-answer:"48"
-},
+    {
+        question:
+            "Which number is closest to 50?",
+        options:
+            ["42", "48", "61"],
+        answer:
+            "48"
+    },
 
-{
-question:"What is 100 - 25?",
-options:["65","75","85"],
-answer:"75"
-},
+    {
+        question:
+            "What is 100 - 25?",
+        options:
+            ["65", "75", "85"],
+        answer:
+            "75"
+    },
 
-{
-question:"Which number is a multiple of 3?",
-options:["14","18","25"],
-answer:"18"
-},
+    {
+        question:
+            "Which number is a multiple of 3?",
+        options:
+            ["14", "18", "25"],
+        answer:
+            "18"
+    },
 
-{
-question:"What is 9 + 9?",
-options:["16","18","20"],
-answer:"18"
-},
+    {
+        question:
+            "What is 9 + 9?",
+        options:
+            ["16", "18", "20"],
+        answer:
+            "18"
+    },
 
-{
-question:"Which number is the smallest?",
-options:["31","27","35"],
-answer:"27"
-},
+    {
+        question:
+            "Which number is the smallest?",
+        options:
+            ["31", "27", "35"],
+        answer:
+            "27"
+    },
 
-{
-question:"What is 4 × 8?",
-options:["28","32","36"],
-answer:"32"
-},
+    {
+        question:
+            "What is 4 × 8?",
+        options:
+            ["28", "32", "36"],
+        answer:
+            "32"
+    },
 
-{
-question:"Complete: 10, 20, 30, ?",
-options:["35","40","50"],
-answer:"40"
-},
+    {
+        question:
+            "Complete: 10, 20, 30, ?",
+        options:
+            ["35", "40", "50"],
+        answer:
+            "40"
+    },
 
-{
-question:"Which number is odd?",
-options:["22","24","17"],
-answer:"17"
-},
+    {
+        question:
+            "Which number is odd?",
+        options:
+            ["22", "24", "17"],
+        answer:
+            "17"
+    },
 
-{
-question:"What is 45 ÷ 5?",
-options:["8","9","10"],
-answer:"9"
-},
+    {
+        question:
+            "What is 45 ÷ 5?",
+        options:
+            ["8", "9", "10"],
+        answer:
+            "9"
+    },
 
-{
-question:"Which is greater?",
-options:["37","29","31"],
-answer:"37"
-},
+    {
+        question:
+            "Which is greater?",
+        options:
+            ["37", "29", "31"],
+        answer:
+            "37"
+    },
 
-{
-question:"What is 13 + 12?",
-options:["23","25","27"],
-answer:"25"
-},
+    {
+        question:
+            "What is 13 + 12?",
+        options:
+            ["23", "25", "27"],
+        answer:
+            "25"
+    },
 
-{
-question:"Complete: 3, 6, 9, ?",
-options:["11","12","15"],
-answer:"12"
-},
+    {
+        question:
+            "Complete: 3, 6, 9, ?",
+        options:
+            ["11", "12", "15"],
+        answer:
+            "12"
+    },
 
-{
-question:"What is 8 × 4?",
-options:["28","32","36"],
-answer:"32"
-},
+    {
+        question:
+            "What is 8 × 4?",
+        options:
+            ["28", "32", "36"],
+        answer:
+            "32"
+    },
 
-{
-question:"Which number is even?",
-options:["15","21","26"],
-answer:"26"
-},
+    {
+        question:
+            "Which number is even?",
+        options:
+            ["15", "21", "26"],
+        answer:
+            "26"
+    },
 
-{
-question:"What is 60 ÷ 10?",
-options:["5","6","7"],
-answer:"6"
-},
+    {
+        question:
+            "What is 60 ÷ 10?",
+        options:
+            ["5", "6", "7"],
+        answer:
+            "6"
+    },
 
-{
-question:"Which number is closest to 100?",
-options:["91","72","83"],
-answer:"91"
-},
+    {
+        question:
+            "Which number is closest to 100?",
+        options:
+            ["91", "72", "83"],
+        answer:
+            "91"
+    },
 
-{
-question:"What is 14 + 16?",
-options:["28","30","32"],
-answer:"30"
-},
+    {
+        question:
+            "What is 14 + 16?",
+        options:
+            ["28", "30", "32"],
+        answer:
+            "30"
+    },
 
-{
-question:"Complete: 1, 3, 5, ?",
-options:["6","7","9"],
-answer:"7"
-},
+    {
+        question:
+            "Complete: 1, 3, 5, ?",
+        options:
+            ["6", "7", "9"],
+        answer:
+            "7"
+    },
 
-{
-question:"What is 50 ÷ 5?",
-options:["8","10","12"],
-answer:"10"
-},
+    {
+        question:
+            "What is 50 ÷ 5?",
+        options:
+            ["8", "10", "12"],
+        answer:
+            "10"
+    },
 
-{
-question:"Which number is greater?",
-options:["44","39","41"],
-answer:"44"
-},
+    {
+        question:
+            "Which number is greater?",
+        options:
+            ["44", "39", "41"],
+        answer:
+            "44"
+    },
 
-{
-question:"What is 15 × 2?",
-options:["25","30","35"],
-answer:"30"
-},
+    {
+        question:
+            "What is 15 × 2?",
+        options:
+            ["25", "30", "35"],
+        answer:
+            "30"
+    },
 
-{
-question:"Which number is divisible by 2?",
-options:["17","23","28"],
-answer:"28"
-},
+    {
+        question:
+            "Which number is divisible by 2?",
+        options:
+            ["17", "23", "28"],
+        answer:
+            "28"
+    },
 
-{
-question:"What is 90 - 30?",
-options:["50","60","70"],
-answer:"60"
-},
+    {
+        question:
+            "What is 90 - 30?",
+        options:
+            ["50", "60", "70"],
+        answer:
+            "60"
+    },
 
-{
-question:"Complete: 4, 8, 12, ?",
-options:["14","16","18"],
-answer:"16"
-},
+    {
+        question:
+            "Complete: 4, 8, 12, ?",
+        options:
+            ["14", "16", "18"],
+        answer:
+            "16"
+    },
 
-{
-question:"What is 5 × 9?",
-options:["40","45","50"],
-answer:"45"
-},
+    {
+        question:
+            "What is 5 × 9?",
+        options:
+            ["40", "45", "50"],
+        answer:
+            "45"
+    },
 
-{
-question:"Which number is the smallest?",
-options:["19","13","17"],
-answer:"13"
-},
+    {
+        question:
+            "Which number is the smallest?",
+        options:
+            ["19", "13", "17"],
+        answer:
+            "13"
+    },
 
-{
-question:"What is 70 - 18?",
-options:["42","52","62"],
-answer:"52"
-}
+    {
+        question:
+            "What is 70 - 18?",
+        options:
+            ["42", "52", "62"],
+        answer:
+            "52"
+    }
 
 ];
 
@@ -1400,11 +1688,14 @@ todayGame.options.forEach(
                 "button"
             );
 
+
         button.className =
             "game-option";
 
+
         button.textContent =
             option;
+
 
         button.onclick =
             function() {
@@ -1412,6 +1703,7 @@ todayGame.options.forEach(
                 playGame(option);
 
             };
+
 
         gameArea.appendChild(
             button
@@ -1439,6 +1731,8 @@ function playGame(choice) {
         );
 
 
+    /* Already completed */
+
     if (
         completedDate === today
     ) {
@@ -1447,25 +1741,26 @@ function playGame(choice) {
             "You already completed today's game.";
 
         return;
+
     }
 
 
     /* Disable buttons */
 
-    const buttons =
-        document.querySelectorAll(
+    document
+        .querySelectorAll(
             ".game-option"
+        )
+        .forEach(
+            function(button) {
+
+                button.disabled = true;
+
+            }
         );
 
 
-    buttons.forEach(
-        function(button) {
-
-            button.disabled = true;
-
-        }
-    );
-
+    /* Check answer */
 
     if (
         choice === todayGame.answer
@@ -1488,6 +1783,8 @@ function playGame(choice) {
     }
 
 
+    /* Save completion */
+
     localStorage.setItem(
         "gameCompletedDate",
         today
@@ -1497,10 +1794,8 @@ function playGame(choice) {
 
 
 /* =====================================================
-   CHECK TODAY'S STATUS
+   RESTORE TODAY'S CHECK-IN STATUS
 ===================================================== */
-
-/* CHECK-IN */
 
 if (
     localStorage.getItem(
@@ -1516,6 +1811,7 @@ if (
 
     checkinBtn.disabled = true;
 
+
     checkinBtn.textContent =
         "✅ Completed Today";
 
@@ -1528,7 +1824,9 @@ if (
 }
 
 
-/* QUIZ */
+/* =====================================================
+   RESTORE TODAY'S QUIZ STATUS
+===================================================== */
 
 if (
     localStorage.getItem(
@@ -1557,7 +1855,9 @@ if (
 }
 
 
-/* GAME */
+/* =====================================================
+   RESTORE TODAY'S GAME STATUS
+===================================================== */
 
 if (
     localStorage.getItem(
@@ -1582,7 +1882,9 @@ if (
 
             }
         );
+
 }
+
 
 /* =====================================================
    INITIAL DISPLAY
@@ -1590,17 +1892,9 @@ if (
 
 updateDisplay();
 
-/* =====================================================
-   BACK BUTTON
-===================================================== */
-
-function goBack() {
-
-    window.history.back();
-
-}
-
 </script>
 
+
 </body>
+
 </html>
