@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>My Profile - Reward Platform</title>
+
+<style>
+
+/* =========================
+   GENERAL
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #222;
+}
+
+
+/* =========================
+   TOP NAVIGATION
+========================= */
+
+.top-nav {
+    background: #182848;
+    padding: 12px 10px;
+    display: flex;
+    align-items: center;
+}
+
+
+/* =========================
+   BACK BUTTON
+========================= */
+
+.back-button {
+    width: auto;
+    margin: 0;
+
+    padding: 11px 16px;
+
+    background: rgba(255,255,255,0.12);
+
+    color: white;
+
+    border: none;
+
+    border-radius: 10px;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.back-button:hover {
+    background: rgba(255,255,255,0.22);
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    background: #182848;
+
+    color: white;
+
+    padding: 28px 15px;
+
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+
+    animation:
+        headingColor 3s infinite alternate;
+}
+
+header p {
+    margin: 8px 0 0;
+}
+
+
+/* =========================
+   HEADING ANIMATION
+========================= */
+
+@keyframes headingColor {
+
+    0% {
+        color: white;
+    }
+
+    100% {
+        color: #00bfff;
+    }
+
+}
+
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.container {
+    max-width: 700px;
+
+    margin: auto;
+
+    padding: 15px;
+}
+
+
+/* =========================
+   PROFILE CARD
+========================= */
+
+.card {
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 20px;
+
+    margin: 15px 0;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.08);
+}
+
+
+/* =========================
+   PROFILE ICON
+========================= */
+
+.profile-icon {
+    width: 90px;
+    height: 90px;
+
+    margin: 0 auto 15px;
+
+    border-radius: 50%;
+
+    background: #182848;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 42px;
+
+    text-align: center;
+}
+
+
+/* =========================
+   PROFILE NAME
+========================= */
+
+.profile-name {
+    text-align: center;
+
+    font-size: 24px;
+
+    font-weight: bold;
+
+    margin-bottom: 5px;
+}
+
+.profile-email {
+    text-align: center;
+
+    color: #666;
+
+    margin-bottom: 10px;
+}
+
+
+/* =========================
+   INFORMATION ROW
+========================= */
+
+.info-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 14px 0;
+
+    border-bottom: 1px solid #eee;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: bold;
+}
+
+.info-value {
+    text-align: right;
+
+    color: #555;
+
+    word-break: break-word;
+}
+
+
+/* =========================
+   ACCOUNT STATUS
+========================= */
+
+.status-active {
+    color: #168a3a;
+
+    font-weight: bold;
+}
+
+
+/* =========================
+   POINTS CARD
+========================= */
+
+.points-card {
+    text-align: center;
+}
+
+.points-title {
+    font-size: 18px;
+
+    font-weight: bold;
+}
+
+.points-number {
+    font-size: 42px;
+
+    font-weight: bold;
+
+    color: #182848;
+
+    margin: 10px 0;
+}
+
+.points-label {
+    color: #666;
+}
+
+
+/* =========================
+   BUTTON
+========================= */
+
+button.action-button {
+
+    width: 100%;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #182848;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    margin-top: 10px;
+}
+
+button.action-button:hover {
+    opacity: 0.9;
+}
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+.message {
+    text-align: center;
+
+    font-weight: bold;
+
+    margin-top: 12px;
+
+    color: #168a3a;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+
+    text-align: center;
+
+    padding: 25px;
+
+    color: #666;
+
+    font-size: 14px;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 500px) {
+
+    .info-row {
+        align-items: flex-start;
+    }
+
+    .info-value {
+        max-width: 55%;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     TOP NAVIGATION
+========================= -->
+
+<nav class="top-nav">
+
+    <button
+        class="back-button"
+        onclick="goBack()">
+
+        ← Back
+
+    </button>
+
+</nav>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header>
+
+    <h1>👤 My Profile</h1>
+
+    <p>
+        Manage and view your account information.
+    </p>
+
+</header>
+
+
+<div class="container">
+
+
+<!-- =========================
+     PROFILE
+========================= -->
+
+<div class="card">
+
+    <div class="profile-icon">
+        👤
+    </div>
+
+    <div
+        class="profile-name"
+        id="profileName">
+
+        User
+
+    </div>
+
+    <div
+        class="profile-email"
+        id="profileEmail">
+
+        -
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     ACCOUNT INFORMATION
+========================= -->
+
+<div class="card">
+
+    <h2>Account Information</h2>
+
+
+    <div class="info-row">
+
+        <div class="info-label">
+            👤 Username
+        </div>
+
+        <div
+            class="info-value"
+            id="username">
+
+            -
+
+        </div>
+
+    </div>
+
+
+    <div class="info-row">
+
+        <div class="info-label">
+            📧 Email
+        </div>
+
+        <div
+            class="info-value"
+            id="email">
+
+            -
+
+        </div>
+
+    </div>
+
+
+    <div class="info-row">
+
+        <div class="info-label">
+            🟢 Status
+        </div>
+
+        <div class="info-value status-active">
+
+            Active
+
+        </div>
+
+    </div>
+
+
+    <div class="info-row">
+
+        <div class="info-label">
+            📅 Member Since
+        </div>
+
+        <div
+            class="info-value"
+            id="memberSince">
+
+            -
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     POINTS
+========================= -->
+
+<div class="card points-card">
+
+    <div class="points-title">
+
+        💰 Current Points
+
+    </div>
+
+
+    <div
+        class="points-number"
+        id="points">
+
+        0
+
+    </div>
+
+
+    <div class="points-label">
+
+        points available
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     EDIT PROFILE
+========================= -->
+
+<div class="card">
+
+    <h2>✏️ Profile</h2>
+
+    <p>
+        Your profile information can be managed
+        from here.
+    </p>
+
+
+    <button
+        class="action-button"
+        onclick="showMessage()">
+
+        ✏️ Edit Profile
+
+    </button>
+
+
+    <div
+        class="message"
+        id="message">
+    </div>
+
+</div>
+
+
+</div>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    Reward Platform — Prototype
+
+</footer>
+
+
+<script>
+
+/* =====================================================
+   LOGIN PROTECTION
+===================================================== */
+
+if (
+    localStorage.getItem("loggedIn") !== "true"
+) {
+
+    window.location.href = "login.html";
+
+}
+
+
+/* =====================================================
+   GET USER INFORMATION
+===================================================== */
+
+/*
+   We check several possible storage names so
+   the Profile page can work with the registration
+   system we have been building.
+*/
+
+const username =
+    localStorage.getItem("username") ||
+    localStorage.getItem("userName") ||
+    "User";
+
+
+const email =
+    localStorage.getItem("email") ||
+    localStorage.getItem("userEmail") ||
+    "Not provided";
+
+
+/* =====================================================
+   DISPLAY USERNAME
+===================================================== */
+
+document.getElementById(
+    "profileName"
+).textContent = username;
+
+
+document.getElementById(
+    "username"
+).textContent = username;
+
+
+/* =====================================================
+   DISPLAY EMAIL
+===================================================== */
+
+document.getElementById(
+    "profileEmail"
+).textContent = email;
+
+
+document.getElementById(
+    "email"
+).textContent = email;
+
+
+/* =====================================================
+   MEMBER SINCE
+===================================================== */
+
+let memberSince =
+    localStorage.getItem(
+        "memberSince"
+    );
+
+
+if (!memberSince) {
+
+    memberSince =
+        new Date().toLocaleDateString();
+
+}
+
+
+document.getElementById(
+    "memberSince"
+).textContent =
+    memberSince;
+
+
+/* =====================================================
+   POINTS
+===================================================== */
+
+const points =
+    Number(
+        localStorage.getItem(
+            "rewardPoints"
+        )
+    ) || 0;
+
+
+document.getElementById(
+    "points"
+).textContent = points;
+
+
+/* =====================================================
+   EDIT PROFILE
+===================================================== */
+
+function showMessage() {
+
+    document.getElementById(
+        "message"
+    ).textContent =
+        "Profile editing will be available in the next version.";
+
+}
+
+
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+function goBack() {
+
+    window.history.back();
+
+}
+
+</script>
+
+
+</body>
+
+</html>
