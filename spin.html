@@ -2,12 +2,23 @@
 <html lang="en">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Daily Spin</title>
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Daily Spin - Reward Platform</title>
+
 
 <style>
+
+/* =====================================================
+   GENERAL
+===================================================== */
+
 * {
     box-sizing: border-box;
 }
@@ -19,107 +30,80 @@ body {
     color: #222;
 }
 
+
+/* =====================================================
+   TOP NAVIGATION
+===================================================== */
+
 .top-nav {
     background: #182848;
     padding: 12px 10px;
     display: flex;
     align-items: center;
-    gap: 8px;
 }
 
-.top-nav a,
-.menu-button {
-    color: white;
-    text-decoration: none;
-    padding: 11px 14px;
-    font-weight: bold;
-    border-radius: 10px;
-}
 
-.menu-button {
-    background: transparent;
-    border: none;
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+.back-button {
     width: auto;
     margin: 0;
-    font-size: 16px;
-}
 
-.home-button {
+    padding: 11px 16px;
+
     background: rgba(255,255,255,0.12);
-}
 
-/* SIDE MENU */
-
-.side-menu {
-    position: fixed;
-    top: 0;
-    left: -280px;
-    width: 270px;
-    height: 100%;
-    background: #182848;
-    z-index: 1000;
-    padding-top: 60px;
-    transition: left 0.3s ease;
-    box-shadow: 4px 0 15px rgba(0,0,0,0.25);
-}
-
-.side-menu.open {
-    left: 0;
-}
-
-.side-menu a {
-    display: block;
     color: white;
-    text-decoration: none;
-    padding: 16px 20px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    font-size: 16px;
+
     font-weight: bold;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+
+    cursor: pointer;
 }
 
-.side-menu a:hover {
-    background: #0066ff;
+.back-button:hover {
+    background: rgba(255,255,255,0.22);
 }
 
-.close-menu {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: auto;
-    margin: 0;
-    padding: 8px 12px;
-    background: transparent;
-    font-size: 20px;
-}
 
-.menu-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
-    z-index: 999;
-    display: none;
-}
-
-.menu-overlay.open {
-    display: block;
-}
+/* =====================================================
+   HEADER
+===================================================== */
 
 header {
     background: #182848;
+
     color: white;
-    text-align: center;
+
     padding: 25px 15px;
+
+    text-align: center;
 }
 
 header h1 {
     margin: 0;
-    animation: headerHeadingInvert 3s infinite alternate;
+
+    animation:
+        headerHeadingInvert
+        3s
+        infinite
+        alternate;
 }
 
-.card h2 {
-    animation: cardHeadingInvert 3s infinite alternate;
+header p {
+    margin: 8px 0 0;
 }
+
 
 @keyframes headerHeadingInvert {
+
     0% {
         color: white;
     }
@@ -127,9 +111,54 @@ header h1 {
     100% {
         color: #00bfff;
     }
+
 }
 
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.container {
+    max-width: 700px;
+
+    margin: auto;
+
+    padding: 15px;
+}
+
+
+/* =====================================================
+   POINTS CARD
+===================================================== */
+
+.points-card {
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 20px;
+
+    margin: 15px 0;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.08);
+
+    text-align: center;
+}
+
+.points-card h2 {
+    animation:
+        cardHeadingInvert
+        3s
+        infinite
+        alternate;
+}
+
+
 @keyframes cardHeadingInvert {
+
     0% {
         color: #182848;
     }
@@ -137,354 +166,778 @@ header h1 {
     100% {
         color: #00bfff;
     }
+
 }
 
-.container {
-    max-width: 700px;
-    margin: auto;
-    padding: 15px;
-}
-
-.card {
-    background: white;
-    border-radius: 14px;
-    padding: 20px;
-    margin: 15px 0;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-    text-align: center;
-}
 
 .points-number {
-    font-size: 40px;
+    font-size: 42px;
+
     font-weight: bold;
+
     margin: 10px 0;
 }
 
-.wheel {
-    width: 220px;
-    height: 220px;
-    border-radius: 50%;
-    margin: 20px auto;
-    background: conic-gradient(
-        #182848 0deg 72deg,
-        #36558a 72deg 144deg,
-        #182848 144deg 216deg,
-        #36558a 216deg 288deg,
-        #182848 288deg 360deg
-    );
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 8px solid white;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
 
-.wheel span {
-    background: white;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* =====================================================
+   DAY
+===================================================== */
+
+.day {
+    text-align: center;
+
     font-weight: bold;
+
+    margin: 20px 0;
 }
 
-button {
+
+/* =====================================================
+   SPIN CARD
+===================================================== */
+
+.spin-card {
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 25px 20px;
+
+    margin: 15px 0;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.08);
+
+    text-align: center;
+}
+
+.spin-card h2 {
+    animation:
+        cardHeadingInvert
+        3s
+        infinite
+        alternate;
+}
+
+
+/* =====================================================
+   WHEEL
+===================================================== */
+
+.wheel-container {
+    position: relative;
+
+    width: 300px;
+
+    height: 300px;
+
+    margin: 25px auto;
+}
+
+
+#wheel {
+    width: 300px;
+
+    height: 300px;
+
+    border-radius: 50%;
+
+    border: 8px solid #182848;
+
+    background:
+        conic-gradient(
+            #ff7675 0deg 45deg,
+            #74b9ff 45deg 90deg,
+            #55efc4 90deg 135deg,
+            #ffeaa7 135deg 180deg,
+            #a29bfe 180deg 225deg,
+            #fd79a8 225deg 270deg,
+            #81ecec 270deg 315deg,
+            #fab1a0 315deg 360deg
+        );
+
+    position: relative;
+
+    transition:
+        transform 5s
+        cubic-bezier(
+            0.17,
+            0.67,
+            0.12,
+            0.99
+        );
+
+    box-shadow:
+        0 5px 15px
+        rgba(0,0,0,0.20);
+}
+
+
+/* =====================================================
+   WHEEL LABELS
+===================================================== */
+
+.wheel-label {
+    position: absolute;
+
     width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 10px;
+
+    height: 100%;
+
+    top: 0;
+
+    left: 0;
+
+    pointer-events: none;
+}
+
+.wheel-label span {
+    position: absolute;
+
+    left: 50%;
+
+    top: 50%;
+
+    transform-origin: 0 0;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    color: #182848;
+
+    text-shadow:
+        0 1px 2px
+        rgba(255,255,255,0.8);
+}
+
+
+/* =====================================================
+   POINTER
+===================================================== */
+
+.pointer {
+    position: absolute;
+
+    top: -12px;
+
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    width: 0;
+
+    height: 0;
+
+    border-left: 18px solid transparent;
+
+    border-right: 18px solid transparent;
+
+    border-top: 35px solid #182848;
+
+    z-index: 5;
+}
+
+
+/* =====================================================
+   CENTER
+===================================================== */
+
+.wheel-center {
+    position: absolute;
+
+    top: 50%;
+
+    left: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    width: 65px;
+
+    height: 65px;
+
+    border-radius: 50%;
+
+    background: white;
+
+    border: 6px solid #182848;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 28px;
+
+    z-index: 4;
+}
+
+
+/* =====================================================
+   SPIN BUTTON
+===================================================== */
+
+.spin-button {
+    max-width: 350px;
+
+    margin: 20px auto 10px;
+
+    display: block;
+
     background: #182848;
+
     color: white;
-    font-size: 16px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    padding: 16px;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
     cursor: pointer;
 }
 
-button:disabled {
+.spin-button:hover {
+    opacity: 0.9;
+}
+
+.spin-button:disabled {
     background: #999;
+
     cursor: not-allowed;
 }
 
+
+/* =====================================================
+   RESULT
+===================================================== */
+
+.result {
+    text-align: center;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    min-height: 32px;
+
+    margin-top: 15px;
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
 .message {
     text-align: center;
+
     font-weight: bold;
-    margin-top: 15px;
-    min-height: 24px;
+
+    margin-top: 12px;
 }
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
 
 footer {
     text-align: center;
+
     padding: 25px;
+
     color: #666;
+
     font-size: 14px;
 }
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 500px) {
+
+    .wheel-container {
+        width: 270px;
+        height: 270px;
+    }
+
+    #wheel {
+        width: 270px;
+        height: 270px;
+    }
+
+    .wheel-label span {
+        font-size: 15px;
+    }
+
+}
+
 </style>
+
 </head>
+
 
 <body>
 
-<nav class="top-nav">
-    <button class="menu-button" onclick="toggleMenu()">☰ Menu</button>
-    <a href="index.html" class="home-button">🏠 Home</a>
-</nav>
 
-<div id="sideMenu" class="side-menu">
-    <button class="close-menu" onclick="toggleMenu()">✕</button>
-
-    <a href="earn.html">💰 Earn Points</a>
-    <a href="watch.html">📺 Watch & Earn</a>
-    <a href="spin.html">🎡 Daily Spin</a>
-    <a href="challenges.html">🏆 Challenges</a>
-    <a href="buy-points.html">💳 Buy Points</a>
-    <a href="balance.html">💰 My Balance</a>
-    <a href="withdraw.html">💸 Withdraw</a>
-    <a href="rewards.html">🎁 Rewards</a>
-</div>
-    
-<header>
-
-<h1>🎡 Daily Spin</h1>
-
-<p>Spin once a day for a chance to earn bonus points.</p>
-
-</header>
-
-<div class="container">
-
-<div class="card">
-
-<h2>💰 Your Points</h2>
-
-<div
-class="points-number"
-id="points">
-0
-</div>
-
-<p>points available</p>
-
-</div>
-
-
-<div class="card">
-
-<h2>🎡 Spin the Wheel</h2>
-
-<p>
-You get <strong>1 free spin per day</strong>.
-</p>
-
-<div class="wheel">
-
-<span>SPIN</span>
-
-</div>
-
-<button
-id="spinButton"
-onclick="spinWheel()">
-
-🎡 Spin Now
-
-</button>
-
-<div
-id="spinMessage"
-class="message">
-</div>
-
-</div>
-
-
-<div class="card">
-
-<h2>🎁 Possible Rewards</h2>
-
-<p>Try Again — 0 points</p>
-<p>Small Reward — 2 points</p>
-<p>Good Reward — 5 points</p>
-<p>Great Reward — 10 points</p>
-<p>Bonus Reward — 15 points</p>
-
-</div>
-
-</div>
-
-<footer>
-
-Reward Platform — Prototype
-
-</footer>
+<!-- =====================================================
+     LOGIN PROTECTION
+===================================================== -->
 
 <script>
 
-/* =========================
-   PAGE PROTECTION
-========================= */
-
 if (
-    localStorage.getItem("loggedIn") !== "true"
+    localStorage.getItem("loggedIn")
+    !==
+    "true"
 ) {
-    localStorage.setItem(
-        "loginReturnPage",
-        "spin.html"
-    );
 
-    window.location.href = "login.html";
+    window.location.href =
+        "login.html";
+
 }
-    
-/* =========================
-   POINTS
-========================= */
 
-let points =
-    Number(
-        localStorage.getItem(
-            "rewardPoints"
-        )
-    ) || 0;
-
-let history =
-    JSON.parse(
-        localStorage.getItem(
-            "rewardHistory"
-        )
-    ) || [];
+</script>
 
 
-/* =========================
-   TODAY
-========================= */
+<!-- =====================================================
+     TOP NAVIGATION
+===================================================== -->
+
+<nav class="top-nav">
+
+    <button
+        class="back-button"
+        onclick="goBack()"
+    >
+
+        ← Back
+
+    </button>
+
+</nav>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header>
+
+    <h1>
+        🎡 Daily Spin
+    </h1>
+
+    <p>
+        Spin once every day and win points!
+    </p>
+
+</header>
+
+
+<div class="container">
+
+
+<!-- =====================================================
+     POINTS
+===================================================== -->
+
+<div class="points-card">
+
+    <h2>
+        💰 Your Points
+    </h2>
+
+    <div
+        class="points-number"
+        id="points"
+    >
+        0
+    </div>
+
+    <p>
+        points available
+    </p>
+
+</div>
+
+
+<!-- =====================================================
+     DAY
+===================================================== -->
+
+<div
+    class="day"
+    id="dayDisplay"
+>
+</div>
+
+
+<!-- =====================================================
+     SPIN
+===================================================== -->
+
+<div class="spin-card">
+
+    <h2>
+        🎁 Spin the Wheel
+    </h2>
+
+    <p>
+        You can spin the wheel
+        <strong>once per day</strong>.
+    </p>
+
+
+    <div class="wheel-container">
+
+        <div class="pointer"></div>
+
+
+        <div id="wheel">
+
+            <div class="wheel-label">
+
+                <span
+                    style="
+                    transform:
+                    rotate(22.5deg)
+                    translate(95px)
+                    rotate(-22.5deg);
+                    "
+                >
+                    5
+                </span>
+
+                <span
+                    style="
+                    transform:
+                    rotate(67.5deg)
+                    translate(95px)
+                    rotate(-67.5deg);
+                    "
+                >
+                    10
+                </span>
+
+                <span
+                    style="
+                    transform:
+                    rotate(112.5deg)
+                    translate(95px)
+                    rotate(-112.5deg);
+                    "
+                >
+                    15
+                </span>
+
+                <span
+                    style="
+                    transform:
+                    rotate(157.5deg)
+                    translate(95px)
+                    rotate(-157.5deg);
+                    "
+                >
+                    20
+                </span>
+
+                <span
+                    style="
+                    transform:
+                    rotate(202.5deg)
+                    translate(95px)
+                    rotate(-202.5deg);
+                    "
+                >
+                    25
+                </span>
+
+                <span
+                    style="
+                    transform:
+                    rotate(247.5deg)
+                    translate(95px)
+                    rotate(-247.5deg);
+                    "
+                >
+                    30
+                </span>
+
+                <span
+                    style="
+                    transform:
+                    rotate(292.5deg)
+                    translate(95px)
+                    rotate(-292.5deg);
+                    "
+                >
+                    40
+                </span>
+
+                <span
+                    style="
+                    transform:
+                    rotate(337.5deg)
+                    translate(95px)
+                    rotate(-337.5deg);
+                    "
+                >
+                    50
+                </span>
+
+            </div>
+
+
+            <div class="wheel-center">
+                🎡
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <button
+        class="spin-button"
+        id="spinButton"
+        onclick="spinWheel()"
+    >
+
+        🎡 SPIN NOW
+
+    </button>
+
+
+    <div
+        class="result"
+        id="result"
+    >
+    </div>
+
+
+    <div
+        class="message"
+        id="message"
+    >
+    </div>
+
+</div>
+
+
+</div>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    Reward Platform — Prototype
+
+</footer>
+
+
+<script>
+
+/* =====================================================
+   DATE
+===================================================== */
 
 const today =
     new Date().toDateString();
 
 
-/* =========================
-   DISPLAY POINTS
-========================= */
+document.getElementById(
+    "dayDisplay"
+).textContent =
+    "Today's Spin — " + today;
+
+
+/* =====================================================
+   POINTS DISPLAY
+===================================================== */
 
 function updateDisplay() {
 
+    const points =
+        Number(
+            localStorage.getItem(
+                "rewardPoints"
+            )
+        ) || 0;
+
+
     document.getElementById(
         "points"
-    ).textContent = points;
+    ).textContent =
+        points;
 
 }
 
 
-/* =========================
+/* =====================================================
    ADD POINTS
-========================= */
+===================================================== */
 
 function addPoints(
     amount,
     activity
 ) {
 
+    let points =
+        Number(
+            localStorage.getItem(
+                "rewardPoints"
+            )
+        ) || 0;
+
+
     points += amount;
 
-    history.push({
-
-        activity: activity,
-
-        points: amount,
-
-        date:
-            new Date()
-            .toLocaleString()
-
-    });
 
     localStorage.setItem(
         "rewardPoints",
         points
     );
 
+
+    let history;
+
+    try {
+
+        history =
+            JSON.parse(
+                localStorage.getItem(
+                    "rewardHistory"
+                )
+            ) || [];
+
+        if (!Array.isArray(history)) {
+            history = [];
+        }
+
+    } catch (error) {
+
+        history = [];
+
+    }
+
+
+    history.push({
+
+        activity:
+            activity,
+
+        points:
+            amount,
+
+        date:
+            new Date().toLocaleString()
+
+    });
+
+
     localStorage.setItem(
         "rewardHistory",
         JSON.stringify(history)
     );
+
 
     updateDisplay();
 
 }
 
 
-/* =========================
-   CHECK SPIN STATUS
-========================= */
+/* =====================================================
+   REWARDS
+===================================================== */
 
-function updateSpinStatus() {
+const rewards = [
 
-    const completedDate =
-        localStorage.getItem(
-            "spinCompletedDate"
-        );
+    5,
+    10,
+    15,
+    20,
+    25,
+    30,
+    40,
+    50
 
-    const button =
-        document.getElementById(
-            "spinButton"
-        );
-
-    const message =
-        document.getElementById(
-            "spinMessage"
-        );
+];
 
 
-    if (
-        completedDate === today
-    ) {
+/* =====================================================
+   SPIN
+===================================================== */
 
-        button.disabled = true;
+let spinning = false;
 
-        button.textContent =
-            "✅ Spin Completed Today";
-
-        message.textContent =
-            "You already used today's spin.";
-
-    }
-
-}
-
-
-/* =========================
-   SPIN WHEEL
-========================= */
 
 function spinWheel() {
 
-    const completedDate =
+    if (spinning) {
+        return;
+    }
+
+
+    const lastSpin =
         localStorage.getItem(
-            "spinCompletedDate"
+            "lastSpin"
         );
 
-    const message =
-        document.getElementById(
-            "spinMessage"
-        );
 
-    const button =
-        document.getElementById(
-            "spinButton"
-        );
-
+    /* Check daily limit */
 
     if (
-        completedDate === today
+        lastSpin === today
     ) {
 
-        message.textContent =
+        document.getElementById(
+            "message"
+        ).textContent =
             "You already used today's spin.";
 
-        button.disabled = true;
+        document.getElementById(
+            "spinButton"
+        ).disabled = true;
 
         return;
 
     }
+
+
+    spinning = true;
+
+
+    const button =
+        document.getElementById(
+            "spinButton"
+        );
+
+
+    const result =
+        document.getElementById(
+            "result"
+        );
+
+
+    const message =
+        document.getElementById(
+            "message"
+        );
 
 
     button.disabled = true;
@@ -493,107 +946,188 @@ function spinWheel() {
         "⏳ Spinning...";
 
 
-    const rewards = [
-        0,
-        2,
-        5,
-        10,
-        15
-    ];
+    result.textContent = "";
+
+    message.textContent = "";
+
+
+    /* =================================================
+       SELECT REWARD
+    ================================================= */
+
+    const rewardIndex =
+        Math.floor(
+            Math.random()
+            *
+            rewards.length
+        );
 
 
     const reward =
-        rewards[
-            Math.floor(
-                Math.random() *
-                rewards.length
-            )
-        ];
+        rewards[rewardIndex];
 
+
+    /* =================================================
+       WHEEL ROTATION
+    ================================================= */
+
+    const wheel =
+        document.getElementById(
+            "wheel"
+        );
+
+
+    const segmentSize =
+        360 / rewards.length;
+
+
+    const targetAngle =
+        360
+        -
+        (
+            rewardIndex
+            *
+            segmentSize
+        )
+        -
+        (
+            segmentSize / 2
+        );
+
+
+    const extraSpins =
+        360 * 6;
+
+
+    const finalRotation =
+        extraSpins
+        +
+        targetAngle;
+
+
+    wheel.style.transform =
+        "rotate("
+        +
+        finalRotation
+        +
+        "deg)";
+
+
+    /* =================================================
+       COMPLETE AFTER ANIMATION
+    ================================================= */
 
     setTimeout(
         function() {
 
+            spinning = false;
+
+
+            /* Save today's spin */
+
             localStorage.setItem(
-                "spinCompletedDate",
+                "lastSpin",
                 today
             );
 
 
-            if (
-                reward > 0
-            ) {
+            /* Award points */
 
-                addPoints(
-                    reward,
-                    "Daily Spin"
-                );
+            addPoints(
+                reward,
+                "Daily Spin"
+            );
 
-                message.textContent =
-                    "🎉 You won " +
-                    reward +
-                    " points!";
 
-            } else {
+            /* Display result */
 
-                message.textContent =
-                    "Try again tomorrow! You won 0 points.";
+            result.textContent =
+                "🎉 You won "
+                +
+                reward
+                +
+                " points!";
 
-            }
+
+            message.textContent =
+                "Your points have been added to your balance.";
 
 
             button.textContent =
                 "✅ Spin Completed Today";
 
+
+            button.disabled = true;
+
+
         },
-        1500
+        5000
     );
 
 }
 
 
-/* =========================
-   START
-========================= */
+/* =====================================================
+   CHECK TODAY'S STATUS
+===================================================== */
+
+function checkSpinStatus() {
+
+    const lastSpin =
+        localStorage.getItem(
+            "lastSpin"
+        );
+
+
+    if (
+        lastSpin === today
+    ) {
+
+        const button =
+            document.getElementById(
+                "spinButton"
+            );
+
+
+        button.disabled = true;
+
+
+        button.textContent =
+            "✅ Spin Completed Today";
+
+
+        document.getElementById(
+            "message"
+        ).textContent =
+            "You already used today's spin.";
+
+    }
+
+}
+
+
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+function goBack() {
+
+    window.history.back();
+
+}
+
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
 
 updateDisplay();
 
-updateSpinStatus();
-/* =========================
-   SIDE MENU
-========================= */
+checkSpinStatus();
 
-function toggleMenu() {
-
-    const menu =
-        document.getElementById("sideMenu");
-
-    const overlay =
-        document.getElementById("menuOverlay");
-
-    menu.classList.toggle("open");
-    overlay.classList.toggle("open");
-}
-    
-    /* =========================
-   LOGOUT
-========================= */
-
-function logoutUser() {
-
-    localStorage.removeItem(
-        "loggedIn"
-    );
-
-    localStorage.removeItem(
-        "loginReturnPage"
-    );
-
-    window.location.href =
-        "index.html";
-}
-    
 </script>
 
+
 </body>
+
 </html>
