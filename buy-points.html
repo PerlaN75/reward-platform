@@ -2,12 +2,21 @@
 <html lang="en">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
 <title>Buy Points - Reward Platform</title>
 
 <style>
+
+/* =====================================================
+   GENERAL
+===================================================== */
 
 * {
     box-sizing: border-box;
@@ -15,511 +24,698 @@
 
 body {
     margin: 0;
+
     font-family: Arial, sans-serif;
+
     background: #f4f7fb;
+
     color: #222;
 }
 
-/* =========================
+
+/* =====================================================
    TOP NAVIGATION
-========================= */
+===================================================== */
 
 .top-nav {
     background: #182848;
+
     padding: 12px 10px;
+
     display: flex;
+
     align-items: center;
-    gap: 8px;
 }
 
-.top-nav a,
-.menu-button {
+
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+.back-button {
+    width: auto;
+
+    margin: 0;
+
+    padding: 11px 16px;
+
+    background:
+        rgba(255,255,255,0.12);
+
     color: white;
-    text-decoration: none;
-    padding: 11px 14px;
-    font-weight: bold;
-    border-radius: 10px;
-}
 
-.menu-button {
-    background: transparent;
     border: none;
-    width: auto;
-    margin: 0;
+
+    border-radius: 10px;
+
     font-size: 16px;
-    cursor: pointer;
-}
 
-.home-button {
-    background: rgba(255,255,255,0.12);
-}
-
-/* =========================
-   SIDE MENU
-========================= */
-
-.side-menu {
-    position: fixed;
-    top: 0;
-    left: -280px;
-    width: 270px;
-    height: 100%;
-    background: #182848;
-    z-index: 1000;
-    padding-top: 60px;
-    transition: left 0.3s ease;
-    box-shadow: 4px 0 15px rgba(0,0,0,0.25);
-}
-
-.side-menu.open {
-    left: 0;
-}
-
-.side-menu a {
-    display: block;
-    color: white;
-    text-decoration: none;
-    padding: 16px 20px;
     font-weight: bold;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
 
-.side-menu a:hover {
-    background: #0066ff;
-}
-
-.close-menu {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: auto;
-    margin: 0;
-    padding: 8px 12px;
-    background: transparent;
-    color: white;
-    font-size: 20px;
     cursor: pointer;
 }
 
-/* =========================
-   OVERLAY
-========================= */
-
-.menu-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
-    z-index: 999;
-    display: none;
+.back-button:hover {
+    background:
+        rgba(255,255,255,0.22);
 }
 
-.menu-overlay.open {
-    display: block;
-}
 
-/* =========================
+/* =====================================================
    HEADER
-========================= */
+===================================================== */
 
 header {
     background: #182848;
+
     color: white;
-    text-align: center;
+
     padding: 25px 15px;
+
+    text-align: center;
 }
 
 header h1 {
     margin: 0;
+
+    animation:
+        headerHeadingInvert
+        3s infinite alternate;
 }
 
-/* =========================
+header p {
+    margin: 8px 0 0;
+}
+
+
+/* =====================================================
+   HEADER ANIMATION
+===================================================== */
+
+@keyframes headerHeadingInvert {
+
+    0% {
+        color: white;
+    }
+
+    100% {
+        color: #00bfff;
+    }
+
+}
+
+
+/* =====================================================
    CONTENT
-========================= */
+===================================================== */
 
 .container {
     max-width: 700px;
+
     margin: auto;
+
     padding: 15px;
 }
 
+
+/* =====================================================
+   CARD
+===================================================== */
+
 .card {
     background: white;
+
     border-radius: 14px;
+
     padding: 20px;
+
     margin: 15px 0;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.08);
 }
 
-/* =========================
-   BALANCE
-========================= */
+.card h2 {
+    animation:
+        cardHeadingInvert
+        3s infinite alternate;
+}
 
-.points {
+
+/* =====================================================
+   CARD HEADING ANIMATION
+===================================================== */
+
+@keyframes cardHeadingInvert {
+
+    0% {
+        color: #182848;
+    }
+
+    100% {
+        color: #00bfff;
+    }
+
+}
+
+
+/* =====================================================
+   BALANCE
+===================================================== */
+
+.balance {
     text-align: center;
 }
 
-.points-number {
-    font-size: 40px;
+.balance-number {
+    font-size: 42px;
+
     font-weight: bold;
+
     margin: 10px 0;
 }
 
-/* =========================
+
+/* =====================================================
    PACKAGES
-========================= */
+===================================================== */
+
+.packages {
+    display: grid;
+
+    gap: 15px;
+}
+
+
+/* =====================================================
+   PACKAGE CARD
+===================================================== */
 
 .package {
+    border:
+        2px solid #e1e5eb;
+
+    border-radius: 14px;
+
+    padding: 20px;
+
     text-align: center;
-    border: 2px solid #e3e7ef;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
+
+.package:hover {
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 5px 15px
+        rgba(0,0,0,0.10);
+}
+
+
+/* =====================================================
+   PACKAGE ICON
+===================================================== */
+
+.package-icon {
+    font-size: 42px;
+
+    margin-bottom: 8px;
+}
+
+
+/* =====================================================
+   PACKAGE POINTS
+===================================================== */
 
 .package-points {
-    font-size: 30px;
+    font-size: 28px;
+
     font-weight: bold;
-    margin: 12px 0;
+
+    color: #182848;
+
+    margin: 8px 0;
 }
+
+
+/* =====================================================
+   PACKAGE PRICE
+===================================================== */
 
 .package-price {
-    font-size: 18px;
+    font-size: 20px;
+
     font-weight: bold;
-    margin-bottom: 10px;
+
+    margin-bottom: 15px;
 }
 
-.package button {
+
+/* =====================================================
+   BUY BUTTON
+===================================================== */
+
+.buy-button {
     width: 100%;
-    padding: 14px;
+
+    padding: 13px;
+
     border: none;
+
     border-radius: 10px;
+
     background: #182848;
+
     color: white;
+
     font-size: 16px;
+
+    font-weight: bold;
+
     cursor: pointer;
 }
 
-.package button:hover {
-    background: #0066ff;
+.buy-button:hover {
+    opacity: 0.9;
 }
 
-/* =========================
-   NOTICE
-========================= */
+
+/* =====================================================
+   COMING SOON
+===================================================== */
 
 .notice {
     background: #fff8e1;
-    border-left: 5px solid #ffb300;
-    padding: 12px;
-    border-radius: 8px;
-    line-height: 1.5;
+
+    border-left:
+        5px solid #f0ad00;
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    line-height: 1.6;
 }
 
-/* =========================
+
+/* =====================================================
    MESSAGE
-========================= */
+===================================================== */
 
 .message {
     text-align: center;
+
     font-weight: bold;
-    margin: 20px 0;
+
+    margin-top: 15px;
+
+    min-height: 24px;
 }
 
-/* =========================
-   ANIMATED HEADINGS
-========================= */
 
-h1,
-h2 {
-    background: linear-gradient(
-        90deg,
-        #ffb300,
-        #ff4d8d,
-        #8a2be2,
-        #2196f3,
-        #ffb300
-    );
+/* =====================================================
+   INFORMATION
+===================================================== */
 
-    background-size: 300% 100%;
+.info-list {
+    padding-left: 20px;
 
-    -webkit-background-clip: text;
-    background-clip: text;
-
-    color: transparent;
-
-    animation: headingSlide 8s linear infinite;
+    line-height: 1.7;
 }
 
-@keyframes headingSlide {
 
-    from {
-        background-position: 0% 50%;
-    }
-
-    to {
-        background-position: 300% 50%;
-    }
-}
-
-/* =========================
+/* =====================================================
    FOOTER
-========================= */
+===================================================== */
 
 footer {
     text-align: center;
+
     padding: 25px;
+
     color: #666;
+
     font-size: 14px;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 450px) {
+
+    .package-points {
+        font-size: 25px;
+    }
+
 }
 
 </style>
 
 </head>
 
+
 <body>
 
-<!-- =========================
-     TOP BAR
-========================= -->
+
+<!-- =====================================================
+     LOGIN PROTECTION
+===================================================== -->
+
+<script>
+
+if (
+    localStorage.getItem("loggedIn")
+    !==
+    "true"
+) {
+
+    window.location.href =
+        "login.html";
+
+}
+
+</script>
+
+
+<!-- =====================================================
+     TOP NAVIGATION
+===================================================== -->
 
 <nav class="top-nav">
 
     <button
-        type="button"
-        class="menu-button"
-        onclick="toggleMenu()">
+        class="back-button"
+        onclick="goBack()">
 
-        ☰ Menu
+        ← Back
 
     </button>
-
-    <a
-        href="index.html"
-        class="home-button">
-
-        🏠 Home
-
-    </a>
 
 </nav>
 
 
-<!-- =========================
-     SIDE MENU
-========================= -->
-
-<div
-    id="sideMenu"
-    class="side-menu">
-
-    <button
-        type="button"
-        class="close-menu"
-        onclick="toggleMenu()">
-
-        ✕
-
-    </button>
-
-
-    <a href="earn.html">
-        💰 Earn Points
-    </a>
-
-    <a href="watch.html">
-        📺 Watch & Earn
-    </a>
-
-    <a href="spin.html">
-        🎡 Daily Spin
-    </a>
-
-    <a href="challenges.html">
-        🏆 Challenges
-    </a>
-
-    <a href="buy-points.html">
-        💳 Buy Points
-    </a>
-
-    <a href="balance.html">
-        💰 My Balance
-    </a>
-
-    <a href="withdraw.html">
-        💸 Withdraw
-    </a>
-
-    <a href="rewards.html">
-        🎁 Rewards
-    </a>
-
-</div>
-
-
-<!-- =========================
-     OVERLAY
-========================= -->
-
-<div
-    id="menuOverlay"
-    class="menu-overlay"
-    onclick="toggleMenu()">
-</div>
-
-
-<!-- =========================
-     PAGE HEADER
-========================= -->
+<!-- =====================================================
+     HEADER
+===================================================== -->
 
 <header>
 
     <h1>💳 Buy Points</h1>
 
     <p>
-        Increase your points balance.
+        Increase your balance with additional points.
     </p>
 
 </header>
 
 
-<!-- =========================
-     PAGE CONTENT
-========================= -->
-
 <div class="container">
 
 
-    <!-- CURRENT BALANCE -->
+<!-- =====================================================
+     CURRENT BALANCE
+===================================================== -->
 
-    <div class="card points">
+<div class="card balance">
 
-        <h2>💰 Your Current Balance</h2>
+    <h2>💰 Your Current Balance</h2>
 
-        <div
-            id="points"
-            class="points-number">
+    <div
+        class="balance-number"
+        id="points">
 
-            0
+        0
+
+    </div>
+
+    <p>
+        points available
+    </p>
+
+</div>
+
+
+<!-- =====================================================
+     PAYMENT NOTICE
+===================================================== -->
+
+<div class="card">
+
+    <h2>💳 Payment Information</h2>
+
+    <div class="notice">
+
+        <strong>Prototype Notice</strong>
+
+        <br><br>
+
+        Real payments are not connected yet.
+
+        <br>
+
+        The packages below show how the
+        future purchasing system will work.
+
+        <br>
+
+        No money will be charged by this page.
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     POINT PACKAGES
+===================================================== -->
+
+<div class="card">
+
+    <h2>🪙 Choose a Points Package</h2>
+
+    <p>
+        Select a package below.
+    </p>
+
+
+    <div class="packages">
+
+
+        <!-- =================================================
+             PACKAGE 1
+        ================================================= -->
+
+        <div class="package">
+
+            <div class="package-icon">
+                🪙
+            </div>
+
+            <div class="package-points">
+                100 Points
+            </div>
+
+            <div class="package-price">
+                $1.00
+            </div>
+
+            <button
+                class="buy-button"
+                onclick="selectPackage(100, '$1.00')">
+
+                Buy 100 Points
+
+            </button>
 
         </div>
 
-        <p>
-            points available
-        </p>
+
+        <!-- =================================================
+             PACKAGE 2
+        ================================================= -->
+
+        <div class="package">
+
+            <div class="package-icon">
+                💰
+            </div>
+
+            <div class="package-points">
+                500 Points
+            </div>
+
+            <div class="package-price">
+                $5.00
+            </div>
+
+            <button
+                class="buy-button"
+                onclick="selectPackage(500, '$5.00')">
+
+                Buy 500 Points
+
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             PACKAGE 3
+        ================================================= -->
+
+        <div class="package">
+
+            <div class="package-icon">
+                💎
+            </div>
+
+            <div class="package-points">
+                1,000 Points
+            </div>
+
+            <div class="package-price">
+                $10.00
+            </div>
+
+            <button
+                class="buy-button"
+                onclick="selectPackage(1000, '$10.00')">
+
+                Buy 1,000 Points
+
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             PACKAGE 4
+        ================================================= -->
+
+        <div class="package">
+
+            <div class="package-icon">
+                👑
+            </div>
+
+            <div class="package-points">
+                5,000 Points
+            </div>
+
+            <div class="package-price">
+                $50.00
+            </div>
+
+            <button
+                class="buy-button"
+                onclick="selectPackage(5000, '$50.00')">
+
+                Buy 5,000 Points
+
+            </button>
+
+        </div>
 
     </div>
 
 
-    <!-- INFORMATION -->
-
-    <div class="card">
-
-        <h2>ℹ️ About Buying Points</h2>
-
-        <p>
-            Choose a points package below.
-        </p>
-
-        <div class="notice">
-
-            <strong>Prototype:</strong>
-
-            Point purchases are currently
-            simulated for testing.
-
-            No real payment is processed
-            on this page.
-
-        </div>
-
-    </div>
-
-
-    <!-- STARTER -->
-
-    <div class="card package">
-
-        <h2>🌱 Starter</h2>
-
-        <div class="package-points">
-            100 Points
-        </div>
-
-        <div class="package-price">
-            Demo Package
-        </div>
-
-        <button
-            type="button"
-            onclick="selectPackage(100)">
-
-            Select 100 Points
-
-        </button>
-
-    </div>
-
-
-    <!-- STANDARD -->
-
-    <div class="card package">
-
-        <h2>⭐ Standard</h2>
-
-        <div class="package-points">
-            250 Points
-        </div>
-
-        <div class="package-price">
-            Demo Package
-        </div>
-
-        <button
-            type="button"
-            onclick="selectPackage(250)">
-
-            Select 250 Points
-
-        </button>
-
-    </div>
-
-
-    <!-- PREMIUM -->
-
-    <div class="card package">
-
-        <h2>🚀 Premium</h2>
-
-        <div class="package-points">
-            500 Points
-        </div>
-
-        <div class="package-price">
-            Demo Package
-        </div>
-
-        <button
-            type="button"
-            onclick="selectPackage(500)">
-
-            Select 500 Points
-
-        </button>
-
-    </div>
-
+    <!-- =================================================
+         MESSAGE
+    ================================================= -->
 
     <div
         id="message"
         class="message">
     </div>
 
+</div>
+
+
+<!-- =====================================================
+     HOW IT WILL WORK
+===================================================== -->
+
+<div class="card">
+
+    <h2>📋 How Buying Points Will Work</h2>
+
+    <ol class="info-list">
+
+        <li>
+            Choose the points package you want.
+        </li>
+
+        <li>
+            Select a supported payment method.
+        </li>
+
+        <li>
+            Complete the payment.
+        </li>
+
+        <li>
+            The payment is verified.
+        </li>
+
+        <li>
+            Points are added to your account.
+        </li>
+
+        <li>
+            The purchase is recorded in your
+            transaction history.
+        </li>
+
+    </ol>
 
 </div>
 
 
-<!-- =========================
+<!-- =====================================================
+     FUTURE PAYMENT METHODS
+===================================================== -->
+
+<div class="card">
+
+    <h2>💳 Future Payment Methods</h2>
+
+    <p>
+        We can later decide which payment
+        methods are appropriate for the platform.
+    </p>
+
+    <ul class="info-list">
+
+        <li>Mobile Money</li>
+
+        <li>Bank/Card payments</li>
+
+        <li>Other supported payment providers</li>
+
+    </ul>
+
+    <p>
+        Payment integration will be added
+        only after the platform's purchase
+        rules and verification system are ready.
+    </p>
+
+</div>
+
+
+</div>
+
+
+<!-- =====================================================
      FOOTER
-========================= -->
+===================================================== -->
 
 <footer>
 
@@ -530,66 +726,72 @@ footer {
 
 <script>
 
-/* =========================
-   DISPLAY BALANCE
-========================= */
+/* =====================================================
+   UPDATE BALANCE
+===================================================== */
 
-function updateDisplay() {
+function updateBalance() {
 
     const points =
         Number(
-            localStorage.getItem("rewardPoints")
+            localStorage.getItem(
+                "rewardPoints"
+            )
         ) || 0;
 
-    document.getElementById("points")
-        .textContent = points;
+
+    document.getElementById(
+        "points"
+    ).textContent =
+        points;
 
 }
 
 
-/* =========================
+/* =====================================================
    SELECT PACKAGE
-========================= */
+===================================================== */
 
-function selectPackage(amount) {
+function selectPackage(
+    points,
+    price
+) {
 
     const message =
-        document.getElementById("message");
+        document.getElementById(
+            "message"
+        );
+
 
     message.textContent =
         "You selected " +
-        amount +
-        " points. Payment integration will be added later.";
+        points +
+        " points for " +
+        price +
+        ". Real payment integration is coming later.";
 
 }
 
 
-/* =========================
-   OPEN / CLOSE MENU
-========================= */
+/* =====================================================
+   BACK BUTTON
+===================================================== */
 
-function toggleMenu() {
+function goBack() {
 
-    const menu =
-        document.getElementById("sideMenu");
-
-    const overlay =
-        document.getElementById("menuOverlay");
-
-    menu.classList.toggle("open");
-
-    overlay.classList.toggle("open");
+    window.history.back();
 
 }
 
 
-/* =========================
-   START
-========================= */
+/* =====================================================
+   INITIAL DISPLAY
+===================================================== */
 
-updateDisplay();
+updateBalance();
 
 </script>
+
 
 </body>
 
