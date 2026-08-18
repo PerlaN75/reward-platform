@@ -2,445 +2,522 @@
 <html lang="en">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
 <title>My Balance - Reward Platform</title>
 
 <style>
+
+/* =====================================================
+   GENERAL
+===================================================== */
 
 * {
     box-sizing: border-box;
 }
 
 body {
+
     margin: 0;
+
     font-family: Arial, sans-serif;
+
     background: #f4f7fb;
+
     color: #222;
+
 }
 
-/* =========================
+
+/* =====================================================
    TOP NAVIGATION
-========================= */
+===================================================== */
 
 .top-nav {
+
     background: #182848;
+
     padding: 12px 10px;
+
     display: flex;
+
     align-items: center;
-    gap: 8px;
+
 }
 
-.top-nav a,
-.menu-button {
-    color: white;
-    text-decoration: none;
-    padding: 11px 14px;
-    font-weight: bold;
-    border-radius: 10px;
-}
 
-.menu-button {
-    background: transparent;
-    border: none;
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+.back-button {
+
     width: auto;
-    margin: 0;
-    font-size: 16px;
-    cursor: pointer;
-}
 
-.home-button {
+    margin: 0;
+
+    padding: 11px 16px;
+
     background: rgba(255,255,255,0.12);
-}
 
-/* =========================
-   SIDE MENU
-========================= */
-
-.side-menu {
-    position: fixed;
-    top: 0;
-    left: -280px;
-    width: 270px;
-    height: 100%;
-    background: #182848;
-    z-index: 1000;
-    padding-top: 60px;
-    transition: left 0.3s ease;
-    box-shadow: 4px 0 15px rgba(0,0,0,0.25);
-}
-
-.side-menu.open {
-    left: 0;
-}
-
-.side-menu a {
-    display: block;
     color: white;
-    text-decoration: none;
-    padding: 16px 20px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    font-size: 16px;
+
     font-weight: bold;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
 
-.side-menu a:hover {
-    background: #0066ff;
-}
-
-.close-menu {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: auto;
-    margin: 0;
-    padding: 8px 12px;
-    background: transparent;
-    color: white;
-    font-size: 20px;
     cursor: pointer;
+
 }
 
-/* =========================
-   MENU OVERLAY
-========================= */
+.back-button:hover {
 
-.menu-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
-    z-index: 999;
-    display: none;
+    background: rgba(255,255,255,0.22);
+
 }
 
-.menu-overlay.open {
-    display: block;
-}
 
-/* =========================
+/* =====================================================
    HEADER
-========================= */
+===================================================== */
 
 header {
+
     background: #182848;
+
     color: white;
-    text-align: center;
+
     padding: 25px 15px;
+
+    text-align: center;
+
 }
 
 header h1 {
+
     margin: 0;
+
+    animation: headingAnimation 3s infinite alternate;
+
 }
 
-/* =========================
-   CONTAINER
-========================= */
+header p {
+
+    margin: 8px 0 0;
+
+}
+
+
+/* =====================================================
+   HEADING ANIMATION
+===================================================== */
+
+@keyframes headingAnimation {
+
+    0% {
+
+        color: white;
+
+    }
+
+    100% {
+
+        color: #00bfff;
+
+    }
+
+}
+
+
+/* =====================================================
+   MAIN CONTAINER
+===================================================== */
 
 .container {
+
     max-width: 700px;
+
     margin: auto;
+
     padding: 15px;
+
 }
 
-/* =========================
+
+/* =====================================================
    CARDS
-========================= */
+===================================================== */
 
 .card {
+
     background: white;
+
     border-radius: 14px;
+
     padding: 20px;
+
     margin: 15px 0;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+
+    box-shadow:
+        0 3px 12px rgba(0,0,0,0.08);
+
 }
 
-/* =========================
-   BALANCE
-========================= */
+.card h2 {
+
+    margin-top: 0;
+
+    animation: cardHeadingAnimation 3s infinite alternate;
+
+}
+
+@keyframes cardHeadingAnimation {
+
+    0% {
+
+        color: #182848;
+
+    }
+
+    100% {
+
+        color: #00bfff;
+
+    }
+
+}
+
+
+/* =====================================================
+   MAIN BALANCE
+===================================================== */
 
 .balance-card {
+
     text-align: center;
+
 }
 
 .balance-number {
+
     font-size: 48px;
+
     font-weight: bold;
-    margin: 12px 0;
+
+    margin: 15px 0;
+
+    color: #182848;
+
 }
 
 .balance-label {
+
     color: #666;
+
+    font-size: 16px;
+
 }
 
-/* =========================
+
+/* =====================================================
    SUMMARY
-========================= */
+===================================================== */
 
 .summary {
-    display: flex;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
     gap: 12px;
-    flex-wrap: wrap;
+
 }
 
 .summary-box {
-    flex: 1;
-    min-width: 140px;
+
     background: #f4f7fb;
+
     border-radius: 12px;
+
     padding: 18px;
+
     text-align: center;
+
+}
+
+.summary-box h3 {
+
+    margin: 0;
+
+    font-size: 15px;
+
+    color: #555;
+
 }
 
 .summary-number {
+
     font-size: 28px;
+
     font-weight: bold;
-    margin-bottom: 5px;
+
+    margin-top: 8px;
+
+    color: #182848;
+
 }
 
-.summary-label {
-    color: #555;
-}
 
-/* =========================
+/* =====================================================
    HISTORY
-========================= */
+===================================================== */
 
 .history-item {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 10px;
+
     padding: 14px 0;
-    border-bottom: 1px solid #e5e5e5;
+
+    border-bottom:
+        1px solid #e5e5e5;
+
 }
 
 .history-item:last-child {
+
     border-bottom: none;
+
 }
 
 .history-activity {
+
     font-weight: bold;
+
 }
 
-.earned {
-    color: #16803c;
-}
+.history-date {
 
-.redeemed {
-    color: #c62828;
-}
+    font-size: 12px;
 
-.history-details {
-    color: #666;
-    font-size: 14px;
+    color: #777;
+
     margin-top: 4px;
+
 }
 
-/* =========================
+.history-points {
+
+    font-weight: bold;
+
+    white-space: nowrap;
+
+}
+
+
+/* =====================================================
+   POSITIVE POINTS
+===================================================== */
+
+.positive {
+
+    color: #168a45;
+
+}
+
+
+/* =====================================================
    EMPTY HISTORY
-========================= */
+===================================================== */
 
 .empty-history {
+
     text-align: center;
+
     color: #777;
+
     padding: 20px 0;
+
 }
 
-/* =========================
+
+/* =====================================================
    BUTTONS
-========================= */
+===================================================== */
 
-.action-button {
-    display: block;
+button {
+
     width: 100%;
+
     padding: 14px;
-    margin-top: 12px;
+
+    border: none;
+
     border-radius: 10px;
+
     background: #182848;
+
     color: white;
-    text-decoration: none;
-    text-align: center;
-    font-weight: bold;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    margin-top: 10px;
+
 }
 
-.action-button:hover {
+button:hover {
+
     opacity: 0.9;
+
 }
 
-/* =========================
-   ANIMATED HEADINGS
-========================= */
 
-h1,
-h2 {
-    background: linear-gradient(
-        90deg,
-        #ffb300,
-        #ff4d8d,
-        #8a2be2,
-        #2196f3,
-        #ffb300
-    );
-
-    background-size: 300% 100%;
-
-    -webkit-background-clip: text;
-    background-clip: text;
-
-    color: transparent;
-
-    animation: headingSlide 8s linear infinite;
-}
-
-@keyframes headingSlide {
-
-    from {
-        background-position: 0% 50%;
-    }
-
-    to {
-        background-position: 300% 50%;
-    }
-}
-
-/* =========================
+/* =====================================================
    FOOTER
-========================= */
+===================================================== */
 
 footer {
+
     text-align: center;
+
     padding: 25px;
+
     color: #666;
+
     font-size: 14px;
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 500px) {
+
+    .summary {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .balance-number {
+
+        font-size: 42px;
+
+    }
+
 }
 
 </style>
+
 </head>
 
 
 <body>
 
-<!-- =========================
+
+<!-- =====================================================
+     LOGIN PROTECTION
+===================================================== -->
+
+<script>
+
+if (
+    localStorage.getItem("loggedIn")
+    !== "true"
+) {
+
+    window.location.href = "login.html";
+
+}
+
+</script>
+
+
+<!-- =====================================================
      TOP NAVIGATION
-========================= -->
+===================================================== -->
 
 <nav class="top-nav">
 
     <button
-        type="button"
-        class="menu-button"
-        onclick="toggleMenu()">
-        ☰ Menu
-    </button>
+        class="back-button"
+        onclick="goBack()">
 
-    <a
-        href="index.html"
-        class="home-button">
-        🏠 Home
-    </a>
+        ← Back
+
+    </button>
 
 </nav>
 
 
-<!-- =========================
-     SIDE MENU
-========================= -->
-
-<div
-    id="sideMenu"
-    class="side-menu">
-
-    <button
-        type="button"
-        class="close-menu"
-        onclick="toggleMenu()">
-        ✕
-    </button>
-
-    <a href="earn.html">
-        💰 Earn Points
-    </a>
-
-    <a href="watch.html">
-        📺 Watch & Earn
-    </a>
-
-    <a href="spin.html">
-        🎡 Daily Spin
-    </a>
-
-    <a href="challenges.html">
-        🏆 Challenges
-    </a>
-
-    <a href="buy-points.html">
-        💳 Buy Points
-    </a>
-
-    <a href="balance.html">
-        💰 My Balance
-    </a>
-
-    <a href="withdraw.html">
-    💸 Withdraw
-    </a>
-
-    <a href="rewards.html">
-        🎁 Rewards
-    </a>
-
-</div>
-
-
-<!-- =========================
-     MENU OVERLAY
-========================= -->
-
-<div
-    id="menuOverlay"
-    class="menu-overlay"
-    onclick="toggleMenu()">
-</div>
-
-
-<!-- =========================
-     PAGE HEADER
-========================= -->
+<!-- =====================================================
+     HEADER
+===================================================== -->
 
 <header>
 
     <h1>💰 My Balance</h1>
 
     <p>
-        View your points and complete transaction history.
+        View your points balance and activity history.
     </p>
 
 </header>
 
 
-<!-- =========================
-     PAGE CONTENT
-========================= -->
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
 
 <div class="container">
 
 
-    <!-- CURRENT BALANCE -->
+    <!-- =================================================
+         CURRENT BALANCE
+    ================================================== -->
 
     <div class="card balance-card">
 
         <h2>💰 Current Balance</h2>
 
         <div
-            id="balance"
-            class="balance-number">
+            class="balance-number"
+            id="balance">
+
             0
+
         </div>
 
         <div class="balance-label">
-            points available
+
+            Points Available
+
         </div>
 
     </div>
 
 
-    <!-- POINTS SUMMARY -->
+    <!-- =================================================
+         SUMMARY
+    ================================================== -->
 
     <div class="card">
 
@@ -449,95 +526,51 @@ footer {
         <div class="summary">
 
 
-            <!-- TOTAL EARNED -->
-
             <div class="summary-box">
 
-                <div
-                    id="totalEarned"
-                    class="summary-number">
-                    0
-                </div>
+                <h3>Total Earned</h3>
 
-                <div class="summary-label">
-                    Total Earned
+                <div
+                    class="summary-number"
+                    id="totalEarned">
+
+                    0
+
                 </div>
 
             </div>
 
 
-            <!-- TOTAL REDEEMED -->
-
             <div class="summary-box">
 
-                <div
-                    id="totalRedeemed"
-                    class="summary-number">
-                    0
-                </div>
+                <h3>Total Activities</h3>
 
-                <div class="summary-label">
-                    Total Redeemed
+                <div
+                    class="summary-number"
+                    id="totalActivities">
+
+                    0
+
                 </div>
 
             </div>
 
-
-            <!-- ACTIVITIES -->
-
-            <div class="summary-box">
-
-                <div
-                    id="activityCount"
-                    class="summary-number">
-                    0
-                </div>
-
-                <div class="summary-label">
-                    Activities
-                </div>
-
-            </div>
 
         </div>
 
     </div>
 
 
-    <!-- QUICK ACTIONS -->
+    <!-- =================================================
+         ACTIVITY HISTORY
+    ================================================== -->
 
     <div class="card">
 
-        <h2>⚡ Quick Actions</h2>
-
-        <a
-            href="earn.html"
-            class="action-button">
-            💰 Earn More Points
-        </a>
-
-        <a
-            href="buy-points.html"
-            class="action-button">
-            💳 Buy Points
-        </a>
-
-        <a
-            href="rewards.html"
-            class="action-button">
-            🎁 View Rewards
-        </a>
-
-    </div>
-
-
-    <!-- TRANSACTION HISTORY -->
-
-    <div class="card">
-
-        <h2>📜 Transaction History</h2>
+        <h2>📜 Activity History</h2>
 
         <div id="history">
+
         </div>
 
     </div>
@@ -546,9 +579,9 @@ footer {
 </div>
 
 
-<!-- =========================
+<!-- =====================================================
      FOOTER
-========================= -->
+===================================================== -->
 
 <footer>
 
@@ -557,33 +590,92 @@ footer {
 </footer>
 
 
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
 <script>
 
-/* =========================
-   LOAD BALANCE AND SUMMARY
-========================= */
 
-function loadBalance() {
+/* =====================================================
+   GET CURRENT BALANCE
+===================================================== */
 
-    const points =
-        Number(
-            localStorage.getItem(
-                "rewardPoints"
-            )
-        ) || 0;
+function getBalance() {
 
+    return Number(
+        localStorage.getItem(
+            "rewardPoints"
+        )
+    ) || 0;
+
+}
+
+
+/* =====================================================
+   GET HISTORY
+===================================================== */
+
+function getHistory() {
+
+    try {
+
+        const storedHistory =
+            JSON.parse(
+                localStorage.getItem(
+                    "rewardHistory"
+                )
+            );
+
+        if (
+            Array.isArray(storedHistory)
+        ) {
+
+            return storedHistory;
+
+        }
+
+        return [];
+
+    }
+
+    catch (error) {
+
+        return [];
+
+    }
+
+}
+
+
+/* =====================================================
+   DISPLAY BALANCE
+===================================================== */
+
+function displayBalance() {
+
+    const balance =
+        getBalance();
+
+    document.getElementById(
+        "balance"
+    ).textContent =
+        balance;
+
+}
+
+
+/* =====================================================
+   DISPLAY SUMMARY
+===================================================== */
+
+function displaySummary() {
 
     const history =
-        JSON.parse(
-            localStorage.getItem(
-                "rewardHistory"
-            )
-        ) || [];
+        getHistory();
 
 
     let totalEarned = 0;
-
-    let totalRedeemed = 0;
 
 
     history.forEach(
@@ -599,46 +691,33 @@ function loadBalance() {
 
             }
 
-
-            if (amount < 0) {
-
-                totalRedeemed +=
-                    Math.abs(amount);
-
-            }
-
         }
     );
 
 
     document.getElementById(
-        "balance"
-    ).textContent = points;
-
-
-    document.getElementById(
         "totalEarned"
-    ).textContent = totalEarned;
+    ).textContent =
+        totalEarned;
 
 
     document.getElementById(
-        "totalRedeemed"
-    ).textContent = totalRedeemed;
-
-
-    document.getElementById(
-        "activityCount"
+        "totalActivities"
     ).textContent =
         history.length;
 
 }
 
 
-/* =========================
-   LOAD TRANSACTION HISTORY
-========================= */
+/* =====================================================
+   DISPLAY HISTORY
+===================================================== */
 
-function loadHistory() {
+function displayHistory() {
+
+    const history =
+        getHistory();
+
 
     const historyContainer =
         document.getElementById(
@@ -646,19 +725,19 @@ function loadHistory() {
         );
 
 
-    const history =
-        JSON.parse(
-            localStorage.getItem(
-                "rewardHistory"
-            )
-        ) || [];
+    historyContainer.innerHTML = "";
 
 
-    if (history.length === 0) {
+    if (
+        history.length === 0
+    ) {
 
         historyContainer.innerHTML =
+
             '<div class="empty-history">' +
-            'No transactions recorded yet.' +
+
+            'No activities yet.' +
+
             '</div>';
 
         return;
@@ -666,10 +745,7 @@ function loadHistory() {
     }
 
 
-    historyContainer.innerHTML = "";
-
-
-    /* Newest transaction first */
+    /* Show newest activity first */
 
     const reversedHistory =
         [...history].reverse();
@@ -678,90 +754,78 @@ function loadHistory() {
     reversedHistory.forEach(
         function(item) {
 
-            const historyItem =
-                document.createElement(
-                    "div"
-                );
-
-            historyItem.className =
-                "history-item";
-
 
             const activity =
                 item.activity ||
                 "Activity";
 
 
-            const amount =
+            const points =
                 Number(item.points) || 0;
 
 
             const date =
-                item.date || "";
+                item.date ||
+                "";
 
 
-            /* EARNED */
-
-            if (amount > 0) {
-
-                historyItem.innerHTML =
-
-                    '<div class="history-activity earned">' +
-                    '🎉 ' +
-                    activity +
-                    ' — +' +
-                    amount +
-                    ' points' +
-                    '</div>' +
-
-                    '<div class="history-details">' +
-                    date +
-                    '</div>';
-
-            }
+            const itemElement =
+                document.createElement(
+                    "div"
+                );
 
 
-            /* REDEEMED */
-
-            else if (amount < 0) {
-
-                historyItem.innerHTML =
-
-                    '<div class="history-activity redeemed">' +
-                    '🎁 ' +
-                    activity +
-                    ' — −' +
-                    Math.abs(amount) +
-                    ' points' +
-                    '</div>' +
-
-                    '<div class="history-details">' +
-                    date +
-                    '</div>';
-
-            }
+            itemElement.className =
+                "history-item";
 
 
-            /* OTHER */
+            const leftSide =
+                document.createElement(
+                    "div"
+                );
 
-            else {
 
-                historyItem.innerHTML =
+            leftSide.innerHTML =
 
-                    '<div class="history-activity">' +
-                    activity +
-                    ' — 0 points' +
-                    '</div>' +
+                '<div class="history-activity">' +
 
-                    '<div class="history-details">' +
-                    date +
-                    '</div>';
+                activity +
 
-            }
+                '</div>' +
+
+                '<div class="history-date">' +
+
+                date +
+
+                '</div>';
+
+
+            const rightSide =
+                document.createElement(
+                    "div"
+                );
+
+
+            rightSide.className =
+                "history-points positive";
+
+
+            rightSide.textContent =
+                "+" + points;
+
+
+            itemElement.appendChild(
+                leftSide
+            );
+
+
+            itemElement.appendChild(
+                rightSide
+            );
 
 
             historyContainer.appendChild(
-                historyItem
+                itemElement
             );
 
         }
@@ -770,43 +834,31 @@ function loadHistory() {
 }
 
 
-/* =========================
-   SIDE MENU
-========================= */
+/* =====================================================
+   BACK BUTTON
+===================================================== */
 
-function toggleMenu() {
+function goBack() {
 
-    const menu =
-        document.getElementById(
-            "sideMenu"
-        );
-
-    const overlay =
-        document.getElementById(
-            "menuOverlay"
-        );
-
-
-    menu.classList.toggle(
-        "open"
-    );
-
-    overlay.classList.toggle(
-        "open"
-    );
+    window.history.back();
 
 }
 
 
-/* =========================
-   START
-========================= */
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
 
-loadBalance();
+displayBalance();
 
-loadHistory();
+displaySummary();
+
+displayHistory();
+
 
 </script>
 
+
 </body>
+
 </html>
