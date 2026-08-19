@@ -56,13 +56,14 @@ body {
 
     border: none;
 
-    background: rgba(255,255,255,0.12);
-
-    color: white;
+    border-radius: 10px;
 
     padding: 11px 16px;
 
-    border-radius: 10px;
+    background:
+        rgba(255,255,255,0.12);
+
+    color: white;
 
     font-size: 16px;
 
@@ -75,7 +76,8 @@ body {
 
 .back-button:hover {
 
-    background: rgba(255,255,255,0.22);
+    background:
+        rgba(255,255,255,0.22);
 
 }
 
@@ -131,10 +133,6 @@ header p {
 
 }
 
-
-/* =========================
-   HEADING ANIMATION
-========================= */
 
 @keyframes headingSlide {
 
@@ -226,7 +224,7 @@ header p {
 
 
 /* =========================
-   REFERRAL CODE
+   SECTION TITLE
 ========================= */
 
 .section-title {
@@ -235,6 +233,10 @@ header p {
 
 }
 
+
+/* =========================
+   REFERRAL CODE
+========================= */
 
 .referral-code-box {
 
@@ -580,7 +582,7 @@ if (
     <button
         type="button"
         class="back-button"
-        onclick="goBack()">
+        onclick="goBackToMenu()">
 
         ← Back
 
@@ -865,7 +867,9 @@ if (
 
         <div class="notice">
 
-            <strong>⚠️ Referral rewards are not active yet.</strong>
+            <strong>
+                ⚠️ Referral rewards are not active yet.
+            </strong>
 
             <br><br>
 
@@ -900,12 +904,23 @@ if (
    GET USER INFORMATION
 ===================================================== */
 
-const savedUser =
-    JSON.parse(
-        localStorage.getItem(
-            "rewardUser"
-        )
-    );
+let savedUser = null;
+
+
+try {
+
+    savedUser =
+        JSON.parse(
+            localStorage.getItem(
+                "rewardUser"
+            )
+        );
+
+} catch (error) {
+
+    savedUser = null;
+
+}
 
 
 /* =====================================================
@@ -926,12 +941,22 @@ function createReferralCode() {
         || "USER";
 
 
-    return (
-        "RP-" +
+    const cleanUsername =
         username
             .substring(0, 6)
             .toUpperCase()
-            .replace(/[^A-Z0-9]/g, "")
+            .replace(
+                /[^A-Z0-9]/g,
+                ""
+            );
+
+
+    return (
+        "RP-" +
+        (
+            cleanUsername
+            || "USER"
+        )
     );
 
 }
@@ -1174,12 +1199,13 @@ function fallbackCopy(
 
 
 /* =====================================================
-   BACK BUTTON
+   BACK TO MENU
 ===================================================== */
 
-function goBack() {
+function goBackToMenu() {
 
-    window.history.back();
+    window.location.href =
+        "menu.html";
 
 }
 
