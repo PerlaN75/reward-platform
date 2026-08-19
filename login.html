@@ -630,6 +630,67 @@ const BLOCK_TIME =
     30 * 60 * 1000;
 
 
+/* =====================================================
+   CREATE LOGIN NOTIFICATION
+===================================================== */
+
+function createLoginNotification() {
+
+    let notifications = [];
+
+
+    try {
+
+        notifications =
+            JSON.parse(
+                localStorage.getItem(
+                    "rewardNotifications"
+                )
+            ) || [];
+
+    } catch (error) {
+
+        notifications = [];
+
+    }
+
+
+    const now =
+        new Date();
+
+
+    const notification = {
+
+        title:
+            "🔐 Login Successful",
+
+        message:
+            "You have logged in successfully.",
+
+        time:
+            now.toLocaleString(),
+
+        read:
+            false
+
+    };
+
+
+    notifications.unshift(
+        notification
+    );
+
+
+    localStorage.setItem(
+        "rewardNotifications",
+        JSON.stringify(
+            notifications
+        )
+    );
+
+}
+
+
 /* =========================
    LOGIN USER
 ========================= */
@@ -838,6 +899,13 @@ function loginUser(event) {
     );
 
 
+    /* =========================
+       CREATE LOGIN NOTIFICATION
+    ========================= */
+
+    createLoginNotification();
+
+
     message.textContent =
         "🎉 Login successful!";
 
@@ -860,8 +928,7 @@ function loginUser(event) {
         800
     );
 
-
-}   /* ← IMPORTANT: closes loginUser() */
+}
 
 
 /* =========================
