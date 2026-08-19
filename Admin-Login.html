@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>Admin Login - Reward Platform</title>
+
+
+<style>
+
+/* =====================================================
+   GENERAL
+===================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+    font-family: Arial, sans-serif;
+
+    background: #f4f7fb;
+
+    color: #222;
+
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+/* =====================================================
+   LOGIN CONTAINER
+===================================================== */
+
+.login-container {
+
+    width: 100%;
+
+    max-width: 430px;
+
+    padding: 20px;
+
+}
+
+
+/* =====================================================
+   LOGIN CARD
+===================================================== */
+
+.login-card {
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 30px 25px;
+
+    box-shadow:
+        0 5px 20px
+        rgba(0,0,0,0.10);
+
+}
+
+
+/* =====================================================
+   ADMIN ICON
+===================================================== */
+
+.admin-icon {
+
+    width: 80px;
+
+    height: 80px;
+
+    margin: 0 auto 18px;
+
+    border-radius: 50%;
+
+    background: #182848;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 38px;
+
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.login-card h1 {
+
+    margin: 0;
+
+    text-align: center;
+
+    background: linear-gradient(
+        90deg,
+        #ffb300,
+        #ff4d8d,
+        #8a2be2,
+        #2196f3,
+        #00c9a7,
+        #ffb300
+    );
+
+    background-size: 300% 100%;
+
+    -webkit-background-clip: text;
+
+    background-clip: text;
+
+    color: transparent;
+
+    animation:
+        headingSlide 8s linear infinite;
+
+}
+
+
+.login-card .subtitle {
+
+    text-align: center;
+
+    color: #666;
+
+    margin:
+        10px 0 25px;
+
+    line-height: 1.5;
+
+}
+
+
+/* =====================================================
+   HEADING ANIMATION
+===================================================== */
+
+@keyframes headingSlide {
+
+    from {
+
+        background-position: 0% 50%;
+
+    }
+
+    to {
+
+        background-position: 300% 50%;
+
+    }
+
+}
+
+
+/* =====================================================
+   FORM GROUP
+===================================================== */
+
+.form-group {
+
+    margin-bottom: 18px;
+
+}
+
+
+.form-group label {
+
+    display: block;
+
+    font-weight: bold;
+
+    margin-bottom: 8px;
+
+}
+
+
+.form-group input {
+
+    width: 100%;
+
+    padding: 14px;
+
+    border:
+        1px solid #d7dce5;
+
+    border-radius: 10px;
+
+    font-size: 16px;
+
+    outline: none;
+
+}
+
+
+.form-group input:focus {
+
+    border-color: #2196f3;
+
+}
+
+
+/* =====================================================
+   LOGIN BUTTON
+===================================================== */
+
+.login-button {
+
+    width: 100%;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #182848;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    margin-top: 5px;
+
+}
+
+
+.login-button:hover {
+
+    opacity: 0.9;
+
+}
+
+
+.login-button:disabled {
+
+    background: #999;
+
+    cursor: not-allowed;
+
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+.message {
+
+    min-height: 22px;
+
+    text-align: center;
+
+    font-weight: bold;
+
+    margin-top: 15px;
+
+    line-height: 1.5;
+
+}
+
+
+/* =====================================================
+   SECURITY NOTICE
+===================================================== */
+
+.security-notice {
+
+    margin-top: 22px;
+
+    padding: 14px;
+
+    background: #fff8e1;
+
+    border-left:
+        5px solid #ffb300;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+    color: #555;
+
+}
+
+
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+.back-button {
+
+    display: block;
+
+    width: 100%;
+
+    margin-top: 15px;
+
+    padding: 12px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #777;
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+
+.back-button:hover {
+
+    opacity: 0.9;
+
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer {
+
+    text-align: center;
+
+    margin-top: 18px;
+
+    color: #777;
+
+    font-size: 13px;
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 500px) {
+
+    .login-container {
+
+        padding: 15px;
+
+    }
+
+
+    .login-card {
+
+        padding: 25px 20px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     LOGIN CONTAINER
+===================================================== -->
+
+<div class="login-container">
+
+
+    <!-- =================================================
+         LOGIN CARD
+    ================================================== -->
+
+    <div class="login-card">
+
+
+        <!-- ADMIN ICON -->
+
+        <div class="admin-icon">
+
+            🛠️
+
+        </div>
+
+
+        <!-- HEADER -->
+
+        <h1>
+
+            Admin Login
+
+        </h1>
+
+
+        <p class="subtitle">
+
+            Reward Platform Administration
+
+        </p>
+
+
+        <!-- =================================================
+             LOGIN FORM
+        ================================================== -->
+
+        <form
+            id="adminLoginForm"
+            onsubmit="adminLogin(event)">
+
+
+            <!-- ADMIN USERNAME -->
+
+            <div class="form-group">
+
+                <label for="adminUsername">
+
+                    Admin Username
+
+                </label>
+
+
+                <input
+                    type="text"
+                    id="adminUsername"
+                    placeholder="Enter admin username"
+                    autocomplete="username"
+                    required>
+
+            </div>
+
+
+            <!-- ADMIN PASSWORD -->
+
+            <div class="form-group">
+
+                <label for="adminPassword">
+
+                    Admin Password
+
+                </label>
+
+
+                <input
+                    type="password"
+                    id="adminPassword"
+                    placeholder="Enter admin password"
+                    autocomplete="current-password"
+                    required>
+
+            </div>
+
+
+            <!-- LOGIN BUTTON -->
+
+            <button
+                type="submit"
+                class="login-button"
+                id="loginButton">
+
+                🔐 Login to Admin Panel
+
+            </button>
+
+
+        </form>
+
+
+        <!-- MESSAGE -->
+
+        <div
+            id="loginMessage"
+            class="message">
+        </div>
+
+
+        <!-- SECURITY NOTICE -->
+
+        <div class="security-notice">
+
+            <strong>⚠️ Prototype Notice</strong>
+
+            <br><br>
+
+            This is the prototype administration login.
+            Real administrator authentication will be
+            connected to a secure backend and database
+            during Phase 3.
+
+        </div>
+
+
+        <!-- BACK -->
+
+        <button
+            type="button"
+            class="back-button"
+            onclick="goBack()">
+
+            ← Back to Website
+
+        </button>
+
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        Reward Platform — Administration
+
+    </footer>
+
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   ADMIN LOGIN
+===================================================== */
+
+function adminLogin(event) {
+
+    event.preventDefault();
+
+
+    const username =
+        document.getElementById(
+            "adminUsername"
+        ).value.trim();
+
+
+    const password =
+        document.getElementById(
+            "adminPassword"
+        ).value;
+
+
+    const message =
+        document.getElementById(
+            "loginMessage"
+        );
+
+
+    const button =
+        document.getElementById(
+            "loginButton"
+        );
+
+
+    /* =================================================
+       PROTOTYPE ADMIN CREDENTIALS
+    ================================================= */
+
+    const ADMIN_USERNAME =
+        "admin";
+
+
+    const ADMIN_PASSWORD =
+        "Admin@123";
+
+
+    /* =================================================
+       VALIDATION
+    ================================================= */
+
+    if (
+        username === "" ||
+        password === ""
+    ) {
+
+        message.textContent =
+            "❌ Please enter both username and password.";
+
+        return;
+
+    }
+
+
+    /* =================================================
+       CHECK CREDENTIALS
+    ================================================= */
+
+    if (
+        username === ADMIN_USERNAME &&
+        password === ADMIN_PASSWORD
+    ) {
+
+
+        /* =============================================
+           CREATE ADMIN SESSION
+        ============================================= */
+
+        localStorage.setItem(
+            "adminLoggedIn",
+            "true"
+        );
+
+
+        /* =============================================
+           CLEAR FAILED ATTEMPTS
+        ============================================= */
+
+        localStorage.removeItem(
+            "adminLoginAttempts"
+        );
+
+
+        /* =============================================
+           SUCCESS MESSAGE
+        ============================================= */
+
+        message.textContent =
+            "✅ Login successful. Opening Admin Panel...";
+
+
+        /* Disable button */
+
+        button.disabled =
+            true;
+
+
+        /* =============================================
+           OPEN DASHBOARD
+        ============================================= */
+
+        setTimeout(
+            function() {
+
+                window.location.href =
+                    "admin-dashboard.html";
+
+            },
+            700
+        );
+
+    }
+
+    else {
+
+
+        /* =============================================
+           FAILED LOGIN
+        ============================================= */
+
+        let attempts =
+            Number(
+                localStorage.getItem(
+                    "adminLoginAttempts"
+                )
+            ) || 0;
+
+
+        attempts++;
+
+
+        localStorage.setItem(
+            "adminLoginAttempts",
+            attempts
+        );
+
+
+        message.textContent =
+            "❌ Incorrect admin username or password.";
+
+    }
+
+}
+
+
+/* =====================================================
+   BACK TO WEBSITE
+===================================================== */
+
+function goBack() {
+
+    window.location.href =
+        "index.html";
+
+}
+
+</script>
+
+
+</body>
+
+</html>
