@@ -9,7 +9,7 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0">
 
-<title>Menu - Reward Platform</title>
+<title>Referrals - Reward Platform</title>
 
 
 <style>
@@ -36,37 +36,70 @@ body {
 
 
 /* =========================
-   TOP BAR
+   TOP NAVIGATION
 ========================= */
 
-.top-bar {
+.top-nav {
 
     background: #182848;
 
-    min-height: 70px;
-
-    padding: 10px 15px;
+    padding: 12px 10px;
 
     display: flex;
 
     align-items: center;
 
-    justify-content: center;
+}
 
-    position: relative;
+
+.back-button {
+
+    border: none;
+
+    background: rgba(255,255,255,0.12);
+
+    color: white;
+
+    padding: 11px 16px;
+
+    border-radius: 10px;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+
+.back-button:hover {
+
+    background: rgba(255,255,255,0.22);
 
 }
 
 
 /* =========================
-   MENU TITLE
+   HEADER
 ========================= */
 
-.menu-title {
+header {
 
-    font-size: 30px;
+    background: #182848;
 
-    font-weight: bold;
+    color: white;
+
+    text-align: center;
+
+    padding: 28px 15px;
+
+}
+
+
+header h1 {
+
+    margin: 0;
 
     background: linear-gradient(
         90deg,
@@ -92,6 +125,17 @@ body {
 }
 
 
+header p {
+
+    margin: 8px 0 0;
+
+}
+
+
+/* =========================
+   HEADING ANIMATION
+========================= */
+
 @keyframes headingSlide {
 
     from {
@@ -110,138 +154,37 @@ body {
 
 
 /* =========================
-   MORE BUTTON
-========================= */
-
-.more-button {
-
-    position: absolute;
-
-    right: 12px;
-
-    top: 15px;
-
-    border: none;
-
-    border-radius: 8px;
-
-    padding: 10px 13px;
-
-    background: #36558a;
-
-    color: white;
-
-    font-size: 14px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-
-}
-
-
-.more-button:hover {
-
-    opacity: 0.9;
-
-}
-
-
-/* =========================
-   MORE PANEL
-========================= */
-
-.more-panel {
-
-    display: none;
-
-    position: absolute;
-
-    top: 62px;
-
-    right: 12px;
-
-    width: 250px;
-
-    background: white;
-
-    border-radius: 12px;
-
-    box-shadow:
-        0 5px 20px rgba(0,0,0,0.2);
-
-    z-index: 1000;
-
-    overflow: hidden;
-
-}
-
-
-.more-panel.open {
-
-    display: block;
-
-}
-
-
-/* =========================
-   MORE PANEL LINKS
-========================= */
-
-.more-panel a {
-
-    display: block;
-
-    padding: 16px 18px;
-
-    border-bottom:
-        1px solid #eeeeee;
-
-    font-weight: bold;
-
-    font-size: 16px;
-
-    color: #222;
-
-    text-decoration: none;
-
-    min-height: 52px;
-
-}
-
-
-.more-panel a:hover {
-
-    background: #f4f7fb;
-
-}
-
-
-.more-panel a:active {
-
-    background: #e8edf5;
-
-}
-
-
-.more-panel a:last-child {
-
-    border-bottom: none;
-
-}
-
-
-/* =========================
    MAIN CONTAINER
 ========================= */
 
 .container {
 
-    max-width: 850px;
+    max-width: 700px;
 
     margin: auto;
 
-    padding: 25px 15px 35px;
+    padding: 20px 15px 35px;
+
+}
+
+
+/* =========================
+   CARD
+========================= */
+
+.card {
+
+    background: white;
+
+    border-radius: 15px;
+
+    padding: 20px;
+
+    margin: 15px 0;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.08);
 
 }
 
@@ -254,237 +197,301 @@ body {
 
     text-align: center;
 
-    margin-bottom: 25px;
-
 }
 
 
-.intro h2 {
+.intro-icon {
 
-    margin: 0 0 8px;
-
-    background: linear-gradient(
-        90deg,
-        #182848,
-        #2196f3,
-        #00a86b,
-        #182848
-    );
-
-    background-size: 300% 100%;
-
-    -webkit-background-clip: text;
-
-    background-clip: text;
-
-    color: transparent;
-
-    animation:
-        headingSlide 8s linear infinite;
-
-}
-
-
-.intro p {
-
-    margin: 0;
-
-    color: #666;
-
-}
-
-
-/* =========================
-   FEATURE GRID
-========================= */
-
-.feature-grid {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 15px;
-
-}
-
-
-/* =========================
-   KEYBOARD-STYLE FEATURE
-========================= */
-
-.feature-key {
-
-    min-height: 120px;
-
-    background: white;
-
-    border: 1px solid #d8dee9;
-
-    border-radius: 12px;
-
-    box-shadow:
-        0 4px 0 #c5cad3,
-        0 6px 12px rgba(0,0,0,0.08);
-
-    text-decoration: none;
-
-    color: #182848;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    justify-content: center;
-
-    text-align: center;
-
-    padding: 15px;
-
-    transition:
-        transform 0.15s ease,
-        box-shadow 0.15s ease;
-
-}
-
-
-.feature-key:hover {
-
-    transform:
-        translateY(-2px);
-
-    box-shadow:
-        0 6px 0 #b7bdc8,
-        0 8px 15px rgba(0,0,0,0.12);
-
-}
-
-
-.feature-key:active {
-
-    transform:
-        translateY(3px);
-
-    box-shadow:
-        0 2px 0 #b7bdc8,
-        0 3px 7px rgba(0,0,0,0.10);
-
-}
-
-
-/* =========================
-   FEATURE ICON
-========================= */
-
-.feature-icon {
-
-    font-size: 32px;
+    font-size: 55px;
 
     margin-bottom: 10px;
 
 }
 
 
-/* =========================
-   FEATURE NAME
-========================= */
+.intro h2 {
 
-.feature-name {
+    margin: 5px 0 10px;
 
-    font-size: 16px;
+}
 
-    font-weight: bold;
+
+.intro p {
+
+    color: #666;
+
+    line-height: 1.5;
 
 }
 
 
 /* =========================
-   SEPARATOR
+   REFERRAL CODE
 ========================= */
 
-.logout-separator {
+.section-title {
 
-    margin: 35px 0 25px;
-
-    height: 2px;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            #b8bec9,
-            transparent
-        );
+    margin-top: 0;
 
 }
 
 
-/* =========================
-   LOGOUT AREA
-========================= */
+.referral-code-box {
 
-.logout-area {
+    background: #f4f7fb;
+
+    border: 2px dashed #2196f3;
+
+    border-radius: 12px;
+
+    padding: 18px;
 
     text-align: center;
 
 }
 
 
+.referral-code {
+
+    font-size: 26px;
+
+    font-weight: bold;
+
+    color: #182848;
+
+    letter-spacing: 2px;
+
+    word-break: break-word;
+
+    margin-bottom: 15px;
+
+}
+
+
 /* =========================
-   LOGOUT BUTTON
+   BUTTONS
 ========================= */
 
-.logout-button {
+.action-button {
 
-    display: inline-flex;
+    width: 100%;
 
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 10px;
-
-    min-width: 220px;
-
-    padding: 15px 25px;
+    padding: 14px;
 
     border: none;
 
-    border-radius: 11px;
+    border-radius: 10px;
 
-    background: #c62828;
+    background: #182848;
 
     color: white;
 
-    font-size: 17px;
+    font-size: 16px;
 
     font-weight: bold;
 
     cursor: pointer;
 
-    box-shadow:
-        0 4px 0 #8e1b1b;
+    margin-top: 8px;
 
 }
 
 
-.logout-button:hover {
+.action-button:hover {
 
-    background: #b71c1c;
+    opacity: 0.9;
 
 }
 
 
-.logout-button:active {
+.secondary-button {
 
-    transform:
-        translateY(3px);
+    background: #2196f3;
 
-    box-shadow:
-        0 1px 0 #8e1b1b;
+}
+
+
+/* =========================
+   REFERRAL LINK
+========================= */
+
+.referral-link-box {
+
+    background: #f4f7fb;
+
+    border-radius: 10px;
+
+    padding: 12px;
+
+    margin-top: 10px;
+
+}
+
+
+.referral-link {
+
+    color: #555;
+
+    font-size: 14px;
+
+    word-break: break-all;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================
+   STATISTICS
+========================= */
+
+.stats-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 15px;
+
+}
+
+
+.stat-box {
+
+    background: #f4f7fb;
+
+    border-radius: 12px;
+
+    padding: 20px 10px;
+
+    text-align: center;
+
+}
+
+
+.stat-icon {
+
+    font-size: 30px;
+
+}
+
+
+.stat-number {
+
+    font-size: 30px;
+
+    font-weight: bold;
+
+    color: #182848;
+
+    margin: 7px 0;
+
+}
+
+
+.stat-label {
+
+    color: #666;
+
+    font-size: 14px;
+
+}
+
+
+/* =========================
+   HOW IT WORKS
+========================= */
+
+.steps {
+
+    margin: 0;
+
+    padding: 0;
+
+    list-style: none;
+
+}
+
+
+.steps li {
+
+    padding: 14px 0;
+
+    border-bottom:
+        1px solid #eeeeee;
+
+    line-height: 1.5;
+
+}
+
+
+.steps li:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.step-number {
+
+    display: inline-flex;
+
+    width: 30px;
+
+    height: 30px;
+
+    border-radius: 50%;
+
+    background: #182848;
+
+    color: white;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-weight: bold;
+
+    margin-right: 8px;
+
+}
+
+
+/* =========================
+   NOTICE
+========================= */
+
+.notice {
+
+    background: #fff8e1;
+
+    border-left: 5px solid #ffb300;
+
+    padding: 14px;
+
+    border-radius: 8px;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+.message {
+
+    text-align: center;
+
+    font-weight: bold;
+
+    margin-top: 12px;
+
+    color: #168a3a;
+
+    min-height: 20px;
 
 }
 
@@ -497,9 +504,9 @@ footer {
 
     text-align: center;
 
-    padding: 20px;
+    padding: 25px;
 
-    color: #777;
+    color: #666;
 
     font-size: 14px;
 
@@ -510,83 +517,28 @@ footer {
    MOBILE
 ========================= */
 
-@media (max-width: 650px) {
+@media (max-width: 500px) {
 
-    .feature-grid {
+    .stats-grid {
 
         grid-template-columns:
             repeat(2, 1fr);
 
-        gap: 12px;
+        gap: 10px;
 
     }
 
 
-    .feature-key {
+    .referral-code {
 
-        min-height: 110px;
+        font-size: 22px;
 
     }
 
 
-    .menu-title {
+    .stat-number {
 
         font-size: 26px;
-
-    }
-
-
-    .more-panel {
-
-        width: 260px;
-
-        right: 10px;
-
-    }
-
-
-    .more-panel a {
-
-        padding: 17px 18px;
-
-        font-size: 16px;
-
-        min-height: 55px;
-
-    }
-
-}
-
-
-@media (max-width: 380px) {
-
-    .feature-grid {
-
-        grid-template-columns:
-            repeat(2, 1fr);
-
-    }
-
-
-    .feature-icon {
-
-        font-size: 28px;
-
-    }
-
-
-    .feature-name {
-
-        font-size: 14px;
-
-    }
-
-
-    .more-panel {
-
-        width: calc(100vw - 20px);
-
-        right: 10px;
 
     }
 
@@ -601,7 +553,7 @@ footer {
 
 
 <!-- =========================
-     PAGE PROTECTION
+     LOGIN PROTECTION
 ========================= -->
 
 <script>
@@ -620,92 +572,34 @@ if (
 
 
 <!-- =========================
-     TOP BAR
+     TOP NAVIGATION
 ========================= -->
 
-<header class="top-bar">
-
-    <div class="menu-title">
-
-        Menu
-
-    </div>
-
+<nav class="top-nav">
 
     <button
         type="button"
-        class="more-button"
-        onclick="toggleMore()">
+        class="back-button"
+        onclick="goBack()">
 
-        More ⋮
+        ← Back
 
     </button>
 
-
-    <!-- =========================
-         MORE PANEL
-    ========================= -->
-
-    <div
-        id="morePanel"
-        class="more-panel">
+</nav>
 
 
-        <!-- SETTINGS -->
+<!-- =========================
+     HEADER
+========================= -->
 
-        <a href="settings.html">
+<header>
 
-            ⚙️ Settings
+    <h1>🎁 Referrals</h1>
 
-        </a>
-
-
-        <!-- PROFILE -->
-
-        <a href="profile.html">
-
-            👤 Profile
-
-        </a>
-
-
-        <!-- HISTORY -->
-
-        <a href="history.html">
-
-            📜 History
-
-        </a>
-
-
-        <!-- NOTIFICATIONS -->
-
-        <a href="notifications.html">
-
-            🔔 Notifications
-
-        </a>
-
-
-        <!-- REFERRALS -->
-
-        <a href="referrals.html">
-
-            🎁 Referrals
-
-        </a>
-
-
-        <!-- HELP -->
-
-        <a href="help.html">
-
-            ❓ Help / Support
-
-        </a>
-
-
-    </div>
+    <p>
+        Invite others and grow the Reward Platform community.
+    </p>
 
 </header>
 
@@ -718,190 +612,270 @@ if (
 
 
     <!-- =========================
-         INTRO
+         INTRODUCTION
     ========================= -->
 
-    <div class="intro">
+    <div class="card intro">
+
+        <div class="intro-icon">
+            🎁
+        </div>
 
         <h2>
-            Choose an Activity
+            Invite Friends
         </h2>
 
         <p>
-            Select what you would like to do.
+            Share your referral link with others.
+            When the referral system becomes active,
+            qualifying referrals will be recorded here.
         </p>
 
     </div>
 
 
     <!-- =========================
-         FEATURES
+         REFERRAL CODE
     ========================= -->
 
-    <div class="feature-grid">
+    <div class="card">
+
+        <h2 class="section-title">
+            🔗 Your Referral Code
+        </h2>
+
+        <div class="referral-code-box">
+
+            <div
+                id="referralCode"
+                class="referral-code">
+
+                -
+
+            </div>
 
 
-        <!-- EARN POINTS -->
+            <button
+                type="button"
+                class="action-button"
+                onclick="copyReferralCode()">
 
-        <a
-            href="earn.html"
-            class="feature-key">
+                📋 Copy Referral Code
 
-            <span class="feature-icon">
-                💰
-            </span>
+            </button>
 
-            <span class="feature-name">
-                Earn Points
-            </span>
-
-        </a>
+        </div>
 
 
-        <!-- WATCH & EARN -->
-
-        <a
-            href="watch.html"
-            class="feature-key">
-
-            <span class="feature-icon">
-                📺
-            </span>
-
-            <span class="feature-name">
-                Watch & Earn
-            </span>
-
-        </a>
-
-
-        <!-- DAILY SPIN -->
-
-        <a
-            href="spin.html"
-            class="feature-key">
-
-            <span class="feature-icon">
-                🎡
-            </span>
-
-            <span class="feature-name">
-                Daily Spin
-            </span>
-
-        </a>
-
-
-        <!-- CHALLENGES -->
-
-        <a
-            href="challenges.html"
-            class="feature-key">
-
-            <span class="feature-icon">
-                🏆
-            </span>
-
-            <span class="feature-name">
-                Challenges
-            </span>
-
-        </a>
-
-
-        <!-- BUY POINTS -->
-
-        <a
-            href="buy-points.html"
-            class="feature-key">
-
-            <span class="feature-icon">
-                💳
-            </span>
-
-            <span class="feature-name">
-                Buy Points
-            </span>
-
-        </a>
-
-
-        <!-- BALANCE -->
-
-        <a
-            href="balance.html"
-            class="feature-key">
-
-            <span class="feature-icon">
-                💰
-            </span>
-
-            <span class="feature-name">
-                My Balance
-            </span>
-
-        </a>
-
-
-        <!-- WITHDRAW -->
-
-        <a
-            href="withdraw.html"
-            class="feature-key">
-
-            <span class="feature-icon">
-                💸
-            </span>
-
-            <span class="feature-name">
-                Withdraw
-            </span>
-
-        </a>
-
-
-        <!-- REWARDS -->
-
-        <a
-            href="rewards.html"
-            class="feature-key">
-
-            <span class="feature-icon">
-                🎁
-            </span>
-
-            <span class="feature-name">
-                Rewards
-            </span>
-
-        </a>
-
+        <div
+            id="codeMessage"
+            class="message">
+        </div>
 
     </div>
 
 
     <!-- =========================
-         LOGOUT SEPARATOR
+         REFERRAL LINK
     ========================= -->
 
-    <div class="logout-separator">
-    </div>
+    <div class="card">
 
+        <h2 class="section-title">
+            🔗 Your Referral Link
+        </h2>
 
-    <!-- =========================
-         LOGOUT
-    ========================= -->
+        <div class="referral-link-box">
 
-    <div class="logout-area">
+            <div
+                id="referralLink"
+                class="referral-link">
+
+                -
+
+            </div>
+
+        </div>
+
 
         <button
             type="button"
-            class="logout-button"
-            onclick="logoutUser()">
+            class="action-button secondary-button"
+            onclick="copyReferralLink()">
 
-            ⏻ Logout
+            📋 Copy Referral Link
 
         </button>
+
+
+        <div
+            id="linkMessage"
+            class="message">
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         STATISTICS
+    ========================= -->
+
+    <div class="card">
+
+        <h2 class="section-title">
+            📊 Referral Statistics
+        </h2>
+
+
+        <div class="stats-grid">
+
+
+            <div class="stat-box">
+
+                <div class="stat-icon">
+                    👥
+                </div>
+
+                <div
+                    id="referralCount"
+                    class="stat-number">
+
+                    0
+
+                </div>
+
+                <div class="stat-label">
+                    Successful Referrals
+                </div>
+
+            </div>
+
+
+            <div class="stat-box">
+
+                <div class="stat-icon">
+                    💰
+                </div>
+
+                <div
+                    id="referralPoints"
+                    class="stat-number">
+
+                    0
+
+                </div>
+
+                <div class="stat-label">
+                    Points Earned
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         HOW IT WORKS
+    ========================= -->
+
+    <div class="card">
+
+        <h2 class="section-title">
+            ℹ️ How Referrals Will Work
+        </h2>
+
+
+        <ul class="steps">
+
+
+            <li>
+
+                <span class="step-number">
+                    1
+                </span>
+
+                Share your referral link
+                with another person.
+
+            </li>
+
+
+            <li>
+
+                <span class="step-number">
+                    2
+                </span>
+
+                The person registers using
+                your referral link.
+
+            </li>
+
+
+            <li>
+
+                <span class="step-number">
+                    3
+                </span>
+
+                The platform verifies the
+                referral.
+
+            </li>
+
+
+            <li>
+
+                <span class="step-number">
+                    4
+                </span>
+
+                A qualifying referral is
+                recorded in your account.
+
+            </li>
+
+
+            <li>
+
+                <span class="step-number">
+                    5
+                </span>
+
+                Any referral reward will be
+                added according to the platform's
+                referral rules.
+
+            </li>
+
+
+        </ul>
+
+    </div>
+
+
+    <!-- =========================
+         NOTICE
+    ========================= -->
+
+    <div class="card">
+
+        <div class="notice">
+
+            <strong>⚠️ Referral rewards are not active yet.</strong>
+
+            <br><br>
+
+            This page is currently preparing the
+            referral system. Referral points will
+            only be awarded after the registration
+            and referral verification system has
+            been connected.
+
+        </div>
 
     </div>
 
@@ -922,77 +896,292 @@ if (
 
 <script>
 
-/* =========================
-   MORE PANEL
-========================= */
+/* =====================================================
+   GET USER INFORMATION
+===================================================== */
 
-function toggleMore() {
+const savedUser =
+    JSON.parse(
+        localStorage.getItem(
+            "rewardUser"
+        )
+    );
 
-    const panel =
+
+/* =====================================================
+   CREATE REFERRAL CODE
+===================================================== */
+
+function createReferralCode() {
+
+    if (!savedUser) {
+
+        return "USER";
+
+    }
+
+
+    const username =
+        savedUser.username
+        || "USER";
+
+
+    return (
+        "RP-" +
+        username
+            .substring(0, 6)
+            .toUpperCase()
+            .replace(/[^A-Z0-9]/g, "")
+    );
+
+}
+
+
+/* =====================================================
+   REFERRAL CODE
+===================================================== */
+
+const referralCode =
+    localStorage.getItem(
+        "referralCode"
+    ) ||
+    createReferralCode();
+
+
+localStorage.setItem(
+    "referralCode",
+    referralCode
+);
+
+
+document.getElementById(
+    "referralCode"
+).textContent =
+    referralCode;
+
+
+/* =====================================================
+   REFERRAL LINK
+===================================================== */
+
+const referralLink =
+    window.location.origin +
+    window.location.pathname.replace(
+        "referrals.html",
+        "register.html"
+    ) +
+    "?ref=" +
+    encodeURIComponent(
+        referralCode
+    );
+
+
+document.getElementById(
+    "referralLink"
+).textContent =
+    referralLink;
+
+
+/* =====================================================
+   REFERRAL STATISTICS
+===================================================== */
+
+const referralCount =
+    Number(
+        localStorage.getItem(
+            "referralCount"
+        )
+    ) || 0;
+
+
+const referralPoints =
+    Number(
+        localStorage.getItem(
+            "referralPoints"
+        )
+    ) || 0;
+
+
+document.getElementById(
+    "referralCount"
+).textContent =
+    referralCount;
+
+
+document.getElementById(
+    "referralPoints"
+).textContent =
+    referralPoints;
+
+
+/* =====================================================
+   COPY REFERRAL CODE
+===================================================== */
+
+function copyReferralCode() {
+
+    const message =
         document.getElementById(
-            "morePanel"
+            "codeMessage"
         );
 
 
-    panel.classList.toggle(
-        "open"
+    copyText(
+        referralCode,
+        message,
+        "Referral code copied successfully!"
     );
 
 }
 
 
-/* =========================
-   LOGOUT
-========================= */
+/* =====================================================
+   COPY REFERRAL LINK
+===================================================== */
 
-function logoutUser() {
+function copyReferralLink() {
 
-    localStorage.removeItem(
-        "loggedIn"
+    const message =
+        document.getElementById(
+            "linkMessage"
+        );
+
+
+    copyText(
+        referralLink,
+        message,
+        "Referral link copied successfully!"
     );
-
-
-    window.location.href =
-        "index.html";
 
 }
 
 
-/* =========================
-   CLOSE MORE PANEL
-   WHEN CLICKING OUTSIDE
-========================= */
+/* =====================================================
+   COPY TEXT
+===================================================== */
 
-document.addEventListener(
-    "click",
-    function(event) {
+function copyText(
+    text,
+    messageElement,
+    successMessage
+) {
 
-        const panel =
-            document.getElementById(
-                "morePanel"
+    if (
+        navigator.clipboard &&
+        window.isSecureContext
+    ) {
+
+        navigator.clipboard
+            .writeText(text)
+            .then(
+                function() {
+
+                    messageElement.textContent =
+                        "✅ " +
+                        successMessage;
+
+                }
+            )
+            .catch(
+                function() {
+
+                    fallbackCopy(
+                        text,
+                        messageElement,
+                        successMessage
+                    );
+
+                }
             );
 
+    } else {
 
-        const button =
-            document.querySelector(
-                ".more-button"
-            );
-
-
-        if (
-            panel.classList.contains("open") &&
-            !panel.contains(event.target) &&
-            !button.contains(event.target)
-        ) {
-
-            panel.classList.remove(
-                "open"
-            );
-
-        }
+        fallbackCopy(
+            text,
+            messageElement,
+            successMessage
+        );
 
     }
-);
+
+}
+
+
+/* =====================================================
+   FALLBACK COPY
+===================================================== */
+
+function fallbackCopy(
+    text,
+    messageElement,
+    successMessage
+) {
+
+    const textarea =
+        document.createElement(
+            "textarea"
+        );
+
+
+    textarea.value =
+        text;
+
+
+    textarea.style.position =
+        "fixed";
+
+
+    textarea.style.opacity =
+        "0";
+
+
+    document.body.appendChild(
+        textarea
+    );
+
+
+    textarea.focus();
+
+    textarea.select();
+
+
+    try {
+
+        document.execCommand(
+            "copy"
+        );
+
+
+        messageElement.textContent =
+            "✅ " +
+            successMessage;
+
+    }
+
+    catch (error) {
+
+        messageElement.textContent =
+            "❌ Unable to copy automatically. Please copy it manually.";
+
+    }
+
+
+    document.body.removeChild(
+        textarea
+    );
+
+}
+
+
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+function goBack() {
+
+    window.history.back();
+
+}
 
 </script>
 
