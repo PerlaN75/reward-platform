@@ -41,7 +41,12 @@ body {
 
 .top-nav {
 
-    background: #182848;
+    background:
+        linear-gradient(
+            90deg,
+            #182848,
+            #302060
+        );
 
     padding: 12px 10px;
 
@@ -56,6 +61,8 @@ body {
 }
 
 
+/* Administrator label */
+
 .admin-label {
 
     color: white;
@@ -67,15 +74,18 @@ body {
 }
 
 
-.logout-button {
+/* Back button */
+
+.back-button {
 
     border: none;
 
     border-radius: 10px;
 
-    padding: 11px 16px;
+    padding: 11px 17px;
 
-    background: #c62828;
+    background:
+        rgba(255,255,255,0.12);
 
     color: white;
 
@@ -85,12 +95,19 @@ body {
 
     cursor: pointer;
 
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+
 }
 
 
-.logout-button:hover {
+.back-button:hover {
 
-    background: #b71c1c;
+    background:
+        rgba(255,255,255,0.22);
+
+    transform: translateY(-1px);
 
 }
 
@@ -101,13 +118,18 @@ body {
 
 header {
 
-    background: #182848;
+    background:
+        linear-gradient(
+            135deg,
+            #182848,
+            #3b216d
+        );
 
     color: white;
 
     text-align: center;
 
-    padding: 28px 15px;
+    padding: 30px 15px;
 
 }
 
@@ -116,15 +138,16 @@ header h1 {
 
     margin: 0;
 
-    background: linear-gradient(
-        90deg,
-        #ffb300,
-        #ff4d8d,
-        #8a2be2,
-        #2196f3,
-        #00c9a7,
-        #ffb300
-    );
+    background:
+        linear-gradient(
+            90deg,
+            #ffd52f,
+            #ff8a3d,
+            #d53cff,
+            #6b7cff,
+            #00c9a7,
+            #ffd52f
+        );
 
     background-size: 300% 100%;
 
@@ -143,6 +166,8 @@ header h1 {
 header p {
 
     margin: 8px 0 0;
+
+    color: #e4e0ef;
 
 }
 
@@ -252,6 +277,21 @@ header p {
         0 3px 12px
         rgba(0,0,0,0.08);
 
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+}
+
+
+.stat-card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 16px
+        rgba(0,0,0,0.12);
+
 }
 
 
@@ -315,6 +355,10 @@ header p {
 }
 
 
+/* =====================================================
+   ADMIN CARD
+===================================================== */
+
 .admin-card {
 
     background: white;
@@ -332,8 +376,8 @@ header p {
     cursor: pointer;
 
     transition:
-        transform 0.2s,
-        box-shadow 0.2s;
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 
 }
 
@@ -343,8 +387,15 @@ header p {
     transform: translateY(-3px);
 
     box-shadow:
-        0 6px 16px
-        rgba(0,0,0,0.12);
+        0 7px 18px
+        rgba(0,0,0,0.14);
+
+}
+
+
+.admin-card:active {
+
+    transform: scale(0.98);
 
 }
 
@@ -487,6 +538,29 @@ footer {
 
 @media (max-width: 600px) {
 
+    .top-nav {
+
+        padding: 10px;
+
+    }
+
+
+    .admin-label {
+
+        font-size: 14px;
+
+    }
+
+
+    .back-button {
+
+        padding: 10px 14px;
+
+        font-size: 14px;
+
+    }
+
+
     .stats-grid {
 
         grid-template-columns:
@@ -583,6 +657,7 @@ if (
 
 <nav class="top-nav">
 
+
     <div class="admin-label">
 
         🔐 Administrator
@@ -592,12 +667,13 @@ if (
 
     <button
         type="button"
-        class="logout-button"
-        onclick="adminLogout()">
+        class="back-button"
+        onclick="goBack()">
 
-        🚪 Logout
+        ← Back
 
     </button>
+
 
 </nav>
 
@@ -609,11 +685,16 @@ if (
 <header>
 
     <h1>
+
         🛠️ Admin Dashboard
+
     </h1>
 
+
     <p>
+
         Manage and monitor the Reward Platform.
+
     </p>
 
 </header>
@@ -633,12 +714,17 @@ if (
     <div class="welcome-card">
 
         <h2>
+
             Welcome, Administrator
+
         </h2>
 
+
         <p>
+
             This dashboard is the central control
             area for the Reward Platform.
+
         </p>
 
     </div>
@@ -649,7 +735,9 @@ if (
     ================================================== -->
 
     <h2 class="section-title">
+
         📊 Platform Overview
+
     </h2>
 
 
@@ -664,6 +752,7 @@ if (
                 👥
             </div>
 
+
             <div
                 id="userCount"
                 class="stat-number">
@@ -671,6 +760,7 @@ if (
                 0
 
             </div>
+
 
             <div class="stat-label">
 
@@ -689,6 +779,7 @@ if (
                 💰
             </div>
 
+
             <div
                 id="totalPoints"
                 class="stat-number">
@@ -696,6 +787,7 @@ if (
                 0
 
             </div>
+
 
             <div class="stat-label">
 
@@ -714,6 +806,7 @@ if (
                 📜
             </div>
 
+
             <div
                 id="transactionCount"
                 class="stat-number">
@@ -721,6 +814,7 @@ if (
                 0
 
             </div>
+
 
             <div class="stat-label">
 
@@ -739,6 +833,7 @@ if (
                 🔔
             </div>
 
+
             <div
                 id="notificationCount"
                 class="stat-number">
@@ -746,6 +841,7 @@ if (
                 0
 
             </div>
+
 
             <div class="stat-label">
 
@@ -764,7 +860,9 @@ if (
     ================================================== -->
 
     <h2 class="section-title">
+
         ⚙️ Platform Management
+
     </h2>
 
 
@@ -781,12 +879,18 @@ if (
                 👥
             </div>
 
+
             <h3>
+
                 Users
+
             </h3>
 
+
             <p>
+
                 View and manage platform users.
+
             </p>
 
         </div>
@@ -802,12 +906,18 @@ if (
                 💰
             </div>
 
+
             <h3>
+
                 Points Transactions
+
             </h3>
 
+
             <p>
+
                 Monitor points activity.
+
             </p>
 
         </div>
@@ -823,12 +933,18 @@ if (
                 💸
             </div>
 
+
             <h3>
+
                 Withdrawals
+
             </h3>
 
+
             <p>
+
                 Review withdrawal requests.
+
             </p>
 
         </div>
@@ -844,12 +960,18 @@ if (
                 💳
             </div>
 
+
             <h3>
+
                 Point Purchases
+
             </h3>
 
+
             <p>
+
                 Monitor point purchases.
+
             </p>
 
         </div>
@@ -865,12 +987,18 @@ if (
                 🎁
             </div>
 
+
             <h3>
+
                 Reward Redemptions
+
             </h3>
 
+
             <p>
+
                 Manage reward activity.
+
             </p>
 
         </div>
@@ -886,12 +1014,18 @@ if (
                 📩
             </div>
 
+
             <h3>
+
                 Support Requests
+
             </h3>
 
+
             <p>
+
                 Review user support requests.
+
             </p>
 
         </div>
@@ -907,12 +1041,18 @@ if (
                 🔔
             </div>
 
+
             <h3>
+
                 Notifications
+
             </h3>
 
+
             <p>
+
                 Manage platform notifications.
+
             </p>
 
         </div>
@@ -928,12 +1068,18 @@ if (
                 🚨
             </div>
 
+
             <h3>
+
                 Account Problems
+
             </h3>
 
+
             <p>
+
                 Review account issues.
+
             </p>
 
         </div>
@@ -949,12 +1095,18 @@ if (
                 📊
             </div>
 
+
             <h3>
+
                 Platform Statistics
+
             </h3>
 
+
             <p>
+
                 View platform performance.
+
             </p>
 
         </div>
@@ -970,12 +1122,18 @@ if (
                 ⚙️
             </div>
 
+
             <h3>
+
                 Platform Settings
+
             </h3>
 
+
             <p>
+
                 Configure platform settings.
+
             </p>
 
         </div>
@@ -989,7 +1147,9 @@ if (
     ================================================== -->
 
     <h2 class="section-title">
+
         🟢 System Status
+
     </h2>
 
 
@@ -999,11 +1159,16 @@ if (
         <div class="status-row">
 
             <div class="status-name">
+
                 User Platform
+
             </div>
 
+
             <div class="status-value">
+
                 Active
+
             </div>
 
         </div>
@@ -1012,11 +1177,16 @@ if (
         <div class="status-row">
 
             <div class="status-name">
+
                 Points System
+
             </div>
 
+
             <div class="status-value">
+
                 Active
+
             </div>
 
         </div>
@@ -1025,11 +1195,16 @@ if (
         <div class="status-row">
 
             <div class="status-name">
+
                 Local Storage
+
             </div>
+
 
             <div class="status-value">
+
                 Prototype
+
             </div>
 
         </div>
@@ -1038,11 +1213,15 @@ if (
         <div class="status-row">
 
             <div class="status-name">
+
                 Backend Database
+
             </div>
 
-            <div class="status-value"
-                 style="color:#c62828;">
+
+            <div
+                class="status-value"
+                style="color:#c62828;">
 
                 Not Connected
 
@@ -1061,16 +1240,22 @@ if (
     <div class="notice">
 
         <strong>
+
             ⚠️ Prototype Notice
+
         </strong>
 
+
         <br><br>
+
 
         The Admin Panel currently operates with
         browser-based prototype data. It is not yet
         connected to a central database.
 
+
         <br><br>
+
 
         During Phase 3, the platform will be connected
         to a backend and database so the administrator
@@ -1103,11 +1288,6 @@ function updateUserCount() {
 
     let count = 0;
 
-
-    /*
-       Current prototype stores one user
-       in rewardUser.
-    */
 
     const user =
         localStorage.getItem(
@@ -1257,31 +1437,13 @@ function openSection(
 
 
 /* =====================================================
-   ADMIN LOGOUT
+   BACK TO ADMIN WELCOME
 ===================================================== */
 
-function adminLogout() {
-
-    const confirmed =
-        confirm(
-            "Are you sure you want to log out of the Admin Panel?"
-        );
-
-
-    if (!confirmed) {
-
-        return;
-
-    }
-
-
-    localStorage.removeItem(
-        "adminLoggedIn"
-    );
-
+function goBack() {
 
     window.location.href =
-        "admin-login.html";
+        "admin-welcome.html";
 
 }
 
