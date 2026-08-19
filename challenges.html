@@ -14,6 +14,10 @@
 
 <style>
 
+/* =====================================================
+   GENERAL
+===================================================== */
+
 * {
     box-sizing: border-box;
 }
@@ -25,16 +29,41 @@ body {
     color: #222;
 }
 
-/* =========================
+
+/* =====================================================
    HEADER
-========================= */
+===================================================== */
 
 header {
     background: #6f42c1;
     color: white;
-    padding: 16px;
+    padding: 14px 16px 20px;
     text-align: center;
 }
+
+
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+.back {
+    display: block;
+    width: fit-content;
+    margin: 0 auto 10px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.back:hover {
+    text-decoration: underline;
+}
+
+
+/* =====================================================
+   HEADER TEXT
+===================================================== */
 
 header h1 {
     margin: 0;
@@ -46,31 +75,21 @@ header p {
     font-size: 14px;
 }
 
-/* =========================
-   BACK BUTTON
-========================= */
 
-.back {
-    display: inline-block;
-    margin: 15px;
-    text-decoration: none;
-    color: #6f42c1;
-    font-weight: bold;
-}
-
-/* =========================
+/* =====================================================
    MAIN
-========================= */
+===================================================== */
 
 .container {
     max-width: 600px;
     margin: auto;
-    padding: 10px 18px 40px;
+    padding: 20px 18px 40px;
 }
 
-/* =========================
+
+/* =====================================================
    POINTS CARD
-========================= */
+===================================================== */
 
 .points-card {
     background: white;
@@ -95,9 +114,10 @@ header p {
     color: #777;
 }
 
-/* =========================
+
+/* =====================================================
    CHALLENGE CARD
-========================= */
+===================================================== */
 
 .challenge-card {
     background: white;
@@ -118,9 +138,10 @@ header p {
     line-height: 1.5;
 }
 
-/* =========================
+
+/* =====================================================
    PROGRESS
-========================= */
+===================================================== */
 
 .progress-title {
     font-weight: bold;
@@ -149,9 +170,10 @@ header p {
     transition: width 0.4s ease;
 }
 
-/* =========================
+
+/* =====================================================
    DAYS
-========================= */
+===================================================== */
 
 .days {
     display: flex;
@@ -179,9 +201,10 @@ header p {
     border: 2px solid #6f42c1;
 }
 
-/* =========================
+
+/* =====================================================
    REWARD
-========================= */
+===================================================== */
 
 .reward-box {
     background: #fff4d6;
@@ -197,9 +220,10 @@ header p {
     color: #d39e00;
 }
 
-/* =========================
+
+/* =====================================================
    HOW IT WORKS
-========================= */
+===================================================== */
 
 .info-box {
     background: white;
@@ -217,9 +241,10 @@ header p {
     line-height: 1.4;
 }
 
-/* =========================
+
+/* =====================================================
    MESSAGE
-========================= */
+===================================================== */
 
 .message {
     display: none;
@@ -249,9 +274,20 @@ header p {
 
 <body>
 
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
 <header>
 
-    <h1>🏆 Challenges</h1>
+    <a href="menu.html" class="back">
+        ← Back
+    </a>
+
+    <h1>
+        🏆 Challenges
+    </h1>
 
     <p>
         Complete activities and build your streak.
@@ -260,21 +296,22 @@ header p {
 </header>
 
 
-<a href="menu.html" class="back">
-    ← Back
-</a>
-
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
 
 <div class="container">
 
 
-    <!-- =========================
+    <!-- =================================================
          POINTS
-    ========================== -->
+    ================================================== -->
 
     <div class="points-card">
 
-        <h2>💰 Your Points</h2>
+        <h2>
+            💰 Your Points
+        </h2>
 
         <div
             class="points-number"
@@ -290,9 +327,9 @@ header p {
     </div>
 
 
-    <!-- =========================
+    <!-- =================================================
          CHALLENGE
-    ========================== -->
+    ================================================== -->
 
     <div class="challenge-card">
 
@@ -305,6 +342,8 @@ header p {
             every day for 5 consecutive days.
         </p>
 
+
+        <!-- PROGRESS -->
 
         <div class="progress-title">
             🎯 Your Progress
@@ -332,30 +371,47 @@ header p {
 
         <div class="days">
 
-            <div class="day" id="day1">
+            <div
+                class="day"
+                id="day1"
+            >
                 Day 1
             </div>
 
-            <div class="day" id="day2">
+            <div
+                class="day"
+                id="day2"
+            >
                 Day 2
             </div>
 
-            <div class="day" id="day3">
+            <div
+                class="day"
+                id="day3"
+            >
                 Day 3
             </div>
 
-            <div class="day" id="day4">
+            <div
+                class="day"
+                id="day4"
+            >
                 Day 4
             </div>
 
-            <div class="day" id="day5">
+            <div
+                class="day"
+                id="day5"
+            >
                 Day 5
             </div>
 
         </div>
 
 
-        <!-- REWARD -->
+        <!-- =================================================
+             REWARD
+        ================================================== -->
 
         <div class="reward-box">
 
@@ -379,6 +435,8 @@ header p {
         </div>
 
 
+        <!-- MESSAGE -->
+
         <div
             id="message"
             class="message"
@@ -387,13 +445,15 @@ header p {
     </div>
 
 
-    <!-- =========================
+    <!-- =================================================
          HOW IT WORKS
-    ========================== -->
+    ================================================== -->
 
     <div class="info-box">
 
-        <h2>📋 How It Works</h2>
+        <h2>
+            📋 How It Works
+        </h2>
 
         <ol>
 
@@ -519,20 +579,28 @@ function updateChallengeDisplay() {
         percentage + "%";
 
 
-    for (let i = 1; i <= 5; i++) {
+    for (
+        let i = 1;
+        i <= 5;
+        i++
+    ) {
 
         const day =
             document.getElementById("day" + i);
 
         day.classList.remove("completed");
+
         day.classList.remove("current");
 
 
-        if (i <= challengeProgress) {
+        if (
+            i <= challengeProgress
+        ) {
 
             day.classList.add("completed");
 
         }
+
         else if (
             i === challengeProgress + 1 &&
             !challengeCompleted
@@ -551,12 +619,16 @@ function updateChallengeDisplay() {
    SHOW MESSAGE
 ===================================================== */
 
-function showMessage(text, type) {
+function showMessage(
+    text,
+    type
+) {
 
     const message =
         document.getElementById("message");
 
-    message.textContent = text;
+    message.textContent =
+        text;
 
     message.className =
         "message " + type;
@@ -578,11 +650,13 @@ function checkStreak() {
 
 
     /*
-       If the challenge is already completed,
+       If challenge is already completed,
        do nothing.
     */
 
-    if (challengeCompleted) {
+    if (
+        challengeCompleted
+    ) {
 
         showMessage(
             "🎉 You have completed the 5-Day Challenge!",
@@ -595,9 +669,8 @@ function checkStreak() {
 
 
     /*
-       If the user has a previous activity date
-       and today is not the next consecutive day,
-       reset the challenge.
+       If a day was missed,
+       reset the streak.
     */
 
     if (
@@ -608,10 +681,12 @@ function checkStreak() {
 
         challengeProgress = 0;
 
+
         localStorage.setItem(
             "challengeProgress",
             "0"
         );
+
 
         showMessage(
             "Your streak was reset because a day was missed.",
@@ -629,8 +704,12 @@ function checkStreak() {
 
 function completeTodayChallenge() {
 
-    if (challengeCompleted) {
+    if (
+        challengeCompleted
+    ) {
+
         return;
+
     }
 
 
@@ -642,7 +721,9 @@ function completeTodayChallenge() {
        Do not count the same day twice.
     */
 
-    if (lastChallengeDate === today) {
+    if (
+        lastChallengeDate === today
+    ) {
 
         return;
 
@@ -654,7 +735,7 @@ function completeTodayChallenge() {
 
 
     /*
-       Continue the streak if yesterday was completed.
+       Continue the streak.
     */
 
     if (
@@ -666,7 +747,7 @@ function completeTodayChallenge() {
     }
 
     /*
-       First activity of the challenge.
+       Start a new streak.
     */
 
     else {
@@ -694,13 +775,14 @@ function completeTodayChallenge() {
 
     /* =================================================
        DAY 5 REWARD
-    ================================================= */
+    ================================================== */
 
     if (
         challengeProgress >= 5
     ) {
 
         challengeProgress = 5;
+
 
         localStorage.setItem(
             "challengeProgress",
@@ -727,7 +809,8 @@ function completeTodayChallenge() {
         );
 
 
-        challengeCompleted = true;
+        challengeCompleted =
+            true;
 
 
         updatePointsDisplay();
@@ -753,7 +836,11 @@ function completeTodayChallenge() {
         "🔥 Today's activity counted! Your streak is now " +
         challengeProgress +
         " day" +
-        (challengeProgress === 1 ? "" : "s") +
+        (
+            challengeProgress === 1
+                ? ""
+                : "s"
+        ) +
         ".",
         "success"
     );
@@ -772,6 +859,7 @@ checkStreak();
 updateChallengeDisplay();
 
 </script>
+
 
 </body>
 
