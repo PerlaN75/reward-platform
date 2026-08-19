@@ -344,7 +344,27 @@ header p {
 
 
 /* =========================
-   FORM
+   EDIT FORM
+========================= */
+
+.edit-form {
+
+    display: none;
+
+    margin-top: 20px;
+
+}
+
+
+.edit-form.open {
+
+    display: block;
+
+}
+
+
+/* =========================
+   FORM GROUP
 ========================= */
 
 .form-group {
@@ -551,6 +571,7 @@ if (
 
 
     <button
+        type="button"
         class="nav-button"
         onclick="goBack()">
 
@@ -587,7 +608,7 @@ if (
 
 
 <!-- =========================
-     MAIN
+     MAIN CONTAINER
 ========================= -->
 
 <div class="container">
@@ -684,7 +705,8 @@ if (
         </div>
 
 
-        <div class="info-value status-active">
+        <div
+            class="info-value status-active">
 
             Active
 
@@ -750,23 +772,36 @@ if (
      EDIT PROFILE
 ========================= -->
 
-<div
-    class="card"
-    id="editCard">
+<div class="card">
 
-
-    <h2>✏️ Edit Profile</h2>
+    <h2>✏️ Profile</h2>
 
 
     <p>
 
-        Update your username or email address.
+        Your profile information can be managed
+        from here.
 
     </p>
 
 
-    <form
-        onsubmit="saveProfile(event)">
+    <!-- EDIT PROFILE BUTTON -->
+
+    <button
+        type="button"
+        class="action-button"
+        onclick="openEditProfile()">
+
+        ✏️ Edit Profile
+
+    </button>
+
+
+    <!-- EDIT FORM -->
+
+    <div
+        id="editForm"
+        class="edit-form">
 
 
         <!-- USERNAME -->
@@ -811,8 +846,9 @@ if (
         <!-- SAVE -->
 
         <button
-            type="submit"
-            class="action-button">
+            type="button"
+            class="action-button"
+            onclick="saveProfile()">
 
             💾 Save Changes
 
@@ -831,15 +867,16 @@ if (
         </button>
 
 
-    </form>
+        <!-- MESSAGE -->
 
+        <div
+            class="message"
+            id="message">
 
-    <div
-        class="message"
-        id="message">
+        </div>
+
 
     </div>
-
 
 </div>
 
@@ -861,7 +898,7 @@ if (
 <script>
 
 /* =====================================================
-   GET REGISTERED USER
+   GET SAVED USER
 ===================================================== */
 
 let savedUser = null;
@@ -884,24 +921,6 @@ try {
 
 
 /* =====================================================
-   CHECK USER DATA
-===================================================== */
-
-if (!savedUser) {
-
-    document.getElementById(
-        "profileName"
-    ).textContent = "User";
-
-
-    document.getElementById(
-        "profileEmail"
-    ).textContent = "Not provided";
-
-}
-
-
-/* =====================================================
    USERNAME
 ===================================================== */
 
@@ -914,12 +933,14 @@ const username =
 
 document.getElementById(
     "profileName"
-).textContent = username;
+).textContent =
+    username;
 
 
 document.getElementById(
     "username"
-).textContent = username;
+).textContent =
+    username;
 
 
 /* =====================================================
@@ -935,12 +956,14 @@ const email =
 
 document.getElementById(
     "profileEmail"
-).textContent = email;
+).textContent =
+    email;
 
 
 document.getElementById(
     "email"
-).textContent = email;
+).textContent =
+    email;
 
 
 /* =====================================================
@@ -991,27 +1014,50 @@ document.getElementById(
 
 
 /* =====================================================
-   LOAD EDIT FORM
+   OPEN EDIT PROFILE
 ===================================================== */
 
-document.getElementById(
-    "editUsername"
-).value = username;
+function openEditProfile() {
+
+    const editForm =
+        document.getElementById(
+            "editForm"
+        );
 
 
-document.getElementById(
-    "editEmail"
-).value = email;
+    document.getElementById(
+        "editUsername"
+    ).value =
+        document.getElementById(
+            "username"
+        ).textContent;
+
+
+    document.getElementById(
+        "editEmail"
+    ).value =
+        document.getElementById(
+            "email"
+        ).textContent;
+
+
+    document.getElementById(
+        "message"
+    ).textContent = "";
+
+
+    editForm.classList.add(
+        "open"
+    );
+
+}
 
 
 /* =====================================================
    SAVE PROFILE
 ===================================================== */
 
-function saveProfile(event) {
-
-    event.preventDefault();
-
+function saveProfile() {
 
     const newUsername =
         document.getElementById(
@@ -1032,7 +1078,7 @@ function saveProfile(event) {
 
 
     /* =========================
-       USERNAME CHECK
+       USERNAME VALIDATION
     ========================= */
 
     if (
@@ -1048,7 +1094,7 @@ function saveProfile(event) {
 
 
     /* =========================
-       EMAIL CHECK
+       EMAIL VALIDATION
     ========================= */
 
     if (
@@ -1064,10 +1110,10 @@ function saveProfile(event) {
 
 
     /* =========================
-       GET CURRENT ACCOUNT
+       GET CURRENT USER
     ========================= */
 
-    let currentUser;
+    let currentUser = null;
 
 
     try {
@@ -1109,7 +1155,7 @@ function saveProfile(event) {
 
 
     /* =========================
-       SAVE UPDATED USER
+       SAVE USER
     ========================= */
 
     localStorage.setItem(
@@ -1165,19 +1211,10 @@ function saveProfile(event) {
 function cancelEdit() {
 
     document.getElementById(
-        "editUsername"
-    ).value =
-        document.getElementById(
-            "username"
-        ).textContent;
-
-
-    document.getElementById(
-        "editEmail"
-    ).value =
-        document.getElementById(
-            "email"
-        ).textContent;
+        "editForm"
+    ).classList.remove(
+        "open"
+    );
 
 
     document.getElementById(
