@@ -4,11 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Challenges - Reward Platform</title>
 
@@ -49,13 +45,21 @@ body {
 .back-button {
     width: auto;
     margin: 0;
+
     padding: 11px 16px;
+
     background: rgba(255,255,255,0.12);
+
     color: white;
+
     border: none;
+
     border-radius: 10px;
+
     font-size: 16px;
+
     font-weight: bold;
+
     cursor: pointer;
 }
 
@@ -70,16 +74,22 @@ body {
 
 header {
     background: #182848;
+
     color: white;
+
     padding: 25px 15px;
+
     text-align: center;
 }
 
 header h1 {
     margin: 0;
+
     animation:
         headerHeadingInvert
-        3s infinite alternate;
+        3s
+        infinite
+        alternate;
 }
 
 header p {
@@ -110,7 +120,9 @@ header p {
 
 .container {
     max-width: 700px;
+
     margin: auto;
+
     padding: 15px;
 }
 
@@ -121,9 +133,13 @@ header p {
 
 .card {
     background: white;
+
     border-radius: 14px;
+
     padding: 20px;
+
     margin: 15px 0;
+
     box-shadow:
         0 3px 12px
         rgba(0,0,0,0.08);
@@ -132,7 +148,9 @@ header p {
 .card h2 {
     animation:
         cardHeadingInvert
-        3s infinite alternate;
+        3s
+        infinite
+        alternate;
 }
 
 
@@ -163,7 +181,9 @@ header p {
 
 .balance-number {
     font-size: 42px;
+
     font-weight: bold;
+
     margin: 10px 0;
 }
 
@@ -187,6 +207,7 @@ header p {
 
 .progress-container {
     width: 100%;
+
     height: 25px;
 
     background: #e5e7eb;
@@ -461,8 +482,7 @@ if (
 
     <h2>🎯 Your Progress</h2>
 
-    <div
-        class="progress-container">
+    <div class="progress-container">
 
         <div
             class="progress-bar"
@@ -531,7 +551,6 @@ if (
     <div
         class="status"
         id="status">
-
     </div>
 
 </div>
@@ -619,6 +638,14 @@ if (
 <script>
 
 /* =====================================================
+   TODAY
+===================================================== */
+
+const today =
+    new Date().toDateString();
+
+
+/* =====================================================
    UPDATE BALANCE
 ===================================================== */
 
@@ -641,7 +668,7 @@ function updateBalance() {
 
 
 /* =====================================================
-   UPDATE CHALLENGE
+   UPDATE CHALLENGE DISPLAY
 ===================================================== */
 
 function updateChallengeDisplay() {
@@ -660,17 +687,18 @@ function updateChallengeDisplay() {
         ) === "true";
 
 
-    /*
-       Make sure progress stays
-       between 0 and 5.
-    */
+    /* Keep progress between 0 and 5 */
 
     if (progress < 0) {
+
         progress = 0;
+
     }
 
     if (progress > 5) {
+
         progress = 5;
+
     }
 
 
