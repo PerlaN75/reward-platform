@@ -78,11 +78,8 @@ body {
 
 header {
     background: #182848;
-
     color: white;
-
     padding: 25px 15px;
-
     text-align: center;
 }
 
@@ -120,9 +117,7 @@ header p {
 
 .container {
     max-width: 700px;
-
     margin: auto;
-
     padding: 15px;
 }
 
@@ -154,6 +149,15 @@ header p {
         infinite
         alternate;
 }
+
+.watch-card h2 {
+    animation:
+        cardHeadingInvert
+        3s
+        infinite
+        alternate;
+}
+
 
 @keyframes cardHeadingInvert {
 
@@ -210,12 +214,6 @@ header p {
 
 .watch-card h2 {
     margin-top: 0;
-
-    animation:
-        cardHeadingInvert
-        3s
-        infinite
-        alternate;
 }
 
 
@@ -506,8 +504,7 @@ if (
 
     <div
         class="message"
-        id="message1"
-    >
+        id="message1">
     </div>
 
 </div>
@@ -566,8 +563,7 @@ if (
 
     <div
         class="message"
-        id="message2"
-    >
+        id="message2">
     </div>
 
 </div>
@@ -626,8 +622,7 @@ if (
 
     <div
         class="message"
-        id="message3"
-    >
+        id="message3">
     </div>
 
 </div>
@@ -711,7 +706,9 @@ function addPoints(
     );
 
 
-    /* Get history */
+    /* =================================================
+       REWARD HISTORY
+    ================================================= */
 
     let history;
 
@@ -725,17 +722,19 @@ function addPoints(
             ) || [];
 
         if (!Array.isArray(history)) {
+
             history = [];
+
         }
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         history = [];
 
     }
 
-
-    /* Record activity */
 
     history.push({
 
@@ -757,7 +756,216 @@ function addPoints(
     );
 
 
+    /* =================================================
+       UPDATE 5-DAY CHALLENGE
+    ================================================= */
+
+    updateChallenge();
+
+
     updateDisplay();
+
+}
+
+
+/* =====================================================
+   FIVE-DAY STREAK CHALLENGE
+===================================================== */
+
+function updateChallenge() {
+
+
+    const completed =
+        localStorage.getItem(
+            "challengeCompleted"
+        ) === "true";
+
+
+    if (completed) {
+
+        return;
+
+    }
+
+
+    const challengeToday =
+        new Date().toDateString();
+
+
+    const lastChallengeDay =
+        localStorage.getItem(
+            "lastChallengeDay"
+        );
+
+
+    let progress =
+        Number(
+            localStorage.getItem(
+                "challengeProgress"
+            )
+        ) || 0;
+
+
+    /*
+       Do not count more than once
+       during the same day.
+    */
+
+    if (
+        lastChallengeDay === challengeToday
+    ) {
+
+        return;
+
+    }
+
+
+    /* =================================================
+       YESTERDAY
+    ================================================= */
+
+    const yesterdayDate =
+        new Date();
+
+
+    yesterdayDate.setDate(
+        yesterdayDate.getDate() - 1
+    );
+
+
+    const yesterday =
+        yesterdayDate.toDateString();
+
+
+    /* =================================================
+       CONTINUE OR START STREAK
+    ================================================= */
+
+    if (
+        lastChallengeDay === yesterday
+    ) {
+
+        progress++;
+
+    }
+
+    else {
+
+        progress = 1;
+
+    }
+
+
+    /* Maximum 5 days */
+
+    if (progress > 5) {
+
+        progress = 5;
+
+    }
+
+
+    /* =================================================
+       SAVE PROGRESS
+    ================================================= */
+
+    localStorage.setItem(
+        "lastChallengeDay",
+        challengeToday
+    );
+
+
+    localStorage.setItem(
+        "challengeProgress",
+        progress
+    );
+
+
+    /* =================================================
+       FIVE-DAY REWARD
+    ================================================= */
+
+    if (progress >= 5) {
+
+
+        let currentPoints =
+            Number(
+                localStorage.getItem(
+                    "rewardPoints"
+                )
+            ) || 0;
+
+
+        currentPoints += 50;
+
+
+        localStorage.setItem(
+            "rewardPoints",
+            currentPoints
+        );
+
+
+        /* Get history */
+
+        let challengeHistory;
+
+        try {
+
+            challengeHistory =
+                JSON.parse(
+                    localStorage.getItem(
+                        "rewardHistory"
+                    )
+                ) || [];
+
+            if (
+                !Array.isArray(
+                    challengeHistory
+                )
+            ) {
+
+                challengeHistory = [];
+
+            }
+
+        }
+
+        catch (error) {
+
+            challengeHistory = [];
+
+        }
+
+
+        /* Record reward */
+
+        challengeHistory.push({
+
+            activity:
+                "5-Day Streak Challenge",
+
+            points: 50,
+
+            date:
+                new Date().toLocaleString()
+
+        });
+
+
+        localStorage.setItem(
+            "rewardHistory",
+            JSON.stringify(
+                challengeHistory
+            )
+        );
+
+
+        localStorage.setItem(
+            "challengeCompleted",
+            "true"
+        );
+
+    }
 
 }
 
@@ -789,7 +997,9 @@ function getWatchStatus() {
 
         }
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         status = {};
 
@@ -805,7 +1015,9 @@ function getWatchStatus() {
    SAVE WATCH STATUS
 ===================================================== */
 
-function saveWatchStatus(status) {
+function saveWatchStatus(
+    status
+) {
 
     localStorage.setItem(
         "watchCompleted",
@@ -819,13 +1031,17 @@ function saveWatchStatus(status) {
    START WATCHING
 ===================================================== */
 
-function startWatch(activityNumber) {
+function startWatch(
+    activityNumber
+) {
 
     const status =
         getWatchStatus();
 
 
-    /* Already completed */
+    /* =================================================
+       ALREADY COMPLETED
+    ================================================= */
 
     if (
         status[today]
@@ -863,7 +1079,9 @@ function startWatch(activityNumber) {
         );
 
 
-    /* Prevent multiple starts */
+    /* =================================================
+       START
+    ================================================= */
 
     button.disabled = true;
 
@@ -941,7 +1159,9 @@ function completeWatch(
         getWatchStatus();
 
 
-    /* Check again */
+    /* =================================================
+       CHECK AGAIN
+    ================================================= */
 
     if (
         status[today]
@@ -956,7 +1176,9 @@ function completeWatch(
     }
 
 
-    /* Create today's list */
+    /* =================================================
+       CREATE TODAY'S LIST
+    ================================================= */
 
     if (
         !status[today]
@@ -967,7 +1189,9 @@ function completeWatch(
     }
 
 
-    /* Record completion */
+    /* =================================================
+       RECORD COMPLETION
+    ================================================= */
 
     status[today].push(
         activityNumber
@@ -979,7 +1203,9 @@ function completeWatch(
     );
 
 
-    /* Award points */
+    /* =================================================
+       AWARD 10 POINTS
+    ================================================= */
 
     addPoints(
         10,
@@ -989,7 +1215,9 @@ function completeWatch(
     );
 
 
-    /* Update screen */
+    /* =================================================
+       UPDATE SCREEN
+    ================================================= */
 
     const button =
         document.getElementById(
