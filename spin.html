@@ -49,21 +49,13 @@ body {
 .back-button {
     width: auto;
     margin: 0;
-
     padding: 11px 16px;
-
     background: rgba(255,255,255,0.12);
-
     color: white;
-
     border: none;
-
     border-radius: 10px;
-
     font-size: 16px;
-
     font-weight: bold;
-
     cursor: pointer;
 }
 
@@ -78,11 +70,8 @@ body {
 
 header {
     background: #182848;
-
     color: white;
-
     padding: 25px 15px;
-
     text-align: center;
 }
 
@@ -122,9 +111,7 @@ header p {
 
 .container {
     max-width: 700px;
-
     margin: auto;
-
     padding: 15px;
 }
 
@@ -135,11 +122,8 @@ header p {
 
 .card {
     background: white;
-
     border-radius: 14px;
-
     padding: 20px;
-
     margin: 15px 0;
 
     box-shadow:
@@ -181,9 +165,7 @@ header p {
 
 .points-number {
     font-size: 42px;
-
     font-weight: bold;
-
     margin: 10px 0;
 }
 
@@ -194,7 +176,6 @@ header p {
 
 .spin-area {
     text-align: center;
-
     padding: 10px 0 20px;
 }
 
@@ -205,11 +186,8 @@ header p {
 
 .wheel-container {
     position: relative;
-
     width: 300px;
-
     height: 300px;
-
     margin: 20px auto;
 }
 
@@ -220,16 +198,13 @@ header p {
 
 .pointer {
     position: absolute;
-
     top: -8px;
-
     left: 50%;
 
     transform:
         translateX(-50%);
 
     width: 0;
-
     height: 0;
 
     border-left:
@@ -251,7 +226,6 @@ header p {
 
 #wheel {
     width: 300px;
-
     height: 300px;
 
     border-radius: 50%;
@@ -300,21 +274,17 @@ header p {
     position: absolute;
 
     left: 50%;
-
     top: 50%;
 
     width: 70px;
-
     height: 30px;
 
     margin-left: -35px;
-
     margin-top: -15px;
 
     text-align: center;
 
     font-weight: bold;
-
     font-size: 18px;
 
     color: #182848;
@@ -331,26 +301,21 @@ header p {
     position: absolute;
 
     top: 50%;
-
     left: 50%;
 
     transform:
         translate(-50%, -50%);
 
     width: 60px;
-
     height: 60px;
 
     border-radius: 50%;
 
     background: #182848;
-
     color: white;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     font-weight: bold;
@@ -393,7 +358,6 @@ button.spin-button:hover {
 
 button.spin-button:disabled {
     background: #999;
-
     cursor: not-allowed;
 }
 
@@ -468,6 +432,26 @@ footer {
 
 
 <!-- =====================================================
+     LOGIN PROTECTION
+===================================================== -->
+
+<script>
+
+if (
+    localStorage.getItem("loggedIn")
+    !==
+    "true"
+) {
+
+    window.location.href =
+        "login.html";
+
+}
+
+</script>
+
+
+<!-- =====================================================
      TOP NAVIGATION
 ===================================================== -->
 
@@ -490,7 +474,9 @@ footer {
 
 <header>
 
-    <h1>🎡 Daily Spin</h1>
+    <h1>
+        🎡 Daily Spin
+    </h1>
 
     <p>
         Spin the wheel once every day and win points!
@@ -508,7 +494,9 @@ footer {
 
 <div class="card points">
 
-    <h2>💰 Your Points</h2>
+    <h2>
+        💰 Your Points
+    </h2>
 
     <div
         class="points-number"
@@ -541,7 +529,9 @@ footer {
 
 <div class="card spin-area">
 
-    <h2>🎡 Spin & Win</h2>
+    <h2>
+        🎡 Spin & Win
+    </h2>
 
     <p>
         You can spin the wheel
@@ -549,16 +539,17 @@ footer {
     </p>
 
 
-    <!-- POINTER -->
+    <!-- =================================================
+         WHEEL
+    ================================================= -->
 
     <div class="wheel-container">
 
         <div class="pointer"></div>
 
 
-        <!-- WHEEL -->
-
         <div id="wheel">
+
 
             <div
                 class="wheel-label"
@@ -676,12 +667,15 @@ footer {
                 SPIN
             </div>
 
+
         </div>
 
     </div>
 
 
-    <!-- SPIN BUTTON -->
+    <!-- =================================================
+         SPIN BUTTON
+    ================================================= -->
 
     <button
         class="spin-button"
@@ -693,12 +687,15 @@ footer {
     </button>
 
 
-    <!-- MESSAGE -->
+    <!-- =================================================
+         MESSAGE
+    ================================================= -->
 
     <div
         id="spinMessage"
         class="message">
     </div>
+
 
 </div>
 
@@ -719,22 +716,6 @@ footer {
 <script>
 
 /* =====================================================
-   LOGIN PROTECTION
-===================================================== */
-
-if (
-    localStorage.getItem("loggedIn")
-    !==
-    "true"
-) {
-
-    window.location.href =
-        "login.html";
-
-}
-
-
-/* =====================================================
    DATE
 ===================================================== */
 
@@ -749,7 +730,7 @@ document.getElementById(
 
 
 /* =====================================================
-   POINTS
+   POINT DISPLAY
 ===================================================== */
 
 function updateDisplay() {
@@ -764,13 +745,49 @@ function updateDisplay() {
 
     document.getElementById(
         "points"
-    ).textContent = points;
+    ).textContent =
+        points;
 
 }
 
 
 /* =====================================================
-   ADD POINTS
+   GET HISTORY
+===================================================== */
+
+function getHistory() {
+
+    let history;
+
+    try {
+
+        history =
+            JSON.parse(
+                localStorage.getItem(
+                    "rewardHistory"
+                )
+            ) || [];
+
+        if (!Array.isArray(history)) {
+
+            history = [];
+
+        }
+
+    } catch (error) {
+
+        history = [];
+
+    }
+
+
+    return history;
+
+}
+
+
+/* =====================================================
+   ADD POINTS + HISTORY
 ===================================================== */
 
 function addPoints(
@@ -789,44 +806,28 @@ function addPoints(
     points += amount;
 
 
-    let history;
+    localStorage.setItem(
+        "rewardPoints",
+        points
+    );
 
-    try {
 
-        history =
-            JSON.parse(
-                localStorage.getItem(
-                    "rewardHistory"
-                )
-            ) || [];
-
-        if (!Array.isArray(history)) {
-            history = [];
-        }
-
-    } catch (error) {
-
-        history = [];
-
-    }
+    const history =
+        getHistory();
 
 
     history.push({
 
-        activity: activity,
+        activity:
+            activity,
 
-        points: amount,
+        points:
+            amount,
 
         date:
             new Date().toLocaleString()
 
     });
-
-
-    localStorage.setItem(
-        "rewardPoints",
-        points
-    );
 
 
     localStorage.setItem(
@@ -836,6 +837,75 @@ function addPoints(
 
 
     updateDisplay();
+
+}
+
+
+/* =====================================================
+   ADD NOTIFICATION
+===================================================== */
+
+function addNotification(
+    title,
+    message
+) {
+
+    let notifications;
+
+
+    try {
+
+        notifications =
+            JSON.parse(
+                localStorage.getItem(
+                    "rewardNotifications"
+                )
+            ) || [];
+
+
+        if (
+            !Array.isArray(
+                notifications
+            )
+        ) {
+
+            notifications = [];
+
+        }
+
+    } catch (error) {
+
+        notifications = [];
+
+    }
+
+
+    notifications.unshift({
+
+        id:
+            Date.now(),
+
+        title:
+            title,
+
+        message:
+            message,
+
+        date:
+            new Date().toLocaleString(),
+
+        read:
+            false
+
+    });
+
+
+    localStorage.setItem(
+        "rewardNotifications",
+        JSON.stringify(
+            notifications
+        )
+    );
 
 }
 
@@ -865,11 +935,6 @@ const spinMessage =
 /* =====================================================
    REWARDS
 ===================================================== */
-
-/*
-   These values correspond exactly
-   to the 8 wheel sections.
-*/
 
 const rewards = [
 
@@ -904,7 +969,9 @@ function spinWheel() {
         );
 
 
-    /* Already used today */
+    /* ================================================
+       CHECK DAILY LIMIT
+    ================================================= */
 
     if (
         lastSpin === today
@@ -913,21 +980,17 @@ function spinWheel() {
         spinMessage.textContent =
             "You already spun the wheel today.";
 
-        spinButton.disabled = true;
+        spinButton.disabled =
+            true;
 
         return;
 
     }
 
 
-    /*
-       Choose the winning section.
-
-       IMPORTANT:
-       The random section is selected FIRST.
-       The wheel is then rotated to that exact
-       section.
-    */
+    /* ================================================
+       SELECT WINNING SECTION
+    ================================================= */
 
     const winningIndex =
         Math.floor(
@@ -938,28 +1001,18 @@ function spinWheel() {
 
 
     const reward =
-        rewards[winningIndex];
+        rewards[
+            winningIndex
+        ];
 
 
-    /*
-       Each section is 45 degrees.
-    */
+    /* ================================================
+       CALCULATE WHEEL POSITION
+    ================================================= */
 
-    const sectionAngle = 45;
+    const sectionAngle =
+        45;
 
-
-    /*
-       We want the CENTER of the winning
-       section to stop underneath the pointer.
-
-       Pointer is at 0 degrees.
-       Section centers are:
-
-       22.5
-       67.5
-       112.5
-       etc.
-    */
 
     const targetAngle =
         winningIndex
@@ -969,21 +1022,9 @@ function spinWheel() {
         sectionAngle / 2;
 
 
-    /*
-       Add several complete rotations
-       to make the animation exciting.
-    */
-
     const extraSpins =
         5 * 360;
 
-
-    /*
-       Calculate final rotation.
-
-       The negative sign makes the wheel
-       rotate toward the selected section.
-    */
 
     const finalRotation =
         currentRotation
@@ -997,44 +1038,59 @@ function spinWheel() {
         finalRotation;
 
 
-    /* Disable button during spin */
+    /* ================================================
+       DISABLE BUTTON
+    ================================================= */
 
-    spinButton.disabled = true;
+    spinButton.disabled =
+        true;
+
 
     spinMessage.textContent =
         "🎡 Spinning...";
 
 
-    /* Animate */
+    /* ================================================
+       ANIMATE WHEEL
+    ================================================= */
 
     wheel.style.transform =
-        "rotate(" +
-        finalRotation +
+        "rotate("
+        +
+        finalRotation
+        +
         "deg)";
 
 
-    /*
-       Wait until animation finishes.
-    */
+    /* ================================================
+       COMPLETE AFTER ANIMATION
+    ================================================= */
 
     setTimeout(
         function() {
 
-            /*
-               Award EXACTLY the reward
-               belonging to the selected
-               wheel section.
-            */
 
-            addPoints(
-                reward,
-                "Daily Spin"
-            );
+            /* ========================================
+               DOUBLE-CHECK DAILY LIMIT
+            ======================================== */
+
+            if (
+                localStorage.getItem(
+                    "lastSpin"
+                ) === today
+            ) {
+
+                spinMessage.textContent =
+                    "This spin has already been completed today.";
+
+                return;
+
+            }
 
 
-            /*
-               Save today's spin.
-            */
+            /* ========================================
+               SAVE DAILY SPIN FIRST
+            ======================================== */
 
             localStorage.setItem(
                 "lastSpin",
@@ -1042,24 +1098,56 @@ function spinWheel() {
             );
 
 
-            /*
-               Show the exact reward.
-            */
+            /* ========================================
+               ADD POINTS
+            ======================================== */
+
+            addPoints(
+                reward,
+                "Daily Spin"
+            );
+
+
+            /* ========================================
+               ADD NOTIFICATION
+            ======================================== */
+
+            addNotification(
+
+                "🎡 Daily Spin Reward",
+
+                "You won "
+                +
+                reward
+                +
+                " points from the Daily Spin."
+
+            );
+
+
+            /* ========================================
+               SHOW RESULT
+            ======================================== */
 
             spinMessage.textContent =
-                "🎉 You won " +
-                reward +
+                "🎉 You won "
+                +
+                reward
+                +
                 " points!";
 
 
-            /*
-               Keep button disabled.
-            */
+            /* ========================================
+               KEEP BUTTON DISABLED
+            ======================================== */
 
-            spinButton.disabled = true;
+            spinButton.disabled =
+                true;
+
 
             spinButton.textContent =
                 "✅ Spin Completed Today";
+
 
         },
         4100
@@ -1072,19 +1160,30 @@ function spinWheel() {
    CHECK TODAY'S STATUS
 ===================================================== */
 
-if (
-    localStorage.getItem(
-        "lastSpin"
-    ) === today
-) {
+function checkSpinStatus() {
 
-    spinButton.disabled = true;
+    const lastSpin =
+        localStorage.getItem(
+            "lastSpin"
+        );
 
-    spinButton.textContent =
-        "✅ Spin Completed Today";
 
-    spinMessage.textContent =
-        "You already spun the wheel today.";
+    if (
+        lastSpin === today
+    ) {
+
+        spinButton.disabled =
+            true;
+
+
+        spinButton.textContent =
+            "✅ Spin Completed Today";
+
+
+        spinMessage.textContent =
+            "You already spun the wheel today.";
+
+    }
 
 }
 
@@ -1094,6 +1193,8 @@ if (
 ===================================================== */
 
 updateDisplay();
+
+checkSpinStatus();
 
 
 /* =====================================================
