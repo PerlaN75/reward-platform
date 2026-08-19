@@ -64,6 +64,7 @@ header {
 
 header h1 {
     margin: 0;
+
     background: linear-gradient(
         90deg,
         #00a86b,
@@ -219,6 +220,81 @@ textarea {
 
 
 /* =========================
+   PROOF AREA
+========================= */
+
+.proof-box {
+
+    background: #f4f7fb;
+
+    border: 1px dashed #b8c0cc;
+
+    border-radius: 12px;
+
+    padding: 15px;
+
+    margin-bottom: 18px;
+}
+
+.proof-title {
+
+    font-weight: bold;
+
+    margin-bottom: 8px;
+}
+
+.proof-description {
+
+    color: #666;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+    margin-bottom: 12px;
+}
+
+.proof-input {
+
+    width: 100%;
+
+    padding: 10px;
+
+    background: white;
+
+    border: 1px solid #d7dce5;
+
+    border-radius: 8px;
+}
+
+.file-info {
+
+    margin-top: 10px;
+
+    font-size: 14px;
+
+    color: #555;
+
+    line-height: 1.5;
+}
+
+.proof-preview {
+
+    display: none;
+
+    margin-top: 12px;
+
+    max-width: 100%;
+
+    max-height: 250px;
+
+    border-radius: 10px;
+
+    border: 1px solid #d7dce5;
+}
+
+
+/* =========================
    SUBMIT BUTTON
 ========================= */
 
@@ -306,7 +382,6 @@ textarea {
     color: #182848;
 
     margin-bottom: 8px;
-
 }
 
 .request-subject {
@@ -316,7 +391,6 @@ textarea {
     font-weight: bold;
 
     margin-bottom: 8px;
-
 }
 
 .request-info {
@@ -326,7 +400,6 @@ textarea {
     font-size: 14px;
 
     margin-bottom: 8px;
-
 }
 
 .request-description {
@@ -334,7 +407,42 @@ textarea {
     margin-top: 12px;
 
     line-height: 1.5;
+}
 
+
+/* =========================
+   PROOF DISPLAY
+========================= */
+
+.saved-proof {
+
+    margin-top: 15px;
+
+    padding: 14px;
+
+    background: #f4f7fb;
+
+    border-radius: 10px;
+}
+
+.saved-proof-title {
+
+    font-weight: bold;
+
+    margin-bottom: 8px;
+}
+
+.saved-proof-image {
+
+    max-width: 100%;
+
+    max-height: 250px;
+
+    border-radius: 10px;
+
+    border: 1px solid #d7dce5;
+
+    display: block;
 }
 
 
@@ -362,7 +470,6 @@ textarea {
     background: #fff3cd;
 
     color: #856404;
-
 }
 
 .status-answered {
@@ -370,7 +477,6 @@ textarea {
     background: #d4edda;
 
     color: #155724;
-
 }
 
 
@@ -391,7 +497,6 @@ textarea {
     border-radius: 8px;
 
     line-height: 1.5;
-
 }
 
 .response-title {
@@ -401,7 +506,6 @@ textarea {
     color: #168a3a;
 
     margin-bottom: 6px;
-
 }
 
 
@@ -426,13 +530,11 @@ textarea {
     font-weight: bold;
 
     cursor: pointer;
-
 }
 
 .delete-request:hover {
 
     background: #b71c1c;
-
 }
 
 
@@ -447,7 +549,6 @@ textarea {
     color: #777;
 
     padding: 20px 5px;
-
 }
 
 
@@ -464,7 +565,6 @@ footer {
     color: #666;
 
     font-size: 14px;
-
 }
 
 
@@ -497,7 +597,7 @@ footer {
 
 
 <!-- =========================
-     LOGIN PROTECTION
+     PAGE PROTECTION
 ========================= -->
 
 <script>
@@ -556,221 +656,267 @@ if (
 <main class="container">
 
 
-    <!-- =========================
-         INTRODUCTION
-    ========================= -->
+<!-- =========================
+     INTRODUCTION
+========================= -->
 
-    <div class="card">
+<div class="card">
 
-        <h2>
-            📩 Contact Support
-        </h2>
+    <h2>
+        📩 Contact Support
+    </h2>
 
-        <p class="introduction">
+    <p class="introduction">
 
-            If you have a problem with your account,
-            points, rewards, withdrawals, or another
-            part of the platform, send us a support
-            request.
+        If you have a problem with your account,
+        points, rewards, withdrawals, or another
+        part of the platform, send us a support
+        request.
 
-        </p>
+    </p>
 
-        <p class="introduction">
+    <p class="introduction">
 
-            Explain the problem clearly so that it
-            can be reviewed and answered.
+        Explain the problem clearly so that it
+        can be reviewed and answered.
 
-        </p>
+    </p>
 
-    </div>
+</div>
 
 
-    <!-- =========================
-         SUBMIT ISSUE
-    ========================= -->
+<!-- =========================
+     SUBMIT ISSUE
+========================= -->
 
-    <div class="card">
+<div class="card">
 
-        <h2>
-            📝 Submit an Issue
-        </h2>
+    <h2>
+        📝 Submit an Issue
+    </h2>
 
 
-        <form
-            id="supportForm"
-            onsubmit="submitSupportRequest(event)">
+    <form
+        id="supportForm"
+        onsubmit="submitSupportRequest(event)">
 
 
-            <!-- ISSUE TYPE -->
+        <!-- ISSUE TYPE -->
 
-            <div class="form-group">
+        <div class="form-group">
 
-                <label for="issueType">
+            <label for="issueType">
+                Issue Type
+            </label>
 
-                    Issue Type
+            <select
+                id="issueType"
+                required>
 
-                </label>
+                <option value="">
+                    Select an issue type
+                </option>
 
+                <option value="Login / Account">
+                    🔐 Login / Account
+                </option>
 
-                <select
-                    id="issueType"
-                    required>
+                <option value="Points / Balance">
+                    💰 Points / Balance
+                </option>
 
-                    <option value="">
-                        Select an issue type
-                    </option>
+                <option value="Watch & Earn">
+                    📺 Watch & Earn
+                </option>
 
-                    <option value="Login / Account">
-                        🔐 Login / Account
-                    </option>
+                <option value="Daily Spin">
+                    🎡 Daily Spin
+                </option>
 
-                    <option value="Points / Balance">
-                        💰 Points / Balance
-                    </option>
+                <option value="Challenges">
+                    🏆 Challenges
+                </option>
 
-                    <option value="Watch & Earn">
-                        📺 Watch & Earn
-                    </option>
+                <option value="Rewards">
+                    🎁 Rewards
+                </option>
 
-                    <option value="Daily Spin">
-                        🎡 Daily Spin
-                    </option>
+                <option value="Withdrawal">
+                    💸 Withdrawal
+                </option>
 
-                    <option value="Challenges">
-                        🏆 Challenges
-                    </option>
+                <option value="Buy Points">
+                    💳 Buy Points
+                </option>
 
-                    <option value="Rewards">
-                        🎁 Rewards
-                    </option>
+                <option value="Notifications">
+                    🔔 Notifications
+                </option>
 
-                    <option value="Withdrawal">
-                        💸 Withdrawal
-                    </option>
+                <option value="Other">
+                    ❓ Other
+                </option>
 
-                    <option value="Buy Points">
-                        💳 Buy Points
-                    </option>
-
-                    <option value="Notifications">
-                        🔔 Notifications
-                    </option>
-
-                    <option value="Other">
-                        ❓ Other
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- SUBJECT -->
-
-            <div class="form-group">
-
-                <label for="subject">
-
-                    Subject
-
-                </label>
-
-
-                <input
-                    type="text"
-                    id="subject"
-                    placeholder="Briefly describe the problem"
-                    maxlength="100"
-                    required>
-
-            </div>
-
-
-            <!-- DESCRIPTION -->
-
-            <div class="form-group">
-
-                <label for="description">
-
-                    Explain Your Issue
-
-                </label>
-
-
-                <textarea
-                    id="description"
-                    placeholder="Explain what happened..."
-                    maxlength="1000"
-                    required></textarea>
-
-            </div>
-
-
-            <!-- REFERENCE -->
-
-            <div class="form-group">
-
-                <label for="reference">
-
-                    Reference / Transaction ID
-                    <span style="font-weight:normal;">
-                        (optional)
-                    </span>
-
-                </label>
-
-
-                <input
-                    type="text"
-                    id="reference"
-                    placeholder="Enter a reference if you have one"
-                    maxlength="100">
-
-            </div>
-
-
-            <!-- SUBMIT -->
-
-            <button
-                type="submit"
-                class="submit-button">
-
-                📩 Submit Issue
-
-            </button>
-
-
-        </form>
-
-
-        <!-- SUCCESS -->
-
-        <div
-            id="successMessage"
-            class="success-message">
+            </select>
 
         </div>
 
-    </div>
 
+        <!-- SUBJECT -->
 
-    <!-- =========================
-         MY SUPPORT REQUESTS
-    ========================= -->
+        <div class="form-group">
 
-    <div class="card">
+            <label for="subject">
+                Subject
+            </label>
 
-        <h2>
-            📋 My Support Requests
-        </h2>
-
-
-        <div
-            id="requestsContainer">
+            <input
+                type="text"
+                id="subject"
+                placeholder="Briefly describe the problem"
+                maxlength="100"
+                required>
 
         </div>
 
+
+        <!-- DESCRIPTION -->
+
+        <div class="form-group">
+
+            <label for="description">
+                Explain Your Issue
+            </label>
+
+            <textarea
+                id="description"
+                placeholder="Explain what happened..."
+                maxlength="1000"
+                required></textarea>
+
+        </div>
+
+
+        <!-- REFERENCE -->
+
+        <div class="form-group">
+
+            <label for="reference">
+
+                Reference / Transaction ID
+
+                <span
+                    style="font-weight:normal;">
+
+                    (optional)
+
+                </span>
+
+            </label>
+
+            <input
+                type="text"
+                id="reference"
+                placeholder="Enter a reference if you have one"
+                maxlength="100">
+
+        </div>
+
+
+        <!-- =========================
+             ATTACH PROOF
+        ========================= -->
+
+        <div class="proof-box">
+
+            <div class="proof-title">
+
+                📎 Attach Proof
+                <span style="font-weight:normal;">
+                    (optional)
+                </span>
+
+            </div>
+
+
+            <div class="proof-description">
+
+                If your issue requires proof, you may
+                attach a screenshot or relevant image.
+
+                <br><br>
+
+                Accepted formats:
+                JPG, JPEG, PNG, WEBP
+
+                <br>
+
+                Maximum size: 5 MB
+
+            </div>
+
+
+            <input
+                type="file"
+                id="proofFile"
+                class="proof-input"
+                accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                onchange="previewProof()">
+
+
+            <div
+                id="fileInfo"
+                class="file-info">
+            </div>
+
+
+            <img
+                id="proofPreview"
+                class="proof-preview"
+                alt="Proof preview">
+
+        </div>
+
+
+        <!-- SUBMIT -->
+
+        <button
+            type="submit"
+            class="submit-button">
+
+            📩 Submit Issue
+
+        </button>
+
+
+    </form>
+
+
+    <!-- SUCCESS MESSAGE -->
+
+    <div
+        id="successMessage"
+        class="success-message">
     </div>
+
+</div>
+
+
+<!-- =========================
+     MY SUPPORT REQUESTS
+========================= -->
+
+<div class="card">
+
+    <h2>
+        📋 My Support Requests
+    </h2>
+
+    <div
+        id="requestsContainer">
+    </div>
+
+</div>
 
 
 </main>
@@ -876,6 +1022,149 @@ function generateSupportID() {
 
 
 /* =====================================================
+   PREVIEW PROOF
+===================================================== */
+
+function previewProof() {
+
+    const fileInput =
+        document.getElementById(
+            "proofFile"
+        );
+
+    const fileInfo =
+        document.getElementById(
+            "fileInfo"
+        );
+
+    const preview =
+        document.getElementById(
+            "proofPreview"
+        );
+
+
+    fileInfo.textContent = "";
+
+    preview.style.display =
+        "none";
+
+    preview.removeAttribute(
+        "src"
+    );
+
+
+    if (
+        !fileInput.files ||
+        !fileInput.files[0]
+    ) {
+
+        return;
+
+    }
+
+
+    const file =
+        fileInput.files[0];
+
+
+    /* =========================
+       CHECK FILE TYPE
+    ========================= */
+
+    const allowedTypes = [
+
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+
+    ];
+
+
+    if (
+        !allowedTypes.includes(
+            file.type
+        )
+    ) {
+
+        fileInput.value = "";
+
+        fileInfo.textContent =
+            "❌ Please select a JPG, JPEG, PNG, or WEBP image.";
+
+        return;
+
+    }
+
+
+    /* =========================
+       CHECK FILE SIZE
+    ========================= */
+
+    const maxSize =
+        5 * 1024 * 1024;
+
+
+    if (
+        file.size > maxSize
+    ) {
+
+        fileInput.value = "";
+
+        fileInfo.textContent =
+            "❌ The selected file is larger than 5 MB.";
+
+        return;
+
+    }
+
+
+    /* =========================
+       SHOW FILE INFORMATION
+    ========================= */
+
+    const sizeMB =
+        (
+            file.size /
+            (1024 * 1024)
+        ).toFixed(2);
+
+
+    fileInfo.textContent =
+        "📎 " +
+        file.name +
+        " (" +
+        sizeMB +
+        " MB)";
+
+
+    /* =========================
+       IMAGE PREVIEW
+    ========================= */
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        function(event) {
+
+            preview.src =
+                event.target.result;
+
+            preview.style.display =
+                "block";
+
+        };
+
+
+    reader.readAsDataURL(
+        file
+    );
+
+}
+
+
+/* =====================================================
    SUBMIT SUPPORT REQUEST
 ===================================================== */
 
@@ -910,6 +1199,12 @@ function submitSupportRequest(
         ).value.trim();
 
 
+    const fileInput =
+        document.getElementById(
+            "proofFile"
+        );
+
+
     const successMessage =
         document.getElementById(
             "successMessage"
@@ -928,8 +1223,147 @@ function submitSupportRequest(
 
 
     /* =========================
-       CREATE REQUEST
+       PREPARE PROOF
     ========================= */
+
+    let proofData =
+        "";
+
+    let proofName =
+        "";
+
+
+    if (
+        fileInput.files &&
+        fileInput.files[0]
+    ) {
+
+        const file =
+            fileInput.files[0];
+
+
+        const allowedTypes = [
+
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+
+        ];
+
+
+        if (
+            !allowedTypes.includes(
+                file.type
+            )
+        ) {
+
+            alert(
+                "Please select a JPG, JPEG, PNG, or WEBP image."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            file.size >
+            5 * 1024 * 1024
+        ) {
+
+            alert(
+                "The selected proof is larger than 5 MB."
+            );
+
+            return;
+
+        }
+
+
+        proofName =
+            file.name;
+
+
+        /*
+           Convert the image to Base64
+           for this prototype.
+        */
+
+        const reader =
+            new FileReader();
+
+
+        reader.onload =
+            function(event) {
+
+                proofData =
+                    event.target.result;
+
+
+                saveRequestWithProof(
+                    proofData,
+                    proofName
+                );
+
+            };
+
+
+        reader.readAsDataURL(
+            file
+        );
+
+
+        return;
+
+    }
+
+
+    saveRequestWithProof(
+        "",
+        ""
+    );
+
+}
+
+
+/* =====================================================
+   SAVE REQUEST
+===================================================== */
+
+function saveRequestWithProof(
+    proofData,
+    proofName
+) {
+
+    const issueType =
+        document.getElementById(
+            "issueType"
+        ).value;
+
+
+    const subject =
+        document.getElementById(
+            "subject"
+        ).value.trim();
+
+
+    const description =
+        document.getElementById(
+            "description"
+        ).value.trim();
+
+
+    const reference =
+        document.getElementById(
+            "reference"
+        ).value.trim();
+
+
+    const successMessage =
+        document.getElementById(
+            "successMessage"
+        );
+
 
     const request = {
 
@@ -955,13 +1389,19 @@ function submitSupportRequest(
             "Under Review",
 
         response:
-            ""
+            "",
+
+        proofName:
+            proofName,
+
+        proofData:
+            proofData
 
     };
 
 
     /* =========================
-       SAVE
+       SAVE REQUEST
     ========================= */
 
     const requests =
@@ -973,13 +1413,25 @@ function submitSupportRequest(
     );
 
 
-    saveSupportRequests(
-        requests
-    );
+    try {
+
+        saveSupportRequests(
+            requests
+        );
+
+    } catch (error) {
+
+        alert(
+            "The proof could not be saved. The image may be too large for this prototype. Please try a smaller image."
+        );
+
+        return;
+
+    }
 
 
     /* =========================
-       SUCCESS MESSAGE
+       SUCCESS
     ========================= */
 
     successMessage.style.display =
@@ -987,10 +1439,12 @@ function submitSupportRequest(
 
 
     successMessage.innerHTML =
-        "✅ Your support request has been submitted.<br><br>" +
+        "✅ Your support request has been submitted." +
+        "<br><br>" +
         "Support ID: <strong>" +
         request.id +
-        "</strong><br><br>" +
+        "</strong>" +
+        "<br><br>" +
         "Please keep this ID for future reference.";
 
 
@@ -1001,6 +1455,25 @@ function submitSupportRequest(
     document.getElementById(
         "supportForm"
     ).reset();
+
+
+    document.getElementById(
+        "fileInfo"
+    ).textContent =
+        "";
+
+
+    document.getElementById(
+        "proofPreview"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "proofPreview"
+    ).removeAttribute(
+        "src"
+    );
 
 
     /* =========================
@@ -1028,10 +1501,6 @@ function displayRequests() {
         getSupportRequests();
 
 
-    /* =========================
-       NO REQUESTS
-    ========================= */
-
     if (
         requests.length === 0
     ) {
@@ -1046,11 +1515,8 @@ function displayRequests() {
     }
 
 
-    /* =========================
-       BUILD REQUESTS
-    ========================= */
-
-    container.innerHTML = "";
+    container.innerHTML =
+        "";
 
 
     requests.forEach(
@@ -1096,6 +1562,39 @@ function displayRequests() {
             }
 
 
+            let proofHTML =
+                "";
+
+
+            if (
+                request.proofData
+            ) {
+
+                proofHTML =
+                    '<div class="saved-proof">' +
+
+                    '<div class="saved-proof-title">' +
+                    '📎 Attached Proof' +
+                    '</div>' +
+
+                    '<div class="request-info">' +
+                    escapeHTML(
+                        request.proofName
+                    ) +
+                    '</div>' +
+
+                    '<img ' +
+                    'src="' +
+                    request.proofData +
+                    '" ' +
+                    'class="saved-proof-image" ' +
+                    'alt="Attached proof">' +
+
+                    '</div>';
+
+            }
+
+
             item.innerHTML =
 
                 '<div class="request-id">' +
@@ -1127,42 +1626,62 @@ function displayRequests() {
                 '<span class="status ' +
                 statusClass +
                 '">' +
+
                 (
                     request.status === "Answered"
                         ? "🟢 Answered"
                         : "🟡 Under Review"
                 ) +
+
                 '</span>' +
 
                 '<div class="request-description">' +
-                '<strong>Your issue:</strong><br>' +
+
+                '<strong>Your issue:</strong>' +
+
+                '<br>' +
+
                 escapeHTML(
                     request.description
                 ) +
+
                 '</div>' +
 
                 (
                     request.reference
                         ?
+
                         '<div class="request-info" style="margin-top:10px;">' +
+
                         '🔖 Reference: ' +
+
                         escapeHTML(
                             request.reference
                         ) +
+
                         '</div>'
+
                         :
+
                         ''
                 ) +
+
+                proofHTML +
 
                 responseHTML +
 
                 '<button ' +
+
                 'type="button" ' +
+
                 'class="delete-request" ' +
+
                 'onclick="deleteRequest(' +
                 index +
                 ')">' +
+
                 '✕ Delete Request' +
+
                 '</button>';
 
 
@@ -1228,7 +1747,6 @@ function deleteRequest(
 
 /* =====================================================
    ESCAPE HTML
-   Protects displayed user text
 ===================================================== */
 
 function escapeHTML(
@@ -1240,8 +1758,10 @@ function escapeHTML(
             "div"
         );
 
+
     div.textContent =
         value || "";
+
 
     return div.innerHTML;
 
@@ -1249,7 +1769,7 @@ function escapeHTML(
 
 
 /* =====================================================
-   DISPLAY ON PAGE LOAD
+   LOAD REQUESTS
 ===================================================== */
 
 displayRequests();
