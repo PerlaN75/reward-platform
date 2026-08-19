@@ -4,7 +4,10 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
 
 <title>Earn Points - Reward Platform</title>
 
@@ -226,9 +229,14 @@ footer {
 
 <script>
 
-if (localStorage.getItem("loggedIn") !== "true") {
+if (
+    localStorage.getItem("loggedIn")
+    !==
+    "true"
+) {
 
-    window.location.href = "login.html";
+    window.location.href =
+        "login.html";
 
 }
 
@@ -258,7 +266,9 @@ if (localStorage.getItem("loggedIn") !== "true") {
 
 <header>
 
-    <h1>Earn Points</h1>
+    <h1>
+        Earn Points
+    </h1>
 
     <p>
         Complete today's activities and increase your balance.
@@ -276,7 +286,9 @@ if (localStorage.getItem("loggedIn") !== "true") {
 
 <div class="card points">
 
-    <h2>💰 Your Points</h2>
+    <h2>
+        💰 Your Points
+    </h2>
 
     <div
         class="points-number"
@@ -309,7 +321,9 @@ if (localStorage.getItem("loggedIn") !== "true") {
 
 <div class="card">
 
-    <h2>🎁 Daily Check-in</h2>
+    <h2>
+        🎁 Daily Check-in
+    </h2>
 
     <p>
 
@@ -340,7 +354,9 @@ if (localStorage.getItem("loggedIn") !== "true") {
 
 <div class="card">
 
-    <h2>🧠 Daily Quiz</h2>
+    <h2>
+        🧠 Daily Quiz
+    </h2>
 
     <p>
 
@@ -351,11 +367,15 @@ if (localStorage.getItem("loggedIn") !== "true") {
 
     <p>
 
-        <strong id="quizQuestion"></strong>
+        <strong
+            id="quizQuestion">
+        </strong>
 
     </p>
 
-    <div id="quizOptions"></div>
+    <div
+        id="quizOptions">
+    </div>
 
     <div
         id="quizMessage"
@@ -371,11 +391,17 @@ if (localStorage.getItem("loggedIn") !== "true") {
 
 <div class="card">
 
-    <h2>🎮 Daily Game</h2>
+    <h2>
+        🎮 Daily Game
+    </h2>
 
-    <p id="gameQuestion"></p>
+    <p
+        id="gameQuestion">
+    </p>
 
-    <div id="gameArea"></div>
+    <div
+        id="gameArea">
+    </div>
 
     <div
         id="gameMessage"
@@ -444,7 +470,62 @@ function updateDisplay() {
 
     document.getElementById(
         "points"
-    ).textContent = points;
+    ).textContent =
+        points;
+
+}
+
+
+/* =====================================================
+   GET HISTORY
+===================================================== */
+
+function getHistory() {
+
+    let history;
+
+    try {
+
+        history =
+            JSON.parse(
+                localStorage.getItem(
+                    "rewardHistory"
+                )
+            ) || [];
+
+
+        if (
+            !Array.isArray(history)
+        ) {
+
+            history = [];
+
+        }
+
+    }
+
+    catch (error) {
+
+        history = [];
+
+    }
+
+
+    return history;
+
+}
+
+
+/* =====================================================
+   SAVE HISTORY
+===================================================== */
+
+function saveHistory(history) {
+
+    localStorage.setItem(
+        "rewardHistory",
+        JSON.stringify(history)
+    );
 
 }
 
@@ -453,7 +534,10 @@ function updateDisplay() {
    ADD POINTS
 ===================================================== */
 
-function addPoints(amount, activity) {
+function addPoints(
+    amount,
+    activity
+) {
 
 
     /* Get latest balance */
@@ -471,42 +555,21 @@ function addPoints(amount, activity) {
     points += amount;
 
 
-    /* Get latest history */
+    /* Get history */
 
-    let currentHistory;
-
-    try {
-
-        currentHistory =
-            JSON.parse(
-                localStorage.getItem(
-                    "rewardHistory"
-                )
-            ) || [];
-
-
-        if (!Array.isArray(currentHistory)) {
-
-            currentHistory = [];
-
-        }
-
-    }
-
-    catch (error) {
-
-        currentHistory = [];
-
-    }
+    const currentHistory =
+        getHistory();
 
 
     /* Record activity */
 
     currentHistory.push({
 
-        activity: activity,
+        activity:
+            activity,
 
-        points: amount,
+        points:
+            amount,
 
         date:
             new Date().toLocaleString()
@@ -524,17 +587,16 @@ function addPoints(amount, activity) {
 
     /* Save history */
 
-    localStorage.setItem(
-        "rewardHistory",
-        JSON.stringify(
-            currentHistory
-        )
+    saveHistory(
+        currentHistory
     );
 
 
-    /* Update challenge */
+    /* =================================================
+       UPDATE FIVE-DAY CHALLENGE
+    ================================================= */
 
-    updateChallenge(activity);
+    updateChallenge();
 
 
     /* Update display */
@@ -548,8 +610,12 @@ function addPoints(amount, activity) {
    FIVE-DAY STREAK CHALLENGE
 ===================================================== */
 
-function updateChallenge(activity) {
+function updateChallenge() {
 
+
+    /* =================================================
+       CHECK IF CHALLENGE IS ALREADY COMPLETED
+    ================================================= */
 
     const completed =
         localStorage.getItem(
@@ -564,15 +630,27 @@ function updateChallenge(activity) {
     }
 
 
+    /* =================================================
+       TODAY
+    ================================================= */
+
     const challengeToday =
         new Date().toDateString();
 
+
+    /* =================================================
+       LAST CHALLENGE DAY
+    ================================================= */
 
     const lastChallengeDay =
         localStorage.getItem(
             "lastChallengeDay"
         );
 
+
+    /* =================================================
+       CURRENT PROGRESS
+    ================================================= */
 
     let progress =
         Number(
@@ -582,10 +660,13 @@ function updateChallenge(activity) {
         ) || 0;
 
 
-    /* Do not count more than once per day */
+    /* =================================================
+       ONLY COUNT ONCE PER DAY
+    ================================================= */
 
     if (
-        lastChallengeDay === challengeToday
+        lastChallengeDay ===
+        challengeToday
     ) {
 
         return;
@@ -593,7 +674,9 @@ function updateChallenge(activity) {
     }
 
 
-    /* Calculate yesterday */
+    /* =================================================
+       CALCULATE YESTERDAY
+    ================================================= */
 
     const yesterdayDate =
         new Date();
@@ -608,10 +691,13 @@ function updateChallenge(activity) {
         yesterdayDate.toDateString();
 
 
-    /* Continue streak or start again */
+    /* =================================================
+       CONTINUE STREAK OR START AGAIN
+    ================================================= */
 
     if (
-        lastChallengeDay === yesterday
+        lastChallengeDay ===
+        yesterday
     ) {
 
         progress++;
@@ -625,22 +711,22 @@ function updateChallenge(activity) {
     }
 
 
-    /* Maximum progress is 5 */
+    /* =================================================
+       MAXIMUM PROGRESS
+    ================================================= */
 
-    if (progress > 5) {
+    if (
+        progress > 5
+    ) {
 
         progress = 5;
 
     }
 
 
-    /* Save challenge */
-
-    localStorage.setItem(
-        "lastChallengeDay",
-        challengeToday
-    );
-
+    /* =================================================
+       SAVE PROGRESS
+    ================================================= */
 
     localStorage.setItem(
         "challengeProgress",
@@ -648,12 +734,22 @@ function updateChallenge(activity) {
     );
 
 
+    localStorage.setItem(
+        "lastChallengeDay",
+        challengeToday
+    );
+
+
     /* =================================================
        FIVE-DAY REWARD
     ================================================= */
 
-    if (progress >= 5) {
+    if (
+        progress === 5
+    ) {
 
+
+        /* Get current balance */
 
         let currentPoints =
             Number(
@@ -662,6 +758,8 @@ function updateChallenge(activity) {
                 )
             ) || 0;
 
+
+        /* Add 50 points */
 
         currentPoints += 50;
 
@@ -672,44 +770,21 @@ function updateChallenge(activity) {
         );
 
 
-        let challengeHistory;
+        /* Get history */
+
+        const challengeHistory =
+            getHistory();
 
 
-        try {
-
-            challengeHistory =
-                JSON.parse(
-                    localStorage.getItem(
-                        "rewardHistory"
-                    )
-                ) || [];
-
-
-            if (
-                !Array.isArray(
-                    challengeHistory
-                )
-            ) {
-
-                challengeHistory = [];
-
-            }
-
-        }
-
-        catch (error) {
-
-            challengeHistory = [];
-
-        }
-
+        /* Record challenge reward */
 
         challengeHistory.push({
 
             activity:
                 "5-Day Streak Challenge",
 
-            points: 50,
+            points:
+                50,
 
             date:
                 new Date().toLocaleString()
@@ -717,19 +792,20 @@ function updateChallenge(activity) {
         });
 
 
-        localStorage.setItem(
-            "rewardHistory",
-            JSON.stringify(
-                challengeHistory
-            )
+        saveHistory(
+            challengeHistory
         );
 
+
+        /* Mark challenge completed */
 
         localStorage.setItem(
             "challengeCompleted",
             "true"
         );
 
+
+        /* Update balance display */
 
         updateDisplay();
 
@@ -752,7 +828,8 @@ function dailyCheckIn() {
 
 
     if (
-        lastCheckIn === today
+        lastCheckIn ===
+        today
     ) {
 
         document.getElementById(
@@ -765,11 +842,15 @@ function dailyCheckIn() {
     }
 
 
+    /* Award points */
+
     addPoints(
         10,
         "Daily Check-in"
     );
 
+
+    /* Save completion */
 
     localStorage.setItem(
         "lastCheckIn",
@@ -777,11 +858,15 @@ function dailyCheckIn() {
     );
 
 
+    /* Message */
+
     document.getElementById(
         "checkinMessage"
     ).textContent =
         "🎉 You earned 10 points!";
 
+
+    /* Disable button */
 
     const button =
         document.getElementById(
@@ -1060,7 +1145,8 @@ const dayNumber =
 
 
 const quizIndex =
-    dayNumber % quizzes.length;
+    dayNumber %
+    quizzes.length;
 
 
 const todayQuiz =
@@ -1113,7 +1199,9 @@ todayQuiz.options.forEach(
    ANSWER QUIZ
 ===================================================== */
 
-function answerQuiz(answer) {
+function answerQuiz(
+    answer
+) {
 
 
     const message =
@@ -1129,7 +1217,8 @@ function answerQuiz(answer) {
 
 
     if (
-        completedDate === today
+        completedDate ===
+        today
     ) {
 
         message.textContent =
@@ -1140,7 +1229,7 @@ function answerQuiz(answer) {
     }
 
 
-    /* Disable all answers */
+    /* Disable answers */
 
     document
         .querySelectorAll(
@@ -1156,7 +1245,8 @@ function answerQuiz(answer) {
 
 
     if (
-        answer === todayQuiz.answer
+        answer ===
+        todayQuiz.answer
     ) {
 
 
@@ -1441,7 +1531,8 @@ answer:"52"
 ===================================================== */
 
 const gameIndex =
-    dayNumber % games.length;
+    dayNumber %
+    games.length;
 
 
 const todayGame =
@@ -1498,7 +1589,9 @@ todayGame.options.forEach(
    PLAY TODAY'S GAME
 ===================================================== */
 
-function playGame(choice) {
+function playGame(
+    choice
+) {
 
 
     const message =
@@ -1514,7 +1607,8 @@ function playGame(choice) {
 
 
     if (
-        completedDate === today
+        completedDate ===
+        today
     ) {
 
         message.textContent =
@@ -1543,7 +1637,8 @@ function playGame(choice) {
 
 
     if (
-        choice === todayGame.answer
+        choice ===
+        todayGame.answer
     ) {
 
 
@@ -1584,9 +1679,9 @@ function playGame(choice) {
 if (
     localStorage.getItem(
         "lastCheckIn"
-    ) === today
+    ) ===
+    today
 ) {
-
 
     const checkinBtn =
         document.getElementById(
@@ -1594,7 +1689,8 @@ if (
         );
 
 
-    checkinBtn.disabled = true;
+    checkinBtn.disabled =
+        true;
 
 
     checkinBtn.textContent =
@@ -1614,9 +1710,9 @@ if (
 if (
     localStorage.getItem(
         "quizCompletedDate"
-    ) === today
+    ) ===
+    today
 ) {
-
 
     document.getElementById(
         "quizMessage"
@@ -1631,7 +1727,8 @@ if (
         .forEach(
             function(button) {
 
-                button.disabled = true;
+                button.disabled =
+                    true;
 
             }
         );
@@ -1644,9 +1741,9 @@ if (
 if (
     localStorage.getItem(
         "gameCompletedDate"
-    ) === today
+    ) ===
+    today
 ) {
-
 
     document.getElementById(
         "gameMessage"
@@ -1661,7 +1758,8 @@ if (
         .forEach(
             function(button) {
 
-                button.disabled = true;
+                button.disabled =
+                    true;
 
             }
         );
