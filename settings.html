@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>Settings - Reward Platform</title>
+
+
+<style>
+
+/* =========================
+   GENERAL
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+
+    font-family: Arial, sans-serif;
+
+    background: #f4f7fb;
+
+    color: #222;
+}
+
+
+/* =========================
+   TOP NAVIGATION
+========================= */
+
+.top-nav {
+
+    background: #182848;
+
+    padding: 12px 10px;
+
+    display: flex;
+
+    align-items: center;
+
+}
+
+.back-button {
+
+    border: none;
+
+    border-radius: 10px;
+
+    padding: 11px 16px;
+
+    background: rgba(255,255,255,0.12);
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+.back-button:hover {
+
+    background:
+        rgba(255,255,255,0.22);
+
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+
+    background: #182848;
+
+    color: white;
+
+    text-align: center;
+
+    padding: 28px 15px;
+
+}
+
+header h1 {
+
+    margin: 0;
+
+    animation:
+        headingColor 3s infinite alternate;
+
+}
+
+header p {
+
+    margin: 8px 0 0;
+
+}
+
+
+@keyframes headingColor {
+
+    0% {
+
+        color: white;
+
+    }
+
+    100% {
+
+        color: #00bfff;
+
+    }
+
+}
+
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.container {
+
+    max-width: 700px;
+
+    margin: auto;
+
+    padding: 15px;
+
+}
+
+
+/* =========================
+   SETTINGS CARD
+========================= */
+
+.settings-card {
+
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 20px;
+
+    margin: 15px 0;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.08);
+
+}
+
+
+/* =========================
+   SETTINGS TITLE
+========================= */
+
+.settings-card h2 {
+
+    margin-top: 0;
+
+    color: #182848;
+
+}
+
+
+/* =========================
+   SETTINGS ITEM
+========================= */
+
+.setting-item {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 16px 5px;
+
+    border-bottom:
+        1px solid #eeeeee;
+
+}
+
+.setting-item:last-child {
+
+    border-bottom: none;
+
+}
+
+
+/* =========================
+   SETTING INFORMATION
+========================= */
+
+.setting-info {
+
+    flex: 1;
+
+}
+
+.setting-name {
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+}
+
+.setting-description {
+
+    margin-top: 5px;
+
+    color: #777;
+
+    font-size: 14px;
+
+    line-height: 1.4;
+
+}
+
+
+/* =========================
+   OPEN BUTTON
+========================= */
+
+.open-button {
+
+    border: none;
+
+    border-radius: 9px;
+
+    padding: 10px 13px;
+
+    background: #182848;
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+}
+
+.open-button:hover {
+
+    opacity: 0.9;
+
+}
+
+
+/* =========================
+   LANGUAGE BOX
+========================= */
+
+.language-box {
+
+    display: none;
+
+    margin-top: 15px;
+
+    padding: 15px;
+
+    background: #f4f7fb;
+
+    border-radius: 10px;
+
+}
+
+.language-box.open {
+
+    display: block;
+
+}
+
+.language-option {
+
+    width: 100%;
+
+    padding: 12px;
+
+    margin-bottom: 8px;
+
+    border: 1px solid #d7dce5;
+
+    border-radius: 9px;
+
+    background: white;
+
+    text-align: left;
+
+    font-size: 15px;
+
+    cursor: pointer;
+
+}
+
+.language-option:last-child {
+
+    margin-bottom: 0;
+
+}
+
+.language-option:hover {
+
+    background: #eef5ff;
+
+}
+
+.language-option.selected {
+
+    border-color: #2196f3;
+
+    background: #e8f3ff;
+
+    font-weight: bold;
+
+}
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+.message {
+
+    text-align: center;
+
+    font-weight: bold;
+
+    margin-top: 15px;
+
+    line-height: 1.5;
+
+    color: #168a3a;
+
+}
+
+
+/* =========================
+   DELETE AREA
+========================= */
+
+.delete-area {
+
+    margin-top: 20px;
+
+    padding: 18px;
+
+    background: #fff3f3;
+
+    border-radius: 12px;
+
+    border:
+        1px solid #f0caca;
+
+}
+
+.delete-area h3 {
+
+    margin-top: 0;
+
+    color: #c62828;
+
+}
+
+.delete-area p {
+
+    line-height: 1.5;
+
+    color: #555;
+
+}
+
+.delete-button {
+
+    width: 100%;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #c62828;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+.delete-button:hover {
+
+    background: #b71c1c;
+
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+
+    text-align: center;
+
+    padding: 25px;
+
+    color: #666;
+
+    font-size: 14px;
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 500px) {
+
+    .setting-item {
+
+        align-items: flex-start;
+
+    }
+
+    .open-button {
+
+        padding: 9px 11px;
+
+        font-size: 13px;
+
+    }
+
+    .setting-name {
+
+        font-size: 16px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     LOGIN PROTECTION
+========================= -->
+
+<script>
+
+if (
+    localStorage.getItem("loggedIn")
+    !== "true"
+) {
+
+    window.location.href =
+        "login.html";
+
+}
+
+</script>
+
+
+<!-- =========================
+     TOP NAVIGATION
+========================= -->
+
+<nav class="top-nav">
+
+    <button
+        type="button"
+        class="back-button"
+        onclick="goBack()">
+
+        ← Back
+
+    </button>
+
+</nav>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header>
+
+    <h1>⚙️ Settings</h1>
+
+    <p>
+        Manage your platform preferences.
+    </p>
+
+</header>
+
+
+<!-- =========================
+     MAIN CONTENT
+========================= -->
+
+<main class="container">
+
+
+    <!-- =========================
+         SETTINGS
+    ========================= -->
+
+    <div class="settings-card">
+
+        <h2>
+            ⚙️ Settings
+        </h2>
+
+
+        <!-- =========================
+             ACCOUNT
+        ========================= -->
+
+        <div class="setting-item">
+
+            <div class="setting-info">
+
+                <div class="setting-name">
+                    👤 Account
+                </div>
+
+                <div class="setting-description">
+
+                    Manage your account information.
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="open-button"
+                onclick="openAccount()">
+
+                Open
+
+            </button>
+
+        </div>
+
+
+        <!-- =========================
+             APPEARANCE
+        ========================= -->
+
+        <div class="setting-item">
+
+            <div class="setting-info">
+
+                <div class="setting-name">
+                    🎨 Appearance
+                </div>
+
+                <div class="setting-description">
+
+                    Choose how the platform looks.
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="open-button"
+                onclick="openAppearance()">
+
+                Open
+
+            </button>
+
+        </div>
+
+
+        <!-- =========================
+             LANGUAGE
+        ========================= -->
+
+        <div class="setting-item">
+
+            <div class="setting-info">
+
+                <div class="setting-name">
+                    🌐 Language
+                </div>
+
+                <div
+                    class="setting-description"
+                    id="currentLanguage">
+
+                    English
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="open-button"
+                onclick="toggleLanguage()">
+
+                Open
+
+            </button>
+
+        </div>
+
+
+        <!-- =========================
+             LANGUAGE OPTIONS
+        ========================= -->
+
+        <div
+            id="languageBox"
+            class="language-box">
+
+
+            <button
+                type="button"
+                class="language-option"
+                data-language="English"
+                onclick="selectLanguage('English')">
+
+                🇬🇧 English
+
+            </button>
+
+
+            <button
+                type="button"
+                class="language-option"
+                data-language="Français"
+                onclick="selectLanguage('Français')">
+
+                🇫🇷 Français
+
+            </button>
+
+
+            <button
+                type="button"
+                class="language-option"
+                data-language="中文"
+                onclick="selectLanguage('中文')">
+
+                🇨🇳 中文 (Chinese)
+
+            </button>
+
+
+            <button
+                type="button"
+                class="language-option"
+                data-language="Español"
+                onclick="selectLanguage('Español')">
+
+                🇪🇸 Español
+
+            </button>
+
+
+            <button
+                type="button"
+                class="language-option"
+                data-language="Português"
+                onclick="selectLanguage('Português')">
+
+                🇵🇹 Português
+
+            </button>
+
+
+            <button
+                type="button"
+                class="language-option"
+                data-language="Kiswahili"
+                onclick="selectLanguage('Kiswahili')">
+
+                🇰🇪 Kiswahili
+
+            </button>
+
+
+            <button
+                type="button"
+                class="language-option"
+                data-language="Kinyarwanda"
+                onclick="selectLanguage('Kinyarwanda')">
+
+                🇷🇼 Kinyarwanda
+
+            </button>
+
+
+            <button
+                type="button"
+                class="language-option"
+                data-language="Deutsch"
+                onclick="selectLanguage('Deutsch')">
+
+                🇩🇪 Deutsch
+
+            </button>
+
+
+            <button
+                type="button"
+                class="language-option"
+                data-language="Italiano"
+                onclick="selectLanguage('Italiano')">
+
+                🇮🇹 Italiano
+
+            </button>
+
+
+            <button
+                type="button"
+                class="language-option"
+                data-language="العربية"
+                onclick="selectLanguage('العربية')">
+
+                🇸🇦 العربية (Arabic)
+
+            </button>
+
+
+            <div
+                id="languageMessage"
+                class="message">
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             SECURITY
+        ========================= -->
+
+        <div class="setting-item">
+
+            <div class="setting-info">
+
+                <div class="setting-name">
+                    🔒 Security
+                </div>
+
+                <div class="setting-description">
+
+                    Manage password and account security.
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="open-button"
+                onclick="openSecurity()">
+
+                Open
+
+            </button>
+
+        </div>
+
+
+        <!-- =========================
+             DELETE ACCOUNT
+        ========================= -->
+
+        <div class="setting-item">
+
+            <div class="setting-info">
+
+                <div class="setting-name">
+                    ⚠️ Delete Account
+                </div>
+
+                <div class="setting-description">
+
+                    Permanently delete your account
+                    and associated data.
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="open-button"
+                onclick="showDeleteArea()">
+
+                Open
+
+            </button>
+
+        </div>
+
+
+        <!-- =========================
+             DELETE ACCOUNT AREA
+        ========================= -->
+
+        <div
+            id="deleteArea"
+            class="delete-area"
+            style="display:none;">
+
+            <h3>
+                ⚠️ Permanent Account Deletion
+            </h3>
+
+            <p>
+
+                Account deletion is a permanent action.
+                Once the final deletion system is connected,
+                the account and its data will not be recoverable.
+
+            </p>
+
+            <p>
+
+                The final system will also prevent the
+                deleted username and email address from
+                being registered again.
+
+            </p>
+
+
+            <button
+                type="button"
+                class="delete-button"
+                onclick="deleteAccount()">
+
+                ⚠️ Delete My Account
+
+            </button>
+
+
+            <div
+                id="deleteMessage"
+                class="message">
+            </div>
+
+        </div>
+
+    </div>
+
+
+</main>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    Reward Platform — Prototype
+
+</footer>
+
+
+<script>
+
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+function goBack() {
+
+    window.history.back();
+
+}
+
+
+/* =====================================================
+   ACCOUNT
+===================================================== */
+
+function openAccount() {
+
+    window.location.href =
+        "profile.html";
+
+}
+
+
+/* =====================================================
+   APPEARANCE
+===================================================== */
+
+function openAppearance() {
+
+    alert(
+        "🎨 Appearance settings will be built here."
+    );
+
+}
+
+
+/* =====================================================
+   LANGUAGE
+===================================================== */
+
+function toggleLanguage() {
+
+    const box =
+        document.getElementById(
+            "languageBox"
+        );
+
+
+    box.classList.toggle(
+        "open"
+    );
+
+
+    updateLanguageDisplay();
+
+}
+
+
+/* =====================================================
+   SELECT LANGUAGE
+===================================================== */
+
+function selectLanguage(
+    language
+) {
+
+    localStorage.setItem(
+        "selectedLanguage",
+        language
+    );
+
+
+    updateLanguageDisplay();
+
+
+    const message =
+        document.getElementById(
+            "languageMessage"
+        );
+
+
+    message.textContent =
+        "✅ Language preference saved: " +
+        language;
+
+
+    highlightSelectedLanguage();
+
+}
+
+
+/* =====================================================
+   UPDATE LANGUAGE DISPLAY
+===================================================== */
+
+function updateLanguageDisplay() {
+
+    const savedLanguage =
+        localStorage.getItem(
+            "selectedLanguage"
+        ) || "English";
+
+
+    document.getElementById(
+        "currentLanguage"
+    ).textContent =
+        savedLanguage;
+
+
+    highlightSelectedLanguage();
+
+}
+
+
+/* =====================================================
+   HIGHLIGHT LANGUAGE
+===================================================== */
+
+function highlightSelectedLanguage() {
+
+    const savedLanguage =
+        localStorage.getItem(
+            "selectedLanguage"
+        ) || "English";
+
+
+    const options =
+        document.querySelectorAll(
+            ".language-option"
+        );
+
+
+    options.forEach(
+        function(option) {
+
+            if (
+                option.dataset.language
+                === savedLanguage
+            ) {
+
+                option.classList.add(
+                    "selected"
+                );
+
+            } else {
+
+                option.classList.remove(
+                    "selected"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   SECURITY
+===================================================== */
+
+function openSecurity() {
+
+    alert(
+        "🔒 Security settings will be built here."
+    );
+
+}
+
+
+/* =====================================================
+   SHOW DELETE AREA
+===================================================== */
+
+function showDeleteArea() {
+
+    const area =
+        document.getElementById(
+            "deleteArea"
+        );
+
+
+    if (
+        area.style.display === "none"
+    ) {
+
+        area.style.display =
+            "block";
+
+    } else {
+
+        area.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =====================================================
+   DELETE ACCOUNT
+===================================================== */
+
+function deleteAccount() {
+
+    const message =
+        document.getElementById(
+            "deleteMessage"
+        );
+
+
+    message.textContent =
+        "⚠️ Permanent account deletion will be activated after the secure account-deletion system is built.";
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+updateLanguageDisplay();
+
+</script>
+
+
+</body>
+
+</html>
