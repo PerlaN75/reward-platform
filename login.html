@@ -325,6 +325,34 @@ input:focus {
 
 
 /* =========================
+   USERNAME RULES
+========================= */
+
+.username-rules {
+    background: #f4f7fb;
+    border-radius: 10px;
+    padding: 12px;
+    margin-top: 10px;
+    margin-bottom: 18px;
+    font-size: 14px;
+}
+
+.username-rules strong {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.username-rules ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.username-rules li {
+    margin-bottom: 4px;
+}
+
+
+/* =========================
    FOOTER
 ========================= */
 
@@ -406,6 +434,8 @@ footer {
             onsubmit="loginUser(event)">
 
 
+            <!-- USERNAME -->
+
             <div class="form-group">
 
                 <label for="username">
@@ -420,6 +450,32 @@ footer {
 
             </div>
 
+
+            <!-- USERNAME RULES -->
+
+            <div class="username-rules">
+
+                <strong>
+                    Username:
+                </strong>
+
+                <ul>
+
+                    <li>
+                        Use lowercase letters only (a–z)
+                    </li>
+
+                    <li>
+                        No capital letters, numbers,
+                        spaces, or special characters
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <!-- PASSWORD -->
 
             <div class="form-group">
 
@@ -700,10 +756,16 @@ function loginUser(event) {
     event.preventDefault();
 
 
+    /*
+       IMPORTANT:
+       Username is NOT converted to lowercase.
+       The username must match exactly.
+    */
+
     const username =
         document.getElementById(
             "username"
-        ).value.trim().toLowerCase();
+        ).value.trim();
 
 
     const password =
@@ -724,12 +786,41 @@ function loginUser(event) {
         );
 
 
-    const savedUser =
-        JSON.parse(
-            localStorage.getItem(
-                "rewardUser"
-            )
-        );
+    /* =========================
+       USERNAME FORMAT CHECK
+    ========================= */
+
+    if (!/^[a-z]+$/.test(username)) {
+
+        message.textContent =
+            "❌ Username must contain only lowercase letters (a–z). No capital letters, numbers, spaces, or special characters.";
+
+        return;
+
+    }
+
+
+    /* =========================
+       LOAD SAVED USER
+    ========================= */
+
+    let savedUser = null;
+
+
+    try {
+
+        savedUser =
+            JSON.parse(
+                localStorage.getItem(
+                    "rewardUser"
+                )
+            );
+
+    } catch (error) {
+
+        savedUser = null;
+
+    }
 
 
     /* =========================
@@ -900,7 +991,7 @@ function loginUser(event) {
 
 
     /* =========================
-       CREATE LOGIN NOTIFICATION
+       LOGIN NOTIFICATION
     ========================= */
 
     createLoginNotification();
@@ -1058,12 +1149,23 @@ function resetPassword() {
         );
 
 
-    const savedUser =
-        JSON.parse(
-            localStorage.getItem(
-                "rewardUser"
-            )
-        );
+    let savedUser = null;
+
+
+    try {
+
+        savedUser =
+            JSON.parse(
+                localStorage.getItem(
+                    "rewardUser"
+                )
+            );
+
+    } catch (error) {
+
+        savedUser = null;
+
+    }
 
 
     /* =========================
