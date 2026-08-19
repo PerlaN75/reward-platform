@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>Help & Support - Reward Platform</title>
+
+<style>
+
+/* =========================
+   GENERAL
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #222;
+}
+
+
+/* =========================
+   TOP NAVIGATION
+========================= */
+
+.top-nav {
+    background: #182848;
+    padding: 12px 10px;
+    display: flex;
+    align-items: center;
+}
+
+.back-button {
+    background: rgba(255,255,255,0.12);
+    color: white;
+    text-decoration: none;
+    padding: 11px 16px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    background: #182848;
+    color: white;
+    text-align: center;
+    padding: 28px 15px;
+}
+
+header h1 {
+    margin: 0;
+    background: linear-gradient(
+        90deg,
+        #00a86b,
+        #00c9a7,
+        #2196f3,
+        #8a2be2,
+        #00a86b
+    );
+
+    background-size: 300% 100%;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+
+    animation:
+        headingSlide 8s linear infinite;
+}
+
+header p {
+    margin: 10px 0 0;
+}
+
+@keyframes headingSlide {
+
+    from {
+        background-position: 0% 50%;
+    }
+
+    to {
+        background-position: 300% 50%;
+    }
+
+}
+
+
+/* =========================
+   CONTAINER
+========================= */
+
+.container {
+    max-width: 700px;
+    margin: auto;
+    padding: 20px 15px 35px;
+}
+
+
+/* =========================
+   CARD
+========================= */
+
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 18px;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.08);
+}
+
+
+/* =========================
+   CARD HEADING
+========================= */
+
+.card h2 {
+    margin-top: 0;
+
+    background: linear-gradient(
+        90deg,
+        #182848,
+        #2196f3,
+        #00a86b,
+        #182848
+    );
+
+    background-size: 300% 100%;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+
+    animation:
+        headingSlide 8s linear infinite;
+}
+
+
+/* =========================
+   INTRODUCTION
+========================= */
+
+.introduction {
+    line-height: 1.6;
+    color: #555;
+}
+
+
+/* =========================
+   FORM
+========================= */
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+select,
+input,
+textarea {
+
+    width: 100%;
+
+    padding: 14px;
+
+    border: 1px solid #d7dce5;
+
+    border-radius: 10px;
+
+    font-size: 16px;
+
+    font-family: Arial, sans-serif;
+
+    outline: none;
+
+    background: white;
+}
+
+select:focus,
+input:focus,
+textarea:focus {
+
+    border-color: #2196f3;
+
+}
+
+textarea {
+
+    min-height: 150px;
+
+    resize: vertical;
+
+}
+
+
+/* =========================
+   SUBMIT BUTTON
+========================= */
+
+.submit-button {
+
+    width: 100%;
+
+    padding: 15px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #182848;
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.submit-button:hover {
+
+    opacity: 0.9;
+
+}
+
+
+/* =========================
+   SUCCESS MESSAGE
+========================= */
+
+.success-message {
+
+    display: none;
+
+    margin-top: 18px;
+
+    padding: 15px;
+
+    background: #e8f5e9;
+
+    border-left: 5px solid #168a3a;
+
+    border-radius: 8px;
+
+    color: #168a3a;
+
+    font-weight: bold;
+
+    line-height: 1.5;
+}
+
+
+/* =========================
+   SUPPORT REQUEST
+========================= */
+
+.support-request {
+
+    border: 1px solid #dfe4ec;
+
+    border-radius: 12px;
+
+    padding: 17px;
+
+    margin-top: 15px;
+
+    background: #fafbfe;
+}
+
+.support-request:first-child {
+
+    margin-top: 0;
+
+}
+
+.request-id {
+
+    font-weight: bold;
+
+    color: #182848;
+
+    margin-bottom: 8px;
+
+}
+
+.request-subject {
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    margin-bottom: 8px;
+
+}
+
+.request-info {
+
+    color: #666;
+
+    font-size: 14px;
+
+    margin-bottom: 8px;
+
+}
+
+.request-description {
+
+    margin-top: 12px;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+.status {
+
+    display: inline-block;
+
+    padding: 6px 10px;
+
+    border-radius: 20px;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    margin-top: 5px;
+}
+
+.status-review {
+
+    background: #fff3cd;
+
+    color: #856404;
+
+}
+
+.status-answered {
+
+    background: #d4edda;
+
+    color: #155724;
+
+}
+
+
+/* =========================
+   SUPPORT RESPONSE
+========================= */
+
+.response-box {
+
+    margin-top: 15px;
+
+    padding: 14px;
+
+    background: #e8f5e9;
+
+    border-left: 4px solid #168a3a;
+
+    border-radius: 8px;
+
+    line-height: 1.5;
+
+}
+
+.response-title {
+
+    font-weight: bold;
+
+    color: #168a3a;
+
+    margin-bottom: 6px;
+
+}
+
+
+/* =========================
+   DELETE REQUEST
+========================= */
+
+.delete-request {
+
+    margin-top: 15px;
+
+    padding: 9px 13px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #c62828;
+
+    color: white;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+.delete-request:hover {
+
+    background: #b71c1c;
+
+}
+
+
+/* =========================
+   EMPTY MESSAGE
+========================= */
+
+.empty-message {
+
+    text-align: center;
+
+    color: #777;
+
+    padding: 20px 5px;
+
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+
+    text-align: center;
+
+    padding: 25px;
+
+    color: #666;
+
+    font-size: 14px;
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 500px) {
+
+    .container {
+        padding: 15px 10px 30px;
+    }
+
+    .card {
+        padding: 18px;
+    }
+
+    header h1 {
+        font-size: 26px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     LOGIN PROTECTION
+========================= -->
+
+<script>
+
+if (
+    localStorage.getItem("loggedIn")
+    !== "true"
+) {
+
+    window.location.href =
+        "login.html";
+
+}
+
+</script>
+
+
+<!-- =========================
+     TOP NAVIGATION
+========================= -->
+
+<nav class="top-nav">
+
+    <a
+        href="menu.html"
+        class="back-button">
+
+        ← Back
+
+    </a>
+
+</nav>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header>
+
+    <h1>
+        ❓ Help / Support
+    </h1>
+
+    <p>
+        Tell us about a problem and get support.
+    </p>
+
+</header>
+
+
+<!-- =========================
+     MAIN CONTENT
+========================= -->
+
+<main class="container">
+
+
+    <!-- =========================
+         INTRODUCTION
+    ========================= -->
+
+    <div class="card">
+
+        <h2>
+            📩 Contact Support
+        </h2>
+
+        <p class="introduction">
+
+            If you have a problem with your account,
+            points, rewards, withdrawals, or another
+            part of the platform, send us a support
+            request.
+
+        </p>
+
+        <p class="introduction">
+
+            Explain the problem clearly so that it
+            can be reviewed and answered.
+
+        </p>
+
+    </div>
+
+
+    <!-- =========================
+         SUBMIT ISSUE
+    ========================= -->
+
+    <div class="card">
+
+        <h2>
+            📝 Submit an Issue
+        </h2>
+
+
+        <form
+            id="supportForm"
+            onsubmit="submitSupportRequest(event)">
+
+
+            <!-- ISSUE TYPE -->
+
+            <div class="form-group">
+
+                <label for="issueType">
+
+                    Issue Type
+
+                </label>
+
+
+                <select
+                    id="issueType"
+                    required>
+
+                    <option value="">
+                        Select an issue type
+                    </option>
+
+                    <option value="Login / Account">
+                        🔐 Login / Account
+                    </option>
+
+                    <option value="Points / Balance">
+                        💰 Points / Balance
+                    </option>
+
+                    <option value="Watch & Earn">
+                        📺 Watch & Earn
+                    </option>
+
+                    <option value="Daily Spin">
+                        🎡 Daily Spin
+                    </option>
+
+                    <option value="Challenges">
+                        🏆 Challenges
+                    </option>
+
+                    <option value="Rewards">
+                        🎁 Rewards
+                    </option>
+
+                    <option value="Withdrawal">
+                        💸 Withdrawal
+                    </option>
+
+                    <option value="Buy Points">
+                        💳 Buy Points
+                    </option>
+
+                    <option value="Notifications">
+                        🔔 Notifications
+                    </option>
+
+                    <option value="Other">
+                        ❓ Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- SUBJECT -->
+
+            <div class="form-group">
+
+                <label for="subject">
+
+                    Subject
+
+                </label>
+
+
+                <input
+                    type="text"
+                    id="subject"
+                    placeholder="Briefly describe the problem"
+                    maxlength="100"
+                    required>
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="form-group">
+
+                <label for="description">
+
+                    Explain Your Issue
+
+                </label>
+
+
+                <textarea
+                    id="description"
+                    placeholder="Explain what happened..."
+                    maxlength="1000"
+                    required></textarea>
+
+            </div>
+
+
+            <!-- REFERENCE -->
+
+            <div class="form-group">
+
+                <label for="reference">
+
+                    Reference / Transaction ID
+                    <span style="font-weight:normal;">
+                        (optional)
+                    </span>
+
+                </label>
+
+
+                <input
+                    type="text"
+                    id="reference"
+                    placeholder="Enter a reference if you have one"
+                    maxlength="100">
+
+            </div>
+
+
+            <!-- SUBMIT -->
+
+            <button
+                type="submit"
+                class="submit-button">
+
+                📩 Submit Issue
+
+            </button>
+
+
+        </form>
+
+
+        <!-- SUCCESS -->
+
+        <div
+            id="successMessage"
+            class="success-message">
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         MY SUPPORT REQUESTS
+    ========================= -->
+
+    <div class="card">
+
+        <h2>
+            📋 My Support Requests
+        </h2>
+
+
+        <div
+            id="requestsContainer">
+
+        </div>
+
+    </div>
+
+
+</main>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    Reward Platform — Prototype
+
+</footer>
+
+
+<script>
+
+/* =====================================================
+   STORAGE KEY
+===================================================== */
+
+const SUPPORT_KEY =
+    "supportRequests";
+
+
+/* =====================================================
+   GET SUPPORT REQUESTS
+===================================================== */
+
+function getSupportRequests() {
+
+    try {
+
+        return JSON.parse(
+            localStorage.getItem(
+                SUPPORT_KEY
+            )
+        ) || [];
+
+    } catch (error) {
+
+        return [];
+
+    }
+
+}
+
+
+/* =====================================================
+   SAVE SUPPORT REQUESTS
+===================================================== */
+
+function saveSupportRequests(
+    requests
+) {
+
+    localStorage.setItem(
+        SUPPORT_KEY,
+        JSON.stringify(requests)
+    );
+
+}
+
+
+/* =====================================================
+   GENERATE SUPPORT ID
+===================================================== */
+
+function generateSupportID() {
+
+    const now =
+        new Date();
+
+    const year =
+        now.getFullYear();
+
+    const month =
+        String(
+            now.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            now.getDate()
+        ).padStart(2, "0");
+
+    const random =
+        Math.floor(
+            100 + Math.random() * 900
+        );
+
+    return (
+        "SUP-" +
+        year +
+        month +
+        day +
+        "-" +
+        random
+    );
+
+}
+
+
+/* =====================================================
+   SUBMIT SUPPORT REQUEST
+===================================================== */
+
+function submitSupportRequest(
+    event
+) {
+
+    event.preventDefault();
+
+
+    const issueType =
+        document.getElementById(
+            "issueType"
+        ).value;
+
+
+    const subject =
+        document.getElementById(
+            "subject"
+        ).value.trim();
+
+
+    const description =
+        document.getElementById(
+            "description"
+        ).value.trim();
+
+
+    const reference =
+        document.getElementById(
+            "reference"
+        ).value.trim();
+
+
+    const successMessage =
+        document.getElementById(
+            "successMessage"
+        );
+
+
+    if (
+        !issueType ||
+        !subject ||
+        !description
+    ) {
+
+        return;
+
+    }
+
+
+    /* =========================
+       CREATE REQUEST
+    ========================= */
+
+    const request = {
+
+        id:
+            generateSupportID(),
+
+        issueType:
+            issueType,
+
+        subject:
+            subject,
+
+        description:
+            description,
+
+        reference:
+            reference,
+
+        date:
+            new Date().toLocaleString(),
+
+        status:
+            "Under Review",
+
+        response:
+            ""
+
+    };
+
+
+    /* =========================
+       SAVE
+    ========================= */
+
+    const requests =
+        getSupportRequests();
+
+
+    requests.unshift(
+        request
+    );
+
+
+    saveSupportRequests(
+        requests
+    );
+
+
+    /* =========================
+       SUCCESS MESSAGE
+    ========================= */
+
+    successMessage.style.display =
+        "block";
+
+
+    successMessage.innerHTML =
+        "✅ Your support request has been submitted.<br><br>" +
+        "Support ID: <strong>" +
+        request.id +
+        "</strong><br><br>" +
+        "Please keep this ID for future reference.";
+
+
+    /* =========================
+       RESET FORM
+    ========================= */
+
+    document.getElementById(
+        "supportForm"
+    ).reset();
+
+
+    /* =========================
+       REFRESH REQUESTS
+    ========================= */
+
+    displayRequests();
+
+}
+
+
+/* =====================================================
+   DISPLAY REQUESTS
+===================================================== */
+
+function displayRequests() {
+
+    const container =
+        document.getElementById(
+            "requestsContainer"
+        );
+
+
+    const requests =
+        getSupportRequests();
+
+
+    /* =========================
+       NO REQUESTS
+    ========================= */
+
+    if (
+        requests.length === 0
+    ) {
+
+        container.innerHTML =
+            '<div class="empty-message">' +
+            '📭 You have not submitted any support requests yet.' +
+            '</div>';
+
+        return;
+
+    }
+
+
+    /* =========================
+       BUILD REQUESTS
+    ========================= */
+
+    container.innerHTML = "";
+
+
+    requests.forEach(
+        function(request, index) {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+
+            item.className =
+                "support-request";
+
+
+            const statusClass =
+                request.status === "Answered"
+                    ? "status-answered"
+                    : "status-review";
+
+
+            let responseHTML =
+                "";
+
+
+            if (
+                request.response
+            ) {
+
+                responseHTML =
+                    '<div class="response-box">' +
+
+                    '<div class="response-title">' +
+                    '💬 Support Response' +
+                    '</div>' +
+
+                    escapeHTML(
+                        request.response
+                    ) +
+
+                    '</div>';
+
+            }
+
+
+            item.innerHTML =
+
+                '<div class="request-id">' +
+                escapeHTML(
+                    request.id
+                ) +
+                '</div>' +
+
+                '<div class="request-subject">' +
+                escapeHTML(
+                    request.subject
+                ) +
+                '</div>' +
+
+                '<div class="request-info">' +
+                '📂 ' +
+                escapeHTML(
+                    request.issueType
+                ) +
+                '</div>' +
+
+                '<div class="request-info">' +
+                '📅 ' +
+                escapeHTML(
+                    request.date
+                ) +
+                '</div>' +
+
+                '<span class="status ' +
+                statusClass +
+                '">' +
+                (
+                    request.status === "Answered"
+                        ? "🟢 Answered"
+                        : "🟡 Under Review"
+                ) +
+                '</span>' +
+
+                '<div class="request-description">' +
+                '<strong>Your issue:</strong><br>' +
+                escapeHTML(
+                    request.description
+                ) +
+                '</div>' +
+
+                (
+                    request.reference
+                        ?
+                        '<div class="request-info" style="margin-top:10px;">' +
+                        '🔖 Reference: ' +
+                        escapeHTML(
+                            request.reference
+                        ) +
+                        '</div>'
+                        :
+                        ''
+                ) +
+
+                responseHTML +
+
+                '<button ' +
+                'type="button" ' +
+                'class="delete-request" ' +
+                'onclick="deleteRequest(' +
+                index +
+                ')">' +
+                '✕ Delete Request' +
+                '</button>';
+
+
+            container.appendChild(
+                item
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   DELETE REQUEST
+===================================================== */
+
+function deleteRequest(
+    index
+) {
+
+    const requests =
+        getSupportRequests();
+
+
+    if (
+        !requests[index]
+    ) {
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            "Delete this support request?"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    requests.splice(
+        index,
+        1
+    );
+
+
+    saveSupportRequests(
+        requests
+    );
+
+
+    displayRequests();
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+   Protects displayed user text
+===================================================== */
+
+function escapeHTML(
+    value
+) {
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+    div.textContent =
+        value || "";
+
+    return div.innerHTML;
+
+}
+
+
+/* =====================================================
+   DISPLAY ON PAGE LOAD
+===================================================== */
+
+displayRequests();
+
+</script>
+
+
+</body>
+
+</html>
