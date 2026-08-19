@@ -140,13 +140,6 @@ body {
 }
 
 
-.more-button:hover {
-
-    opacity: 0.9;
-
-}
-
-
 /* =========================
    MORE PANEL
 ========================= */
@@ -157,24 +150,27 @@ body {
 
     position: absolute;
 
-    top: 62px;
+    top: 70px;
 
-    right: 12px;
+    right: 10px;
 
-    width: 220px;
+    width: 280px;
 
     background: white;
 
-    border-radius: 12px;
+    border-radius: 14px;
 
     box-shadow:
-        0 5px 20px rgba(0,0,0,0.2);
+        0 7px 25px rgba(0,0,0,0.22);
 
     z-index: 1000;
 
     overflow: hidden;
 
+    border: 1px solid #dfe4ec;
+
 }
+
 
 .more-panel.open {
 
@@ -182,22 +178,38 @@ body {
 
 }
 
-.more-panel a {
+
+/* =========================
+   MORE PANEL LINKS
+========================= */
+
+.more-panel a,
+.more-panel div {
 
     display: block;
 
-    padding: 13px 15px;
+    padding: 17px 18px;
 
     border-bottom:
         1px solid #eeeeee;
 
     font-weight: bold;
 
+    font-size: 16px;
+
+    line-height: 1.3;
+
+}
+
+
+.more-panel a {
+
     color: #222;
 
     text-decoration: none;
 
 }
+
 
 .more-panel a:hover {
 
@@ -205,42 +217,14 @@ body {
 
 }
 
-.more-panel div:last-child {
+
+.more-panel div:last-child,
+.more-panel a:last-child {
 
     border-bottom: none;
 
 }
-/* =========================
-   MORE PANEL LINKS
-========================= */
 
-.more-link {
-
-    display: block;
-
-    padding: 13px 15px;
-
-    border-bottom:
-        1px solid #eeeeee;
-
-    font-weight: bold;
-
-    color: #222;
-
-    text-decoration: none;
-
-    background: white;
-
-}
-
-
-.more-link:hover {
-
-    background: #f4f7fb;
-
-    color: #182848;
-
-}
 
 /* =========================
    MAIN CONTAINER
@@ -322,7 +306,7 @@ body {
 
 
 /* =========================
-   KEYBOARD-STYLE FEATURE
+   FEATURE KEY
 ========================= */
 
 .feature-key {
@@ -434,7 +418,7 @@ body {
 
 
 /* =========================
-   LOGOUT AREA
+   LOGOUT
 ========================= */
 
 .logout-area {
@@ -443,10 +427,6 @@ body {
 
 }
 
-
-/* =========================
-   LOGOUT BUTTON
-========================= */
 
 .logout-button {
 
@@ -546,6 +526,15 @@ footer {
 
     }
 
+
+    .more-panel {
+
+        width: 280px;
+
+        right: 8px;
+
+    }
+
 }
 
 
@@ -569,6 +558,15 @@ footer {
     .feature-name {
 
         font-size: 14px;
+
+    }
+
+
+    .more-panel {
+
+        width: 270px;
+
+        right: 6px;
 
     }
 
@@ -607,6 +605,7 @@ if (
 
 <header class="top-bar">
 
+
     <div class="menu-title">
 
         Menu
@@ -624,35 +623,56 @@ if (
     </button>
 
 
-    <!-- MORE PANEL -->
+    <!-- =========================
+         MORE PANEL
+    ========================= -->
 
     <div
         id="morePanel"
         class="more-panel">
 
+
         <a href="settings.html">
-    ⚙️ Settings
-</a>
 
-        <a href="profile.html" class="more-link">
-    👤 Profile
-</a>
+            ⚙️ Settings
 
-        <div>
+        </a>
+
+
+        <a href="profile.html">
+
+            👤 Profile
+
+        </a>
+
+
+        <a href="history.html">
+
             📜 History
-        </div>
 
-        <a href="notifications.html" class="more-link">
-    🔔 Notifications
-</a>
+        </a>
 
-        <div>
+
+        <a href="notifications.html">
+
+            🔔 Notifications
+
+        </a>
+
+
+        <a href="referrals.html">
+
             🎁 Referrals
-        </div>
 
-        <div>
+        </a>
+
+
+        <a href="help.html">
+
             ❓ Help / Support
-        </div>
+
+        </a>
+
 
     </div>
 
@@ -686,8 +706,6 @@ if (
     <div class="feature-grid">
 
 
-        <!-- EARN POINTS -->
-
         <a
             href="earn.html"
             class="feature-key">
@@ -702,8 +720,6 @@ if (
 
         </a>
 
-
-        <!-- WATCH & EARN -->
 
         <a
             href="watch.html"
@@ -720,8 +736,6 @@ if (
         </a>
 
 
-        <!-- DAILY SPIN -->
-
         <a
             href="spin.html"
             class="feature-key">
@@ -736,8 +750,6 @@ if (
 
         </a>
 
-
-        <!-- CHALLENGES -->
 
         <a
             href="challenges.html"
@@ -754,8 +766,6 @@ if (
         </a>
 
 
-        <!-- BUY POINTS -->
-
         <a
             href="buy-points.html"
             class="feature-key">
@@ -770,8 +780,6 @@ if (
 
         </a>
 
-
-        <!-- BALANCE -->
 
         <a
             href="balance.html"
@@ -788,8 +796,6 @@ if (
         </a>
 
 
-        <!-- WITHDRAW -->
-
         <a
             href="withdraw.html"
             class="feature-key">
@@ -804,8 +810,6 @@ if (
 
         </a>
 
-
-        <!-- REWARDS -->
 
         <a
             href="rewards.html"
@@ -894,7 +898,6 @@ function logoutUser() {
     localStorage.removeItem(
         "loggedIn"
     );
-
 
     window.location.href =
         "index.html";
