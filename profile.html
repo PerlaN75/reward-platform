@@ -49,18 +49,14 @@ body {
 
     align-items: center;
 
-    gap: 10px;
-
-    overflow-x: auto;
-
 }
 
 
 /* =========================
-   NAVIGATION BUTTONS
+   BACK BUTTON
 ========================= */
 
-.nav-button {
+.back-button {
 
     display: inline-block;
 
@@ -82,12 +78,10 @@ body {
 
     cursor: pointer;
 
-    white-space: nowrap;
-
 }
 
 
-.nav-button:hover {
+.back-button:hover {
 
     background: rgba(255,255,255,0.22);
 
@@ -569,25 +563,14 @@ if (
 
 <nav class="top-nav">
 
-
     <button
         type="button"
-        class="nav-button"
+        class="back-button"
         onclick="goBack()">
 
         ← Back
 
     </button>
-
-
-    <a
-        href="profile.html"
-        class="nav-button">
-
-        👤 Profile
-
-    </a>
-
 
 </nav>
 
@@ -1062,7 +1045,7 @@ function saveProfile() {
     const newUsername =
         document.getElementById(
             "editUsername"
-        ).value.trim().toLowerCase();
+        ).value.trim();
 
 
     const newEmail =
@@ -1082,11 +1065,11 @@ function saveProfile() {
     ========================= */
 
     if (
-        newUsername.length < 3
+        !/^[a-z]{3,}$/.test(newUsername)
     ) {
 
         message.textContent =
-            "❌ Username must contain at least 3 characters.";
+            "❌ Username must contain only lowercase letters (a–z), with no numbers, capital letters, or special characters.";
 
         return;
 
@@ -1225,12 +1208,13 @@ function cancelEdit() {
 
 
 /* =====================================================
-   BACK BUTTON
+   BACK TO MENU
 ===================================================== */
 
 function goBack() {
 
-    window.history.back();
+    window.location.href =
+        "menu.html";
 
 }
 
