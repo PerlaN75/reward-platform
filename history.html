@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>History - Reward Platform</title>
+
+<style>
+
+/* =========================
+   GENERAL
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #222;
+}
+
+
+/* =========================
+   TOP NAVIGATION
+========================= */
+
+.top-nav {
+    background: #182848;
+    padding: 12px 10px;
+    display: flex;
+    align-items: center;
+}
+
+.back-button {
+    border: none;
+    border-radius: 10px;
+    padding: 11px 16px;
+    background: rgba(255,255,255,0.12);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.back-button:hover {
+    background: rgba(255,255,255,0.22);
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    background: #182848;
+    color: white;
+    text-align: center;
+    padding: 28px 15px;
+}
+
+header h1 {
+    margin: 0;
+
+    background: linear-gradient(
+        90deg,
+        #00a86b,
+        #00c9a7,
+        #2196f3,
+        #8a2be2,
+        #00a86b
+    );
+
+    background-size: 300% 100%;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+
+    animation:
+        headingSlide 8s linear infinite;
+}
+
+header p {
+    margin: 8px 0 0;
+}
+
+@keyframes headingSlide {
+
+    from {
+        background-position: 0% 50%;
+    }
+
+    to {
+        background-position: 300% 50%;
+    }
+
+}
+
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.container {
+    max-width: 750px;
+    margin: auto;
+    padding: 20px 15px 35px;
+}
+
+
+/* =========================
+   SUMMARY CARD
+========================= */
+
+.summary-card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 18px;
+
+    box-shadow:
+        0 3px 12px rgba(0,0,0,0.08);
+
+    text-align: center;
+}
+
+.summary-number {
+    font-size: 38px;
+    font-weight: bold;
+    color: #182848;
+}
+
+.summary-label {
+    color: #666;
+    margin-top: 5px;
+}
+
+
+/* =========================
+   ACTIONS
+========================= */
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.action-button {
+    flex: 1;
+    padding: 13px 10px;
+
+    border: none;
+    border-radius: 10px;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.read-button {
+    background: #2196f3;
+    color: white;
+}
+
+.clear-button {
+    background: #c62828;
+    color: white;
+}
+
+.action-button:hover {
+    opacity: 0.9;
+}
+
+
+/* =========================
+   HISTORY LIST
+========================= */
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+
+/* =========================
+   HISTORY ITEM
+========================= */
+
+.history-item {
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 16px;
+
+    box-shadow:
+        0 3px 12px rgba(0,0,0,0.08);
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
+
+/* =========================
+   HISTORY ICON
+========================= */
+
+.history-icon {
+    width: 48px;
+    height: 48px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #e8f0ff;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 24px;
+}
+
+
+/* =========================
+   HISTORY CONTENT
+========================= */
+
+.history-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.history-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.history-date {
+    color: #777;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.history-points {
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+
+/* =========================
+   POINT COLORS
+========================= */
+
+.points-positive {
+    color: #168a3a;
+}
+
+.points-negative {
+    color: #c62828;
+}
+
+.points-neutral {
+    color: #666;
+}
+
+
+/* =========================
+   DELETE BUTTON
+========================= */
+
+.delete-history {
+
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #f1f1f1;
+
+    color: #777;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.delete-history:hover {
+
+    background: #c62828;
+
+    color: white;
+
+}
+
+
+/* =========================
+   EMPTY HISTORY
+========================= */
+
+.empty-history {
+
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 35px 20px;
+
+    text-align: center;
+
+    box-shadow:
+        0 3px 12px rgba(0,0,0,0.08);
+
+}
+
+.empty-icon {
+
+    font-size: 50px;
+
+    margin-bottom: 10px;
+
+}
+
+.empty-history h2 {
+
+    margin: 5px 0 8px;
+
+}
+
+.empty-history p {
+
+    color: #666;
+
+    margin: 0;
+
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+
+    text-align: center;
+
+    padding: 25px;
+
+    color: #666;
+
+    font-size: 14px;
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 500px) {
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .history-item {
+        padding: 13px;
+    }
+
+    .history-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 21px;
+    }
+
+    .history-title {
+        font-size: 15px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     PAGE PROTECTION
+========================= -->
+
+<script>
+
+if (
+    localStorage.getItem("loggedIn")
+    !== "true"
+) {
+
+    window.location.href =
+        "login.html";
+
+}
+
+</script>
+
+
+<!-- =========================
+     TOP NAVIGATION
+========================= -->
+
+<nav class="top-nav">
+
+    <button
+        type="button"
+        class="back-button"
+        onclick="goBack()">
+
+        ← Back
+
+    </button>
+
+</nav>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header>
+
+    <h1>
+        📜 History
+    </h1>
+
+    <p>
+        View your recent activity on Reward Platform.
+    </p>
+
+</header>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<main class="container">
+
+
+    <!-- =========================
+         SUMMARY
+    ========================= -->
+
+    <div class="summary-card">
+
+        <div
+            class="summary-number"
+            id="historyCount">
+
+            0
+
+        </div>
+
+        <div class="summary-label">
+
+            Total Activities
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ACTION BUTTONS
+    ========================= -->
+
+    <div class="actions">
+
+        <button
+            type="button"
+            class="action-button read-button"
+            onclick="refreshHistory()">
+
+            🔄 Refresh
+
+        </button>
+
+
+        <button
+            type="button"
+            class="action-button clear-button"
+            onclick="clearAllHistory()">
+
+            🗑️ Clear All History
+
+        </button>
+
+    </div>
+
+
+    <!-- =========================
+         HISTORY LIST
+    ========================= -->
+
+    <div
+        id="historyList"
+        class="history-list">
+    </div>
+
+
+</main>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    Reward Platform — Prototype
+
+</footer>
+
+
+<script>
+
+/* =====================================================
+   HISTORY STORAGE KEY
+===================================================== */
+
+const HISTORY_KEY = "rewardHistory";
+
+
+/* =====================================================
+   GET HISTORY
+===================================================== */
+
+function getHistory() {
+
+    try {
+
+        const history =
+            JSON.parse(
+                localStorage.getItem(
+                    HISTORY_KEY
+                )
+            );
+
+        if (
+            Array.isArray(history)
+        ) {
+
+            return history;
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "History could not be loaded."
+        );
+
+    }
+
+    return [];
+
+}
+
+
+/* =====================================================
+   SAVE HISTORY
+===================================================== */
+
+function saveHistory(history) {
+
+    localStorage.setItem(
+        HISTORY_KEY,
+        JSON.stringify(history)
+    );
+
+}
+
+
+/* =====================================================
+   DISPLAY HISTORY
+===================================================== */
+
+function displayHistory() {
+
+    const history =
+        getHistory();
+
+
+    const list =
+        document.getElementById(
+            "historyList"
+        );
+
+
+    const count =
+        document.getElementById(
+            "historyCount"
+        );
+
+
+    count.textContent =
+        history.length;
+
+
+    list.innerHTML = "";
+
+
+    /* =========================
+       NO HISTORY
+    ========================= */
+
+    if (
+        history.length === 0
+    ) {
+
+        list.innerHTML = `
+
+            <div class="empty-history">
+
+                <div class="empty-icon">
+                    📜
+                </div>
+
+                <h2>
+                    No History
+                </h2>
+
+                <p>
+                    Your activities will appear here
+                    as you use the platform.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    /* =========================
+       DISPLAY NEWEST FIRST
+    ========================= */
+
+    history
+        .slice()
+        .reverse()
+        .forEach(
+            function(item, reversedIndex) {
+
+                const originalIndex =
+                    history.length -
+                    1 -
+                    reversedIndex;
+
+
+                const title =
+                    item.title ||
+                    item.activity ||
+                    item.type ||
+                    "Activity";
+
+
+                const description =
+                    item.description ||
+                    item.message ||
+                    "";
+
+
+                const date =
+                    item.date ||
+                    item.time ||
+                    item.timestamp ||
+                    "";
+
+
+                const icon =
+                    item.icon ||
+                    getHistoryIcon(title);
+
+
+                const points =
+                    item.points;
+
+
+                let pointsHTML = "";
+
+
+                if (
+                    points !== undefined &&
+                    points !== null &&
+                    points !== ""
+                ) {
+
+                    const number =
+                        Number(points);
+
+
+                    if (
+                        number > 0
+                    ) {
+
+                        pointsHTML = `
+                            <div class="history-points points-positive">
+                                +${number} points
+                            </div>
+                        `;
+
+                    } else if (
+                        number < 0
+                    ) {
+
+                        pointsHTML = `
+                            <div class="history-points points-negative">
+                                ${number} points
+                            </div>
+                        `;
+
+                    } else {
+
+                        pointsHTML = `
+                            <div class="history-points points-neutral">
+                                0 points
+                            </div>
+                        `;
+
+                    }
+
+                }
+
+
+                const itemElement =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                itemElement.className =
+                    "history-item";
+
+
+                itemElement.innerHTML = `
+
+                    <div class="history-icon">
+                        ${icon}
+                    </div>
+
+                    <div class="history-content">
+
+                        <div class="history-title">
+                            ${escapeHTML(title)}
+                        </div>
+
+                        ${
+                            description
+                            ?
+                            `
+                            <div class="history-date">
+                                ${escapeHTML(description)}
+                            </div>
+                            `
+                            :
+                            ""
+                        }
+
+                        ${
+                            date
+                            ?
+                            `
+                            <div class="history-date">
+                                📅 ${escapeHTML(formatDate(date))}
+                            </div>
+                            `
+                            :
+                            ""
+                        }
+
+                        ${pointsHTML}
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="delete-history"
+                        title="Delete this history item"
+                        onclick="deleteHistoryItem(${originalIndex})">
+
+                        ×
+
+                    </button>
+
+                `;
+
+
+                list.appendChild(
+                    itemElement
+                );
+
+            }
+        );
+
+}
+
+
+/* =====================================================
+   HISTORY ICON
+===================================================== */
+
+function getHistoryIcon(title) {
+
+    const text =
+        String(title).toLowerCase();
+
+
+    if (
+        text.includes("login")
+    ) {
+
+        return "🔐";
+
+    }
+
+
+    if (
+        text.includes("watch")
+    ) {
+
+        return "📺";
+
+    }
+
+
+    if (
+        text.includes("spin")
+    ) {
+
+        return "🎡";
+
+    }
+
+
+    if (
+        text.includes("challenge")
+    ) {
+
+        return "🏆";
+
+    }
+
+
+    if (
+        text.includes("buy")
+    ) {
+
+        return "💳";
+
+    }
+
+
+    if (
+        text.includes("withdraw")
+    ) {
+
+        return "💸";
+
+    }
+
+
+    if (
+        text.includes("reward")
+    ) {
+
+        return "🎁";
+
+    }
+
+
+    if (
+        text.includes("password")
+    ) {
+
+        return "🔑";
+
+    }
+
+
+    if (
+        text.includes("profile")
+    ) {
+
+        return "👤";
+
+    }
+
+
+    return "📜";
+
+}
+
+
+/* =====================================================
+   FORMAT DATE
+===================================================== */
+
+function formatDate(value) {
+
+    const date =
+        new Date(value);
+
+
+    if (
+        !isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return date.toLocaleString();
+
+    }
+
+
+    return String(value);
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHTML(value) {
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =====================================================
+   DELETE ONE HISTORY ITEM
+===================================================== */
+
+function deleteHistoryItem(index) {
+
+    const history =
+        getHistory();
+
+
+    if (
+        index < 0 ||
+        index >= history.length
+    ) {
+
+        return;
+
+    }
+
+
+    history.splice(
+        index,
+        1
+    );
+
+
+    saveHistory(
+        history
+    );
+
+
+    displayHistory();
+
+}
+
+
+/* =====================================================
+   CLEAR ALL HISTORY
+===================================================== */
+
+function clearAllHistory() {
+
+    const history =
+        getHistory();
+
+
+    if (
+        history.length === 0
+    ) {
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to delete all your history?"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    localStorage.removeItem(
+        HISTORY_KEY
+    );
+
+
+    displayHistory();
+
+}
+
+
+/* =====================================================
+   REFRESH
+===================================================== */
+
+function refreshHistory() {
+
+    displayHistory();
+
+}
+
+
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+function goBack() {
+
+    window.location.href =
+        "menu.html";
+
+}
+
+
+/* =====================================================
+   LOAD HISTORY
+===================================================== */
+
+displayHistory();
+
+</script>
+
+
+</body>
+
+</html>
