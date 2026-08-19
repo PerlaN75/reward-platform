@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>Referrals - Reward Platform</title>
+
+
+<style>
+
+/* =========================
+   GENERAL
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+    font-family: Arial, sans-serif;
+
+    background: #f4f7fb;
+
+    color: #222;
+
+}
+
+
+/* =========================
+   TOP NAVIGATION
+========================= */
+
+.top-nav {
+
+    background: #182848;
+
+    padding: 12px 10px;
+
+    display: flex;
+
+    align-items: center;
+
+}
+
+
+.back-button {
+
+    border: none;
+
+    background: rgba(255,255,255,0.12);
+
+    color: white;
+
+    padding: 11px 16px;
+
+    border-radius: 10px;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+
+.back-button:hover {
+
+    background: rgba(255,255,255,0.22);
+
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+
+    background: #182848;
+
+    color: white;
+
+    text-align: center;
+
+    padding: 28px 15px;
+
+}
+
+
+header h1 {
+
+    margin: 0;
+
+    background: linear-gradient(
+        90deg,
+        #ffb300,
+        #ff4d8d,
+        #8a2be2,
+        #2196f3,
+        #00c9a7,
+        #ffb300
+    );
+
+    background-size: 300% 100%;
+
+    -webkit-background-clip: text;
+
+    background-clip: text;
+
+    color: transparent;
+
+    animation:
+        headingSlide 8s linear infinite;
+
+}
+
+
+header p {
+
+    margin: 8px 0 0;
+
+}
+
+
+/* =========================
+   HEADING ANIMATION
+========================= */
+
+@keyframes headingSlide {
+
+    from {
+
+        background-position: 0% 50%;
+
+    }
+
+    to {
+
+        background-position: 300% 50%;
+
+    }
+
+}
+
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.container {
+
+    max-width: 700px;
+
+    margin: auto;
+
+    padding: 20px 15px 35px;
+
+}
+
+
+/* =========================
+   CARD
+========================= */
+
+.card {
+
+    background: white;
+
+    border-radius: 15px;
+
+    padding: 20px;
+
+    margin: 15px 0;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.08);
+
+}
+
+
+/* =========================
+   INTRODUCTION
+========================= */
+
+.intro {
+
+    text-align: center;
+
+}
+
+
+.intro-icon {
+
+    font-size: 55px;
+
+    margin-bottom: 10px;
+
+}
+
+
+.intro h2 {
+
+    margin: 5px 0 10px;
+
+}
+
+
+.intro p {
+
+    color: #666;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================
+   REFERRAL CODE
+========================= */
+
+.section-title {
+
+    margin-top: 0;
+
+}
+
+
+.referral-code-box {
+
+    background: #f4f7fb;
+
+    border: 2px dashed #2196f3;
+
+    border-radius: 12px;
+
+    padding: 18px;
+
+    text-align: center;
+
+}
+
+
+.referral-code {
+
+    font-size: 26px;
+
+    font-weight: bold;
+
+    color: #182848;
+
+    letter-spacing: 2px;
+
+    word-break: break-word;
+
+    margin-bottom: 15px;
+
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.action-button {
+
+    width: 100%;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #182848;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    margin-top: 8px;
+
+}
+
+
+.action-button:hover {
+
+    opacity: 0.9;
+
+}
+
+
+.secondary-button {
+
+    background: #2196f3;
+
+}
+
+
+/* =========================
+   REFERRAL LINK
+========================= */
+
+.referral-link-box {
+
+    background: #f4f7fb;
+
+    border-radius: 10px;
+
+    padding: 12px;
+
+    margin-top: 10px;
+
+}
+
+
+.referral-link {
+
+    color: #555;
+
+    font-size: 14px;
+
+    word-break: break-all;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================
+   STATISTICS
+========================= */
+
+.stats-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 15px;
+
+}
+
+
+.stat-box {
+
+    background: #f4f7fb;
+
+    border-radius: 12px;
+
+    padding: 20px 10px;
+
+    text-align: center;
+
+}
+
+
+.stat-icon {
+
+    font-size: 30px;
+
+}
+
+
+.stat-number {
+
+    font-size: 30px;
+
+    font-weight: bold;
+
+    color: #182848;
+
+    margin: 7px 0;
+
+}
+
+
+.stat-label {
+
+    color: #666;
+
+    font-size: 14px;
+
+}
+
+
+/* =========================
+   HOW IT WORKS
+========================= */
+
+.steps {
+
+    margin: 0;
+
+    padding: 0;
+
+    list-style: none;
+
+}
+
+
+.steps li {
+
+    padding: 14px 0;
+
+    border-bottom:
+        1px solid #eeeeee;
+
+    line-height: 1.5;
+
+}
+
+
+.steps li:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.step-number {
+
+    display: inline-flex;
+
+    width: 30px;
+
+    height: 30px;
+
+    border-radius: 50%;
+
+    background: #182848;
+
+    color: white;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-weight: bold;
+
+    margin-right: 8px;
+
+}
+
+
+/* =========================
+   NOTICE
+========================= */
+
+.notice {
+
+    background: #fff8e1;
+
+    border-left: 5px solid #ffb300;
+
+    padding: 14px;
+
+    border-radius: 8px;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+.message {
+
+    text-align: center;
+
+    font-weight: bold;
+
+    margin-top: 12px;
+
+    color: #168a3a;
+
+    min-height: 20px;
+
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+
+    text-align: center;
+
+    padding: 25px;
+
+    color: #666;
+
+    font-size: 14px;
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 500px) {
+
+    .stats-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 10px;
+
+    }
+
+
+    .referral-code {
+
+        font-size: 22px;
+
+    }
+
+
+    .stat-number {
+
+        font-size: 26px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     LOGIN PROTECTION
+========================= -->
+
+<script>
+
+if (
+    localStorage.getItem("loggedIn")
+    !== "true"
+) {
+
+    window.location.href =
+        "login.html";
+
+}
+
+</script>
+
+
+<!-- =========================
+     TOP NAVIGATION
+========================= -->
+
+<nav class="top-nav">
+
+    <button
+        type="button"
+        class="back-button"
+        onclick="goBack()">
+
+        ← Back
+
+    </button>
+
+</nav>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header>
+
+    <h1>🎁 Referrals</h1>
+
+    <p>
+        Invite others and grow the Reward Platform community.
+    </p>
+
+</header>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<main class="container">
+
+
+    <!-- =========================
+         INTRODUCTION
+    ========================= -->
+
+    <div class="card intro">
+
+        <div class="intro-icon">
+            🎁
+        </div>
+
+        <h2>
+            Invite Friends
+        </h2>
+
+        <p>
+            Share your referral link with others.
+            When the referral system becomes active,
+            qualifying referrals will be recorded here.
+        </p>
+
+    </div>
+
+
+    <!-- =========================
+         REFERRAL CODE
+    ========================= -->
+
+    <div class="card">
+
+        <h2 class="section-title">
+            🔗 Your Referral Code
+        </h2>
+
+        <div class="referral-code-box">
+
+            <div
+                id="referralCode"
+                class="referral-code">
+
+                -
+
+            </div>
+
+
+            <button
+                type="button"
+                class="action-button"
+                onclick="copyReferralCode()">
+
+                📋 Copy Referral Code
+
+            </button>
+
+        </div>
+
+
+        <div
+            id="codeMessage"
+            class="message">
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         REFERRAL LINK
+    ========================= -->
+
+    <div class="card">
+
+        <h2 class="section-title">
+            🔗 Your Referral Link
+        </h2>
+
+        <div class="referral-link-box">
+
+            <div
+                id="referralLink"
+                class="referral-link">
+
+                -
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="action-button secondary-button"
+            onclick="copyReferralLink()">
+
+            📋 Copy Referral Link
+
+        </button>
+
+
+        <div
+            id="linkMessage"
+            class="message">
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         STATISTICS
+    ========================= -->
+
+    <div class="card">
+
+        <h2 class="section-title">
+            📊 Referral Statistics
+        </h2>
+
+
+        <div class="stats-grid">
+
+
+            <div class="stat-box">
+
+                <div class="stat-icon">
+                    👥
+                </div>
+
+                <div
+                    id="referralCount"
+                    class="stat-number">
+
+                    0
+
+                </div>
+
+                <div class="stat-label">
+                    Successful Referrals
+                </div>
+
+            </div>
+
+
+            <div class="stat-box">
+
+                <div class="stat-icon">
+                    💰
+                </div>
+
+                <div
+                    id="referralPoints"
+                    class="stat-number">
+
+                    0
+
+                </div>
+
+                <div class="stat-label">
+                    Points Earned
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         HOW IT WORKS
+    ========================= -->
+
+    <div class="card">
+
+        <h2 class="section-title">
+            ℹ️ How Referrals Will Work
+        </h2>
+
+
+        <ul class="steps">
+
+
+            <li>
+
+                <span class="step-number">
+                    1
+                </span>
+
+                Share your referral link
+                with another person.
+
+            </li>
+
+
+            <li>
+
+                <span class="step-number">
+                    2
+                </span>
+
+                The person registers using
+                your referral link.
+
+            </li>
+
+
+            <li>
+
+                <span class="step-number">
+                    3
+                </span>
+
+                The platform verifies the
+                referral.
+
+            </li>
+
+
+            <li>
+
+                <span class="step-number">
+                    4
+                </span>
+
+                A qualifying referral is
+                recorded in your account.
+
+            </li>
+
+
+            <li>
+
+                <span class="step-number">
+                    5
+                </span>
+
+                Any referral reward will be
+                added according to the platform's
+                referral rules.
+
+            </li>
+
+
+        </ul>
+
+    </div>
+
+
+    <!-- =========================
+         NOTICE
+    ========================= -->
+
+    <div class="card">
+
+        <div class="notice">
+
+            <strong>⚠️ Referral rewards are not active yet.</strong>
+
+            <br><br>
+
+            This page is currently preparing the
+            referral system. Referral points will
+            only be awarded after the registration
+            and referral verification system has
+            been connected.
+
+        </div>
+
+    </div>
+
+
+</main>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    Reward Platform — Prototype
+
+</footer>
+
+
+<script>
+
+/* =====================================================
+   GET USER INFORMATION
+===================================================== */
+
+const savedUser =
+    JSON.parse(
+        localStorage.getItem(
+            "rewardUser"
+        )
+    );
+
+
+/* =====================================================
+   CREATE REFERRAL CODE
+===================================================== */
+
+function createReferralCode() {
+
+    if (!savedUser) {
+
+        return "USER";
+
+    }
+
+
+    const username =
+        savedUser.username
+        || "USER";
+
+
+    return (
+        "RP-" +
+        username
+            .substring(0, 6)
+            .toUpperCase()
+            .replace(/[^A-Z0-9]/g, "")
+    );
+
+}
+
+
+/* =====================================================
+   REFERRAL CODE
+===================================================== */
+
+const referralCode =
+    localStorage.getItem(
+        "referralCode"
+    ) ||
+    createReferralCode();
+
+
+localStorage.setItem(
+    "referralCode",
+    referralCode
+);
+
+
+document.getElementById(
+    "referralCode"
+).textContent =
+    referralCode;
+
+
+/* =====================================================
+   REFERRAL LINK
+===================================================== */
+
+const referralLink =
+    window.location.origin +
+    window.location.pathname.replace(
+        "referrals.html",
+        "register.html"
+    ) +
+    "?ref=" +
+    encodeURIComponent(
+        referralCode
+    );
+
+
+document.getElementById(
+    "referralLink"
+).textContent =
+    referralLink;
+
+
+/* =====================================================
+   REFERRAL STATISTICS
+===================================================== */
+
+const referralCount =
+    Number(
+        localStorage.getItem(
+            "referralCount"
+        )
+    ) || 0;
+
+
+const referralPoints =
+    Number(
+        localStorage.getItem(
+            "referralPoints"
+        )
+    ) || 0;
+
+
+document.getElementById(
+    "referralCount"
+).textContent =
+    referralCount;
+
+
+document.getElementById(
+    "referralPoints"
+).textContent =
+    referralPoints;
+
+
+/* =====================================================
+   COPY REFERRAL CODE
+===================================================== */
+
+function copyReferralCode() {
+
+    const message =
+        document.getElementById(
+            "codeMessage"
+        );
+
+
+    copyText(
+        referralCode,
+        message,
+        "Referral code copied successfully!"
+    );
+
+}
+
+
+/* =====================================================
+   COPY REFERRAL LINK
+===================================================== */
+
+function copyReferralLink() {
+
+    const message =
+        document.getElementById(
+            "linkMessage"
+        );
+
+
+    copyText(
+        referralLink,
+        message,
+        "Referral link copied successfully!"
+    );
+
+}
+
+
+/* =====================================================
+   COPY TEXT
+===================================================== */
+
+function copyText(
+    text,
+    messageElement,
+    successMessage
+) {
+
+    if (
+        navigator.clipboard &&
+        window.isSecureContext
+    ) {
+
+        navigator.clipboard
+            .writeText(text)
+            .then(
+                function() {
+
+                    messageElement.textContent =
+                        "✅ " +
+                        successMessage;
+
+                }
+            )
+            .catch(
+                function() {
+
+                    fallbackCopy(
+                        text,
+                        messageElement,
+                        successMessage
+                    );
+
+                }
+            );
+
+    } else {
+
+        fallbackCopy(
+            text,
+            messageElement,
+            successMessage
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   FALLBACK COPY
+===================================================== */
+
+function fallbackCopy(
+    text,
+    messageElement,
+    successMessage
+) {
+
+    const textarea =
+        document.createElement(
+            "textarea"
+        );
+
+
+    textarea.value =
+        text;
+
+
+    textarea.style.position =
+        "fixed";
+
+
+    textarea.style.opacity =
+        "0";
+
+
+    document.body.appendChild(
+        textarea
+    );
+
+
+    textarea.focus();
+
+    textarea.select();
+
+
+    try {
+
+        document.execCommand(
+            "copy"
+        );
+
+
+        messageElement.textContent =
+            "✅ " +
+            successMessage;
+
+    }
+
+    catch (error) {
+
+        messageElement.textContent =
+            "❌ Unable to copy automatically. Please copy it manually.";
+
+    }
+
+
+    document.body.removeChild(
+        textarea
+    );
+
+}
+
+
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+function goBack() {
+
+    window.history.back();
+
+}
+
+</script>
+
+
+</body>
+
+</html>
