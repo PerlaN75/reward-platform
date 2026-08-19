@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -130,6 +131,33 @@ h2 {
 }
 
 /* =========================
+   USERNAME RULES
+========================= */
+
+.username-rules {
+    background: #f4f7fb;
+    border-radius: 10px;
+    padding: 14px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.username-rules strong {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.username-rules ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.username-rules li {
+    margin-bottom: 5px;
+}
+
+/* =========================
    PASSWORD RULES
 ========================= */
 
@@ -243,6 +271,7 @@ footer {
 }
 
 </style>
+
 </head>
 
 
@@ -323,6 +352,37 @@ footer {
             </div>
 
 
+            <!-- USERNAME RULES -->
+
+            <div class="username-rules">
+
+                <strong>
+                    Username must:
+                </strong>
+
+                <ul>
+
+                    <li>
+                        Contain only lowercase letters (a–z)
+                    </li>
+
+                    <li>
+                        Be at least 3 characters long
+                    </li>
+
+                    <li>
+                        Not contain capital letters
+                    </li>
+
+                    <li>
+                        Not contain numbers, spaces, or special characters
+                    </li>
+
+                </ul>
+
+            </div>
+
+
             <!-- EMAIL -->
 
             <div class="form-group">
@@ -367,11 +427,17 @@ footer {
 
                 <ul>
 
-                    <li>Be 6–15 characters long</li>
+                    <li>
+                        Be 6–15 characters long
+                    </li>
 
-                    <li>Contain at least one capital letter (A–Z)</li>
+                    <li>
+                        Contain at least one capital letter (A–Z)
+                    </li>
 
-                    <li>Contain at least one lowercase letter (a–z)</li>
+                    <li>
+                        Contain at least one lowercase letter (a–z)
+                    </li>
 
                     <li>
                         Contain at least one special character:
@@ -460,10 +526,16 @@ function registerUser(event) {
        GET FORM VALUES
     ========================= */
 
+    /*
+       IMPORTANT:
+       Username is NOT converted to lowercase.
+       The user must enter lowercase letters themselves.
+    */
+
     const username =
         document.getElementById(
             "username"
-        ).value.trim().toLowerCase();
+        ).value.trim();
 
 
     const email =
@@ -491,13 +563,35 @@ function registerUser(event) {
 
 
     /* =========================
-       BASIC USERNAME CHECK
+       USERNAME LENGTH
     ========================= */
 
     if (username.length < 3) {
 
         message.textContent =
             "❌ Username must contain at least 3 characters.";
+
+        return;
+
+    }
+
+
+    /* =========================
+       USERNAME FORMAT
+    ========================= */
+
+    /*
+       Only lowercase English letters a-z.
+       No capitals.
+       No numbers.
+       No spaces.
+       No special characters.
+    */
+
+    if (!/^[a-z]+$/.test(username)) {
+
+        message.textContent =
+            "❌ Username must contain only lowercase letters (a–z). No capital letters, numbers, spaces, or special characters.";
 
         return;
 
@@ -669,22 +763,23 @@ function registerUser(event) {
 
 
     /* =========================
-       OPEN EARN PAGE
+       OPEN MENU PAGE
     ========================= */
 
-  setTimeout(
-    function() {
+    setTimeout(
+        function() {
 
-        window.location.href =
-            "menu.html";
+            window.location.href =
+                "menu.html";
 
-    },
-    1000
-);
+        },
+        1000
+    );
 
 }
 
 </script>
 
 </body>
+
 </html>
