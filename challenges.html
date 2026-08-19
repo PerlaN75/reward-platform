@@ -4,15 +4,15 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
 <title>Challenges - Reward Platform</title>
 
 <style>
-
-/* =====================================================
-   GENERAL
-===================================================== */
 
 * {
     box-sizing: border-box;
@@ -25,345 +25,221 @@ body {
     color: #222;
 }
 
-
-/* =====================================================
-   TOP NAVIGATION
-===================================================== */
-
-.top-nav {
-    background: #182848;
-    padding: 12px 10px;
-    display: flex;
-    align-items: center;
-}
-
-
-/* =====================================================
-   BACK BUTTON
-===================================================== */
-
-.back-button {
-    width: auto;
-    margin: 0;
-
-    padding: 11px 16px;
-
-    background: rgba(255,255,255,0.12);
-
-    color: white;
-
-    border: none;
-
-    border-radius: 10px;
-
-    font-size: 16px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-}
-
-.back-button:hover {
-    background: rgba(255,255,255,0.22);
-}
-
-
-/* =====================================================
+/* =========================
    HEADER
-===================================================== */
+========================= */
 
 header {
-    background: #182848;
-
+    background: #6f42c1;
     color: white;
-
-    padding: 25px 15px;
-
+    padding: 16px;
     text-align: center;
 }
 
 header h1 {
     margin: 0;
-
-    animation:
-        headerHeadingInvert
-        3s
-        infinite
-        alternate;
+    font-size: 25px;
 }
 
 header p {
-    margin: 8px 0 0;
+    margin: 6px 0 0;
+    font-size: 14px;
 }
 
+/* =========================
+   BACK BUTTON
+========================= */
 
-/* =====================================================
-   HEADER ANIMATION
-===================================================== */
-
-@keyframes headerHeadingInvert {
-
-    0% {
-        color: white;
-    }
-
-    100% {
-        color: #00bfff;
-    }
-
+.back {
+    display: inline-block;
+    margin: 15px;
+    text-decoration: none;
+    color: #6f42c1;
+    font-weight: bold;
 }
 
-
-/* =====================================================
-   CONTENT
-===================================================== */
+/* =========================
+   MAIN
+========================= */
 
 .container {
-    max-width: 700px;
-
+    max-width: 600px;
     margin: auto;
-
-    padding: 15px;
+    padding: 10px 18px 40px;
 }
 
+/* =========================
+   POINTS CARD
+========================= */
 
-/* =====================================================
-   CARD
-===================================================== */
-
-.card {
+.points-card {
     background: white;
-
-    border-radius: 14px;
-
+    border-radius: 15px;
     padding: 20px;
-
-    margin: 15px 0;
-
-    box-shadow:
-        0 3px 12px
-        rgba(0,0,0,0.08);
-}
-
-.card h2 {
-    animation:
-        cardHeadingInvert
-        3s
-        infinite
-        alternate;
-}
-
-
-/* =====================================================
-   CARD HEADING ANIMATION
-===================================================== */
-
-@keyframes cardHeadingInvert {
-
-    0% {
-        color: #182848;
-    }
-
-    100% {
-        color: #00bfff;
-    }
-
-}
-
-
-/* =====================================================
-   BALANCE
-===================================================== */
-
-.balance {
     text-align: center;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
 }
 
-.balance-number {
-    font-size: 42px;
+.points-card h2 {
+    margin: 0 0 8px;
+    color: #6f42c1;
+}
 
+.points-number {
+    font-size: 32px;
     font-weight: bold;
+}
 
+.points-label {
+    color: #777;
+}
+
+/* =========================
+   CHALLENGE CARD
+========================= */
+
+.challenge-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+.challenge-title {
+    color: #6f42c1;
+    font-size: 21px;
+    font-weight: bold;
+}
+
+.challenge-description {
+    color: #555;
+    line-height: 1.5;
+}
+
+/* =========================
+   PROGRESS
+========================= */
+
+.progress-title {
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.progress-number {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
     margin: 10px 0;
 }
 
-
-/* =====================================================
-   CHALLENGE TITLE
-===================================================== */
-
-.challenge-title {
-    text-align: center;
-}
-
-.challenge-icon {
-    font-size: 55px;
-}
-
-
-/* =====================================================
-   PROGRESS
-===================================================== */
-
-.progress-container {
-    width: 100%;
-
-    height: 25px;
-
-    background: #e5e7eb;
-
-    border-radius: 20px;
-
-    overflow: hidden;
-
-    margin: 20px 0 10px;
-}
-
 .progress-bar {
-    height: 100%;
-
-    width: 0%;
-
-    background: #182848;
-
+    width: 100%;
+    height: 16px;
+    background: #e4e4e4;
     border-radius: 20px;
-
-    transition:
-        width 0.5s ease;
+    overflow: hidden;
 }
 
-.progress-text {
-    text-align: center;
-
-    font-weight: bold;
-
-    margin-bottom: 15px;
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #6f42c1;
+    transition: width 0.4s ease;
 }
 
-
-/* =====================================================
+/* =========================
    DAYS
-===================================================== */
+========================= */
 
 .days {
-    display: grid;
-
-    grid-template-columns:
-        repeat(5, 1fr);
-
-    gap: 8px;
-
+    display: flex;
+    justify-content: space-between;
+    gap: 7px;
     margin-top: 20px;
 }
 
-.day-box {
+.day {
+    flex: 1;
     text-align: center;
-
-    padding: 12px 5px;
-
-    background: #f0f2f5;
-
+    padding: 10px 4px;
     border-radius: 10px;
-
+    background: #eeeeee;
+    font-size: 13px;
     font-weight: bold;
-
-    font-size: 14px;
 }
 
-.day-box.completed {
-    background: #182848;
-
+.day.completed {
+    background: #28a745;
     color: white;
 }
 
-.day-box.current {
-    border:
-        3px solid #00bfff;
+.day.current {
+    border: 2px solid #6f42c1;
 }
 
-
-/* =====================================================
+/* =========================
    REWARD
-===================================================== */
+========================= */
 
 .reward-box {
-    text-align: center;
-
-    background: #f8fafc;
-
+    background: #fff4d6;
     border-radius: 12px;
-
     padding: 18px;
-
+    text-align: center;
     margin-top: 20px;
 }
 
-.reward-number {
-    font-size: 30px;
-
+.reward-points {
+    font-size: 28px;
     font-weight: bold;
-
-    margin: 8px 0;
+    color: #d39e00;
 }
 
+/* =========================
+   HOW IT WORKS
+========================= */
 
-/* =====================================================
-   STATUS
-===================================================== */
+.info-box {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
 
-.status {
+.info-box h2 {
+    color: #6f42c1;
+}
+
+.info-box li {
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+/* =========================
+   MESSAGE
+========================= */
+
+.message {
+    display: none;
+    margin-top: 18px;
+    padding: 14px;
+    border-radius: 10px;
     text-align: center;
-
     font-weight: bold;
-
-    margin-top: 15px;
-
-    min-height: 24px;
 }
 
-
-/* =====================================================
-   INFORMATION
-===================================================== */
-
-.info-list {
-    padding-left: 20px;
-
-    line-height: 1.7;
+.message.success {
+    display: block;
+    background: #d4edda;
+    color: #155724;
 }
 
-
-/* =====================================================
-   FOOTER
-===================================================== */
-
-footer {
-    text-align: center;
-
-    padding: 25px;
-
-    color: #666;
-
-    font-size: 14px;
-}
-
-
-/* =====================================================
-   MOBILE
-===================================================== */
-
-@media (max-width: 450px) {
-
-    .days {
-        gap: 5px;
-    }
-
-    .day-box {
-        padding: 10px 3px;
-
-        font-size: 12px;
-    }
-
+.message.info {
+    display: block;
+    background: #e8ddff;
+    color: #4b2785;
 }
 
 </style>
@@ -372,48 +248,6 @@ footer {
 
 
 <body>
-
-
-<!-- =====================================================
-     LOGIN PROTECTION
-===================================================== -->
-
-<script>
-
-if (
-    localStorage.getItem("loggedIn")
-    !==
-    "true"
-) {
-
-    window.location.href =
-        "login.html";
-
-}
-
-</script>
-
-
-<!-- =====================================================
-     TOP NAVIGATION
-===================================================== -->
-
-<nav class="top-nav">
-
-    <button
-        class="back-button"
-        onclick="goBack()">
-
-        ← Back
-
-    </button>
-
-</nav>
-
-
-<!-- =====================================================
-     HEADER
-===================================================== -->
 
 <header>
 
@@ -426,486 +260,518 @@ if (
 </header>
 
 
+<a href="menu.html" class="back">
+    ← Back
+</a>
+
+
 <div class="container">
 
 
-<!-- =====================================================
-     BALANCE
-===================================================== -->
+    <!-- =========================
+         POINTS
+    ========================== -->
 
-<div class="card balance">
+    <div class="points-card">
 
-    <h2>💰 Your Points</h2>
-
-    <div
-        class="balance-number"
-        id="points">
-
-        0
-
-    </div>
-
-    <p>
-        points available
-    </p>
-
-</div>
-
-
-<!-- =====================================================
-     MAIN CHALLENGE
-===================================================== -->
-
-<div class="card challenge-title">
-
-    <div class="challenge-icon">
-        🔥
-    </div>
-
-    <h2>
-        5-Day Streak Challenge
-    </h2>
-
-    <p>
-        Complete at least one earning
-        activity every day for 5 consecutive days.
-    </p>
-
-</div>
-
-
-<!-- =====================================================
-     PROGRESS
-===================================================== -->
-
-<div class="card">
-
-    <h2>🎯 Your Progress</h2>
-
-    <div class="progress-container">
+        <h2>💰 Your Points</h2>
 
         <div
-            class="progress-bar"
-            id="progressBar">
+            class="points-number"
+            id="points"
+        >
+            0
+        </div>
+
+        <div class="points-label">
+            points available
         </div>
 
     </div>
 
 
-    <div
-        class="progress-text"
-        id="progressText">
+    <!-- =========================
+         CHALLENGE
+    ========================== -->
 
-        0 / 5 Days
+    <div class="challenge-card">
 
-    </div>
-
-
-    <!-- DAYS -->
-
-    <div class="days">
-
-        <div
-            class="day-box"
-            id="day1">
-
-            Day 1
-
+        <div class="challenge-title">
+            🔥 5-Day Streak Challenge
         </div>
 
-        <div
-            class="day-box"
-            id="day2">
-
-            Day 2
-
-        </div>
-
-        <div
-            class="day-box"
-            id="day3">
-
-            Day 3
-
-        </div>
-
-        <div
-            class="day-box"
-            id="day4">
-
-            Day 4
-
-        </div>
-
-        <div
-            class="day-box"
-            id="day5">
-
-            Day 5
-
-        </div>
-
-    </div>
-
-
-    <div
-        class="status"
-        id="status">
-    </div>
-
-</div>
-
-
-<!-- =====================================================
-     REWARD
-===================================================== -->
-
-<div class="card">
-
-    <h2>🎁 Challenge Reward</h2>
-
-    <div class="reward-box">
-
-        <p>
-            Complete all 5 days and receive:
+        <p class="challenge-description">
+            Complete at least one earning activity
+            every day for 5 consecutive days.
         </p>
 
-        <div class="reward-number">
-            +50 Points
+
+        <div class="progress-title">
+            🎯 Your Progress
         </div>
 
-        <p>
-            Reward is automatically added
-            to your balance.
-        </p>
+        <div
+            class="progress-number"
+            id="progressText"
+        >
+            0 / 5 Days
+        </div>
+
+
+        <div class="progress-bar">
+
+            <div
+                class="progress-fill"
+                id="progressFill"
+            ></div>
+
+        </div>
+
+
+        <!-- DAYS -->
+
+        <div class="days">
+
+            <div class="day" id="day1">
+                Day 1
+            </div>
+
+            <div class="day" id="day2">
+                Day 2
+            </div>
+
+            <div class="day" id="day3">
+                Day 3
+            </div>
+
+            <div class="day" id="day4">
+                Day 4
+            </div>
+
+            <div class="day" id="day5">
+                Day 5
+            </div>
+
+        </div>
+
+
+        <!-- REWARD -->
+
+        <div class="reward-box">
+
+            <div>
+                🎁 Challenge Reward
+            </div>
+
+            <p>
+                Complete all 5 days and receive:
+            </p>
+
+            <div class="reward-points">
+                +50 Points
+            </div>
+
+            <small>
+                Reward is automatically added
+                to your balance.
+            </small>
+
+        </div>
+
+
+        <div
+            id="message"
+            class="message"
+        ></div>
+
+    </div>
+
+
+    <!-- =========================
+         HOW IT WORKS
+    ========================== -->
+
+    <div class="info-box">
+
+        <h2>📋 How It Works</h2>
+
+        <ol>
+
+            <li>
+                Complete at least one earning
+                activity each day.
+            </li>
+
+            <li>
+                Your streak increases automatically.
+            </li>
+
+            <li>
+                Continue for 5 consecutive days.
+            </li>
+
+            <li>
+                After Day 5, you receive
+                <strong>50 points</strong>.
+            </li>
+
+            <li>
+                Missing a day resets the streak.
+            </li>
+
+        </ol>
 
     </div>
 
 </div>
-
-
-<!-- =====================================================
-     HOW IT WORKS
-===================================================== -->
-
-<div class="card">
-
-    <h2>📋 How It Works</h2>
-
-    <ol class="info-list">
-
-        <li>
-            Complete at least one earning
-            activity each day.
-        </li>
-
-        <li>
-            Your streak increases automatically.
-        </li>
-
-        <li>
-            Continue for 5 consecutive days.
-        </li>
-
-        <li>
-            After Day 5, you receive
-            <strong>50 points</strong>.
-        </li>
-
-        <li>
-            Missing a day resets the streak.
-        </li>
-
-    </ol>
-
-</div>
-
-
-</div>
-
-
-<!-- =====================================================
-     FOOTER
-===================================================== -->
-
-<footer>
-
-    Reward Platform — Prototype
-
-</footer>
 
 
 <script>
+
+/* =====================================================
+   POINTS
+===================================================== */
+
+function getPoints() {
+
+    return Number(
+        localStorage.getItem("rewardPoints") || 0
+    );
+
+}
+
+
+function updatePointsDisplay() {
+
+    document.getElementById("points").textContent =
+        getPoints();
+
+}
+
+
+/* =====================================================
+   CHALLENGE DATA
+===================================================== */
+
+let challengeProgress =
+    Number(
+        localStorage.getItem("challengeProgress") || 0
+    );
+
+
+let lastChallengeDate =
+    localStorage.getItem("challengeLastDate") || "";
+
+
+let challengeCompleted =
+    localStorage.getItem("challengeCompleted") === "true";
+
 
 /* =====================================================
    TODAY
 ===================================================== */
 
-const today =
-    new Date().toDateString();
+function getToday() {
 
+    const today = new Date();
 
-/* =====================================================
-   UPDATE BALANCE
-===================================================== */
-
-function updateBalance() {
-
-    const points =
-        Number(
-            localStorage.getItem(
-                "rewardPoints"
-            )
-        ) || 0;
-
-
-    document.getElementById(
-        "points"
-    ).textContent =
-        points;
+    return today.getFullYear() + "-" +
+        String(today.getMonth() + 1).padStart(2, "0") + "-" +
+        String(today.getDate()).padStart(2, "0");
 
 }
 
 
 /* =====================================================
-   UPDATE CHALLENGE DISPLAY
+   YESTERDAY
+===================================================== */
+
+function getYesterday() {
+
+    const date = new Date();
+
+    date.setDate(
+        date.getDate() - 1
+    );
+
+    return date.getFullYear() + "-" +
+        String(date.getMonth() + 1).padStart(2, "0") + "-" +
+        String(date.getDate()).padStart(2, "0");
+
+}
+
+
+/* =====================================================
+   UPDATE DISPLAY
 ===================================================== */
 
 function updateChallengeDisplay() {
 
-    let progress =
-        Number(
-            localStorage.getItem(
-                "challengeProgress"
-            )
-        ) || 0;
+    document.getElementById("progressText").textContent =
+        challengeProgress + " / 5 Days";
 
-
-    const completed =
-        localStorage.getItem(
-            "challengeCompleted"
-        ) === "true";
-
-
-    /* Keep progress between 0 and 5 */
-
-    if (progress < 0) {
-
-        progress = 0;
-
-    }
-
-    if (progress > 5) {
-
-        progress = 5;
-
-    }
-
-
-    /* =================================================
-       PROGRESS BAR
-    ================================================= */
 
     const percentage =
-        (progress / 5) * 100;
+        (challengeProgress / 5) * 100;
 
 
-    document.getElementById(
-        "progressBar"
-    ).style.width =
+    document.getElementById("progressFill").style.width =
         percentage + "%";
 
 
-    /* =================================================
-       PROGRESS TEXT
-    ================================================= */
+    for (let i = 1; i <= 5; i++) {
 
-    document.getElementById(
-        "progressText"
-    ).textContent =
-        progress + " / 5 Days";
+        const day =
+            document.getElementById("day" + i);
 
-
-    /* =================================================
-       DAY BOXES
-    ================================================= */
-
-    for (
-        let i = 1;
-        i <= 5;
-        i++
-    ) {
-
-        const box =
-            document.getElementById(
-                "day" + i
-            );
+        day.classList.remove("completed");
+        day.classList.remove("current");
 
 
-        box.classList.remove(
-            "completed"
-        );
+        if (i <= challengeProgress) {
 
-        box.classList.remove(
-            "current"
-        );
+            day.classList.add("completed");
 
-
-        if (
-            i <= progress
+        }
+        else if (
+            i === challengeProgress + 1 &&
+            !challengeCompleted
         ) {
 
-            box.classList.add(
-                "completed"
-            );
+            day.classList.add("current");
 
         }
 
     }
 
+}
+
+
+/* =====================================================
+   SHOW MESSAGE
+===================================================== */
+
+function showMessage(text, type) {
+
+    const message =
+        document.getElementById("message");
+
+    message.textContent = text;
+
+    message.className =
+        "message " + type;
+
+}
+
+
+/* =====================================================
+   CHECK STREAK
+===================================================== */
+
+function checkStreak() {
+
+    const today =
+        getToday();
+
+    const yesterday =
+        getYesterday();
+
+
+    /*
+       If the challenge is already completed,
+       do nothing.
+    */
+
+    if (challengeCompleted) {
+
+        showMessage(
+            "🎉 You have completed the 5-Day Challenge!",
+            "success"
+        );
+
+        return;
+
+    }
+
+
+    /*
+       If the user has a previous activity date
+       and today is not the next consecutive day,
+       reset the challenge.
+    */
+
+    if (
+        lastChallengeDate &&
+        lastChallengeDate !== today &&
+        lastChallengeDate !== yesterday
+    ) {
+
+        challengeProgress = 0;
+
+        localStorage.setItem(
+            "challengeProgress",
+            "0"
+        );
+
+        showMessage(
+            "Your streak was reset because a day was missed.",
+            "info"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   COMPLETE TODAY'S CHALLENGE
+===================================================== */
+
+function completeTodayChallenge() {
+
+    if (challengeCompleted) {
+        return;
+    }
+
+
+    const today =
+        getToday();
+
+
+    /*
+       Do not count the same day twice.
+    */
+
+    if (lastChallengeDate === today) {
+
+        return;
+
+    }
+
+
+    const yesterday =
+        getYesterday();
+
+
+    /*
+       Continue the streak if yesterday was completed.
+    */
+
+    if (
+        lastChallengeDate === yesterday
+    ) {
+
+        challengeProgress++;
+
+    }
+
+    /*
+       First activity of the challenge.
+    */
+
+    else {
+
+        challengeProgress = 1;
+
+    }
+
+
+    lastChallengeDate =
+        today;
+
+
+    localStorage.setItem(
+        "challengeProgress",
+        challengeProgress
+    );
+
+
+    localStorage.setItem(
+        "challengeLastDate",
+        lastChallengeDate
+    );
+
 
     /* =================================================
-       CURRENT DAY
+       DAY 5 REWARD
     ================================================= */
 
     if (
-        progress < 5
-        &&
-        !completed
+        challengeProgress >= 5
     ) {
 
-        const currentDay =
-            progress + 1;
+        challengeProgress = 5;
 
-
-        document.getElementById(
-            "day" + currentDay
-        ).classList.add(
-            "current"
-        );
-
-    }
-
-
-    /* =================================================
-       STATUS
-    ================================================= */
-
-    const status =
-        document.getElementById(
-            "status"
+        localStorage.setItem(
+            "challengeProgress",
+            "5"
         );
 
 
-    if (completed) {
+        let points =
+            getPoints();
 
-        status.textContent =
-            "🏆 Challenge completed! You earned 50 points.";
+
+        points += 50;
+
+
+        localStorage.setItem(
+            "rewardPoints",
+            points
+        );
+
+
+        localStorage.setItem(
+            "challengeCompleted",
+            "true"
+        );
+
+
+        challengeCompleted = true;
+
+
+        updatePointsDisplay();
+
+        updateChallengeDisplay();
+
+
+        showMessage(
+            "🎉 Congratulations! You completed the 5-Day Challenge and received +50 points!",
+            "success"
+        );
+
+
+        return;
 
     }
 
-    else if (progress === 0) {
-
-        status.textContent =
-            "Start today to begin your 5-day streak.";
-
-    }
-
-    else if (progress < 5) {
-
-        status.textContent =
-            "🔥 Keep going! You are on Day " +
-            progress +
-            " of 5.";
-
-    }
-
-}
-
-
-/* =====================================================
-   BACK BUTTON
-===================================================== */
-
-function goBack() {
-
-    window.history.back();
-
-}
-
-<!-- =====================================================
-     TEST RESET
-===================================================== -->
-
-<div
-    style="
-        max-width:700px;
-        margin:20px auto;
-        padding:0 15px;
-    "
->
-
-    <button
-        onclick="resetChallengeTest()"
-        style="
-            width:100%;
-            padding:12px;
-            border:none;
-            border-radius:10px;
-            background:#d9534f;
-            color:white;
-            font-size:15px;
-            font-weight:bold;
-            cursor:pointer;
-        "
-    >
-
-        🧪 Reset Challenge Test
-
-    </button>
-
-</div>
-
-
-<script>
-
-/* =====================================================
-   RESET CHALLENGE TEST ONLY
-===================================================== */
-
-function resetChallengeTest() {
-
-    localStorage.removeItem(
-        "challengeProgress"
-    );
-
-    localStorage.removeItem(
-        "challengeCompleted"
-    );
-
-    localStorage.removeItem(
-        "lastChallengeDay"
-    );
 
     updateChallengeDisplay();
 
-    alert(
-        "Challenge test data has been reset."
+
+    showMessage(
+        "🔥 Today's activity counted! Your streak is now " +
+        challengeProgress +
+        " day" +
+        (challengeProgress === 1 ? "" : "s") +
+        ".",
+        "success"
     );
 
 }
 
 
 /* =====================================================
-   INITIAL DISPLAY
+   PAGE START
 ===================================================== */
 
-updateBalance();
+updatePointsDisplay();
+
+checkStreak();
 
 updateChallengeDisplay();
 
 </script>
-
 
 </body>
 
