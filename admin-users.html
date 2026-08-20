@@ -471,6 +471,13 @@ header p {
 }
 
 
+.status-negative {
+
+    color: #c62828;
+
+}
+
+
 .status-prototype {
 
     color: #d48b00;
@@ -937,6 +944,22 @@ function getPoints() {
 
 
 /* =====================================================
+   ACCOUNT STATUS
+===================================================== */
+
+function getAccountStatus() {
+
+    return (
+        localStorage.getItem(
+            "adminAccountStatus"
+        ) ||
+        "Active"
+    );
+
+}
+
+
+/* =====================================================
    DISPLAY USERS
 ===================================================== */
 
@@ -963,15 +986,16 @@ function displayUsers() {
     area.innerHTML = "";
 
 
-    /* =========================
+    /* =================================================
        NO USER
-    ========================= */
+    ================================================== */
 
     if (!user) {
 
         document.getElementById(
             "userCount"
-        ).textContent = "0";
+        ).textContent =
+            "0";
 
 
         area.innerHTML = `
@@ -1008,10 +1032,6 @@ function displayUsers() {
     }
 
 
-    /* =========================
-       SEARCH
-    ========================= */
-
     const username =
         getUsername(user);
 
@@ -1028,6 +1048,10 @@ function displayUsers() {
         ).toLowerCase();
 
 
+    /* =================================================
+       SEARCH FILTER
+    ================================================== */
+
     if (
         search &&
         !searchable.includes(search)
@@ -1035,7 +1059,8 @@ function displayUsers() {
 
         document.getElementById(
             "userCount"
-        ).textContent = "0";
+        ).textContent =
+            "0";
 
 
         area.innerHTML = `
@@ -1071,18 +1096,11 @@ function displayUsers() {
     }
 
 
-    /* =========================
-       USER COUNT
-    ========================= */
-
     document.getElementById(
         "userCount"
-    ).textContent = "1";
+    ).textContent =
+        "1";
 
-
-    /* =========================
-       USER CARD
-    ========================= */
 
     const points =
         getPoints();
@@ -1090,6 +1108,16 @@ function displayUsers() {
 
     const registered =
         getRegisteredDate(user);
+
+
+    const status =
+        getAccountStatus();
+
+
+    const statusClass =
+        status === "Suspended"
+            ? "status-negative"
+            : "status-active";
 
 
     const card =
@@ -1164,9 +1192,10 @@ function displayUsers() {
                 </div>
 
 
-                <div class="info-value status-active">
+                <div
+                    class="info-value ${statusClass}">
 
-                    Active
+                    ${escapeHTML(status)}
 
                 </div>
 
@@ -1210,6 +1239,7 @@ function displayUsers() {
 
             </div>
 
+
         </div>
 
 
@@ -1231,24 +1261,46 @@ function displayUsers() {
 
 
 /* =====================================================
+   VIEW USER DETAILS
+===================================================== */
+
+function viewUserDetails() {
+
+    const user =
+        getUser();
+
+
+    if (!user) {
+
+        return;
+
+    }
+
+
+    /*
+       Store the selected user so that
+       admin-user-details.html can load it.
+    */
+
+    localStorage.setItem(
+        "adminSelectedUser",
+        JSON.stringify(user)
+    );
+
+
+    window.location.href =
+        "admin-user-details.html";
+
+}
+
+
+/* =====================================================
    SEARCH USERS
 ===================================================== */
 
 function searchUsers() {
 
     displayUsers();
-
-}
-
-
-/* =====================================================
-   OPEN USER DETAILS
-===================================================== */
-
-function viewUserDetails() {
-
-    window.location.href =
-        "admin-user-details.html";
 
 }
 
@@ -1296,7 +1348,7 @@ function escapeHTML(value) {
 function goBackToDashboard() {
 
     window.location.href =
-        "admin-dashboard.html";
+        "admin.html";
 
 }
 
