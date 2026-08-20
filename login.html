@@ -898,6 +898,31 @@ function loginUser(event) {
     }
 
 
+    /* =================================================
+       CHECK ACCOUNT SUSPENSION
+    ================================================= */
+
+    const accountStatus =
+        localStorage.getItem(
+            "adminAccountStatus"
+        ) || "Active";
+
+
+    if (
+        accountStatus === "Suspended"
+    ) {
+
+        message.textContent =
+            "🚫 This account has been suspended by the administrator.";
+
+        attemptsDisplay.textContent =
+            "Please contact the administrator if you believe this is an error.";
+
+        return;
+
+    }
+
+
     /* =========================
        CHECK PASSWORD
     ========================= */
@@ -1181,29 +1206,7 @@ function resetPassword() {
 
     }
 
-/* =========================
-   CHECK ACCOUNT SUSPENSION
-========================= */
 
-const accountStatus =
-    localStorage.getItem(
-        "adminAccountStatus"
-    ) || "Active";
-
-
-if (
-    accountStatus === "Suspended"
-) {
-
-    message.textContent =
-        "🚫 This account has been suspended by the administrator.";
-
-    attemptsDisplay.textContent =
-        "Please contact the administrator if you believe this is an error.";
-
-    return;
-
-}
     /* =========================
        CHECK EMAIL
     ========================= */
