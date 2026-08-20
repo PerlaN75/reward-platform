@@ -1,0 +1,2002 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>Admin - Points Transactions - Reward Platform</title>
+
+
+<style>
+
+/* =====================================================
+   GENERAL
+===================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+
+    margin: 0;
+
+    font-family: Arial, sans-serif;
+
+    background: #f4f7fb;
+
+    color: #222;
+
+}
+
+
+/* =====================================================
+   TOP NAVIGATION
+===================================================== */
+
+.top-nav {
+
+    background:
+        linear-gradient(
+            90deg,
+            #182848,
+            #3d2075
+        );
+
+    padding: 12px 10px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+}
+
+
+.admin-label {
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+}
+
+
+.back-button {
+
+    border: none;
+
+    border-radius: 12px;
+
+    padding: 11px 17px;
+
+    background:
+        rgba(255,255,255,0.13);
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+
+.back-button:hover {
+
+    background:
+        rgba(255,255,255,0.22);
+
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+header {
+
+    background:
+        linear-gradient(
+            135deg,
+            #182848,
+            #3d2075
+        );
+
+    color: white;
+
+    text-align: center;
+
+    padding: 42px 15px 48px;
+
+}
+
+
+header h1 {
+
+    margin: 0;
+
+    font-size:
+        clamp(36px, 8vw, 58px);
+
+    background:
+        linear-gradient(
+            90deg,
+            #d4ff38,
+            #ffd43b,
+            #ff4d8d,
+            #8a2be2,
+            #2196f3,
+            #00c9a7
+        );
+
+    background-size: 300% 100%;
+
+    -webkit-background-clip: text;
+
+    background-clip: text;
+
+    color: transparent;
+
+    animation:
+        headingSlide 8s linear infinite;
+
+}
+
+
+header p {
+
+    margin: 12px 0 0;
+
+    color: #eee;
+
+    font-size:
+        clamp(16px, 4vw, 21px);
+
+}
+
+
+@keyframes headingSlide {
+
+    from {
+
+        background-position: 0% 50%;
+
+    }
+
+    to {
+
+        background-position: 300% 50%;
+
+    }
+
+}
+
+
+/* =====================================================
+   MAIN CONTAINER
+===================================================== */
+
+.container {
+
+    max-width: 1100px;
+
+    margin: auto;
+
+    padding: 25px 15px 45px;
+
+}
+
+
+/* =====================================================
+   SUMMARY GRID
+===================================================== */
+
+.summary-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+
+}
+
+
+.summary-card {
+
+    background: white;
+
+    border-radius: 17px;
+
+    padding: 22px 15px;
+
+    text-align: center;
+
+    box-shadow:
+        0 4px 16px
+        rgba(0,0,0,0.08);
+
+}
+
+
+.summary-icon {
+
+    font-size: 38px;
+
+}
+
+
+.summary-number {
+
+    margin-top: 6px;
+
+    color: #182848;
+
+    font-size: 29px;
+
+    font-weight: bold;
+
+    word-break: break-word;
+
+}
+
+
+.summary-label {
+
+    margin-top: 5px;
+
+    color: #777;
+
+    font-size: 14px;
+
+}
+
+
+/* =====================================================
+   FILTER CARD
+===================================================== */
+
+.filter-card {
+
+    background: white;
+
+    border-radius: 17px;
+
+    padding: 20px;
+
+    margin-top: 25px;
+
+    box-shadow:
+        0 4px 16px
+        rgba(0,0,0,0.07);
+
+}
+
+
+.filter-title {
+
+    margin: 0 0 15px;
+
+    color: #182848;
+
+    font-size: 20px;
+
+}
+
+
+.filter-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        2fr 1fr;
+
+    gap: 12px;
+
+}
+
+
+.search-input,
+.filter-select {
+
+    width: 100%;
+
+    padding: 14px;
+
+    border:
+        1px solid #d8dce5;
+
+    border-radius: 11px;
+
+    background: white;
+
+    color: #222;
+
+    font-size: 15px;
+
+    outline: none;
+
+}
+
+
+.search-input:focus,
+.filter-select:focus {
+
+    border-color: #7b2cff;
+
+}
+
+
+/* =====================================================
+   TRANSACTIONS CARD
+===================================================== */
+
+.transactions-card {
+
+    background: white;
+
+    border-radius: 17px;
+
+    padding: 20px;
+
+    margin-top: 25px;
+
+    box-shadow:
+        0 4px 16px
+        rgba(0,0,0,0.07);
+
+}
+
+
+.transactions-title-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 15px;
+
+}
+
+
+.transactions-title {
+
+    margin: 0;
+
+    color: #182848;
+
+    font-size: 21px;
+
+}
+
+
+.transaction-count {
+
+    color: #777;
+
+    font-size: 14px;
+
+}
+
+
+/* =====================================================
+   TABLE
+===================================================== */
+
+.table-wrapper {
+
+    width: 100%;
+
+    overflow-x: auto;
+
+}
+
+
+.transactions-table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 760px;
+
+}
+
+
+.transactions-table th {
+
+    padding: 13px 10px;
+
+    background: #f0f2f8;
+
+    color: #182848;
+
+    text-align: left;
+
+    font-size: 13px;
+
+    white-space: nowrap;
+
+}
+
+
+.transactions-table td {
+
+    padding: 14px 10px;
+
+    border-bottom:
+        1px solid #eeeeee;
+
+    font-size: 13px;
+
+    vertical-align: top;
+
+}
+
+
+.transactions-table tr:last-child td {
+
+    border-bottom: none;
+
+}
+
+
+.transactions-table tr:hover td {
+
+    background: #fafaff;
+
+}
+
+
+/* =====================================================
+   TRANSACTION POINTS
+===================================================== */
+
+.points-positive {
+
+    color: #168a3a;
+
+    font-weight: bold;
+
+}
+
+
+.points-negative {
+
+    color: #c62828;
+
+    font-weight: bold;
+
+}
+
+
+.points-zero {
+
+    color: #777;
+
+    font-weight: bold;
+
+}
+
+
+/* =====================================================
+   TYPE BADGES
+===================================================== */
+
+.type-badge {
+
+    display: inline-block;
+
+    padding: 5px 9px;
+
+    border-radius: 8px;
+
+    font-size: 11px;
+
+    font-weight: bold;
+
+}
+
+
+.type-earn {
+
+    background: #eaf8ef;
+
+    color: #168a3a;
+
+}
+
+
+.type-spend {
+
+    background: #fff0f0;
+
+    color: #c62828;
+
+}
+
+
+.type-admin {
+
+    background: #eee9ff;
+
+    color: #673ab7;
+
+}
+
+
+.type-other {
+
+    background: #f1f1f1;
+
+    color: #666;
+
+}
+
+
+/* =====================================================
+   USER NAME
+===================================================== */
+
+.transaction-user {
+
+    color: #182848;
+
+    font-weight: bold;
+
+}
+
+
+.transaction-email {
+
+    margin-top: 3px;
+
+    color: #888;
+
+    font-size: 11px;
+
+    word-break: break-word;
+
+}
+
+
+/* =====================================================
+   EMPTY STATE
+===================================================== */
+
+.empty-state {
+
+    padding: 45px 20px;
+
+    text-align: center;
+
+}
+
+
+.empty-icon {
+
+    font-size: 55px;
+
+}
+
+
+.empty-state h2 {
+
+    margin: 12px 0 8px;
+
+    color: #182848;
+
+}
+
+
+.empty-state p {
+
+    margin: 0;
+
+    color: #777;
+
+    line-height: 1.5;
+
+}
+
+
+/* =====================================================
+   REFRESH BUTTON
+===================================================== */
+
+.refresh-button {
+
+    border: none;
+
+    border-radius: 10px;
+
+    padding: 10px 14px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #8b25ff,
+            #287dff
+        );
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+
+.refresh-button:hover {
+
+    transform: translateY(-1px);
+
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer {
+
+    text-align: center;
+
+    padding: 25px;
+
+    color: #666;
+
+    font-size: 14px;
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 800px) {
+
+    .summary-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+
+    .filter-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    header {
+
+        padding:
+            35px 15px 40px;
+
+    }
+
+
+    .container {
+
+        padding:
+            20px 10px 40px;
+
+    }
+
+
+    .summary-grid {
+
+        gap: 10px;
+
+    }
+
+
+    .summary-card {
+
+        padding:
+            18px 10px;
+
+    }
+
+
+    .summary-icon {
+
+        font-size: 31px;
+
+    }
+
+
+    .summary-number {
+
+        font-size: 23px;
+
+    }
+
+
+    .summary-label {
+
+        font-size: 12px;
+
+    }
+
+
+    .transactions-card {
+
+        padding: 14px;
+
+    }
+
+
+    .transactions-title-row {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+
+    .refresh-button {
+
+        width: 100%;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     ADMIN LOGIN PROTECTION
+===================================================== -->
+
+<script>
+
+if (
+    localStorage.getItem("adminLoggedIn")
+    !== "true"
+) {
+
+    window.location.href =
+        "admin-login.html";
+
+}
+
+</script>
+
+
+<!-- =====================================================
+     TOP NAVIGATION
+===================================================== -->
+
+<nav class="top-nav">
+
+    <div class="admin-label">
+
+        🔐 Administrator
+
+    </div>
+
+
+    <button
+        type="button"
+        class="back-button"
+        onclick="goBackToDashboard()">
+
+        ← Back
+
+    </button>
+
+</nav>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header>
+
+    <h1>
+
+        💰 Points Transactions
+
+    </h1>
+
+
+    <p>
+
+        Monitor all points earned, spent, and adjusted.
+
+    </p>
+
+</header>
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="container">
+
+
+    <!-- =================================================
+         SUMMARY
+    ================================================== -->
+
+    <section class="summary-grid">
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+
+                🔄
+
+            </div>
+
+
+            <div
+                id="totalTransactions"
+                class="summary-number">
+
+                0
+
+            </div>
+
+
+            <div class="summary-label">
+
+                Total Transactions
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+
+                📈
+
+            </div>
+
+
+            <div
+                id="totalEarned"
+                class="summary-number">
+
+                0
+
+            </div>
+
+
+            <div class="summary-label">
+
+                Points Earned
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+
+                📉
+
+            </div>
+
+
+            <div
+                id="totalSpent"
+                class="summary-number">
+
+                0
+
+            </div>
+
+
+            <div class="summary-label">
+
+                Points Spent
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+
+                👥
+
+            </div>
+
+
+            <div
+                id="usersWithTransactions"
+                class="summary-number">
+
+                0
+
+            </div>
+
+
+            <div class="summary-label">
+
+                Users with Transactions
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         FILTERS
+    ================================================== -->
+
+    <section class="filter-card">
+
+        <h2 class="filter-title">
+
+            🔎 Search & Filter Transactions
+
+        </h2>
+
+
+        <div class="filter-grid">
+
+
+            <input
+                type="search"
+                id="searchInput"
+                class="search-input"
+                placeholder="Search username, email, activity, reason..."
+                oninput="renderTransactions()">
+
+
+            <select
+                id="transactionFilter"
+                class="filter-select"
+                onchange="renderTransactions()">
+
+                <option value="all">
+                    All Transactions
+                </option>
+
+                <option value="earned">
+                    📈 Earned Points
+                </option>
+
+                <option value="spent">
+                    📉 Spent Points
+                </option>
+
+                <option value="admin">
+                    🔐 Admin Adjustments
+                </option>
+
+            </select>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         TRANSACTIONS
+    ================================================== -->
+
+    <section class="transactions-card">
+
+
+        <div class="transactions-title-row">
+
+
+            <div>
+
+                <h2 class="transactions-title">
+
+                    📜 Transaction History
+
+                </h2>
+
+
+                <div
+                    id="transactionCount"
+                    class="transaction-count">
+
+                    0 transactions
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="refresh-button"
+                onclick="refreshTransactions()">
+
+                🔄 Refresh
+
+            </button>
+
+        </div>
+
+
+        <div
+            id="transactionsContent"
+            class="table-wrapper">
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    Reward Platform — Admin Points Transactions
+
+</footer>
+
+
+<script>
+
+/* =====================================================
+   GET USER
+===================================================== */
+
+function getUser() {
+
+    try {
+
+        const stored =
+            localStorage.getItem(
+                "rewardUser"
+            );
+
+
+        if (!stored) {
+
+            return null;
+
+        }
+
+
+        const user =
+            JSON.parse(stored);
+
+
+        if (
+            !user ||
+            typeof user !== "object"
+        ) {
+
+            return null;
+
+        }
+
+
+        return user;
+
+    }
+
+    catch (error) {
+
+        return null;
+
+    }
+
+}
+
+
+/* =====================================================
+   GET USERNAME
+===================================================== */
+
+function getUsername(user) {
+
+    if (!user) {
+
+        return "Unknown User";
+
+    }
+
+
+    return (
+        user.username ||
+        user.name ||
+        user.fullName ||
+        "Unknown User"
+    );
+
+}
+
+
+/* =====================================================
+   GET EMAIL
+===================================================== */
+
+function getEmail(user) {
+
+    if (!user) {
+
+        return "Not available";
+
+    }
+
+
+    return (
+        user.email ||
+        "Not available"
+    );
+
+}
+
+
+/* =====================================================
+   GET HISTORY
+===================================================== */
+
+function getHistory() {
+
+    try {
+
+        const stored =
+            localStorage.getItem(
+                "rewardHistory"
+            );
+
+
+        if (!stored) {
+
+            return [];
+
+        }
+
+
+        const history =
+            JSON.parse(stored);
+
+
+        if (
+            !Array.isArray(history)
+        ) {
+
+            return [];
+
+        }
+
+
+        return history;
+
+    }
+
+    catch (error) {
+
+        return [];
+
+    }
+
+}
+
+
+/* =====================================================
+   NORMALIZE TRANSACTION
+===================================================== */
+
+function normalizeTransaction(
+    item,
+    index
+) {
+
+    const user =
+        getUser();
+
+
+    const username =
+        item.username ||
+        item.userName ||
+        item.user ||
+        getUsername(user);
+
+
+    const email =
+        item.email ||
+        getEmail(user);
+
+
+    const activity =
+        item.activity ||
+        item.title ||
+        item.name ||
+        "Points Activity";
+
+
+    const reason =
+        item.reason ||
+        item.description ||
+        "";
+
+
+    const date =
+        item.date ||
+        item.time ||
+        item.timestamp ||
+        "Not available";
+
+
+    const points =
+        Number(
+            item.points
+        ) || 0;
+
+
+    const type =
+        item.type ||
+        "";
+
+
+    return {
+
+        id:
+            index,
+
+        username:
+            String(username),
+
+        email:
+            String(email),
+
+        activity:
+            String(activity),
+
+        reason:
+            String(reason),
+
+        date:
+            String(date),
+
+        points:
+            points,
+
+        type:
+            String(type)
+
+    };
+
+}
+
+
+/* =====================================================
+   TRANSACTION CATEGORY
+===================================================== */
+
+function getTransactionCategory(
+    transaction
+) {
+
+    const activity =
+        (
+            transaction.activity +
+            " " +
+            transaction.type +
+            " " +
+            transaction.reason
+        ).toLowerCase();
+
+
+    if (
+        activity.includes(
+            "admin adjustment"
+        ) ||
+        activity.includes(
+            "admin added"
+        ) ||
+        activity.includes(
+            "admin removed"
+        ) ||
+        activity.includes(
+            "admin"
+        )
+    ) {
+
+        return "admin";
+
+    }
+
+
+    if (
+        transaction.points > 0
+    ) {
+
+        return "earned";
+
+    }
+
+
+    if (
+        transaction.points < 0
+    ) {
+
+        return "spent";
+
+    }
+
+
+    return "other";
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHTML(value) {
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =====================================================
+   FORMAT POINTS
+===================================================== */
+
+function formatPoints(points) {
+
+    const number =
+        Number(points) || 0;
+
+
+    if (
+        number > 0
+    ) {
+
+        return "+" +
+            number.toLocaleString();
+
+    }
+
+
+    return number.toLocaleString();
+
+}
+
+
+/* =====================================================
+   GET POINT CLASS
+===================================================== */
+
+function getPointClass(points) {
+
+    if (
+        points > 0
+    ) {
+
+        return "points-positive";
+
+    }
+
+
+    if (
+        points < 0
+    ) {
+
+        return "points-negative";
+
+    }
+
+
+    return "points-zero";
+
+}
+
+
+/* =====================================================
+   GET TYPE BADGE
+===================================================== */
+
+function getTypeBadge(
+    transaction
+) {
+
+    const category =
+        getTransactionCategory(
+            transaction
+        );
+
+
+    if (
+        category === "earned"
+    ) {
+
+        return `
+            <span class="type-badge type-earn">
+                EARNED
+            </span>
+        `;
+
+    }
+
+
+    if (
+        category === "spent"
+    ) {
+
+        return `
+            <span class="type-badge type-spend">
+                SPENT
+            </span>
+        `;
+
+    }
+
+
+    if (
+        category === "admin"
+    ) {
+
+        return `
+            <span class="type-badge type-admin">
+                ADMIN
+            </span>
+        `;
+
+    }
+
+
+    return `
+        <span class="type-badge type-other">
+            OTHER
+        </span>
+    `;
+
+}
+
+
+/* =====================================================
+   UPDATE SUMMARY
+===================================================== */
+
+function updateSummary(
+    transactions
+) {
+
+    let earned = 0;
+
+    let spent = 0;
+
+
+    const users =
+        new Set();
+
+
+    transactions.forEach(
+        function(transaction) {
+
+            const points =
+                transaction.points;
+
+
+            if (
+                points > 0
+            ) {
+
+                earned += points;
+
+            }
+
+
+            if (
+                points < 0
+            ) {
+
+                spent +=
+                    Math.abs(points);
+
+            }
+
+
+            const username =
+                transaction.username;
+
+
+            if (
+                username &&
+                username !== "Unknown User"
+            ) {
+
+                users.add(
+                    username
+                );
+
+            }
+
+        }
+    );
+
+
+    document.getElementById(
+        "totalTransactions"
+    ).textContent =
+        transactions.length;
+
+
+    document.getElementById(
+        "totalEarned"
+    ).textContent =
+        earned.toLocaleString();
+
+
+    document.getElementById(
+        "totalSpent"
+    ).textContent =
+        spent.toLocaleString();
+
+
+    document.getElementById(
+        "usersWithTransactions"
+    ).textContent =
+        users.size;
+
+}
+
+
+/* =====================================================
+   FILTER TRANSACTIONS
+===================================================== */
+
+function getFilteredTransactions() {
+
+    const history =
+        getHistory();
+
+
+    const transactions =
+        history.map(
+            function(item, index) {
+
+                return normalizeTransaction(
+                    item,
+                    index
+                );
+
+            }
+        );
+
+
+    const search =
+        document.getElementById(
+            "searchInput"
+        ).value
+        .trim()
+        .toLowerCase();
+
+
+    const filter =
+        document.getElementById(
+            "transactionFilter"
+        ).value;
+
+
+    return transactions.filter(
+        function(transaction) {
+
+            const searchable = (
+
+                transaction.username +
+                " " +
+                transaction.email +
+                " " +
+                transaction.activity +
+                " " +
+                transaction.reason +
+                " " +
+                transaction.type
+
+            ).toLowerCase();
+
+
+            if (
+                search &&
+                !searchable.includes(search)
+            ) {
+
+                return false;
+
+            }
+
+
+            const category =
+                getTransactionCategory(
+                    transaction
+                );
+
+
+            if (
+                filter !== "all" &&
+                category !== filter
+            ) {
+
+                return false;
+
+            }
+
+
+            return true;
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   RENDER TRANSACTIONS
+===================================================== */
+
+function renderTransactions() {
+
+    const allHistory =
+        getHistory();
+
+
+    const filtered =
+        getFilteredTransactions();
+
+
+    updateSummary(
+        allHistory.map(
+            function(item, index) {
+
+                return normalizeTransaction(
+                    item,
+                    index
+                );
+
+            }
+        )
+    );
+
+
+    document.getElementById(
+        "transactionCount"
+    ).textContent =
+        filtered.length +
+        (
+            filtered.length === 1
+                ? " transaction"
+                : " transactions"
+        );
+
+
+    const container =
+        document.getElementById(
+            "transactionsContent"
+        );
+
+
+    if (
+        filtered.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+
+                    ${
+                        allHistory.length === 0
+                            ? "💰"
+                            : "🔎"
+                    }
+
+                </div>
+
+
+                <h2>
+
+                    ${
+                        allHistory.length === 0
+                            ? "No Transactions Yet"
+                            : "No Matching Transactions"
+                    }
+
+                </h2>
+
+
+                <p>
+
+                    ${
+                        allHistory.length === 0
+                            ? "Points activity will appear here when users earn, spend, or receive point adjustments."
+                            : "Try changing your search or transaction filter."
+                    }
+
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const newestFirst =
+        [...filtered].reverse();
+
+
+    let html = `
+
+        <table class="transactions-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Date
+                    </th>
+
+                    <th>
+                        User
+                    </th>
+
+                    <th>
+                        Activity
+                    </th>
+
+                    <th>
+                        Points
+                    </th>
+
+                    <th>
+                        Type
+                    </th>
+
+                    <th>
+                        Reason
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+    `;
+
+
+    newestFirst.forEach(
+        function(transaction) {
+
+            const pointClass =
+                getPointClass(
+                    transaction.points
+                );
+
+
+            const pointText =
+                formatPoints(
+                    transaction.points
+                );
+
+
+            const reason =
+                transaction.reason ||
+                "—";
+
+
+            html += `
+
+                <tr>
+
+                    <td>
+
+                        ${escapeHTML(
+                            transaction.date
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        <div
+                            class="transaction-user">
+
+                            ${escapeHTML(
+                                transaction.username
+                            )}
+
+                        </div>
+
+
+                        <div
+                            class="transaction-email">
+
+                            ${escapeHTML(
+                                transaction.email
+                            )}
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHTML(
+                            transaction.activity
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            class="${pointClass}">
+
+                            ${pointText}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        ${getTypeBadge(
+                            transaction
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHTML(
+                            reason
+                        )}
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    html += `
+
+            </tbody>
+
+        </table>
+
+    `;
+
+
+    container.innerHTML =
+        html;
+
+}
+
+
+/* =====================================================
+   REFRESH
+===================================================== */
+
+function refreshTransactions() {
+
+    renderTransactions();
+
+}
+
+
+/* =====================================================
+   BACK TO ADMIN DASHBOARD
+===================================================== */
+
+function goBackToDashboard() {
+
+    window.location.href =
+        "admin.html";
+
+}
+
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
+
+renderTransactions();
+
+</script>
+
+
+</body>
+
+</html>
