@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>User Details - Admin Panel</title>
+
+
+<style>
+
+/* =====================================================
+   GENERAL
+===================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+    font-family: Arial, sans-serif;
+
+    background: #f4f7fb;
+
+    color: #222;
+
+}
+
+
+/* =====================================================
+   TOP NAVIGATION
+===================================================== */
+
+.top-nav {
+
+    background:
+        linear-gradient(
+            90deg,
+            #182848,
+            #3b1d73
+        );
+
+    padding: 12px 10px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+}
+
+
+.admin-label {
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+}
+
+
+.back-button {
+
+    border: none;
+
+    border-radius: 12px;
+
+    padding: 11px 18px;
+
+    background:
+        rgba(255,255,255,0.15);
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+
+.back-button:hover {
+
+    background:
+        rgba(255,255,255,0.25);
+
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+header {
+
+    background:
+        linear-gradient(
+            135deg,
+            #182848,
+            #43217a
+        );
+
+    color: white;
+
+    text-align: center;
+
+    padding: 35px 15px;
+
+}
+
+
+header h1 {
+
+    margin: 0;
+
+    font-size: clamp(32px, 8vw, 50px);
+
+    background:
+        linear-gradient(
+            90deg,
+            #ffd52f,
+            #ff8a3d,
+            #d53cff,
+            #2196f3,
+            #00c9a7
+        );
+
+    background-size: 300% 100%;
+
+    -webkit-background-clip: text;
+
+    background-clip: text;
+
+    color: transparent;
+
+    animation:
+        headingSlide 8s linear infinite;
+
+}
+
+
+header p {
+
+    margin: 10px 0 0;
+
+    color: #e3e0ef;
+
+    font-size: 17px;
+
+}
+
+
+@keyframes headingSlide {
+
+    from {
+
+        background-position: 0% 50%;
+
+    }
+
+    to {
+
+        background-position: 300% 50%;
+
+    }
+
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.container {
+
+    max-width: 850px;
+
+    margin: auto;
+
+    padding: 20px 15px 40px;
+
+}
+
+
+/* =====================================================
+   USER PROFILE CARD
+===================================================== */
+
+.profile-card {
+
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 25px;
+
+    margin-top: 15px;
+
+    box-shadow:
+        0 4px 15px
+        rgba(0,0,0,0.08);
+
+}
+
+
+.profile-top {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    margin-bottom: 25px;
+
+}
+
+
+.profile-avatar {
+
+    width: 75px;
+
+    height: 75px;
+
+    min-width: 75px;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7b1cff,
+            #287dff
+        );
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 42px;
+
+}
+
+
+.profile-name {
+
+    font-size: 27px;
+
+    font-weight: bold;
+
+    color: #182848;
+
+}
+
+
+.profile-email {
+
+    margin-top: 6px;
+
+    color: #777;
+
+    word-break: break-word;
+
+}
+
+
+/* =====================================================
+   INFORMATION GRID
+===================================================== */
+
+.info-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 12px;
+
+}
+
+
+.info-box {
+
+    background: #f7f8fc;
+
+    border-radius: 12px;
+
+    padding: 15px;
+
+}
+
+
+.info-label {
+
+    color: #777;
+
+    font-size: 14px;
+
+    margin-bottom: 7px;
+
+}
+
+
+.info-value {
+
+    color: #182848;
+
+    font-size: 19px;
+
+    font-weight: bold;
+
+    word-break: break-word;
+
+}
+
+
+.active {
+
+    color: #168a3a;
+
+}
+
+
+.prototype {
+
+    color: #d18a00;
+
+}
+
+
+/* =====================================================
+   SECTION
+===================================================== */
+
+.section-title {
+
+    color: #182848;
+
+    margin:
+
+        30px 0 15px;
+
+}
+
+
+/* =====================================================
+   BALANCE CARD
+===================================================== */
+
+.balance-card {
+
+    background:
+        linear-gradient(
+            135deg,
+            #182848,
+            #43217a
+        );
+
+    color: white;
+
+    border-radius: 16px;
+
+    padding: 25px;
+
+    text-align: center;
+
+    box-shadow:
+        0 5px 18px
+        rgba(24,40,72,0.20);
+
+}
+
+
+.balance-icon {
+
+    font-size: 38px;
+
+}
+
+
+.balance-number {
+
+    font-size: 42px;
+
+    font-weight: bold;
+
+    margin: 8px 0;
+
+}
+
+
+.balance-label {
+
+    color: #ddd;
+
+}
+
+
+/* =====================================================
+   ACTIVITY
+===================================================== */
+
+.activity-card {
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 20px;
+
+    box-shadow:
+        0 4px 15px
+        rgba(0,0,0,0.08);
+
+}
+
+
+.activity-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 14px 0;
+
+    border-bottom:
+        1px solid #eeeeee;
+
+}
+
+
+.activity-item:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.activity-icon {
+
+    width: 45px;
+
+    height: 45px;
+
+    min-width: 45px;
+
+    border-radius: 11px;
+
+    background: #eef4ff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 23px;
+
+}
+
+
+.activity-info {
+
+    flex: 1;
+
+    min-width: 0;
+
+}
+
+
+.activity-name {
+
+    font-weight: bold;
+
+    color: #182848;
+
+}
+
+
+.activity-date {
+
+    color: #777;
+
+    font-size: 13px;
+
+    margin-top: 4px;
+
+}
+
+
+.activity-points {
+
+    font-weight: bold;
+
+    white-space: nowrap;
+
+}
+
+
+.positive {
+
+    color: #168a3a;
+
+}
+
+
+.negative {
+
+    color: #c62828;
+
+}
+
+
+/* =====================================================
+   ADMIN ACTIONS
+===================================================== */
+
+.actions-card {
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 20px;
+
+    margin-top: 25px;
+
+    box-shadow:
+        0 4px 15px
+        rgba(0,0,0,0.08);
+
+}
+
+
+.action-button {
+
+    width: 100%;
+
+    border: none;
+
+    border-radius: 11px;
+
+    padding: 14px;
+
+    margin-top: 10px;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+
+.back-users {
+
+    background:
+        linear-gradient(
+            90deg,
+            #8b25ff,
+            #287dff
+        );
+
+    color: white;
+
+}
+
+
+.status-button {
+
+    background: #eef7f0;
+
+    color: #168a3a;
+
+}
+
+
+/* =====================================================
+   NOTICE
+===================================================== */
+
+.notice {
+
+    background: #fff8e1;
+
+    border-left:
+        5px solid #ffb300;
+
+    border-radius: 9px;
+
+    padding: 15px;
+
+    margin-top: 25px;
+
+    color: #555;
+
+    line-height: 1.5;
+
+}
+
+
+/* =====================================================
+   EMPTY
+===================================================== */
+
+.empty {
+
+    text-align: center;
+
+    padding: 35px 15px;
+
+    color: #777;
+
+}
+
+
+.empty-icon {
+
+    font-size: 50px;
+
+    margin-bottom: 10px;
+
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer {
+
+    text-align: center;
+
+    padding: 25px;
+
+    color: #666;
+
+    font-size: 14px;
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .info-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .profile-top {
+
+        align-items: flex-start;
+
+    }
+
+
+    .profile-name {
+
+        font-size: 23px;
+
+    }
+
+
+    .profile-avatar {
+
+        width: 65px;
+
+        height: 65px;
+
+        min-width: 65px;
+
+        font-size: 34px;
+
+    }
+
+
+    .balance-number {
+
+        font-size: 36px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     ADMIN PROTECTION
+===================================================== -->
+
+<script>
+
+if (
+    localStorage.getItem("adminLoggedIn")
+    !== "true"
+) {
+
+    window.location.href =
+        "admin-login.html";
+
+}
+
+</script>
+
+
+<!-- =====================================================
+     TOP NAVIGATION
+===================================================== -->
+
+<nav class="top-nav">
+
+    <div class="admin-label">
+
+        🔐 Administrator
+
+    </div>
+
+
+    <button
+        type="button"
+        class="back-button"
+        onclick="goBackToUsers()">
+
+        ← Back
+
+    </button>
+
+</nav>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header>
+
+    <h1>
+        👤 User Details
+    </h1>
+
+    <p>
+        View and monitor this user's account.
+    </p>
+
+</header>
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="container">
+
+
+    <!-- =================================================
+         USER PROFILE
+    ================================================== -->
+
+    <section class="profile-card">
+
+
+        <div class="profile-top">
+
+            <div class="profile-avatar">
+
+                👤
+
+            </div>
+
+
+            <div>
+
+                <div
+                    id="username"
+                    class="profile-name">
+
+                    User
+
+                </div>
+
+
+                <div
+                    id="email"
+                    class="profile-email">
+
+                    Email not available
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- INFORMATION -->
+
+        <div class="info-grid">
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    👤 Username
+                </div>
+
+                <div
+                    id="usernameInfo"
+                    class="info-value">
+
+                    Not available
+
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    📧 Email
+                </div>
+
+                <div
+                    id="emailInfo"
+                    class="info-value">
+
+                    Not available
+
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    🟢 Status
+                </div>
+
+                <div
+                    class="info-value active">
+
+                    Active
+
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    🔐 Account
+                </div>
+
+                <div
+                    class="info-value prototype">
+
+                    Prototype
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         BALANCE
+    ================================================== -->
+
+    <h2 class="section-title">
+
+        💰 Account Balance
+
+    </h2>
+
+
+    <section class="balance-card">
+
+        <div class="balance-icon">
+
+            💰
+
+        </div>
+
+
+        <div
+            id="balance"
+            class="balance-number">
+
+            0
+
+        </div>
+
+
+        <div class="balance-label">
+
+            Current Points
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         ACTIVITY HISTORY
+    ================================================== -->
+
+    <h2 class="section-title">
+
+        📜 Recent Activity
+
+    </h2>
+
+
+    <section
+        id="activityContainer"
+        class="activity-card">
+
+    </section>
+
+
+    <!-- =================================================
+         ADMIN ACTIONS
+    ================================================== -->
+
+    <h2 class="section-title">
+
+        ⚙️ Account Management
+
+    </h2>
+
+
+    <section class="actions-card">
+
+
+        <button
+            type="button"
+            class="action-button back-users"
+            onclick="goBackToUsers()">
+
+            👥 Back to Users
+
+        </button>
+
+
+        <button
+            type="button"
+            class="action-button status-button"
+            onclick="showPrototypeMessage()">
+
+            🟢 Account Status: Active
+
+        </button>
+
+
+    </section>
+
+
+    <!-- =================================================
+         NOTICE
+    ================================================== -->
+
+    <div class="notice">
+
+        <strong>
+            ⚠️ Prototype Notice
+        </strong>
+
+        <br><br>
+
+        This administrator page currently reads
+        information from browser-based prototype data.
+
+        <br><br>
+
+        During Phase 3, user accounts will be connected
+        to the central backend and database. The
+        administrator will then be able to manage
+        permanent user records securely.
+
+    </div>
+
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    Reward Platform — Admin Panel Prototype
+
+</footer>
+
+
+<script>
+
+/* =====================================================
+   GET USER
+===================================================== */
+
+function getUser() {
+
+    try {
+
+        const storedUser =
+            localStorage.getItem(
+                "rewardUser"
+            );
+
+
+        if (!storedUser) {
+
+            return null;
+
+        }
+
+
+        return JSON.parse(
+            storedUser
+        );
+
+    }
+
+    catch (error) {
+
+        return null;
+
+    }
+
+}
+
+
+/* =====================================================
+   GET POINTS
+===================================================== */
+
+function getPoints() {
+
+    return Number(
+        localStorage.getItem(
+            "rewardPoints"
+        )
+    ) || 0;
+
+}
+
+
+/* =====================================================
+   GET HISTORY
+===================================================== */
+
+function getHistory() {
+
+    try {
+
+        const history =
+            JSON.parse(
+                localStorage.getItem(
+                    "rewardHistory"
+                )
+            ) || [];
+
+
+        return Array.isArray(history)
+            ? history
+            : [];
+
+    }
+
+    catch (error) {
+
+        return [];
+
+    }
+
+}
+
+
+/* =====================================================
+   ACTIVITY ICON
+===================================================== */
+
+function getActivityIcon(
+    activity
+) {
+
+    const name =
+        String(
+            activity
+        ).toLowerCase();
+
+
+    if (name.includes("watch"))
+        return "📺";
+
+    if (name.includes("spin"))
+        return "🎡";
+
+    if (name.includes("challenge"))
+        return "🏆";
+
+    if (name.includes("quiz"))
+        return "🧠";
+
+    if (name.includes("game"))
+        return "🎮";
+
+    if (name.includes("check"))
+        return "📅";
+
+    if (name.includes("reward"))
+        return "🎁";
+
+    if (name.includes("buy"))
+        return "💳";
+
+    if (name.includes("withdraw"))
+        return "💸";
+
+
+    return "💰";
+
+}
+
+
+/* =====================================================
+   DISPLAY USER
+===================================================== */
+
+function displayUser() {
+
+    const user =
+        getUser();
+
+
+    const username =
+        user &&
+        (
+            user.username ||
+            user.name ||
+            user.userName
+        );
+
+
+    const email =
+        user &&
+        (
+            user.email ||
+            user.userEmail
+        );
+
+
+    const finalUsername =
+        username ||
+        "User";
+
+
+    const finalEmail =
+        email ||
+        "Email not available";
+
+
+    document.getElementById(
+        "username"
+    ).textContent =
+        finalUsername;
+
+
+    document.getElementById(
+        "email"
+    ).textContent =
+        finalEmail;
+
+
+    document.getElementById(
+        "usernameInfo"
+    ).textContent =
+        finalUsername;
+
+
+    document.getElementById(
+        "emailInfo"
+    ).textContent =
+        finalEmail;
+
+
+    document.getElementById(
+        "balance"
+    ).textContent =
+        getPoints();
+
+}
+
+
+/* =====================================================
+   DISPLAY HISTORY
+===================================================== */
+
+function displayHistory() {
+
+    const container =
+        document.getElementById(
+            "activityContainer"
+        );
+
+
+    const history =
+        getHistory();
+
+
+    if (
+        history.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    📜
+                </div>
+
+                <strong>
+                    No activity yet
+                </strong>
+
+                <p>
+                    This user's points activity
+                    will appear here.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const ordered =
+        [...history].reverse();
+
+
+    container.innerHTML = "";
+
+
+    ordered.forEach(
+        function(item) {
+
+
+            const activity =
+                item.activity ||
+                item.title ||
+                item.name ||
+                "Points Activity";
+
+
+            let points =
+                item.points;
+
+
+            if (
+                typeof points !== "number"
+            ) {
+
+                points =
+                    Number(
+                        item.amount
+                    ) || 0;
+
+            }
+
+
+            const date =
+                item.date ||
+                item.time ||
+                item.timestamp ||
+                "Date not available";
+
+
+            const icon =
+                getActivityIcon(
+                    activity
+                );
+
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.className =
+                "activity-item";
+
+
+            const pointClass =
+                points >= 0
+                    ? "positive"
+                    : "negative";
+
+
+            const pointText =
+                points > 0
+                    ? "+" + points
+                    : points;
+
+
+            row.innerHTML = `
+
+                <div class="activity-icon">
+
+                    ${icon}
+
+                </div>
+
+
+                <div class="activity-info">
+
+                    <div class="activity-name">
+
+                        ${activity}
+
+                    </div>
+
+
+                    <div class="activity-date">
+
+                        ${date}
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="activity-points ${pointClass}">
+
+                    ${pointText}
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   BACK TO USERS
+===================================================== */
+
+function goBackToUsers() {
+
+    window.location.href =
+        "admin-users.html";
+
+}
+
+
+/* =====================================================
+   PROTOTYPE ACTION
+===================================================== */
+
+function showPrototypeMessage() {
+
+    alert(
+        "Account management will be connected to the backend and database during Phase 3."
+    );
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+displayUser();
+
+displayHistory();
+
+</script>
+
+
+</body>
+
+</html>
