@@ -1421,7 +1421,6 @@ if (
 
             </button>
 
-
         </div>
 
 
@@ -1908,7 +1907,7 @@ if (
 <script>
 
 /* =====================================================
-   SELECTED USER
+   VARIABLES
 ===================================================== */
 
 let selectedUser = null;
@@ -2188,6 +2187,86 @@ function getNotesKey() {
 
 
 /* =====================================================
+   CURRENT PROTOTYPE USER
+===================================================== */
+
+function getCurrentPrototypeUser() {
+
+    let user = null;
+
+
+    try {
+
+        const stored =
+            localStorage.getItem(
+                "rewardUser"
+            );
+
+
+        if (stored) {
+
+            user =
+                JSON.parse(
+                    stored
+                );
+
+        }
+
+    }
+
+    catch (error) {
+
+        user = null;
+
+    }
+
+
+    return user;
+
+}
+
+
+/* =====================================================
+   IS CURRENT PROTOTYPE USER
+===================================================== */
+
+function isCurrentPrototypeUser() {
+
+    const currentUser =
+        getCurrentPrototypeUser();
+
+
+    if (
+        !currentUser ||
+        !selectedUser
+    ) {
+
+        return false;
+
+    }
+
+
+    const currentKey =
+        getUserKey(
+            currentUser
+        );
+
+
+    const selectedKey =
+        getUserKey(
+            selectedUser
+        );
+
+
+    return (
+        String(currentKey) ===
+        String(selectedKey)
+    );
+
+}
+
+
+/* =====================================================
    GET POINTS
 ===================================================== */
 
@@ -2200,8 +2279,8 @@ function getPoints() {
 
 
     /*
-       If user-specific balance does not exist,
-       use the original prototype balance.
+       Compatibility with the original
+       single-user prototype.
     */
 
     if (
@@ -2228,10 +2307,34 @@ function getPoints() {
 
 function setPoints(value) {
 
+    const cleanValue =
+        Math.max(
+            0,
+            Number(value) || 0
+        );
+
+
     localStorage.setItem(
         getPointsKey(),
-        String(value)
+        String(cleanValue)
     );
+
+
+    /*
+       Keep the original prototype balance
+       synchronized for the current user.
+    */
+
+    if (
+        isCurrentPrototypeUser()
+    ) {
+
+        localStorage.setItem(
+            "rewardPoints",
+            String(cleanValue)
+        );
+
+    }
 
 }
 
@@ -2309,6 +2412,23 @@ function setHistory(history) {
         JSON.stringify(history)
     );
 
+
+    /*
+       Keep original prototype history
+       synchronized for current user.
+    */
+
+    if (
+        isCurrentPrototypeUser()
+    ) {
+
+        localStorage.setItem(
+            "rewardHistory",
+            JSON.stringify(history)
+        );
+
+    }
+
 }
 
 
@@ -2318,12 +2438,69 @@ function setHistory(history) {
 
 function getAccountStatus() {
 
-    return (
+    let status =
         localStorage.getItem(
             getStatusKey()
-        ) ||
+        );
+
+
+    /*
+       For the current prototype user,
+       also understand the original
+       global status key used by login.html.
+    */
+
+    if (
+        status === null &&
+        isCurrentPrototypeUser()
+    ) {
+
+        status =
+            localStorage.getItem(
+                "adminAccountStatus"
+            );
+
+    }
+
+
+    return (
+        status ||
         "Active"
     );
+
+}
+
+
+/* =====================================================
+   SET ACCOUNT STATUS
+===================================================== */
+
+function setAccountStatus(status) {
+
+    localStorage.setItem(
+        getStatusKey(),
+        status
+    );
+
+
+    /*
+       login.html currently checks this
+       global key. Therefore, when the
+       selected account is the current
+       prototype account, keep both keys
+       synchronized.
+    */
+
+    if (
+        isCurrentPrototypeUser()
+    ) {
+
+        localStorage.setItem(
+            "adminAccountStatus",
+            status
+        );
+
+    }
 
 }
 
@@ -2346,6 +2523,30 @@ function displayUser() {
             "profileEmail"
         ).textContent =
             "No selected user was found.";
+
+
+        document.getElementById(
+            "detailUsername"
+        ).textContent =
+            "Not available";
+
+
+        document.getElementById(
+            "detailEmail"
+        ).textContent =
+            "Not available";
+
+
+        document.getElementById(
+            "detailRegistered"
+        ).textContent =
+            "Not available";
+
+
+        document.getElementById(
+            "detailLastActivity"
+        ).textContent =
+            "Not available";
 
 
         return;
@@ -2542,18 +2743,25 @@ function showPointsAdjustment(type) {
 
 function updateAdjustmentPreview() {
 
+    const preview =
+        document.getElementById(
+            "adjustmentPreview"
+        );
+
+
+    if (!preview) {
+
+        return;
+
+    }
+
+
     const amount =
         Number(
             document.getElementById(
                 "adjustmentAmount"
             ).value
         ) || 0;
-
-
-    const preview =
-        document.getElementById(
-            "adjustmentPreview"
-        );
 
 
     if (
@@ -2578,6 +2786,18 @@ function updateAdjustmentPreview() {
             : current - amount;
 
 
+    if (
+        newBalance < 0
+    ) {
+
+        preview.textContent =
+            "New Balance: 0 Points — amount exceeds current balance.";
+
+        return;
+
+    }
+
+
     preview.textContent =
         "New Balance: " +
         newBalance +
@@ -2591,6 +2811,17 @@ function updateAdjustmentPreview() {
 ===================================================== */
 
 function confirmPointsAdjustment() {
+
+    if (!selectedUser) {
+
+        alert(
+            "No user is selected."
+        );
+
+        return;
+
+    }
+
 
     if (!adjustmentType) {
 
@@ -2615,11 +2846,12 @@ function confirmPointsAdjustment() {
 
     if (
         !Number.isFinite(amount) ||
-        amount <= 0
+        amount <= 0 ||
+        !Number.isInteger(amount)
     ) {
 
         alert(
-            "Please enter a valid points amount."
+            "Please enter a valid whole number of points."
         );
 
         return;
@@ -3020,7 +3252,9 @@ function displayCompleteHistory() {
                         </div>
 
                         <div class="${pointClass}">
-                            ${pointText}
+                            ${escapeHTML(
+                                String(pointText)
+                            )}
                         </div>
 
                         <div>
@@ -3152,6 +3386,17 @@ function loadAccountStatus() {
 
 function toggleAccountStatus() {
 
+    if (!selectedUser) {
+
+        alert(
+            "No user is selected."
+        );
+
+        return;
+
+    }
+
+
     const current =
         getAccountStatus();
 
@@ -3173,9 +3418,38 @@ function toggleAccountStatus() {
         }
 
 
-        localStorage.setItem(
-            getStatusKey(),
+        setAccountStatus(
             "Suspended"
+        );
+
+
+        /*
+           Record the administrative action.
+        */
+
+        const history =
+            getHistory();
+
+
+        history.push({
+
+            activity:
+                "Account Suspended",
+
+            points:
+                0,
+
+            type:
+                "Admin Action",
+
+            date:
+                new Date().toLocaleString()
+
+        });
+
+
+        setHistory(
+            history
         );
 
     }
@@ -3195,15 +3469,42 @@ function toggleAccountStatus() {
         }
 
 
-        localStorage.setItem(
-            getStatusKey(),
+        setAccountStatus(
             "Active"
+        );
+
+
+        const history =
+            getHistory();
+
+
+        history.push({
+
+            activity:
+                "Account Reactivated",
+
+            points:
+                0,
+
+            type:
+                "Admin Action",
+
+            date:
+                new Date().toLocaleString()
+
+        });
+
+
+        setHistory(
+            history
         );
 
     }
 
 
     loadAccountStatus();
+
+    displayCompleteHistory();
 
 }
 
@@ -3214,9 +3515,23 @@ function toggleAccountStatus() {
 
 function saveAccountChanges() {
 
-    localStorage.setItem(
-        getStatusKey(),
-        getAccountStatus()
+    if (!selectedUser) {
+
+        alert(
+            "No user is selected."
+        );
+
+        return;
+
+    }
+
+
+    const status =
+        getAccountStatus();
+
+
+    setAccountStatus(
+        status
     );
 
 
@@ -3233,6 +3548,17 @@ function saveAccountChanges() {
 
 function resetAccountSettings() {
 
+    if (!selectedUser) {
+
+        alert(
+            "No user is selected."
+        );
+
+        return;
+
+    }
+
+
     const confirmed =
         confirm(
             "Reset this user's prototype account settings?"
@@ -3246,8 +3572,8 @@ function resetAccountSettings() {
     }
 
 
-    localStorage.removeItem(
-        getStatusKey()
+    setAccountStatus(
+        "Active"
     );
 
 
@@ -3256,9 +3582,31 @@ function resetAccountSettings() {
     );
 
 
+    /*
+       Reset login security only when this
+       is the current prototype account.
+    */
+
+    if (
+        isCurrentPrototypeUser()
+    ) {
+
+        localStorage.removeItem(
+            "loginAttempts"
+        );
+
+        localStorage.removeItem(
+            "loginBlockedUntil"
+        );
+
+    }
+
+
     loadAccountStatus();
 
     loadAdminNotes();
+
+    loadSecurityInformation();
 
 
     alert(
@@ -3274,6 +3622,11 @@ function resetAccountSettings() {
 
 function loadSecurityInformation() {
 
+    /*
+       IMPORTANT:
+       login.html uses loginAttempts.
+    */
+
     const failed =
         Number(
             localStorage.getItem(
@@ -3282,10 +3635,17 @@ function loadSecurityInformation() {
         ) || 0;
 
 
+    /*
+       IMPORTANT:
+       login.html uses loginBlockedUntil.
+       The old admin code incorrectly used
+       "blockedUntil".
+    */
+
     const blockedUntil =
         Number(
             localStorage.getItem(
-                "blockedUntil"
+                "loginBlockedUntil"
             )
         ) || 0;
 
@@ -3308,8 +3668,19 @@ function loadSecurityInformation() {
 
     if (blocked) {
 
+        const minutes =
+            Math.ceil(
+                (
+                    blockedUntil -
+                    Date.now()
+                ) / 60000
+            );
+
+
         blockedElement.textContent =
-            "Blocked";
+            "Blocked (" +
+            minutes +
+            " min remaining)";
 
 
         blockedElement.className =
@@ -3368,6 +3739,17 @@ function loadAdminNotes() {
 ===================================================== */
 
 function saveAdminNote() {
+
+    if (!selectedUser) {
+
+        alert(
+            "No user is selected."
+        );
+
+        return;
+
+    }
+
 
     const note =
         document.getElementById(
@@ -3460,6 +3842,20 @@ selectedUser =
 
 
 displayUser();
+
+
+/* =====================================================
+   AUTO REFRESH SECURITY STATUS
+===================================================== */
+
+setInterval(
+    function() {
+
+        loadSecurityInformation();
+
+    },
+    1000
+);
 
 </script>
 
