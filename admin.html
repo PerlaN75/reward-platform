@@ -862,35 +862,6 @@ if (
         </div>
 
 
-        <!-- WITHDRAWALS -->
-
-        <div class="stat-card">
-
-            <div class="stat-icon">
-
-                💸
-
-            </div>
-
-
-            <div
-                id="pendingWithdrawalCount"
-                class="stat-number">
-
-                0
-
-            </div>
-
-
-            <div class="stat-label">
-
-                Pending Withdrawals
-
-            </div>
-
-        </div>
-
-
     </div>
 
 
@@ -984,7 +955,7 @@ if (
             class="admin-card"
             onclick="
                 window.location.href =
-                'admin.withdrawals.html';
+                'admin-withdrawals.html';
             ">
 
             <div class="admin-icon">
@@ -1312,26 +1283,6 @@ if (
 
             <div class="status-name">
 
-                Withdrawal System
-
-            </div>
-
-
-            <div
-                id="withdrawalSystemStatus"
-                class="status-value">
-
-                Active
-
-            </div>
-
-        </div>
-
-
-        <div class="status-row">
-
-            <div class="status-name">
-
                 Local Storage
 
             </div>
@@ -1557,75 +1508,6 @@ function updateNotificationCount() {
 
 
 /* =====================================================
-   PENDING WITHDRAWAL COUNT
-===================================================== */
-
-function updatePendingWithdrawalCount() {
-
-    let withdrawals = [];
-
-
-    try {
-
-        withdrawals =
-            JSON.parse(
-                localStorage.getItem(
-                    "rewardWithdrawals"
-                )
-            ) || [];
-
-    }
-
-    catch (error) {
-
-        withdrawals = [];
-
-    }
-
-
-    if (
-        !Array.isArray(withdrawals)
-    ) {
-
-        withdrawals = [];
-
-    }
-
-
-    let pendingCount = 0;
-
-
-    withdrawals.forEach(
-        function(withdrawal) {
-
-            const status =
-                String(
-                    withdrawal.status ||
-                    "Pending"
-                ).toLowerCase();
-
-
-            if (
-                status === "pending"
-            ) {
-
-                pendingCount++;
-
-            }
-
-        }
-    );
-
-
-    document.getElementById(
-        "pendingWithdrawalCount"
-    ).textContent =
-        pendingCount;
-
-}
-
-
-/* =====================================================
    OPEN ADMIN SECTION
 ===================================================== */
 
@@ -1664,30 +1546,6 @@ updatePoints();
 updateTransactionCount();
 
 updateNotificationCount();
-
-updatePendingWithdrawalCount();
-
-
-/* =====================================================
-   REFRESH DASHBOARD WHEN RETURNING
-===================================================== */
-
-window.addEventListener(
-    "pageshow",
-    function() {
-
-        updateUserCount();
-
-        updatePoints();
-
-        updateTransactionCount();
-
-        updateNotificationCount();
-
-        updatePendingWithdrawalCount();
-
-    }
-);
 
 </script>
 
