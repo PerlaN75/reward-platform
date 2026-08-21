@@ -1160,7 +1160,6 @@ if (
 
 <nav class="top-nav">
 
-
     <div class="admin-label">
 
         🔐 Administrator
@@ -1176,7 +1175,6 @@ if (
         ← Back
 
     </button>
-
 
 </nav>
 
@@ -1220,7 +1218,9 @@ if (
         <div class="stat-card">
 
             <div class="stat-icon">
+
                 ⏳
+
             </div>
 
 
@@ -1245,7 +1245,9 @@ if (
         <div class="stat-card">
 
             <div class="stat-icon">
+
                 ✅
+
             </div>
 
 
@@ -1270,7 +1272,9 @@ if (
         <div class="stat-card">
 
             <div class="stat-icon">
+
                 ❌
+
             </div>
 
 
@@ -1295,7 +1299,9 @@ if (
         <div class="stat-card">
 
             <div class="stat-icon">
+
                 💰
+
             </div>
 
 
@@ -1310,7 +1316,7 @@ if (
 
             <div class="stat-label">
 
-                Points Requested
+                Pending Points
 
             </div>
 
@@ -1348,19 +1354,30 @@ if (
             onchange="renderWithdrawals()">
 
             <option value="all">
+
                 All Withdrawals
+
             </option>
+
 
             <option value="Pending">
+
                 Pending
+
             </option>
+
 
             <option value="Approved">
+
                 Approved
+
             </option>
 
+
             <option value="Rejected">
+
                 Rejected
+
             </option>
 
         </select>
@@ -1441,7 +1458,7 @@ if (
         <div class="modal-body">
 
 
-            <!-- ACCOUNT -->
+            <!-- USER -->
 
             <section class="detail-section">
 
@@ -1567,7 +1584,7 @@ if (
 
                         <div class="detail-label">
 
-                            Destination
+                            Account / Destination
 
                         </div>
 
@@ -1716,7 +1733,7 @@ if (
 <script>
 
 /* =====================================================
-   WITHDRAWAL STORAGE KEY
+   STORAGE KEY
 ===================================================== */
 
 const WITHDRAWAL_KEY =
@@ -1729,37 +1746,43 @@ const WITHDRAWAL_KEY =
 
 function getWithdrawals() {
 
-    let withdrawals = [];
-
-
     try {
 
-        withdrawals =
+        const stored =
+            localStorage.getItem(
+                WITHDRAWAL_KEY
+            );
+
+
+        if (!stored) {
+
+            return [];
+
+        }
+
+
+        const data =
             JSON.parse(
-                localStorage.getItem(
-                    WITHDRAWAL_KEY
-                )
-            ) || [];
+                stored
+            );
+
+
+        return Array.isArray(data)
+            ? data
+            : [];
 
     }
 
     catch (error) {
 
-        withdrawals = [];
+        console.error(
+            "Unable to read withdrawals:",
+            error
+        );
+
+        return [];
 
     }
-
-
-    if (
-        !Array.isArray(withdrawals)
-    ) {
-
-        withdrawals = [];
-
-    }
-
-
-    return withdrawals;
 
 }
 
@@ -1783,10 +1806,10 @@ function saveWithdrawals(
 
 
 /* =====================================================
-   GET USER
+   GET CURRENT USER
 ===================================================== */
 
-function getUser() {
+function getCurrentUser() {
 
     try {
 
@@ -1823,22 +1846,48 @@ function getUser() {
 ===================================================== */
 
 function getUsername(
-    user
+    item
 ) {
 
-    if (!user) {
+    if (
+        item.username
+    ) {
 
-        return "Unknown User";
+        return item.username;
 
     }
 
 
-    return (
-        user.username ||
-        user.name ||
-        user.fullName ||
-        "Unknown User"
-    );
+    if (
+        item.userName
+    ) {
+
+        return item.userName;
+
+    }
+
+
+    if (
+        item.user &&
+        item.user.username
+    ) {
+
+        return item.user.username;
+
+    }
+
+
+    if (
+        item.user &&
+        item.user.name
+    ) {
+
+        return item.user.name;
+
+    }
+
+
+    return "Unknown User";
 
 }
 
@@ -1848,20 +1897,29 @@ function getUsername(
 ===================================================== */
 
 function getEmail(
-    user
+    item
 ) {
 
-    if (!user) {
+    if (
+        item.email
+    ) {
 
-        return "Not available";
+        return item.email;
 
     }
 
 
-    return (
-        user.email ||
-        "Not available"
-    );
+    if (
+        item.user &&
+        item.user.email
+    ) {
+
+        return item.user.email;
+
+    }
+
+
+    return "Not available";
 
 }
 
@@ -1875,82 +1933,71 @@ function normalizeWithdrawal(
     index
 ) {
 
-    const user =
-        getUser();
+    const points =
+        Number(
+            item.points ??
+            item.amountPoints ??
+            item.requestedPoints ??
+            item.value ??
+            0
+        );
 
 
     const username =
-        item.username ||
-        item.userName ||
-        (
-            item.user &&
-            (
-                item.user.username ||
-                item.user.name
-            )
-        ) ||
-        getUsername(user);
+        getUsername(
+            item
+        );
 
 
     const email =
-        item.email ||
-        (
-            item.user &&
-            item.user.email
-        ) ||
-        getEmail(user);
-
-
-    const points =
-        Number(
-            item.points ||
-            item.amountPoints ||
-            item.requestedPoints ||
-            item.value
-        ) || 0;
-
-
-    const cashAmount =
-        item.cashAmount ||
-        item.cashValue ||
-        item.moneyAmount ||
-        item.amountMoney ||
-        "Not specified";
+        getEmail(
+            item
+        );
 
 
     const method =
-        item.method ||
-        item.paymentMethod ||
-        item.withdrawalMethod ||
+        item.method ??
+        item.paymentMethod ??
+        item.withdrawalMethod ??
         "Not specified";
 
 
     const destination =
-        item.destination ||
-        item.account ||
-        item.phone ||
-        item.wallet ||
-        item.address ||
+        item.destination ??
+        item.account ??
+        item.phone ??
+        item.wallet ??
+        item.address ??
+        "Not specified";
+
+
+    const cashAmount =
+        item.cashAmount ??
+        item.cashValue ??
+        item.moneyAmount ??
+        item.amountMoney ??
         "Not specified";
 
 
     const date =
-        item.date ||
-        item.createdAt ||
-        item.requestDate ||
-        item.timestamp ||
+        item.date ??
+        item.createdAt ??
+        item.requestDate ??
+        item.timestamp ??
         "Not available";
 
 
     const status =
-        item.status ||
-        "Pending";
+        normalizeStatus(
+            item.status
+        );
 
 
     const reference =
-        item.reference ||
-        item.referenceId ||
-        item.id ||
+        item.reference ??
+        item.referenceId ??
+        item.requestId ??
+        item.id ??
         "WD-" +
         String(
             index + 1
@@ -1960,45 +2007,65 @@ function normalizeWithdrawal(
         );
 
 
+    const reason =
+        item.adminReason ??
+        item.reason ??
+        item.note ??
+        "";
+
+
     return {
 
         originalIndex:
             index,
 
         username:
-            String(username),
-
-        email:
-            String(email),
-
-        points:
-            points,
-
-        cashAmount:
-            String(cashAmount),
-
-        method:
-            String(method),
-
-        destination:
-            String(destination),
-
-        date:
-            String(date),
-
-        status:
-            normalizeStatus(
-                status
+            String(
+                username
             ),
 
+        email:
+            String(
+                email
+            ),
+
+        points:
+            Number.isFinite(points)
+                ? points
+                : 0,
+
+        cashAmount:
+            String(
+                cashAmount
+            ),
+
+        method:
+            String(
+                method
+            ),
+
+        destination:
+            String(
+                destination
+            ),
+
+        date:
+            String(
+                date
+            ),
+
+        status:
+            status,
+
         reference:
-            String(reference),
+            String(
+                reference
+            ),
 
         reason:
-            item.reason ||
-            item.adminReason ||
-            item.note ||
-            ""
+            String(
+                reason
+            )
 
     };
 
@@ -2015,8 +2082,11 @@ function normalizeStatus(
 
     const value =
         String(
-            status
-        ).toLowerCase();
+            status ??
+            "Pending"
+        )
+        .trim()
+        .toLowerCase();
 
 
     if (
@@ -2053,32 +2123,34 @@ function escapeHTML(
     value
 ) {
 
-    return String(value)
+    return String(
+        value
+    )
 
-        .replace(
-            /&/g,
-            "&amp;"
-        )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
 
-        .replace(
-            /</g,
-            "&lt;"
-        )
+    .replace(
+        /</g,
+        "&lt;"
+    )
 
-        .replace(
-            />/g,
-            "&gt;"
-        )
+    .replace(
+        />/g,
+        "&gt;"
+    )
 
-        .replace(
-            /"/g,
-            "&quot;"
-        )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
 
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+    .replace(
+        /'/g,
+        "&#039;"
+    );
 
 }
 
@@ -2105,7 +2177,7 @@ function statusHTML(
     }
 
 
-    if (
+    else if (
         status === "Rejected"
     ) {
 
@@ -2136,9 +2208,9 @@ function updateStatistics() {
 
     const withdrawals =
         getWithdrawals()
-            .map(
-                normalizeWithdrawal
-            );
+        .map(
+            normalizeWithdrawal
+        );
 
 
     let pending = 0;
@@ -2160,6 +2232,9 @@ function updateStatistics() {
 
                 pending++;
 
+                requestedPoints +=
+                    item.points;
+
             }
 
 
@@ -2179,17 +2254,6 @@ function updateStatistics() {
             ) {
 
                 rejected++;
-
-            }
-
-
-            if (
-                item.status ===
-                "Pending"
-            ) {
-
-                requestedPoints +=
-                    item.points;
 
             }
 
@@ -2238,25 +2302,37 @@ function renderWithdrawals() {
         );
 
 
-    const search =
+    const searchInput =
         document.getElementById(
             "searchInput"
-        ).value
-        .trim()
-        .toLowerCase();
+        );
+
+
+    const filterInput =
+        document.getElementById(
+            "statusFilter"
+        );
+
+
+    const search =
+        searchInput
+            ? searchInput.value
+                .trim()
+                .toLowerCase()
+            : "";
 
 
     const filter =
-        document.getElementById(
-            "statusFilter"
-        ).value;
+        filterInput
+            ? filterInput.value
+            : "all";
 
 
     const withdrawals =
         getWithdrawals()
-            .map(
-                normalizeWithdrawal
-            );
+        .map(
+            normalizeWithdrawal
+        );
 
 
     const filtered =
@@ -2276,7 +2352,8 @@ function renderWithdrawals() {
                         item.reference +
                         " " +
                         item.reason
-                    ).toLowerCase();
+                    )
+                    .toLowerCase();
 
 
                 const matchesSearch =
@@ -2288,7 +2365,8 @@ function renderWithdrawals() {
 
                 const matchesStatus =
                     filter === "all" ||
-                    item.status === filter;
+                    item.status ===
+                    filter;
 
 
                 return (
@@ -2342,231 +2420,237 @@ function renderWithdrawals() {
 
 
     filtered
-        .slice()
-        .reverse()
-        .forEach(
-            function(item) {
-
-                const card =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                card.className =
-                    "withdrawal-card";
-
-
-                card.innerHTML = `
-
-                    <div class="withdrawal-top">
-
-
-                        <div class="withdrawal-avatar">
-
-                            👤
-
-                        </div>
-
-
-                        <div class="withdrawal-user">
-
-                            <div class="withdrawal-username">
-
-                                ${escapeHTML(
-                                    item.username
-                                )}
-
-                            </div>
-
-
-                            <div class="withdrawal-email">
-
-                                ${escapeHTML(
-                                    item.email
-                                )}
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="withdrawal-info-grid">
-
-
-                        <div class="info-box">
-
-                            <div class="info-label">
-
-                                💰 Points
-
-                            </div>
-
-                            <div class="info-value">
-
-                                ${item.points}
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="info-box">
-
-                            <div class="info-label">
-
-                                💵 Cash Value
-
-                            </div>
-
-                            <div class="info-value">
-
-                                ${escapeHTML(
-                                    item.cashAmount
-                                )}
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="info-box">
-
-                            <div class="info-label">
-
-                                💳 Method
-
-                            </div>
-
-                            <div class="info-value">
-
-                                ${escapeHTML(
-                                    item.method
-                                )}
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="info-box">
-
-                            <div class="info-label">
-
-                                📅 Date
-
-                            </div>
-
-                            <div class="info-value">
-
-                                ${escapeHTML(
-                                    item.date
-                                )}
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="info-box">
-
-                            <div class="info-label">
-
-                                🔖 Reference
-
-                            </div>
-
-                            <div class="info-value">
-
-                                ${escapeHTML(
-                                    item.reference
-                                )}
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="info-box">
-
-                            <div class="info-label">
-
-                                📌 Status
-
-                            </div>
-
-                            <div class="info-value">
-
-                                ${statusHTML(
-                                    item.status
-                                )}
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="withdrawal-actions">
-
-
-                        <button
-                            type="button"
-                            class="view-button"
-                            onclick="viewWithdrawal(
-                                ${item.originalIndex}
-                            )">
-
-                            👁️ View Details
-
-                        </button>
-
-
-                        ${
-                            item.status === "Pending"
-                            ? `
-
-                                <button
-                                    type="button"
-                                    class="approve-button"
-                                    onclick="quickApprove(
-                                        ${item.originalIndex}
-                                    )">
-
-                                    ✅ Approve
-
-                                </button>
-
-
-                                <button
-                                    type="button"
-                                    class="reject-button"
-                                    onclick="quickReject(
-                                        ${item.originalIndex}
-                                    )">
-
-                                    ❌ Reject
-
-                                </button>
-
-                            `
-                            : ""
-                        }
-
-                    </div>
-
-                `;
-
-
-                area.appendChild(
-                    card
+    .slice()
+    .reverse()
+    .forEach(
+        function(item) {
+
+            const card =
+                document.createElement(
+                    "div"
                 );
 
-            }
-        );
+
+            card.className =
+                "withdrawal-card";
+
+
+            card.innerHTML = `
+
+                <div class="withdrawal-top">
+
+
+                    <div class="withdrawal-avatar">
+
+                        👤
+
+                    </div>
+
+
+                    <div class="withdrawal-user">
+
+                        <div class="withdrawal-username">
+
+                            ${escapeHTML(
+                                item.username
+                            )}
+
+                        </div>
+
+
+                        <div class="withdrawal-email">
+
+                            ${escapeHTML(
+                                item.email
+                            )}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="withdrawal-info-grid">
+
+
+                    <div class="info-box">
+
+                        <div class="info-label">
+
+                            💰 Points
+
+                        </div>
+
+
+                        <div class="info-value">
+
+                            ${item.points}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <div class="info-label">
+
+                            💵 Cash Value
+
+                        </div>
+
+
+                        <div class="info-value">
+
+                            ${escapeHTML(
+                                item.cashAmount
+                            )}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <div class="info-label">
+
+                            💳 Method
+
+                        </div>
+
+
+                        <div class="info-value">
+
+                            ${escapeHTML(
+                                item.method
+                            )}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <div class="info-label">
+
+                            📅 Date
+
+                        </div>
+
+
+                        <div class="info-value">
+
+                            ${escapeHTML(
+                                item.date
+                            )}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <div class="info-label">
+
+                            🔖 Reference
+
+                        </div>
+
+
+                        <div class="info-value">
+
+                            ${escapeHTML(
+                                item.reference
+                            )}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <div class="info-label">
+
+                            📌 Status
+
+                        </div>
+
+
+                        <div class="info-value">
+
+                            ${statusHTML(
+                                item.status
+                            )}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="withdrawal-actions">
+
+
+                    <button
+                        type="button"
+                        class="view-button"
+                        onclick="viewWithdrawal(
+                            ${item.originalIndex}
+                        )">
+
+                        👁️ View Details
+
+                    </button>
+
+
+                    ${
+                        item.status === "Pending"
+                        ? `
+
+                            <button
+                                type="button"
+                                class="approve-button"
+                                onclick="quickApprove(
+                                    ${item.originalIndex}
+                                )">
+
+                                ✅ Approve
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="reject-button"
+                                onclick="quickReject(
+                                    ${item.originalIndex}
+                                )">
+
+                                ❌ Reject
+
+                            </button>
+
+                        `
+                        : ""
+                    }
+
+                </div>
+
+            `;
+
+
+            area.appendChild(
+                card
+            );
+
+        }
+    );
 
 }
 
@@ -2614,6 +2698,7 @@ function viewWithdrawal(
     document.getElementById(
         "modalReference"
     ).textContent =
+        "Request ID: " +
         item.reference;
 
 
@@ -2671,7 +2756,7 @@ function viewWithdrawal(
     document.getElementById(
         "decisionReason"
     ).value =
-        item.reason || "";
+        item.reason;
 
 
     document.getElementById(
@@ -2731,7 +2816,7 @@ function closeDetailsOutside(
 
 
 /* =====================================================
-   APPROVE WITHDRAWAL
+   APPROVE CURRENT
 ===================================================== */
 
 function approveCurrentWithdrawal() {
@@ -2754,7 +2839,7 @@ function approveCurrentWithdrawal() {
 
 
 /* =====================================================
-   REJECT WITHDRAWAL
+   REJECT CURRENT
 ===================================================== */
 
 function rejectCurrentWithdrawal() {
@@ -2856,6 +2941,10 @@ function processWithdrawal(
     }
 
 
+    /* =================================================
+       UPDATE REQUEST
+    ================================================== */
+
     withdrawals[index].status =
         newStatus;
 
@@ -2869,14 +2958,34 @@ function processWithdrawal(
             .toLocaleString();
 
 
+    /*
+       IMPORTANT:
+
+       Points were already reserved when
+       the user submitted the withdrawal.
+
+       Therefore APPROVAL does NOT deduct
+       the points again.
+
+       If rejected, we return the reserved
+       points to the user's balance.
+    */
+
+    if (
+        newStatus === "Rejected"
+    ) {
+
+        returnReservedPoints(
+            current.points
+        );
+
+    }
+
+
     saveWithdrawals(
         withdrawals
     );
 
-
-    /* =================================================
-       RECORD ADMIN ACTION
-    ================================================== */
 
     recordAdminWithdrawalHistory(
         current,
@@ -2888,7 +2997,7 @@ function processWithdrawal(
     alert(
         newStatus === "Approved"
             ? "Withdrawal approved successfully."
-            : "Withdrawal rejected successfully."
+            : "Withdrawal rejected and points returned."
     );
 
 
@@ -3008,6 +3117,23 @@ function quickReject(
     }
 
 
+    const current =
+        normalizeWithdrawal(
+            withdrawals[index],
+            index
+        );
+
+
+    if (
+        current.status !==
+        "Pending"
+    ) {
+
+        return;
+
+    }
+
+
     const reason =
         prompt(
             "Enter the reason for rejecting this withdrawal:"
@@ -3023,30 +3149,17 @@ function quickReject(
     }
 
 
+    const cleanReason =
+        reason.trim();
+
+
     if (
-        reason.trim() === ""
+        !cleanReason
     ) {
 
         alert(
             "A rejection reason is required."
         );
-
-        return;
-
-    }
-
-
-    const current =
-        normalizeWithdrawal(
-            withdrawals[index],
-            index
-        );
-
-
-    if (
-        current.status !==
-        "Pending"
-    ) {
 
         return;
 
@@ -3073,7 +3186,7 @@ function quickReject(
 
 
     withdrawals[index].adminReason =
-        reason.trim();
+        cleanReason;
 
 
     withdrawals[index].processedAt =
@@ -3086,19 +3199,143 @@ function quickReject(
     );
 
 
+    /*
+       Return the points reserved by
+       the original withdrawal.
+    */
+
+    returnReservedPoints(
+        current.points
+    );
+
+
     recordAdminWithdrawalHistory(
         current,
         "Rejected",
-        reason.trim()
+        cleanReason
     );
 
 
     alert(
-        "Withdrawal rejected."
+        "Withdrawal rejected and points returned."
     );
 
 
     renderWithdrawals();
+
+}
+
+
+/* =====================================================
+   RETURN RESERVED POINTS
+===================================================== */
+
+function returnReservedPoints(
+    points
+) {
+
+    const amount =
+        Number(points) || 0;
+
+
+    if (
+        amount <= 0
+    ) {
+
+        return;
+
+    }
+
+
+    const currentPoints =
+        Number(
+            localStorage.getItem(
+                "rewardPoints"
+            )
+        ) || 0;
+
+
+    localStorage.setItem(
+        "rewardPoints",
+        String(
+            currentPoints +
+            amount
+        )
+    );
+
+
+    /*
+       Also update rewardUser if the
+       balance exists inside that object.
+    */
+
+    try {
+
+        const stored =
+            localStorage.getItem(
+                "rewardUser"
+            );
+
+
+        if (!stored) {
+
+            return;
+
+        }
+
+
+        const user =
+            JSON.parse(
+                stored
+            );
+
+
+        if (
+            user &&
+            typeof user === "object"
+        ) {
+
+            if (
+                typeof user.points ===
+                "number"
+            ) {
+
+                user.points +=
+                    amount;
+
+            }
+
+
+            else if (
+                typeof user.rewardPoints ===
+                "number"
+            ) {
+
+                user.rewardPoints +=
+                    amount;
+
+            }
+
+
+            localStorage.setItem(
+                "rewardUser",
+                JSON.stringify(
+                    user
+                )
+            );
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Unable to update user balance:",
+            error
+        );
+
+    }
 
 }
 
@@ -3152,10 +3389,10 @@ function recordAdminWithdrawalHistory(
 
         points:
             status === "Approved"
-                ? -Math.abs(
+                ? 0
+                : Number(
                     withdrawal.points
-                )
-                : 0,
+                ) || 0,
 
         type:
             "Withdrawal",
@@ -3168,6 +3405,9 @@ function recordAdminWithdrawalHistory(
 
         reference:
             withdrawal.reference,
+
+        status:
+            status,
 
         date:
             new Date()
@@ -3199,11 +3439,31 @@ function goBackToDashboard() {
 
 
 /* =====================================================
+   AUTOMATIC REFRESH
+===================================================== */
+
+window.addEventListener(
+    "storage",
+    function(event) {
+
+        if (
+            event.key ===
+            WITHDRAWAL_KEY
+        ) {
+
+            renderWithdrawals();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
    INITIALIZE
 ===================================================== */
 
 renderWithdrawals();
-
 
 </script>
 
