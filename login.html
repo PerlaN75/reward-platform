@@ -11,356 +11,464 @@
 
 <title>Login - Reward Platform</title>
 
+
 <style>
 
+/* =====================================================
+   GENERAL
+===================================================== */
+
 * {
+
     box-sizing: border-box;
+
 }
+
 
 body {
+
     margin: 0;
+
     font-family: Arial, sans-serif;
-    background: #f4f7fb;
-    color: #222;
-}
 
+    background:
+        linear-gradient(
+            135deg,
+            #182848,
+            #3d2075
+        );
 
-/* =========================
-   TOP NAVIGATION
-========================= */
+    min-height: 100vh;
 
-.top-nav {
-    background: #182848;
-    padding: 12px 10px;
     display: flex;
+
     align-items: center;
-}
 
-.top-nav a {
-    color: white;
-    text-decoration: none;
-    padding: 11px 14px;
-    font-weight: bold;
-    border-radius: 10px;
-}
+    justify-content: center;
 
-.home-button {
-    background: rgba(255,255,255,0.12);
+    padding: 20px;
+
 }
 
 
-/* =========================
-   HEADER
-========================= */
+/* =====================================================
+   LOGIN CARD
+===================================================== */
 
-header {
-    background: #182848;
-    color: white;
-    text-align: center;
-    padding: 25px 15px;
-}
+.login-card {
 
-header h1 {
-    margin: 0;
-}
+    width: 100%;
 
+    max-width: 500px;
 
-/* =========================
-   CONTAINER
-========================= */
-
-.container {
-    max-width: 650px;
-    margin: auto;
-    padding: 20px 15px;
-}
-
-
-/* =========================
-   CARD
-========================= */
-
-.card {
     background: white;
-    border-radius: 16px;
-    padding: 25px;
-    margin-top: 15px;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-}
 
+    border-radius: 22px;
 
-/* =========================
-   HEADINGS
-========================= */
+    padding: 30px 22px;
 
-h1,
-h2 {
-    background: linear-gradient(
-        90deg,
-        #00a86b,
-        #00c9a7,
-        #2196f3,
-        #0066cc,
-        #00a86b
-    );
-
-    background-size: 300% 100%;
-
-    -webkit-background-clip: text;
-    background-clip: text;
-
-    color: transparent;
-
-    animation:
-        headingSlide 8s linear infinite;
-}
-
-@keyframes headingSlide {
-
-    from {
-        background-position: 0% 50%;
-    }
-
-    to {
-        background-position: 300% 50%;
-    }
+    box-shadow:
+        0 10px 35px
+        rgba(0,0,0,0.25);
 
 }
 
 
-/* =========================
-   NOTICE
-========================= */
+.login-icon {
 
-.notice {
-    background: #fff8e1;
-    border-left: 5px solid #00a86b;
-    padding: 14px;
-    border-radius: 8px;
-    line-height: 1.5;
-    margin-bottom: 22px;
+    text-align: center;
+
+    font-size: 55px;
+
 }
 
 
-/* =========================
+h1 {
+
+    margin: 10px 0 5px;
+
+    text-align: center;
+
+    font-size: 32px;
+
+    color: #182848;
+
+}
+
+
+.subtitle {
+
+    text-align: center;
+
+    color: #777;
+
+    margin-bottom: 25px;
+
+}
+
+
+/* =====================================================
    FORM
-========================= */
+===================================================== */
 
 .form-group {
+
     margin-bottom: 18px;
+
 }
+
 
 label {
+
     display: block;
+
+    margin-bottom: 7px;
+
+    color: #333;
+
     font-weight: bold;
-    margin-bottom: 8px;
-    font-size: 17px;
+
+    font-size: 15px;
+
 }
+
 
 input {
+
     width: 100%;
-    padding: 15px;
-    border: 1px solid #d7dce5;
-    border-radius: 10px;
+
+    padding: 14px;
+
+    border:
+        1px solid #d8dce5;
+
+    border-radius: 11px;
+
     font-size: 16px;
+
     outline: none;
+
 }
+
 
 input:focus {
-    border-color: #2196f3;
+
+    border-color: #7b2cff;
+
+    box-shadow:
+        0 0 0 2px
+        rgba(123,44,255,0.10);
+
 }
 
 
-/* =========================
-   LOGIN BUTTON
-========================= */
-
-.login-button {
-    width: 100%;
-    padding: 15px;
-    border: none;
-    border-radius: 10px;
-    background: #182848;
-    color: white;
-    font-size: 17px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 5px;
-}
-
-.login-button:hover {
-    opacity: 0.9;
-}
-
-.login-button:disabled {
-    background: #999;
-    cursor: not-allowed;
-}
-
-
-/* =========================
+/* =====================================================
    MESSAGE
-========================= */
+===================================================== */
 
 .message {
+
+    min-height: 22px;
+
+    margin: 12px 0;
+
     text-align: center;
-    font-weight: bold;
-    margin-top: 18px;
-    line-height: 1.5;
-}
 
-
-/* =========================
-   ATTEMPTS
-========================= */
-
-.attempts {
-    text-align: center;
-    margin-top: 12px;
-    color: #666;
     font-size: 14px;
-}
 
-
-/* =========================
-   PASSWORD RESET LINK
-========================= */
-
-.reset-link {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.reset-link button {
-    border: none;
-    background: none;
-    color: #2196f3;
-    font-size: 16px;
     font-weight: bold;
-    cursor: pointer;
-    text-decoration: underline;
+
 }
 
 
-/* =========================
-   REGISTER LINK
-========================= */
+.message.error {
+
+    color: #c62828;
+
+}
+
+
+.message.success {
+
+    color: #168a3a;
+
+}
+
+
+/* =====================================================
+   ATTEMPTS
+===================================================== */
+
+.attempts-message {
+
+    min-height: 20px;
+
+    margin-top: 5px;
+
+    text-align: center;
+
+    color: #777;
+
+    font-size: 13px;
+
+}
+
+
+/* =====================================================
+   LOGIN BUTTON
+===================================================== */
+
+.login-button {
+
+    width: 100%;
+
+    border: none;
+
+    border-radius: 13px;
+
+    padding: 15px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #8b25ff,
+            #287dff
+        );
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+
+.login-button:hover {
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+.login-button:disabled {
+
+    opacity: 0.6;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+}
+
+
+/* =====================================================
+   LINKS
+===================================================== */
+
+.links-area {
+
+    text-align: center;
+
+    margin-top: 20px;
+
+}
+
+
+.links-area a {
+
+    color: #7b2cff;
+
+    font-weight: bold;
+
+    text-decoration: none;
+
+}
+
+
+.links-area a:hover {
+
+    text-decoration: underline;
+
+}
+
 
 .register-link {
-    text-align: center;
-    margin-top: 22px;
-    font-size: 17px;
+
+    margin-top: 12px;
+
+    color: #666;
+
+    font-size: 14px;
+
 }
 
-.register-link a {
-    color: #182848;
-    font-weight: bold;
-}
 
-
-/* =========================
-   RESET BOX
-========================= */
+/* =====================================================
+   RESET PASSWORD BOX
+===================================================== */
 
 .reset-box {
+
     display: none;
-    margin-top: 25px;
-    padding: 20px;
-    background: #f4f7fb;
-    border-radius: 12px;
+
+    margin-top: 22px;
+
+    padding: 18px;
+
+    background: #f7f8fc;
+
+    border-radius: 14px;
+
 }
+
 
 .reset-box h3 {
-    margin-top: 0;
+
+    margin:
+        0 0 15px;
+
+    color: #182848;
+
+    text-align: center;
+
 }
 
 
-/* =========================
-   RESET PASSWORD BUTTON
-========================= */
+.reset-box input {
+
+    margin-bottom: 10px;
+
+}
+
 
 .reset-button {
+
     width: 100%;
-    padding: 13px;
+
     border: none;
+
     border-radius: 10px;
-    background: #00a86b;
+
+    padding: 12px;
+
+    background: #182848;
+
     color: white;
-    font-size: 16px;
+
     font-weight: bold;
+
     cursor: pointer;
-}
 
-.reset-button:hover {
-    opacity: 0.9;
 }
 
 
-/* =========================
+.reset-cancel {
+
+    width: 100%;
+
+    border: none;
+
+    background: transparent;
+
+    color: #777;
+
+    margin-top: 10px;
+
+    cursor: pointer;
+
+    padding: 8px;
+
+}
+
+
+/* =====================================================
    PASSWORD RULES
-========================= */
+===================================================== */
 
 .password-rules {
+
     background: white;
+
     border-radius: 10px;
-    padding: 12px;
-    margin-bottom: 18px;
-    font-size: 14px;
-    border: 1px solid #d7dce5;
-}
 
-.password-rules strong {
-    display: block;
-    margin-bottom: 8px;
-}
+    padding: 10px;
 
-.password-rules ul {
-    margin: 0;
-    padding-left: 20px;
-}
+    margin-top: 8px;
 
-.password-rules li {
-    margin-bottom: 4px;
-}
-
-
-/* =========================
-   USERNAME RULES
-========================= */
-
-.username-rules {
-    background: #f4f7fb;
-    border-radius: 10px;
-    padding: 12px;
-    margin-top: 10px;
-    margin-bottom: 18px;
-    font-size: 14px;
-}
-
-.username-rules strong {
-    display: block;
-    margin-bottom: 6px;
-}
-
-.username-rules ul {
-    margin: 0;
-    padding-left: 20px;
-}
-
-.username-rules li {
-    margin-bottom: 4px;
-}
-
-
-/* =========================
-   FOOTER
-========================= */
-
-footer {
-    text-align: center;
-    padding: 25px;
     color: #666;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+
+}
+
+
+.rule {
+
+    margin: 2px 0;
+
+}
+
+
+.rule.valid {
+
+    color: #168a3a;
+
+}
+
+
+.rule.invalid {
+
+    color: #c62828;
+
+}
+
+
+/* =====================================================
+   HOME
+===================================================== */
+
+.home-button {
+
+    display: block;
+
+    text-align: center;
+
+    margin-top: 15px;
+
+    color: #555;
+
+    text-decoration: none;
+
     font-size: 14px;
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 500px) {
+
+    .login-card {
+
+        padding: 25px 17px;
+
+    }
+
+
+    h1 {
+
+        font-size: 28px;
+
+    }
+
 }
 
 </style>
@@ -371,313 +479,250 @@ footer {
 <body>
 
 
-<!-- =========================
-     TOP NAVIGATION
-========================= -->
-
-<nav class="top-nav">
-
-    <a
-        href="index.html"
-        class="home-button">
-
-        🏠 Home
-
-    </a>
-
-</nav>
+<div class="login-card">
 
 
-<!-- =========================
-     PAGE HEADER
-========================= -->
+    <div class="login-icon">
 
-<header>
+        🔐
 
-    <h1>🔐 Login</h1>
-
-    <p>
-        Welcome back to the Reward Platform
-    </p>
-
-</header>
+    </div>
 
 
-<!-- =========================
-     PAGE CONTENT
-========================= -->
+    <h1>
 
-<div class="container">
+        Welcome Back
 
-    <div class="card">
-
-        <h2>👤 Sign In</h2>
+    </h1>
 
 
-        <div class="notice">
+    <div class="subtitle">
 
-            <strong>Security:</strong>
+        Login to your Reward Platform account
 
-            You have a maximum of 3 incorrect
-            login attempts. After 3 failed attempts,
-            your account will be blocked for 30 minutes.
+    </div>
+
+
+    <!-- =================================================
+         LOGIN FORM
+    ================================================== -->
+
+    <form
+        id="loginForm"
+        onsubmit="loginUser(event)">
+
+
+        <div class="form-group">
+
+            <label for="loginIdentifier">
+
+                Username or Email
+
+            </label>
+
+
+            <input
+                type="text"
+                id="loginIdentifier"
+                autocomplete="username"
+                placeholder="Enter username or email"
+                required>
 
         </div>
 
 
-        <!-- =========================
-             LOGIN FORM
-        ========================= -->
+        <div class="form-group">
 
-        <form
-            id="loginForm"
-            onsubmit="loginUser(event)">
+            <label for="loginPassword">
 
+                Password
 
-            <!-- USERNAME -->
-
-            <div class="form-group">
-
-                <label for="username">
-                    Username
-                </label>
-
-                <input
-                    type="text"
-                    id="username"
-                    placeholder="Enter your username"
-                    required>
-
-            </div>
+            </label>
 
 
-            <!-- USERNAME RULES -->
+            <input
+                type="password"
+                id="loginPassword"
+                autocomplete="current-password"
+                placeholder="Enter your password"
+                required>
 
-            <div class="username-rules">
+        </div>
 
-                <strong>
-                    Username:
-                </strong>
-
-                <ul>
-
-                    <li>
-                        Use lowercase letters only (a–z)
-                    </li>
-
-                    <li>
-                        No capital letters, numbers,
-                        spaces, or special characters
-                    </li>
-
-                </ul>
-
-            </div>
-
-
-            <!-- PASSWORD -->
-
-            <div class="form-group">
-
-                <label for="password">
-                    Password
-                </label>
-
-                <input
-                    type="password"
-                    id="password"
-                    placeholder="Enter your password"
-                    required>
-
-            </div>
-
-
-            <button
-                type="submit"
-                id="loginButton"
-                class="login-button">
-
-                🔐 Login
-
-            </button>
-
-        </form>
-
-
-        <!-- =========================
-             LOGIN MESSAGE
-        ========================= -->
 
         <div
             id="message"
             class="message">
+
         </div>
 
-
-        <!-- =========================
-             ATTEMPTS
-        ========================= -->
 
         <div
-            id="attempts"
-            class="attempts">
-        </div>
-
-
-        <!-- =========================
-             PASSWORD RESET
-        ========================= -->
-
-        <div class="reset-link">
-
-            <button
-                type="button"
-                onclick="showResetBox()">
-
-                🔑 Forgot Password?
-
-            </button>
+            id="attemptsMessage"
+            class="attempts-message">
 
         </div>
 
 
-        <!-- =========================
-             RESET BOX
-        ========================= -->
+        <button
+            type="submit"
+            id="loginButton"
+            class="login-button">
 
-        <div
-            id="resetBox"
-            class="reset-box">
+            🔐 Login
 
-            <h3>
-                🔑 Password Reset
-            </h3>
-
-            <p>
-                Enter your registered email address.
-            </p>
+        </button>
 
 
-            <div class="form-group">
-
-                <label for="resetEmail">
-                    Email
-                </label>
-
-                <input
-                    type="email"
-                    id="resetEmail"
-                    placeholder="Enter your registered email">
-
-            </div>
+    </form>
 
 
-            <div class="form-group">
+    <!-- =================================================
+         LINKS
+    ================================================== -->
 
-                <label for="newPassword">
-                    New Password
-                </label>
+    <div class="links-area">
 
-                <input
-                    type="password"
-                    id="newPassword"
-                    placeholder="Enter your new password">
+        <a
+            href="#"
+            onclick="showResetBox(); return false;">
 
-            </div>
+            Forgot Password?
 
+        </a>
 
-            <div class="form-group">
-
-                <label for="confirmNewPassword">
-                    Confirm New Password
-                </label>
-
-                <input
-                    type="password"
-                    id="confirmNewPassword"
-                    placeholder="Enter your new password again">
-
-            </div>
-
-
-            <div class="password-rules">
-
-                <strong>
-                    New password must:
-                </strong>
-
-                <ul>
-
-                    <li>
-                        Be 6–15 characters long
-                    </li>
-
-                    <li>
-                        Contain at least one capital letter (A–Z)
-                    </li>
-
-                    <li>
-                        Contain at least one lowercase letter (a–z)
-                    </li>
-
-                    <li>
-                        Contain at least one special character:
-                        ? ! % & $ # =
-                    </li>
-
-                </ul>
-
-            </div>
-
-
-            <button
-                type="button"
-                class="reset-button"
-                onclick="resetPassword()">
-
-                🔄 Reset Password
-
-            </button>
-
-
-            <div
-                id="resetMessage"
-                class="message">
-            </div>
-
-        </div>
-
-
-        <!-- =========================
-             REGISTER
-        ========================= -->
 
         <div class="register-link">
 
             Don't have an account?
 
             <a href="register.html">
-                Create Account
+
+                Register
+
             </a>
 
         </div>
 
     </div>
 
+
+    <!-- =================================================
+         PASSWORD RESET
+    ================================================== -->
+
+    <div
+        id="resetBox"
+        class="reset-box">
+
+
+        <h3>
+
+            🔄 Reset Password
+
+        </h3>
+
+
+        <input
+            type="email"
+            id="resetEmail"
+            placeholder="Registered email">
+
+
+        <input
+            type="password"
+            id="newPassword"
+            maxlength="15"
+            placeholder="New password">
+
+
+        <div class="password-rules">
+
+            <div
+                id="resetLengthRule"
+                class="rule invalid">
+
+                ✗ 6–15 characters
+
+            </div>
+
+
+            <div
+                id="resetCapitalRule"
+                class="rule invalid">
+
+                ✗ At least one capital letter
+
+            </div>
+
+
+            <div
+                id="resetLowerRule"
+                class="rule invalid">
+
+                ✗ At least one lowercase letter
+
+            </div>
+
+
+            <div
+                id="resetSpecialRule"
+                class="rule invalid">
+
+                ✗ At least one special character
+                (? ! % & $ # =)
+
+            </div>
+
+        </div>
+
+
+        <input
+            type="password"
+            id="confirmNewPassword"
+            maxlength="15"
+            placeholder="Confirm new password">
+
+
+        <button
+            type="button"
+            class="reset-button"
+            onclick="resetPassword()">
+
+            Reset Password
+
+        </button>
+
+
+        <button
+            type="button"
+            class="reset-cancel"
+            onclick="hideResetBox()">
+
+            Cancel
+
+        </button>
+
+
+    </div>
+
+
+    <a
+        href="index.html"
+        class="home-button">
+
+        ← Home
+
+    </a>
+
+
 </div>
-
-
-<footer>
-
-    Reward Platform — Prototype
-
-</footer>
 
 
 <script>
 
 /* =====================================================
-   LOGIN SETTINGS
+   CONSTANTS
 ===================================================== */
 
 const MAX_ATTEMPTS = 3;
@@ -687,116 +732,109 @@ const BLOCK_TIME =
 
 
 /* =====================================================
-   LOAD USERS
+   GET ALL USERS
 ===================================================== */
 
-function getUsers() {
+function getAllUsers() {
 
     let users = [];
 
 
-    /* =================================================
-       FIRST: USE NEW MULTI-USER STORAGE
-    ================================================= */
-
     try {
 
-        users =
-            JSON.parse(
-                localStorage.getItem(
-                    "rewardUsers"
-                )
-            ) || [];
-
-    } catch (error) {
-
-        users = [];
-
-    }
-
-
-    /*
-       Make sure the result is actually an array.
-    */
-
-    if (!Array.isArray(users)) {
-
-        users = [];
-
-    }
-
-
-    /* =================================================
-       MIGRATE OLD SINGLE USER
-    ================================================= */
-
-    /*
-       Older versions of the platform used:
-
-       rewardUser
-
-       That system could store only ONE user.
-
-       We move that user into the new
-       rewardUsers array.
-    */
-
-    let oldUser = null;
-
-
-    try {
-
-        oldUser =
-            JSON.parse(
-                localStorage.getItem(
-                    "rewardUser"
-                )
-            );
-
-    } catch (error) {
-
-        oldUser = null;
-
-    }
-
-
-    if (
-        oldUser &&
-        oldUser.username
-    ) {
-
-        const alreadyExists =
-            users.some(
-                function(user) {
-
-                    return (
-                        user.username ===
-                        oldUser.username
-                    );
-
-                }
+        const stored =
+            localStorage.getItem(
+                "rewardUsers"
             );
 
 
-        if (!alreadyExists) {
+        if (stored) {
 
-            users.push(
-                oldUser
-            );
+            const parsed =
+                JSON.parse(stored);
+
+
+            if (
+                Array.isArray(parsed)
+            ) {
+
+                users =
+                    parsed;
+
+            }
 
         }
 
+    }
 
-        /*
-           Save the complete multi-user list.
-        */
+    catch (error) {
 
-        localStorage.setItem(
-            "rewardUsers",
-            JSON.stringify(
-                users
-            )
-        );
+        users = [];
+
+    }
+
+
+    /*
+       Compatibility with older
+       single-user storage.
+    */
+
+    if (
+        users.length === 0
+    ) {
+
+        try {
+
+            const oldUser =
+                localStorage.getItem(
+                    "rewardUser"
+                );
+
+
+            if (oldUser) {
+
+                const parsedOldUser =
+                    JSON.parse(
+                        oldUser
+                    );
+
+
+                if (
+                    parsedOldUser &&
+                    typeof parsedOldUser ===
+                    "object"
+                ) {
+
+                    if (
+                        !parsedOldUser.id
+                    ) {
+
+                        parsedOldUser.id =
+                            createUserId();
+
+                    }
+
+
+                    users.push(
+                        parsedOldUser
+                    );
+
+
+                    saveAllUsers(
+                        users
+                    );
+
+                }
+
+            }
+
+        }
+
+        catch (error) {
+
+            users = [];
+
+        }
 
     }
 
@@ -810,7 +848,7 @@ function getUsers() {
    SAVE USERS
 ===================================================== */
 
-function saveUsers(users) {
+function saveAllUsers(users) {
 
     localStorage.setItem(
         "rewardUsers",
@@ -823,21 +861,61 @@ function saveUsers(users) {
 
 
 /* =====================================================
+   CREATE USER ID
+===================================================== */
+
+function createUserId() {
+
+    return (
+        "user_" +
+        Date.now() +
+        "_" +
+        Math.random()
+            .toString(36)
+            .substring(2, 10)
+    );
+
+}
+
+
+/* =====================================================
    FIND USER
 ===================================================== */
 
-function findUser(username) {
+function findUser(identifier) {
 
     const users =
-        getUsers();
+        getAllUsers();
+
+
+    const search =
+        identifier
+            .trim()
+            .toLowerCase();
 
 
     return users.find(
         function(user) {
 
+            const username =
+                String(
+                    user.username || ""
+                )
+                .trim()
+                .toLowerCase();
+
+
+            const email =
+                String(
+                    user.email || ""
+                )
+                .trim()
+                .toLowerCase();
+
+
             return (
-                user.username ===
-                username
+                username === search ||
+                email === search
             );
 
         }
@@ -847,92 +925,66 @@ function findUser(username) {
 
 
 /* =====================================================
-   CREATE LOGIN NOTIFICATION
+   GET USER KEY
 ===================================================== */
 
-function createLoginNotification(
-    username
-) {
+function getUserKey(user) {
 
-    let notifications = [];
+    if (!user) {
 
-
-    try {
-
-        notifications =
-            JSON.parse(
-                localStorage.getItem(
-                    "rewardNotifications"
-                )
-            ) || [];
-
-    } catch (error) {
-
-        notifications = [];
+        return "unknown";
 
     }
 
 
-    if (
-        !Array.isArray(notifications)
-    ) {
-
-        notifications = [];
-
-    }
-
-
-    const now =
-        new Date();
-
-
-    const notification = {
-
-        username:
-            username,
-
-        title:
-            "🔐 Login Successful",
-
-        message:
-            "You have logged in successfully.",
-
-        time:
-            now.toLocaleString(),
-
-        read:
-            false
-
-    };
-
-
-    notifications.unshift(
-        notification
-    );
-
-
-    localStorage.setItem(
-        "rewardNotifications",
-        JSON.stringify(
-            notifications
-        )
+    return (
+        user.id ||
+        user.userId ||
+        user.username ||
+        user.email ||
+        "unknown"
     );
 
 }
 
 
 /* =====================================================
-   GET USER LOGIN ATTEMPTS
+   GET ATTEMPT KEY
 ===================================================== */
 
-function getLoginAttempts(
-    username
-) {
+function getAttemptKey(user) {
+
+    return (
+        "loginAttempts_" +
+        getUserKey(user)
+    );
+
+}
+
+
+/* =====================================================
+   GET BLOCK KEY
+===================================================== */
+
+function getBlockKey(user) {
+
+    return (
+        "loginBlockedUntil_" +
+        getUserKey(user)
+    );
+
+}
+
+
+/* =====================================================
+   GET ATTEMPTS
+===================================================== */
+
+function getAttempts(user) {
 
     return Number(
         localStorage.getItem(
-            "loginAttempts_" +
-            username
+            getAttemptKey(user)
         )
     ) || 0;
 
@@ -940,35 +992,49 @@ function getLoginAttempts(
 
 
 /* =====================================================
-   SET USER LOGIN ATTEMPTS
+   SET ATTEMPTS
 ===================================================== */
 
-function setLoginAttempts(
-    username,
+function setAttempts(
+    user,
     attempts
 ) {
 
     localStorage.setItem(
-        "loginAttempts_" +
-        username,
-        attempts
+        getAttemptKey(user),
+        String(attempts)
     );
+
+
+    /*
+       Maintain old keys for
+       compatibility with the
+       existing prototype user.
+    */
+
+    if (
+        isCurrentPrototypeUser(user)
+    ) {
+
+        localStorage.setItem(
+            "loginAttempts",
+            String(attempts)
+        );
+
+    }
 
 }
 
 
 /* =====================================================
-   GET USER BLOCK TIME
+   GET BLOCK TIME
 ===================================================== */
 
-function getBlockedUntil(
-    username
-) {
+function getBlockedUntil(user) {
 
     return Number(
         localStorage.getItem(
-            "loginBlockedUntil_" +
-            username
+            getBlockKey(user)
         )
     ) || 0;
 
@@ -976,47 +1042,340 @@ function getBlockedUntil(
 
 
 /* =====================================================
-   SET USER BLOCK TIME
+   SET BLOCK TIME
 ===================================================== */
 
 function setBlockedUntil(
-    username,
-    time
+    user,
+    timestamp
 ) {
 
     localStorage.setItem(
-        "loginBlockedUntil_" +
-        username,
-        time
+        getBlockKey(user),
+        String(timestamp)
     );
+
+
+    if (
+        isCurrentPrototypeUser(user)
+    ) {
+
+        localStorage.setItem(
+            "loginBlockedUntil",
+            String(timestamp)
+        );
+
+    }
 
 }
 
 
 /* =====================================================
-   CLEAR USER LOGIN SECURITY
+   CLEAR LOGIN SECURITY
 ===================================================== */
 
-function clearLoginSecurity(
-    username
-) {
+function clearLoginSecurity(user) {
 
     localStorage.removeItem(
-        "loginAttempts_" +
-        username
+        getAttemptKey(user)
     );
 
 
     localStorage.removeItem(
-        "loginBlockedUntil_" +
-        username
+        getBlockKey(user)
+    );
+
+
+    if (
+        isCurrentPrototypeUser(user)
+    ) {
+
+        localStorage.removeItem(
+            "loginAttempts"
+        );
+
+        localStorage.removeItem(
+            "loginBlockedUntil"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   CURRENT PROTOTYPE USER
+===================================================== */
+
+function getCurrentPrototypeUser() {
+
+    try {
+
+        const stored =
+            localStorage.getItem(
+                "rewardUser"
+            );
+
+
+        if (stored) {
+
+            return JSON.parse(
+                stored
+            );
+
+        }
+
+    }
+
+    catch (error) {
+
+        return null;
+
+    }
+
+
+    return null;
+
+}
+
+
+/* =====================================================
+   IS CURRENT USER
+===================================================== */
+
+function isCurrentPrototypeUser(user) {
+
+    const current =
+        getCurrentPrototypeUser();
+
+
+    if (
+        !current ||
+        !user
+    ) {
+
+        return false;
+
+    }
+
+
+    return (
+        String(
+            getUserKey(current)
+        )
+        ===
+        String(
+            getUserKey(user)
+        )
     );
 
 }
 
 
 /* =====================================================
-   LOGIN USER
+   SET ACTIVE USER
+===================================================== */
+
+function setActiveUser(user) {
+
+    /*
+       Store the complete active user
+       in the compatibility key used
+       throughout the current platform.
+    */
+
+    localStorage.setItem(
+        "rewardUser",
+        JSON.stringify(
+            user
+        )
+    );
+
+
+    /*
+       Store the active user ID separately.
+    */
+
+    localStorage.setItem(
+        "activeUserId",
+        String(
+            getUserKey(user)
+        )
+    );
+
+
+    /*
+       Load this user's individual
+       points into the current
+       prototype balance.
+    */
+
+    const userKey =
+        getUserKey(user);
+
+
+    const individualPoints =
+        localStorage.getItem(
+            "rewardPoints_" +
+            userKey
+        );
+
+
+    if (
+        individualPoints !== null
+    ) {
+
+        localStorage.setItem(
+            "rewardPoints",
+            individualPoints
+        );
+
+    }
+
+    else {
+
+        localStorage.setItem(
+            "rewardPoints",
+            "0"
+        );
+
+        localStorage.setItem(
+            "rewardPoints_" +
+            userKey,
+            "0"
+        );
+
+    }
+
+
+    /*
+       Load this user's history.
+    */
+
+    const individualHistory =
+        localStorage.getItem(
+            "rewardHistory_" +
+            userKey
+        );
+
+
+    if (
+        individualHistory !== null
+    ) {
+
+        localStorage.setItem(
+            "rewardHistory",
+            individualHistory
+        );
+
+    }
+
+    else {
+
+        localStorage.setItem(
+            "rewardHistory",
+            JSON.stringify([])
+        );
+
+        localStorage.setItem(
+            "rewardHistory_" +
+            userKey,
+            JSON.stringify([])
+        );
+
+    }
+
+
+    /*
+       Load this user's account status.
+    */
+
+    const individualStatus =
+        localStorage.getItem(
+            "adminAccountStatus_" +
+            userKey
+        );
+
+
+    localStorage.setItem(
+        "adminAccountStatus",
+        individualStatus ||
+        "Active"
+    );
+
+
+    /*
+       Mark the user as logged in.
+    */
+
+    localStorage.setItem(
+        "loggedIn",
+        "true"
+    );
+
+
+    /*
+       Compatibility with older
+       platform code.
+    */
+
+    localStorage.setItem(
+        "isLoggedIn",
+        "true"
+    );
+
+}
+
+
+/* =====================================================
+   UPDATE USER RECORD
+===================================================== */
+
+function updateUserRecord(user) {
+
+    const users =
+        getAllUsers();
+
+
+    const userKey =
+        getUserKey(user);
+
+
+    const index =
+        users.findIndex(
+            function(item) {
+
+                return (
+                    String(
+                        getUserKey(item)
+                    )
+                    ===
+                    String(userKey)
+                );
+
+            }
+        );
+
+
+    if (
+        index !== -1
+    ) {
+
+        users[index] =
+            user;
+
+
+        saveAllUsers(
+            users
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   LOGIN
 ===================================================== */
 
 function loginUser(event) {
@@ -1024,15 +1383,15 @@ function loginUser(event) {
     event.preventDefault();
 
 
-    const username =
+    const identifier =
         document.getElementById(
-            "username"
+            "loginIdentifier"
         ).value.trim();
 
 
     const password =
         document.getElementById(
-            "password"
+            "loginPassword"
         ).value;
 
 
@@ -1042,24 +1401,32 @@ function loginUser(event) {
         );
 
 
-    const attemptsDisplay =
+    const attemptsMessage =
         document.getElementById(
-            "attempts"
+            "attemptsMessage"
         );
 
 
-    /* =================================================
-       USERNAME FORMAT
-    ================================================= */
+    message.className =
+        "message";
+
+
+    message.textContent =
+        "";
+
+
+    attemptsMessage.textContent =
+        "";
+
 
     if (
-        !/^[a-z]+$/.test(
-            username
-        )
+        !identifier ||
+        !password
     ) {
 
-        message.textContent =
-            "❌ Username must contain only lowercase letters (a–z). No capital letters, numbers, spaces, or special characters.";
+        showError(
+            "Please enter your username/email and password."
+        );
 
         return;
 
@@ -1068,25 +1435,27 @@ function loginUser(event) {
 
     /* =================================================
        FIND USER
-    ================================================= */
+    ================================================== */
 
-    const savedUser =
+    const user =
         findUser(
-            username
+            identifier
         );
 
 
-    /* =================================================
-       NO ACCOUNT
-    ================================================= */
+    /*
+       If the user does not exist,
+       do not reveal unnecessary account
+       information.
+    */
 
-    if (!savedUser) {
+    if (
+        !user
+    ) {
 
-        message.textContent =
-            "❌ Incorrect username or password.";
-
-        attemptsDisplay.textContent =
-            "";
+        showError(
+            "Invalid username/email or password."
+        );
 
         return;
 
@@ -1094,12 +1463,12 @@ function loginUser(event) {
 
 
     /* =================================================
-       CHECK USER BLOCK
-    ================================================= */
+       CHECK BLOCK
+    ================================================== */
 
     const blockedUntil =
         getBlockedUntil(
-            username
+            user
         );
 
 
@@ -1107,123 +1476,101 @@ function loginUser(event) {
         blockedUntil > Date.now()
     ) {
 
-        showBlockMessage(
-            username,
-            blockedUntil
+        const minutes =
+            Math.ceil(
+                (
+                    blockedUntil -
+                    Date.now()
+                ) / 60000
+            );
+
+
+        showError(
+            "Account temporarily blocked. Try again in " +
+            minutes +
+            " minute(s)."
         );
+
+
+        attemptsMessage.textContent =
+            "Too many failed login attempts.";
+
 
         return;
 
     }
 
 
-    /* =================================================
-       CLEAR EXPIRED BLOCK
-    ================================================= */
+    /*
+       Clear expired block.
+    */
 
     if (
         blockedUntil > 0 &&
         blockedUntil <= Date.now()
     ) {
 
-        clearLoginSecurity(
-            username
+        setBlockedUntil(
+            user,
+            0
         );
 
-    }
-
-
-    /* =================================================
-       ACCOUNT STATUS
-    ================================================= */
-
-    /*
-       The account status is now stored
-       with the individual user.
-
-       This prevents one user's suspension
-       from affecting every user.
-    */
-
-    const accountStatus =
-        savedUser.status ||
-        "Active";
-
-
-    if (
-        accountStatus ===
-        "Suspended"
-    ) {
-
-        message.textContent =
-            "🚫 This account has been suspended by the administrator.";
-
-        attemptsDisplay.textContent =
-            "Please contact the administrator if you believe this is an error.";
-
-        return;
+        setAttempts(
+            user,
+            0
+        );
 
     }
 
 
     /* =================================================
        CHECK PASSWORD
-    ================================================= */
+    ================================================== */
 
     if (
-        password !==
-        savedUser.password
+        String(user.password || "")
+        !==
+        password
     ) {
 
         let attempts =
-            getLoginAttempts(
-                username
+            getAttempts(
+                user
             );
 
 
         attempts++;
 
 
-        setLoginAttempts(
-            username,
+        setAttempts(
+            user,
             attempts
         );
 
-
-        const remaining =
-            MAX_ATTEMPTS -
-            attempts;
-
-
-        /* =============================================
-           MAXIMUM ATTEMPTS
-        ============================================= */
 
         if (
             attempts >=
             MAX_ATTEMPTS
         ) {
 
-            const blockUntil =
+            const blockedTime =
                 Date.now() +
                 BLOCK_TIME;
 
 
             setBlockedUntil(
-                username,
-                blockUntil
+                user,
+                blockedTime
             );
 
 
-            message.textContent =
-                "🔒 Account blocked for 30 minutes because of 3 incorrect login attempts.";
+            showError(
+                "Too many failed attempts. Account blocked for 30 minutes."
+            );
 
 
-            attemptsDisplay.textContent =
+            attemptsMessage.textContent =
                 "Please try again later.";
-
-
-            disableLogin();
 
 
             return;
@@ -1231,19 +1578,19 @@ function loginUser(event) {
         }
 
 
-        /* =============================================
-           INCORRECT PASSWORD
-        ============================================= */
-
-        message.textContent =
-            "❌ Incorrect username or password.";
+        const remaining =
+            MAX_ATTEMPTS -
+            attempts;
 
 
-        attemptsDisplay.textContent =
-            "⚠️ " +
+        showError(
+            "Invalid username/email or password."
+        );
+
+
+        attemptsMessage.textContent =
             remaining +
-            " login attempt(s) remaining.";
-
+            " attempt(s) remaining.";
 
         return;
 
@@ -1251,61 +1598,46 @@ function loginUser(event) {
 
 
     /* =================================================
-       LOGIN SUCCESS
-    ================================================= */
+       SUCCESSFUL LOGIN
+    ================================================== */
 
     clearLoginSecurity(
-        username
+        user
     );
 
-
-    /* =================================================
-       SAVE CURRENT USER
-    ================================================= */
 
     /*
-       THIS IS VERY IMPORTANT.
-
-       Other pages can now identify
-       which user is currently logged in.
+       Make this user the active user.
     */
 
-    localStorage.setItem(
-        "currentUsername",
-        savedUser.username
+    setActiveUser(
+        user
     );
 
 
-    localStorage.setItem(
-        "loggedIn",
-        "true"
+    /*
+       Update last login information.
+    */
+
+    user.lastLogin =
+        new Date().toISOString();
+
+
+    updateUserRecord(
+        user
     );
 
 
-    /* =================================================
-       LOGIN NOTIFICATION
-    ================================================= */
-
-    createLoginNotification(
-        savedUser.username
+    showSuccess(
+        "Login successful. Welcome, " +
+        (user.username || "User") +
+        "!"
     );
 
 
-    /* =================================================
-       SUCCESS MESSAGE
-    ================================================= */
-
-    message.textContent =
-        "🎉 Login successful!";
-
-
-    attemptsDisplay.textContent =
-        "";
-
-
-    /* =================================================
-       OPEN MENU
-    ================================================= */
+    /*
+       Determine where the user should go.
+    */
 
     setTimeout(
         function() {
@@ -1316,40 +1648,38 @@ function loginUser(event) {
                 );
 
 
-            localStorage.removeItem(
-                "loginReturnPage"
-            );
-
-
             if (
                 returnPage
             ) {
 
+                localStorage.removeItem(
+                    "loginReturnPage"
+                );
+
+
                 window.location.href =
                     returnPage;
 
-            } else {
-
-                window.location.href =
-                    "menu.html";
+                return;
 
             }
 
+
+            window.location.href =
+                "menu.html";
+
         },
-        800
+        700
     );
 
 }
 
 
 /* =====================================================
-   SHOW BLOCK MESSAGE
+   ERROR
 ===================================================== */
 
-function showBlockMessage(
-    username,
-    blockedUntil
-) {
+function showError(text) {
 
     const message =
         document.getElementById(
@@ -1357,86 +1687,167 @@ function showBlockMessage(
         );
 
 
-    const attemptsDisplay =
-        document.getElementById(
-            "attempts"
-        );
-
-
-    const remaining =
-        blockedUntil -
-        Date.now();
-
-
-    const minutes =
-        Math.ceil(
-            remaining /
-            60000
-        );
+    message.className =
+        "message error";
 
 
     message.textContent =
-        "🔒 Account is temporarily blocked.";
-
-
-    attemptsDisplay.textContent =
-        "Please try again in " +
-        minutes +
-        " minute(s).";
-
-
-    disableLogin();
+        text;
 
 }
 
 
 /* =====================================================
-   DISABLE LOGIN
+   SUCCESS
 ===================================================== */
 
-function disableLogin() {
+function showSuccess(text) {
 
-    document.getElementById(
-        "loginButton"
-    ).disabled = true;
-
-
-    document.getElementById(
-        "username"
-    ).disabled = true;
+    const message =
+        document.getElementById(
+            "message"
+        );
 
 
-    document.getElementById(
-        "password"
-    ).disabled = true;
+    message.className =
+        "message success";
+
+
+    message.textContent =
+        text;
 
 }
 
 
 /* =====================================================
-   SHOW RESET BOX
+   RESET PASSWORD BOX
 ===================================================== */
 
 function showResetBox() {
 
-    const box =
+    document.getElementById(
+        "resetBox"
+    ).style.display =
+        "block";
+
+
+    document.getElementById(
+        "resetEmail"
+    ).focus();
+
+}
+
+
+function hideResetBox() {
+
+    document.getElementById(
+        "resetBox"
+    ).style.display =
+        "none";
+
+}
+
+
+/* =====================================================
+   RESET PASSWORD RULES
+===================================================== */
+
+function checkResetPasswordRules() {
+
+    const password =
         document.getElementById(
-            "resetBox"
+            "newPassword"
+        ).value;
+
+
+    const lengthValid =
+        password.length >= 6 &&
+        password.length <= 15;
+
+
+    const capitalValid =
+        /[A-Z]/.test(password);
+
+
+    const lowerValid =
+        /[a-z]/.test(password);
+
+
+    const specialValid =
+        /[?!%&$#=]/.test(password);
+
+
+    updateResetRule(
+        "resetLengthRule",
+        lengthValid,
+        "6–15 characters"
+    );
+
+
+    updateResetRule(
+        "resetCapitalRule",
+        capitalValid,
+        "At least one capital letter"
+    );
+
+
+    updateResetRule(
+        "resetLowerRule",
+        lowerValid,
+        "At least one lowercase letter"
+    );
+
+
+    updateResetRule(
+        "resetSpecialRule",
+        specialValid,
+        "At least one special character (? ! % & $ # =)"
+    );
+
+
+    return (
+        lengthValid &&
+        capitalValid &&
+        lowerValid &&
+        specialValid
+    );
+
+}
+
+
+/* =====================================================
+   UPDATE RESET RULE
+===================================================== */
+
+function updateResetRule(
+    id,
+    valid,
+    text
+) {
+
+    const element =
+        document.getElementById(
+            id
         );
 
 
-    if (
-        box.style.display ===
-        "block"
-    ) {
+    if (valid) {
 
-        box.style.display =
-            "none";
+        element.className =
+            "rule valid";
 
-    } else {
+        element.textContent =
+            "✓ " + text;
 
-        box.style.display =
-            "block";
+    }
+
+    else {
+
+        element.className =
+            "rule invalid";
+
+        element.textContent =
+            "✗ " + text;
 
     }
 
@@ -1444,7 +1855,7 @@ function showResetBox() {
 
 
 /* =====================================================
-   PASSWORD RESET
+   RESET PASSWORD
 ===================================================== */
 
 function resetPassword() {
@@ -1452,8 +1863,7 @@ function resetPassword() {
     const email =
         document.getElementById(
             "resetEmail"
-        ).value
-        .trim()
+        ).value.trim()
         .toLowerCase();
 
 
@@ -1463,34 +1873,46 @@ function resetPassword() {
         ).value;
 
 
-    const confirmNewPassword =
+    const confirmPassword =
         document.getElementById(
             "confirmNewPassword"
         ).value;
 
 
-    const resetMessage =
-        document.getElementById(
-            "resetMessage"
+    if (
+        !email ||
+        !newPassword ||
+        !confirmPassword
+    ) {
+
+        showError(
+            "Please complete all password reset fields."
         );
 
+        return;
 
-    const users =
-        getUsers();
+    }
 
 
     /* =================================================
        FIND USER BY EMAIL
-    ================================================= */
+    ================================================== */
 
-    const userIndex =
-        users.findIndex(
-            function(user) {
+    const users =
+        getAllUsers();
+
+
+    const user =
+        users.find(
+            function(item) {
 
                 return (
-                    user.email &&
-                    user.email
-                        .toLowerCase() ===
+                    String(
+                        item.email || ""
+                    )
+                    .trim()
+                    .toLowerCase()
+                    ===
                     email
                 );
 
@@ -1498,16 +1920,13 @@ function resetPassword() {
         );
 
 
-    /* =================================================
-       EMAIL NOT FOUND
-    ================================================= */
-
     if (
-        userIndex === -1
+        !user
     ) {
 
-        resetMessage.textContent =
-            "❌ Email address not found.";
+        showError(
+            "No registered account was found with that email."
+        );
 
         return;
 
@@ -1515,87 +1934,30 @@ function resetPassword() {
 
 
     /* =================================================
-       PASSWORD LENGTH
-    ================================================= */
+       PASSWORD RULES
+    ================================================== */
 
     if (
-        newPassword.length < 6 ||
-        newPassword.length > 15
+        !checkResetPasswordRules()
     ) {
 
-        resetMessage.textContent =
-            "❌ Password must be 6–15 characters long.";
+        showError(
+            "Please meet all password requirements."
+        );
 
         return;
 
     }
 
-
-    /* =================================================
-       CAPITAL LETTER
-    ================================================= */
-
-    if (
-        !/[A-Z]/.test(
-            newPassword
-        )
-    ) {
-
-        resetMessage.textContent =
-            "❌ Password must contain at least one capital letter.";
-
-        return;
-
-    }
-
-
-    /* =================================================
-       LOWERCASE LETTER
-    ================================================= */
-
-    if (
-        !/[a-z]/.test(
-            newPassword
-        )
-    ) {
-
-        resetMessage.textContent =
-            "❌ Password must contain at least one lowercase letter.";
-
-        return;
-
-    }
-
-
-    /* =================================================
-       SPECIAL CHARACTER
-    ================================================= */
-
-    if (
-        !/[?!%&$#=]/.test(
-            newPassword
-        )
-    ) {
-
-        resetMessage.textContent =
-            "❌ Password must contain at least one special character: ? ! % & $ # =";
-
-        return;
-
-    }
-
-
-    /* =================================================
-       CONFIRM PASSWORD
-    ================================================= */
 
     if (
         newPassword !==
-        confirmNewPassword
+        confirmPassword
     ) {
 
-        resetMessage.textContent =
-            "❌ Passwords do not match. Please enter the same password in both fields.";
+        showError(
+            "Passwords do not match."
+        );
 
         return;
 
@@ -1603,48 +1965,79 @@ function resetPassword() {
 
 
     /* =================================================
-       SAVE NEW PASSWORD
-    ================================================= */
+       UPDATE PASSWORD
+    ================================================== */
 
-    users[userIndex].password =
+    user.password =
         newPassword;
 
 
-    saveUsers(
-        users
+    updateUserRecord(
+        user
     );
 
 
-    /* =================================================
-       ALSO UPDATE OLD STORAGE
-       FOR COMPATIBILITY
-    ================================================= */
-
-    localStorage.setItem(
-        "rewardUser",
-        JSON.stringify(
-            users[userIndex]
-        )
-    );
-
-
-    /* =================================================
-       CLEAR LOGIN SECURITY
-    ================================================= */
+    /*
+       Reset security counters.
+    */
 
     clearLoginSecurity(
-        users[userIndex].username
+        user
     );
 
 
-    /* =================================================
-       SUCCESS
-    ================================================= */
+    showSuccess(
+        "Password reset successfully. You can now log in."
+    );
 
-    resetMessage.textContent =
-        "✅ Password reset successfully. You can now login.";
+
+    document.getElementById(
+        "resetEmail"
+    ).value = "";
+
+
+    document.getElementById(
+        "newPassword"
+    ).value = "";
+
+
+    document.getElementById(
+        "confirmNewPassword"
+    ).value = "";
+
+
+    setTimeout(
+        function() {
+
+            hideResetBox();
+
+        },
+        900
+    );
 
 }
+
+
+/* =====================================================
+   RESET PASSWORD INPUT
+===================================================== */
+
+document
+    .getElementById(
+        "newPassword"
+    )
+    .addEventListener(
+        "input",
+        checkResetPasswordRules
+    );
+
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
+
+checkResetPasswordRules();
+
 
 </script>
 
