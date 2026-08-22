@@ -676,9 +676,9 @@ footer {
 
 <script>
 
-/* =====================================================
+/* =========================
    SETTINGS
-===================================================== */
+========================= */
 
 const MAX_ATTEMPTS = 3;
 
@@ -687,288 +687,12 @@ const BLOCK_TIME =
 
 
 /* =====================================================
-   USER STORAGE HELPERS
-===================================================== */
-
-/*
-   The platform is being changed from a
-   single-user system to a multi-user system.
-
-   New accounts should be stored in:
-
-       rewardUsers
-
-   as an array.
-
-   This login page also supports the old
-   rewardUser storage temporarily so existing
-   accounts are not immediately lost.
-*/
-
-
-function getAllUsers() {
-
-    let users = [];
-
-
-    try {
-
-        const stored =
-            localStorage.getItem(
-                "rewardUsers"
-            );
-
-
-        if (stored) {
-
-            users =
-                JSON.parse(
-                    stored
-                );
-
-        }
-
-    }
-
-    catch (error) {
-
-        users = [];
-
-    }
-
-
-    if (!Array.isArray(users)) {
-
-        users = [];
-
-    }
-
-
-    /*
-       Compatibility with the old
-       single-user account.
-    */
-
-    if (users.length === 0) {
-
-        try {
-
-            const oldUser =
-                JSON.parse(
-                    localStorage.getItem(
-                        "rewardUser"
-                    )
-                );
-
-
-            if (
-                oldUser &&
-                oldUser.username
-            ) {
-
-                users.push(
-                    oldUser
-                );
-
-            }
-
-        }
-
-        catch (error) {
-
-            /* Ignore invalid old data */
-
-        }
-
-    }
-
-
-    return users;
-
-}
-
-
-/* =====================================================
-   SAVE USERS
-===================================================== */
-
-function saveAllUsers(users) {
-
-    localStorage.setItem(
-        "rewardUsers",
-        JSON.stringify(
-            users
-        )
-    );
-
-}
-
-
-/* =====================================================
-   GET USER KEY
-===================================================== */
-
-function getUserKey(user) {
-
-    if (!user) {
-
-        return "";
-
-    }
-
-
-    /*
-       Prefer a permanent ID when available.
-    */
-
-    if (user.id) {
-
-        return String(
-            user.id
-        );
-
-    }
-
-
-    if (user.userId) {
-
-        return String(
-            user.userId
-        );
-
-    }
-
-
-    /*
-       Existing accounts without an ID
-       use the username as their identity.
-    */
-
-    if (user.username) {
-
-        return String(
-            user.username
-        );
-
-    }
-
-
-    return "";
-
-}
-
-
-/* =====================================================
-   CREATE USER ID IF NECESSARY
-===================================================== */
-
-function ensureUserId(user) {
-
-    if (
-        !user.id &&
-        !user.userId
-    ) {
-
-        user.id =
-            "user_" +
-            Date.now() +
-            "_" +
-            Math.random()
-                .toString(36)
-                .substring(2, 8);
-
-    }
-
-
-    return user;
-
-}
-
-
-/* =====================================================
-   LOGIN SECURITY KEY
-===================================================== */
-
-function getLoginAttemptsKey(user) {
-
-    const key =
-        getUserKey(user);
-
-
-    return (
-        "loginAttempts_" +
-        key
-    );
-
-}
-
-
-function getLoginBlockedKey(user) {
-
-    const key =
-        getUserKey(user);
-
-
-    return (
-        "loginBlockedUntil_" +
-        key
-    );
-
-}
-
-
-/* =====================================================
-   ACCOUNT STATUS KEY
-===================================================== */
-
-function getAccountStatusKey(user) {
-
-    const key =
-        getUserKey(user);
-
-
-    return (
-        "adminAccountStatus_" +
-        key
-    );
-
-}
-
-
-/* =====================================================
-   GET ACCOUNT STATUS
-===================================================== */
-
-function getAccountStatus(user) {
-
-    if (!user) {
-
-        return "Active";
-
-    }
-
-
-    const key =
-        getAccountStatusKey(
-            user
-        );
-
-
-    return (
-        localStorage.getItem(
-            key
-        ) ||
-        "Active"
-    );
-
-}
-
-
-/* =====================================================
    CREATE LOGIN NOTIFICATION
 ===================================================== */
 
-function createLoginNotification(user) {
+function createLoginNotification(
+    user
+) {
 
     let notifications = [];
 
@@ -982,9 +706,7 @@ function createLoginNotification(user) {
                 )
             ) || [];
 
-    }
-
-    catch (error) {
+    } catch (error) {
 
         notifications = [];
 
@@ -1001,19 +723,18 @@ function createLoginNotification(user) {
             "🔐 Login Successful",
 
         message:
-            "You have logged in successfully.",
-
-        username:
-            user.username,
-
-        userId:
-            getUserKey(user),
+            "User " +
+            user.username +
+            " logged in successfully.",
 
         time:
             now.toLocaleString(),
 
         read:
-            false
+            false,
+
+        userId:
+            user.id
 
     };
 
@@ -1034,20 +755,181 @@ function createLoginNotification(user) {
 
 
 /* =====================================================
-   LOGIN USER
+   LOAD ALL USERS
 ===================================================== */
 
-function loginUser(event) {
+function getAllUsers() {
+
+    let users = [];
+
+
+    try {
+
+        users =
+            JSON.parse(
+                localStorage.getItem(
+                    "rewardUsers"
+                )
+            ) || [];
+
+    } catch (error) {
+
+        users = [];
+
+    }
+
+
+    return users;
+
+}
+
+
+/* =====================================================
+   SAVE ALL USERS
+===================================================== */
+
+function saveAllUsers(
+    users
+) {
+
+    localStorage.setItem(
+        "rewardUsers",
+        JSON.stringify(
+            users
+        )
+    );
+
+}
+
+
+/* =====================================================
+   SYNCHRONIZE CURRENT USER
+===================================================== */
+
+function setCurrentUser(
+    user
+) {
+
+    /*
+       Store the ID of the user who
+       is currently logged in.
+    */
+
+    localStorage.setItem(
+        "currentUserId",
+        user.id
+    );
+
+
+    /*
+       Keep rewardUser for compatibility
+       with pages that still use it.
+    */
+
+    localStorage.setItem(
+        "rewardUser",
+        JSON.stringify(
+            user
+        )
+    );
+
+
+    /*
+       Keep the current user's points
+       available to older pages.
+    */
+
+    localStorage.setItem(
+        "rewardPoints",
+        String(
+            Number(user.points) || 0
+        )
+    );
+
+
+    /*
+       Keep the current user's history
+       available to older pages.
+    */
+
+    localStorage.setItem(
+        "rewardHistory",
+        JSON.stringify(
+            user.history || []
+        )
+    );
+
+
+    /*
+       Store account status specifically
+       for the current user.
+    */
+
+    localStorage.setItem(
+        "adminAccountStatus_" +
+        user.id,
+        user.status ||
+        "Active"
+    );
+
+}
+
+
+/* =====================================================
+   UPDATE CURRENT USER DATA
+===================================================== */
+
+function updateUserAfterLogin(
+    user
+) {
+
+    const users =
+        getAllUsers();
+
+
+    const index =
+        users.findIndex(
+            function(item) {
+
+                return (
+                    item.id ===
+                    user.id
+                );
+
+            }
+        );
+
+
+    if (
+        index !== -1
+    ) {
+
+        users[index] =
+            user;
+
+        saveAllUsers(
+            users
+        );
+
+    }
+
+}
+
+
+/* =========================
+   LOGIN USER
+========================= */
+
+function loginUser(
+    event
+) {
 
     event.preventDefault();
 
 
-    /*
-       Username is NOT converted to lowercase.
-
-       The user must enter the username
-       exactly as registered.
-    */
+    /* =========================
+       GET FORM VALUES
+    ========================= */
 
     const username =
         document.getElementById(
@@ -1077,7 +959,11 @@ function loginUser(event) {
        USERNAME FORMAT CHECK
     ========================= */
 
-    if (!/^[a-z]+$/.test(username)) {
+    if (
+        !/^[a-z]+$/.test(
+            username
+        )
+    ) {
 
         message.textContent =
             "❌ Username must contain only lowercase letters (a–z). No capital letters, numbers, spaces, or special characters.";
@@ -1091,8 +977,112 @@ function loginUser(event) {
        LOAD ALL USERS
     ========================= */
 
-    const users =
+    let users =
         getAllUsers();
+
+
+    /* =================================================
+       OLD SINGLE-USER MIGRATION
+       FOR USERS CREATED BEFORE THE NEW SYSTEM
+    ================================================= */
+
+    if (
+        users.length === 0
+    ) {
+
+        const oldUserData =
+            localStorage.getItem(
+                "rewardUser"
+            );
+
+
+        if (
+            oldUserData
+        ) {
+
+            try {
+
+                const oldUser =
+                    JSON.parse(
+                        oldUserData
+                    );
+
+
+                if (
+                    oldUser &&
+                    oldUser.username
+                ) {
+
+                    oldUser.id =
+                        oldUser.id ||
+                        (
+                            "user_" +
+                            Date.now()
+                        );
+
+
+                    oldUser.points =
+                        Number(
+                            oldUser.points
+                        ) ||
+                        Number(
+                            localStorage.getItem(
+                                "rewardPoints"
+                            )
+                        ) ||
+                        0;
+
+
+                    oldUser.balance =
+                        Number(
+                            oldUser.balance
+                        ) ||
+                        oldUser.points;
+
+
+                    oldUser.history =
+                        oldUser.history ||
+                        JSON.parse(
+                            localStorage.getItem(
+                                "rewardHistory"
+                            )
+                        ) ||
+                        [];
+
+
+                    oldUser.status =
+                        oldUser.status ||
+                        "Active";
+
+
+                    oldUser.createdAt =
+                        oldUser.createdAt ||
+                        new Date().toISOString();
+
+
+                    users.push(
+                        oldUser
+                    );
+
+
+                    saveAllUsers(
+                        users
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.log(
+                    "Old account migration failed:",
+                    error
+                );
+
+            }
+
+        }
+
+    }
 
 
     /* =========================
@@ -1112,106 +1102,16 @@ function loginUser(event) {
 
 
     /* =========================
-       FIND USER
+       CHECK BLOCK
     ========================= */
-
-    let savedUser =
-        users.find(
-            function(user) {
-
-                return (
-                    user &&
-                    user.username ===
-                    username
-                );
-
-            }
-        );
-
-
-    /* =========================
-       USER NOT FOUND
-    ========================= */
-
-    if (!savedUser) {
-
-        message.textContent =
-            "❌ Incorrect username or password.";
-
-        return;
-
-    }
-
-
-    /* =========================
-       ENSURE USER ID
-    ========================= */
-
-    savedUser =
-        ensureUserId(
-            savedUser
-        );
-
-
-    /*
-       Save the generated ID back
-       into the users array.
-    */
-
-    const userIndex =
-        users.findIndex(
-            function(user) {
-
-                return (
-                    user.username ===
-                    username
-                );
-
-            }
-        );
-
-
-    if (
-        userIndex >= 0
-    ) {
-
-        users[userIndex] =
-            savedUser;
-
-        saveAllUsers(
-            users
-        );
-
-    }
-
-
-    /* =========================
-       USER-SPECIFIC SECURITY
-    ========================= */
-
-    const attemptsKey =
-        getLoginAttemptsKey(
-            savedUser
-        );
-
-
-    const blockedKey =
-        getLoginBlockedKey(
-            savedUser
-        );
-
 
     const blockedUntil =
         Number(
             localStorage.getItem(
-                blockedKey
+                "loginBlockedUntil"
             )
         ) || 0;
 
-
-    /* =========================
-       CHECK BLOCK
-    ========================= */
 
     if (
         blockedUntil > Date.now()
@@ -1236,12 +1136,47 @@ function loginUser(event) {
     ) {
 
         localStorage.removeItem(
-            blockedKey
+            "loginBlockedUntil"
         );
 
         localStorage.removeItem(
-            attemptsKey
+            "loginAttempts"
         );
+
+    }
+
+
+    /* =========================
+       FIND USER
+    ========================= */
+
+    const user =
+        users.find(
+            function(item) {
+
+                return (
+                    item.username ===
+                    username
+                );
+
+            }
+        );
+
+
+    /* =========================
+       USER NOT FOUND
+    ========================= */
+
+    if (
+        !user
+    ) {
+
+        handleFailedLogin(
+            message,
+            attemptsDisplay
+        );
+
+        return;
 
     }
 
@@ -1251,9 +1186,12 @@ function loginUser(event) {
     ================================================= */
 
     const accountStatus =
-        getAccountStatus(
-            savedUser
-        );
+        localStorage.getItem(
+            "adminAccountStatus_" +
+            user.id
+        ) ||
+        user.status ||
+        "Active";
 
 
     if (
@@ -1278,74 +1216,13 @@ function loginUser(event) {
 
     if (
         password !==
-        savedUser.password
+        user.password
     ) {
 
-        let attempts =
-            Number(
-                localStorage.getItem(
-                    attemptsKey
-                )
-            ) || 0;
-
-
-        attempts++;
-
-
-        localStorage.setItem(
-            attemptsKey,
-            String(
-                attempts
-            )
+        handleFailedLogin(
+            message,
+            attemptsDisplay
         );
-
-
-        const remaining =
-            MAX_ATTEMPTS -
-            attempts;
-
-
-        if (
-            attempts >=
-            MAX_ATTEMPTS
-        ) {
-
-            const blockUntil =
-                Date.now() +
-                BLOCK_TIME;
-
-
-            localStorage.setItem(
-                blockedKey,
-                String(
-                    blockUntil
-                )
-            );
-
-
-            message.textContent =
-                "🔒 Account blocked for 30 minutes because of 3 incorrect login attempts.";
-
-
-            attemptsDisplay.textContent =
-                "Please try again later.";
-
-
-            disableLogin();
-
-            return;
-
-        }
-
-
-        message.textContent =
-            "❌ Incorrect username or password.";
-
-
-        attemptsDisplay.textContent =
-            "⚠️ " +
-            remaining +
-            " login attempt(s) remaining.";
 
         return;
 
@@ -1357,59 +1234,40 @@ function loginUser(event) {
     ========================= */
 
     localStorage.removeItem(
-        attemptsKey
+        "loginAttempts"
     );
 
 
     localStorage.removeItem(
-        blockedKey
+        "loginBlockedUntil"
     );
 
 
-    /*
-       IMPORTANT:
+    /* =========================
+       UPDATE USER STATUS
+    ========================= */
 
-       Store the complete active user.
+    user.status =
+        "Active";
 
-       Other pages can now identify
-       exactly which account is logged in.
-    */
 
-    localStorage.setItem(
-        "activeUser",
-        JSON.stringify(
-            savedUser
-        )
+    updateUserAfterLogin(
+        user
     );
 
 
-    /*
-       Keep the username separately
-       for easy access by other pages.
-    */
+    /* =========================
+       SET CURRENT USER
+    ========================= */
 
-    localStorage.setItem(
-        "activeUsername",
-        savedUser.username
+    setCurrentUser(
+        user
     );
 
 
-    /*
-       Keep the active user's ID
-       separately as well.
-    */
-
-    localStorage.setItem(
-        "activeUserId",
-        getUserKey(
-            savedUser
-        )
-    );
-
-
-    /*
-       Existing protection system.
-    */
+    /* =========================
+       LOGIN STATUS
+    ========================= */
 
     localStorage.setItem(
         "loggedIn",
@@ -1422,9 +1280,13 @@ function loginUser(event) {
     ========================= */
 
     createLoginNotification(
-        savedUser
+        user
     );
 
+
+    /* =========================
+       SUCCESS MESSAGE
+    ========================= */
 
     message.textContent =
         "🎉 Login successful!";
@@ -1435,7 +1297,7 @@ function loginUser(event) {
 
 
     /* =========================
-       OPEN RETURN PAGE
+       OPEN MENU
     ========================= */
 
     setTimeout(
@@ -1447,26 +1309,19 @@ function loginUser(event) {
                 );
 
 
-            /*
-               Remove the return-page
-               instruction after reading it.
-            */
-
-            localStorage.removeItem(
-                "loginReturnPage"
-            );
-
-
             if (
                 returnPage
             ) {
 
+                localStorage.removeItem(
+                    "loginReturnPage"
+                );
+
+
                 window.location.href =
                     returnPage;
 
-            }
-
-            else {
+            } else {
 
                 window.location.href =
                     "menu.html";
@@ -1481,8 +1336,90 @@ function loginUser(event) {
 
 
 /* =====================================================
-   SHOW BLOCK MESSAGE
+   HANDLE FAILED LOGIN
 ===================================================== */
+
+function handleFailedLogin(
+    message,
+    attemptsDisplay
+) {
+
+    let attempts =
+        Number(
+            localStorage.getItem(
+                "loginAttempts"
+            )
+        ) || 0;
+
+
+    attempts++;
+
+
+    localStorage.setItem(
+        "loginAttempts",
+        attempts
+    );
+
+
+    const remaining =
+        MAX_ATTEMPTS -
+        attempts;
+
+
+    /* =========================
+       MAXIMUM ATTEMPTS
+    ========================= */
+
+    if (
+        attempts >=
+        MAX_ATTEMPTS
+    ) {
+
+        const blockUntil =
+            Date.now() +
+            BLOCK_TIME;
+
+
+        localStorage.setItem(
+            "loginBlockedUntil",
+            blockUntil
+        );
+
+
+        message.textContent =
+            "🔒 Account blocked for 30 minutes because of 3 incorrect login attempts.";
+
+
+        attemptsDisplay.textContent =
+            "Please try again later.";
+
+
+        disableLogin();
+
+        return;
+
+    }
+
+
+    /* =========================
+       FAILED LOGIN
+    ========================= */
+
+    message.textContent =
+        "❌ Incorrect username or password.";
+
+
+    attemptsDisplay.textContent =
+        "⚠️ " +
+        remaining +
+        " login attempt(s) remaining.";
+
+}
+
+
+/* =========================
+   SHOW BLOCK MESSAGE
+========================= */
 
 function showBlockMessage(
     blockedUntil
@@ -1527,32 +1464,35 @@ function showBlockMessage(
 }
 
 
-/* =====================================================
+/* =========================
    DISABLE LOGIN
-===================================================== */
+========================= */
 
 function disableLogin() {
 
     document.getElementById(
         "loginButton"
-    ).disabled = true;
+    ).disabled =
+        true;
 
 
     document.getElementById(
         "username"
-    ).disabled = true;
+    ).disabled =
+        true;
 
 
     document.getElementById(
         "password"
-    ).disabled = true;
+    ).disabled =
+        true;
 
 }
 
 
-/* =====================================================
+/* =========================
    SHOW RESET BOX
-===================================================== */
+========================= */
 
 function showResetBox() {
 
@@ -1570,9 +1510,7 @@ function showResetBox() {
         box.style.display =
             "none";
 
-    }
-
-    else {
+    } else {
 
         box.style.display =
             "block";
@@ -1613,7 +1551,7 @@ function resetPassword() {
 
 
     /* =========================
-       LOAD ALL USERS
+       LOAD USERS
     ========================= */
 
     const users =
@@ -1621,7 +1559,7 @@ function resetPassword() {
 
 
     /* =========================
-       NO ACCOUNT
+       NO USERS
     ========================= */
 
     if (
@@ -1640,16 +1578,12 @@ function resetPassword() {
        FIND USER BY EMAIL
     ========================= */
 
-    const userIndex =
-        users.findIndex(
-            function(user) {
+    const user =
+        users.find(
+            function(item) {
 
                 return (
-                    user &&
-                    String(
-                        user.email ||
-                        ""
-                    ).toLowerCase() ===
+                    item.email ===
                     email
                 );
 
@@ -1657,8 +1591,12 @@ function resetPassword() {
         );
 
 
+    /* =========================
+       EMAIL NOT FOUND
+    ========================= */
+
     if (
-        userIndex === -1
+        !user
     ) {
 
         resetMessage.textContent =
@@ -1667,20 +1605,6 @@ function resetPassword() {
         return;
 
     }
-
-
-    let savedUser =
-        users[userIndex];
-
-
-    /* =========================
-       ENSURE USER ID
-    ========================= */
-
-    savedUser =
-        ensureUserId(
-            savedUser
-        );
 
 
     /* =========================
@@ -1775,38 +1699,39 @@ function resetPassword() {
        SAVE NEW PASSWORD
     ========================= */
 
-    savedUser.password =
+    user.password =
         newPassword;
 
 
-    users[userIndex] =
-        savedUser;
-
+    /* =========================
+       SAVE USERS
+    ========================= */
 
     saveAllUsers(
         users
     );
 
 
-    /*
-       Keep old storage compatible
-       when this is the same old account.
-    */
+    /* =================================================
+       UPDATE CURRENT USER IF THIS
+       IS THE CURRENT ACCOUNT
+    ================================================= */
 
-    const oldUser =
-        getOldStoredUser();
+    const currentUserId =
+        localStorage.getItem(
+            "currentUserId"
+        );
 
 
     if (
-        oldUser &&
-        oldUser.username ===
-        savedUser.username
+        currentUserId ===
+        user.id
     ) {
 
         localStorage.setItem(
             "rewardUser",
             JSON.stringify(
-                savedUser
+                user
             )
         );
 
@@ -1814,20 +1739,16 @@ function resetPassword() {
 
 
     /* =========================
-       CLEAR USER-SPECIFIC BLOCK
+       CLEAR LOGIN BLOCK
     ========================= */
 
     localStorage.removeItem(
-        getLoginAttemptsKey(
-            savedUser
-        )
+        "loginAttempts"
     );
 
 
     localStorage.removeItem(
-        getLoginBlockedKey(
-            savedUser
-        )
+        "loginBlockedUntil"
     );
 
 
@@ -1839,66 +1760,6 @@ function resetPassword() {
         "✅ Password reset successfully. You can now login.";
 
 }
-
-
-/* =====================================================
-   GET OLD STORED USER
-===================================================== */
-
-function getOldStoredUser() {
-
-    try {
-
-        return JSON.parse(
-            localStorage.getItem(
-                "rewardUser"
-            )
-        );
-
-    }
-
-    catch (error) {
-
-        return null;
-
-    }
-
-}
-
-
-/* =====================================================
-   INITIAL LOGIN SECURITY DISPLAY
-===================================================== */
-
-function initializeLoginPage() {
-
-    /*
-       If an existing active user is already
-       logged in, do not automatically redirect.
-       The user may still want to log in
-       as another account.
-    */
-
-    const usernameInput =
-        document.getElementById(
-            "username"
-        );
-
-
-    if (usernameInput) {
-
-        usernameInput.focus();
-
-    }
-
-}
-
-
-/* =====================================================
-   INITIALIZE
-===================================================== */
-
-initializeLoginPage();
 
 </script>
 
