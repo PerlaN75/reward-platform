@@ -2272,31 +2272,58 @@ function isCurrentPrototypeUser() {
 
 function getPoints() {
 
+    /*
+       IMPORTANT:
+
+       For the current prototype user,
+       "rewardPoints" is the authoritative
+       balance used by the normal user panel.
+
+       This makes Admin User Details
+       immediately reflect withdrawals,
+       earnings and other balance changes.
+    */
+
+    if (
+        isCurrentPrototypeUser()
+    ) {
+
+        const mainPoints =
+            localStorage.getItem(
+                "rewardPoints"
+            );
+
+
+        return Number(
+            mainPoints
+        ) || 0;
+
+    }
+
+
+    /*
+       Other selected users use their
+       individual balance key.
+    */
+
     let value =
         localStorage.getItem(
             getPointsKey()
         );
 
 
-    /*
-       Compatibility with the original
-       single-user prototype.
-    */
-
     if (
-        value === null &&
-        getPointsKey() !== "rewardPoints"
+        value === null
     ) {
 
-        value =
-            localStorage.getItem(
-                "rewardPoints"
-            );
+        value = 0;
 
     }
 
 
-    return Number(value) || 0;
+    return Number(
+        value
+    ) || 0;
 
 }
 
@@ -2314,15 +2341,10 @@ function setPoints(value) {
         );
 
 
-    localStorage.setItem(
-        getPointsKey(),
-        String(cleanValue)
-    );
-
-
     /*
-       Keep the original prototype balance
-       synchronized for the current user.
+       For the current prototype user,
+       keep the main user balance and
+       admin-specific balance synchronized.
     */
 
     if (
@@ -2334,7 +2356,27 @@ function setPoints(value) {
             String(cleanValue)
         );
 
+
+        localStorage.setItem(
+            getPointsKey(),
+            String(cleanValue)
+        );
+
+
+        return;
+
     }
+
+
+    /*
+       Other selected users use their
+       individual balance.
+    */
+
+    localStorage.setItem(
+        getPointsKey(),
+        String(cleanValue)
+    );
 
 }
 
@@ -2345,36 +2387,97 @@ function setPoints(value) {
 
 function getHistory() {
 
-    let history = [];
+    /*
+       IMPORTANT:
 
+       For the current prototype user,
+       "rewardHistory" is the authoritative
+       history used by the normal user panel.
+
+       This means withdrawals already recorded
+       by the user panel will also appear here.
+    */
+
+    if (
+        isCurrentPrototypeUser()
+    ) {
+
+        try {
+
+            const mainHistory =
+                localStorage.getItem(
+                    "rewardHistory"
+                );
+
+
+            if (
+                mainHistory
+            ) {
+
+                const parsedHistory =
+                    JSON.parse(
+                        mainHistory
+                    );
+
+
+                if (
+                    Array.isArray(
+                        parsedHistory
+                    )
+                ) {
+
+                    return parsedHistory;
+
+                }
+
+            }
+
+        }
+
+        catch (error) {
+
+            return [];
+
+        }
+
+
+        return [];
+
+    }
+
+
+    /*
+       Other selected users use their
+       individual history key.
+    */
 
     try {
 
-        let stored =
+        const stored =
             localStorage.getItem(
                 getHistoryKey()
             );
 
 
         if (
-            stored === null &&
-            getHistoryKey() !== "rewardHistory"
+            stored
         ) {
 
-            stored =
-                localStorage.getItem(
-                    "rewardHistory"
-                );
-
-        }
-
-
-        if (stored) {
-
-            history =
+            const parsed =
                 JSON.parse(
                     stored
                 );
+
+
+            if (
+                Array.isArray(
+                    parsed
+                )
+            ) {
+
+                return parsed;
+
+            }
 
         }
 
@@ -2382,21 +2485,12 @@ function getHistory() {
 
     catch (error) {
 
-        history = [];
+        return [];
 
     }
 
 
-    if (
-        !Array.isArray(history)
-    ) {
-
-        history = [];
-
-    }
-
-
-    return history;
+    return [];
 
 }
 
@@ -2407,15 +2501,21 @@ function getHistory() {
 
 function setHistory(history) {
 
-    localStorage.setItem(
-        getHistoryKey(),
-        JSON.stringify(history)
-    );
+    if (
+        !Array.isArray(
+            history
+        )
+    ) {
+
+        history = [];
+
+    }
 
 
     /*
-       Keep original prototype history
-       synchronized for current user.
+       For the current prototype user,
+       update the main history and also
+       synchronize the admin-specific history.
     */
 
     if (
@@ -2424,10 +2524,36 @@ function setHistory(history) {
 
         localStorage.setItem(
             "rewardHistory",
-            JSON.stringify(history)
+            JSON.stringify(
+                history
+            )
         );
 
+
+        localStorage.setItem(
+            getHistoryKey(),
+            JSON.stringify(
+                history
+            )
+        );
+
+
+        return;
+
     }
+
+
+    /*
+       Other selected users use their
+       individual history key.
+    */
+
+    localStorage.setItem(
+        getHistoryKey(),
+        JSON.stringify(
+            history
+        )
+    );
 
 }
 
@@ -2443,12 +2569,6 @@ function getAccountStatus() {
             getStatusKey()
         );
 
-
-    /*
-       For the current prototype user,
-       also understand the original
-       global status key used by login.html.
-    */
 
     if (
         status === null &&
@@ -2483,14 +2603,6 @@ function setAccountStatus(status) {
     );
 
 
-    /*
-       login.html currently checks this
-       global key. Therefore, when the
-       selected account is the current
-       prototype account, keep both keys
-       synchronized.
-    */
-
     if (
         isCurrentPrototypeUser()
     ) {
@@ -2511,7 +2623,9 @@ function setAccountStatus(status) {
 
 function displayUser() {
 
-    if (!selectedUser) {
+    if (
+        !selectedUser
+    ) {
 
         document.getElementById(
             "profileUsername"
@@ -2548,6 +2662,16 @@ function displayUser() {
         ).textContent =
             "Not available";
 
+
+        updatePointsManagement();
+
+        updateActivitySummary();
+
+        displayCompleteHistory();
+
+        loadSecurityInformation();
+
+        loadAdminNotes();
 
         return;
 
@@ -2812,7 +2936,9 @@ function updateAdjustmentPreview() {
 
 function confirmPointsAdjustment() {
 
-    if (!selectedUser) {
+    if (
+        !selectedUser
+    ) {
 
         alert(
             "No user is selected."
@@ -2823,7 +2949,9 @@ function confirmPointsAdjustment() {
     }
 
 
-    if (!adjustmentType) {
+    if (
+        !adjustmentType
+    ) {
 
         return;
 
@@ -2859,7 +2987,9 @@ function confirmPointsAdjustment() {
     }
 
 
-    if (!reason) {
+    if (
+        !reason
+    ) {
 
         alert(
             "Please enter a reason for the adjustment."
@@ -3386,7 +3516,9 @@ function loadAccountStatus() {
 
 function toggleAccountStatus() {
 
-    if (!selectedUser) {
+    if (
+        !selectedUser
+    ) {
 
         alert(
             "No user is selected."
@@ -3411,7 +3543,9 @@ function toggleAccountStatus() {
             );
 
 
-        if (!confirmed) {
+        if (
+            !confirmed
+        ) {
 
             return;
 
@@ -3422,10 +3556,6 @@ function toggleAccountStatus() {
             "Suspended"
         );
 
-
-        /*
-           Record the administrative action.
-        */
 
         const history =
             getHistory();
@@ -3462,7 +3592,9 @@ function toggleAccountStatus() {
             );
 
 
-        if (!confirmed) {
+        if (
+            !confirmed
+        ) {
 
             return;
 
@@ -3515,7 +3647,9 @@ function toggleAccountStatus() {
 
 function saveAccountChanges() {
 
-    if (!selectedUser) {
+    if (
+        !selectedUser
+    ) {
 
         alert(
             "No user is selected."
@@ -3548,7 +3682,9 @@ function saveAccountChanges() {
 
 function resetAccountSettings() {
 
-    if (!selectedUser) {
+    if (
+        !selectedUser
+    ) {
 
         alert(
             "No user is selected."
@@ -3565,7 +3701,9 @@ function resetAccountSettings() {
         );
 
 
-    if (!confirmed) {
+    if (
+        !confirmed
+    ) {
 
         return;
 
@@ -3581,11 +3719,6 @@ function resetAccountSettings() {
         getNotesKey()
     );
 
-
-    /*
-       Reset login security only when this
-       is the current prototype account.
-    */
 
     if (
         isCurrentPrototypeUser()
@@ -3622,11 +3755,6 @@ function resetAccountSettings() {
 
 function loadSecurityInformation() {
 
-    /*
-       IMPORTANT:
-       login.html uses loginAttempts.
-    */
-
     const failed =
         Number(
             localStorage.getItem(
@@ -3634,13 +3762,6 @@ function loadSecurityInformation() {
             )
         ) || 0;
 
-
-    /*
-       IMPORTANT:
-       login.html uses loginBlockedUntil.
-       The old admin code incorrectly used
-       "blockedUntil".
-    */
 
     const blockedUntil =
         Number(
@@ -3666,7 +3787,9 @@ function loadSecurityInformation() {
         );
 
 
-    if (blocked) {
+    if (
+        blocked
+    ) {
 
         const minutes =
             Math.ceil(
@@ -3740,7 +3863,9 @@ function loadAdminNotes() {
 
 function saveAdminNote() {
 
-    if (!selectedUser) {
+    if (
+        !selectedUser
+    ) {
 
         alert(
             "No user is selected."
@@ -3845,11 +3970,24 @@ displayUser();
 
 
 /* =====================================================
-   AUTO REFRESH SECURITY STATUS
+   AUTO REFRESH
 ===================================================== */
 
 setInterval(
     function() {
+
+        /*
+           Refresh balance and history automatically.
+           This allows a withdrawal made from the
+           user panel to appear in Admin User Details
+           without requiring a full page redesign.
+        */
+
+        updatePointsManagement();
+
+        updateActivitySummary();
+
+        displayCompleteHistory();
 
         loadSecurityInformation();
 
