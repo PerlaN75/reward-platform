@@ -115,7 +115,6 @@ h2 {
     to {
         background-position: 300% 50%;
     }
-
 }
 
 /* =========================
@@ -535,6 +534,219 @@ footer {
 <script>
 
 /* =====================================================
+   MULTI-USER STORAGE
+===================================================== */
+
+/*
+   The old system used:
+
+       rewardUser
+
+   That allowed only ONE account.
+
+   The new system uses:
+
+       rewardUsers
+
+   which stores an ARRAY of users.
+*/
+
+
+/* =====================================================
+   LOAD ALL USERS
+===================================================== */
+
+function getUsers() {
+
+    let users = [];
+
+
+    try {
+
+        const savedUsers =
+            localStorage.getItem(
+                "rewardUsers"
+            );
+
+
+        if (savedUsers) {
+
+            users =
+                JSON.parse(
+                    savedUsers
+                );
+
+
+            if (!Array.isArray(users)) {
+
+                users = [];
+
+            }
+
+        }
+
+    } catch (error) {
+
+        users = [];
+
+    }
+
+
+    return users;
+
+}
+
+
+/* =====================================================
+   SAVE ALL USERS
+===================================================== */
+
+function saveUsers(users) {
+
+    localStorage.setItem(
+        "rewardUsers",
+        JSON.stringify(users)
+    );
+
+}
+
+
+/* =====================================================
+   MIGRATE OLD SINGLE USER
+===================================================== */
+
+/*
+   If an older account still exists under
+   "rewardUser", move it into the new
+   "rewardUsers" system.
+
+   This prevents the old account from
+   disappearing when we move to
+   multiple-user support.
+*/
+
+function migrateOldUser() {
+
+    let oldUser = null;
+
+
+    try {
+
+        oldUser =
+            JSON.parse(
+                localStorage.getItem(
+                    "rewardUser"
+                )
+            );
+
+    } catch (error) {
+
+        oldUser = null;
+
+    }
+
+
+    if (!oldUser) {
+
+        return;
+
+    }
+
+
+    let users =
+        getUsers();
+
+
+    const alreadyExists =
+        users.some(
+            function(user) {
+
+                return (
+                    user.username ===
+                    oldUser.username
+                );
+
+            }
+        );
+
+
+    if (!alreadyExists) {
+
+        /*
+           Preserve the old account.
+
+           If the old system has a global
+           rewardPoints value, use it as
+           the starting balance for the
+           migrated user.
+        */
+
+        const oldPoints =
+            Number(
+                localStorage.getItem(
+                    "rewardPoints"
+                )
+            ) || 0;
+
+
+        oldUser.points =
+            Number(
+                oldUser.points
+            ) || oldPoints;
+
+
+        /*
+           Give the migrated user
+           an activity history if one
+           does not already exist.
+        */
+
+        if (
+            !Array.isArray(
+                oldUser.history
+            )
+        ) {
+
+            oldUser.history = [];
+
+        }
+
+
+        /*
+           Give the migrated user
+           a default account status.
+        */
+
+        if (!oldUser.status) {
+
+            oldUser.status =
+                "Active";
+
+        }
+
+
+        users.push(
+            oldUser
+        );
+
+
+        saveUsers(
+            users
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   RUN MIGRATION
+===================================================== */
+
+migrateOldUser();
+
+
+/* =====================================================
    REGISTER USER
 ===================================================== */
 
@@ -546,6 +758,14 @@ function registerUser(event) {
     /* =========================
        GET FORM VALUES
     ========================= */
+
+    /*
+       Username is NOT converted
+       to lowercase.
+
+       The user must enter
+       lowercase letters themselves.
+    */
 
     const username =
         document.getElementById(
@@ -578,10 +798,19 @@ function registerUser(event) {
 
 
     /* =========================
+       CLEAR MESSAGE
+    ========================= */
+
+    message.textContent = "";
+
+
+    /* =========================
        USERNAME LENGTH
     ========================= */
 
-    if (username.length < 3) {
+    if (
+        username.length < 3
+    ) {
 
         message.textContent =
             "❌ Username must contain at least 3 characters.";
@@ -595,7 +824,11 @@ function registerUser(event) {
        USERNAME FORMAT
     ========================= */
 
-    if (!/^[a-z]+$/.test(username)) {
+    if (
+        !/^[a-z]+$/.test(
+            username
+        )
+    ) {
 
         message.textContent =
             "❌ Username must contain only lowercase letters (a–z). No capital letters, numbers, spaces, or special characters.";
@@ -609,119 +842,8 @@ function registerUser(event) {
        LOAD ALL USERS
     ========================= */
 
-    let users = [];
-
-
-    try {
-
-        users =
-            JSON.parse(
-                localStorage.getItem(
-                    "rewardUsers"
-                )
-            ) || [];
-
-    } catch (error) {
-
-        users = [];
-
-    }
-
-
-    /* =================================================
-       MIGRATE OLD SINGLE USER
-       INTO MULTI-USER SYSTEM
-    ================================================= */
-
-    const oldUser =
-        localStorage.getItem(
-            "rewardUser"
-        );
-
-
-    if (
-        oldUser &&
-        users.length === 0
-    ) {
-
-        try {
-
-            const previousUser =
-                JSON.parse(
-                    oldUser
-                );
-
-
-            if (
-                previousUser &&
-                previousUser.username
-            ) {
-
-                const previousUserId =
-                    previousUser.id ||
-                    (
-                        "user_" +
-                        Date.now()
-                    );
-
-
-                const previousPoints =
-                    Number(
-                        localStorage.getItem(
-                            "rewardPoints"
-                        )
-                    ) || 0;
-
-
-                const previousHistory =
-                    JSON.parse(
-                        localStorage.getItem(
-                            "rewardHistory"
-                        )
-                    ) || [];
-
-
-                previousUser.id =
-                    previousUserId;
-
-
-                previousUser.points =
-                    previousPoints;
-
-
-                previousUser.balance =
-                    previousPoints;
-
-
-                previousUser.history =
-                    previousHistory;
-
-
-                previousUser.status =
-                    "Active";
-
-
-                previousUser.createdAt =
-                    previousUser.createdAt ||
-                    new Date().toISOString();
-
-
-                users.push(
-                    previousUser
-                );
-
-            }
-
-        } catch (error) {
-
-            console.log(
-                "Old user migration failed:",
-                error
-            );
-
-        }
-
-    }
+    const users =
+        getUsers();
 
 
     /* =========================
@@ -741,10 +863,12 @@ function registerUser(event) {
         );
 
 
-    if (usernameExists) {
+    if (
+        usernameExists
+    ) {
 
         message.textContent =
-            "❌ Username already exists.";
+            "❌ Username already exists. Please choose another username.";
 
         return;
 
@@ -768,10 +892,12 @@ function registerUser(event) {
         );
 
 
-    if (emailExists) {
+    if (
+        emailExists
+    ) {
 
         message.textContent =
-            "❌ Email already exists.";
+            "❌ Email already exists. Please use another email address.";
 
         return;
 
@@ -799,7 +925,11 @@ function registerUser(event) {
        CAPITAL LETTER
     ========================= */
 
-    if (!/[A-Z]/.test(password)) {
+    if (
+        !/[A-Z]/.test(
+            password
+        )
+    ) {
 
         message.textContent =
             "❌ Password must contain at least one capital letter.";
@@ -813,7 +943,11 @@ function registerUser(event) {
        LOWERCASE LETTER
     ========================= */
 
-    if (!/[a-z]/.test(password)) {
+    if (
+        !/[a-z]/.test(
+            password
+        )
+    ) {
 
         message.textContent =
             "❌ Password must contain at least one lowercase letter.";
@@ -827,7 +961,11 @@ function registerUser(event) {
        SPECIAL CHARACTER
     ========================= */
 
-    if (!/[?!%&$#=]/.test(password)) {
+    if (
+        !/[?!%&$#=]/.test(
+            password
+        )
+    ) {
 
         message.textContent =
             "❌ Password must contain at least one special character: ? ! % & $ # =";
@@ -842,7 +980,8 @@ function registerUser(event) {
     ========================= */
 
     if (
-        password !== confirmPassword
+        password !==
+        confirmPassword
     ) {
 
         message.textContent =
@@ -854,26 +993,10 @@ function registerUser(event) {
 
 
     /* =================================================
-       CREATE UNIQUE USER ID
-    ================================================= */
-
-    const newUserId =
-        "user_" +
-        Date.now() +
-        "_" +
-        Math.random()
-            .toString(36)
-            .substring(2, 8);
-
-
-    /* =================================================
        CREATE NEW USER
     ================================================= */
 
     const newUser = {
-
-        id:
-            newUserId,
 
         username:
             username,
@@ -884,17 +1007,50 @@ function registerUser(event) {
         password:
             password,
 
+        /*
+           EVERY NEW USER STARTS
+           WITH ZERO POINTS.
+        */
+
         points:
             0,
 
-        balance:
-            0,
+        /*
+           Individual activity history.
+        */
 
         history:
             [],
 
+        /*
+           Account status.
+        */
+
         status:
             "Active",
+
+        /*
+           Individual daily activity data.
+        */
+
+        lastCheckIn:
+            null,
+
+        quizCompleted:
+            false,
+
+        gameCompleted:
+            false,
+
+        spinCompleted:
+            false,
+
+        challengeProgress:
+            0,
+
+        /*
+           Account creation date.
+        */
 
         createdAt:
             new Date().toISOString()
@@ -903,8 +1059,7 @@ function registerUser(event) {
 
 
     /* =================================================
-       ADD NEW USER
-       WITHOUT REMOVING OLD USERS
+       ADD NEW USER TO USER ARRAY
     ================================================= */
 
     users.push(
@@ -912,80 +1067,41 @@ function registerUser(event) {
     );
 
 
-    /* =========================
+    /* =================================================
        SAVE ALL USERS
-    ========================= */
+    ================================================= */
 
-    localStorage.setItem(
-        "rewardUsers",
-        JSON.stringify(
-            users
-        )
+    saveUsers(
+        users
     );
 
 
     /* =================================================
-       CURRENT USER COMPATIBILITY
+       SAVE CURRENT USER
     ================================================= */
 
-    localStorage.setItem(
-        "rewardUser",
-        JSON.stringify(
-            newUser
-        )
-    );
+    /*
+       This identifies the newly
+       created account.
 
-
-    /* =================================================
-       IMPORTANT:
-       NEW USER STARTS WITH ZERO
-       POINTS AND ZERO BALANCE
-    ================================================= */
+       Login will later use this
+       system to identify the correct
+       user's points and activities.
+    */
 
     localStorage.setItem(
-        "rewardPoints",
-        "0"
-    );
-
-
-    localStorage.setItem(
-        "rewardHistory",
-        JSON.stringify([])
+        "currentUsername",
+        username
     );
 
 
     /* =========================
-       LOGIN STATUS
+       RESET LOGIN STATUS
     ========================= */
 
     localStorage.setItem(
         "loggedIn",
         "false"
-    );
-
-
-    /* =========================
-       CLEAR OLD LOGIN ATTEMPTS
-    ========================= */
-
-    localStorage.removeItem(
-        "loginAttempts"
-    );
-
-
-    localStorage.removeItem(
-        "loginBlockedUntil"
-    );
-
-
-    /* =========================
-       ACCOUNT STATUS
-    ========================= */
-
-    localStorage.setItem(
-        "adminAccountStatus_" +
-        newUserId,
-        "Active"
     );
 
 
