@@ -7,7 +7,8 @@
 
 <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0">
+    content="width=device-width, initial-scale=1.0"
+>
 
 <title>Register - Reward Platform</title>
 
@@ -28,20 +29,24 @@ body {
 
     font-family: Arial, sans-serif;
 
-    background:
-        linear-gradient(
-            135deg,
-            #182848,
-            #3d2075
-        );
+    background: #f4f7fb;
 
-    min-height: 100vh;
+    color: #222;
 
-    display: flex;
+}
 
-    align-items: center;
 
-    justify-content: center;
+/* =====================================================
+   CONTAINER
+===================================================== */
+
+.container {
+
+    width: 100%;
+
+    max-width: 480px;
+
+    margin: 50px auto;
 
     padding: 20px;
 
@@ -54,50 +59,33 @@ body {
 
 .register-card {
 
-    width: 100%;
-
-    max-width: 500px;
-
     background: white;
 
-    border-radius: 22px;
+    padding: 30px;
 
-    padding: 30px 22px;
+    border-radius: 15px;
 
-    box-shadow:
-        0 10px 35px
-        rgba(0,0,0,0.25);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.10);
 
 }
 
 
-.register-icon {
+.register-card h1 {
+
+    margin: 0 0 10px 0;
 
     text-align: center;
 
-    font-size: 55px;
+    font-size: 28px;
 
 }
 
 
-h1 {
-
-    margin: 10px 0 5px;
+.register-card p {
 
     text-align: center;
 
-    font-size: 32px;
-
-    color: #182848;
-
-}
-
-
-.subtitle {
-
-    text-align: center;
-
-    color: #777;
+    color: #666;
 
     margin-bottom: 25px;
 
@@ -105,7 +93,7 @@ h1 {
 
 
 /* =====================================================
-   FORM
+   FORM GROUP
 ===================================================== */
 
 .form-group {
@@ -115,46 +103,37 @@ h1 {
 }
 
 
-label {
+.form-group label {
 
     display: block;
 
     margin-bottom: 7px;
 
-    color: #333;
-
     font-weight: bold;
-
-    font-size: 15px;
 
 }
 
 
-input {
+.form-group input {
 
     width: 100%;
 
-    padding: 14px;
+    padding: 13px;
 
-    border:
-        1px solid #d8dce5;
+    border: 1px solid #ccc;
 
-    border-radius: 11px;
+    border-radius: 8px;
 
-    font-size: 16px;
+    font-size: 15px;
 
     outline: none;
 
 }
 
 
-input:focus {
+.form-group input:focus {
 
-    border-color: #7b2cff;
-
-    box-shadow:
-        0 0 0 2px
-        rgba(123,44,255,0.10);
+    border-color: #2563eb;
 
 }
 
@@ -165,108 +144,63 @@ input:focus {
 
 .password-rules {
 
-    background: #f7f8fc;
+    background: #f7f9fc;
 
-    border-radius: 12px;
+    border: 1px solid #e1e5eb;
 
-    padding: 13px;
+    border-radius: 8px;
+
+    padding: 12px;
 
     margin-top: 8px;
 
-    color: #666;
-
     font-size: 13px;
 
-    line-height: 1.6;
+    color: #555;
 
 }
 
 
-.password-rules strong {
+.password-rules div {
 
-    color: #182848;
-
-}
-
-
-.rule {
-
-    margin: 2px 0;
+    margin: 4px 0;
 
 }
 
 
-.rule.valid {
+.rule-valid {
 
-    color: #168a3a;
+    color: #16803c;
 
 }
 
 
-.rule.invalid {
+.rule-invalid {
 
-    color: #c62828;
+    color: #b42318;
 
 }
 
 
 /* =====================================================
-   MESSAGE
-===================================================== */
-
-.message {
-
-    min-height: 22px;
-
-    margin: 12px 0;
-
-    text-align: center;
-
-    font-size: 14px;
-
-    font-weight: bold;
-
-}
-
-
-.message.error {
-
-    color: #c62828;
-
-}
-
-
-.message.success {
-
-    color: #168a3a;
-
-}
-
-
-/* =====================================================
-   REGISTER BUTTON
+   BUTTON
 ===================================================== */
 
 .register-button {
 
     width: 100%;
 
+    padding: 14px;
+
     border: none;
 
-    border-radius: 13px;
+    border-radius: 8px;
 
-    padding: 15px;
-
-    background:
-        linear-gradient(
-            90deg,
-            #8b25ff,
-            #287dff
-        );
+    background: #2563eb;
 
     color: white;
 
-    font-size: 17px;
+    font-size: 16px;
 
     font-weight: bold;
 
@@ -277,8 +211,50 @@ input:focus {
 
 .register-button:hover {
 
-    transform:
-        translateY(-1px);
+    background: #1d4ed8;
+
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+.message {
+
+    display: none;
+
+    padding: 12px;
+
+    border-radius: 8px;
+
+    margin-bottom: 18px;
+
+    font-size: 14px;
+
+    text-align: center;
+
+}
+
+
+.message.error {
+
+    background: #fff0f0;
+
+    color: #b42318;
+
+    border: 1px solid #f3c2c2;
+
+}
+
+
+.message.success {
+
+    background: #eefaf1;
+
+    color: #16803c;
+
+    border: 1px solid #b8e0c2;
 
 }
 
@@ -287,54 +263,31 @@ input:focus {
    LOGIN LINK
 ===================================================== */
 
-.login-area {
+.login-link {
 
     text-align: center;
 
-    margin-top: 20px;
-
-    color: #666;
+    margin-top: 22px;
 
     font-size: 14px;
 
 }
 
 
-.login-area a {
+.login-link a {
 
-    color: #7b2cff;
+    color: #2563eb;
+
+    text-decoration: none;
 
     font-weight: bold;
 
-    text-decoration: none;
-
 }
 
 
-.login-area a:hover {
+.login-link a:hover {
 
     text-decoration: underline;
-
-}
-
-
-/* =====================================================
-   HOME
-===================================================== */
-
-.home-button {
-
-    display: block;
-
-    text-align: center;
-
-    margin-top: 15px;
-
-    color: #555;
-
-    text-decoration: none;
-
-    font-size: 14px;
 
 }
 
@@ -343,18 +296,20 @@ input:focus {
    MOBILE
 ===================================================== */
 
-@media (max-width: 500px) {
+@media (max-width: 520px) {
 
-    .register-card {
+    .container {
 
-        padding: 25px 17px;
+        margin: 20px auto;
+
+        padding: 15px;
 
     }
 
 
-    h1 {
+    .register-card {
 
-        font-size: 28px;
+        padding: 22px;
 
     }
 
@@ -368,200 +323,168 @@ input:focus {
 <body>
 
 
-<div class="register-card">
+<div class="container">
 
 
-    <div class="register-icon">
-
-        👤
-
-    </div>
+    <div class="register-card">
 
 
-    <h1>
-
-        Create Account
-
-    </h1>
+        <h1>Create Account</h1>
 
 
-    <div class="subtitle">
-
-        Join the Reward Platform
-
-    </div>
+        <p>
+            Register to start earning rewards.
+        </p>
 
 
-    <!-- =================================================
-         REGISTER FORM
-    ================================================== -->
+        <!-- =================================================
+             MESSAGE
+        ================================================== -->
 
-    <form
-        id="registerForm"
-        onsubmit="registerUser(event)">
-
-
-        <div class="form-group">
-
-            <label for="username">
-
-                Username
-
-            </label>
+        <div
+            id="message"
+            class="message"
+        ></div>
 
 
-            <input
-                type="text"
-                id="username"
-                maxlength="30"
-                autocomplete="username"
-                placeholder="Enter your username"
-                required>
+        <!-- =================================================
+             REGISTER FORM
+        ================================================== -->
 
-        </div>
+        <form id="registerForm">
 
 
-        <div class="form-group">
+            <!-- USERNAME -->
 
-            <label for="email">
+            <div class="form-group">
 
-                Email
+                <label for="username">
+                    Username
+                </label>
 
-            </label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Enter username"
+                    autocomplete="username"
+                    required
+                >
 
-
-            <input
-                type="email"
-                id="email"
-                autocomplete="email"
-                placeholder="Enter your email"
-                required>
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label for="password">
-
-                Password
-
-            </label>
+            </div>
 
 
-            <input
-                type="password"
-                id="password"
-                maxlength="15"
-                autocomplete="new-password"
-                placeholder="Create a password"
-                required>
+            <!-- EMAIL -->
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter email address"
+                    autocomplete="email"
+                    required
+                >
+
+            </div>
 
 
-            <div class="password-rules">
+            <!-- PASSWORD -->
 
-                <strong>Password must contain:</strong>
+            <div class="form-group">
 
-                <div
-                    id="lengthRule"
-                    class="rule invalid">
+                <label for="password">
+                    Password
+                </label>
 
-                    ✗ 6–15 characters
-
-                </div>
-
-
-                <div
-                    id="capitalRule"
-                    class="rule invalid">
-
-                    ✗ At least one capital letter
-
-                </div>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Create password"
+                    autocomplete="new-password"
+                    required
+                >
 
 
-                <div
-                    id="lowerRule"
-                    class="rule invalid">
+                <div class="password-rules">
 
-                    ✗ At least one lowercase letter
+                    <div id="lengthRule">
+                        ❌ 6–15 characters
+                    </div>
 
-                </div>
+                    <div id="capitalRule">
+                        ❌ At least one capital letter
+                    </div>
 
+                    <div id="lowercaseRule">
+                        ❌ At least one lowercase letter
+                    </div>
 
-                <div
-                    id="specialRule"
-                    class="rule invalid">
-
-                    ✗ At least one special character
-                    (? ! % & $ # =)
+                    <div id="specialRule">
+                        ❌ At least one special character:
+                        ? ! % & $ # =
+                    </div>
 
                 </div>
 
             </div>
 
+
+            <!-- CONFIRM PASSWORD -->
+
+            <div class="form-group">
+
+                <label for="confirmPassword">
+                    Confirm Password
+                </label>
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    placeholder="Confirm password"
+                    autocomplete="new-password"
+                    required
+                >
+
+            </div>
+
+
+            <!-- SUBMIT -->
+
+            <button
+                type="submit"
+                class="register-button"
+            >
+                Create Account
+            </button>
+
+
+        </form>
+
+
+        <!-- =================================================
+             LOGIN
+        ================================================== -->
+
+        <div class="login-link">
+
+            Already have an account?
+
+            <a href="login.html">
+                Login
+            </a>
+
         </div>
 
-
-        <div class="form-group">
-
-            <label for="confirmPassword">
-
-                Confirm Password
-
-            </label>
-
-
-            <input
-                type="password"
-                id="confirmPassword"
-                maxlength="15"
-                autocomplete="new-password"
-                placeholder="Confirm your password"
-                required>
-
-        </div>
-
-
-        <div
-            id="message"
-            class="message">
-
-        </div>
-
-
-        <button
-            type="submit"
-            class="register-button">
-
-            🚀 Create Account
-
-        </button>
-
-
-    </form>
-
-
-    <div class="login-area">
-
-        Already have an account?
-
-        <a href="login.html">
-
-            Login
-
-        </a>
 
     </div>
-
-
-    <a
-        href="index.html"
-        class="home-button">
-
-        ← Home
-
-    </a>
 
 
 </div>
@@ -570,16 +493,50 @@ input:focus {
 <script>
 
 /* =====================================================
-   PASSWORD RULES
+   ELEMENTS
 ===================================================== */
 
-function checkPasswordRules() {
+const registerForm =
+    document.getElementById("registerForm");
 
-    const password =
-        document.getElementById(
-            "password"
-        ).value;
+const usernameInput =
+    document.getElementById("username");
 
+const emailInput =
+    document.getElementById("email");
+
+const passwordInput =
+    document.getElementById("password");
+
+const confirmPasswordInput =
+    document.getElementById("confirmPassword");
+
+const message =
+    document.getElementById("message");
+
+
+/* =====================================================
+   PASSWORD RULE ELEMENTS
+===================================================== */
+
+const lengthRule =
+    document.getElementById("lengthRule");
+
+const capitalRule =
+    document.getElementById("capitalRule");
+
+const lowercaseRule =
+    document.getElementById("lowercaseRule");
+
+const specialRule =
+    document.getElementById("specialRule");
+
+
+/* =====================================================
+   PASSWORD VALIDATION
+===================================================== */
+
+function validatePassword(password) {
 
     const lengthValid =
         password.length >= 6 &&
@@ -590,7 +547,7 @@ function checkPasswordRules() {
         /[A-Z]/.test(password);
 
 
-    const lowerValid =
+    const lowercaseValid =
         /[a-z]/.test(password);
 
 
@@ -599,37 +556,37 @@ function checkPasswordRules() {
 
 
     updateRule(
-        "lengthRule",
+        lengthRule,
         lengthValid,
         "6–15 characters"
     );
 
 
     updateRule(
-        "capitalRule",
+        capitalRule,
         capitalValid,
         "At least one capital letter"
     );
 
 
     updateRule(
-        "lowerRule",
-        lowerValid,
+        lowercaseRule,
+        lowercaseValid,
         "At least one lowercase letter"
     );
 
 
     updateRule(
-        "specialRule",
+        specialRule,
         specialValid,
-        "At least one special character (? ! % & $ # =)"
+        "At least one special character: ? ! % & $ # ="
     );
 
 
     return (
         lengthValid &&
         capitalValid &&
-        lowerValid &&
+        lowercaseValid &&
         specialValid
     );
 
@@ -641,32 +598,28 @@ function checkPasswordRules() {
 ===================================================== */
 
 function updateRule(
-    id,
+    element,
     valid,
     text
 ) {
 
-    const element =
-        document.getElementById(id);
-
-
     if (valid) {
 
-        element.className =
-            "rule valid";
-
         element.textContent =
-            "✓ " + text;
+            "✅ " + text;
+
+        element.className =
+            "rule-valid";
 
     }
 
     else {
 
-        element.className =
-            "rule invalid";
-
         element.textContent =
-            "✗ " + text;
+            "❌ " + text;
+
+        element.className =
+            "rule-invalid";
 
     }
 
@@ -674,46 +627,92 @@ function updateRule(
 
 
 /* =====================================================
-   PASSWORD INPUT
+   PASSWORD LIVE CHECK
 ===================================================== */
 
-document
-    .getElementById("password")
-    .addEventListener(
-        "input",
-        checkPasswordRules
-    );
+passwordInput.addEventListener(
+    "input",
+    function() {
+
+        validatePassword(
+            passwordInput.value
+        );
+
+    }
+);
 
 
 /* =====================================================
-   GET ALL USERS
+   SHOW MESSAGE
 ===================================================== */
 
-function getAllUsers() {
+function showMessage(
+    text,
+    type
+) {
+
+    message.textContent =
+        text;
+
+    message.className =
+        "message " + type;
+
+    message.style.display =
+        "block";
+
+}
+
+
+/* =====================================================
+   NORMALIZE EMAIL
+===================================================== */
+
+function normalizeEmail(email) {
+
+    return email
+        .trim()
+        .toLowerCase();
+
+}
+
+
+/* =====================================================
+   NORMALIZE USERNAME
+===================================================== */
+
+function normalizeUsername(username) {
+
+    return username
+        .trim();
+
+}
+
+
+/* =====================================================
+   LOAD USERS
+===================================================== */
+
+function getUsers() {
 
     let users = [];
 
 
     try {
 
-        const stored =
-            localStorage.getItem(
-                "rewardUsers"
-            );
+        const storedUsers =
+            localStorage.getItem("users");
 
 
-        if (stored) {
+        if (storedUsers) {
 
-            const parsed =
-                JSON.parse(stored);
+            const parsedUsers =
+                JSON.parse(storedUsers);
 
 
-            if (
-                Array.isArray(parsed)
-            ) {
+            if (Array.isArray(parsedUsers)) {
 
                 users =
-                    parsed;
+                    parsedUsers;
 
             }
 
@@ -723,81 +722,12 @@ function getAllUsers() {
 
     catch (error) {
 
+        console.error(
+            "Unable to read users:",
+            error
+        );
+
         users = [];
-
-    }
-
-
-    /*
-       IMPORTANT:
-
-       If an older version of the platform
-       has one user stored as "rewardUser",
-       preserve that user by migrating it
-       into the new users array.
-    */
-
-    if (
-        users.length === 0
-    ) {
-
-        try {
-
-            const oldUser =
-                localStorage.getItem(
-                    "rewardUser"
-                );
-
-
-            if (oldUser) {
-
-                const parsedOldUser =
-                    JSON.parse(
-                        oldUser
-                    );
-
-
-                if (
-                    parsedOldUser &&
-                    typeof parsedOldUser ===
-                    "object"
-                ) {
-
-                    if (
-                        !parsedOldUser.id
-                    ) {
-
-                        parsedOldUser.id =
-                            createUserId();
-
-                    }
-
-
-                    users.push(
-                        parsedOldUser
-                    );
-
-
-                    localStorage.setItem(
-                        "rewardUsers",
-                        JSON.stringify(
-                            users
-                        )
-                    );
-
-                }
-
-            }
-
-        }
-
-        catch (error) {
-
-            console.log(
-                "Legacy user migration failed."
-            );
-
-        }
 
     }
 
@@ -808,157 +738,150 @@ function getAllUsers() {
 
 
 /* =====================================================
-   SAVE ALL USERS
+   SAVE USERS
 ===================================================== */
 
-function saveAllUsers(users) {
+function saveUsers(users) {
 
     localStorage.setItem(
-        "rewardUsers",
-        JSON.stringify(
-            users
-        )
+        "users",
+        JSON.stringify(users)
     );
 
 }
 
 
 /* =====================================================
-   CREATE USER ID
+   GENERATE USER ID
 ===================================================== */
 
-function createUserId() {
+function generateUserId() {
 
     return (
-        "user_" +
+        "USER-" +
         Date.now() +
-        "_" +
+        "-" +
         Math.random()
             .toString(36)
-            .substring(2, 10)
+            .substring(2, 8)
+            .toUpperCase()
     );
 
 }
 
 
 /* =====================================================
-   REGISTER USER
+   REGISTER
 ===================================================== */
 
-function registerUser(event) {
+registerForm.addEventListener(
+    "submit",
+    function(event) {
 
-    event.preventDefault();
-
-
-    const username =
-        document.getElementById(
-            "username"
-        ).value.trim();
+        event.preventDefault();
 
 
-    const email =
-        document.getElementById(
-            "email"
-        ).value.trim()
-        .toLowerCase();
+        /* =============================================
+           GET VALUES
+        ============================================= */
+
+        const username =
+            normalizeUsername(
+                usernameInput.value
+            );
 
 
-    const password =
-        document.getElementById(
-            "password"
-        ).value;
+        const email =
+            normalizeEmail(
+                emailInput.value
+            );
 
 
-    const confirmPassword =
-        document.getElementById(
-            "confirmPassword"
-        ).value;
+        const password =
+            passwordInput.value;
 
 
-    const message =
-        document.getElementById(
-            "message"
-        );
+        const confirmPassword =
+            confirmPasswordInput.value;
 
 
-    message.className =
-        "message";
+        /* =============================================
+           BASIC VALIDATION
+        ============================================= */
+
+        if (!username) {
+
+            showMessage(
+                "Please enter a username.",
+                "error"
+            );
+
+            return;
+
+        }
 
 
-    message.textContent =
-        "";
+        if (!email) {
+
+            showMessage(
+                "Please enter your email address.",
+                "error"
+            );
+
+            return;
+
+        }
 
 
-    /* =================================================
-       BASIC VALIDATION
-    ================================================== */
+        /* =============================================
+           PASSWORD VALIDATION
+        ============================================= */
 
-    if (
-        !username ||
-        !email ||
-        !password ||
-        !confirmPassword
-    ) {
+        if (!validatePassword(password)) {
 
-        showError(
-            "Please complete all fields."
-        );
+            showMessage(
+                "Please satisfy all password requirements.",
+                "error"
+            );
 
-        return;
+            return;
 
-    }
+        }
 
 
-    /* =================================================
-       PASSWORD VALIDATION
-    ================================================== */
+        /* =============================================
+           CONFIRM PASSWORD
+        ============================================= */
 
-    if (
-        !checkPasswordRules()
-    ) {
+        if (
+            password !==
+            confirmPassword
+        ) {
 
-        showError(
-            "Please meet all password requirements."
-        );
+            showMessage(
+                "Passwords do not match.",
+                "error"
+            );
 
-        return;
+            return;
 
-    }
-
-
-    /* =================================================
-       CONFIRM PASSWORD
-    ================================================== */
-
-    if (
-        password !==
-        confirmPassword
-    ) {
-
-        showError(
-            "Passwords do not match."
-        );
-
-        return;
-
-    }
+        }
 
 
-    /* =================================================
-       GET USERS
-    ================================================== */
+        /* =============================================
+           LOAD ALL USERS
+        ============================================= */
 
-    const users =
-        getAllUsers();
+        const users =
+            getUsers();
 
 
-    /* =================================================
-       DUPLICATE USERNAME
-    ================================================== */
+        /* =============================================
+           CHECK USERNAME
+        ============================================= */
 
-    const usernameExists =
-        users.some(
-            function(user) {
+        const usernameExists =
+            users.some(function(user) {
 
                 return (
                     String(
@@ -970,30 +893,27 @@ function registerUser(event) {
                     username.toLowerCase()
                 );
 
-            }
-        );
+            });
 
 
-    if (
-        usernameExists
-    ) {
+        if (usernameExists) {
 
-        showError(
-            "This username is already registered."
-        );
+            showMessage(
+                "This username is already registered.",
+                "error"
+            );
 
-        return;
+            return;
 
-    }
+        }
 
 
-    /* =================================================
-       DUPLICATE EMAIL
-    ================================================== */
+        /* =============================================
+           CHECK EMAIL
+        ============================================= */
 
-    const emailExists =
-        users.some(
-            function(user) {
+        const emailExists =
+            users.some(function(user) {
 
                 return (
                     String(
@@ -1005,210 +925,193 @@ function registerUser(event) {
                     email
                 );
 
-            }
+            });
+
+
+        if (emailExists) {
+
+            showMessage(
+                "This email is already registered.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        /* =============================================
+           CREATE NEW USER
+        ============================================= */
+
+        const newUser = {
+
+            id:
+                generateUserId(),
+
+            username:
+                username,
+
+            email:
+                email,
+
+            password:
+                password,
+
+            points:
+                0,
+
+            rewardPoints:
+                0,
+
+            rewardHistory:
+                [],
+
+            activityHistory:
+                [],
+
+            completedActivities:
+                {},
+
+            dailyCheckIn:
+                null,
+
+            lastCheckIn:
+                null,
+
+            quizHistory:
+                [],
+
+            gameHistory:
+                [],
+
+            watchHistory:
+                [],
+
+            spinHistory:
+                [],
+
+            challengeProgress:
+                0,
+
+            withdrawals:
+                [],
+
+            notifications:
+                [],
+
+            createdAt:
+                new Date().toISOString()
+
+        };
+
+
+        /* =============================================
+           ADD USER TO USERS ARRAY
+        ============================================= */
+
+        users.push(
+            newUser
         );
 
 
-    if (
-        emailExists
-    ) {
+        /* =============================================
+           SAVE ALL USERS
+        ============================================= */
 
-        showError(
-            "This email is already registered."
+        saveUsers(
+            users
         );
 
-        return;
+
+        /* =============================================
+           SAVE CURRENT USER
+           
+           This keeps the registration compatible
+           with the rest of the platform while we
+           transition everything to the multi-user
+           structure.
+        ============================================= */
+
+        localStorage.setItem(
+            "currentUser",
+            JSON.stringify(newUser)
+        );
+
+
+        localStorage.setItem(
+            "rewardUser",
+            JSON.stringify(newUser)
+        );
+
+
+        /* =============================================
+           SAVE CURRENT USERNAME / EMAIL
+        ============================================= */
+
+        localStorage.setItem(
+            "username",
+            username
+        );
+
+
+        localStorage.setItem(
+            "userEmail",
+            email
+        );
+
+
+        /* =============================================
+           DO NOT LOG USER IN AUTOMATICALLY
+           
+           The account is created first.
+           Login remains responsible for authentication.
+        ============================================= */
+
+        localStorage.removeItem(
+            "loggedIn"
+        );
+
+
+        localStorage.removeItem(
+            "isLoggedIn"
+        );
+
+
+        /* =============================================
+           SUCCESS MESSAGE
+        ============================================= */
+
+        showMessage(
+            "Account created successfully. Redirecting to login...",
+            "success"
+        );
+
+
+        /* =============================================
+           REDIRECT TO LOGIN
+        ============================================= */
+
+        setTimeout(
+            function() {
+
+                window.location.href =
+                    "login.html";
+
+            },
+            1000
+        );
 
     }
-
-
-    /* =================================================
-       CREATE NEW USER
-    ================================================== */
-
-    const newUser = {
-
-        id:
-            createUserId(),
-
-        username:
-            username,
-
-        email:
-            email,
-
-        password:
-            password,
-
-        registeredAt:
-            new Date().toLocaleString(),
-
-        createdAt:
-            new Date().toISOString(),
-
-        accountStatus:
-            "Active"
-
-    };
-
-
-    /* =================================================
-       ADD USER TO USERS ARRAY
-    ================================================== */
-
-    users.push(
-        newUser
-    );
-
-
-    saveAllUsers(
-        users
-    );
-
-
-    /* =================================================
-       CURRENT USER COMPATIBILITY
-    =================================================
-
-       The existing user pages still use
-       "rewardUser".
-
-       Therefore we keep this key for
-       the newly registered user.
-
-    */
-
-    localStorage.setItem(
-        "rewardUser",
-        JSON.stringify(
-            newUser
-        )
-    );
-
-
-    /* =================================================
-       INITIAL USER DATA
-    ================================================= */
-
-    localStorage.setItem(
-        "rewardPoints_" +
-        newUser.id,
-        "0"
-    );
-
-
-    localStorage.setItem(
-        "rewardHistory_" +
-        newUser.id,
-        JSON.stringify([])
-    );
-
-
-    localStorage.setItem(
-        "adminAccountStatus_" +
-        newUser.id,
-        "Active"
-    );
-
-
-    /* =================================================
-       ALSO INITIALIZE CURRENT USER KEYS
-    ================================================= */
-
-    localStorage.setItem(
-        "rewardPoints",
-        "0"
-    );
-
-
-    localStorage.setItem(
-        "rewardHistory",
-        JSON.stringify([])
-    );
-
-
-    localStorage.setItem(
-        "adminAccountStatus",
-        "Active"
-    );
-
-
-    /* =================================================
-       SUCCESS
-    ================================================= */
-
-    showSuccess(
-        "Account created successfully."
-    );
-
-
-    /*
-       Give the user a moment to see
-       the success message.
-    */
-
-    setTimeout(
-        function() {
-
-            window.location.href =
-                "login.html";
-
-        },
-        800
-    );
-
-}
+);
 
 
 /* =====================================================
-   ERROR MESSAGE
+   INITIAL PASSWORD DISPLAY
 ===================================================== */
 
-function showError(text) {
+validatePassword("");
 
-    const message =
-        document.getElementById(
-            "message"
-        );
-
-
-    message.className =
-        "message error";
-
-
-    message.textContent =
-        text;
-
-}
-
-
-/* =====================================================
-   SUCCESS MESSAGE
-===================================================== */
-
-function showSuccess(text) {
-
-    const message =
-        document.getElementById(
-            "message"
-        );
-
-
-    message.className =
-        "message success";
-
-
-    message.textContent =
-        text;
-
-}
-
-
-/* =====================================================
-   INITIALIZE
-===================================================== */
-
-checkPasswordRules();
 
 </script>
 
