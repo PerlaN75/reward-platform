@@ -26,7 +26,7 @@
     border-radius: 20px;
     width: 100%;
     max-width: 400px;
-    margin-bottom: 15px; /* space before back button */
+    margin-bottom: 15px;
   }
 
   h1 {
@@ -70,7 +70,7 @@
     padding: 14px;
     border-radius: 10px;
     border: none;
-    background: #4b5563; /* gray */
+    background: #4b5563;
     color: #000;
     font-weight: bold;
     font-size: 16px;
@@ -100,12 +100,11 @@
     font-weight: bold;
   }
 
-  /* BACK BUTTON OUTSIDE THE CARD */
   .btn-back {
     padding: 14px 40px;
     border-radius: 12px;
     border: none;
-    background: #F59E0B; /* orange/yellow */
+    background: #F59E0B;
     color: #000;
     font-weight: bold;
     font-size: 15px;
@@ -125,26 +124,65 @@
     <h1>Create Account</h1>
     <p class="subtitle">🙊 From Nothing to Something 🍇</p>
     
-    <form>
+    <form id="registerForm">
       <label>Username</label>
-      <input type="text" placeholder="John">
+      <input type="text" id="username" placeholder="John" required>
       
       <label>Password</label>
-      <input type="password">
+      <input type="password" id="password" required>
       
       <label>Confirm Password</label>
-      <input type="password">
+      <input type="password" id="confirmPassword" required>
+
+      <!-- HIDDEN REFERRAL INPUT -->
+      <input type="hidden" id="refInput" name="referrer">
       
       <button type="submit" class="btn-register">Register</button>
     </form>
 
-    <div class="ref-box">Ref from URL: null</div>
+    <div class="ref-box" id="refBox">Ref from URL: null</div>
     
     <p class="login-text">Already have account? <a href="log.html">Login Here</a></p>
   </div>
 
-  <!-- BACK BUTTON IS NOW OUTSIDE THE CARD -->
   <a href="index.html" class="btn-back">← Back</a>
+
+<script>
+  // 1. READ REF FROM URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const ref = urlParams.get('ref');
+  const refBox = document.getElementById('refBox');
+  const refInput = document.getElementById('refInput');
+
+  if(ref) {
+    refBox.innerText = `Referred by: ${ref}`;
+    refBox.style.color = '#FBBF24'; // gold if someone referred
+    refInput.value = ref; // save it in hidden input
+  }
+
+  // 2. HANDLE REGISTER SUBMIT
+  document.getElementById('registerForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const referrer = refInput.value; // this will be "" or "Username"
+
+    if(password !== confirmPassword){
+      alert("Passwords do not match!");
+      return;
+    }
+
+    // HERE YOU SEND DATA TO YOUR BACKEND
+    console.log("Registering:", {username, password, referrer});
+    
+    alert(`Account created!\nUsername: ${username}\nReferred by: ${referrer || 'None'}`);
+    
+    // Example: redirect to login after
+    // window.location.href = "log.html";
+  });
+</script>
 
 </body>
 </html>
