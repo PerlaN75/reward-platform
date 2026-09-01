@@ -129,12 +129,24 @@
       return;
     }
 
-    // 1. SAVE USERNAME FOR HOME PAGE
-    localStorage.setItem("username", username);
+    // 1. GET USERS FROM "DATABASE"
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    // 2. CHECK IF USER EXISTS + PASSWORD MATCHES
+    const user = users.find(u => u.username === username && u.password === password);
+
+    if(!user){
+      alert("User not found or wrong password. Please register first.");
+      return;
+    }
+
+    // 3. SAVE CURRENT USER + POINTS FOR HOME PAGE
+    localStorage.setItem("username", user.username);
+    localStorage.setItem("points", user.points);
     
-    console.log("Logging in:", {username, password});
+    console.log("Logging in:", user);
     
-    // 2. REDIRECT TO HOME/MENU
+    // 4. REDIRECT TO HOME/MENU
     window.location.href = "home.html";
   });
 </script>
