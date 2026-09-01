@@ -105,13 +105,13 @@
 <body>
   
   <div class="welcome">
-    <h1>Welcome</h1>  <!-- REMOVED NAME -->
+    <h1>Welcome <span id="userName"></span></h1>
     <p>🙊 From Nothing to Something 🍇</p>
   </div>
 
   <div class="points-card">
     <div class="label">YOUR POINTS</div>
-    <div class="points" id="userPoints">70</div>
+    <div class="points" id="userPoints">0</div> <!-- REMOVED 70, NOW 0 -->
   </div>
 
   <div class="grid">
@@ -146,7 +146,16 @@
     </div>
   </div>
 
-  <button class="btn-logout" onclick="window.location.href='index.html'">Logout</button>
+  <button class="btn-logout" onclick="localStorage.clear(); window.location.href='index.html'">Logout</button>
+
+<script>
+  // LOAD USERNAME FROM LOGIN/REGISTER
+  document.getElementById('userName').innerText = localStorage.getItem("username") || "";
+
+  // LOAD POINTS - FOR NOW 0. LATER FETCH FROM DATABASE
+  // Example: document.getElementById('userPoints').innerText = userPointsFromDB;
+  document.getElementById('userPoints').innerText = localStorage.getItem("points") || "0";
+</script>
 
 </body>
 </html>
