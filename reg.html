@@ -29,30 +29,15 @@
     margin-bottom: 15px;
   }
 
-  h1 {
-    text-align: center;
-    font-size: 28px;
-    margin-bottom: 5px;
-  }
+  h1 { text-align: center; font-size: 28px; margin-bottom: 5px; }
+  .subtitle { text-align: center; color: #FFD700; font-size: 14px; margin-bottom: 25px; }
 
-  .subtitle {
-    text-align: center;
-    color: #FFD700;
-    font-size: 14px;
-    margin-bottom: 25px;
-  }
-
-  label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 14px;
-    color: #cbd5e1;
-  }
+  label { display: block; margin-bottom: 8px; font-size: 14px; color: #cbd5e1; }
 
   input {
     width: 100%;
     padding: 14px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     border-radius: 10px;
     border: none;
     background: #000;
@@ -60,10 +45,17 @@
     font-size: 15px;
     outline: none;
   }
+  input:focus { box-shadow: 0 0 0 2px #FFD700; }
 
-  input:focus {
-    box-shadow: 0 0 0 2px #FFD700;
+  .rules {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 15px;
+    display: none;
+    line-height: 1.6;
   }
+  .rules .valid { color: #22c55e; } /* green when valid */
+  .rules .invalid { color: #EF4444; } /* red when invalid */
 
   .btn-register {
     width: 100%;
@@ -82,23 +74,14 @@
     background: #000;
     padding: 12px;
     border-radius: 10px;
-    color: #22c55e; /* green */
+    color: #22c55e;
     font-size: 14px;
     text-align: center;
     margin-bottom: 15px;
   }
 
-  .login-text {
-    text-align: center;
-    font-size: 14px;
-    color: #cbd5e1;
-  }
-
-  .login-text a {
-    color: #3B82F6;
-    text-decoration: none;
-    font-weight: bold;
-  }
+  .login-text { text-align: center; font-size: 14px; color: #cbd5e1; }
+  .login-text a { color: #3B82F6; text-decoration: none; font-weight: bold; }
 
   .btn-back {
     padding: 14px 40px;
@@ -110,12 +93,6 @@
     font-size: 15px;
     text-decoration: none;
     box-shadow: 0 4px 0 #D97706;
-    transition: all 0.2s;
-  }
-
-  .btn-back:active {
-    transform: translateY(2px);
-    box-shadow: 0 2px 0 #D97706;
   }
 </style>
 </head>
@@ -127,14 +104,24 @@
     <form id="registerForm">
       <label>Username</label>
       <input type="text" id="username" placeholder="John" required>
+      <div class="rules" id="userRules">
+        <div id="u1" class="invalid">• First letter Capital</div>
+        <div id="u2" class="invalid">• Remaining letters lowercase</div>
+        <div id="u3" class="invalid">• No numbers or special characters</div>
+      </div>
       
       <label>Password</label>
       <input type="password" id="password" required>
+      <div class="rules" id="passRules">
+        <div id="p1" class="invalid">• At least 1 Capital letter</div>
+        <div id="p2" class="invalid">• At least 1 lowercase letter</div>
+        <div id="p3" class="invalid">• At least 1 number</div>
+        <div id="p4" class="invalid">• At least 1 special character</div>
+      </div>
       
       <label>Confirm Password</label>
       <input type="password" id="confirmPassword" required>
 
-      <!-- HIDDEN REFERRAL INPUT -->
       <input type="hidden" id="refInput" name="referrer">
       
       <button type="submit" class="btn-register">Register</button>
@@ -153,34 +140,60 @@
   const ref = urlParams.get('ref');
   const refBox = document.getElementById('refBox');
   const refInput = document.getElementById('refInput');
-
   if(ref) {
     refBox.innerText = `Referred by: ${ref}`;
-    refBox.style.color = '#FBBF24'; // gold if someone referred
-    refInput.value = ref; // save it in hidden input
+    refBox.style.color = '#FBBF24';
+    refInput.value = ref;
   }
 
-  // 2. HANDLE REGISTER SUBMIT
+  const username = document.getElementById('username');
+  const password = document.getElementById('password');
+  const confirmPassword = document.getElementById('confirmPassword');
+
+  // 2. SHOW RULES ON FOCUS
+  username.addEventListener('focus', () => document.getElementById('userRules').style.display = 'block');
+  password.addEventListener('focus', () => document.getElementById('passRules').style.display = 'block');
+
+  // 3. LIVE VALIDATION
+  username.addEventListener('input', () => {
+    const val = username.value;
+    document.getElementById('u1').className = /^[A-Z]/.test(val) ? 'valid' : 'invalid';
+    document.getElementById('u2').className = /^[A-Z][a-z]*$/.test(val) ? 'valid' : 'invalid';
+    document.getElementById('u3').className = /^[A-Za-z]+$/.test(val) ? 'valid' : 'invalid';
+  });
+
+  password.addEventListener('input', () => {
+    const val = password.value;
+    document.getElementById('p1').className = /[A-Z]/.test(val) ? 'valid' : 'invalid';
+    document.getElementById('p2').className = /[a-z]/.test(val) ? 'valid' : 'invalid';
+    document.getElementById('p3').className = /[0-9]/.test(val) ? 'valid' : 'invalid';
+    document.getElementById('p4').className = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(val) ? 'valid' : 'invalid';
+  });
+
+  // 4. SUBMIT
   document.getElementById('registerForm').addEventListener('submit', function(e){
     e.preventDefault();
     
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    const referrer = refInput.value; // this will be "" or "Username"
+    const userVal = username.value;
+    const passVal = password.value;
+    const confirmVal = confirmPassword.value;
+    const referrer = refInput.value;
 
-    if(password !== confirmPassword){
-      alert("Passwords do not match!");
-      return;
-    }
+    const userValid = /^[A-Z][a-z]+$/.test(userVal);
+    const passValid = /[A-Z]/.test(passVal) && /[a-z]/.test(passVal) && /[0-9]/.test(passVal) && /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(passVal);
+    const confirmValid = passVal === confirmVal;
 
-    // HERE YOU SEND DATA TO YOUR BACKEND
-    console.log("Registering:", {username, password, referrer});
+    if(!userValid){ alert("Username format is wrong"); return; }
+    if(!passValid){ alert("Password format is wrong"); return; }
+    if(!confirmValid){ alert("Passwords do not match"); return; }
+
+    // Save username for home page
+    localStorage.setItem("username", userVal);
     
-    alert(`Account created!\nUsername: ${username}\nReferred by: ${referrer || 'None'}`);
+    console.log("Registering:", {username: userVal, password: passVal, referrer});
     
-    // Example: redirect to login after
-    // window.location.href = "log.html";
+    // GO TO MENU
+    window.location.href = "home.html";
   });
 </script>
 
