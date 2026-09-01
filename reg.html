@@ -3,181 +3,148 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Create Account</title>
+<title>Register - Reward Platform</title>
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
   
   body {
-    background: #3a3f1e; /* dark green */
+    background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #1a0033 100%);
     color: #fff;
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 20px;
   }
 
-  .register-box {
-    background: #2d3018; /* darker green box */
-    padding: 35px 30px;
-    border-radius: 24px;
+  .card {
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 30px 25px;
+    border-radius: 20px;
     width: 100%;
-    max-width: 380px;
+    max-width: 400px;
+    margin-bottom: 15px; /* space before back button */
   }
 
-  h2 { text-align: center; font-size: 28px; margin-bottom: 8px; font-weight: bold; }
-  .subtitle { text-align: center; color: #FFC107; font-size: 14px; margin-bottom: 25px; }
+  h1 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 5px;
+  }
 
-  label { display: block; font-size: 14px; margin-bottom: 6px; color: #ccc; }
+  .subtitle {
+    text-align: center;
+    color: #FFD700;
+    font-size: 14px;
+    margin-bottom: 25px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #cbd5e1;
+  }
 
   input {
-    width: 100%; padding: 14px 16px; margin-bottom: 5px;
-    border-radius: 12px; border: 2px solid #000;
-    background: #000; color: #fff; font-size: 15px; outline: none;
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: none;
+    background: #000;
+    color: #fff;
+    font-size: 15px;
+    outline: none;
   }
-  input.error { border-color: #EF4444; }
-  input.success { border-color: #22C55E; }
 
-  .error-text {
-    color: #EF4444;
-    font-size: 12px;
-    margin-bottom: 12px;
-    min-height: 16px;
+  input:focus {
+    box-shadow: 0 0 0 2px #FFD700;
   }
 
   .btn-register {
-    width: 100%; padding: 14px; border-radius: 12px; border: none;
-    background: #4ADE80; /* green button */
-    color: #000; font-size: 16px;
-    font-weight: bold; cursor: pointer; margin: 10px 0 15px 0;
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    background: #4b5563; /* gray */
+    color: #000;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 15px;
   }
-  .btn-register:disabled { background: #555; cursor: not-allowed; }
 
-  .btn-back {
-    display: block;
-    width: 140px;
-    margin: 0 auto 15px auto; /* center + space below */
+  .ref-box {
+    background: #000;
     padding: 12px;
-    border-radius: 14px;
-    background: #FFA000; /* orange rectangle */
-    color: #000; /* black text */
+    border-radius: 10px;
+    color: #22c55e; /* green */
+    font-size: 14px;
     text-align: center;
+    margin-bottom: 15px;
+  }
+
+  .login-text {
+    text-align: center;
+    font-size: 14px;
+    color: #cbd5e1;
+  }
+
+  .login-text a {
+    color: #3B82F6;
     text-decoration: none;
     font-weight: bold;
-    font-size: 15px;
   }
 
-  .ref-box { background: #000; padding: 12px; border-radius: 10px; color: #22C55E; font-size: 13px; margin-bottom: 15px; }
-  .login-link { text-align: center; font-size: 14px; color: #ccc; }
-  .login-link a { color: #3B82F6; text-decoration: none; font-weight: bold; }
+  /* BACK BUTTON OUTSIDE THE CARD */
+  .btn-back {
+    padding: 14px 40px;
+    border-radius: 12px;
+    border: none;
+    background: #F59E0B; /* orange/yellow */
+    color: #000;
+    font-weight: bold;
+    font-size: 15px;
+    text-decoration: none;
+    box-shadow: 0 4px 0 #D97706;
+    transition: all 0.2s;
+  }
+
+  .btn-back:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #D97706;
+  }
 </style>
 </head>
 <body>
-  <div class="register-box">
-    <h2>Create Account</h2>
-    <div class="subtitle">🐒 From Nothing to Something 🍇</div>
+  <div class="card">
+    <h1>Create Account</h1>
+    <p class="subtitle">🙊 From Nothing to Something 🍇</p>
     
-    <label>Username</label>
-    <input type="text" id="username" placeholder="John">
-    <div class="error-text" id="user-error"></div>
+    <form>
+      <label>Username</label>
+      <input type="text" placeholder="John">
+      
+      <label>Password</label>
+      <input type="password">
+      
+      <label>Confirm Password</label>
+      <input type="password">
+      
+      <button type="submit" class="btn-register">Register</button>
+    </form>
+
+    <div class="ref-box">Ref from URL: null</div>
     
-    <label>Password</label>
-    <input type="password" id="password" placeholder="">
-    <div class="error-text" id="pass-error"></div>
-    
-    <label>Confirm Password</label>
-    <input type="password" id="confirm" placeholder="">
-    <div class="error-text" id="confirm-error"></div>
-    
-    <button class="btn-register" id="registerBtn" disabled>Register</button>
-    
-    <a href="index.html" class="btn-back">← Back</a>
-    
-    <div class="ref-box" id="refBox">Ref from URL: null</div>
-    
-    <div class="login-link">
-      Already have account? <a href="log.html">Login Here</a>
-    </div>
+    <p class="login-text">Already have account? <a href="log.html">Login Here</a></p>
   </div>
 
-<script>
-  const username = document.getElementById('username');
-  const password = document.getElementById('password');
-  const confirm = document.getElementById('confirm');
-  const btn = document.getElementById('registerBtn');
+  <!-- BACK BUTTON IS NOW OUTSIDE THE CARD -->
+  <a href="index.html" class="btn-back">← Back</a>
 
-  // 1. Get ref from URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const ref = urlParams.get('ref');
-  document.getElementById('refBox').innerText = 'Ref from URL: ' + (ref ? ref : 'null');
-
-  // 2. Username validation: First capital, rest lowercase, no digits/special/space
-  username.addEventListener('input', () => {
-    let val = username.value;
-    const regex = /^[A-Z][a-z]*$/;
-    const errorEl = document.getElementById('user-error');
-    
-    if(val === '') {
-      errorEl.innerText = '';
-      username.className = '';
-    } else if(regex.test(val)) {
-      errorEl.innerText = '';
-      username.className = 'success';
-    } else {
-      errorEl.innerText = 'First letter capital, rest lowercase. No numbers or special characters.';
-      username.className = 'error';
-    }
-    checkForm();
-  });
-
-  // 3. Password validation: 1 capital, 1 lowercase, 1 digit, 1 special
-  password.addEventListener('input', () => {
-    let val = password.value;
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
-    const errorEl = document.getElementById('pass-error');
-    
-    if(val === '') {
-      errorEl.innerText = '';
-      password.className = '';
-    } else if(regex.test(val)) {
-      errorEl.innerText = '';
-      password.className = 'success';
-    } else {
-      errorEl.innerText = 'Need: 1 capital, 1 lowercase, 1 digit, 1 special character @ $ ! % * ? &';
-      password.className = 'error';
-    }
-    checkForm();
-  });
-
-  // 4. Confirm password
-  confirm.addEventListener('input', () => {
-    const errorEl = document.getElementById('confirm-error');
-    if(confirm.value === '') {
-      errorEl.innerText = '';
-      confirm.className = '';
-    } else if(confirm.value === password.value) {
-      errorEl.innerText = '';
-      confirm.className = 'success';
-    } else {
-      errorEl.innerText = 'Passwords do not match';
-      confirm.className = 'error';
-    }
-    checkForm();
-  });
-
-  // 5. Enable button only if all valid
-  function checkForm() {
-    const userValid = /^[A-Z][a-z]*$/.test(username.value);
-    const passValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/.test(password.value);
-    const confirmValid = confirm.value === password.value && confirm.value !== '';
-    
-    btn.disabled = !(userValid && passValid && confirmValid);
-  }
-
-  // 6. On Register click → go to home.html
-  btn.addEventListener('click', () => {
-    window.location.href = 'home.html';
-  });
-</script>
 </body>
 </html>
