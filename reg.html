@@ -62,12 +62,18 @@
     padding: 14px;
     border-radius: 10px;
     border: none;
-    background: #4b5563;
-    color: #000;
+    background: #4b5563; /* gray when disabled */
+    color: #fff;
     font-weight: bold;
     font-size: 16px;
-    cursor: pointer;
+    cursor: not-allowed;
     margin-bottom: 15px;
+    transition: all 0.3s;
+  }
+
+  .btn-register.active {
+    background: #22c55e; /* green when valid */
+    cursor: pointer;
   }
 
   .ref-box {
@@ -105,9 +111,10 @@
       <label>Username</label>
       <input type="text" id="username" placeholder="John" required>
       <div class="rules" id="userRules">
-        <div id="u1" class="invalid">• First letter Capital</div>
-        <div id="u2" class="invalid">• Remaining letters lowercase</div>
-        <div id="u3" class="invalid">• No numbers or special characters</div>
+        <div id="u1" class="invalid">• 4-12 characters long</div>
+        <div id="u2" class="invalid">• First letter Capital</div>
+        <div id="u3" class="invalid">• Remaining letters lowercase</div>
+        <div id="u4" class="invalid">• No numbers or special characters</div>
       </div>
       
       <label>Password</label>
@@ -124,7 +131,7 @@
 
       <input type="hidden" id="refInput" name="referrer">
       
-      <button type="submit" class="btn-register">Register</button>
+      <button type="submit" class="btn-register" id="registerBtn">Register</button>
     </form>
 
     <div class="ref-box" id="refBox">Ref from URL: null</div>
@@ -149,28 +156,61 @@
   const username = document.getElementById('username');
   const password = document.getElementById('password');
   const confirmPassword = document.getElementById('confirmPassword');
+  const registerBtn = document.getElementById('registerBtn');
 
   // 2. SHOW RULES ON FOCUS
   username.addEventListener('focus', () => document.getElementById('userRules').style.display = 'block');
   password.addEventListener('focus', () => document.getElementById('passRules').style.display = 'block');
 
-  // 3. LIVE VALIDATION
-  username.addEventListener('input', () => {
-    const val = username.value;
-    document.getElementById('u1').className = /^[A-Z]/.test(val) ? 'valid' : 'invalid';
-    document.getElementById('u2').className = /^[A-Z][a-z]*$/.test(val) ? 'valid' : 'invalid';
-    document.getElementById('u3').className = /^[A-Za-z]+$/.test(val) ? 'valid' : 'invalid';
-  });
+  // 3. VALIDATION FUNCTIONS
+  function validateUsername(val){
+    const rules = {
+      len: val.length >= 4 && val.length <= 12,
+      first: /^[A-Z]/.test(val),
+      rest: /^[A-Z][a-z]*$/.test(val),
+      chars: /^[A-Za-z]+$/.test(val)
+    };
+    document.getElementById('u1').className = rules.len ? 'valid' : 'invalid';
+    document.getElementById('u2').className = rules.first ? 'valid' : 'invalid';
+    document.getElementById('u3').className = rules.rest ? 'valid' : 'invalid';
+    document.getElementById('u4').className = rules.chars ? 'valid' : 'invalid';
+    return rules.len && rules.first && rules.rest && rules.chars;
+  }
 
-  password.addEventListener('input', () => {
-    const val = password.value;
-    document.getElementById('p1').className = /[A-Z]/.test(val) ? 'valid' : 'invalid';
-    document.getElementById('p2').className = /[a-z]/.test(val) ? 'valid' : 'invalid';
-    document.getElementById('p3').className = /[0-9]/.test(val) ? 'valid' : 'invalid';
-    document.getElementById('p4').className = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(val) ? 'valid' : 'invalid';
-  });
+  function validatePassword(val){
+    const rules = {
+      cap: /[A-Z]/.test(val),
+      low: /[a-z]/.test(val),
+      num: /[0-9]/.test(val),
+      spec: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(val)
+    };
+    document.getElementById('p1').className = rules.cap ? 'valid' : 'invalid';
+    document.getElementById('p2').className = rules.low ? 'valid' : 'invalid';
+    document.getElementById('p3').className = rules.num ? 'valid' : 'invalid';
+    document.getElementById('p4').className = rules.spec ? 'valid' : 'invalid';
+    return rules.cap && rules.low && rules.num && rules.spec;
+  }
 
-  // 4. SUBMIT + SAVE USER
+  function checkForm(){
+    const userValid = validateUsername(username.value);
+    const passValid = validatePassword(password.value);
+    const confirmValid = password.value === confirmPassword.value && password.value !== "";
+
+    if(userValid && passValid && confirmValid){
+      registerBtn.classList.add('active');
+      registerBtn.disabled = false;
+    } else {
+      registerBtn.classList.remove('active');
+      registerBtn.disabled = true;
+    }
+  }
+
+  // 4. LIVE CHECK
+  username.addEventListener('input', checkForm);
+  password.addEventListener('input', checkForm);
+  confirmPassword.addEventListener('input', checkForm);
+
+  // 5. SUBMIT + SAVE USER
   document.getElementById('registerForm').addEventListener('submit', function(e){
     e.preventDefault();
     
@@ -179,11 +219,11 @@
     const confirmVal = confirmPassword.value;
     const referrer = refInput.value;
 
-    const userValid = /^[A-Z][a-z]+$/.test(userVal);
+    const userValid = /^[A-Z][a-z]{3,11}$/.test(userVal); // 4-12 chars total
     const passValid = /[A-Z]/.test(passVal) && /[a-z]/.test(passVal) && /[0-9]/.test(passVal) && /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(passVal);
     const confirmValid = passVal === confirmVal;
 
-    if(!userValid){ alert("Username format is wrong"); return; }
+    if(!userValid){ alert("Username must be 4-12 letters, First Capital"); return; }
     if(!passValid){ alert("Password format is wrong"); return; }
     if(!confirmValid){ alert("Passwords do not match"); return; }
 
@@ -195,18 +235,18 @@
       return;
     }
 
-    // 1. SAVE USER TO "DATABASE"
+    // SAVE USER TO "DATABASE"
     users.push({username: userVal, password: passVal, points: 0, referrer: referrer});
     localStorage.setItem("users", JSON.stringify(users));
 
-    // 2. SAVE CURRENT USER FOR HOME PAGE
+    // SAVE CURRENT USER FOR HOME PAGE
     localStorage.setItem("username", userVal);
     localStorage.setItem("points", "0");
     
     console.log("Registered:", {username: userVal, referrer});
     alert(`Account created successfully!\nWelcome ${userVal}`);
     
-    // 3. GO TO MENU
+    // GO TO MENU
     window.location.href = "home.html";
   });
 </script>
