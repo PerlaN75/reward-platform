@@ -114,15 +114,28 @@
     <p class="forgot">Forgot Password? <a href="#">Reset</a></p>
   </div>
 
+  <!-- BACK BUTTON OUTSIDE THE CARD -->
   <a href="index.html" class="btn-back">← Back</a>
 
 <script>
   document.getElementById('loginForm').addEventListener('submit', function(e){
     e.preventDefault();
-    const username = document.getElementById('username').value;
+    
+    const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value;
+
+    if(username === "" || password === ""){
+      alert("Please fill all fields");
+      return;
+    }
+
+    // 1. SAVE USERNAME FOR HOME PAGE
+    localStorage.setItem("username", username);
+    
     console.log("Logging in:", {username, password});
-    alert(`Logging in: ${username}`);
+    
+    // 2. REDIRECT TO HOME/MENU
+    window.location.href = "home.html";
   });
 </script>
 
