@@ -5,91 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { 
-      background: #2f3e1a; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      min-height: 100vh; 
-      padding: 20px;
-    }
-   .container { 
-      background: #3a4a22; 
-      padding: 35px 25px; 
-      border-radius: 20px; 
-      width: 100%; 
-      max-width: 380px; 
-      text-align: center; 
-    }
+    body { background: #2f3e1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+   .container { background: #3a4a22; padding: 35px 25px; border-radius: 20px; width: 100%; max-width: 380px; text-align: center; }
     h2 { color: white; font-size: 30px; margin-bottom: 8px; font-weight: bold; }
    .tagline { color: #fbbf24; font-size: 14px; margin-bottom: 25px; }
     label { display: block; text-align: left; color: #ddd; margin: 15px 0 5px 5px; font-size: 15px; }
-    input { 
-      width: 100%; 
-      padding: 14px; 
-      background: #000; 
-      border: 2px solid transparent;
-      border-radius: 12px; 
-      color: white; 
-      font-size: 16px;
-      outline: none;
-    }
-    input::placeholder { color: #666; }
+    input { width: 100%; padding: 14px; background: #000; border: 2px solid transparent; border-radius: 12px; color: white; font-size: 16px; outline: none; }
     input:focus { border: 2px solid #f59e0b; }
-    
-    /* Hidden rules box */
-   .rules {
-      display: none;
-      background: #1a1a1a;
-      color: #ccc;
-      font-size: 12px;
-      text-align: left;
-      padding: 10px;
-      border-radius: 8px;
-      margin-top: 5px;
-      line-height: 1.6;
-    }
+   .rules { display: none; background: #1a1a1a; color: #ccc; font-size: 12px; text-align: left; padding: 10px; border-radius: 8px; margin-top: 5px; line-height: 1.6; }
    .rules.show { display: block; }
    .rules span { color: #22c55e; }
-
-    .register-btn { 
-      width: 100%; 
-      padding: 15px; 
-      margin: 20px 0 12px 0;
-      background: #555; 
-      color: black; 
-      border: none; 
-      border-radius: 12px; 
-      cursor: not-allowed; 
-      font-size: 18px; 
-      font-weight: bold;
-      transition: 0.3s;
-    }
-    .register-btn.active {
-      background: #22c55e; /* green when valid */
-      cursor: pointer;
-    }
-    .back-btn { 
-      width: 100%; 
-      padding: 14px; 
-      background: #f59e0b; 
-      color: black; 
-      border: none; 
-      border-radius: 12px; 
-      cursor: pointer; 
-      font-size: 16px; 
-      font-weight: bold;
-      margin-bottom: 15px;
-    }
-   .ref-box { 
-      background: #000; 
-      color: #22c55e; 
-      padding: 12px; 
-      border-radius: 10px; 
-      font-size: 14px; 
-      text-align: left;
-      margin-bottom: 15px;
-    }
+    .register-btn { width: 100%; padding: 15px; margin: 20px 0 12px 0; background: #555; color: black; border: none; border-radius: 12px; cursor: not-allowed; font-size: 18px; font-weight: bold; transition: 0.3s; }
+    .register-btn.active { background: #22c55e; cursor: pointer; }
+    .back-btn { width: 100%; padding: 14px; background: #f59e0b; color: black; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: bold; margin-bottom: 15px; }
+   .ref-box { background: #000; color: #22c55e; padding: 12px; border-radius: 10px; font-size: 14px; text-align: left; margin-bottom: 15px; }
    .login-link { color: #ccc; font-size: 14px; }
    .login-link a { color: #3b82f6; text-decoration: none; font-weight: bold; }
   </style>
@@ -106,6 +35,12 @@
     <span>•</span> Lowercase letters only<br>
     <span>•</span> No numbers or characters
   </div>
+  
+  <label>Phone Number</label>
+  <input id="phone" type="tel" placeholder="+250 788123456" oninput="checkForm()">
+
+  <label>Gmail</label>
+  <input id="email" type="email" placeholder="you@gmail.com" oninput="checkForm()">
   
   <label>Password</label>
   <input id="password" type="password" onfocus="showRules('passRules')" onblur="hideRules('passRules')" oninput="checkForm()">
@@ -129,7 +64,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, collection, query, where, getDocs, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -150,63 +85,51 @@
 
   function showRules(id){ document.getElementById(id).classList.add('show'); }
   function hideRules(id){ document.getElementById(id).classList.remove('show'); }
+  function makeRefCode(name) { return name.toUpperCase() + Math.floor(Math.random() * 900 + 100); }
 
-  function makeRefCode(name) {
-    return name.toUpperCase() + Math.floor(Math.random() * 900 + 100);
-  }
-
-  function validateUsername(u){
-    const regex = /^[A-Z][a-z]+$/; // Capital + lowercase only
-    return regex.test(u);
-  }
-
-  function validatePassword(p){
-    const lengthOk = p.length >= 4 && p.length <= 8;
-    const hasCapital = /[A-Z]/.test(p);
-    const hasDigit = /[0-9]/.test(p);
-    const hasSpecial = /[\$&#@?!\%]/.test(p);
-    return lengthOk && hasCapital && hasDigit && hasSpecial;
-  }
+  function validateUsername(u){ return /^[A-Z][a-z]+$/.test(u); }
+  function validatePassword(p){ return p.length >= 4 && p.length <= 8 && /[A-Z]/.test(p) && /[0-9]/.test(p) && /[\$&#@?!\%]/.test(p); }
+  function validatePhone(p){ return /^\+250\s?7\d{8}$/.test(p.replace(/\s/g,'')); } // +250788123456
+  function validateEmail(e){ return e.endsWith("@gmail.com"); }
 
   window.checkForm = function() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
+    const u = document.getElementById('username').value;
+    const p = document.getElementById('password').value;
+    const cp = document.getElementById('confirmPassword').value;
+    const ph = document.getElementById('phone').value;
+    const em = document.getElementById('email').value;
     const btn = document.getElementById('registerBtn');
-
-    const valid = validateUsername(username) && validatePassword(password) && password === confirmPassword && password !== "";
-    
-    if(valid){
-      btn.classList.add('active');
-    } else {
-      btn.classList.remove('active');
-    }
+    const valid = validateUsername(u) && validatePassword(p) && p === cp && validatePhone(ph) && validateEmail(em);
+    btn.classList.toggle('active', valid);
   }
 
   window.register = async function() {
     const username = document.getElementById('username').value;
+    const phone = document.getElementById('phone').value;
+    const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
     const referredBy = refFromUrl;
     const btn = document.getElementById('registerBtn');
-
     if(!btn.classList.contains('active')) return;
-
-    const email = username + "@reward.com";
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const uid = userCredential.user.uid;
       const myReferralCode = makeRefCode(username);
 
+      // Send OTP to email
+      await sendEmailVerification(userCredential.user);
+
       const userData = {
         username,
         email,
+        phone,
         referralCode: myReferralCode,
         referredBy: referredBy,
         referrals: [],
         balance: 0,
-        level: 1
+        level: 1,
+        emailVerified: false
       };
       await setDoc(doc(db, "users", uid), userData);
 
@@ -221,8 +144,8 @@
         });
       }
 
-      alert("Registered! Your referral code: " + myReferralCode + " 🐒");
-      window.location.href = "home.html";
+      alert("Account created! Check your Gmail for verification link. Verify to activate account 🐒");
+      window.location.href = "log.html"; // send to login to verify
     } catch (e) {
       alert(e.message);
     }
