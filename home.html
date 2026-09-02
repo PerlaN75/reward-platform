@@ -111,7 +111,7 @@
 
   <div class="points-card">
     <div class="label">YOUR POINTS</div>
-    <div class="points" id="userPoints">0</div> <!-- REMOVED 70, NOW 0 -->
+    <div class="points" id="userPoints">0</div>
   </div>
 
   <div class="grid">
@@ -146,15 +146,32 @@
     </div>
   </div>
 
-  <button class="btn-logout" onclick="localStorage.clear(); window.location.href='index.html'">Logout</button>
+  <button class="btn-logout" onclick="logout()">Logout</button>
 
 <script>
-  // LOAD USERNAME FROM LOGIN/REGISTER
-  document.getElementById('userName').innerText = localStorage.getItem("username") || "";
+  // ON PAGE LOAD
+  window.addEventListener('load', function(){
+    // 1. CHECK IF USER IS LOGGED IN
+    const currentUser = localStorage.getItem("currentUser"); // CHANGED FROM username
+    const points = localStorage.getItem("points") || "0";
 
-  // LOAD POINTS - FOR NOW 0. LATER FETCH FROM DATABASE
-  // Example: document.getElementById('userPoints').innerText = userPointsFromDB;
-  document.getElementById('userPoints').innerText = localStorage.getItem("points") || "0";
+    if(!currentUser){
+      // If no one logged in, kick back to login
+      window.location.href = "log.html";
+      return;
+    }
+
+    // 2. SHOW NAME AND POINTS
+    document.getElementById('userName').innerText = currentUser;
+    document.getElementById('userPoints').innerText = points;
+  });
+
+  // 3. PROPER LOGOUT - ONLY CLEAR CURRENT USER, NOT ALL USERS
+  function logout(){
+    localStorage.removeItem("currentUser"); // only remove session
+    localStorage.removeItem("points");
+    window.location.href = "index.html";
+  }
 </script>
 
 </body>
