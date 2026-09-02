@@ -92,7 +92,8 @@
     max-width: 320px;
   }
   .popup h2 { color: #22c55e; margin-bottom: 10px; font-size: 20px; }
-  .popup p { color: #fff; margin-bottom: 20px; }
+  .popup.error h2 { color: #EF4444; } /* Red for errors */
+  .popup p { color: #fff; margin-bottom: 20px; white-space: pre-line; }
   .popup-btn {
     background: #FFD700;
     color: #000;
@@ -144,22 +145,29 @@
 
   <!-- CUSTOM POPUP HTML -->
   <div class="popup-overlay" id="popupOverlay">
-    <div class="popup">
-      <h2>🎉 Success!</h2>
+    <div class="popup" id="popupBox">
+      <h2 id="popupTitle">🎉 Success!</h2>
       <p id="popupMessage"></p>
       <button class="popup-btn" onclick="closePopup()">OK</button>
     </div>
   </div>
 
 <script>
-  // POPUP FUNCTIONS
-  function showPopup(message) {
+  let redirectAfterPopup = false; // NEW: control redirect
+
+  // POPUP FUNCTIONS - UPDATED
+  function showPopup(message, type = 'success') {
+    document.getElementById('popupTitle').innerText = type === 'error' ? 'Error!' : '🎉 Success!';
     document.getElementById('popupMessage').innerText = message;
+    document.getElementById('popupBox').className = 'popup ' + type;
     document.getElementById('popupOverlay').style.display = 'flex';
   }
   function closePopup() {
     document.getElementById('popupOverlay').style.display = 'none';
-    window.location.href = "home.html"; // redirect after closing
+    // FIX: Only redirect if we set the flag
+    if(redirectAfterPopup){
+      window.location.href = "home.html";
+    }
   }
 
   // 1. READ REF FROM URL
@@ -238,21 +246,32 @@
     const passValid = /[A-Z]/.test(passVal) && /[a-z]/.test(passVal) && /[0-9]/.test(passVal) && /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(passVal);
     const confirmValid = passVal === confirmVal;
 
-    if(!userValid){ showPopup("Username must be 4-12 letters, First Capital"); return; }
-    if(!passValid){ showPopup("Password format is wrong"); return; }
-    if(!confirmValid){ showPopup("Passwords do not match"); return; }
+    if(!userValid){ showPopup("Username must be 4-12 letters, First Capital", 'error'); return; }
+    if(!passValid){ showPopup("Password format is wrong", 'error'); return; }
+    if(!confirmValid){ showPopup("Passwords do not match", 'error'); return; }
 
     let users = JSON.parse(localStorage.getItem("users")) || [];
     const exists = users.find(u => u.username === userVal);
-    if(exists){ showPopup("Username already taken. Please choose another."); return; }
+    if(exists){ showPopup("Username already taken. Please choose another.", 'error'); return; }
 
+    // SAVE USER TO "DATABASE"
     users.push({username: userVal, password: passVal, points: 0, referrer: referrer});
     localStorage.setItem("users", JSON.stringify(users));
-    localStorage.setItem("username", userVal);
+    
+    // FIX: USE "currentUser" TO MATCH LOG.HTML
+    localStorage.setItem("currentUser", userVal);
     localStorage.setItem("points", "0");
     
-    // USE CUSTOM POPUP INSTEAD OF ALERT
-    showPopup(`Account created successfully!\nWelcome ${userVal}`);
+    console.log("SAVED USERS:", users); // For debugging
+    
+    // FIX: SET FLAG AND USE DELAY
+    redirectAfterPopup = true;
+    showPopup(`Account created successfully!\nWelcome ${userVal}`, 'success');
+    
+    // Give browser 800ms to save before we redirect
+    setTimeout(() => {
+      closePopup();
+    }, 800);
   });
 </script>
 
