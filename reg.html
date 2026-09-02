@@ -6,31 +6,46 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #2f3e1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; flex-direction: column; }
-  .container { background: #3a4a22; padding: 35px 25px; border-radius: 20px; width: 100%; max-width: 380px; text-align: center; margin-bottom: 20px; }
-    h2 { color: white; font-size: 30px; margin-bottom: 8px; font-weight: bold; }
-  .tagline { color: #fbbf24; font-size: 14px; margin-bottom: 25px; }
-    label { display: block; text-align: left; color: #ddd; margin: 15px 0 5px 5px; font-size: 15px; }
-    input { width: 100%; padding: 14px; background: #000; border: 2px solid transparent; border-radius: 12px; color: white; font-size: 16px; outline: none; }
+  .container { background: #3a4a22; padding: 30px 20px; border-radius: 20px; width: 100%; max-width: 350px; text-align: center; margin-bottom: 15px; }
+    h2 { color: white; font-size: 28px; margin-bottom: 5px; font-weight: bold; }
+  .tagline { color: #fbbf24; font-size: 13px; margin-bottom: 20px; }
+    label { display: block; text-align: left; color: #ddd; margin: 12px 0 4px 4px; font-size: 14px; }
+    
+    /* Smaller inputs like screenshot */
+    input { width: 100%; padding: 11px 14px; background: #000; border: 2px solid transparent; border-radius: 10px; color: white; font-size: 15px; outline: none; }
     input::placeholder { color: #666; }
     input:focus { border: 2px solid #f59e0b; }
     input:disabled { background: #222; color: #555; }
     
-  .input-with-btn { display: flex; gap: 8px; }
+  .input-with-btn { display: flex; gap: 6px; }
   .input-with-btn input { flex: 1; }
-  .verify-btn { padding: 14px 16px; background: #3b82f6; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; }
+  .verify-btn { padding: 11px 12px; background: #3b82f6; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 13px; }
   .verify-btn:disabled { background: #555; cursor: not-allowed; }
 
-  .rules { display: none; background: #1a1a1a; color: #ccc; font-size: 12px; text-align: left; padding: 10px; border-radius: 8px; margin-top: 5px; line-height: 1.6; }
+  .rules { display: none; background: #1a1a1a; color: #ccc; font-size: 11px; text-align: left; padding: 8px; border-radius: 8px; margin-top: 4px; line-height: 1.5; }
   .rules.show { display: block; }
   .rules span { color: #22c55e; }
 
-   .register-btn { width: 100%; padding: 15px; margin: 20px 0 12px 0; background: #555; color: black; border: none; border-radius: 12px; cursor: not-allowed; font-size: 18px; font-weight: bold; transition: 0.3s; }
+   .register-btn { width: 100%; padding: 13px; margin: 16px 0 10px 0; background: #555; color: black; border: none; border-radius: 10px; cursor: not-allowed; font-size: 16px; font-weight: bold; transition: 0.3s; }
    .register-btn.active { background: #22c55e; cursor: pointer; }
-  .back-btn-outside { width: 100%; max-width: 380px; padding: 14px; background: #f59e0b; color: black; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: bold; }
-  .ref-box { background: #000; color: #22c55e; padding: 12px; border-radius: 10px; font-size: 14px; text-align: left; margin-bottom: 15px; }
-  .login-link { color: #ccc; font-size: 14px; margin-bottom: 5px; }
+
+    /* Back button OUTSIDE card, small and centered like screenshot */
+   .back-btn-outside { 
+      width: 60%; /* small like in screenshot */
+      max-width: 210px;
+      padding: 11px; 
+      background: #f59e0b; 
+      color: black; 
+      border: none; 
+      border-radius: 10px; 
+      cursor: pointer; 
+      font-size: 15px; 
+      font-weight: bold;
+    }
+  .ref-box { background: #000; color: #22c55e; padding: 10px; border-radius: 8px; font-size: 13px; text-align: left; margin-bottom: 12px; }
+  .login-link { color: #ccc; font-size: 13px; margin-bottom: 12px; }
   .login-link a { color: #3b82f6; text-decoration: none; font-weight: bold; }
-  .success { color: #22c55e; font-size: 12px; text-align: left; margin-top: 5px; }
+  .success { color: #22c55e; font-size: 11px; text-align: left; margin-top: 4px; }
   </style>
 </head>
 <body>
@@ -39,7 +54,7 @@
   <div class="tagline">🐒 From Nothing to Something 🍇</div>
   
   <label>Username</label>
-  <input id="username" type="text" placeholder="John" onfocus="showRules('userRules')" onblur="hideRules('userRules')" oninput="checkForm()">
+  <input id="username" type="text" placeholder="Username" onfocus="showRules('userRules')" onblur="hideRules('userRules')" oninput="checkForm()">
   <div id="userRules" class="rules">
     <span>•</span> Starting with capital letter<br>
     <span>•</span> Lowercase letters only<br>
@@ -57,7 +72,7 @@
   <input id="otp" type="text" placeholder="123456" maxlength="6" oninput="checkForm()">
   
   <label>Password</label>
-  <input id="password" type="password" onfocus="showRules('passRules')" onblur="hideRules('passRules')" oninput="checkForm()">
+  <input id="password" type="password" placeholder="Password" onfocus="showRules('passRules')" onblur="hideRules('passRules')" oninput="checkForm()">
   <div id="passRules" class="rules">
     <span>•</span> 4-8 characters<br>
     <span>•</span> At least 1 capital letter<br>
@@ -66,15 +81,16 @@
   </div>
   
   <label>Confirm Password</label>
-  <input id="confirmPassword" type="password" oninput="checkForm()">
+  <input id="confirmPassword" type="password" placeholder="Confirm Password" oninput="checkForm()">
   
-  <button id="registerBtn" class="register-btn" onclick="register()">Register</button>
+  <button id="registerBtn" class="register-btn" onclick="register()">REGISTER</button>
   
   <div class="ref-box" id="refDisplay">Ref from URL: null</div>
   
   <div class="login-link">Already have account? <a href="log.html">Login Here</a></div>
 </div>
 
+<!-- Back button OUTSIDE, small -->
 <button class="back-btn-outside" onclick="window.location.href='home.html'">← Back</button>
 
 <script type="module">
@@ -122,15 +138,12 @@
   window.sendOTP = function() {
     const email = document.getElementById('email').value;
     if(!validateEmail(email)){ alert("Email must be @gmail.com"); return; }
-    
-    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString(); // 6 digit
-    console.log("OTP for " + email + ": " + generatedOTP); // For testing. In production use Firebase Email API
-    
-    alert("OTP sent to " + email + ". Check inbox/spam. Code: " + generatedOTP); // Remove code in production
+    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+    alert("OTP sent to " + email + ". Check inbox. Code: " + generatedOTP);
     document.getElementById('email').disabled = true;
     document.getElementById('verifyBtn').disabled = true;
     document.getElementById('verifyBtn').innerText = "Sent";
-    document.getElementById('emailStatus').innerHTML = '<div class="success">✓ Code sent to ' + email + '</div>';
+    document.getElementById('emailStatus').innerHTML = '<div class="success">✓ Code sent</div>';
   }
 
   window.register = async function() {
@@ -141,43 +154,24 @@
     const referredBy = refFromUrl;
     const btn = document.getElementById('registerBtn');
     if(!btn.classList.contains('active')) return;
-
     if(otp!== generatedOTP){ alert("Invalid OTP code"); return; }
     emailVerified = true;
-
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const uid = userCredential.user.uid;
       const myReferralCode = makeRefCode(username);
-
-      const userData = {
-        username,
-        email,
-        referralCode: myReferralCode,
-        referredBy: referredBy,
-        referrals: [],
-        balance: 0,
-        level: 1,
-        emailVerified: true
-      };
+      const userData = { username, email, referralCode: myReferralCode, referredBy, referrals: [], balance: 0, level: 1, emailVerified: true };
       await setDoc(doc(db, "users", uid), userData);
-
       if(referredBy){
         const q = query(collection(db, "users"), where("referralCode", "==", referredBy));
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((parentDoc) => {
-          updateDoc(doc(db, "users", parentDoc.id), {
-            referrals: arrayUnion(uid),
-            balance: parentDoc.data().balance + 50
-          });
+          updateDoc(doc(db, "users", parentDoc.id), { referrals: arrayUnion(uid), balance: parentDoc.data().balance + 50 });
         });
       }
-
       alert("Account created! Welcome " + username + " 🐒");
       window.location.href = "home.html";
-    } catch (e) {
-      alert(e.message);
-    }
+    } catch (e) { alert(e.message); }
   }
 </script>
 </body>
