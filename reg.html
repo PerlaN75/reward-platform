@@ -20,42 +20,18 @@
   .verify-btn { padding: 11px 12px; background: #3b82f6; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 13px; }
   .verify-btn:disabled { background: #555; cursor: not-allowed; }
 
-  /* FIXED RULES BOX */
-  .rules { 
-    display: none; 
-    background: #1a1a1a; 
-    color: #ccc; 
-    font-size: 11px; 
-    text-align: left; 
-    padding: 8px; 
-    border-radius: 8px; 
-    margin-top: 4px; 
-    line-height: 1.5; 
-    border-left: 3px solid #f59e0b;
-  }
+  .rules { display: none; background: #1a1a1a; color: #ccc; font-size: 11px; text-align: left; padding: 8px; border-radius: 8px; margin-top: 4px; line-height: 1.5; border-left: 3px solid #f59e0b; }
   .rules.show { display: block; }
   .rules span { color: #22c55e; font-weight: bold; }
 
    .register-btn { width: 100%; padding: 13px; margin: 16px 0 10px 0; background: #555; color: #222; border: none; border-radius: 10px; cursor: not-allowed; font-size: 16px; font-weight: bold; transition: 0.3s; }
    .register-btn.active { background: #22c55e; color: black; cursor: pointer; }
 
-   .back-btn-outside { 
-      width: 40%;
-      max-width: 140px;
-      padding: 11px;
-      background: #f59e0b; 
-      color: black; 
-      border: none; 
-      border-radius: 10px; 
-      cursor: pointer; 
-      font-size: 15px; 
-      font-weight: bold;
-    }
+   .back-btn-outside { width: 40%; max-width: 140px; padding: 11px; background: #f59e0b; color: black; border: none; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: bold; }
   .ref-box { background: #000; color: #22c55e; padding: 10px; border-radius: 8px; font-size: 13px; text-align: left; margin-bottom: 12px; }
   .login-link { color: #ccc; font-size: 13px; margin-bottom: 12px; }
   .login-link a { color: #3b82f6; text-decoration: none; font-weight: bold; }
   .success { color: #22c55e; font-size: 11px; text-align: left; margin-top: 4px; }
-  .error { color: #ef4444; font-size: 11px; text-align: left; margin-top: 4px; }
   </style>
 </head>
 <body>
@@ -107,8 +83,19 @@
   import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, collection, query, where, getDocs, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = { apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d", storageBucket: "reward-platform-rw-2e13d.firebasestorage.app", messagingSenderId: "123456789", appId: "1:123456789:web:abc123" };
-  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+  // TODO: REPLACE WITH YOUR REAL KEYS FROM FIREBASE PROJECT SETTINGS
+  const firebaseConfig = { 
+    apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", 
+    authDomain: "reward-platform-rw-2e13d.firebaseapp.com", 
+    projectId: "reward-platform-rw-2e13d", 
+    storageBucket: "reward-platform-rw-2e13d.firebasestorage.app", 
+    messagingSenderId: "123456789", 
+    appId: "1:123456789:web:abc123" 
+  };
+  
+  const app = initializeApp(firebaseConfig); 
+  const auth = getAuth(app); 
+  const db = getFirestore(app);
   
   let generatedOTP = null; let emailVerified = false;
   const urlParams = new URLSearchParams(window.location.search); const refFromUrl = urlParams.get('ref');
@@ -129,7 +116,6 @@
     const otp = document.getElementById('otp').value; 
     const btn = document.getElementById('registerBtn');
     
-    // Auto verify OTP if it matches
     if(otp === generatedOTP && generatedOTP !== null) {
       emailVerified = true;
       document.getElementById('emailStatus').innerHTML = '<div class="success">✓ Email verified</div>';
@@ -162,14 +148,14 @@
       alert("Please fill all fields correctly");
       return; 
     }
-    if(otp!== generatedOTP){ alert("Invalid OTP code"); return; } 
+    if(otp !== generatedOTP){ alert("Invalid OTP code"); return; } 
     
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password); 
       const uid = userCredential.user.uid;
       const myReferralCode = makeRefCode(username);
       
-      const userData = { username, email, referralCode: myReferralCode, referredBy, referrals: [], balance: 0, level: 1, emailVerified: true };
+      const userData = { username, email, referralCode: myReferralCode, referredBy: referredBy || null, referrals: [], balance: 0, level: 1, emailVerified: true, createdAt: new Date() };
       await setDoc(doc(db, "users", uid), userData);
       
       if(referredBy){ 
@@ -180,8 +166,11 @@
         });
       }
       alert("Account created! Welcome " + username + " 🐒"); 
-      window.location.href = "home.html";
-    } catch (e) { alert(e.message); }
+      window.location.href = "home.html"; // Goes to menu with 6 buttons
+    } catch (e) { 
+      console.error(e);
+      alert("Error: " + e.message); 
+    }
   }
 </script>
 </body>
