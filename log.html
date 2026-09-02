@@ -71,14 +71,15 @@
     font-size: 15px;
     text-decoration: none;
     box-shadow: 0 4px 0 #D97706;
+    margin-top: 10px;
   }
 
-  /* CUSTOM POPUP - SAME AS REG */
+  /* CUSTOM POPUP */
   .popup-overlay {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.8);
     display: none;
     justify-content: center;
     align-items: center;
@@ -93,8 +94,9 @@
     box-shadow: 0 0 20px rgba(255,215,0,0.3);
     max-width: 320px;
   }
-  .popup h2 { color: #EF4444; margin-bottom: 10px; font-size: 20px; } /* Red for errors */
-  .popup p { color: #fff; margin-bottom: 20px; }
+  .popup h2 { color: #EF4444; margin-bottom: 10px; font-size: 20px; }
+  .popup.success h2 { color: #22c55e; } /* Green for success */
+  .popup p { color: #fff; margin-bottom: 20px; white-space: pre-line; }
   .popup-btn {
     background: #FFD700;
     color: #000;
@@ -124,7 +126,7 @@
 
   <!-- CUSTOM POPUP HTML -->
   <div class="popup-overlay" id="popupOverlay">
-    <div class="popup">
+    <div class="popup" id="popupBox">
       <h2 id="popupTitle">Error!</h2>
       <p id="popupMessage"></p>
       <button class="popup-btn" onclick="closePopup()">OK</button>
@@ -133,9 +135,10 @@
 
 <script>
   // POPUP FUNCTIONS
-  function showPopup(title, message) {
+  function showPopup(title, message, type = 'error') {
     document.getElementById('popupTitle').innerText = title;
     document.getElementById('popupMessage').innerText = message;
+    document.getElementById('popupBox').className = 'popup ' + type;
     document.getElementById('popupOverlay').style.display = 'flex';
   }
   function closePopup() {
@@ -145,33 +148,43 @@
   document.getElementById('loginForm').addEventListener('submit', function(e){
     e.preventDefault();
     
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value;
+    const usernameInput = document.getElementById('username').value.trim();
+    const passwordInput = document.getElementById('password').value;
 
-    if(username === "" || password === ""){
+    if(usernameInput === "" || passwordInput === ""){
       showPopup("Missing Info", "Please fill all fields");
       return;
     }
 
-    // GET USERS FROM "DATABASE"
+    // 1. GET USERS FROM "DATABASE" - SAME KEY AS REG.HTML
     let users = JSON.parse(localStorage.getItem("users")) || [];
 
-    // CHECK IF USER EXISTS + PASSWORD MATCHES
-    const user = users.find(u => u.username === username && u.password === password);
-
-    if(!user){
-      showPopup("Login Failed", "User not found or wrong password. Please register first.");
+    // 2. DEBUG: If no users at all, tell them
+    if(users.length === 0){
+      showPopup("No Accounts Found", "No accounts registered yet. Please go register first.");
       return;
     }
 
-    // SAVE CURRENT USER + POINTS FOR HOME PAGE
-    localStorage.setItem("username", user.username);
+    // 3. CHECK IF USER EXISTS + PASSWORD MATCHES - CASE SENSITIVE
+    const user = users.find(u => u.username === usernameInput && u.password === passwordInput);
+
+    if(!user){
+      // Show what usernames exist to help debug
+      let existingNames = users.map(u => u.username).join(", ");
+      showPopup("Login Failed", `User not found or wrong password.\n\nRegistered users: ${existingNames}`);
+      return;
+    }
+
+    // 4. SAVE CURRENT USER + POINTS FOR HOME PAGE
+    localStorage.setItem("currentUser", user.username); // use "currentUser" to avoid conflict
     localStorage.setItem("points", user.points);
     
-    console.log("Logging in:", user);
+    showPopup("Success", `Welcome back, ${user.username}!`, 'success');
     
-    // REDIRECT TO HOME/MENU
-    window.location.href = "home.html";
+    // 5. REDIRECT AFTER 1.5s
+    setTimeout(() => {
+      window.location.href = "home.html";
+    }, 1500);
   });
 </script>
 
