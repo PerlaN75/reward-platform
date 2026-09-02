@@ -10,8 +10,6 @@
     h2 { color: white; font-size: 28px; margin-bottom: 5px; font-weight: bold; }
   .tagline { color: #fbbf24; font-size: 13px; margin-bottom: 20px; }
     label { display: block; text-align: left; color: #ddd; margin: 12px 0 4px 4px; font-size: 14px; }
-    
-    /* Smaller inputs like screenshot */
     input { width: 100%; padding: 11px 14px; background: #000; border: 2px solid transparent; border-radius: 10px; color: white; font-size: 15px; outline: none; }
     input::placeholder { color: #666; }
     input:focus { border: 2px solid #f59e0b; }
@@ -29,11 +27,11 @@
    .register-btn { width: 100%; padding: 13px; margin: 16px 0 10px 0; background: #555; color: black; border: none; border-radius: 10px; cursor: not-allowed; font-size: 16px; font-weight: bold; transition: 0.3s; }
    .register-btn.active { background: #22c55e; cursor: pointer; }
 
-    /* Back button OUTSIDE card, small and centered like screenshot */
+    /* Only width changed here. Height/padding same */
    .back-btn-outside { 
-      width: 60%; /* small like in screenshot */
-      max-width: 210px;
-      padding: 11px; 
+      width: 50%; /* <-- Changed from 60% to 50%. Smaller left-right */
+      max-width: 175px;
+      padding: 11px; /* Height unchanged */
       background: #f59e0b; 
       color: black; 
       border: none; 
@@ -90,7 +88,7 @@
   <div class="login-link">Already have account? <a href="log.html">Login Here</a></div>
 </div>
 
-<!-- Back button OUTSIDE, small -->
+<!-- Back button OUTSIDE, width 50% -->
 <button class="back-btn-outside" onclick="window.location.href='home.html'">← Back</button>
 
 <script type="module">
@@ -98,79 +96,43 @@
   import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, collection, query, where, getDocs, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE",
-    authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
-    projectId: "reward-platform-rw-2e13d",
-    storageBucket: "reward-platform-rw-2e13d.firebasestorage.app",
-    messagingSenderId: "123456789",
-    appId: "1:123456789:web:abc123"
-  };
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  let generatedOTP = null;
-  let emailVerified = false;
-  const urlParams = new URLSearchParams(window.location.search);
-  const refFromUrl = urlParams.get('ref');
+  const firebaseConfig = { apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d", storageBucket: "reward-platform-rw-2e13d.firebasestorage.app", messagingSenderId: "123456789", appId: "1:123456789:web:abc123" };
+  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+  let generatedOTP = null; let emailVerified = false;
+  const urlParams = new URLSearchParams(window.location.search); const refFromUrl = urlParams.get('ref');
   document.getElementById('refDisplay').innerText = `Ref from URL: ${refFromUrl || 'null'}`;
-
   function showRules(id){ document.getElementById(id).classList.add('show'); }
   function hideRules(id){ document.getElementById(id).classList.remove('show'); }
   function makeRefCode(name) { return name.toUpperCase() + Math.floor(Math.random() * 900 + 100); }
-
   function validateUsername(u){ return /^[A-Z][a-z]+$/.test(u); }
   function validatePassword(p){ return p.length >= 4 && p.length <= 8 && /[A-Z]/.test(p) && /[0-9]/.test(p) && /[\$&#@?!\%]/.test(p); }
   function validateEmail(e){ return e.endsWith("@gmail.com"); }
-
   window.checkForm = function() {
-    const u = document.getElementById('username').value;
-    const p = document.getElementById('password').value;
-    const cp = document.getElementById('confirmPassword').value;
-    const em = document.getElementById('email').value;
-    const otp = document.getElementById('otp').value;
-    const btn = document.getElementById('registerBtn');
+    const u = document.getElementById('username').value; const p = document.getElementById('password').value; const cp = document.getElementById('confirmPassword').value;
+    const em = document.getElementById('email').value; const otp = document.getElementById('otp').value; const btn = document.getElementById('registerBtn');
     const valid = validateUsername(u) && validatePassword(p) && p === cp && validateEmail(em) && emailVerified && otp === generatedOTP;
     btn.classList.toggle('active', valid);
   }
-
   window.sendOTP = function() {
-    const email = document.getElementById('email').value;
-    if(!validateEmail(email)){ alert("Email must be @gmail.com"); return; }
+    const email = document.getElementById('email').value; if(!validateEmail(email)){ alert("Email must be @gmail.com"); return; }
     generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
     alert("OTP sent to " + email + ". Check inbox. Code: " + generatedOTP);
-    document.getElementById('email').disabled = true;
-    document.getElementById('verifyBtn').disabled = true;
-    document.getElementById('verifyBtn').innerText = "Sent";
+    document.getElementById('email').disabled = true; document.getElementById('verifyBtn').disabled = true; document.getElementById('verifyBtn').innerText = "Sent";
     document.getElementById('emailStatus').innerHTML = '<div class="success">✓ Code sent</div>';
   }
-
   window.register = async function() {
-    const username = document.getElementById('username').value;
-    const email = document.getElementById('email').value;
-    const otp = document.getElementById('otp').value;
-    const password = document.getElementById('password').value;
-    const referredBy = refFromUrl;
-    const btn = document.getElementById('registerBtn');
-    if(!btn.classList.contains('active')) return;
-    if(otp!== generatedOTP){ alert("Invalid OTP code"); return; }
-    emailVerified = true;
+    const username = document.getElementById('username').value; const email = document.getElementById('email').value; const otp = document.getElementById('otp').value;
+    const password = document.getElementById('password').value; const referredBy = refFromUrl; const btn = document.getElementById('registerBtn');
+    if(!btn.classList.contains('active')) return; if(otp!== generatedOTP){ alert("Invalid OTP code"); return; } emailVerified = true;
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const uid = userCredential.user.uid;
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password); const uid = userCredential.user.uid;
       const myReferralCode = makeRefCode(username);
       const userData = { username, email, referralCode: myReferralCode, referredBy, referrals: [], balance: 0, level: 1, emailVerified: true };
       await setDoc(doc(db, "users", uid), userData);
-      if(referredBy){
-        const q = query(collection(db, "users"), where("referralCode", "==", referredBy));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((parentDoc) => {
-          updateDoc(doc(db, "users", parentDoc.id), { referrals: arrayUnion(uid), balance: parentDoc.data().balance + 50 });
-        });
+      if(referredBy){ const q = query(collection(db, "users"), where("referralCode", "==", referredBy)); const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((parentDoc) => { updateDoc(doc(db, "users", parentDoc.id), { referrals: arrayUnion(uid), balance: parentDoc.data().balance + 50 }); });
       }
-      alert("Account created! Welcome " + username + " 🐒");
-      window.location.href = "home.html";
+      alert("Account created! Welcome " + username + " 🐒"); window.location.href = "home.html";
     } catch (e) { alert(e.message); }
   }
 </script>
