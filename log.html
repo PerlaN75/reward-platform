@@ -95,8 +95,8 @@
     max-width: 320px;
   }
   .popup h2 { color: #EF4444; margin-bottom: 10px; font-size: 20px; }
-  .popup.success h2 { color: #22c55e; } /* Green for success */
-  .popup p { color: #fff; margin-bottom: 20px; white-space: pre-line; }
+  .popup.success h2 { color: #22c55e; }
+  .popup p { color: #fff; margin-bottom: 20px; white-space: pre-line; font-size: 13px; }
   .popup-btn {
     background: #FFD700;
     color: #000;
@@ -145,6 +145,13 @@
     document.getElementById('popupOverlay').style.display = 'none';
   }
 
+  // RUN THIS ON PAGE LOAD TO CHECK STORAGE
+  window.addEventListener('load', function(){
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    console.log("ON LOAD - USERS IN STORAGE:", users);
+    // If we find users, show count in console
+  });
+
   document.getElementById('loginForm').addEventListener('submit', function(e){
     e.preventDefault();
     
@@ -156,27 +163,32 @@
       return;
     }
 
-    // 1. GET USERS FROM "DATABASE" - SAME KEY AS REG.HTML
-    let users = JSON.parse(localStorage.getItem("users")) || [];
+    // 1. GET USERS FROM "DATABASE" - WITH FALLBACK
+    let usersRaw = localStorage.getItem("users");
+    let users = [];
+    try {
+      users = JSON.parse(usersRaw) || [];
+    } catch(e) {
+      users = [];
+    }
 
-    // 2. DEBUG: If no users at all, tell them
+    // 2. DEBUG: SHOW EXACTLY WHAT'S IN STORAGE
     if(users.length === 0){
-      showPopup("No Accounts Found", "No accounts registered yet. Please go register first.");
+      showPopup("No Accounts Found", `Storage is empty.\n\nRaw data: ${usersRaw}\n\nPlease register again and WAIT 3 seconds on success popup before clicking OK.`);
       return;
     }
 
-    // 3. CHECK IF USER EXISTS + PASSWORD MATCHES - CASE SENSITIVE
+    // 3. CHECK IF USER EXISTS + PASSWORD MATCHES
     const user = users.find(u => u.username === usernameInput && u.password === passwordInput);
 
     if(!user){
-      // Show what usernames exist to help debug
       let existingNames = users.map(u => u.username).join(", ");
       showPopup("Login Failed", `User not found or wrong password.\n\nRegistered users: ${existingNames}`);
       return;
     }
 
     // 4. SAVE CURRENT USER + POINTS FOR HOME PAGE
-    localStorage.setItem("currentUser", user.username); // use "currentUser" to avoid conflict
+    localStorage.setItem("currentUser", user.username);
     localStorage.setItem("points", user.points);
     
     showPopup("Success", `Welcome back, ${user.username}!`, 'success');
