@@ -15,20 +15,20 @@
     }
    .container { 
       background: #3a4a22; 
-      padding: 30px 25px; 
+      padding: 35px 25px; 
       border-radius: 20px; 
       width: 100%; 
       max-width: 380px; 
       text-align: center; 
     }
-    h2 { color: white; font-size: 28px; margin-bottom: 8px; font-weight: bold; }
+    h2 { color: white; font-size: 30px; margin-bottom: 8px; font-weight: bold; }
    .tagline { color: #fbbf24; font-size: 14px; margin-bottom: 25px; }
-    label { display: block; text-align: left; color: #ddd; margin: 15px 0 5px 5px; font-size: 14px; }
+    label { display: block; text-align: left; color: #ddd; margin: 15px 0 5px 5px; font-size: 15px; }
     input { 
       width: 100%; 
       padding: 14px; 
       background: #000; 
-      border: none; 
+      border: 2px solid transparent;
       border-radius: 12px; 
       color: white; 
       font-size: 16px;
@@ -55,7 +55,7 @@
     .register-btn { 
       width: 100%; 
       padding: 15px; 
-      margin: 25px 0 12px 0;
+      margin: 20px 0 12px 0;
       background: #555; 
       color: black; 
       border: none; 
@@ -70,8 +70,8 @@
       cursor: pointer;
     }
     .back-btn { 
-      width: 60%; 
-      padding: 12px; 
+      width: 100%; 
+      padding: 14px; 
       background: #f59e0b; 
       color: black; 
       border: none; 
@@ -168,7 +168,6 @@
     return lengthOk && hasCapital && hasDigit && hasSpecial;
   }
 
-  // Check form and turn button green
   window.checkForm = function() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -191,7 +190,7 @@
     const referredBy = refFromUrl;
     const btn = document.getElementById('registerBtn');
 
-    if(!btn.classList.contains('active')) return; // prevent click if not valid
+    if(!btn.classList.contains('active')) return;
 
     const email = username + "@reward.com";
 
@@ -223,7 +222,7 @@
       }
 
       alert("Registered! Your referral code: " + myReferralCode + " 🐒");
-      window.location.href = "home.html"; // goes to home.html
+      window.location.href = "home.html";
     } catch (e) {
       alert(e.message);
     }
