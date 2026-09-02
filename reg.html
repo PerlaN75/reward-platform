@@ -47,13 +47,7 @@
   }
   input:focus { box-shadow: 0 0 0 2px #FFD700; }
 
-  .rules {
-    font-size: 12px;
-    color: #94a3b8;
-    margin-bottom: 15px;
-    display: none;
-    line-height: 1.6;
-  }
+  .rules { font-size: 12px; color: #94a3b8; margin-bottom: 15px; display: none; line-height: 1.6; }
   .rules .valid { color: #22c55e; }
   .rules .invalid { color: #EF4444; }
 
@@ -62,7 +56,7 @@
     padding: 14px;
     border-radius: 10px;
     border: none;
-    background: #4b5563; /* gray when disabled */
+    background: #4b5563;
     color: #fff;
     font-weight: bold;
     font-size: 16px;
@@ -70,35 +64,43 @@
     margin-bottom: 15px;
     transition: all 0.3s;
   }
+  .btn-register.active { background: #22c55e; cursor: pointer; }
 
-  .btn-register.active {
-    background: #22c55e; /* green when valid */
-    cursor: pointer;
-  }
-
-  .ref-box {
-    background: #000;
-    padding: 12px;
-    border-radius: 10px;
-    color: #22c55e;
-    font-size: 14px;
-    text-align: center;
-    margin-bottom: 15px;
-  }
-
+  .ref-box { background: #000; padding: 12px; border-radius: 10px; color: #22c55e; font-size: 14px; text-align: center; margin-bottom: 15px; }
   .login-text { text-align: center; font-size: 14px; color: #cbd5e1; }
   .login-text a { color: #3B82F6; text-decoration: none; font-weight: bold; }
+  .btn-back { padding: 14px 40px; border-radius: 12px; border: none; background: #F59E0B; color: #000; font-weight: bold; font-size: 15px; text-decoration: none; box-shadow: 0 4px 0 #D97706; }
 
-  .btn-back {
-    padding: 14px 40px;
-    border-radius: 12px;
-    border: none;
-    background: #F59E0B;
+  /* CUSTOM POPUP */
+  .popup-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  .popup {
+    background: #3a3f2a; /* MILITARY GREEN */
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    border: 2px solid #FFD700;
+    box-shadow: 0 0 20px rgba(255,215,0,0.3);
+    max-width: 320px;
+  }
+  .popup h2 { color: #22c55e; margin-bottom: 10px; font-size: 20px; }
+  .popup p { color: #fff; margin-bottom: 20px; }
+  .popup-btn {
+    background: #FFD700;
     color: #000;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 8px;
     font-weight: bold;
-    font-size: 15px;
-    text-decoration: none;
-    box-shadow: 0 4px 0 #D97706;
+    cursor: pointer;
   }
 </style>
 </head>
@@ -135,13 +137,31 @@
     </form>
 
     <div class="ref-box" id="refBox">Ref from URL: null</div>
-    
     <p class="login-text">Already have account? <a href="log.html">Login Here</a></p>
   </div>
 
   <a href="index.html" class="btn-back">← Back</a>
 
+  <!-- CUSTOM POPUP HTML -->
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="popup">
+      <h2>🎉 Success!</h2>
+      <p id="popupMessage"></p>
+      <button class="popup-btn" onclick="closePopup()">OK</button>
+    </div>
+  </div>
+
 <script>
+  // POPUP FUNCTIONS
+  function showPopup(message) {
+    document.getElementById('popupMessage').innerText = message;
+    document.getElementById('popupOverlay').style.display = 'flex';
+  }
+  function closePopup() {
+    document.getElementById('popupOverlay').style.display = 'none';
+    window.location.href = "home.html"; // redirect after closing
+  }
+
   // 1. READ REF FROM URL
   const urlParams = new URLSearchParams(window.location.search);
   const ref = urlParams.get('ref');
@@ -158,11 +178,9 @@
   const confirmPassword = document.getElementById('confirmPassword');
   const registerBtn = document.getElementById('registerBtn');
 
-  // 2. SHOW RULES ON FOCUS
   username.addEventListener('focus', () => document.getElementById('userRules').style.display = 'block');
   password.addEventListener('focus', () => document.getElementById('passRules').style.display = 'block');
 
-  // 3. VALIDATION FUNCTIONS
   function validateUsername(val){
     const rules = {
       len: val.length >= 4 && val.length <= 12,
@@ -195,7 +213,6 @@
     const userValid = validateUsername(username.value);
     const passValid = validatePassword(password.value);
     const confirmValid = password.value === confirmPassword.value && password.value !== "";
-
     if(userValid && passValid && confirmValid){
       registerBtn.classList.add('active');
       registerBtn.disabled = false;
@@ -205,12 +222,10 @@
     }
   }
 
-  // 4. LIVE CHECK
   username.addEventListener('input', checkForm);
   password.addEventListener('input', checkForm);
   confirmPassword.addEventListener('input', checkForm);
 
-  // 5. SUBMIT + SAVE USER
   document.getElementById('registerForm').addEventListener('submit', function(e){
     e.preventDefault();
     
@@ -219,35 +234,25 @@
     const confirmVal = confirmPassword.value;
     const referrer = refInput.value;
 
-    const userValid = /^[A-Z][a-z]{3,11}$/.test(userVal); // 4-12 chars total
+    const userValid = /^[A-Z][a-z]{3,11}$/.test(userVal);
     const passValid = /[A-Z]/.test(passVal) && /[a-z]/.test(passVal) && /[0-9]/.test(passVal) && /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(passVal);
     const confirmValid = passVal === confirmVal;
 
-    if(!userValid){ alert("Username must be 4-12 letters, First Capital"); return; }
-    if(!passValid){ alert("Password format is wrong"); return; }
-    if(!confirmValid){ alert("Passwords do not match"); return; }
+    if(!userValid){ showPopup("Username must be 4-12 letters, First Capital"); return; }
+    if(!passValid){ showPopup("Password format is wrong"); return; }
+    if(!confirmValid){ showPopup("Passwords do not match"); return; }
 
-    // CHECK IF USERNAME ALREADY EXISTS
     let users = JSON.parse(localStorage.getItem("users")) || [];
     const exists = users.find(u => u.username === userVal);
-    if(exists){
-      alert("Username already taken. Please choose another.");
-      return;
-    }
+    if(exists){ showPopup("Username already taken. Please choose another."); return; }
 
-    // SAVE USER TO "DATABASE"
     users.push({username: userVal, password: passVal, points: 0, referrer: referrer});
     localStorage.setItem("users", JSON.stringify(users));
-
-    // SAVE CURRENT USER FOR HOME PAGE
     localStorage.setItem("username", userVal);
     localStorage.setItem("points", "0");
     
-    console.log("Registered:", {username: userVal, referrer});
-    alert(`Account created successfully!\nWelcome ${userVal}`);
-    
-    // GO TO MENU
-    window.location.href = "home.html";
+    // USE CUSTOM POPUP INSTEAD OF ALERT
+    showPopup(`Account created successfully!\nWelcome ${userVal}`);
   });
 </script>
 
