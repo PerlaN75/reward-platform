@@ -27,10 +27,10 @@
    .register-btn { width: 100%; padding: 13px; margin: 16px 0 10px 0; background: #555; color: black; border: none; border-radius: 10px; cursor: not-allowed; font-size: 16px; font-weight: bold; transition: 0.3s; }
    .register-btn.active { background: #22c55e; cursor: pointer; }
 
-    /* Only width changed here. Height/padding same */
+    /* Back button 40% width only */
    .back-btn-outside { 
-      width: 50%; /* <-- Changed from 60% to 50%. Smaller left-right */
-      max-width: 175px;
+      width: 40%; /* <-- 40% width left-right */
+      max-width: 140px;
       padding: 11px; /* Height unchanged */
       background: #f59e0b; 
       color: black; 
@@ -88,7 +88,7 @@
   <div class="login-link">Already have account? <a href="log.html">Login Here</a></div>
 </div>
 
-<!-- Back button OUTSIDE, width 50% -->
+<!-- Back button OUTSIDE, 40% width -->
 <button class="back-btn-outside" onclick="window.location.href='home.html'">← Back</button>
 
 <script type="module">
@@ -130,7 +130,7 @@
       const userData = { username, email, referralCode: myReferralCode, referredBy, referrals: [], balance: 0, level: 1, emailVerified: true };
       await setDoc(doc(db, "users", uid), userData);
       if(referredBy){ const q = query(collection(db, "users"), where("referralCode", "==", referredBy)); const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((parentDoc) => { updateDoc(doc(db, "users", parentDoc.id), { referrals: arrayUnion(uid), balance: parentDoc.data().balance + 50 }); });
+        querySnapshot.forEach((parentDoc) => { updateDoc(doc(db, "users", parentDoc.id), { referrals: arrayUnion(uid), balance: parentDoc.data().balance + 50 });
       }
       alert("Account created! Welcome " + username + " 🐒"); window.location.href = "home.html";
     } catch (e) { alert(e.message); }
