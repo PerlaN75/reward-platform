@@ -1,16 +1,81 @@
 <!DOCTYPE html>
 <html>
-<head><title>Login</title></head>
+<head>
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { 
+      background: #1e2a0f; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      height: 100vh; 
+      padding: 20px;
+    }
+   .container { 
+      background: #2d3a1a; 
+      padding: 40px 30px; 
+      border-radius: 20px; 
+      width: 100%; 
+      max-width: 350px; 
+      text-align: center; 
+    }
+    h2 { color: white; font-size: 32px; margin-bottom: 30px; font-weight: bold; }
+    input { 
+      width: 100%; 
+      padding: 15px; 
+      margin: 12px 0; 
+      background: #3a4a22; 
+      border: none; 
+      border-radius: 12px; 
+      color: white; 
+      font-size: 16px;
+      outline: none;
+    }
+    input::placeholder { color: #aaa; }
+    .login-btn { 
+      width: 100%; 
+      padding: 15px; 
+      margin: 20px 0 10px 0;
+      background: linear-gradient(90deg, #a855f7, #3b82f6); 
+      color: white; 
+      border: none; 
+      border-radius: 12px; 
+      cursor: pointer; 
+      font-size: 18px; 
+      font-weight: bold;
+    }
+    .reset { color: #fbbf24; margin: 15px 0; font-size: 14px; }
+    .reset b { color: #fbbf24; cursor: pointer; }
+    .back-btn { 
+      width: 60%; 
+      padding: 12px; 
+      background: #f59e0b; 
+      color: black; 
+      border: none; 
+      border-radius: 12px; 
+      cursor: pointer; 
+      font-size: 16px; 
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
 <body>
-<h2>Login</h2>
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-<button onclick="login()">Login</button>
+<div class="container">
+  <h2>Login</h2>
+  <input id="username" type="text" placeholder="Username">
+  <input id="password" type="password" placeholder="Password">
+  <button class="login-btn" onclick="login()">LOGIN</button>
+  <div class="reset">Forgot Password? <b>Reset</b></div>
+  <button class="back-btn" onclick="window.location.href='index.html'">← Back</button>
+</div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  
+
   const firebaseConfig = {
     apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE",
     authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
@@ -23,11 +88,12 @@
   const auth = getAuth(app);
 
   async function login() {
-    const email = document.getElementById('email').value;
+    const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    const email = username.includes('@') ? username : username + '@test.com'; // if you use username
+    
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      alert("Logged in!");
+      await signInWithEmailAndPassword(auth, email, password);
       window.location.href = "referrals.html";
     } catch (e) {
       alert(e.message);
