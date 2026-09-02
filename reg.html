@@ -5,95 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { 
-      background: #2f3e1a; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      min-height: 100vh; 
-      padding: 20px;
-      flex-direction: column;
-    }
-   .container { 
-      background: #3a4a22; 
-      padding: 35px 25px; 
-      border-radius: 20px; 
-      width: 100%; 
-      max-width: 380px; 
-      text-align: center; 
-      margin-bottom: 20px;
-    }
+    body { background: #2f3e1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; flex-direction: column; }
+  .container { background: #3a4a22; padding: 35px 25px; border-radius: 20px; width: 100%; max-width: 380px; text-align: center; margin-bottom: 20px; }
     h2 { color: white; font-size: 30px; margin-bottom: 8px; font-weight: bold; }
-   .tagline { color: #fbbf24; font-size: 14px; margin-bottom: 25px; }
+  .tagline { color: #fbbf24; font-size: 14px; margin-bottom: 25px; }
     label { display: block; text-align: left; color: #ddd; margin: 15px 0 5px 5px; font-size: 15px; }
-    input { 
-      width: 100%; 
-      padding: 14px; 
-      background: #000; 
-      border: 2px solid transparent;
-      border-radius: 12px; 
-      color: white; 
-      font-size: 16px;
-      outline: none;
-    }
+    input { width: 100%; padding: 14px; background: #000; border: 2px solid transparent; border-radius: 12px; color: white; font-size: 16px; outline: none; }
     input::placeholder { color: #666; }
     input:focus { border: 2px solid #f59e0b; }
+    input:disabled { background: #222; color: #555; }
     
-    /* Hidden rules box */
-   .rules {
-      display: none;
-      background: #1a1a1a;
-      color: #ccc;
-      font-size: 12px;
-      text-align: left;
-      padding: 10px;
-      border-radius: 8px;
-      margin-top: 5px;
-      line-height: 1.6;
-    }
-   .rules.show { display: block; }
-   .rules span { color: #22c55e; }
+  .input-with-btn { display: flex; gap: 8px; }
+  .input-with-btn input { flex: 1; }
+  .verify-btn { padding: 14px 16px; background: #3b82f6; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; }
+  .verify-btn:disabled { background: #555; cursor: not-allowed; }
 
-    .register-btn { 
-      width: 100%; 
-      padding: 15px; 
-      margin: 20px 0 12px 0;
-      background: #555; 
-      color: black; 
-      border: none; 
-      border-radius: 12px; 
-      cursor: not-allowed; 
-      font-size: 18px; 
-      font-weight: bold;
-      transition: 0.3s;
-    }
-    .register-btn.active {
-      background: #22c55e; /* green when valid */
-      cursor: pointer;
-    }
-   .back-btn-outside { 
-      width: 100%; 
-      max-width: 380px;
-      padding: 14px; 
-      background: #f59e0b; 
-      color: black; 
-      border: none; 
-      border-radius: 12px; 
-      cursor: pointer; 
-      font-size: 16px; 
-      font-weight: bold;
-    }
-   .ref-box { 
-      background: #000; 
-      color: #22c55e; 
-      padding: 12px; 
-      border-radius: 10px; 
-      font-size: 14px; 
-      text-align: left;
-      margin-bottom: 15px;
-    }
-   .login-link { color: #ccc; font-size: 14px; margin-bottom: 5px; }
-   .login-link a { color: #3b82f6; text-decoration: none; font-weight: bold; }
+  .rules { display: none; background: #1a1a1a; color: #ccc; font-size: 12px; text-align: left; padding: 10px; border-radius: 8px; margin-top: 5px; line-height: 1.6; }
+  .rules.show { display: block; }
+  .rules span { color: #22c55e; }
+
+   .register-btn { width: 100%; padding: 15px; margin: 20px 0 12px 0; background: #555; color: black; border: none; border-radius: 12px; cursor: not-allowed; font-size: 18px; font-weight: bold; transition: 0.3s; }
+   .register-btn.active { background: #22c55e; cursor: pointer; }
+  .back-btn-outside { width: 100%; max-width: 380px; padding: 14px; background: #f59e0b; color: black; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: bold; }
+  .ref-box { background: #000; color: #22c55e; padding: 12px; border-radius: 10px; font-size: 14px; text-align: left; margin-bottom: 15px; }
+  .login-link { color: #ccc; font-size: 14px; margin-bottom: 5px; }
+  .login-link a { color: #3b82f6; text-decoration: none; font-weight: bold; }
+  .success { color: #22c55e; font-size: 12px; text-align: left; margin-top: 5px; }
   </style>
 </head>
 <body>
@@ -108,6 +45,16 @@
     <span>•</span> Lowercase letters only<br>
     <span>•</span> No numbers or characters
   </div>
+
+  <label>Email</label>
+  <div class="input-with-btn">
+    <input id="email" type="email" placeholder="you@gmail.com" oninput="checkForm()">
+    <button id="verifyBtn" class="verify-btn" onclick="sendOTP()">Verify</button>
+  </div>
+  <div id="emailStatus"></div>
+  
+  <label>Verification code</label>
+  <input id="otp" type="text" placeholder="123456" maxlength="6" oninput="checkForm()">
   
   <label>Password</label>
   <input id="password" type="password" onfocus="showRules('passRules')" onblur="hideRules('passRules')" oninput="checkForm()">
@@ -115,7 +62,7 @@
     <span>•</span> 4-8 characters<br>
     <span>•</span> At least 1 capital letter<br>
     <span>•</span> At least 1 digit number<br>
-    <span>•</span> At least 1 character: $ & # @ ? ! %
+    <span>•</span> At least 1 character: $ & # @?! %
   </div>
   
   <label>Confirm Password</label>
@@ -128,7 +75,6 @@
   <div class="login-link">Already have account? <a href="log.html">Login Here</a></div>
 </div>
 
-<!-- ONLY Back button - Outside the card -->
 <button class="back-btn-outside" onclick="window.location.href='home.html'">← Back</button>
 
 <script type="module">
@@ -148,37 +94,56 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
+  let generatedOTP = null;
+  let emailVerified = false;
   const urlParams = new URLSearchParams(window.location.search);
   const refFromUrl = urlParams.get('ref');
   document.getElementById('refDisplay').innerText = `Ref from URL: ${refFromUrl || 'null'}`;
 
   function showRules(id){ document.getElementById(id).classList.add('show'); }
   function hideRules(id){ document.getElementById(id).classList.remove('show'); }
-
-  function makeRefCode(name) {
-    return name.toUpperCase() + Math.floor(Math.random() * 900 + 100);
-  }
+  function makeRefCode(name) { return name.toUpperCase() + Math.floor(Math.random() * 900 + 100); }
 
   function validateUsername(u){ return /^[A-Z][a-z]+$/.test(u); }
   function validatePassword(p){ return p.length >= 4 && p.length <= 8 && /[A-Z]/.test(p) && /[0-9]/.test(p) && /[\$&#@?!\%]/.test(p); }
+  function validateEmail(e){ return e.endsWith("@gmail.com"); }
 
   window.checkForm = function() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
+    const u = document.getElementById('username').value;
+    const p = document.getElementById('password').value;
+    const cp = document.getElementById('confirmPassword').value;
+    const em = document.getElementById('email').value;
+    const otp = document.getElementById('otp').value;
     const btn = document.getElementById('registerBtn');
-    const valid = validateUsername(username) && validatePassword(password) && password === confirmPassword && password !== "";
+    const valid = validateUsername(u) && validatePassword(p) && p === cp && validateEmail(em) && emailVerified && otp === generatedOTP;
     btn.classList.toggle('active', valid);
+  }
+
+  window.sendOTP = function() {
+    const email = document.getElementById('email').value;
+    if(!validateEmail(email)){ alert("Email must be @gmail.com"); return; }
+    
+    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString(); // 6 digit
+    console.log("OTP for " + email + ": " + generatedOTP); // For testing. In production use Firebase Email API
+    
+    alert("OTP sent to " + email + ". Check inbox/spam. Code: " + generatedOTP); // Remove code in production
+    document.getElementById('email').disabled = true;
+    document.getElementById('verifyBtn').disabled = true;
+    document.getElementById('verifyBtn').innerText = "Sent";
+    document.getElementById('emailStatus').innerHTML = '<div class="success">✓ Code sent to ' + email + '</div>';
   }
 
   window.register = async function() {
     const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const otp = document.getElementById('otp').value;
     const password = document.getElementById('password').value;
     const referredBy = refFromUrl;
     const btn = document.getElementById('registerBtn');
     if(!btn.classList.contains('active')) return;
 
-    const email = username + "@reward.com";
+    if(otp!== generatedOTP){ alert("Invalid OTP code"); return; }
+    emailVerified = true;
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -192,7 +157,8 @@
         referredBy: referredBy,
         referrals: [],
         balance: 0,
-        level: 1
+        level: 1,
+        emailVerified: true
       };
       await setDoc(doc(db, "users", uid), userData);
 
@@ -207,7 +173,7 @@
         });
       }
 
-      alert("Registered! Your referral code: " + myReferralCode + " 🐒");
+      alert("Account created! Welcome " + username + " 🐒");
       window.location.href = "home.html";
     } catch (e) {
       alert(e.message);
