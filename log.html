@@ -30,9 +30,11 @@
     border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px;
   }
   .login-btn:hover { opacity: 0.9; }
+  .login-btn:disabled { background: #666; cursor: not-allowed; }
 
   .footer-link { text-align: center; margin-top: 20px; font-size: 14px; }
   .footer-link a { color: #FFD700; text-decoration: none; font-weight: bold; }
+  #error { color: #ff5252; text-align: center; margin-top: 10px; font-size: 14px; }
 </style>
 </head>
 <body>
@@ -43,7 +45,7 @@
 
   <form id="loginForm">
     <div class="input-group">
-      <label>Username or Email</label>
+      <label>Username</label>
       <input type="text" id="username" placeholder="Enter your username" required>
     </div>
 
@@ -52,7 +54,8 @@
       <input type="password" id="password" placeholder="Enter your password" required>
     </div>
 
-    <button type="submit" class="login-btn">Login</button>
+    <button type="submit" class="login-btn" id="loginBtn">Login</button>
+    <p id="error"></p>
   </form>
 
   <div class="footer-link">
@@ -60,31 +63,75 @@
   </div>
 </div>
 
-<script>
-document.getElementById('loginForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  
-  const username = document.getElementById('username').value.trim();
-  const password = document.getElementById('password').value.trim();
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  if(username === '' || password === ''){
-    alert('Please fill all fields');
-    return;
-  }
+  // YOUR FIREBASE CONFIG
+  const firebaseConfig = {
+    apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
+    authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
+    projectId: "reward-platform-rw-2e13d",
+    storageBucket: "reward-platform-rw-2e13d.firebasestorage.app",
+    messagingSenderId: "787550951987",
+    appId: "1:787550951987:web:724b1463e821b99c90a146"
+  };
 
-  // TODO: REPLACE THIS WITH YOUR REAL API LOGIN CHECK
-  // Example: fetch('/api/login', {method: 'POST', body: JSON.stringify({username, password})})
-  
-  // FOR NOW: We simulate successful login
-  // 1. SAVE USERNAME TO LOCALSTORAGE - THIS IS CRITICAL FOR REFERRALS
-  localStorage.setItem('username', username);
-  localStorage.setItem('isLoggedIn', 'true');
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-  alert('Login Successful! Redirecting...');
-  
-  // 2. REDIRECT TO DASHBOARD
-  window.location.href = 'dashboard.html';
-});
+  document.getElementById('loginForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const btn = document.getElementById('loginBtn');
+    const error = document.getElementById('error');
+    error.innerText = "";
+
+    if(username === '' || password === ''){
+      error.innerText = 'Please fill all fields';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerText = "Logging in...";
+
+    try {
+      // 1. CHECK FIREBASE IF USER EXISTS
+      const userRef = doc(db, "users", username);
+      const userSnap = await getDoc(userRef);
+
+      if(!userSnap.exists()) {
+        error.innerText = "Username not found";
+        btn.disabled = false;
+        btn.innerText = "Login";
+        return;
+      }
+
+      const userData = userSnap.data();
+
+      // 2. CHECK PASSWORD - NOTE: In real app use hashing. For now we compare directly
+      if(userData.password !== password) {
+        error.innerText = "Wrong password";
+        btn.disabled = false;
+        btn.innerText = "Login";
+        return;
+      }
+
+      // 3. SUCCESS: SAVE USERNAME TO LOCALSTORAGE - CRITICAL FOR REFERRALS
+      localStorage.setItem('username', username);
+      localStorage.setItem('isLoggedIn', 'true');
+
+      // 4. REDIRECT TO DASHBOARD
+      window.location.href = 'home.html'; // you said login -> home.html
+
+    } catch(err) {
+      error.innerText = "Error: " + err.message;
+      btn.disabled = false;
+      btn.innerText = "Login";
+    }
+  });
 </script>
 
 </body>
