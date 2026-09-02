@@ -1,151 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Register - Reward Platform</title>
-<style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-  body { background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #1a0033 100%); color: #fff; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
-  .card { background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 30px 25px; border-radius: 20px; width: 100%; max-width: 400px; margin-bottom: 15px; }
-  h1 { text-align: center; font-size: 28px; margin-bottom: 5px; }
-  .subtitle { text-align: center; color: #FFD700; font-size: 14px; margin-bottom: 25px; }
-  label { display: block; margin-bottom: 8px; font-size: 14px; color: #cbd5e1; }
-  input { width: 100%; padding: 14px; margin-bottom: 10px; border-radius: 10px; border: none; background: #000; color: #fff; font-size: 15px; outline: none; }
-  input:focus { box-shadow: 0 0 0 2px #FFD700; }
-  .rules { font-size: 12px; color: #94a3b8; margin-bottom: 15px; display: none; line-height: 1.6; }
-  .rules .valid { color: #22c55e; }
-  .rules .invalid { color: #EF4444; }
-  .btn-register { width: 100%; padding: 14px; border-radius: 10px; border: none; background: #4b5563; color: #fff; font-weight: bold; font-size: 16px; cursor: not-allowed; margin-bottom: 15px; transition: all 0.3s; }
-  .btn-register.active { background: #22c55e; cursor: pointer; }
-  .ref-box { background: #000; padding: 12px; border-radius: 10px; color: #22c55e; font-size: 14px; text-align: center; margin-bottom: 15px; }
-  .login-text { text-align: center; font-size: 14px; color: #cbd5e1; }
-  .login-text a { color: #3B82F6; text-decoration: none; font-weight: bold; }
-  .btn-back { padding: 14px 40px; border-radius: 12px; border: none; background: #F59E0B; color: #000; font-weight: bold; font-size: 15px; text-decoration: none; box-shadow: 0 4px 0 #D97706; }
-  .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
-  .popup { background: #3a3f2a; padding: 25px; border-radius: 15px; text-align: center; border: 2px solid #FFD700; box-shadow: 0 0 20px rgba(255,215,0,0.3); max-width: 320px; }
-  .popup h2 { color: #22c55e; margin-bottom: 10px; font-size: 20px; }
-  .popup.error h2 { color: #EF4444; }
-  .popup p { color: #fff; margin-bottom: 20px; white-space: pre-line; }
-  .popup-btn { background: #FFD700; color: #000; border: none; padding: 10px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-</style>
-</head>
+<html>
+<head><title>Register</title></head>
 <body>
-  <div class="card">
-    <h1>Create Account</h1>
-    <p class="subtitle">🙊 From Nothing to Something 🍇</p>
-    <form id="registerForm">
-      <label>Username</label>
-      <input type="text" id="username" placeholder="John" required>
-      <div class="rules" id="userRules">
-        <div id="u1" class="invalid">• 4-12 characters long</div>
-        <div id="u2" class="invalid">• First letter Capital</div>
-        <div id="u3" class="invalid">• Remaining letters lowercase</div>
-        <div id="u4" class="invalid">• No numbers or special characters</div>
-      </div>
-      <label>Password</label>
-      <input type="password" id="password" required>
-      <div class="rules" id="passRules">
-        <div id="p1" class="invalid">• At least 1 Capital letter</div>
-        <div id="p2" class="invalid">• At least 1 lowercase letter</div>
-        <div id="p3" class="invalid">• At least 1 number</div>
-        <div id="p4" class="invalid">• At least 1 special character</div>
-      </div>
-      <label>Confirm Password</label>
-      <input type="password" id="confirmPassword" required>
-      <input type="hidden" id="refInput" name="referrer">
-      <button type="submit" class="btn-register" id="registerBtn">Register</button>
-    </form>
-    <div class="ref-box" id="refBox">Ref from URL: null</div>
-    <p class="login-text">Already have account? <a href="log.html">Login Here</a></p>
-  </div>
-  <a href="index.html" class="btn-back">← Back</a>
-  <div class="popup-overlay" id="popupOverlay">
-    <div class="popup" id="popupBox">
-      <h2 id="popupTitle">🎉 Success!</h2>
-      <p id="popupMessage"></p>
-      <button class="popup-btn" onclick="goToHome()">OK</button> <!-- CHANGED -->
-    </div>
-  </div>
+<h2>Register</h2>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+<input id="refCode" placeholder="Referral Code - leave blank if none">
+<button onclick="register()">Register</button>
 
-<script>
-  function showPopup(message, type = 'success') {
-    document.getElementById('popupTitle').innerText = type === 'error' ? 'Error!' : '🎉 Success!';
-    document.getElementById('popupMessage').innerText = message;
-    document.getElementById('popupBox').className = 'popup ' + type;
-    document.getElementById('popupOverlay').style.display = 'flex';
-  }
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   
-  // NEW: OK button now redirects
-  function goToHome() {
-    document.getElementById('popupOverlay').style.display = 'none';
-    window.location.href = "home.html";
+  const firebaseConfig = {
+    apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE",
+    authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
+    projectId: "reward-platform-rw-2e13d",
+    storageBucket: "reward-platform-rw-2e13d.firebasestorage.app",
+    messagingSenderId: "123456789",
+    appId: "1:123456789:web:abc123"
+  };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // Generate a simple referral code from name + random
+  function makeRefCode(name) {
+    return name.toUpperCase() + Math.floor(Math.random() * 900 + 100);
   }
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const ref = urlParams.get('ref');
-  const refBox = document.getElementById('refBox');
-  const refInput = document.getElementById('refInput');
-  if(ref) { refBox.innerText = `Referred by: ${ref}`; refBox.style.color = '#FBBF24'; refInput.value = ref; }
-
-  const username = document.getElementById('username');
-  const password = document.getElementById('password');
-  const confirmPassword = document.getElementById('confirmPassword');
-  const registerBtn = document.getElementById('registerBtn');
-
-  username.addEventListener('focus', () => document.getElementById('userRules').style.display = 'block');
-  password.addEventListener('focus', () => document.getElementById('passRules').style.display = 'block');
-
-  function validateUsername(val){
-    const rules = { len: val.length >= 4 && val.length <= 12, first: /^[A-Z]/.test(val), rest: /^[A-Z][a-z]*$/.test(val), chars: /^[A-Za-z]+$/.test(val) };
-    document.getElementById('u1').className = rules.len ? 'valid' : 'invalid';
-    document.getElementById('u2').className = rules.first ? 'valid' : 'invalid';
-    document.getElementById('u3').className = rules.rest ? 'valid' : 'invalid';
-    document.getElementById('u4').className = rules.chars ? 'valid' : 'invalid';
-    return rules.len && rules.first && rules.rest && rules.chars;
-  }
-  function validatePassword(val){
-    const rules = { cap: /[A-Z]/.test(val), low: /[a-z]/.test(val), num: /[0-9]/.test(val), spec: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(val) };
-    document.getElementById('p1').className = rules.cap ? 'valid' : 'invalid';
-    document.getElementById('p2').className = rules.low ? 'valid' : 'invalid';
-    document.getElementById('p3').className = rules.num ? 'valid' : 'invalid';
-    document.getElementById('p4').className = rules.spec ? 'valid' : 'invalid';
-    return rules.cap && rules.low && rules.num && rules.spec;
-  }
-  function checkForm(){
-    const userValid = validateUsername(username.value);
-    const passValid = validatePassword(password.value);
-    const confirmValid = password.value === confirmPassword.value && password.value !== "";
-    if(userValid && passValid && confirmValid){ registerBtn.classList.add('active'); registerBtn.disabled = false; } 
-    else { registerBtn.classList.remove('active'); registerBtn.disabled = true; }
-  }
-  username.addEventListener('input', checkForm);
-  password.addEventListener('input', checkForm);
-  confirmPassword.addEventListener('input', checkForm);
-
-  document.getElementById('registerForm').addEventListener('submit', function(e){
-    e.preventDefault();
-    const userVal = username.value;
-    const passVal = password.value;
-    const confirmVal = confirmPassword.value;
-    const referrer = refInput.value;
-
-    if(!/^[A-Z][a-z]{3,11}$/.test(userVal)){ showPopup("Username must be 4-12 letters, First Capital", 'error'); return; }
-    if(!/[A-Z]/.test(passVal) || !/[a-z]/.test(passVal) || !/[0-9]/.test(passVal) || !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(passVal)){ showPopup("Password format is wrong", 'error'); return; }
-    if(passVal !== confirmVal){ showPopup("Passwords do not match", 'error'); return; }
-
-    let users = JSON.parse(localStorage.getItem("users")) || [];
-    if(users.find(u => u.username === userVal)){ showPopup("Username already taken. Please choose another.", 'error'); return; }
-
-    // SAVE FIRST, THEN SHOW POPUP
-    users.push({username: userVal, password: passVal, points: 0, referrer: referrer});
-    localStorage.setItem("users", JSON.stringify(users));
-    localStorage.setItem("currentUser", userVal);
-    localStorage.setItem("points", "0");
+  async function register() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const referredBy = document.getElementById('refCode').value;
     
-    // NO DELAY. USER CLICKS OK WHEN READY
-    showPopup(`Account created successfully!\nWelcome ${userVal}`);
-  });
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const uid = userCredential.user.uid;
+      const myReferralCode = makeRefCode(email.split('@')[0]); // e.g. PRIYA847
+
+      // Create user doc - every user is a parent
+      const userData = {
+        email,
+        referralCode: myReferralCode,
+        referredBy: referredBy, // empty if they joined directly
+        referrals: [], // list of UIDs they referred
+        balance: 0,
+        level: 1
+      };
+      await setDoc(doc(db, "users", uid), userData);
+
+      // If someone referred this user, add them to that parent's referrals[]
+      if(referredBy!== ""){
+        // Find parent by referralCode
+        const usersRef = doc(db, "users"); // we will query later. For now manual
+        // TODO: we’ll add query logic in referrals.html
+      }
+
+      alert("Registered! Your referral code: " + myReferralCode);
+      window.location.href = "log.html";
+    } catch (e) {
+      alert(e.message);
+    }
+  }
 </script>
 </body>
 </html>
