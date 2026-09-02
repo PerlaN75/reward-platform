@@ -12,6 +12,11 @@
   }
   .container { max-width: 500px; margin: 0 auto; text-align: center; }
   
+  .back-btn {
+    display: block; text-align: left; color: #FFD700; text-decoration: none;
+    font-weight: bold; margin-bottom: 15px; font-size: 15px;
+  }
+
   .hero-emoji { font-size: 80px; margin: 15px 0; animation: bounce 1.8s infinite; }
   @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
   
@@ -38,6 +43,7 @@
 
   .stats { display: flex; justify-content: space-around; text-align: center; }
   .stats div h2 { color: #FFD700; font-size: 28px; }
+  .stats div p { font-size: 12px; color: #cbd5e1; }
 
   .share-btn {
     width: 100%; background: #25D366; color: #fff; border: none; padding: 15px;
@@ -49,6 +55,8 @@
 </head>
 <body>
 <div class="container">
+
+  <a href="dashboard.html" class="back-btn">← Back to Dashboard</a>
 
   <div class="hero-emoji">💰</div>
   <h1>Refer & Earn</h1>
@@ -71,7 +79,7 @@
   <div class="card">
     <h3>Your Referral Link</h3>
     <div class="link-box">
-      <input type="text" id="refLink" value="perlan75.github.io/rev/reg.html?ref=Amina" readonly>
+      <input type="text" id="refLink" readonly>
       <button class="copy-btn" onclick="copyLink()">Copy</button>
     </div>
     <button class="share-btn" onclick="shareWhatsApp()">📱 Share on WhatsApp</button>
@@ -87,17 +95,33 @@
 </div>
 
 <script>
+// 1. MAKE LINK DYNAMIC BASED ON LOGGED IN USER
+// Make sure you save username in localStorage during login: localStorage.setItem('username', 'Amina')
+const username = localStorage.getItem('username') || 'Guest';
+const baseLink = `https://perlan75.github.io/rev/reg.html?ref=${username}`;
+document.getElementById('refLink').value = baseLink;
+
+// 2. COPY FUNCTION
 function copyLink() {
   const link = document.getElementById('refLink');
   link.select();
   document.execCommand('copy');
   alert('Link Copied!');
 }
+
+// 3. WHATSAPP SHARE FUNCTION
 function shareWhatsApp() {
   const link = document.getElementById('refLink').value;
-  const text = `Join Reward Platform and let's earn together! 💰\n\nMy link: ${link}`;
+  const text = `Join Reward Platform and let's earn together! 💰\n\nUse my link: ${link}`;
   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
 }
+
+// 4. TODO: LOAD STATS FROM BACKEND
+// Example: fetch(`/api/user/stats?user=${username}`).then(res => res.json()).then(data => {
+//   document.getElementById('totalInvited').innerText = data.invited;
+//   document.getElementById('validRefs').innerText = data.valid;
+//   document.getElementById('earnedPts').innerText = data.earned;
+// });
 </script>
 </body>
 </html>
