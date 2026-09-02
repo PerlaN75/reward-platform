@@ -28,7 +28,7 @@
   </style>
 </head>
 <body>
-  <h1 id="welcomeText">Welcome back User</h1>
+  <h1 id="welcomeText">Loading...</h1> <!-- CHANGED: was "Welcome back User" -->
   <div class="tagline">🐒 From Nothing to Something 🍇</div>
   
   <div class="points-box">
@@ -81,11 +81,18 @@
 
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      const docSnap = await getDoc(doc(db, "users", user.uid));
-      if(docSnap.exists()) {
-        const data = docSnap.data();
-        document.getElementById('welcomeText').innerText = "Welcome back " + data.username;
-        document.getElementById('points').innerText = data.balance; // using balance as points
+      try { // ADDED: so it doesn't break
+        const docSnap = await getDoc(doc(db, "users", user.uid));
+        if(docSnap.exists()) {
+          const data = docSnap.data();
+          document.getElementById('welcomeText').innerText = "Welcome back " + data.username;
+          document.getElementById('points').innerText = data.balance || 0; // ADDED || 0
+        } else {
+          document.getElementById('welcomeText').innerText = "Welcome back";
+        }
+      } catch(e) {
+        console.log(e);
+        document.getElementById('welcomeText').innerText = "Welcome back";
       }
     } else {
       window.location.href = "log.html"; 
