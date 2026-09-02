@@ -1,138 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login - Reward Platform</title>
-<style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-  body {
-    background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #1a0033 100%);
-    color: #fff; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
-  }
-  .login-box {
-    background: rgba(255,255,255,0.08); padding: 30px; border-radius: 20px;
-    backdrop-filter: blur(10px); width: 100%; max-width: 400px;
-  }
-  .login-box h1 { text-align: center; margin-bottom: 10px; }
-  .login-box p { text-align: center; color: #cbd5e1; font-size: 14px; margin-bottom: 25px; }
-  
-  .input-group { margin-bottom: 15px; }
-  .input-group label { display: block; font-size: 13px; margin-bottom: 5px; color: #cbd5e1; }
-  .input-group input {
-    width: 100%; padding: 12px; background: #000; border: 1px solid #444;
-    border-radius: 10px; color: #fff; font-size: 14px; outline: none;
-  }
-  .input-group input:focus { border-color: #FFD700; }
-
-  .login-btn {
-    width: 100%; background: #FFD700; color: #000; border: none; padding: 14px;
-    border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px;
-  }
-  .login-btn:hover { opacity: 0.9; }
-  .login-btn:disabled { background: #666; cursor: not-allowed; }
-
-  .footer-link { text-align: center; margin-top: 20px; font-size: 14px; }
-  .footer-link a { color: #FFD700; text-decoration: none; font-weight: bold; }
-  #error { color: #ff5252; text-align: center; margin-top: 10px; font-size: 14px; }
-</style>
-</head>
+<html>
+<head><title>Login</title></head>
 <body>
-
-<div class="login-box">
-  <h1>Welcome Back</h1>
-  <p>Login to continue earning</p>
-
-  <form id="loginForm">
-    <div class="input-group">
-      <label>Username</label>
-      <input type="text" id="username" placeholder="Enter your username" required>
-    </div>
-
-    <div class="input-group">
-      <label>Password</label>
-      <input type="password" id="password" placeholder="Enter your password" required>
-    </div>
-
-    <button type="submit" class="login-btn" id="loginBtn">Login</button>
-    <p id="error"></p>
-  </form>
-
-  <div class="footer-link">
-    Don't have an account? <a href="reg.html">Register</a>
-  </div>
-</div>
+<h2>Login</h2>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-  // YOUR FIREBASE CONFIG
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  
   const firebaseConfig = {
-    apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
+    apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE",
     authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
     projectId: "reward-platform-rw-2e13d",
     storageBucket: "reward-platform-rw-2e13d.firebasestorage.app",
-    messagingSenderId: "787550951987",
-    appId: "1:787550951987:web:724b1463e821b99c90a146"
+    messagingSenderId: "123456789",
+    appId: "1:123456789:web:abc123"
   };
-
   const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+  const auth = getAuth(app);
 
-  document.getElementById('loginForm').addEventListener('submit', async function(e){
-    e.preventDefault();
-    
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const btn = document.getElementById('loginBtn');
-    const error = document.getElementById('error');
-    error.innerText = "";
-
-    if(username === '' || password === ''){
-      error.innerText = 'Please fill all fields';
-      return;
-    }
-
-    btn.disabled = true;
-    btn.innerText = "Logging in...";
-
+  async function login() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
     try {
-      // 1. CHECK FIREBASE IF USER EXISTS
-      const userRef = doc(db, "users", username);
-      const userSnap = await getDoc(userRef);
-
-      if(!userSnap.exists()) {
-        error.innerText = "Username not found";
-        btn.disabled = false;
-        btn.innerText = "Login";
-        return;
-      }
-
-      const userData = userSnap.data();
-
-      // 2. CHECK PASSWORD - NOTE: In real app use hashing. For now we compare directly
-      if(userData.password !== password) {
-        error.innerText = "Wrong password";
-        btn.disabled = false;
-        btn.innerText = "Login";
-        return;
-      }
-
-      // 3. SUCCESS: SAVE USERNAME TO LOCALSTORAGE - CRITICAL FOR REFERRALS
-      localStorage.setItem('username', username);
-      localStorage.setItem('isLoggedIn', 'true');
-
-      // 4. REDIRECT TO DASHBOARD
-      window.location.href = 'home.html'; // you said login -> home.html
-
-    } catch(err) {
-      error.innerText = "Error: " + err.message;
-      btn.disabled = false;
-      btn.innerText = "Login";
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      alert("Logged in!");
+      window.location.href = "referrals.html";
+    } catch (e) {
+      alert(e.message);
     }
-  });
+  }
 </script>
-
 </body>
 </html>
