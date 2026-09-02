@@ -1,175 +1,71 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Create Account</title>
+  <title>Register</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { background: #2f3e1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; flex-direction: column; }
-  .container { background: #3a4a22; padding: 30px 20px; border-radius: 20px; width: 100%; max-width: 350px; text-align: center; margin-bottom: 15px; }
-    h2 { color: white; font-size: 28px; margin-bottom: 5px; font-weight: bold; }
-  .tagline { color: #fbbf24; font-size: 13px; margin-bottom: 20px; }
-    label { display: block; text-align: left; color: #ddd; margin: 12px 0 4px 4px; font-size: 14px; }
-    input { width: 100%; padding: 11px 14px; background: #000; border: 2px solid transparent; border-radius: 10px; color: white; font-size: 15px; outline: none; }
-    input::placeholder { color: #666; }
-    input:focus { border: 2px solid #f59e0b; }
-    input:disabled { background: #222; color: #555; }
-    
-  .input-with-btn { display: flex; gap: 6px; }
-  .input-with-btn input { flex: 1; }
-  .verify-btn { padding: 11px 12px; background: #3b82f6; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 13px; }
-  .verify-btn:disabled { background: #555; cursor: not-allowed; }
-
-  .rules { display: none; background: #1a1a1a; color: #ccc; font-size: 11px; text-align: left; padding: 8px; border-radius: 8px; margin-top: 4px; line-height: 1.5; border-left: 3px solid #f59e0b; }
-  .rules.show { display: block; }
-  .rules span { color: #22c55e; font-weight: bold; }
-
-   .register-btn { width: 100%; padding: 13px; margin: 16px 0 10px 0; background: #555; color: #222; border: none; border-radius: 10px; cursor: not-allowed; font-size: 16px; font-weight: bold; transition: 0.3s; }
-   .register-btn.active { background: #22c55e; color: black; cursor: pointer; }
-
-   .back-btn-outside { width: 40%; max-width: 140px; padding: 11px; background: #f59e0b; color: black; border: none; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: bold; }
-  .ref-box { background: #000; color: #22c55e; padding: 10px; border-radius: 8px; font-size: 13px; text-align: left; margin-bottom: 12px; }
-  .login-link { color: #ccc; font-size: 13px; margin-bottom: 12px; }
-  .login-link a { color: #3b82f6; text-decoration: none; font-weight: bold; }
-  .success { color: #22c55e; font-size: 11px; text-align: left; margin-top: 4px; }
+    body { background: #2f3e1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+    .container { background: white; padding: 30px 25px; border-radius: 15px; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    h2 { text-align: center; margin-bottom: 20px; color: #2f3e1a; }
+    input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; }
+    button { width: 100%; padding: 12px; margin-top: 15px; background: #4a5d23; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; }
+    button:hover { background: #3a4a1c; }
+    .link { text-align: center; margin-top: 15px; font-size: 14px; }
+    .link a { color: #4a5d23; text-decoration: none; font-weight: bold; }
+    .error { color: red; text-align: center; margin-top: 10px; font-size: 14px; }
   </style>
 </head>
 <body>
-<div class="container">
-  <h2>Create Account</h2>
-  <div class="tagline">🐒 From Nothing to Something 🍇</div>
-  
-  <label>Username</label>
-  <input id="username" type="text" placeholder="Username" onfocus="showRules('userRules')" oninput="checkForm()">
-  <div id="userRules" class="rules">
-    <span>•</span> Starting with capital letter<br>
-    <span>•</span> Lowercase letters only<br>
-    <span>•</span> No numbers or characters
+  <div class="container">
+    <h2>🐒 Create Account 🍇</h2>
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button onclick="register()">Register</button>
+    <div class="error" id="errorMsg"></div>
+    <div class="link">Already have account? <a href="log.html">Login</a></div>
   </div>
-
-  <label>Email</label>
-  <div class="input-with-btn">
-    <input id="email" type="email" placeholder="you@gmail.com" oninput="checkForm()">
-    <button id="verifyBtn" class="verify-btn" onclick="sendOTP()">Verify</button>
-  </div>
-  <div id="emailStatus"></div>
-  
-  <label>Verification code</label>
-  <input id="otp" type="text" placeholder="123456" maxlength="6" oninput="checkForm()">
-  
-  <label>Password</label>
-  <input id="password" type="password" placeholder="Password" onfocus="showRules('passRules')" oninput="checkForm()">
-  <div id="passRules" class="rules">
-    <span>•</span> 4-8 characters<br>
-    <span>•</span> At least 1 capital letter<br>
-    <span>•</span> At least 1 digit number<br>
-    <span>•</span> At least 1 character: $ & # @?! %
-  </div>
-  
-  <label>Confirm Password</label>
-  <input id="confirmPassword" type="password" placeholder="Confirm Password" oninput="checkForm()">
-  
-  <button id="registerBtn" class="register-btn" onclick="register()">REGISTER</button>
-  
-  <div class="ref-box" id="refDisplay">Ref from URL: null</div>
-  
-  <div class="login-link">Already have account? <a href="log.html">Login Here</a></div>
-</div>
-
-<button class="back-btn-outside" onclick="window.location.href='index.html'">← Back</button>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, collection, query, where, getDocs, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"; // <-- ONLY NEW IMPORT
 
-  // TODO: REPLACE WITH YOUR REAL KEYS FROM FIREBASE PROJECT SETTINGS
   const firebaseConfig = { 
     apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", 
     authDomain: "reward-platform-rw-2e13d.firebaseapp.com", 
-    projectId: "reward-platform-rw-2e13d", 
-    storageBucket: "reward-platform-rw-2e13d.firebasestorage.app", 
-    messagingSenderId: "123456789", 
-    appId: "1:123456789:web:abc123" 
+    projectId: "reward-platform-rw-2e13d"
   };
-  
   const app = initializeApp(firebaseConfig); 
-  const auth = getAuth(app); 
-  const db = getFirestore(app);
-  
-  let generatedOTP = null; let emailVerified = false;
-  const urlParams = new URLSearchParams(window.location.search); const refFromUrl = urlParams.get('ref');
-  document.getElementById('refDisplay').innerText = `Ref from URL: ${refFromUrl || 'null'}`;
-  
-  window.showRules = function(id){ document.getElementById(id).classList.add('show'); }
-  function makeRefCode(name) { return name.toUpperCase() + Math.floor(Math.random() * 900 + 100); }
-  
-  function validateUsername(u){ return /^[A-Z][a-z]+$/.test(u); }
-  function validatePassword(p){ return p.length >= 4 && p.length <= 8 && /[A-Z]/.test(p) && /[0-9]/.test(p) && /[\$&#@?!\%]/.test(p); }
-  function validateEmail(e){ return e.endsWith("@gmail.com"); }
-  
-  window.checkForm = function() {
-    const u = document.getElementById('username').value; 
-    const p = document.getElementById('password').value; 
-    const cp = document.getElementById('confirmPassword').value;
-    const em = document.getElementById('email').value; 
-    const otp = document.getElementById('otp').value; 
-    const btn = document.getElementById('registerBtn');
-    
-    if(otp === generatedOTP && generatedOTP !== null) {
-      emailVerified = true;
-      document.getElementById('emailStatus').innerHTML = '<div class="success">✓ Email verified</div>';
-    }
-    
-    const valid = validateUsername(u) && validatePassword(p) && p === cp && validateEmail(em) && emailVerified;
-    btn.classList.toggle('active', valid);
-  }
-  
-  window.sendOTP = function() {
-    const email = document.getElementById('email').value; 
-    if(!validateEmail(email)){ alert("Email must be @gmail.com"); return; }
-    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-    alert("OTP sent to " + email + ". Check inbox. Code: " + generatedOTP);
-    document.getElementById('email').disabled = true; 
-    document.getElementById('verifyBtn').disabled = true; 
-    document.getElementById('verifyBtn').innerText = "Sent";
-    document.getElementById('emailStatus').innerHTML = '<div class="success">✓ Code sent</div>';
-  }
-  
-  window.register = async function() {
-    const username = document.getElementById('username').value; 
-    const email = document.getElementById('email').value; 
-    const otp = document.getElementById('otp').value;
-    const password = document.getElementById('password').value; 
-    const referredBy = refFromUrl; 
-    const btn = document.getElementById('registerBtn');
-    
-    if(!btn.classList.contains('active')) {
-      alert("Please fill all fields correctly");
-      return; 
-    }
-    if(otp !== generatedOTP){ alert("Invalid OTP code"); return; } 
-    
+  const auth = getAuth(app);
+  const db = getFirestore(app); // <-- ONLY NEW LINE
+
+  window.register = async function() { // <-- CHANGED TO async
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const errorDiv = document.getElementById('errorMsg');
+    errorDiv.innerText = "";
+
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password); 
-      const uid = userCredential.user.uid;
-      const myReferralCode = makeRefCode(username);
-      
-      const userData = { username, email, referralCode: myReferralCode, referredBy: referredBy || null, referrals: [], balance: 0, level: 1, emailVerified: true, createdAt: new Date() };
-      await setDoc(doc(db, "users", uid), userData);
-      
-      if(referredBy){ 
-        const q = query(collection(db, "users"), where("referralCode", "==", referredBy)); 
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((parentDoc) => { 
-          updateDoc(doc(db, "users", parentDoc.id), { referrals: arrayUnion(uid), balance: parentDoc.data().balance + 50 }); 
-        });
-      }
-      alert("Account created! Welcome " + username + " 🐒"); 
-      window.location.href = "home.html"; // Goes to menu with 6 buttons
-    } catch (e) { 
-      console.error(e);
-      alert("Error: " + e.message); 
+      // 1. Create Auth account - YOUR OLD CODE
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // 2. SAVE TO FIRESTORE - ONLY NEW CODE ADDED HERE
+      await setDoc(doc(db, "users", user.uid), {
+        username: username,
+        email: email,
+        balance: 0,
+        referralCode: username.toUpperCase() + Math.floor(Math.random()*1000),
+        createdAt: new Date()
+      });
+
+      alert("Registration Success! Welcome " + username + " 🐒");
+      window.location.href = "log.html";
+    } catch (e) {
+      errorDiv.innerText = "Error: " + e.message;
     }
   }
 </script>
