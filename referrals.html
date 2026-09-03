@@ -2,103 +2,157 @@
 <html>
 <head>
   <title>Refer & Earn</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: Arial; background: #1a1a1a; color: white; text-align: center; padding: 20px; margin:0; }
-    .box { background: #2d2d1a; border: 2px solid #ffaa00; padding: 20px; border-radius: 15px; max-width: 400px; margin: auto; }
-    .points { color: #ffaa00; font-weight: bold; }
-    .link-box { background: black; padding: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin: 15px 0; }
-    .link { color: #ffaa00; font-size: 14px; word-break: break-all; }
-    button { background: #3399ff; color: white; border: none; padding: 10px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; }
-    button:hover { background: #1a8cff; }
-    input { width: 90%; padding: 12px; margin: 8px 0; border-radius: 5px; border: 1px solid #555; font-size: 16px; background:#333; color:white; }
-    #msg { color:#4caf50; font-weight:bold; }
-    .count { color: #4caf50; font-size: 24px; font-weight: bold; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background: #2f3e1a; min-height: 100vh; padding: 20px; color: white; text-align: center; }
+    
+    h2 { font-size: 26px; margin-bottom: 5px; }
+    .tagline { color: #fbbf24; font-size: 13px; margin-bottom: 20px; }
+    
+    /* MATCH HOME POPUP BOX */
+    .box { 
+      background: #3a4a22; 
+      border: 2px solid #f59e0b; /* orange border like screenshot */
+      padding: 25px 20px; 
+      border-radius: 15px; 
+      max-width: 400px; 
+      margin: auto; 
+      position: relative;
+    }
+    .close-btn {
+      position: absolute; top: 10px; right: 15px;
+      background: none; border: none; color: white;
+      font-size: 22px; cursor: pointer; font-weight: bold;
+    }
+    
+    .earn-text { font-size: 14px; margin-bottom: 20px; }
+    .points { color: #f59e0b; font-weight: bold; }
+    
+    .link-box { 
+      background: #000; 
+      padding: 10px; 
+      border-radius: 10px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin: 15px 0; 
+      gap: 8px;
+    }
+    .link { color: #f59e0b; font-size: 12px; word-break: break-all; text-align: left; flex: 1; }
+    
+    .copy-btn { 
+      background: #3b82f6; /* blue like screenshot */
+      color: white; 
+      border: none; 
+      padding: 10px 15px; 
+      border-radius: 8px; 
+      font-weight: bold; 
+      cursor: pointer; 
+      white-space: nowrap;
+    }
+    .copy-btn:active { transform: scale(0.95); }
+    
+    hr { border: none; border-top: 1px solid #2f3e1a; margin: 15px 0; }
+    
+    .count { color: #22c55e; font-size: 24px; font-weight: bold; }
+    #noRefText { color: #aaa; font-size: 13px; }
+    
+    .back-btn { 
+      width: 40%; 
+      padding: 12px; 
+      margin-top: 20px; 
+      background: #f59e0b; 
+      color: black; 
+      border: none; 
+      border-radius: 10px; 
+      font-weight: bold; 
+      cursor: pointer; 
+      font-size: 15px; 
+    }
+    .error { color: #ef4444; font-size: 12px; margin-top: 8px; }
+    .success { color: #22c55e; font-size: 12px; margin-top: 8px; }
   </style>
 </head>
 <body>
+  <h2>👥 Refer & Earn</h2>
+  <div class="tagline">🐒 From Nothing to Something 🍇</div>
+  
   <div class="box">
-    <h2>👥 Refer & Earn</h2>
-    <p>Earn <span class="points">+50 Points</span> after your friend is active for 48 hours!</p>
+    <button class="close-btn" onclick="goHome()">X</button>
+    <p class="earn-text">Earn <span class="points">+50 Points</span> after your friend is active for 48 hours!</p>
 
-    <p><b>Your Referral Link:</b></p>
+    <p style="text-align:left; font-size:14px; margin-bottom:5px;"><b>Your Referral Link:</b></p>
     <div class="link-box">
       <span id="refLink" class="link">loading...</span>
-      <button onclick="copyLink()">Copy</button>
+      <button class="copy-btn" onclick="copyLink()">Copy</button>
     </div>
 
-    <hr style="border-color:#444;">
-    <p>Your Referrals: <span id="refCount" class="count">0</span></p>
+    <hr>
+    <p style="font-size:16px;">Your Referrals: <span id="refCount" class="count">0</span></p>
     <p id="noRefText">No referrals yet. Share your link!</p>
-
-    <hr style="border-color:#444;">
-    <h3>Claim Reward Manually</h3>
-    <input id="name" placeholder="Friend's Name" required>
-    <input id="phone" placeholder="Friend's Phone Number" required>
-    <button onclick="saveData()">Claim Reward</button>
-    <p id="msg"></p>
   </div>
 
+  <button class="back-btn" onclick="goHome()">← Back</button>
+  <div id="msg" class="success"></div>
+
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, addDoc, serverTimestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
-    authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
-    projectId: "reward-platform-rw-2e13d",
-    storageBucket: "reward-platform-rw-2e13d.firebasestorage.app",
-    messagingSenderId: "787550951987",
-    appId: "1:787550951987:web:724b1463e821b99c90a146"
+  // SAME FIREBASE AS HOME.HTML - THIS IS KEY TO NOT RESET TO ZERO
+  const firebaseConfig = { 
+    apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", 
+    authDomain: "reward-platform-rw-2e13d.firebaseapp.com", 
+    projectId: "reward-platform-rw-2e13d"
   };
-
   const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // 1. GET WHO IS LOGGED IN FROM URL ?user=Manzi
-  const urlParams = new URLSearchParams(window.location.search);
-  const referrer = urlParams.get('user') || "Guest"; 
+  const refLinkEl = document.getElementById('refLink');
+  const refCountEl = document.getElementById('refCount');
+  const noRefText = document.getElementById('noRefText');
+  const msg = document.getElementById('msg');
+  
+  let myUsername = "Guest";
+  let myLink = "";
 
-  // 2. BUILD THEIR UNIQUE REFERRAL LINK
-  const myLink = `https://perlan75.github.io/rev/reg.html?ref=${referrer}`;
-  document.getElementById('refLink').innerText = myLink;
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      // Get username from Firestore to build link
+      const docSnap = await getDocs(query(collection(db, "users"), where("__name__", "==", user.uid)));
+      docSnap.forEach((doc) => { myUsername = doc.data().username; });
+      
+      // BUILD REFERRAL LINK - points to register.html with ?ref=
+      myLink = `https://perlan75.github.io/rev/register.html?ref=${myUsername}`;
+      refLinkEl.innerText = myLink;
+      
+      loadReferrals();
+    } else {
+      window.location.href = "log.html"; 
+    }
+  });
 
-  // 3. COUNT THEIR REFERRALS FROM FIREBASE
+  // COUNT REFERRALS FROM FIREBASE
   async function loadReferrals() {
-    const q = query(collection(db, "referrals"), where("referrer", "==", referrer));
+    const q = query(collection(db, "referrals"), where("referrer", "==", myUsername));
     const querySnapshot = await getDocs(q);
     const count = querySnapshot.size;
-    document.getElementById('refCount').innerText = count;
-    if(count > 0) document.getElementById('noRefText').style.display = 'none';
+    refCountEl.innerText = count;
+    if(count > 0) noRefText.style.display = 'none';
   }
-  loadReferrals();
 
-  // 4. COPY BUTTON
+  // COPY BUTTON
   window.copyLink = function() {
     navigator.clipboard.writeText(myLink);
-    alert("Referral link copied!");
+    msg.innerText = "Referral link copied!";
+    setTimeout(() => msg.innerText = "", 2000);
   }
 
-  // 5. SAVE REFERRAL TO FIREBASE
-  window.saveData = async function() {
-    const name = document.getElementById('name').value;
-    const phone = document.getElementById('phone').value;
-    if(!name || !phone){ alert("Please fill both Name and Phone"); return; }
-    
-    try {
-      await addDoc(collection(db, "referrals"), {
-        referrer: referrer,  // KEY: Separates Manzi from Amina
-        refereeName: name,
-        refereePhone: phone,
-        createdAt: serverTimestamp()
-      });
-      document.getElementById('msg').innerText = "Thank you! We got your referral 🎉";
-      document.getElementById('name').value = "";
-      document.getElementById('phone').value = "";
-      loadReferrals(); // refresh count
-    } catch(e) {
-      alert("Error: " + e.message)
-    }
+  window.goHome = function() {
+    window.location.href = "home.html";
   }
 </script>
 </body>
