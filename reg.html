@@ -16,21 +16,20 @@
     
     .input-row { display: flex; gap: 8px; align-items: center; }
     
-    /* CHANGED: BLACK -> SOFT WHITE/PINK */
     input { 
       width: 100%; 
       padding: 14px 16px; 
-      background: #fff0f5; /* soft pink white */
+      background: #fff0f5; 
       border: 2px solid #d1d5db; 
       border-radius: 12px; 
-      color: #1f2937; /* dark text for contrast */
+      color: #1f2937; 
       font-size: 15px; 
       outline: none; 
       transition: 0.3s;
     }
     input::placeholder { color: #9ca3af; }
     input:focus { 
-      border: 2px solid #ec4899; /* pink glow */
+      border: 2px solid #ec4899; 
       background: #ffffff;
       box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.2);
     }
@@ -117,11 +116,13 @@
   let usernameValid = false;
   let passwordValid = false;
 
-  const params = new URLSearchParams(window.location.search);
-  const refUsername = params.get('ref');
-  if(refUsername){
+  // YOUR EXACT CODE ADDED HERE
+  const urlParams = new URLSearchParams(window.location.search);
+  const ref = urlParams.get('ref');
+  if(ref) {
+    document.getElementById('referralBanner').innerText = `Referred by: ${ref}`;
     document.getElementById('referralBanner').style.display = 'block';
-    document.getElementById('referralBanner').innerText = `🎁 You were referred by ${refUsername}! Both get points.`;
+    localStorage.setItem('referredBy', ref); // save it for signup
   }
 
   window.showRules = function(id){
@@ -207,6 +208,9 @@
       return;
     }
 
+    // Get ref from localStorage so it works even after page refresh
+    const refUsername = localStorage.getItem('referredBy');
+
     try {
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCred.user;
@@ -215,7 +219,7 @@
         username: username,
         email: email,
         balance: 0,
-        referredBy: refUsername || null,
+        referredBy: refUsername || null, // NOW IT SAVES WHO REFERRED
         createdAt: new Date()
       });
 
@@ -229,7 +233,8 @@
         await updateDoc(doc(db, "users", user.uid), { balance: increment(100) });
       }
 
-      alert("Account created successfully!");
+      localStorage.removeItem('referredBy'); // clear it
+      alert("Account created successfully! +100 points");
       window.location.href = "home.html";
       
     } catch (e) {
