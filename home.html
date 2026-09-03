@@ -15,16 +15,41 @@
     .points-box h2 { font-size: 48px; color: #f59e0b; font-weight: bold; }
     
     .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    
+    /* 3D BUTTONS + CLICKABLE */
     .menu-btn { 
-      background: white; padding: 20px 10px; border-radius: 15px; 
-      text-align: center; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      transition: 0.2s;
+      background: linear-gradient(180deg, #ffffff, #e5e5e5); 
+      padding: 20px 10px; border-radius: 15px; 
+      text-align: center; cursor: pointer; 
+      box-shadow: 0 6px 0 #b3b3b3, 0 10px 15px rgba(0,0,0,0.3); /* 3D shadow */
+      transition: all 0.1s ease;
+      border: none;
     }
-    .menu-btn:active { transform: scale(0.95); }
+    .menu-btn:active { 
+      transform: translateY(4px); /* Press down effect */
+      box-shadow: 0 2px 0 #b3b3b3, 0 4px 8px rgba(0,0,0,0.2); 
+    }
+    .menu-btn:hover { background: linear-gradient(180deg, #ffffff, #f0f0f0); }
+    
     .menu-icon { font-size: 35px; margin-bottom: 8px; }
     .menu-text { font-size: 14px; font-weight: bold; color: #2f3e1a; }
     
-    .logout-btn { width: 60%; padding: 12px; margin-top: 25px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 15px; }
+    /* LOGOUT RESIZED TO 40% */
+    .logout-btn { 
+      width: 40%; 
+      padding: 12px; 
+      margin-top: 25px; 
+      background: #ef4444; 
+      color: white; 
+      border: none; 
+      border-radius: 10px; 
+      font-weight: bold; 
+      cursor: pointer; 
+      font-size: 15px; 
+      box-shadow: 0 4px 0 #b91c1c; /* small 3D too */
+      transition: 0.1s;
+    }
+    .logout-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b91c1c; }
   </style>
 </head>
 <body>
@@ -82,10 +107,10 @@
   const welcomeEl = document.getElementById('welcomeText');
   const pointsEl = document.getElementById('points');
 
-  // KEY FIX: Show name instantly from browser memory
+  // Show name instantly from browser memory
   const savedName = localStorage.getItem('username');
   if(savedName) {
-    welcomeEl.innerText = "Welcome back " + savedName; // No more Loading...
+    welcomeEl.innerText = "Welcome back " + savedName;
   }
 
   onAuthStateChanged(auth, async (user) => {
@@ -94,10 +119,8 @@
         const docSnap = await getDoc(doc(db, "users", user.uid));
         if(docSnap.exists()) {
           const data = docSnap.data();
-          welcomeEl.innerText = "Welcome back " + data.username; // Update in case it changed
+          welcomeEl.innerText = "Welcome back " + data.username;
           pointsEl.innerText = data.balance || 0;
-          
-          // Save to browser for next time
           localStorage.setItem('username', data.username);
         }
       } catch(e) {
