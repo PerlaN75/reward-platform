@@ -1,109 +1,177 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Refer & Earn</title>
+  <title>Referrals</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+    
     body { 
-      background: rgba(0,0,0,0.7); 
-      min-height: 100vh; 
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1e3c1a 0%, #2d5016 25%, #3a6b1f 50%, #2d5016 75%, #1e3c1a 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
       padding: 20px;
-    }
-    
-    /* POPUP BOX */
-    .popup {
-      background: #3a4a22;
-      border: 3px solid #f59e0b;
-      border-radius: 20px;
-      padding: 25px 20px;
-      width: 100%;
-      max-width: 380px;
       color: white;
+    }
+    
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .header {
       text-align: center;
-      position: relative;
-      box-shadow: 0 0 30px rgba(245, 158, 11, 0.5);
-      animation: popIn 0.3s ease;
+      margin-bottom: 30px;
     }
-    @keyframes popIn {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+    .header h1 {
+      font-size: 36px;
+      background: linear-gradient(90deg, #fbbf24, #f59e0b, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 900;
+      margin-bottom: 8px;
     }
+    .header p { color: #d1fae5; font-size: 15px; }
     
-    .close-btn {
-      position: absolute; top: 12px; right: 15px;
-      background: #ef4444; border: none; color: white;
-      width: 30px; height: 30px; border-radius: 50%;
-      font-size: 18px; cursor: pointer; font-weight: bold;
-    }
-    
-    h2 { font-size: 24px; margin-bottom: 5px; }
-    .tagline { color: #fbbf24; font-size: 12px; margin-bottom: 20px; }
-    
-    .earn-badge {
-      background: linear-gradient(90deg, #fbbf24, #f59e0b);
-      color: black; padding: 10px; border-radius: 10px;
-      font-weight: bold; margin-bottom: 20px;
+    .card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
     
-    .link-box { 
-      background: #000; padding: 12px; border-radius: 12px; 
-      display: flex; gap: 8px; align-items: center; margin: 15px 0;
+    .balance-box {
+      text-align: center;
+      background: linear-gradient(135deg, #fbbf24, #ec4899);
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 20px;
     }
-    .link { color: #f59e0b; font-size: 11px; word-break: break-all; text-align: left; flex: 1; }
-    .copy-btn { 
-      background: #3b82f6; color: white; border: none; 
-      padding: 10px 14px; border-radius: 8px; font-weight: bold; cursor: pointer;
+    .balance-box .label { font-size: 14px; color: rgba(0,0,0,0.7); font-weight: bold; }
+    .balance-box .amount { font-size: 40px; color: black; font-weight: 900; }
+    
+    .referral-link-box {
+      background: rgba(0,0,0,0.4);
+      border: 2px dashed #f59e0b;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
     }
-    
-    hr { border: none; border-top: 1px solid #2f3e1a; margin: 15px 0; }
-    
-    .stats { display: flex; justify-content: space-around; margin: 15px 0; }
-    .stat-box { text-align: center; }
-    .stat-num { color: #22c55e; font-size: 28px; font-weight: bold; }
-    .stat-label { font-size: 12px; color: #aaa; }
-    
-    .home-btn { 
-      width: 100%; padding: 12px; margin-top: 10px; 
-      background: #f59e0b; color: black; border: none; 
-      border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 15px; 
+    .referral-link-box input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: #fbbf24;
+      font-size: 14px;
+      text-align: center;
+      outline: none;
+      margin: 10px 0;
     }
-    .success { color: #22c55e; font-size: 12px; margin-top: 8px; height: 16px; }
+    .copy-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(90deg, #3b82f6, #06b6d4);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .copy-btn:hover { transform: scale(1.02); }
+    
+    .stats {
+      display: flex;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .stat-item {
+      flex: 1;
+      background: rgba(0,0,0,0.3);
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    .stat-item .num { font-size: 24px; font-weight: 900; color: #fbbf24; }
+    .stat-item .txt { font-size: 12px; color: #ccc; }
+    
+    .referred-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .referred-item {
+      background: rgba(0,0,0,0.25);
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .referred-item .name { font-weight: bold; }
+    .referred-item .reward { color: #22c55e; font-weight: bold; }
+    
+    .back-btn { 
+      width: 100%;
+      padding: 16px; 
+      background: linear-gradient(90deg, #f59e0b, #ef4444); 
+      color: black; 
+      border: none; 
+      border-radius: 12px; 
+      cursor: pointer; 
+      font-size: 16px; 
+      font-weight: bold; 
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
-  <div class="popup">
-    <button class="close-btn" onclick="goHome()">X</button>
-    <h2>👥 Refer & Earn</h2>
-    <div class="tagline">🐒 From Nothing to Something 🍇</div>
-    
-    <div class="earn-badge">Earn +50 Points Per Friend!</div>
 
-    <p style="text-align:left; font-size:14px; margin-bottom:5px;"><b>Your Referral Link:</b></p>
-    <div class="link-box">
-      <span id="refLink" class="link">loading...</span>
-      <button class="copy-btn" onclick="copyLink()">Copy</button>
-    </div>
-
-    <hr>
-    <div class="stats">
-      <div class="stat-box">
-        <div id="refCount" class="stat-num">0</div>
-        <div class="stat-label">Referrals</div>
-      </div>
-      <div class="stat-box">
-        <div id="earned" class="stat-num">0</div>
-        <div class="stat-label">Points Earned</div>
-      </div>
-    </div>
-    <p id="noRefText" style="color:#aaa; font-size:13px;">Share to start earning!</p>
-
-    <button class="home-btn" onclick="goHome()">← Back to Home</button>
-    <div id="msg" class="success"></div>
+  <div class="header">
+    <h1>💰 Refer & Earn</h1>
+    <p>Invite friends. Both get 100 points!</p>
   </div>
+
+  <div class="card">
+    <div class="balance-box">
+      <div class="label">YOUR BALANCE</div>
+      <div class="amount" id="balance">0</div>
+    </div>
+    
+    <div class="stats">
+      <div class="stat-item">
+        <div class="num" id="totalRef">0</div>
+        <div class="txt">Total Referred</div>
+      </div>
+      <div class="stat-item">
+        <div class="num" id="totalEarned">0</div>
+        <div class="txt">Points Earned</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom: 12px;">Your Referral Link</h3>
+    <div class="referral-link-box">
+      <input type="text" id="refLink" readonly>
+      <button class="copy-btn" onclick="copyLink()">📋 Copy Link</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom: 15px;">People You Referred</h3>
+    <div class="referred-list" id="referredList">
+      <p style="text-align:center; color:#888;">Loading...</p>
+    </div>
+  </div>
+
+  <button class="back-btn" onclick="window.location.href='home.html'">← Back to Home</button>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -113,49 +181,63 @@
   const firebaseConfig = { 
     apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", 
     authDomain: "reward-platform-rw-2e13d.firebaseapp.com", 
-    projectId: "reward-platform-rw-2e13d"
+    projectId: "reward-platform-rw-2e13d" 
   };
   const app = initializeApp(firebaseConfig); 
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  let myUsername = ""; let myLink = "";
+  let currentUser = null;
+  let currentUsername = "";
 
   onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const docSnap = await getDoc(doc(db, "users", user.uid));
-      if(docSnap.exists()){
-        const data = docSnap.data();
-        myUsername = data.username;
-        myLink = `https://perlan75.github.io/reward-platform/reg.html?ref=${myUsername}`; // FIXED HERE
-        
-        document.getElementById('refLink').innerText = myLink;
-        document.getElementById('earned').innerText = (data.balance || 0);
-        
-        loadReferrals();
+    if(user){
+      currentUser = user;
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if(userDoc.exists()){
+        const data = userDoc.data();
+        currentUsername = data.username;
+        document.getElementById('balance').innerText = data.balance || 0;
+        document.getElementById('refLink').value = `${window.location.origin}/reg.html?ref=${currentUsername}`;
+        loadReferredUsers(currentUsername);
       }
-    } else { 
-      window.location.href = "log.html"; 
+    } else {
+      window.location.href = 'log.html';
     }
   });
 
-  async function loadReferrals() {
-    const q = query(collection(db, "referrals"), where("referrer", "==", myUsername));
+  async function loadReferredUsers(username){
+    const q = query(collection(db, "users"), where("referredBy", "==", username));
     const snap = await getDocs(q);
-    const count = snap.size;
-    document.getElementById('refCount').innerText = count;
-    if(count > 0) document.getElementById('noRefText').style.display = 'none';
+    const list = document.getElementById('referredList');
+    list.innerHTML = "";
+    let count = 0;
+    
+    if(snap.empty){
+      list.innerHTML = "<p style='text-align:center; color:#888;'>No referrals yet. Share your link!</p>";
+    } else {
+      snap.forEach(docSnap => {
+        count++;
+        const d = docSnap.data();
+        list.innerHTML += `
+          <div class="referred-item">
+            <div class="name">${d.username}</div>
+            <div class="reward">+100 pts</div>
+          </div>
+        `;
+      });
+    }
+    document.getElementById('totalRef').innerText = count;
+    document.getElementById('totalEarned').innerText = count * 100;
   }
 
-  window.copyLink = () => { 
-    navigator.clipboard.writeText(myLink); 
-    document.getElementById('msg').innerText = "Link Copied!";
-    setTimeout(() => document.getElementById('msg').innerText = "", 2000);
-  }
-  
-  window.goHome = () => { 
-    window.location.href = "home.html"; 
+  window.copyLink = function(){
+    const link = document.getElementById('refLink');
+    link.select();
+    document.execCommand('copy');
+    alert("Referral link copied!");
   }
 </script>
+
 </body>
 </html>
