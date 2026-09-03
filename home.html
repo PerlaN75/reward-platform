@@ -28,7 +28,7 @@
   </style>
 </head>
 <body>
-  <h1 id="welcomeText">Loading...</h1> <!-- CHANGED: was "Welcome back User" -->
+  <h1 id="welcomeText">Loading...</h1>
   <div class="tagline">🐒 From Nothing to Something 🍇</div>
   
   <div class="points-box">
@@ -79,33 +79,43 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
+  const welcomeEl = document.getElementById('welcomeText');
+  const pointsEl = document.getElementById('points');
+
+  // KEY FIX: Show name instantly from browser memory
+  const savedName = localStorage.getItem('username');
+  if(savedName) {
+    welcomeEl.innerText = "Welcome back " + savedName; // No more Loading...
+  }
+
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      try { // ADDED: so it doesn't break
+      try {
         const docSnap = await getDoc(doc(db, "users", user.uid));
         if(docSnap.exists()) {
           const data = docSnap.data();
-          document.getElementById('welcomeText').innerText = "Welcome back " + data.username;
-          document.getElementById('points').innerText = data.balance || 0; // ADDED || 0
-        } else {
-          document.getElementById('welcomeText').innerText = "Welcome back";
+          welcomeEl.innerText = "Welcome back " + data.username; // Update in case it changed
+          pointsEl.innerText = data.balance || 0;
+          
+          // Save to browser for next time
+          localStorage.setItem('username', data.username);
         }
       } catch(e) {
         console.log(e);
-        document.getElementById('welcomeText').innerText = "Welcome back";
       }
     } else {
+      localStorage.removeItem('username'); 
       window.location.href = "log.html"; 
     }
   });
 
   window.goTo = function(page) {
-    // For now just alert. Later we will make these pages
     if(page === 'referral.html') window.location.href = page;
     else alert(page.replace('.html','') + " page coming soon!");
   }
 
   window.logout = function() {
+    localStorage.removeItem('username'); 
     signOut(auth).then(() => {
       window.location.href = "index.html";
     });
