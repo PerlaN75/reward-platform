@@ -12,51 +12,111 @@ h2{text-align:center;color:#333}
 input{width:100%;padding:12px;margin:10px 0;border:1px solid #ddd;border-radius:8px;box-sizing:border-box}
 button{width:100%;padding:12px;background:#28a745;color:#fff;border:none;border-radius:8px;font-size:16px;cursor:pointer;font-weight:bold}
 button:hover{background:#218838}
+.loading{display:none;text-align:center;color:#28a745;margin-top:10px}
 </style>
 </head>
 <body>
 <div class="container">
 <div id="refBanner" class="banner"></div>
 <h2>Create Account</h2>
-<input type="text" id="username" placeholder="Choose Username">
-<input type="password" id="password" placeholder="Choose Password">
-<button onclick="register()">Sign Up & Get 40 Points</button>
+<input type="text" id="username" placeholder="Choose Username" required>
+<input type="email" id="email" placeholder="Enter Email" required>
+<input type="password" id="password" placeholder="Choose Password" required>
+<button id="signupBtn" onclick="register()">Sign Up & Get 40 Points</button>
+<div id="loading" class="loading">Creating account...</div>
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDocs, collection, query, where, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = { 
+  apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", 
+  authDomain: "reward-platform-rw-2e13d.firebaseapp.com", 
+  projectId: "reward-platform-rw-2e13d"
+};
+const app = initializeApp(firebaseConfig); 
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// 1. CHECK FOR REFERRER IN URL
 const urlParams = new URLSearchParams(window.location.search);
 const referrer = urlParams.get('ref');
 if(referrer){
     document.getElementById('refBanner').style.display = 'block';
     document.getElementById('refBanner').innerText = `🎁 You were referred by ${referrer}! Both get points.`;
-    localStorage.setItem('referrer', referrer);
+    localStorage.setItem('pendingReferrer', referrer); // save temporarily
 }
 
-function register(){
+// 2. REGISTER FUNCTION
+window.register = async () => {
     const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
-    if(!username || !password){ alert('Fill all fields'); return; }
+    const btn = document.getElementById('signupBtn');
+    const loading = document.getElementById('loading');
+
+    if(!username ||!email ||!password){ alert('Please fill all fields'); return; }
     
-    let users = JSON.parse(localStorage.getItem('users') || '[]');
-    if(users.find(u => u.username === username)){ alert('Username taken'); return; }
-    
-    const newUser = {username, password, points: 40, referrals: []};
-    users.push(newUser);
-    
-    const ref = localStorage.getItem('referrer');
-    if(ref){
-        let referrerUser = users.find(u => u.username === ref);
-        if(referrerUser){
-            referrerUser.points += 50;
-            referrerUser.referrals.push(username);
+    btn.disabled = true;
+    loading.style.display = 'block';
+
+    try {
+        // Check if username already exists
+        const q = query(collection(db, "users"), where("username", "==", username));
+        const snap = await getDocs(q);
+        if(!snap.empty){ 
+            alert('Username already taken'); 
+            btn.disabled = false;
+            loading.style.display = 'none';
+            return; 
         }
+
+        // Create Firebase Auth account
+        const userCred = await createUserWithEmailAndPassword(auth, email, password);
+        const uid = userCred.user.uid;
+        const pendingRef = localStorage.getItem('pendingReferrer');
+
+        // 3. CREATE USER DOC IN FIRESTORE with 40 points
+        await setDoc(doc(db, "users", uid), {
+            username: username,
+            email: email,
+            balance: 40,
+            referredBy: pendingRef || null,
+            createdAt: new Date()
+        });
+
+        // 4. IF REFERRED: Give 50 points to referrer + log referral
+        if(pendingRef){
+            const refQuery = query(collection(db, "users"), where("username", "==", pendingRef));
+            const refSnap = await getDocs(refQuery);
+            if(!refSnap.empty){
+                const referrerDoc = refSnap.docs[0];
+                // Add 50 points to referrer
+                await updateDoc(referrerDoc.ref, {
+                    balance: increment(50)
+                });
+                // Log referral
+                await setDoc(doc(collection(db, "referrals")), {
+                    referrer: pendingRef,
+                    referred: username,
+                    referredUid: uid,
+                    date: new Date()
+                });
+            }
+        }
+        
+        localStorage.removeItem('pendingReferrer');
+        localStorage.setItem('currentUser', username);
+        alert('Account created successfully! +40 points');
+        window.location.href = 'home.html';
+
+    } catch(e) {
+        alert('Error: ' + e.message);
+        btn.disabled = false;
+        loading.style.display = 'none';
     }
-    
-    localStorage.setItem('users', JSON.stringify(users));
-    localStorage.setItem('currentUser', username);
-    localStorage.removeItem('referrer');
-    alert('Account created! +40 points. Redirecting...');
-    window.location.href = 'home.html';
 }
 </script>
 </body>
