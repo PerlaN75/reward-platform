@@ -17,6 +17,11 @@
     input::placeholder { color: #666; }
     input:focus { border: 2px solid #f59e0b; }
     
+    .email-row { display: flex; gap: 8px; align-items: center; }
+    .email-row input { flex: 1; }
+    .verify-btn { padding: 11px 12px; background: #3b82f6; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: bold; white-space: nowrap; }
+    .verify-btn:disabled { background: #22c55e; cursor: default; }
+    
     .reg-btn { width: 100%; padding: 13px; margin: 16px 0 10px 0; background: linear-gradient(90deg, #fbbf24, #f59e0b, #ec4899); color: black; border: none; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: bold; }
     
     .back-btn { width: 40%; max-width: 140px; padding: 11px; background: #f59e0b; color: black; border: none; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: bold; }
@@ -25,10 +30,9 @@
     .login-link a { color: #3b82f6; text-decoration: none; font-weight: bold; }
     .error { color: #ef4444; font-size: 12px; margin-top: 8px; }
     
-    /* NEW: RULES BOX - MATCHES YOUR DESIGN */
     .rules-box { background: #1a2410; padding: 10px; border-radius: 8px; margin-top: 6px; text-align: left; display: none; }
     .rule { font-size: 12px; color: #aaa; margin: 4px 0; }
-    .rule.valid { color: #22c55e; } /* green */
+    .rule.valid { color: #22c55e; }
     .rule.valid::before { content: "✓ "; font-weight: bold; }
   </style>
 </head>
@@ -41,18 +45,26 @@
   <input id="username" type="text" placeholder="Choose username">
   <div id="userRules" class="rules-box">
     <div id="u_len" class="rule">3-15 characters</div>
+    <div id="u_cap" class="rule">First letter capital</div>
+    <div id="u_low" class="rule">Remaining letters lowercase</div>
   </div>
   
   <label>Email</label>
-  <input id="email" type="email" placeholder="you@gmail.com">
+  <div class="email-row">
+    <input id="email" type="email" placeholder="you@gmail.com">
+    <button class="verify-btn" id="verifyBtn" onclick="verifyEmail()">Verify</button>
+  </div>
   
   <label>Password</label>
   <input id="password" type="password" placeholder="Min 6 characters">
   <div id="passRules" class="rules-box">
-    <div id="p_len" class="rule">At least 6 characters</div>
+    <div id="p_len" class="rule">4-12 characters</div>
+    <div id="p_cap" class="rule">1 Capital letter</div>
+    <div id="p_num" class="rule">1 Number</div>
+    <div id="p_char" class="rule">1 Special character !@#$%</div>
   </div>
   
-  <button class="reg-btn" onclick="register()">REGISTER</button>
+  <button class="reg-btn" onclick="register()">Create Account</button>
   
   <div class="login-link">Already have account? <a href="log.html">Login Here</a></div>
   <div id="errorMsg" class="error"></div>
@@ -62,7 +74,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d" };
@@ -73,39 +85,33 @@
   const usernameInput = document.getElementById('username');
   const passwordInput = document.getElementById('password');
 
-  // LIVE CHECK USERNAME
   usernameInput.addEventListener('input', () => {
     const val = usernameInput.value;
     if(val.length > 0) document.getElementById('userRules').style.display = 'block'; else document.getElementById('userRules').style.display = 'none';
-    
-    if(val.length >= 3 && val.length <= 15) {
-      document.getElementById('u_len').classList.add('valid');
-    } else {
-      document.getElementById('u_len').classList.remove('valid');
-    }
+    document.getElementById('u_len').classList.toggle('valid', val.length >= 3 && val.length <= 15);
+    document.getElementById('u_cap').classList.toggle('valid', /^[A-Z]/.test(val));
+    document.getElementById('u_low').classList.toggle('valid', /^[A-Z][a-z]*$/.test(val) && val.length > 0);
   });
-  
-  usernameInput.addEventListener('blur', () => {
-    const val = usernameInput.value;
-    if(val.length >= 3 && val.length <= 15) document.getElementById('userRules').style.display = 'none';
-  });
+  usernameInput.addEventListener('blur', () => { if(/^[A-Z][a-z]{2,14}$/.test(usernameInput.value)) document.getElementById('userRules').style.display = 'none'; });
 
-  // LIVE CHECK PASSWORD
   passwordInput.addEventListener('input', () => {
     const val = passwordInput.value;
     if(val.length > 0) document.getElementById('passRules').style.display = 'block'; else document.getElementById('passRules').style.display = 'none';
-    
-    if(val.length >= 6) {
-      document.getElementById('p_len').classList.add('valid');
-    } else {
-      document.getElementById('p_len').classList.remove('valid');
-    }
+    document.getElementById('p_len').classList.toggle('valid', val.length >= 4 && val.length <= 12);
+    document.getElementById('p_cap').classList.toggle('valid', /[A-Z]/.test(val));
+    document.getElementById('p_num').classList.toggle('valid', /[0-9]/.test(val));
+    document.getElementById('p_char').classList.toggle('valid', /[!@#$%^&*]/.test(val));
   });
-  
-  passwordInput.addEventListener('blur', () => {
+  passwordInput.addEventListener('blur', () => { 
     const val = passwordInput.value;
-    if(val.length >= 6) document.getElementById('passRules').style.display = 'none';
+    if(val.length >= 4 && val.length <= 12 && /[A-Z]/.test(val) && /[0-9]/.test(val) && /[!@#$%^&*]/.test(val)) 
+      document.getElementById('passRules').style.display = 'none';
   });
+
+  window.verifyEmail = function() {
+    document.getElementById('errorMsg').innerText = "Verification will be sent after CREATE ACCOUNT";
+    document.getElementById('errorMsg').style.color = "#22c55e";
+  }
   
   window.register = async function() {
     const username = usernameInput.value;
@@ -114,19 +120,22 @@
     const errorMsg = document.getElementById('errorMsg');
     errorMsg.innerText = "";
     
-    if(username.length < 3 || username.length > 15) { errorMsg.innerText = "Username must be 3-15 characters"; return; }
-    if(password.length < 6) { errorMsg.innerText = "Password must be at least 6 characters"; return; }
+    if(!/^[A-Z][a-z]{2,14}$/.test(username)) { errorMsg.innerText = "Username: First capital, rest lowercase, 3-15 chars"; return; }
+    if(!(password.length >= 4 && password.length <= 12 && /[A-Z]/.test(password) && /[0-9]/.test(password) && /[!@#$%^&*]/.test(password))) { 
+      errorMsg.innerText = "Password must have: 4-12 chars, 1 capital, 1 number, 1 special char"; return; 
+    }
     
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      await setDoc(doc(db, "users", userCredential.user.uid), {
-        username: username,
-        email: email,
-        balance: 0
-      });
+      await sendEmailVerification(userCredential.user);
+      document.getElementById('verifyBtn').innerText = "Sent ✓";
+      document.getElementById('verifyBtn').disabled = true;
       
+      await setDoc(doc(db, "users", userCredential.user.uid), { username: username, email: email, balance: 0 });
       localStorage.setItem('username', username);
-      window.location.href = "home.html";
+      errorMsg.innerText = "Check your email to verify, then login";
+      errorMsg.style.color = "#22c55e";
+      setTimeout(() => window.location.href = "home.html", 2000);
     } catch (e) {
       errorMsg.innerText = e.message;
     }
