@@ -6,34 +6,24 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #2f3e1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; flex-direction: column; }
-    
     .container { background: #3a4a22; padding: 60px 20px; border-radius: 20px; width: 100%; max-width: 350px; text-align: center; margin-bottom: 15px; }
-    
     h2 { color: white; font-size: 28px; margin-bottom: 5px; font-weight: bold; }
     .tagline { color: #fbbf24; font-size: 13px; margin-bottom: 20px; }
-    
-    .ref-banner { background: #1a2410; border: 1px solid #22c55e; color: #22c55e; padding: 8px; border-radius: 8px; font-size: 12px; margin-bottom: 15px; display: none; }
-    
+    .ref-banner { background: #1a2410; border: 1px solid #22c55e; color: #22c55e; padding: 8px; border-radius: 8px; font-size: 12px; margin-bottom: 15px; display: none; } /* NEW */
     label { display: block; text-align: left; color: #ddd; margin: 12px 0 4px 4px; font-size: 14px; }
     input { width: 100%; padding: 11px 14px; background: #000; border: 2px solid transparent; border-radius: 10px; color: white; font-size: 15px; outline: none; }
-    input::placeholder { color: #666; }
-    input:focus { border: 2px solid #f59e0b; }
-    
+    input::placeholder { color: #666; } input:focus { border: 2px solid #f59e0b; }
     .email-row { display: flex; gap: 8px; align-items: center; }
     .email-row input { flex: 1; }
     .verify-btn { padding: 11px 12px; background: #3b82f6; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: bold; white-space: nowrap; }
     .verify-btn:disabled { background: #22c55e; cursor: default; }
-    
     .reg-btn { width: 100%; padding: 13px; margin: 16px 0 10px 0; background: linear-gradient(90deg, #fbbf24, #f59e0b, #ec4899); color: black; border: none; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: bold; }
     .reg-btn:disabled { background: #555; color: #999; cursor: not-allowed; }
-    
     .back-btn { width: 40%; max-width: 140px; padding: 11px; background: #f59e0b; color: black; border: none; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: bold; }
-    
     .login-link { color: #ccc; font-size: 13px; margin-top: 12px; }
     .login-link a { color: #3b82f6; text-decoration: none; font-weight: bold; }
     .error { color: #ef4444; font-size: 12px; margin-top: 8px; }
     .success { color: #22c55e; font-size: 12px; margin-top: 8px; }
-    
     .rules-box { background: #1a2410; padding: 10px; border-radius: 8px; margin-top: 6px; text-align: left; display: none; }
     .rule { font-size: 12px; color: #aaa; margin: 4px 0; }
     .rule.valid { color: #22c55e; }
@@ -44,7 +34,7 @@
 <div class="container">
   <h2>Register</h2>
   <div class="tagline">🐒 From Nothing to Something 🍇</div>
-  <div id="refBanner" class="ref-banner"></div>
+  <div id="refBanner" class="ref-banner"></div> <!-- NEW -->
   
   <label>Username</label>
   <input id="username" type="text" placeholder="Choose username">
@@ -83,7 +73,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, collection, query, where, getDocs, addDoc, updateDoc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, collection, query, where, getDocs, addDoc, updateDoc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"; // NEW IMPORTS
 
   const firebaseConfig = { apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d" };
   const app = initializeApp(firebaseConfig); 
@@ -97,21 +87,20 @@
   const verifyBtn = document.getElementById('verifyBtn');
   const createBtn = document.getElementById('createBtn');
   const msg = document.getElementById('msg');
-  const refBanner = document.getElementById('refBanner');
   
   let generatedOTP = "";
   let isEmailVerified = false;
-  let referrerName = null;
+  let referrerName = null; // NEW
 
-  // 1. READ ?ref= FROM URL
+  // NEW: READ REFERRER FROM URL
   const urlParams = new URLSearchParams(window.location.search);
   referrerName = urlParams.get('ref');
   if(referrerName){
-    refBanner.innerText = `You were referred by ${referrerName}! They will get +50 points.`;
-    refBanner.style.display = 'block';
+    document.getElementById('refBanner').innerText = `You were referred by ${referrerName}!`;
+    document.getElementById('refBanner').style.display = 'block';
   }
 
-  // LIVE VALIDATION
+  // YOUR CODE STARTS HERE - UNCHANGED
   usernameInput.addEventListener('input', () => {
     const val = usernameInput.value;
     if(val.length > 0) document.getElementById('userRules').style.display = 'block'; else document.getElementById('userRules').style.display = 'none';
@@ -135,7 +124,6 @@
       document.getElementById('passRules').style.display = 'none';
   });
 
-  // OTP CHECK
   otpInput.addEventListener('input', () => {
     if(otpInput.value === generatedOTP && generatedOTP !== ""){
       isEmailVerified = true;
@@ -150,7 +138,6 @@
   window.sendOTP = function() {
     const email = emailInput.value;
     if(!email) { msg.innerText = "Enter email first"; return; }
-    
     generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
     msg.innerText = `OTP: ${generatedOTP} - Sent to ${email}. Check email.`;
     msg.className = "success";
@@ -174,32 +161,13 @@
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const uid = userCredential.user.uid;
       
-      // 2. SAVE USER
-      await setDoc(doc(db, "users", uid), { 
-        username: username, 
-        email: email, 
-        balance: 0,
-        referredBy: referrerName || null,
-        createdAt: serverTimestamp()
-      });
+      await setDoc(doc(db, "users", uid), { username: username, email: email, balance: 0, referredBy: referrerName || null, createdAt: serverTimestamp() }); // NEW: added referredBy
       
-      // 3. IF REFERRED, SAVE + GIVE POINTS
-      if(referrerName){
-        await addDoc(collection(db, "referrals"), {
-          referrer: referrerName,
-          referee: username,
-          refereeUID: uid,
-          status: "active",
-          createdAt: serverTimestamp()
-        });
-        
+      if(referrerName){ // NEW: GIVE POINTS
+        await addDoc(collection(db, "referrals"), { referrer: referrerName, referee: username, refereeUID: uid, status: "active", createdAt: serverTimestamp() });
         const q = query(collection(db, "users"), where("username", "==", referrerName));
         const querySnapshot = await getDocs(q);
-        querySnapshot.forEach(async (docSnap) => {
-          await updateDoc(doc(db, "users", docSnap.id), {
-            balance: increment(50)
-          });
-        });
+        querySnapshot.forEach(async (docSnap) => { await updateDoc(doc(db, "users", docSnap.id), { balance: increment(50) }); });
       }
       
       localStorage.setItem('username', username);
