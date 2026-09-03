@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sign Up</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background: #2f3e1a; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+    .box { background: #1a2410; padding: 30px 25px; border-radius: 20px; width: 100%; max-width: 380px; color: white; text-align: center; }
+    h2 { margin-bottom: 10px; }
+    .tagline { color: #fbbf24; font-size: 12px; margin-bottom: 20px; }
+    .ref-banner { background: #22c55e; color: black; padding: 10px; border-radius: 10px; margin-bottom: 15px; font-weight: bold; display: none; }
+    input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: none; background: #2f3e1a; color: white; font-size: 15px; }
+    button { width: 100%; padding: 14px; margin-top: 15px; background: #f59e0b; color: black; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; }
+    .link { color: #fbbf24; margin-top: 15px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>🐒 Join Us</h2>
+    <div class="tagline">From Nothing to Something 🍇</div>
+    
+    <div id="refBanner" class="ref-banner"></div>
+
+    <input type="text" id="username" placeholder="Choose Username">
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="signup()">Create Account</button>
+    <p class="link" onclick="window.location.href='log.html'">Already have account? Login</p>
+  </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, increment, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = { 
+    apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", 
+    authDomain: "reward-platform-rw-2e13d.firebaseapp.com", 
+    projectId: "reward-platform-rw-2e13d"
+  };
+  const app = initializeApp(firebaseConfig); 
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // 1. CHECK REFERRAL IN URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const referrer = urlParams.get('ref');
+  let referralBonus = false;
+  
+  if(referrer){
+    document.getElementById('refBanner').style.display = 'block';
+    document.getElementById('refBanner').innerText = `🎁 You were referred by ${referrer}! Both get points.`;
+    referralBonus = true;
+  }
+
+  // 2. SIGNUP FUNCTION
+  window.signup = async () => {
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    if(!username || !email || !password) return alert("Fill all fields");
+
+    try {
+      // Create Firebase Auth User
+      const userCred = await createUserWithEmailAndPassword(auth, email, password);
+      const uid = userCred.user.uid;
+
+      // Save user to Firestore with +20 welcome points
+      let startingPoints = 20;
+      if(referralBonus) startingPoints = 40; // 20 + 20 referral bonus
+
+      await setDoc(doc(db, "users", uid), {
+        username: username,
+        email: email,
+        balance: startingPoints,
+        referredBy: referrer || null,
+        createdAt: new Date()
+      });
+
+      // 3. GIVE REFERRER +50 POINTS
+      if(referralBonus){
+        // Find referrer by username
+        const usersRef = collection(db, "users");
+        // We need to find referrer's uid. For now we add referral record
+        await addDoc(collection(db, "referrals"), {
+          referrer: referrer,
+          referred: username,
+          date: new Date()
+        });
+
+        // Add +50 to referrer - you'll need a cloud function for this later
+        // For now we do it manually in Firebase Console
+        alert(`Account created! You got ${startingPoints} points. ${referrer} will get 50 points.`);
+      } else {
+        alert("Account created! You got 20 points.");
+      }
+
+      localStorage.setItem('username', username);
+      window.location.href = "home.html";
+
+    } catch(e) {
+      alert(e.message);
+    }
+  }
+</script>
+</body>
+</html>
