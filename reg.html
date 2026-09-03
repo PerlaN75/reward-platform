@@ -1,109 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Sign Up</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { background: #2f3e1a; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-    .box { background: #1a2410; padding: 30px 25px; border-radius: 20px; width: 100%; max-width: 380px; color: white; text-align: center; }
-    h2 { margin-bottom: 10px; }
-    .tagline { color: #fbbf24; font-size: 12px; margin-bottom: 20px; }
-    .ref-banner { background: #22c55e; color: black; padding: 10px; border-radius: 10px; margin-bottom: 15px; font-weight: bold; display: none; }
-    input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: none; background: #2f3e1a; color: white; font-size: 15px; }
-    button { width: 100%; padding: 14px; margin-top: 15px; background: #f59e0b; color: black; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; }
-    .link { color: #fbbf24; margin-top: 15px; font-size: 14px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register - Reward Platform</title>
+<style>
+body{font-family:Arial;background:#f5f5f5;display:flex;justify-content:center;align-items:center;height:100vh;margin:0}
+.container{background:#fff;padding:30px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.1);width:90%;max-width:400px}
+h2{text-align:center;color:#333}
+.banner{background:#d4edda;color:#155724;padding:12px;border-radius:8px;margin-bottom:15px;text-align:center;font-weight:bold;display:none}
+input{width:100%;padding:12px;margin:10px 0;border:1px solid #ddd;border-radius:8px;box-sizing:border-box}
+button{width:100%;padding:12px;background:#28a745;color:#fff;border:none;border-radius:8px;font-size:16px;cursor:pointer;font-weight:bold}
+button:hover{background:#218838}
+</style>
 </head>
 <body>
-  <div class="box">
-    <h2>🐒 Join Us</h2>
-    <div class="tagline">From Nothing to Something 🍇</div>
-    
-    <div id="refBanner" class="ref-banner"></div>
+<div class="container">
+<div id="refBanner" class="banner"></div>
+<h2>Create Account</h2>
+<input type="text" id="username" placeholder="Choose Username">
+<input type="password" id="password" placeholder="Choose Password">
+<button onclick="register()">Sign Up & Get 40 Points</button>
+</div>
 
-    <input type="text" id="username" placeholder="Choose Username">
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="signup()">Create Account</button>
-    <p class="link" onclick="window.location.href='log.html'">Already have account? Login</p>
-  </div>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, updateDoc, increment, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-  const firebaseConfig = { 
-    apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", 
-    authDomain: "reward-platform-rw-2e13d.firebaseapp.com", 
-    projectId: "reward-platform-rw-2e13d"
-  };
-  const app = initializeApp(firebaseConfig); 
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  // 1. CHECK REFERRAL IN URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const referrer = urlParams.get('ref');
-  let referralBonus = false;
-  
-  if(referrer){
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const referrer = urlParams.get('ref');
+if(referrer){
     document.getElementById('refBanner').style.display = 'block';
     document.getElementById('refBanner').innerText = `🎁 You were referred by ${referrer}! Both get points.`;
-    referralBonus = true;
-  }
+    localStorage.setItem('referrer', referrer);
+}
 
-  // 2. SIGNUP FUNCTION
-  window.signup = async () => {
+function register(){
     const username = document.getElementById('username').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-
-    if(!username || !email || !password) return alert("Fill all fields");
-
-    try {
-      // Create Firebase Auth User
-      const userCred = await createUserWithEmailAndPassword(auth, email, password);
-      const uid = userCred.user.uid;
-
-      // Save user to Firestore with +20 welcome points
-      let startingPoints = 20;
-      if(referralBonus) startingPoints = 40; // 20 + 20 referral bonus
-
-      await setDoc(doc(db, "users", uid), {
-        username: username,
-        email: email,
-        balance: startingPoints,
-        referredBy: referrer || null,
-        createdAt: new Date()
-      });
-
-      // 3. GIVE REFERRER +50 POINTS
-      if(referralBonus){
-        // Find referrer by username
-        const usersRef = collection(db, "users");
-        // We need to find referrer's uid. For now we add referral record
-        await addDoc(collection(db, "referrals"), {
-          referrer: referrer,
-          referred: username,
-          date: new Date()
-        });
-
-        // Add +50 to referrer - you'll need a cloud function for this later
-        // For now we do it manually in Firebase Console
-        alert(`Account created! You got ${startingPoints} points. ${referrer} will get 50 points.`);
-      } else {
-        alert("Account created! You got 20 points.");
-      }
-
-      localStorage.setItem('username', username);
-      window.location.href = "home.html";
-
-    } catch(e) {
-      alert(e.message);
+    const password = document.getElementById('password').value.trim();
+    if(!username || !password){ alert('Fill all fields'); return; }
+    
+    let users = JSON.parse(localStorage.getItem('users') || '[]');
+    if(users.find(u => u.username === username)){ alert('Username taken'); return; }
+    
+    const newUser = {username, password, points: 40, referrals: []};
+    users.push(newUser);
+    
+    const ref = localStorage.getItem('referrer');
+    if(ref){
+        let referrerUser = users.find(u => u.username === ref);
+        if(referrerUser){
+            referrerUser.points += 50;
+            referrerUser.referrals.push(username);
+        }
     }
-  }
+    
+    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem('currentUser', username);
+    localStorage.removeItem('referrer');
+    alert('Account created! +40 points. Redirecting...');
+    window.location.href = 'home.html';
+}
 </script>
 </body>
 </html>
