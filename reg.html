@@ -31,9 +31,9 @@
     .login-link a { color: #3b82f6; text-decoration: none; font-weight: bold; }
     .referral-banner { background: #065f46; color: #d1fae5; padding: 12px; border-radius: 10px; margin-bottom: 20px; font-size: 14px; font-weight: bold; }
     .error { color: #ef4444; font-size: 13px; margin-top: 10px; }
-    .success { color: #22c55e; font-size: 13px; margin-top: 10px; }
+    .status { font-size: 13px; margin-top: 6px; text-align: left; }
     
-    /* HIDDEN RULES UNTIL TYPING */
+    /* HIDDEN RULES - HIDES WHEN ALL VALID */
     .rules { text-align: left; margin-top: 8px; font-size: 12px; display: none; }
     .rules.show { display: block; }
     .rule { color: #888; margin: 4px 0; transition: 0.3s; }
@@ -63,8 +63,8 @@
     <input id="email" type="email" placeholder="your@gmail.com">
     <button class="verify-btn" id="verifyBtn" onclick="sendOTP()">Verify</button>
   </div>
-  <input id="otp" type="text" placeholder="Enter 6 digit OTP" style="margin-top:10px; display:none;">
-  <div id="otpMsg" class="success"></div>
+  <input id="otp" type="text" placeholder="Enter 6 digit code" style="margin-top:10px; display:none;" oninput="checkOTP()">
+  <div id="emailStatus" class="status"></div>
   
   <label>Password</label>
   <input id="password" type="password" placeholder="Min 6 characters" onfocus="showRules('pRules')" oninput="checkPassword()">
@@ -99,6 +99,8 @@
 
   let emailVerified = false;
   let generatedOTP = "";
+  let usernameValid = false;
+  let passwordValid = false;
 
   const params = new URLSearchParams(window.location.search);
   const refUsername = params.get('ref');
@@ -111,22 +113,44 @@
     document.getElementById(id).classList.add('show');
   }
 
+  function checkCanSubmit(){
+    document.getElementById('createBtn').disabled = !(usernameValid && passwordValid && emailVerified);
+  }
+
   window.checkUsername = function(){
     const u = document.getElementById('username').value;
-    document.getElementById('u1').classList.toggle('valid', u.length >= 5 && u.length <= 12);
-    document.getElementById('u2').classList.toggle('valid', /^[A-Za-z]+$/.test(u));
-    document.getElementById('u3').classList.toggle('valid', /^[A-Z]/.test(u));
+    const r1 = u.length >= 5 && u.length <= 12;
+    const r2 = /^[A-Za-z]+$/.test(u);
+    const r3 = /^[A-Z]/.test(u);
+    
+    document.getElementById('u1').classList.toggle('valid', r1);
+    document.getElementById('u2').classList.toggle('valid', r2);
+    document.getElementById('u3').classList.toggle('valid', r3);
+    
+    usernameValid = r1 && r2 && r3;
+    // HIDE RULES IF ALL VALID
+    if(usernameValid) document.getElementById('uRules').classList.remove('show');
+    checkCanSubmit();
   }
 
   window.checkPassword = function(){
     const p = document.getElementById('password').value;
-    document.getElementById('p1').classList.toggle('valid', p.length >= 6);
-    document.getElementById('p2').classList.toggle('valid', /[A-Z]/.test(p));
-    document.getElementById('p3').classList.toggle('valid', /[0-9]/.test(p));
-    document.getElementById('p4').classList.toggle('valid', /[\$&#@+%=?!]/.test(p));
+    const r1 = p.length >= 6;
+    const r2 = /[A-Z]/.test(p);
+    const r3 = /[0-9]/.test(p);
+    const r4 = /[\$&#@+%=?!]/.test(p);
+    
+    document.getElementById('p1').classList.toggle('valid', r1);
+    document.getElementById('p2').classList.toggle('valid', r2);
+    document.getElementById('p3').classList.toggle('valid', r3);
+    document.getElementById('p4').classList.toggle('valid', r4);
+    
+    passwordValid = r1 && r2 && r3 && r4;
+    // HIDE RULES IF ALL VALID
+    if(passwordValid) document.getElementById('pRules').classList.remove('show');
+    checkCanSubmit();
   }
 
-  // FAKE OTP FOR NOW - Firebase doesn't do email OTP directly
   window.sendOTP = async function(){
     const email = document.getElementById('email').value.trim();
     if(!email.includes('@')){
@@ -135,18 +159,27 @@
     }
     generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
     document.getElementById('otp').style.display = 'block';
-    document.getElementById('otpMsg').innerText = `OTP sent to ${email}. Check console for: ${generatedOTP}`; // REMOVE IN PROD
+    document.getElementById('emailStatus').innerHTML = `Code sent. Check console: <b>${generatedOTP}</b>`; // REMOVE IN PROD
     console.log("OTP:", generatedOTP);
     document.getElementById('verifyBtn').innerText = "Resend";
-    
-    document.getElementById('otp').oninput = function(){
-      if(this.value === generatedOTP){
+  }
+
+  window.checkOTP = function(){
+    const entered = document.getElementById('otp').value;
+    const status = document.getElementById('emailStatus');
+    if(entered.length === 6){
+      if(entered === generatedOTP){
         emailVerified = true;
-        document.getElementById('otpMsg').innerText = "✅ Email Verified!";
-        document.getElementById('verifyBtn').disabled = true;
-        document.getElementById('createBtn').disabled = false;
+        status.innerHTML = "✅ <span style='color:#22c55e'>Email Verified</span>";
+      } else {
+        emailVerified = false;
+        status.innerHTML = "❌ <span style='color:#ef4444'>Unverified</span>";
       }
+    } else {
+      emailVerified = false;
+      status.innerHTML = "";
     }
+    checkCanSubmit();
   }
 
   window.register = async function() {
@@ -157,15 +190,7 @@
     errorMsg.innerText = "";
 
     if(!emailVerified){
-      errorMsg.innerText = "Please verify email with OTP first";
-      return;
-    }
-    if(!/^[A-Z][A-Za-z]{4,11}$/.test(username)){
-      errorMsg.innerText = "Username must be 5-12 letters, first letter capital";
-      return;
-    }
-    if(!/^(?=.*[A-Z])(?=.*[0-9])(?=.*[\$&#@+%=?!]).{6,}$/.test(password)){
-      errorMsg.innerText = "Password does not meet requirements";
+      errorMsg.innerText = "Please verify email with code first";
       return;
     }
 
