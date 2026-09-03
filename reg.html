@@ -15,9 +15,25 @@
     label { display: block; text-align: left; color: #ddd; margin: 15px 0 6px 4px; font-size: 15px; font-weight: 500; }
     
     .input-row { display: flex; gap: 8px; align-items: center; }
-    input { width: 100%; padding: 14px 16px; background: #000; border: 2px solid transparent; border-radius: 12px; color: white; font-size: 15px; outline: none; }
-    input::placeholder { color: #666; }
-    input:focus { border: 2px solid #f59e0b; }
+    
+    /* CHANGED: BLACK -> SOFT WHITE/PINK */
+    input { 
+      width: 100%; 
+      padding: 14px 16px; 
+      background: #fff0f5; /* soft pink white */
+      border: 2px solid #d1d5db; 
+      border-radius: 12px; 
+      color: #1f2937; /* dark text for contrast */
+      font-size: 15px; 
+      outline: none; 
+      transition: 0.3s;
+    }
+    input::placeholder { color: #9ca3af; }
+    input:focus { 
+      border: 2px solid #ec4899; /* pink glow */
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.2);
+    }
     
     .verify-btn { padding: 14px 18px; background: #3b82f6; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px; white-space: nowrap; }
     .verify-btn:disabled { background: #555; cursor: not-allowed; }
@@ -33,7 +49,6 @@
     .error { color: #ef4444; font-size: 13px; margin-top: 10px; }
     .status { font-size: 13px; margin-top: 6px; text-align: left; }
     
-    /* HIDDEN RULES - HIDES WHEN ALL VALID */
     .rules { text-align: left; margin-top: 8px; font-size: 12px; display: none; }
     .rules.show { display: block; }
     .rule { color: #888; margin: 4px 0; transition: 0.3s; }
@@ -128,7 +143,6 @@
     document.getElementById('u3').classList.toggle('valid', r3);
     
     usernameValid = r1 && r2 && r3;
-    // HIDE RULES IF ALL VALID
     if(usernameValid) document.getElementById('uRules').classList.remove('show');
     checkCanSubmit();
   }
@@ -146,7 +160,6 @@
     document.getElementById('p4').classList.toggle('valid', r4);
     
     passwordValid = r1 && r2 && r3 && r4;
-    // HIDE RULES IF ALL VALID
     if(passwordValid) document.getElementById('pRules').classList.remove('show');
     checkCanSubmit();
   }
@@ -159,7 +172,7 @@
     }
     generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
     document.getElementById('otp').style.display = 'block';
-    document.getElementById('emailStatus').innerHTML = `Code sent. Check console: <b>${generatedOTP}</b>`; // REMOVE IN PROD
+    document.getElementById('emailStatus').innerHTML = `Code sent. Check console: <b>${generatedOTP}</b>`;
     console.log("OTP:", generatedOTP);
     document.getElementById('verifyBtn').innerText = "Resend";
   }
