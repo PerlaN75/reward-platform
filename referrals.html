@@ -6,152 +6,62 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #2f3e1a; min-height: 100vh; padding: 20px; color: white; text-align: center; }
-    
     h2 { font-size: 26px; margin-bottom: 5px; }
     .tagline { color: #fbbf24; font-size: 13px; margin-bottom: 20px; }
-    
-    .box { 
-      background: #3a4a22; 
-      border: 2px solid #f59e0b; 
-      padding: 25px 20px; 
-      border-radius: 15px; 
-      max-width: 400px; 
-      margin: auto; 
-      position: relative;
-    }
-    .close-btn {
-      position: absolute; top: 10px; right: 15px;
-      background: none; border: none; color: white;
-      font-size: 22px; cursor: pointer; font-weight: bold;
-    }
-    
+    .box { background: #3a4a22; border: 2px solid #f59e0b; padding: 25px 20px; border-radius: 15px; max-width: 400px; margin: auto; position: relative; }
+    .close-btn { position: absolute; top: 10px; right: 15px; background: none; border: none; color: white; font-size: 22px; cursor: pointer; font-weight: bold; }
     .earn-text { font-size: 14px; margin-bottom: 20px; }
     .points { color: #f59e0b; font-weight: bold; }
-    
-    .link-box { 
-      background: #000; 
-      padding: 10px; 
-      border-radius: 10px; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin: 15px 0; 
-      gap: 8px;
-    }
+    .link-box { background: #000; padding: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin: 15px 0; gap: 8px; }
     .link { color: #f59e0b; font-size: 12px; word-break: break-all; text-align: left; flex: 1; }
-    
-    .copy-btn { 
-      background: #3b82f6;
-      color: white; 
-      border: none; 
-      padding: 10px 15px; 
-      border-radius: 8px; 
-      font-weight: bold; 
-      cursor: pointer; 
-      white-space: nowrap;
-    }
-    .copy-btn:active { transform: scale(0.95); }
-    
+    .copy-btn { background: #3b82f6; color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
     hr { border: none; border-top: 1px solid #2f3e1a; margin: 15px 0; }
-    
     .count { color: #22c55e; font-size: 24px; font-weight: bold; }
     #noRefText { color: #aaa; font-size: 13px; }
-    
-    .back-btn { 
-      width: 40%; 
-      padding: 12px; 
-      margin-top: 20px; 
-      background: #f59e0b; 
-      color: black; 
-      border: none; 
-      border-radius: 10px; 
-      font-weight: bold; 
-      cursor: pointer; 
-      font-size: 15px; 
-    }
+    .back-btn { width: 40%; padding: 12px; margin-top: 20px; background: #f59e0b; color: black; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 15px; }
     .success { color: #22c55e; font-size: 12px; margin-top: 8px; }
   </style>
 </head>
 <body>
   <h2>👥 Refer & Earn</h2>
   <div class="tagline">🐒 From Nothing to Something 🍇</div>
-  
   <div class="box">
-    <button class="close-btn" onclick="goHome()">X</button>
-    <p class="earn-text">Earn <span class="points">+50 Points</span> after your friend is active for 48 hours!</p>
-
+    <button class="close-btn" onclick="window.location.href='home.html'">X</button>
+    <p class="earn-text">Earn <span class="points">+50 Points</span> after your friend signs up!</p>
     <p style="text-align:left; font-size:14px; margin-bottom:5px;"><b>Your Referral Link:</b></p>
     <div class="link-box">
       <span id="refLink" class="link">loading...</span>
       <button class="copy-btn" onclick="copyLink()">Copy</button>
     </div>
-
     <hr>
     <p style="font-size:16px;">Your Referrals: <span id="refCount" class="count">0</span></p>
     <p id="noRefText">No referrals yet. Share your link!</p>
   </div>
-
-  <button class="back-btn" onclick="goHome()">← Back</button>
+  <button class="back-btn" onclick="window.location.href='home.html'">← Back</button>
   <div id="msg" class="success"></div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-  const firebaseConfig = { 
-    apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", 
-    authDomain: "reward-platform-rw-2e13d.firebaseapp.com", 
-    projectId: "reward-platform-rw-2e13d"
-  };
-  const app = initializeApp(firebaseConfig); 
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  const refLinkEl = document.getElementById('refLink');
-  const refCountEl = document.getElementById('refCount');
-  const noRefText = document.getElementById('noRefText');
-  const msg = document.getElementById('msg');
-  
-  let myUsername = "";
-  let myLink = "";
-
+  const firebaseConfig = { apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d" };
+  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+  let myUsername = ""; let myLink = "";
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      const docRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(docRef);
-      
+      const docSnap = await getDoc(doc(db, "users", user.uid));
       if(docSnap.exists()){
-        myUsername = docSnap.data().username; // Will be "Priya"
-        
-        // UPDATED: Using reg.html instead of register.html
+        myUsername = docSnap.data().username;
         myLink = `https://perlan75.github.io/rev/reg.html?ref=${myUsername}`;
-        refLinkEl.innerText = myLink;
-        
-        loadReferrals();
+        document.getElementById('refLink').innerText = myLink;
+        const q = query(collection(db, "referrals"), where("referrer", "==", myUsername));
+        const snap = await getDocs(q);
+        document.getElementById('refCount').innerText = snap.size;
+        if(snap.size > 0) document.getElementById('noRefText').style.display = 'none';
       }
-    } else {
-      window.location.href = "log.html"; 
-    }
+    } else { window.location.href = "log.html"; }
   });
-
-  async function loadReferrals() {
-    const q = query(collection(db, "referrals"), where("referrer", "==", myUsername));
-    const querySnapshot = await getDocs(q);
-    const count = querySnapshot.size;
-    refCountEl.innerText = count;
-    if(count > 0) noRefText.style.display = 'none';
-  }
-
-  window.copyLink = function() {
-    navigator.clipboard.writeText(myLink);
-    msg.innerText = "Referral link copied!";
-    setTimeout(() => msg.innerText = "", 2000);
-  }
-
-  window.goHome = function() {
-    window.location.href = "home.html";
-  }
+  window.copyLink = () => { navigator.clipboard.writeText(myLink); document.getElementById('msg').innerText = "Copied!"; setTimeout(() => document.getElementById('msg').innerText = "", 2000); }
 </script>
 </body>
 </html>
