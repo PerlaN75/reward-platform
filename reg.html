@@ -23,12 +23,14 @@
     .verify-btn:disabled { background: #22c55e; cursor: default; }
     
     .reg-btn { width: 100%; padding: 13px; margin: 16px 0 10px 0; background: linear-gradient(90deg, #fbbf24, #f59e0b, #ec4899); color: black; border: none; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: bold; }
+    .reg-btn:disabled { background: #555; color: #999; cursor: not-allowed; }
     
     .back-btn { width: 40%; max-width: 140px; padding: 11px; background: #f59e0b; color: black; border: none; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: bold; }
     
     .login-link { color: #ccc; font-size: 13px; margin-top: 12px; }
     .login-link a { color: #3b82f6; text-decoration: none; font-weight: bold; }
     .error { color: #ef4444; font-size: 12px; margin-top: 8px; }
+    .success { color: #22c55e; font-size: 12px; margin-top: 8px; }
     
     .rules-box { background: #1a2410; padding: 10px; border-radius: 8px; margin-top: 6px; text-align: left; display: none; }
     .rule { font-size: 12px; color: #aaa; margin: 4px 0; }
@@ -52,8 +54,11 @@
   <label>Email</label>
   <div class="email-row">
     <input id="email" type="email" placeholder="you@gmail.com">
-    <button class="verify-btn" id="verifyBtn" onclick="verifyEmail()">Verify</button>
+    <button class="verify-btn" id="verifyBtn" onclick="sendOTP()">Verify</button>
   </div>
+  
+  <label>Verification Code</label> <!-- NEW OTP FIELD -->
+  <input id="otp" type="text" placeholder="Enter 6 digit code" maxlength="6">
   
   <label>Password</label>
   <input id="password" type="password" placeholder="Min 6 characters">
@@ -64,17 +69,17 @@
     <div id="p_char" class="rule">1 Special character !@#$%</div>
   </div>
   
-  <button class="reg-btn" onclick="register()">Create Account</button>
+  <button class="reg-btn" id="createBtn" onclick="register()" disabled>Create Account</button>
   
   <div class="login-link">Already have account? <a href="log.html">Login Here</a></div>
-  <div id="errorMsg" class="error"></div>
+  <div id="msg" class="error"></div>
 </div>
 
 <button class="back-btn" onclick="window.location.href='index.html'">← Back</button>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d" };
@@ -84,7 +89,16 @@
 
   const usernameInput = document.getElementById('username');
   const passwordInput = document.getElementById('password');
+  const emailInput = document.getElementById('email');
+  const otpInput = document.getElementById('otp');
+  const verifyBtn = document.getElementById('verifyBtn');
+  const createBtn = document.getElementById('createBtn');
+  const msg = document.getElementById('msg');
+  
+  let generatedOTP = "";
+  let isEmailVerified = false;
 
+  // LIVE VALIDATION
   usernameInput.addEventListener('input', () => {
     const val = usernameInput.value;
     if(val.length > 0) document.getElementById('userRules').style.display = 'block'; else document.getElementById('userRules').style.display = 'none';
@@ -108,36 +122,54 @@
       document.getElementById('passRules').style.display = 'none';
   });
 
-  window.verifyEmail = function() {
-    document.getElementById('errorMsg').innerText = "Verification will be sent after CREATE ACCOUNT";
-    document.getElementById('errorMsg').style.color = "#22c55e";
+  // OTP CHECK
+  otpInput.addEventListener('input', () => {
+    if(otpInput.value === generatedOTP && generatedOTP !== ""){
+      isEmailVerified = true;
+      createBtn.disabled = false;
+      msg.innerText = "Email verified! You can now Create Account";
+      msg.className = "success";
+      verifyBtn.innerText = "Verified ✓";
+      verifyBtn.disabled = true;
+    }
+  });
+
+  // SEND OTP FUNCTION - using mailto for now. Replace with EmailJS later
+  window.sendOTP = function() {
+    const email = emailInput.value;
+    if(!email) { msg.innerText = "Enter email first"; return; }
+    
+    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString(); // 6 digit
+    msg.innerText = `OTP: ${generatedOTP} - Sent to ${email}. Check email.`; // FOR TESTING
+    msg.className = "success";
+    verifyBtn.innerText = "Resend";
+    
+    // TODO: Replace this alert with EmailJS to actually send email
+    alert(`Your verification code is: ${generatedOTP}`); 
   }
   
   window.register = async function() {
     const username = usernameInput.value;
-    const email = document.getElementById('email').value;
+    const email = emailInput.value;
     const password = passwordInput.value;
-    const errorMsg = document.getElementById('errorMsg');
-    errorMsg.innerText = "";
+    msg.innerText = "";
     
-    if(!/^[A-Z][a-z]{2,14}$/.test(username)) { errorMsg.innerText = "Username: First capital, rest lowercase, 3-15 chars"; return; }
+    if(!isEmailVerified) { msg.innerText = "Please enter correct OTP first"; return; }
+    if(!/^[A-Z][a-z]{2,14}$/.test(username)) { msg.innerText = "Username: First capital, rest lowercase, 3-15 chars"; return; }
     if(!(password.length >= 4 && password.length <= 12 && /[A-Z]/.test(password) && /[0-9]/.test(password) && /[!@#$%^&*]/.test(password))) { 
-      errorMsg.innerText = "Password must have: 4-12 chars, 1 capital, 1 number, 1 special char"; return; 
+      msg.innerText = "Password must have: 4-12 chars, 1 capital, 1 number, 1 special char"; return; 
     }
     
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      await sendEmailVerification(userCredential.user);
-      document.getElementById('verifyBtn').innerText = "Sent ✓";
-      document.getElementById('verifyBtn').disabled = true;
       
       await setDoc(doc(db, "users", userCredential.user.uid), { username: username, email: email, balance: 0 });
       localStorage.setItem('username', username);
-      errorMsg.innerText = "Check your email to verify, then login";
-      errorMsg.style.color = "#22c55e";
-      setTimeout(() => window.location.href = "home.html", 2000);
+      msg.innerText = "Account Created!";
+      msg.className = "success";
+      setTimeout(() => window.location.href = "home.html", 1500);
     } catch (e) {
-      errorMsg.innerText = e.message;
+      msg.innerText = e.message;
     }
   }
 </script>
