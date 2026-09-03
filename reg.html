@@ -20,21 +20,24 @@
     input:focus { border: 2px solid #f59e0b; }
     
     .verify-btn { padding: 14px 18px; background: #3b82f6; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px; white-space: nowrap; }
+    .verify-btn:disabled { background: #555; cursor: not-allowed; }
     
     .register-btn { width: 100%; padding: 16px; margin: 25px 0 15px 0; background: linear-gradient(90deg, #fbbf24, #f59e0b, #ec4899); color: black; border: none; border-radius: 12px; cursor: pointer; font-size: 17px; font-weight: bold; }
+    .register-btn:disabled { background: #555; color: #888; cursor: not-allowed; }
     
     .back-btn { width: 40%; max-width: 160px; padding: 14px; background: #f59e0b; color: black; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: bold; }
     
     .login-link { color: #ccc; font-size: 14px; margin-top: 10px; }
     .login-link a { color: #3b82f6; text-decoration: none; font-weight: bold; }
-    .verify-note { color: #22c55e; font-size: 13px; margin-top: 8px; }
     .referral-banner { background: #065f46; color: #d1fae5; padding: 12px; border-radius: 10px; margin-bottom: 20px; font-size: 14px; font-weight: bold; }
     .error { color: #ef4444; font-size: 13px; margin-top: 10px; }
+    .success { color: #22c55e; font-size: 13px; margin-top: 10px; }
     
-    /* RULE LIST WITH GREEN TICKS */
-    .rules { text-align: left; margin-top: 8px; font-size: 12px; }
+    /* HIDDEN RULES UNTIL TYPING */
+    .rules { text-align: left; margin-top: 8px; font-size: 12px; display: none; }
+    .rules.show { display: block; }
     .rule { color: #888; margin: 4px 0; transition: 0.3s; }
-    .rule.valid { color: #22c55e; font-weight: bold; } /* green when valid */
+    .rule.valid { color: #22c55e; font-weight: bold; }
     .rule.valid::before { content: "✅ "; }
     .rule::before { content: "⭕ "; }
   </style>
@@ -48,8 +51,8 @@
   <div id="referralBanner" class="referral-banner" style="display:none;"></div>
   
   <label>Username</label>
-  <input id="username" type="text" placeholder="Choose username" oninput="checkUsername()">
-  <div class="rules">
+  <input id="username" type="text" placeholder="Choose username" onfocus="showRules('uRules')" oninput="checkUsername()">
+  <div id="uRules" class="rules">
     <div id="u1" class="rule">5-12 characters</div>
     <div id="u2" class="rule">Only letters</div>
     <div id="u3" class="rule">First letter CAPITAL</div>
@@ -58,22 +61,23 @@
   <label>Email</label>
   <div class="input-row">
     <input id="email" type="email" placeholder="your@gmail.com">
-    <button class="verify-btn">Verify</button>
+    <button class="verify-btn" id="verifyBtn" onclick="sendOTP()">Verify</button>
   </div>
+  <input id="otp" type="text" placeholder="Enter 6 digit OTP" style="margin-top:10px; display:none;">
+  <div id="otpMsg" class="success"></div>
   
   <label>Password</label>
-  <input id="password" type="password" placeholder="Min 6 characters" oninput="checkPassword()">
-  <div class="rules">
+  <input id="password" type="password" placeholder="Min 6 characters" onfocus="showRules('pRules')" oninput="checkPassword()">
+  <div id="pRules" class="rules">
     <div id="p1" class="rule">Min 6 characters</div>
     <div id="p2" class="rule">At least 1 Capital letter</div>
     <div id="p3" class="rule">At least 1 digit</div>
     <div id="p4" class="rule">At least 1 special: $ & # @ + % = ? !</div>
   </div>
   
-  <button class="register-btn" onclick="register()">Create Account</button>
+  <button class="register-btn" id="createBtn" onclick="register()" disabled>Create Account</button>
   
   <div class="login-link">Already have account? <a href="log.html">Login Here</a></div>
-  <div class="verify-note">Verification will be sent after CREATE ACCOUNT</div>
   <div id="errorMsg" class="error"></div>
 </div>
 
@@ -81,7 +85,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, updateDoc, increment, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { 
@@ -93,15 +97,20 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
+  let emailVerified = false;
+  let generatedOTP = "";
+
   const params = new URLSearchParams(window.location.search);
   const refUsername = params.get('ref');
   if(refUsername){
-    const banner = document.getElementById('referralBanner');
-    banner.style.display = 'block';
-    banner.innerText = `🎁 You were referred by ${refUsername}! Both get points.`;
+    document.getElementById('referralBanner').style.display = 'block';
+    document.getElementById('referralBanner').innerText = `🎁 You were referred by ${refUsername}! Both get points.`;
   }
 
-  // LIVE CHECK USERNAME
+  window.showRules = function(id){
+    document.getElementById(id).classList.add('show');
+  }
+
   window.checkUsername = function(){
     const u = document.getElementById('username').value;
     document.getElementById('u1').classList.toggle('valid', u.length >= 5 && u.length <= 12);
@@ -109,13 +118,35 @@
     document.getElementById('u3').classList.toggle('valid', /^[A-Z]/.test(u));
   }
 
-  // LIVE CHECK PASSWORD
   window.checkPassword = function(){
     const p = document.getElementById('password').value;
     document.getElementById('p1').classList.toggle('valid', p.length >= 6);
     document.getElementById('p2').classList.toggle('valid', /[A-Z]/.test(p));
     document.getElementById('p3').classList.toggle('valid', /[0-9]/.test(p));
     document.getElementById('p4').classList.toggle('valid', /[\$&#@+%=?!]/.test(p));
+  }
+
+  // FAKE OTP FOR NOW - Firebase doesn't do email OTP directly
+  window.sendOTP = async function(){
+    const email = document.getElementById('email').value.trim();
+    if(!email.includes('@')){
+      document.getElementById('errorMsg').innerText = "Enter valid email first";
+      return;
+    }
+    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+    document.getElementById('otp').style.display = 'block';
+    document.getElementById('otpMsg').innerText = `OTP sent to ${email}. Check console for: ${generatedOTP}`; // REMOVE IN PROD
+    console.log("OTP:", generatedOTP);
+    document.getElementById('verifyBtn').innerText = "Resend";
+    
+    document.getElementById('otp').oninput = function(){
+      if(this.value === generatedOTP){
+        emailVerified = true;
+        document.getElementById('otpMsg').innerText = "✅ Email Verified!";
+        document.getElementById('verifyBtn').disabled = true;
+        document.getElementById('createBtn').disabled = false;
+      }
+    }
   }
 
   window.register = async function() {
@@ -125,13 +156,16 @@
     const errorMsg = document.getElementById('errorMsg');
     errorMsg.innerText = "";
 
-    // FINAL VALIDATION
+    if(!emailVerified){
+      errorMsg.innerText = "Please verify email with OTP first";
+      return;
+    }
     if(!/^[A-Z][A-Za-z]{4,11}$/.test(username)){
       errorMsg.innerText = "Username must be 5-12 letters, first letter capital";
       return;
     }
     if(!/^(?=.*[A-Z])(?=.*[0-9])(?=.*[\$&#@+%=?!]).{6,}$/.test(password)){
-      errorMsg.innerText = "Password must have 6+ chars, 1 capital, 1 digit, 1 special";
+      errorMsg.innerText = "Password does not meet requirements";
       return;
     }
 
@@ -157,8 +191,7 @@
         await updateDoc(doc(db, "users", user.uid), { balance: increment(100) });
       }
 
-      await sendEmailVerification(user);
-      alert("Account created! Please verify your email.");
+      alert("Account created successfully!");
       window.location.href = "home.html";
       
     } catch (e) {
