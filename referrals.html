@@ -5,63 +5,157 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { background: #2f3e1a; min-height: 100vh; padding: 20px; color: white; text-align: center; }
-    h2 { font-size: 26px; margin-bottom: 5px; }
-    .tagline { color: #fbbf24; font-size: 13px; margin-bottom: 20px; }
-    .box { background: #3a4a22; border: 2px solid #f59e0b; padding: 25px 20px; border-radius: 15px; max-width: 400px; margin: auto; position: relative; }
-    .close-btn { position: absolute; top: 10px; right: 15px; background: none; border: none; color: white; font-size: 22px; cursor: pointer; font-weight: bold; }
-    .earn-text { font-size: 14px; margin-bottom: 20px; }
-    .points { color: #f59e0b; font-weight: bold; }
-    .link-box { background: #000; padding: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin: 15px 0; gap: 8px; }
-    .link { color: #f59e0b; font-size: 12px; word-break: break-all; text-align: left; flex: 1; }
-    .copy-btn { background: #3b82f6; color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    body { 
+      background: rgba(0,0,0,0.7); 
+      min-height: 100vh; 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    /* POPUP BOX */
+    .popup {
+      background: #3a4a22;
+      border: 3px solid #f59e0b;
+      border-radius: 20px;
+      padding: 25px 20px;
+      width: 100%;
+      max-width: 380px;
+      color: white;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 0 30px rgba(245, 158, 11, 0.5);
+      animation: popIn 0.3s ease;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    
+    .close-btn {
+      position: absolute; top: 12px; right: 15px;
+      background: #ef4444; border: none; color: white;
+      width: 30px; height: 30px; border-radius: 50%;
+      font-size: 18px; cursor: pointer; font-weight: bold;
+    }
+    
+    h2 { font-size: 24px; margin-bottom: 5px; }
+    .tagline { color: #fbbf24; font-size: 12px; margin-bottom: 20px; }
+    
+    .earn-badge {
+      background: linear-gradient(90deg, #fbbf24, #f59e0b);
+      color: black; padding: 10px; border-radius: 10px;
+      font-weight: bold; margin-bottom: 20px;
+    }
+    
+    .link-box { 
+      background: #000; padding: 12px; border-radius: 12px; 
+      display: flex; gap: 8px; align-items: center; margin: 15px 0;
+    }
+    .link { color: #f59e0b; font-size: 11px; word-break: break-all; text-align: left; flex: 1; }
+    .copy-btn { 
+      background: #3b82f6; color: white; border: none; 
+      padding: 10px 14px; border-radius: 8px; font-weight: bold; cursor: pointer;
+    }
+    
     hr { border: none; border-top: 1px solid #2f3e1a; margin: 15px 0; }
-    .count { color: #22c55e; font-size: 24px; font-weight: bold; }
-    #noRefText { color: #aaa; font-size: 13px; }
-    .back-btn { width: 40%; padding: 12px; margin-top: 20px; background: #f59e0b; color: black; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 15px; }
-    .success { color: #22c55e; font-size: 12px; margin-top: 8px; }
+    
+    .stats { display: flex; justify-content: space-around; margin: 15px 0; }
+    .stat-box { text-align: center; }
+    .stat-num { color: #22c55e; font-size: 28px; font-weight: bold; }
+    .stat-label { font-size: 12px; color: #aaa; }
+    
+    .home-btn { 
+      width: 100%; padding: 12px; margin-top: 10px; 
+      background: #f59e0b; color: black; border: none; 
+      border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 15px; 
+    }
+    .success { color: #22c55e; font-size: 12px; margin-top: 8px; height: 16px; }
   </style>
 </head>
 <body>
-  <h2>👥 Refer & Earn</h2>
-  <div class="tagline">🐒 From Nothing to Something 🍇</div>
-  <div class="box">
-    <button class="close-btn" onclick="window.location.href='home.html'">X</button>
-    <p class="earn-text">Earn <span class="points">+50 Points</span> after your friend signs up!</p>
+  <div class="popup">
+    <button class="close-btn" onclick="goHome()">X</button>
+    <h2>👥 Refer & Earn</h2>
+    <div class="tagline">🐒 From Nothing to Something 🍇</div>
+    
+    <div class="earn-badge">Earn +50 Points Per Friend!</div>
+
     <p style="text-align:left; font-size:14px; margin-bottom:5px;"><b>Your Referral Link:</b></p>
     <div class="link-box">
       <span id="refLink" class="link">loading...</span>
       <button class="copy-btn" onclick="copyLink()">Copy</button>
     </div>
+
     <hr>
-    <p style="font-size:16px;">Your Referrals: <span id="refCount" class="count">0</span></p>
-    <p id="noRefText">No referrals yet. Share your link!</p>
+    <div class="stats">
+      <div class="stat-box">
+        <div id="refCount" class="stat-num">0</div>
+        <div class="stat-label">Referrals</div>
+      </div>
+      <div class="stat-box">
+        <div id="earned" class="stat-num">0</div>
+        <div class="stat-label">Points Earned</div>
+      </div>
+    </div>
+    <p id="noRefText" style="color:#aaa; font-size:13px;">Share to start earning!</p>
+
+    <button class="home-btn" onclick="goHome()">← Back to Home</button>
+    <div id="msg" class="success"></div>
   </div>
-  <button class="back-btn" onclick="window.location.href='home.html'">← Back</button>
-  <div id="msg" class="success"></div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-  const firebaseConfig = { apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d" };
-  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+
+  const firebaseConfig = { 
+    apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", 
+    authDomain: "reward-platform-rw-2e13d.firebaseapp.com", 
+    projectId: "reward-platform-rw-2e13d"
+  };
+  const app = initializeApp(firebaseConfig); 
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
   let myUsername = ""; let myLink = "";
+
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       const docSnap = await getDoc(doc(db, "users", user.uid));
       if(docSnap.exists()){
-        myUsername = docSnap.data().username;
+        const data = docSnap.data();
+        myUsername = data.username;
         myLink = `https://perlan75.github.io/rev/reg.html?ref=${myUsername}`;
+        
         document.getElementById('refLink').innerText = myLink;
-        const q = query(collection(db, "referrals"), where("referrer", "==", myUsername));
-        const snap = await getDocs(q);
-        document.getElementById('refCount').innerText = snap.size;
-        if(snap.size > 0) document.getElementById('noRefText').style.display = 'none';
+        document.getElementById('earned').innerText = (data.balance || 0);
+        
+        loadReferrals();
       }
-    } else { window.location.href = "log.html"; }
+    } else { 
+      window.location.href = "log.html"; 
+    }
   });
-  window.copyLink = () => { navigator.clipboard.writeText(myLink); document.getElementById('msg').innerText = "Copied!"; setTimeout(() => document.getElementById('msg').innerText = "", 2000); }
+
+  async function loadReferrals() {
+    const q = query(collection(db, "referrals"), where("referrer", "==", myUsername));
+    const snap = await getDocs(q);
+    const count = snap.size;
+    document.getElementById('refCount').innerText = count;
+    if(count > 0) document.getElementById('noRefText').style.display = 'none';
+  }
+
+  window.copyLink = () => { 
+    navigator.clipboard.writeText(myLink); 
+    document.getElementById('msg').innerText = "Link Copied!";
+    setTimeout(() => document.getElementById('msg').innerText = "", 2000);
+  }
+  
+  window.goHome = () => { 
+    window.location.href = "home.html"; // LINKS BACK TO HOME
+  }
 </script>
 </body>
 </html>
