@@ -10,10 +10,9 @@
     h2 { font-size: 26px; margin-bottom: 5px; }
     .tagline { color: #fbbf24; font-size: 13px; margin-bottom: 20px; }
     
-    /* MATCH HOME POPUP BOX */
     .box { 
       background: #3a4a22; 
-      border: 2px solid #f59e0b; /* orange border like screenshot */
+      border: 2px solid #f59e0b; 
       padding: 25px 20px; 
       border-radius: 15px; 
       max-width: 400px; 
@@ -42,7 +41,7 @@
     .link { color: #f59e0b; font-size: 12px; word-break: break-all; text-align: left; flex: 1; }
     
     .copy-btn { 
-      background: #3b82f6; /* blue like screenshot */
+      background: #3b82f6;
       color: white; 
       border: none; 
       padding: 10px 15px; 
@@ -70,7 +69,6 @@
       cursor: pointer; 
       font-size: 15px; 
     }
-    .error { color: #ef4444; font-size: 12px; margin-top: 8px; }
     .success { color: #22c55e; font-size: 12px; margin-top: 8px; }
   </style>
 </head>
@@ -99,9 +97,8 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  // SAME FIREBASE AS HOME.HTML - THIS IS KEY TO NOT RESET TO ZERO
   const firebaseConfig = { 
     apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", 
     authDomain: "reward-platform-rw-2e13d.firebaseapp.com", 
@@ -116,26 +113,29 @@
   const noRefText = document.getElementById('noRefText');
   const msg = document.getElementById('msg');
   
-  let myUsername = "Guest";
+  let myUsername = "";
   let myLink = "";
 
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      // Get username from Firestore to build link
-      const docSnap = await getDocs(query(collection(db, "users"), where("__name__", "==", user.uid)));
-      docSnap.forEach((doc) => { myUsername = doc.data().username; });
+      // Get Priya's username from Firestore
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
       
-      // BUILD REFERRAL LINK - points to register.html with ?ref=
-      myLink = `https://perlan75.github.io/rev/register.html?ref=${myUsername}`;
-      refLinkEl.innerText = myLink;
-      
-      loadReferrals();
+      if(docSnap.exists()){
+        myUsername = docSnap.data().username; // Will be "Priya"
+        
+        // BUILD REFERRAL LINK
+        myLink = `https://perlan75.github.io/rev/register.html?ref=${myUsername}`;
+        refLinkEl.innerText = myLink;
+        
+        loadReferrals();
+      }
     } else {
       window.location.href = "log.html"; 
     }
   });
 
-  // COUNT REFERRALS FROM FIREBASE
   async function loadReferrals() {
     const q = query(collection(db, "referrals"), where("referrer", "==", myUsername));
     const querySnapshot = await getDocs(q);
@@ -144,7 +144,6 @@
     if(count > 0) noRefText.style.display = 'none';
   }
 
-  // COPY BUTTON
   window.copyLink = function() {
     navigator.clipboard.writeText(myLink);
     msg.innerText = "Referral link copied!";
