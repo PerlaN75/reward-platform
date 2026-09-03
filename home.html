@@ -1,150 +1,136 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Home</title>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reward Platform - Home</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { background: #2f3e1a; min-height: 100vh; padding: 20px; color: white; text-align: center; }
-    
-    h1 { font-size: 26px; margin-top: 10px; }
-    .tagline { color: #fbbf24; font-size: 13px; margin: 8px 0 20px 0; }
-    
-    .points-box { background: #1a2410; padding: 20px; border-radius: 15px; margin-bottom: 25px; }
-    .points-box h3 { font-size: 14px; color: #ccc; margin-bottom: 8px; }
-    .points-box h2 { font-size: 48px; color: #f59e0b; font-weight: bold; }
-    
-    .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-    
-    /* 3D BUTTONS + CLICKABLE */
-    .menu-btn { 
-      background: linear-gradient(180deg, #ffffff, #e5e5e5); 
-      padding: 20px 10px; border-radius: 15px; 
-      text-align: center; cursor: pointer; 
-      box-shadow: 0 6px 0 #b3b3b3, 0 10px 15px rgba(0,0,0,0.3); /* 3D shadow */
-      transition: all 0.1s ease;
+    body {
+      font-family: Arial, sans-serif;
+      background: #ffe6f0;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h1 { color: #d63384; }
+    .welcome { font-size: 18px; margin-bottom: 20px; }
+    .points { font-size: 22px; font-weight: bold; color: #28a745; margin-bottom: 30px; }
+    .referral-box {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      border: 2px dashed #d63384;
+    }
+    .referral-box input {
+      width: 90%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    .btn {
+      padding: 20px;
+      background: #d63384;
+      color: white;
       border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
     }
-    .menu-btn:active { 
-      transform: translateY(4px); /* Press down effect */
-      box-shadow: 0 2px 0 #b3b3b3, 0 4px 8px rgba(0,0,0,0.2); 
-    }
-    .menu-btn:hover { background: linear-gradient(180deg, #ffffff, #f0f0f0); }
-    
-    .menu-icon { font-size: 35px; margin-bottom: 8px; }
-    .menu-text { font-size: 14px; font-weight: bold; color: #2f3e1a; }
-    
-    /* LOGOUT RESIZED TO 40% */
-    .logout-btn { 
-      width: 40%; 
-      padding: 12px; 
-      margin-top: 25px; 
-      background: #ef4444; 
-      color: white; 
-      border: none; 
-      border-radius: 10px; 
-      font-weight: bold; 
-      cursor: pointer; 
-      font-size: 15px; 
-      box-shadow: 0 4px 0 #b91c1c; /* small 3D too */
-      transition: 0.1s;
-    }
-    .logout-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b91c1c; }
+    .btn:hover { background: #b52a6e; }
+    .logout { margin-top: 30px; background: #6c757d; }
   </style>
 </head>
 <body>
-  <h1 id="welcomeText">Loading...</h1>
-  <div class="tagline">🐒 From Nothing to Something 🍇</div>
-  
-  <div class="points-box">
-    <h3>YOUR POINTS</h3>
-    <h2 id="points">0</h2>
+  <div class="container">
+    <h1>🎉 Reward Platform</h1>
+    <div class="welcome" id="welcomeText">Welcome!</div>
+    <div class="points" id="pointsText">Points: 0</div>
+
+    <div class="referral-box">
+      <h3>🔗 Your Referral Link</h3>
+      <p>Share this and both get 100 points!</p>
+      <input type="text" id="referralLink" readonly>
+      <button class="btn" onclick="copyLink()" style="margin-top:10px; padding:10px;">Copy Link</button>
+    </div>
+
+    <div class="grid">
+      <button class="btn">Watch Ads</button>
+      <button class="btn">Complete Tasks</button>
+      <button class="btn">Daily Bonus</button>
+      <button class="btn">Withdraw</button>
+      <button class="btn">Referrals</button>
+      <button class="btn">Profile</button>
+    </div>
+
+    <button class="btn logout" onclick="logout()">Logout</button>
   </div>
 
-  <div class="menu-grid">
-    <div class="menu-btn" onclick="goTo('checkin.html')">
-      <div class="menu-icon">📅</div>
-      <div class="menu-text">Daily Checkin</div>
-    </div>
-    <div class="menu-btn" onclick="goTo('watch.html')">
-      <div class="menu-icon">📺</div>
-      <div class="menu-text">Watch & Earn</div>
-    </div>
-    <div class="menu-btn" onclick="goTo('quiz.html')">
-      <div class="menu-icon">🧠</div>
-      <div class="menu-text">Daily Quiz</div>
-    </div>
-    
-    <!-- FIXED: NOW OPENS referrals.html DIRECTLY -->
-    <div class="menu-btn" onclick="window.location.href='referrals.html'">
-      <div class="menu-icon">👥</div>
-      <div class="menu-text">Refer & Earn</div>
-    </div>
-    
-    <div class="menu-btn" onclick="goTo('wallet.html')">
-      <div class="menu-icon">💰</div>
-      <div class="menu-text">Wallet</div>
-    </div>
-    <div class="menu-btn" onclick="goTo('more.html')">
-      <div class="menu-icon">⚙️</div>
-      <div class="menu-text">More</div>
-    </div>
-  </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  <button class="logout-btn" onclick="logout()">Logout</button>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-  const firebaseConfig = { 
-    apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", 
-    authDomain: "reward-platform-rw-2e13d.firebaseapp.com", 
-    projectId: "reward-platform-rw-2e13d"
-  };
-  const app = initializeApp(firebaseConfig); 
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          const username = data.username;
+          const points = data.points || 0;
 
-  const welcomeEl = document.getElementById('welcomeText');
-  const pointsEl = document.getElementById('points');
+          document.getElementById("welcomeText").innerText = `Welcome, ${username}!`;
+          document.getElementById("pointsText").innerText = `Points: ${points}`;
 
-  // Show name instantly from browser memory
-  const savedName = localStorage.getItem('username');
-  if(savedName) {
-    welcomeEl.innerText = "Welcome back " + savedName;
-  }
-
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      try {
-        const docSnap = await getDoc(doc(db, "users", user.uid));
-        if(docSnap.exists()) {
-          const data = docSnap.data();
-          welcomeEl.innerText = "Welcome back " + data.username;
-          pointsEl.innerText = data.balance || 0;
-          localStorage.setItem('username', data.username);
+          // FIXED: Added /reward-platform/ to the link
+          const referralLink = `https://perlan75.github.io/reward-platform/reg.html?ref=${username}`;
+          document.getElementById("referralLink").value = referralLink;
         }
-      } catch(e) {
-        console.log(e);
+      } else {
+        window.location.href = "login.html";
       }
-    } else {
-      localStorage.removeItem('username'); 
-      window.location.href = "log.html"; 
-    }
-  });
-
-  window.goTo = function(page) {
-    alert(page.replace('.html','') + " page coming soon!");
-  }
-
-  window.logout = function() {
-    localStorage.removeItem('username'); 
-    signOut(auth).then(() => {
-      window.location.href = "index.html";
     });
-  }
-</script>
+
+    function copyLink() {
+      const link = document.getElementById("referralLink");
+      link.select();
+      document.execCommand("copy");
+      alert("Referral link copied!");
+    }
+
+    function logout() {
+      signOut(auth).then(() => {
+        window.location.href = "login.html";
+      });
+    }
+  </script>
 </body>
 </html>
