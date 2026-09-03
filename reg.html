@@ -7,7 +7,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #2f3e1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; flex-direction: column; }
     
-    .container { background: #3a4a22; padding: 45px 20px; border-radius: 20px; width: 100%; max-width: 350px; text-align: center; margin-bottom: 15px; }
+    .container { background: #3a4a22; padding: 60px 20px; border-radius: 20px; width: 100%; max-width: 350px; text-align: center; margin-bottom: 15px; }
     
     h2 { color: white; font-size: 28px; margin-bottom: 5px; font-weight: bold; }
     .tagline { color: #fbbf24; font-size: 13px; margin-bottom: 20px; }
@@ -23,9 +23,9 @@
     
     .login-link { color: #ccc; font-size: 13px; margin-top: 12px; }
     .login-link a { color: #3b82f6; text-decoration: none; font-weight: bold; }
-    .error { color: #ef4444; font-size: 12px; margin-top: 5px; text-align: left; }
+    .error { color: #ef4444; font-size: 12px; margin-top: 8px; }
     
-    /* NEW RULES BOX */
+    /* NEW: RULES BOX - MATCHES YOUR DESIGN */
     .rules-box { background: #1a2410; padding: 10px; border-radius: 8px; margin-top: 6px; text-align: left; display: none; }
     .rule { font-size: 12px; color: #aaa; margin: 4px 0; }
     .rule.valid { color: #22c55e; } /* green */
@@ -55,7 +55,7 @@
   <button class="reg-btn" onclick="register()">REGISTER</button>
   
   <div class="login-link">Already have account? <a href="log.html">Login Here</a></div>
-  <div id="errorMsg" class="error" style="text-align:center;"></div>
+  <div id="errorMsg" class="error"></div>
 </div>
 
 <button class="back-btn" onclick="window.location.href='index.html'">← Back</button>
@@ -72,52 +72,39 @@
 
   const usernameInput = document.getElementById('username');
   const passwordInput = document.getElementById('password');
-  const userRules = document.getElementById('userRules');
-  const passRules = document.getElementById('passRules');
 
   // LIVE CHECK USERNAME
   usernameInput.addEventListener('input', () => {
     const val = usernameInput.value;
-    if(val.length > 0) userRules.style.display = 'block'; else userRules.style.display = 'none';
+    if(val.length > 0) document.getElementById('userRules').style.display = 'block'; else document.getElementById('userRules').style.display = 'none';
     
-    // Check length
     if(val.length >= 3 && val.length <= 15) {
       document.getElementById('u_len').classList.add('valid');
     } else {
       document.getElementById('u_len').classList.remove('valid');
     }
-    
-    // Hide box completely if all valid
-    if(val.length >= 3 && val.length <= 15) {
-      setTimeout(() => { if(usernameInput === document.activeElement) {} else { userRules.style.display = 'none'; } }, 300);
-    }
   });
   
-  // Hide when clicking outside and all valid
   usernameInput.addEventListener('blur', () => {
     const val = usernameInput.value;
-    if(val.length >= 3 && val.length <= 15) userRules.style.display = 'none';
+    if(val.length >= 3 && val.length <= 15) document.getElementById('userRules').style.display = 'none';
   });
 
   // LIVE CHECK PASSWORD
   passwordInput.addEventListener('input', () => {
     const val = passwordInput.value;
-    if(val.length > 0) passRules.style.display = 'block'; else passRules.style.display = 'none';
+    if(val.length > 0) document.getElementById('passRules').style.display = 'block'; else document.getElementById('passRules').style.display = 'none';
     
     if(val.length >= 6) {
       document.getElementById('p_len').classList.add('valid');
     } else {
       document.getElementById('p_len').classList.remove('valid');
     }
-    
-    if(val.length >= 6) {
-      setTimeout(() => { if(passwordInput === document.activeElement) {} else { passRules.style.display = 'none'; } }, 300);
-    }
   });
   
   passwordInput.addEventListener('blur', () => {
     const val = passwordInput.value;
-    if(val.length >= 6) passRules.style.display = 'none';
+    if(val.length >= 6) document.getElementById('passRules').style.display = 'none';
   });
   
   window.register = async function() {
