@@ -104,7 +104,7 @@
     authDomain: "reward-platform-rw-2e13d.firebaseapp.com", 
     projectId: "reward-platform-rw-2e13d"
   };
-  const app = initializeApp(firebaseConfig);
+  const app = initializeApp(firebaseConfig); 
   const auth = getAuth(app);
   const db = getFirestore(app);
 
@@ -118,15 +118,14 @@
 
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      // Get Priya's username from Firestore
       const docRef = doc(db, "users", user.uid);
       const docSnap = await getDoc(docRef);
       
       if(docSnap.exists()){
         myUsername = docSnap.data().username; // Will be "Priya"
         
-        // BUILD REFERRAL LINK
-        myLink = `https://perlan75.github.io/rev/register.html?ref=${myUsername}`;
+        // UPDATED: Using reg.html instead of register.html
+        myLink = `https://perlan75.github.io/rev/reg.html?ref=${myUsername}`;
         refLinkEl.innerText = myLink;
         
         loadReferrals();
