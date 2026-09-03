@@ -1,1 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Wallet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background: #2f3e1a; min-height: 100vh; padding: 20px; color: white; }
+    
+    .header { text-align: center; margin-bottom: 20px; padding-top: 40px; }
+    .header h1 { font-size: 32px; background: linear-gradient(90deg, #fbbf24, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
+    .header p { color: #d1fae5; font-size: 14px; }
+    
+    .card { background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px; margin-bottom: 20px; }
+    
+    .balance-box { background: linear-gradient(135deg, #fbbf24, #ec4899); padding: 25px; border-radius: 15px; text-align: center; }
+    .balance-box h3 { color: #1a1a1a; font-size: 14px; margin-bottom: 5px; font-weight: bold; }
+    .balance-box h2 { color: #000; font-size: 48px; font-weight: bold; }
+    .balance-box p { color: #1a1a1a; font-size: 14px; margin-top: 5px; font-weight: bold; }
+    
+    .stats { display: flex; gap: 10px; }
+    .stat-box { flex: 1; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; text-align: center; }
+    .stat-box h4 { font-size: 12px; color: #aaa; }
+    .stat-box p { font-size: 20px; font-weight: bold; margin-top: 5px; }
 
+    .withdraw-box h3 { margin-bottom: 15px; font-size: 18px; }
+    .withdraw-box input, .withdraw-box select { 
+      width: 100%; padding: 14px; margin-bottom: 12px; border: none; border-radius: 10px; 
+      background: #1a2e0f; color: white; font-size: 15px; outline: none;
+    }
+    .withdraw-btn {
+      width: 100%; padding: 15px; background: linear-gradient(90deg, #22c55e, #16a34a);
+      color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px;
+    }
+    .withdraw-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    
+    .tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+    .tab-btn { flex: 1; padding: 10px; background: rgba(0,0,0,0.3); border: none; border-radius: 10px; color: white; cursor: pointer; }
+    .tab-btn.active { background: linear-gradient(90deg, #fbbf24, #f97316); color: #000; font-weight: bold; }
+    
+    .history-item { 
+      background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 10px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .history-item .amount.green { color: #22c55e; font-weight: bold; }
+    .history-item .amount.red { color: #ef4444; font-weight: bold; }
+    .history-item small { color: #aaa; font-size: 12px; }
+    
+    .back-btn { width: 40%; max-width: 200px; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f97316); color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; margin: 10px auto 0 auto; display: block; }
+    .loading { text-align: center; color: #aaa; padding: 20px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>💰 My Wallet</h1>
+    <p>Manage your points & cashout</p>
+  </div>
+
+  <!-- 1. BALANCE SECTION -->
+  <div class="card">
+    <div class="balance-box">
+      <h3>WALLET BALANCE</h3>
+      <h2 id="balance">0</h2>
+      <p>= $<span id="usdValue">0.00</span> USD</p>
+      <small style="color:#1a1a1a;">1000 points = $0.50 USD</small>
+    </div>
+  </div>
+
+  <!-- 2. STATS -->
+  <div class="card stats">
+    <div class="stat-box">
+      <h4>Total Earned</h4>
+      <p id="totalEarned">0</p>
+    </div>
+    <div class="stat-box">
+      <h4>Total Withdrawn</h4>
+      <p id="totalWithdrawn">0</p>
+    </div>
+  </div>
+
+  <!-- 3. WITHDRAW SECTION -->
+  <div class="card withdraw-box">
+    <h3>Request Withdrawal</h3>
+    <select id="method">
+      <option value="MTN">MTN Mobile Money</option>
+      <option value="Airtel">Airtel Money</option>
+      <option value="PayPal">PayPal</option>
+      <option value="Bank">Bank Transfer</option>
+    </select>
+    <input type="text" id="account" placeholder="Phone Number or Email">
+    <input type="number" id="amount" placeholder="Amount in Points - Min 1000">
+    <button class="withdraw-btn" id="withdrawBtn" onclick="requestWithdraw()">Request Withdrawal</button>
+    <small style="color:#aaa; display:block; margin-top:8px;">Processed in 24-48 hours</small>
+  </div>
+
+  <!-- 4. HISTORY TABS -->
+  <div class="card">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('earnings')">Earnings</button>
+      <button class="tab-btn" onclick="showTab('withdrawals')">Withdrawals</button>
+    </div>
+    <div id="earningsTab">
+      <div id="earningHistory"><div class="loading">Loading...</div></div>
+    </div>
+    <div id="withdrawalsTab" style="display:none;">
+      <div id="withdrawHistory"><div class="loading">Loading...</div></div>
+    </div>
+  </div>
+
+  <button class="back-btn" onclick="window.location.href='home.html'">← Back to Home</button>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // REPLACE WITH YOUR FIREBASE CONFIG
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const RATE = 0.0005; // 1000 pts = $0.50
+
+  let currentUser = null;
+  let userData = { balance: 0 };
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return window.location.href = "login.html";
+    currentUser = user;
+    loadUserData();
+    loadHistory();
+  });
+
+  async function loadUserData() {
+    const userRef = doc(db, "users", currentUser.uid);
+    const snap = await getDoc(userRef);
+    if (snap.exists()) {
+      userData = snap.data();
+      updateUI();
+    }
+  }
+
+  function updateUI() {
+    document.getElementById('balance').innerText = userData.balance || 0;
+    document.getElementById('usdValue').innerText = ((userData.balance || 0) * RATE).toFixed(2);
+    document.getElementById('totalEarned').innerText = userData.totalEarned || 0;
+    document.getElementById('totalWithdrawn').innerText = userData.totalWithdrawn || 0;
+  }
+
+  function loadHistory() {
+    // Earnings
+    const earnQ = query(collection(db, "users", currentUser.uid, "transactions"), orderBy("timestamp", "desc"));
+    onSnapshot(earnQ, (snap) => {
+      let html = '';
+      snap.forEach(d => {
+        const data = d.data();
+        if (data.type === 'earn') {
+          html += `<div class="history-item">
+            <div><div>${data.reason}</div><small>${new Date(data.timestamp?.toDate()).toLocaleDateString()}</small></div>
+            <div class="amount green">+${data.amount}</div>
+          </div>`;
+        }
+      });
+      document.getElementById('earningHistory').innerHTML = html || '<div class="loading">No earnings yet</div>';
+    });
+
+    // Withdrawals
+    const withdrawQ = query(collection(db, "users", currentUser.uid, "withdrawals"), orderBy("timestamp", "desc"));
+    onSnapshot(withdrawQ, (snap) => {
+      let html = '';
+      snap.forEach(d => {
+        const data = d.data();
+        html += `<div class="history-item">
+          <div><div>${data.method} - ${data.account}</div><small>${data.status} - ${new Date(data.timestamp?.toDate()).toLocaleDateString()}</small></div>
+          <div class="amount red">-${data.amount}</div>
+        </div>`;
+      });
+      document.getElementById('withdrawHistory').innerHTML = html || '<div class="loading">No withdrawals yet</div>';
+    });
+  }
+
+  window.requestWithdraw = async function() {
+    const amount = parseInt(document.getElementById('amount').value);
+    const method = document.getElementById('method').value;
+    const account = document.getElementById('account').value;
+
+    if (!amount || amount < 1000) return alert("Minimum withdrawal is 1000 points");
+    if (!account) return alert("Enter phone number or email");
+    if (amount > userData.balance) return alert("Not enough balance");
+
+    document.getElementById('withdrawBtn').disabled = true;
+
+    try {
+      const userRef = doc(db, "users", currentUser.uid);
+      await runTransaction(db, async (transaction) => {
+        const snap = await transaction.get(userRef);
+        const newBalance = snap.data().balance - amount;
+        if (newBalance < 0) throw "Not enough balance";
+        transaction.update(userRef, { 
+          balance: newBalance,
+          totalWithdrawn: (snap.data().totalWithdrawn || 0) + amount
+        });
+      });
+
+      await addDoc(collection(db, "users", currentUser.uid, "withdrawals"), {
+        amount, method, account, status: "Pending", timestamp: serverTimestamp()
+      });
+
+      alert("Withdrawal request sent! We will process in 24-48h");
+      document.getElementById('amount').value = '';
+      document.getElementById('account').value = '';
+    } catch (e) {
+      alert("Error: " + e);
+    }
+    document.getElementById('withdrawBtn').disabled = false;
+  }
+
+  window.showTab = function(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('earningsTab').style.display = tab === 'earnings' ? 'block' : 'none';
+    document.getElementById('withdrawalsTab').style.display = tab === 'withdrawals' ? 'block' : 'none';
+  }
+</script>
+</body>
+</html>
