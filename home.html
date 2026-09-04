@@ -130,9 +130,12 @@
   });
 
   window.goTo = function(page) {
-    alert(page.replace('.html','') + " page coming soon!");
-  }
-
+    if(page === 'checkin.html'){
+      window.location.href = page; // this opens the real page
+    } else {
+      alert(page.replace('.html','') + " page coming soon!");
+    }
+}
   window.logout = function() {
     localStorage.removeItem('username'); 
     signOut(auth).then(() => {
