@@ -8,7 +8,7 @@
     body { background: #2f3e1a; min-height: 100vh; padding: 20px; color: white; }
     
     .header { text-align: center; margin-bottom: 20px; padding-top: 50px; }
-    .header h1 { font-size: 32px; background: linear-gradient(90deg, #fbbf24, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .header h1 { font-size: 32px; background: linear-gradient(90deg, #fbbf24, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
     .header p { color: #d1fae5; font-size: 14px; margin-top: 5px; }
     
     .balance-card { background: linear-gradient(135deg, #fbbf24, #ec4899); padding: 25px; border-radius: 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(251,191,36,0.3); }
@@ -21,7 +21,7 @@
     .stat-box h4 { font-size: 12px; color: #aaa; }
     .stat-box p { font-size: 20px; font-weight: bold; margin-top: 5px; }
 
-    .action-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 30px; }
+    .action-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
     .action-card { 
       background: linear-gradient(180deg, #ffffff, #e5e5e5); 
       padding: 18px 10px; border-radius: 18px; text-align: center; cursor: pointer;
@@ -32,6 +32,15 @@
     .action-icon { font-size: 30px; margin-bottom: 6px; }
     .action-text { font-size: 12px; font-weight: bold; color: #2f3e1a; }
 
+    .history-box { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px; margin-bottom: 30px; }
+    .tab-buttons { display: flex; gap: 10px; margin-bottom: 15px; }
+    .tab-btn { flex:1; padding:10px; border:none; border-radius:10px; background:rgba(0,0,0,0.3); color:white; font-weight:bold; cursor:pointer; }
+    .tab-btn.active { background:linear-gradient(90deg, #fbbf24, #f97316); color:#000; }
+    .history-item { background:rgba(0,0,0,0.3); padding:12px; border-radius:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; }
+    .history-item .amount.green { color:#22c55e; font-weight:bold; }
+    .history-item .amount.red { color:#ef4444; font-weight:bold; }
+    .history-item small { color:#aaa; font-size:12px; }
+
     .popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
     .popup-content { background: #1a2410; padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; animation: pop 0.3s; }
     @keyframes pop { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
@@ -41,17 +50,19 @@
       background: #2f3e1a; color: white; font-size: 15px; outline: none;
     }
     .popup-btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #22c55e, #16a34a); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; }
+    .popup-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .close-btn { background: #ef4444; margin-top: 10px; }
     
     .back-btn { 
       width: 50%;
-      margin: 50px auto 0 auto; /* INCREASED TO 50px TO PUSH DOWN MORE */
+      margin: 0 auto;
       display: block;
       padding: 15px; 
       background: linear-gradient(90deg, #fbbf24, #f97316); 
       color: #000; border: none; border-radius: 12px; 
       font-weight: bold; cursor: pointer; font-size: 16px; 
     }
+    .loading { color: #aaa; text-align: center; padding: 15px; }
   </style>
 </head>
 <body>
@@ -62,8 +73,8 @@
 
   <div class="balance-card">
     <h3>WALLET BALANCE</h3>
-    <h2 id="balance">100</h2>
-    <p>= $<span id="usdValue">0.05</span> USD</p>
+    <h2 id="balance">0</h2>
+    <p>= $<span id="usdValue">0.00</span> USD</p>
     <small style="color:#1a1a1a;">1000 points = $0.50 USD</small>
   </div>
 
@@ -93,32 +104,19 @@
     </div>
   </div>
 
+  <!-- HISTORY SECTION -->
+  <div class="history-box">
+    <div class="tab-buttons">
+      <button id="earnTabBtn" class="tab-btn active" onclick="showTab('earnings')">Earnings</button>
+      <button id="withdrawTabBtn" class="tab-btn" onclick="showTab('withdrawals')">Withdrawals</button>
+    </div>
+    <div id="earningsList"><div class="loading">Loading...</div></div>
+    <div id="withdrawalsList" style="display:none;"><div class="loading">Loading...</div></div>
+  </div>
+
   <button class="back-btn" onclick="window.location.href='home.html'">← Back Home</button>
 
-  <!-- POPUPS -->
-  <div class="popup" id="convertPopup">
-    <div class="popup-content">
-      <h3>Convert Points To Crypto</h3>
-      <select id="convertCoin">
-        <option>BNB</option><option>USDT</option><option>USDC</option>
-        <option>XRP</option><option>XLM</option><option>RWF</option>
-      </select>
-      <input type="number" id="convertAmount" placeholder="Amount in Points">
-      <button class="popup-btn" onclick="doConvert()">Convert Now</button>
-      <button class="popup-btn close-btn" onclick="closePopup('convert')">Cancel</button>
-    </div>
-  </div>
-
-  <div class="popup" id="buyPopup">
-    <div class="popup-content">
-      <h3>Buy Points</h3>
-      <p style="color:#aaa; font-size:13px; margin-bottom:10px;">1000 Points = $0.50 USD</p>
-      <input type="number" id="buyAmount" placeholder="How many points?">
-      <button class="popup-btn" onclick="doBuy()">Pay with Card/MoMo</button>
-      <button class="popup-btn close-btn" onclick="closePopup('buy')">Cancel</button>
-    </div>
-  </div>
-
+  <!-- WITHDRAW POPUP -->
   <div class="popup" id="withdrawPopup">
     <div class="popup-content">
       <h3>Withdraw Crypto</h3>
@@ -129,45 +127,163 @@
       <input type="text" id="walletAddress" placeholder="Your Wallet Address">
       <input type="number" id="withdrawAmount" placeholder="Amount in Points - Min 1000">
       <input type="email" id="withdrawEmail" placeholder="Email for confirmation">
-      <button class="popup-btn" onclick="doWithdraw()">Request Withdrawal</button>
+      <button class="popup-btn" id="withdrawSubmitBtn" onclick="doWithdraw()">Request Withdrawal</button>
       <button class="popup-btn close-btn" onclick="closePopup('withdraw')">Cancel</button>
     </div>
   </div>
 
-<script>
+  <!-- Other popups -->
+  <div class="popup" id="convertPopup">
+    <div class="popup-content">
+      <h3>Convert Points To Crypto</h3>
+      <select id="convertCoin"><option>BNB</option><option>USDT</option><option>USDC</option></select>
+      <input type="number" id="convertAmount" placeholder="Amount in Points">
+      <button class="popup-btn" onclick="alert('Coming Soon')">Convert Now</button>
+      <button class="popup-btn close-btn" onclick="closePopup('convert')">Cancel</button>
+    </div>
+  </div>
+
+  <div class="popup" id="buyPopup">
+    <div class="popup-content">
+      <h3>Buy Points</h3>
+      <p style="color:#aaa; font-size:13px; margin-bottom:10px;">1000 Points = $0.50 USD</p>
+      <input type="number" id="buyAmount" placeholder="How many points?">
+      <button class="popup-btn" onclick="alert('Coming Soon')">Pay with Card/MoMo</button>
+      <button class="popup-btn close-btn" onclick="closePopup('buy')">Cancel</button>
+    </div>
+  </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, addDoc, collection, serverTimestamp, runTransaction, increment, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE",
+    authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
+    projectId: "reward-platform-rw-2e13d"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
   const RATE = 0.0005;
-  function updateUSD() {
-    let pts = parseInt(document.getElementById('balance').innerText);
-    document.getElementById('usdValue').innerText = (pts * RATE).toFixed(2);
+
+  let currentUser = null;
+  let userBalance = 0;
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return window.location.href = "log.html";
+    currentUser = user;
+    loadUserData();
+    loadHistory();
+  });
+
+  async function loadUserData() {
+    const userRef = doc(db, "users", currentUser.uid);
+    const snap = await getDoc(userRef);
+    if (snap.exists()) {
+      const data = snap.data();
+      userBalance = data.balance || 0;
+      document.getElementById('balance').innerText = userBalance;
+      document.getElementById('usdValue').innerText = (userBalance * RATE).toFixed(2);
+      document.getElementById('totalEarned').innerText = data.totalEarned || 0;
+      document.getElementById('totalWithdrawn').innerText = data.totalWithdrawn || 0;
+    }
   }
-  updateUSD();
+
+  function loadHistory() {
+    // EARNINGS
+    const earnQ = query(collection(db, "users", currentUser.uid, "transactions"), orderBy("timestamp", "desc"));
+    onSnapshot(earnQ, (snap) => {
+      let html = '';
+      snap.forEach(d => {
+        const data = d.data();
+        const date = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleDateString() : '...';
+        html += `<div class="history-item">
+          <div><div>${data.reason || 'Earning'}</div><small>${date}</small></div>
+          <div class="amount green">+${data.amount}</div>
+        </div>`;
+      });
+      document.getElementById('earningsList').innerHTML = html || '<div class="loading">No earnings yet</div>';
+    });
+
+    // WITHDRAWALS
+    const withdrawQ = query(collection(db, "users", currentUser.uid, "withdrawals"), orderBy("timestamp", "desc"));
+    onSnapshot(withdrawQ, (snap) => {
+      let html = '';
+      snap.forEach(d => {
+        const data = d.data();
+        const date = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleDateString() : '...';
+        const color = data.status === 'Completed' ? '#22c55e' : '#fbbf24';
+        html += `<div class="history-item">
+          <div><div>${data.amount} pts to ${data.coin}</div><small>${data.status} - ${date}</small></div>
+          <div class="amount red">-${data.amount}</div>
+        </div>`;
+      });
+      document.getElementById('withdrawalsList').innerHTML = html || '<div class="loading">No withdrawals yet</div>';
+    });
+  }
+
+  window.showTab = function(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    if(tab === 'earnings') {
+      document.getElementById('earningsList').style.display = 'block';
+      document.getElementById('withdrawalsList').style.display = 'none';
+      document.getElementById('earnTabBtn').classList.add('active');
+    } else {
+      document.getElementById('earningsList').style.display = 'none';
+      document.getElementById('withdrawalsList').style.display = 'block';
+      document.getElementById('withdrawTabBtn').classList.add('active');
+    }
+  }
 
   function openPopup(type) { document.getElementById(type + 'Popup').style.display = 'flex'; }
+  window.openPopup = openPopup;
   function closePopup(type) { document.getElementById(type + 'Popup').style.display = 'none'; }
+  window.closePopup = closePopup;
 
-  function doConvert() {
-    let coin = document.getElementById('convertCoin').value;
-    let amount = document.getElementById('convertAmount').value;
-    if(!amount || amount < 100) return alert("Min 100 points");
-    alert(`Converted ${amount} pts to ${coin}!\nComing soon: Real crypto swap`);
-    closePopup('convert');
-  }
-  function doBuy() {
-    let amount = document.getElementById('buyAmount').value;
-    if(!amount) return alert("Enter amount");
-    let usd = (amount * RATE).toFixed(2);
-    alert(`You will pay $${usd} for ${amount} points\nComing soon: Payment gateway`);
-    closePopup('buy');
-  }
-  function doWithdraw() {
-    let coin = document.getElementById('withdrawCoin').value;
-    let address = document.getElementById('walletAddress').value;
-    let amount = document.getElementById('withdrawAmount').value;
-    let email = document.getElementById('withdrawEmail').value;
-    if(!address || !amount || !email) return alert("Fill all fields");
-    if(amount < 1000) return alert("Min withdrawal 1000 points");
-    alert(`Withdrawal request: ${amount} pts to ${coin}\nAddress: ${address}\nWe will process in 24-48h`);
-    closePopup('withdraw');
+  window.doWithdraw = async function() {
+    const coin = document.getElementById('withdrawCoin').value;
+    const address = document.getElementById('walletAddress').value.trim();
+    const amount = parseInt(document.getElementById('withdrawAmount').value);
+    const email = document.getElementById('withdrawEmail').value.trim();
+    const btn = document.getElementById('withdrawSubmitBtn');
+
+    if(!address || !amount || !email) return alert("Please fill all fields");
+    if(amount < 1000) return alert("Minimum withdrawal is 1000 points");
+    if(amount > userBalance) return alert("Not enough balance");
+
+    btn.disabled = true;
+    btn.innerText = "Processing...";
+
+    try {
+      const userRef = doc(db, "users", currentUser.uid);
+      await runTransaction(db, async (transaction) => {
+        const snap = await transaction.get(userRef);
+        const currentBal = snap.data().balance || 0;
+        if (currentBal < amount) throw "Not enough balance";
+        transaction.update(userRef, { 
+          balance: currentBal - amount,
+          totalWithdrawn: increment(amount)
+        });
+      });
+
+      await addDoc(collection(db, "users", currentUser.uid, "withdrawals"), {
+        coin, address, amount, email, status: "Pending",
+        usdValue: (amount * RATE).toFixed(2),
+        timestamp: serverTimestamp()
+      });
+
+      alert(`Withdrawal request sent!\n${amount} points to ${coin}\nWe will process in 24-48 hours`);
+      document.getElementById('walletAddress').value = '';
+      document.getElementById('withdrawAmount').value = '';
+      document.getElementById('withdrawEmail').value = '';
+      closePopup('withdraw');
+
+    } catch (e) { alert("Error: " + e); }
+    btn.disabled = false;
+    btn.innerText = "Request Withdrawal";
   }
 </script>
 </body>
