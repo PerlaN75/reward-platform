@@ -7,7 +7,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #2f3e1a; min-height: 100vh; padding: 20px; color: white; }
     
-    .header { text-align: center; margin-bottom: 20px; padding-top: 50px; } /* PUSHED DOWN FROM TOP */
+    .header { text-align: center; margin-bottom: 20px; padding-top: 50px; }
     .header h1 { font-size: 32px; background: linear-gradient(90deg, #fbbf24, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; }
     .header p { color: #d1fae5; font-size: 14px; margin-top: 5px; }
     
@@ -21,7 +21,7 @@
     .stat-box h4 { font-size: 12px; color: #aaa; }
     .stat-box p { font-size: 20px; font-weight: bold; margin-top: 5px; }
 
-    .action-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 25px; }
+    .action-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 30px; } /* ADDED MORE SPACE HERE */
     .action-card { 
       background: linear-gradient(180deg, #ffffff, #e5e5e5); 
       padding: 18px 10px; border-radius: 18px; text-align: center; cursor: pointer;
@@ -32,7 +32,6 @@
     .action-icon { font-size: 30px; margin-bottom: 6px; }
     .action-text { font-size: 12px; font-weight: bold; color: #2f3e1a; }
 
-    /* POPUP */
     .popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
     .popup-content { background: #1a2410; padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; animation: pop 0.3s; }
     @keyframes pop { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
@@ -45,8 +44,8 @@
     .close-btn { background: #ef4444; margin-top: 10px; }
     
     .back-btn { 
-      width: 50%; /* RESIZED TO 50% */
-      margin: 0 auto; /* CENTER IT */
+      width: 50%;
+      margin: 20px auto 0 auto; /* ADDED 20px TOP MARGIN TO PUSH DOWN */
       display: block;
       padding: 15px; 
       background: linear-gradient(90deg, #fbbf24, #f97316); 
@@ -61,7 +60,6 @@
     <p>Manage your points & crypto</p>
   </div>
 
-  <!-- BALANCE CARD -->
   <div class="balance-card">
     <h3>WALLET BALANCE</h3>
     <h2 id="balance">100</h2>
@@ -69,7 +67,6 @@
     <small style="color:#1a1a1a;">1000 points = $0.50 USD</small>
   </div>
 
-  <!-- STATS -->
   <div class="stats">
     <div class="stat-box">
       <h4>Total Earned</h4>
@@ -81,7 +78,6 @@
     </div>
   </div>
 
-  <!-- 3D ACTION CARDS -->
   <div class="action-grid">
     <div class="action-card" onclick="openPopup('convert')">
       <div class="action-icon">🔄</div>
@@ -99,7 +95,7 @@
 
   <button class="back-btn" onclick="window.location.href='home.html'">← Back Home</button>
 
-  <!-- CONVERT POPUP -->
+  <!-- POPUPS SAME AS BEFORE -->
   <div class="popup" id="convertPopup">
     <div class="popup-content">
       <h3>Convert Points To Crypto</h3>
@@ -113,7 +109,6 @@
     </div>
   </div>
 
-  <!-- BUY POPUP -->
   <div class="popup" id="buyPopup">
     <div class="popup-content">
       <h3>Buy Points</h3>
@@ -124,7 +119,6 @@
     </div>
   </div>
 
-  <!-- WITHDRAW POPUP -->
   <div class="popup" id="withdrawPopup">
     <div class="popup-content">
       <h3>Withdraw Crypto</h3>
@@ -142,19 +136,14 @@
 
 <script>
   const RATE = 0.0005;
-  
   function updateUSD() {
     let pts = parseInt(document.getElementById('balance').innerText);
     document.getElementById('usdValue').innerText = (pts * RATE).toFixed(2);
   }
   updateUSD();
 
-  function openPopup(type) {
-    document.getElementById(type + 'Popup').style.display = 'flex';
-  }
-  function closePopup(type) {
-    document.getElementById(type + 'Popup').style.display = 'none';
-  }
+  function openPopup(type) { document.getElementById(type + 'Popup').style.display = 'flex'; }
+  function closePopup(type) { document.getElementById(type + 'Popup').style.display = 'none'; }
 
   function doConvert() {
     let coin = document.getElementById('convertCoin').value;
@@ -163,7 +152,6 @@
     alert(`Converted ${amount} pts to ${coin}!\nComing soon: Real crypto swap`);
     closePopup('convert');
   }
-
   function doBuy() {
     let amount = document.getElementById('buyAmount').value;
     if(!amount) return alert("Enter amount");
@@ -171,7 +159,6 @@
     alert(`You will pay $${usd} for ${amount} points\nComing soon: Payment gateway`);
     closePopup('buy');
   }
-
   function doWithdraw() {
     let coin = document.getElementById('withdrawCoin').value;
     let address = document.getElementById('walletAddress').value;
