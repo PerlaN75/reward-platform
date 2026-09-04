@@ -141,23 +141,21 @@
     let streak = data.streak || 0; 
     let points = 5;
     
-    // Check if streak continues
     if(lastCheckin){
       const yesterday = new Date(now); 
       yesterday.setDate(yesterday.getDate()-1);
       if(lastCheckin.toDateString() === yesterday.toDateString()) {
-        streak += 1; // continue
+        streak += 1;
       } else {
-        streak = 1; // reset
+        streak = 1;
       }
     } else {
-      streak = 1; // first time
+      streak = 1;
     }
 
-    // Day 7 bonus
     if(streak >= 7){ 
       points += 50; 
-      streak = 0; // reset after bonus
+      streak = 0;
       alert("7 Day Streak! +50 bonus points 🔥"); 
     }
     
