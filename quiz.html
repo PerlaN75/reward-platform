@@ -6,59 +6,31 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #2f3e1a; min-height: 100vh; padding: 20px; color: white; }
-    
 .header { text-align: center; margin-bottom: 20px; padding-top: 30px; }
 .header h1 { font-size: 28px; color: #fbbf24; font-weight: bold; }
 .header p { color: #d1fae5; font-size: 14px; margin-top: 5px; }
-    
 .quiz-card { background: #1a2410; padding: 20px; border-radius: 15px; margin-bottom: 15px; }
 .quiz-card h3 { font-size: 14px; color: #f97316; margin-bottom: 10px; }
 .quiz-card p { font-size: 16px; font-weight: bold; margin-bottom: 15px; }
-    
-.option { 
-      background: #2f3e1a; padding: 12px; border-radius: 10px; margin-bottom: 10px; 
-      cursor: pointer; border: 2px solid #2f3e1a; transition: 0.2s;
-    }
+.option { background: #2f3e1a; padding: 12px; border-radius: 10px; margin-bottom: 10px; cursor: pointer; border: 2px solid #2f3e1a; transition: 0.2s; }
+.option.selected { border-color: #3b82f6; background: #1e293b; }
 .option.correct { border-color: #22c55e; background: #052e16; }
 .option.wrong { border-color: #ef4444; background: #450a0a; }
 .option.disabled { pointer-events: none; opacity: 0.8; }
-    
-.fill-input { 
-      width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #2f3e1a; 
-      background: #0f1408; color: white; font-size: 16px;
-    }
-.fill-input:disabled { opacity: 0.5; }
+.fill-input { width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #2f3e1a; background: #0f1408; color: white; font-size: 16px; }
 .fill-input.correct { border-color: #22c55e; background: #052e16; }
 .fill-input.wrong { border-color: #ef4444; background: #450a0a; }
-    
-.start-btn { 
-      width: 100%; padding: 16px; background: linear-gradient(90deg, #22c55e, #16a34a); 
-      color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; 
-      font-size: 18px; margin-top: 10px; box-shadow: 0 5px 0 #15803d;
-    }
-    
-.back-btn { 
-      width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; 
-      background: linear-gradient(90deg, #fbbf24, #f97316); color: #000; 
-      border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; 
-      box-shadow: 0 4px 0 #b45309;
-    }
-.back-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b45309; }
-    
-.reset-btn {
-      width: 50%; margin: 10px auto 0 auto; display: block; padding: 10px;
-      background: #ef4444; color: white; border: none; border-radius: 10px;
-      font-weight: bold; cursor: pointer; font-size: 13px;
-    }
-    
+.submit-btn { width: 100%; padding: 16px; background: linear-gradient(90deg, #3b82f6, #06b6d4); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 18px; margin-top: 10px; box-shadow: 0 5px 0 #1d4ed8; }
+.submit-btn:disabled { background: #555; box-shadow: 0 5px 0 #333; cursor: not-allowed; }
+.back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: linear-gradient(90deg, #fbbf24, #f97316); color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; box-shadow: 0 4px 0 #b45309; }
+.reset-btn { width: 50%; margin: 10px auto 0 auto; display: block; padding: 10px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 13px; }
 .completed-msg { text-align: center; padding: 30px 20px; background: #1a2410; border-radius: 15px; }
 .completed-msg h2 { font-size: 20px; color: #22c55e; margin-bottom: 8px; }
-    
 .popup-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
-.popup-box { background: #1a2410; padding: 25px; border-radius: 20px; text-align: center; width: 85%; max-width: 320px; border: 2px solid #22c55e; }
-.popup-box h2 { color: #22c55e; font-size: 20px; margin-bottom: 10px; }
+.popup-box { background: #1a2410; padding: 25px; border-radius: 20px; text-align: center; width: 85%; max-width: 320px; border: 2px solid #3b82f6; }
+.popup-box h2 { color: #3b82f6; font-size: 20px; margin-bottom: 10px; }
 .popup-box p { color: #ddd; font-size: 14px; margin-bottom: 20px; }
-.popup-btn { width: 100%; padding: 14px; background: linear-gradient(90deg, #22c55e, #16a34a); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
+.popup-btn { width: 100%; padding: 14px; background: linear-gradient(90deg, #3b82f6, #06b6d4); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -76,7 +48,8 @@
   </div>
   
   <div id="quizSection"></div>
-  <button class="start-btn" id="startBtn" onclick="startQuiz()">Start Quiz</button>
+  <button class="submit-btn" id="startBtn" onclick="startQuiz()">Start Quiz</button>
+  <button class="submit-btn" id="submitBtn" onclick="submitQuiz()" style="display:none;">Submit Answers</button>
   <button class="back-btn" onclick="window.location.href='home.html'">Back Home</button>
   <button class="reset-btn" onclick="resetQuiz()">Reset for Testing</button>
 
@@ -91,8 +64,7 @@
   
   let currentUser = null;
   let todayQuestions = [];
-  let score = 0;
-  let answeredCount = 0;
+  let userAnswers = {};
   let quizStarted = false;
 
   const QUESTION_POOL = {
@@ -132,40 +104,22 @@
     checkIfCompleted();
   });
 
-  function getTodayString() {
-    const now = new Date();
-    return now.getFullYear() + "-" + (now.getMonth()+1) + "-" + now.getDate();
-  }
-  
-  function seededRandom(seed) {
-    let x = Math.sin(seed) * 10000;
-    return x - Math.floor(x);
-  }
-  function shuffleArray(array, seed) {
-    return array.sort(() => seededRandom(seed++) - 0.5);
-  }
+  function getTodayString() { const now = new Date(); return now.getFullYear() + "-" + (now.getMonth()+1) + "-" + now.getDate(); }
+  function seededRandom(seed) { let x = Math.sin(seed) * 10000; return x - Math.floor(x); }
+  function shuffleArray(array, seed) { return array.sort(() => seededRandom(seed++) - 0.5); }
 
-  function showPopup(title, text) {
-    document.getElementById('popupTitle').innerText = title;
-    document.getElementById('popupText').innerText = text;
-    document.getElementById('popup').style.display = 'flex';
-  }
-  window.closePopup = function() {
-    document.getElementById('popup').style.display = 'none';
-  }
+  function showPopup(title, text) { document.getElementById('popupTitle').innerText = title; document.getElementById('popupText').innerText = text; document.getElementById('popup').style.display = 'flex'; }
+  window.closePopup = function() { document.getElementById('popup').style.display = 'none'; }
 
   window.resetQuiz = async function() {
     const today = getTodayString();
     const cacheKey = 'quiz_' + currentUser.uid + '_' + today;
     localStorage.removeItem(cacheKey);
-    await updateDoc(doc(db, "users", currentUser.uid), {
-      lastQuizDate: ""
-    });
-    quizStarted = false;
-    score = 0;
-    answeredCount = 0;
+    await updateDoc(doc(db, "users", currentUser.uid), { lastQuizDate: "" });
+    quizStarted = false; userAnswers = {};
     document.getElementById('quizSection').innerHTML = '';
     document.getElementById('startBtn').style.display = 'block';
+    document.getElementById('submitBtn').style.display = 'none';
     showPopup("🔄 Quiz Reset!", "Click Start Quiz to test again");
   }
 
@@ -173,11 +127,9 @@
     const today = getTodayString();
     const cacheKey = 'quiz_' + currentUser.uid + '_' + today;
     const cached = localStorage.getItem(cacheKey);
-    
     const snap = await getDoc(doc(db, "users", currentUser.uid));
     if(!snap.exists()) return;
     const data = snap.data();
-    
     if(data.lastQuizDate === today || (cached && JSON.parse(cached).completed)){
       document.getElementById('startBtn').style.display = 'none';
       showCompleted();
@@ -185,112 +137,75 @@
   }
 
   window.startQuiz = function() {
-    if(quizStarted) return; // prevent double click
-    quizStarted = true;
-    
+    if(quizStarted) return; quizStarted = true;
     const seed = currentUser.uid.length + getTodayString().length + new Date().getDate();
     let allQuestions = [...QUESTION_POOL.general,...QUESTION_POOL.biology,...QUESTION_POOL.english,...QUESTION_POOL.math];
     todayQuestions = shuffleArray(allQuestions, seed).slice(0, 2);
-    
     document.getElementById('startBtn').style.display = 'none';
+    document.getElementById('submitBtn').style.display = 'block';
     renderQuiz();
   }
   
   function showCompleted() {
-    document.getElementById('quizSection').innerHTML = `
-      <div class="completed-msg">
-        <h2>✓ Already Completed</h2>
-        <p>You finished today's quiz.<br>Come back tomorrow</p>
-      </div>
-    `;
+    document.getElementById('quizSection').innerHTML = `<div class="completed-msg"><h2>✓ Already Completed</h2><p>You finished today's quiz.<br>Come back tomorrow</p></div>`;
+    document.getElementById('submitBtn').style.display = 'none';
   }
 
   function renderQuiz() {
-    const section = document.getElementById('quizSection');
-    section.innerHTML = '';
+    const section = document.getElementById('quizSection'); section.innerHTML = '';
     todayQuestions.forEach((q, i) => {
       let html = `<div class="quiz-card" id="card${i}"><h3>Question ${i+1}</h3><p>${q.q}</p>`;
       if(q.type === "mcq"){
         q.options.forEach(opt => {
-          html += `<div class="option" data-q="${i}" data-ans="${opt}" onclick="checkAnswer(${i}, '${opt}', this)">${opt}</div>`;
+          html += `<div class="option" data-q="${i}" data-ans="${opt}" onclick="selectOption(${i}, '${opt}', this)">${opt}</div>`;
         });
       } else {
-        html += `<input type="text" class="fill-input" data-q="${i}" id="input${i}" placeholder="Type your answer and press Enter" onkeypress="if(event.key==='Enter') checkFillAnswer(${i}, this)">`;
+        html += `<input type="text" class="fill-input" data-q="${i}" id="input${i}" placeholder="Type your answer">`;
       }
-      html += `</div>`;
-      section.innerHTML += html;
+      html += `</div>`; section.innerHTML += html;
     });
   }
   
-  window.checkAnswer = async function(index, value, el) {
-    if(el.classList.contains('disabled')) return;
-    
+  window.selectOption = function(index, value, el) {
+    userAnswers[index] = value;
+    el.parentElement.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
     const q = todayQuestions[index];
-    const isCorrect = value.toLowerCase() === q.answer.toLowerCase();
-    
-    // Mark green or red
-    if(isCorrect){
-      el.classList.add('correct');
-      score += 10;
-    } else {
+    if(value.toLowerCase() === q.answer.toLowerCase()){ el.classList.add('correct'); } 
+    else {
       el.classList.add('wrong');
-      // also show correct answer
       el.parentElement.querySelectorAll('.option').forEach(o => {
-        if(o.getAttribute('data-ans').toLowerCase() === q.answer.toLowerCase()){
-          o.classList.add('correct');
-        }
+        if(o.getAttribute('data-ans').toLowerCase() === q.answer.toLowerCase()){ o.classList.add('correct'); }
       });
     }
-    
-    // Disable all options for this question
     el.parentElement.querySelectorAll('.option').forEach(o => o.classList.add('disabled'));
-    
-    answeredCount++;
-    await addPoints(10); // ADD POINTS INSTANTLY
-    
-    if(answeredCount === 2) finishQuiz();
   }
   
-  window.checkFillAnswer = async function(index, inputEl) {
-    if(inputEl.disabled) return;
-    const q = todayQuestions[index];
-    const userAns = inputEl.value.trim().toLowerCase();
-    if(userAns === '') return; // don't submit empty
-    
-    const isCorrect = userAns === q.answer.toLowerCase();
-    
-    if(isCorrect){
-      inputEl.classList.add('correct');
-      score += 10;
-    } else {
-      inputEl.classList.add('wrong');
-    }
-    inputEl.disabled = true;
-    
-    answeredCount++;
-    await addPoints(10); // ADD POINTS INSTANTLY
-    
-    if(answeredCount === 2) finishQuiz();
-  }
-  
-  async function addPoints(points) {
-    await updateDoc(doc(db, "users", currentUser.uid), {
-      balance: increment(points)
+  window.submitQuiz = async function() {
+    let score = 0;
+    todayQuestions.forEach((q, i) => {
+      let userAns = q.type === "mcq"? userAnswers[i] : document.getElementById('input'+i)?.value.trim().toLowerCase();
+      if(q.type === "fill" && userAns){
+        const inputEl = document.getElementById('input'+i);
+        if(userAns === q.answer.toLowerCase()){ inputEl.classList.add('correct'); score += 10; } 
+        else { inputEl.classList.add('wrong'); }
+        inputEl.disabled = true;
+      }
+      if(userAns && userAns === q.answer.toLowerCase()) score += 10;
     });
-  }
-  
-  async function finishQuiz() {
+    
+    const points = score;
     const today = getTodayString();
     const cacheKey = 'quiz_' + currentUser.uid + '_' + today;
-    
     localStorage.setItem(cacheKey, JSON.stringify({completed: true}));
+    
     await updateDoc(doc(db, "users", currentUser.uid), {
+      balance: increment(points),
       lastQuizDate: today
     });
     
-    setTimeout(() => {
-      showPopup("✓ Quiz Complete!", `You scored ${score}/20 points`);
-    }, 500);
+    document.getElementById('submitBtn').disabled = true;
+    showPopup("✓ Quiz Complete!", `You scored ${score}/20 points. +${points} Added to Wallet`);
   }
 </script>
 </body>
