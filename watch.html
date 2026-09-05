@@ -40,11 +40,16 @@
     .watch-btn:active { transform: translateY(2px); box-shadow: 0 3px 0 #1d4ed8; }
     .watch-btn:disabled { background: #555; box-shadow: 0 5px 0 #333; cursor: not-allowed; }
     
+    /* CHANGED: Orange gradient back home button */
     .back-btn { 
       width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; 
-      background: linear-gradient(90deg, #fbbf24, #f97316); color: #000; 
+      background: linear-gradient(90deg, #fbbf24, #f97316); 
+      color: #000; 
       border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; 
+      box-shadow: 0 4px 0 #b45309;
     }
+    .back-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b45309; }
+    
     .timer { text-align: center; font-size: 28px; font-weight: bold; color: #fbbf24; margin: 15px 0; }
     
     .completed-msg { text-align: center; padding: 30px 20px; background: #1a2410; border-radius: 15px; }
@@ -116,7 +121,7 @@
     loadData();
   }
   
-  function renderUI(count) { // NEW: Separate render function
+  function renderUI(count) {
     document.getElementById('watchedCount').innerText = count;
     document.getElementById('progressFill').style.width = (count / 5 * 100) + '%';
     
@@ -154,7 +159,6 @@
     const cacheKey = 'watch_' + currentUser.uid + '_' + today;
     const cached = localStorage.getItem(cacheKey);
     
-    // STEP 1: Show from cache instantly - 0ms
     if(cached){
       try {
         const data = JSON.parse(cached);
@@ -163,7 +167,6 @@
       } catch(e){}
     }
     
-    // STEP 2: Get real data from Firebase
     const snap = await getDoc(doc(db, "users", currentUser.uid));
     if(!snap.exists()) return;
     const data = snap.data();
@@ -171,7 +174,6 @@
     watchedToday = (data.lastVideoDate === today) ? (data.videosWatchedToday || 0) : 0;
     renderUI(watchedToday);
     
-    // STEP 3: Save to cache for next time
     localStorage.setItem(cacheKey, JSON.stringify({count: watchedToday}));
   }
 
@@ -202,12 +204,10 @@
     const today = getTodayString();
     const newCount = watchedToday + 1;
     
-    // INSTANT: Update cache first
     const cacheKey = 'watch_' + currentUser.uid + '_' + today;
     localStorage.setItem(cacheKey, JSON.stringify({count: newCount}));
-    renderUI(newCount); // Instant UI update
+    renderUI(newCount);
     
-    // Then update Firebase
     await updateDoc(doc(db, "users", currentUser.uid), {
       balance: increment(10),
       videosWatchedToday: increment(1),
