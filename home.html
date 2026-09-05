@@ -75,7 +75,6 @@
       <div class="menu-icon">👥</div>
       <div class="menu-text">Refer & Earn</div>
     </div>
-    <!-- CHANGED THIS LINE ONLY -->
     <div class="menu-btn" onclick="window.location.href='wallet.html'">
       <div class="menu-icon">💰</div>
       <div class="menu-text">Wallet</div>
@@ -91,7 +90,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"; // ADDED
 
   const firebaseConfig = { 
     apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", 
@@ -101,6 +100,7 @@
   const app = initializeApp(firebaseConfig); 
   const auth = getAuth(app);
   const db = getFirestore(app);
+  enableIndexedDbPersistence(db).catch(() => {}); // ADDED: Firebase offline cache
 
   const welcomeEl = document.getElementById('welcomeText');
   const pointsEl = document.getElementById('points');
@@ -112,30 +112,55 @@
 
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      try {
-        const docSnap = await getDoc(doc(db, "users", user.uid));
-        if(docSnap.exists()) {
-          const data = docSnap.data();
-          welcomeEl.innerText = "Welcome back " + data.username;
-          pointsEl.innerText = data.balance || 0;
-          localStorage.setItem('username', data.username);
-        }
-      } catch(e) {
-        console.log(e);
-      }
+      loadHome(user.uid); // CHANGED: Call new function
     } else {
       localStorage.removeItem('username'); 
+      localStorage.removeItem('home_' + user?.uid); // Clear cache on logout
       window.location.href = "log.html"; 
     }
   });
 
+  async function loadHome(uid) { // ADDED: New function with cache
+    const cacheKey = 'home_' + uid;
+    const cached = localStorage.getItem(cacheKey);
+    
+    // STEP 1: Show from cache instantly - 0ms
+    if(cached){
+      try {
+        const data = JSON.parse(cached);
+        welcomeEl.innerText = "Welcome back " + data.username;
+        pointsEl.innerText = data.balance || 0;
+      } catch(e){}
+    }
+    
+    // STEP 2: Get real data from Firebase
+    try {
+      const docSnap = await getDoc(doc(db, "users", uid));
+      if(docSnap.exists()) {
+        const data = docSnap.data();
+        welcomeEl.innerText = "Welcome back " + data.username;
+        pointsEl.innerText = data.balance || 0;
+        localStorage.setItem('username', data.username);
+        
+        // STEP 3: Save to cache for next time
+        localStorage.setItem(cacheKey, JSON.stringify({
+          username: data.username,
+          balance: data.balance || 0
+        }));
+      }
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
   window.goTo = function(page) {
     if(page === 'checkin.html'){
-      window.location.href = page; // this opens the real page
+      window.location.href = page;
     } else {
       alert(page.replace('.html','') + " page coming soon!");
     }
-}
+  }
+  
   window.logout = function() {
     localStorage.removeItem('username'); 
     signOut(auth).then(() => {
