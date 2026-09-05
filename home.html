@@ -90,7 +90,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"; // ADDED
+  import { getFirestore, doc, getDoc, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { 
     apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", 
@@ -100,7 +100,7 @@
   const app = initializeApp(firebaseConfig); 
   const auth = getAuth(app);
   const db = getFirestore(app);
-  enableIndexedDbPersistence(db).catch(() => {}); // ADDED: Firebase offline cache
+  enableIndexedDbPersistence(db).catch(() => {});
 
   const welcomeEl = document.getElementById('welcomeText');
   const pointsEl = document.getElementById('points');
@@ -112,19 +112,19 @@
 
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      loadHome(user.uid); // CHANGED: Call new function
+      loadHome(user.uid);
     } else {
       localStorage.removeItem('username'); 
-      localStorage.removeItem('home_' + user?.uid); // Clear cache on logout
+      localStorage.removeItem('home_' + user?.uid);
       window.location.href = "log.html"; 
     }
   });
 
-  async function loadHome(uid) { // ADDED: New function with cache
+  async function loadHome(uid) {
     const cacheKey = 'home_' + uid;
     const cached = localStorage.getItem(cacheKey);
     
-    // STEP 1: Show from cache instantly - 0ms
+    // STEP 1: Show from cache instantly
     if(cached){
       try {
         const data = JSON.parse(cached);
@@ -154,7 +154,7 @@
   }
 
   window.goTo = function(page) {
-    if(page === 'checkin.html'){
+    if(page === 'checkin.html' || page === 'watch.html'){ // NOW ALLOWS WATCH.HTML
       window.location.href = page;
     } else {
       alert(page.replace('.html','') + " page coming soon!");
