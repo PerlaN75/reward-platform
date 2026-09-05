@@ -110,7 +110,6 @@
       loadHome(user.uid);
     } else {
       localStorage.removeItem('username'); 
-      localStorage.removeItem('home_' + user?.uid);
       window.location.href = "log.html"; 
     }
   });
@@ -145,8 +144,8 @@
   }
 
   window.goTo = function(page) {
-    // FIXED: NOW ALLOWS wallet + referrals + more
-    if(page === 'checkin.html' || page === 'watch.html' || page === 'quiz.html' || page === 'referrals.html' || page === 'wallet.html' || page === 'more.html'){
+    // FIXED: Added referrals + wallet
+    if(page === 'checkin.html' || page === 'watch.html' || page === 'quiz.html' || page === 'referrals.html' || page === 'wallet.html'){
       window.location.href = page;
     } else {
       alert(page.replace('.html','') + " page coming soon!");
