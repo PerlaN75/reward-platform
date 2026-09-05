@@ -7,50 +7,48 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #2f3e1a; min-height: 100vh; padding: 20px; color: white; }
     
-   .header { text-align: center; margin-bottom: 20px; padding-top: 30px; }
-   .header h1 { font-size: 28px; color: #fbbf24; font-weight: bold; }
-   .header p { color: #d1fae5; font-size: 14px; margin-top: 5px; }
+  .header { text-align: center; margin-bottom: 20px; padding-top: 30px; }
+  .header h1 { font-size: 28px; color: #fbbf24; font-weight: bold; }
+  .header p { color: #d1fae5; font-size: 14px; margin-top: 5px; }
     
-   .quiz-card { background: #1a2410; padding: 20px; border-radius: 15px; margin-bottom: 15px; }
-   .quiz-card h3 { font-size: 14px; color: #f97316; margin-bottom: 10px; }
-   .quiz-card p { font-size: 16px; font-weight: bold; margin-bottom: 15px; }
+  .quiz-card { background: #1a2410; padding: 20px; border-radius: 15px; margin-bottom: 15px; }
+  .quiz-card h3 { font-size: 14px; color: #f97316; margin-bottom: 10px; }
+  .quiz-card p { font-size: 16px; font-weight: bold; margin-bottom: 15px; }
     
-   .option { 
+  .option { 
       background: #2f3e1a; padding: 12px; border-radius: 10px; margin-bottom: 10px; 
       cursor: pointer; border: 2px solid #2f3e1a;
     }
-   .option.selected { border-color: #3b82f6; background: #1e293b; }
-   .option.correct { border-color: #22c55e; background: #052e16; }
-   .option.wrong { border-color: #ef4444; background: #450a0a; }
+  .option.selected { border-color: #3b82f6; background: #1e293b; }
     
-   .fill-input { 
+  .fill-input { 
       width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #2f3e1a; 
       background: #0f1408; color: white; font-size: 16px;
     }
     
-   .submit-btn { 
+  .submit-btn { 
       width: 100%; padding: 16px; background: linear-gradient(90deg, #3b82f6, #06b6d4); 
       color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; 
       font-size: 18px; margin-top: 10px; box-shadow: 0 5px 0 #1d4ed8;
     }
-   .submit-btn:disabled { background: #555; box-shadow: 0 5px 0 #333; cursor: not-allowed; }
+  .submit-btn:disabled { background: #555; box-shadow: 0 5px 0 #333; cursor: not-allowed; }
     
-   .back-btn { 
+  .back-btn { 
       width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; 
       background: linear-gradient(90deg, #fbbf24, #f97316); color: #000; 
       border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; 
       box-shadow: 0 4px 0 #b45309;
     }
-   .back-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b45309; }
+  .back-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b45309; }
     
-   .completed-msg { text-align: center; padding: 30px 20px; background: #1a2410; border-radius: 15px; }
-   .completed-msg h2 { font-size: 20px; color: #22c55e; margin-bottom: 8px; }
+  .completed-msg { text-align: center; padding: 30px 20px; background: #1a2410; border-radius: 15px; }
+  .completed-msg h2 { font-size: 20px; color: #22c55e; margin-bottom: 8px; }
     
-   .popup-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
-   .popup-box { background: #1a2410; padding: 25px; border-radius: 20px; text-align: center; width: 85%; max-width: 320px; border: 2px solid #3b82f6; }
-   .popup-box h2 { color: #3b82f6; font-size: 20px; margin-bottom: 10px; }
-   .popup-box p { color: #ddd; font-size: 14px; margin-bottom: 20px; }
-   .popup-btn { width: 100%; padding: 14px; background: linear-gradient(90deg, #3b82f6, #06b6d4); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
+  .popup-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
+  .popup-box { background: #1a2410; padding: 25px; border-radius: 20px; text-align: center; width: 85%; max-width: 320px; border: 2px solid #3b82f6; }
+  .popup-box h2 { color: #3b82f6; font-size: 20px; margin-bottom: 10px; }
+  .popup-box p { color: #ddd; font-size: 14px; margin-bottom: 20px; }
+  .popup-btn { width: 100%; padding: 14px; background: linear-gradient(90deg, #3b82f6, #06b6d4); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -84,55 +82,36 @@
   let todayQuestions = [];
   let userAnswers = {};
 
-  // QUESTION POOL - Add 50+ questions here
+  // FIXED: Only 1 of each category. Added more questions
   const QUESTION_POOL = {
     general: [
       {type: "mcq", q: "What is the capital of Rwanda?", options: ["Kigali","Nairobi","Kampala","Bujumbura"], answer: "Kigali"},
       {type: "fill", q: "The currency of Rwanda is _____", answer: "franc"},
       {type: "mcq", q: "How many continents are there?", options: ["5","6","7","8"], answer: "7"},
+      {type: "mcq", q: "Which is the largest ocean?", options: ["Atlantic","Indian","Arctic","Pacific"], answer: "Pacific"},
+      {type: "fill", q: "The internet was invented in _____", answer: "1969"},
     ],
     biology: [
       {type: "mcq", q: "What is the powerhouse of the cell?", options: ["Nucleus","Mitochondria","Ribosome","Chloroplast"], answer: "Mitochondria"},
       {type: "fill", q: "Humans have _____ pairs of chromosomes", answer: "23"},
       {type: "mcq", q: "Which gas do plants absorb?", options: ["Oxygen","Nitrogen","CO2","Hydrogen"], answer: "CO2"},
+      {type: "fill", q: "The study of animals is called _____", answer: "zoology"},
     ],
     english: [
       {type: "mcq", q: "Synonym of 'Happy'?", options: ["Sad","Joyful","Angry","Tired"], answer: "Joyful"},
       {type: "fill", q: "Complete: She _____ to school every day", answer: "goes"},
       {type: "mcq", q: "Opposite of 'Expand'?", options: ["Grow","Contract","Increase","Spread"], answer: "Contract"},
+      {type: "fill", q: "Plural of 'child' is _____", answer: "children"},
     ],
     math: [
       {type: "mcq", q: "What is 15 x 4?", options: ["40","50","60","70"], answer: "60"},
       {type: "fill", q: "Square root of 144 is _____", answer: "12"},
       {type: "mcq", q: "What is 25% of 200?", options: ["25","50","75","100"], answer: "50"},
+      {type: "fill", q: "10 squared is _____", answer: "100"},
     ]
-    general: [
-    {type: "mcq", q: "What is the capital of Rwanda?", options: ["Kigali","Nairobi","Kampala","Bujumbura"], answer: "Kigali"},
-    {type: "fill", q: "The currency of Rwanda is _____", answer: "franc"},
-    {type: "mcq", q: "How many continents are there?", options: ["5","6","7","8"], answer: "7"},
-    {type: "mcq", q: "Which is the largest ocean?", options: ["Atlantic","Indian","Arctic","Pacific"], answer: "Pacific"},
-    {type: "fill", q: "The internet was invented in _____", answer: "1969"},
-   ],
-   biology: [
-    {type: "mcq", q: "What is the powerhouse of the cell?", options: ["Nucleus","Mitochondria","Ribosome","Chloroplast"], answer: "Mitochondria"},
-    {type: "fill", q: "Humans have _____ pairs of chromosomes", answer: "23"},
-    {type: "mcq", q: "Which gas do plants absorb?", options: ["Oxygen","Nitrogen","CO2","Hydrogen"], answer: "CO2"},
-    {type: "fill", q: "The study of animals is called _____", answer: "zoology"},
-  ],
-  english: [
-    {type: "mcq", q: "Synonym of 'Happy'?", options: ["Sad","Joyful","Angry","Tired"], answer: "Joyful"},
-    {type: "fill", q: "Complete: She _____ to school every day", answer: "goes"},
-    {type: "mcq", q: "Opposite of 'Expand'?", options: ["Grow","Contract","Increase","Spread"], answer: "Contract"},
-    {type: "fill", q: "Plural of 'child' is _____", answer: "children"},
-  ],
-  math: [
-    {type: "mcq", q: "What is 15 x 4?", options: ["40","50","60","70"], answer: "60"},
-    {type: "fill", q: "Square root of 144 is _____", answer: "12"},
-    {type: "mcq", q: "What is 25% of 200?", options: ["25","50","75","100"], answer: "50"},
-    {type: "fill", q: "10 squared is _____", answer: "100"},
-  ]
-};
-onAuthStateChanged(auth, async (user) => {
+  }; // <- This was the error. You closed it twice
+
+  onAuthStateChanged(auth, async (user) => {
     if (!user) return window.location.href = "log.html";
     currentUser = user;
     loadData();
@@ -143,7 +122,6 @@ onAuthStateChanged(auth, async (user) => {
     return now.getFullYear() + "-" + (now.getMonth()+1) + "-" + now.getDate();
   }
   
-  // Simple seed random based on user + date
   function seededRandom(seed) {
     let x = Math.sin(seed) * 10000;
     return x - Math.floor(x);
@@ -185,8 +163,7 @@ onAuthStateChanged(auth, async (user) => {
       return;
     }
     
-    // Generate 2 questions for today using seed
-    const seed = currentUser.uid.length + today.length;
+    const seed = currentUser.uid.length + today.length + new Date().getDate();
     let allQuestions = [...QUESTION_POOL.general,...QUESTION_POOL.biology,...QUESTION_POOL.english,...QUESTION_POOL.math];
     todayQuestions = shuffleArray(allQuestions, seed).slice(0, 2);
     
