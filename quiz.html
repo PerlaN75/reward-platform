@@ -7,48 +7,55 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #2f3e1a; min-height: 100vh; padding: 20px; color: white; }
     
-  .header { text-align: center; margin-bottom: 20px; padding-top: 30px; }
-  .header h1 { font-size: 28px; color: #fbbf24; font-weight: bold; }
-  .header p { color: #d1fae5; font-size: 14px; margin-top: 5px; }
+.header { text-align: center; margin-bottom: 20px; padding-top: 30px; }
+.header h1 { font-size: 28px; color: #fbbf24; font-weight: bold; }
+.header p { color: #d1fae5; font-size: 14px; margin-top: 5px; }
     
-  .quiz-card { background: #1a2410; padding: 20px; border-radius: 15px; margin-bottom: 15px; }
-  .quiz-card h3 { font-size: 14px; color: #f97316; margin-bottom: 10px; }
-  .quiz-card p { font-size: 16px; font-weight: bold; margin-bottom: 15px; }
+.quiz-card { background: #1a2410; padding: 20px; border-radius: 15px; margin-bottom: 15px; }
+.quiz-card h3 { font-size: 14px; color: #f97316; margin-bottom: 10px; display: flex; justify-content: space-between; }
+.quiz-card p { font-size: 16px; font-weight: bold; margin-bottom: 15px; }
     
-  .option { 
+.timer-badge { background: #ef4444; color: white; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+.timer-badge.warning { background: #f97316; }
+.timer-badge.danger { background: #ef4444; animation: pulse 0.5s infinite; }
+ @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+    
+.option { 
       background: #2f3e1a; padding: 12px; border-radius: 10px; margin-bottom: 10px; 
       cursor: pointer; border: 2px solid #2f3e1a;
     }
-  .option.selected { border-color: #3b82f6; background: #1e293b; }
+.option.selected { border-color: #3b82f6; background: #1e293b; }
+.option.disabled { opacity: 0.5; pointer-events: none; }
     
-  .fill-input { 
+.fill-input { 
       width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #2f3e1a; 
       background: #0f1408; color: white; font-size: 16px;
     }
+.fill-input:disabled { opacity: 0.5; }
     
-  .submit-btn { 
+.submit-btn { 
       width: 100%; padding: 16px; background: linear-gradient(90deg, #3b82f6, #06b6d4); 
       color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; 
       font-size: 18px; margin-top: 10px; box-shadow: 0 5px 0 #1d4ed8;
     }
-  .submit-btn:disabled { background: #555; box-shadow: 0 5px 0 #333; cursor: not-allowed; }
+.submit-btn:disabled { background: #555; box-shadow: 0 5px 0 #333; cursor: not-allowed; }
     
-  .back-btn { 
+.back-btn { 
       width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; 
       background: linear-gradient(90deg, #fbbf24, #f97316); color: #000; 
       border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; 
       box-shadow: 0 4px 0 #b45309;
     }
-  .back-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b45309; }
+.back-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b45309; }
     
-  .completed-msg { text-align: center; padding: 30px 20px; background: #1a2410; border-radius: 15px; }
-  .completed-msg h2 { font-size: 20px; color: #22c55e; margin-bottom: 8px; }
+.completed-msg { text-align: center; padding: 30px 20px; background: #1a2410; border-radius: 15px; }
+.completed-msg h2 { font-size: 20px; color: #22c55e; margin-bottom: 8px; }
     
-  .popup-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
-  .popup-box { background: #1a2410; padding: 25px; border-radius: 20px; text-align: center; width: 85%; max-width: 320px; border: 2px solid #3b82f6; }
-  .popup-box h2 { color: #3b82f6; font-size: 20px; margin-bottom: 10px; }
-  .popup-box p { color: #ddd; font-size: 14px; margin-bottom: 20px; }
-  .popup-btn { width: 100%; padding: 14px; background: linear-gradient(90deg, #3b82f6, #06b6d4); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
+.popup-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
+.popup-box { background: #1a2410; padding: 25px; border-radius: 20px; text-align: center; width: 85%; max-width: 320px; border: 2px solid #3b82f6; }
+.popup-box h2 { color: #3b82f6; font-size: 20px; margin-bottom: 10px; }
+.popup-box p { color: #ddd; font-size: 14px; margin-bottom: 20px; }
+.popup-btn { width: 100%; padding: 14px; background: linear-gradient(90deg, #3b82f6, #06b6d4); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -62,11 +69,11 @@
   
   <div class="header">
     <h1>🧠 Daily Quiz</h1>
-    <p>Answer 2 questions. Earn 20 points</p>
+    <p>Answer 2 questions. 10s each. Earn 20 points</p>
   </div>
   
   <div id="quizSection"></div>
-  <button class="submit-btn" id="submitBtn" onclick="submitQuiz()" style="display:none;">Submit Answers</button>
+  <button class="submit-btn" id="submitBtn" onclick="submitQuiz()">Submit Answers</button>
   <button class="back-btn" onclick="window.location.href='home.html'">Back Home</button>
 
 <script type="module">
@@ -81,8 +88,9 @@
   let currentUser = null;
   let todayQuestions = [];
   let userAnswers = {};
+  let timerInterval = null;
+  let timeLeft = 10; // CHANGED TO 10
 
-  // 66 QUESTIONS POOL
   const QUESTION_POOL = {
     general: [
       {type: "mcq", q: "What is the capital of Rwanda?", options: ["Kigali","Nairobi","Kampala","Bujumbura"], answer: "Kigali"},
@@ -211,9 +219,11 @@
     todayQuestions = shuffleArray(allQuestions, seed).slice(0, 2);
     
     renderQuiz();
+    startTimer();
   }
   
   function showCompleted() {
+    clearInterval(timerInterval);
     document.getElementById('quizSection').innerHTML = `
       <div class="completed-msg">
         <h2>✓ Already Completed</h2>
@@ -227,10 +237,10 @@
     const section = document.getElementById('quizSection');
     section.innerHTML = '';
     todayQuestions.forEach((q, i) => {
-      let html = `<div class="quiz-card"><h3>Question ${i+1}</h3><p>${q.q}</p>`;
+      let html = `<div class="quiz-card"><h3>Question ${i+1} <span class="timer-badge" id="timer${i}">10s</span></h3><p>${q.q}</p>`;
       if(q.type === "mcq"){
         q.options.forEach(opt => {
-          html += `<div class="option" onclick="selectOption(${i}, '${opt}', this)">${opt}</div>`;
+          html += `<div class="option" id="opt${i}" onclick="selectOption(${i}, '${opt}', this)">${opt}</div>`;
         });
       } else {
         html += `<input type="text" class="fill-input" id="input${i}" placeholder="Type your answer">`;
@@ -238,7 +248,33 @@
       html += `</div>`;
       section.innerHTML += html;
     });
-    document.getElementById('submitBtn').style.display = 'block';
+  }
+  
+  function startTimer() {
+    timeLeft = 10; // 10 SECONDS
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      todayQuestions.forEach((q, i) => {
+        const timerEl = document.getElementById('timer' + i);
+        if(timerEl){
+          timerEl.innerText = timeLeft + 's';
+          if(timeLeft <= 3) timerEl.classList.add('danger');
+          else if(timeLeft <= 5) timerEl.classList.add('warning');
+        }
+      });
+      
+      if(timeLeft <= 0){
+        clearInterval(timerInterval);
+        lockQuiz();
+        submitQuiz();
+      }
+    }, 1000);
+  }
+  
+  function lockQuiz() {
+    document.querySelectorAll('.option').forEach(o => o.classList.add('disabled'));
+    document.querySelectorAll('.fill-input').forEach(i => i.disabled = true);
+    document.getElementById('submitBtn').disabled = true;
   }
   
   window.selectOption = function(index, value, el) {
@@ -248,10 +284,12 @@
   }
 
   window.submitQuiz = async function() {
+    clearInterval(timerInterval);
+    
     let score = 0;
     todayQuestions.forEach((q, i) => {
-      let userAns = q.type === "mcq"? userAnswers[i] : document.getElementById('input'+i).value.trim().toLowerCase();
-      if(userAns === q.answer.toLowerCase()) score++;
+      let userAns = q.type === "mcq"? userAnswers[i] : document.getElementById('input'+i)?.value.trim().toLowerCase();
+      if(userAns && userAns === q.answer.toLowerCase()) score++;
     });
     
     const points = score * 10;
