@@ -23,6 +23,7 @@
 .submit-btn { width: 100%; padding: 16px; background: linear-gradient(90deg, #3b82f6, #06b6d4); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 18px; margin-top: 10px; box-shadow: 0 5px 0 #1d4ed8; }
 .submit-btn:disabled { background: #555; box-shadow: 0 5px 0 #333; cursor: not-allowed; }
 .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: linear-gradient(90deg, #fbbf24, #f97316); color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; box-shadow: 0 4px 0 #b45309; }
+.back-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b45309; }
 .reset-btn { width: 50%; margin: 10px auto 0 auto; display: block; padding: 10px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 13px; }
 .completed-msg { text-align: center; padding: 40px 20px; background: #1a2410; border-radius: 15px; border: 2px solid #22c55e; margin-top: 20px; }
 .completed-msg h2 { font-size: 22px; color: #22c55e; margin-bottom: 10px; }
@@ -48,13 +49,16 @@
   </div>
 
   <div id="quizSection"></div>
-  <!-- ALL BUTTONS ARE NOW INSIDE A WRAPPER WE CAN HIDE -->
-  <div id="buttonWrapper">
+
+  <!-- GROUP 1: Quiz buttons -->
+  <div id="quizButtons">
     <button class="submit-btn" id="startBtn" onclick="startQuiz()">Start Quiz</button>
     <button class="submit-btn" id="submitBtn" onclick="submitQuiz()" style="display:none;">Submit Answers</button>
-    <button class="back-btn" onclick="window.location.href='home.html'">Back Home</button>
     <button class="reset-btn" onclick="resetQuiz()">Reset for Testing</button>
   </div>
+
+  <!-- GROUP 2: Back Home - Always shown -->
+  <button class="back-btn" id="backBtn" onclick="window.location.href='home.html'">Back Home</button>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -121,7 +125,7 @@
     await updateDoc(doc(db, "users", currentUser.uid), { lastQuizDate: "" });
     quizStarted = false; userAnswers = {};
     document.getElementById('quizSection').innerHTML = '';
-    document.getElementById('buttonWrapper').style.display = 'block';
+    document.getElementById('quizButtons').style.display = 'block';
     showPopup("🔄 Quiz Reset!", "Click Start Quiz to test again");
   }
 
@@ -133,9 +137,9 @@
     if(!snap.exists()) return;
     const data = snap.data();
 
-    // IF QUIZ DONE TODAY: HIDE EVERYTHING AND SHOW ONLY MESSAGE
+    // IF QUIZ DONE TODAY: HIDE QUIZ BUTTONS, SHOW ONLY MESSAGE + BACK HOME
     if(data.lastQuizDate === today || (cached && JSON.parse(cached).completed)){
-      document.getElementById('buttonWrapper').style.display = 'none'; // HIDE ALL BUTTONS
+      document.getElementById('quizButtons').style.display = 'none'; // HIDE Start + Submit + Reset
       showCompleted();
     }
   }
@@ -150,8 +154,7 @@
     renderQuiz();
   }
 
-  function showCompleted() {
-    // ONLY THIS SHOWS. NO BUTTONS
+  function showCompleted() { // YOUR 2ND SCREENSHOT
     document.getElementById('quizSection').innerHTML = `
       <div class="completed-msg">
         <h2>✓ Already Completed</h2>
@@ -216,7 +219,7 @@
     document.getElementById('submitBtn').disabled = true;
     showPopup("✓ Quiz Complete!", `You scored ${score}/20 points. +${points} Added to Wallet`);
     setTimeout(() => {
-      document.getElementById('buttonWrapper').style.display = 'none'; // HIDE BUTTONS
+      document.getElementById('quizButtons').style.display = 'none'; // HIDE QUIZ BUTTONS
       showCompleted();
     }, 1500);
   }
