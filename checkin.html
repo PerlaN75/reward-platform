@@ -31,10 +31,15 @@
     .checkin-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 #b45309; }
     .checkin-btn:disabled { background: #555; color: #aaa; box-shadow: 0 6px 0 #333; cursor: not-allowed; }
     
+    /* CHANGED: Orange gradient back home button */
     .back-btn { 
-      width: 40%; padding: 14px; background: #555; color: white; 
+      width: 40%; padding: 14px; 
+      background: linear-gradient(90deg, #fbbf24, #f97316); 
+      color: #000; 
       border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; 
+      box-shadow: 0 4px 0 #b45309;
     }
+    .back-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b45309; }
 
     .popup-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
     .popup-box { background: #1a2410; padding: 25px; border-radius: 20px; text-align: center; width: 85%; max-width: 320px; border: 2px solid #fbbf24; }
@@ -99,7 +104,7 @@
     loadData();
   }
   
-  function renderUI(data) { // NEW: Separate render
+  function renderUI(data) {
     document.getElementById('streak').innerText = data.streak + ' Days';
     
     const cal = document.getElementById('calendar');
@@ -127,7 +132,6 @@
     const cacheKey = 'checkin_' + currentUser.uid;
     const cached = localStorage.getItem(cacheKey);
     
-    // STEP 1: Show from cache instantly
     if(cached){
       try {
         const data = JSON.parse(cached);
@@ -136,13 +140,11 @@
       } catch(e){}
     }
     
-    // STEP 2: Get real data from Firebase
     const snap = await getDoc(doc(db, "users", currentUser.uid));
     if(!snap.exists()) return;
     userData = snap.data();
     renderUI(userData);
     
-    // STEP 3: Save to cache
     localStorage.setItem(cacheKey, JSON.stringify(userData));
   }
 
@@ -157,14 +159,12 @@
     if(lastCheckin === yestStr) newStreak++;
     else newStreak = 1;
     
-    // INSTANT: Update cache + UI first
     userData.streak = newStreak;
     userData.lastCheckinDate = today;
     const cacheKey = 'checkin_' + currentUser.uid;
     localStorage.setItem(cacheKey, JSON.stringify(userData));
     renderUI(userData);
     
-    // Then update Firebase
     await updateDoc(doc(db, "users", currentUser.uid), {
       balance: increment(15),
       streak: newStreak,
