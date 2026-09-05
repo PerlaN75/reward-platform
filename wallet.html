@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Wallet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body { background: #2f3e1a; color: white; font-family: Arial; padding: 20px; text-align: center; }
+.card { background: #1a2410; padding: 20px; border-radius: 15px; margin-top: 20px; }
+.points { font-size: 40px; color: #fbbf24; font-weight: bold; }
+.back-btn { margin-top: 20px; padding: 14px; background: #fbbf24; color: #000; border: none; border-radius: 12px; font-weight: bold; width: 40%; }
+</style>
+</head>
+<body>
+<h1>💰 My Wallet</h1>
+<div class="card">
+  <p>YOUR POINTS</p>
+  <div class="points" id="balance">0</div>
+  <p style="font-size: 12px; color: #aaa; margin-top: 10px;">Earn more by doing Daily Quiz</p>
+</div>
+<button class="back-btn" onclick="window.location.href='home.html'">Back Home</button>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = { apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d" };
+const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+
+onAuthStateChanged(auth, async (user) => {
+  if(!user) return window.location.href = "log.html";
+  const snap = await getDoc(doc(db, "users", user.uid));
+  if(snap.exists()){
+    document.getElementById('balance').innerText = snap.data().balance || 0;
+  }
+});
+</script>
+</body>
+</html>
