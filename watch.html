@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Watch & Earn</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background: #2f3e1a; min-height: 100vh; padding: 20px; color: white; }
+    
+    .header { text-align: center; margin-bottom: 20px; padding-top: 40px; }
+    .header h1 { font-size: 32px; background: linear-gradient(90deg, #fbbf24, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
+    .header p { color: #d1fae5; font-size: 14px; margin-top: 5px; }
+    
+    .progress-card { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 20px; margin-bottom: 20px; text-align: center; }
+    .progress-card h3 { font-size: 14px; color: #aaa; margin-bottom: 10px; }
+    .progress-bar { width: 100%; height: 12px; background: #1a2410; border-radius: 10px; overflow: hidden; margin-bottom: 8px; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #fbbf24, #f97316); width: 0%; transition: 0.5s; }
+    .progress-text { font-size: 12px; color: #d1fae5; }
+    
+    .video-grid { display: grid; gap: 12px; margin-bottom: 20px; }
+    .video-card { 
+      background: linear-gradient(180deg, #ffffff, #e5e5e5); 
+      padding: 16px; border-radius: 18px; display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 8px 0 #b3b3b3; transition: 0.1s;
+    }
+    .video-card:active { transform: translateY(4px); box-shadow: 0 4px 0 #b3b3b3; }
+    .video-card.completed { opacity: 0.5; }
+    .video-icon { font-size: 40px; }
+    .video-info { flex: 1; }
+    .video-info h4 { color: #2f3e1a; font-size: 16px; font-weight: bold; }
+    .video-info p { color: #555; font-size: 12px; }
+    .video-reward { background: linear-gradient(90deg, #22c55e, #16a34a); color: white; padding: 8px 12px; border-radius: 10px; font-weight: bold; font-size: 14px; }
+    
+    .watch-btn { 
+      width: 100%; padding: 16px; background: linear-gradient(90deg, #3b82f6, #06b6d4); 
+      color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; 
+      font-size: 18px; margin-top: 10px;
+    }
+    .watch-btn:disabled { background: #555; cursor: not-allowed; }
+    
+    .back-btn { 
+      width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; 
+      background: linear-gradient(90deg, #fbbf24, #f97316); color: #000; 
+      border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; 
+    }
+    .timer { text-align: center; font-size: 24px; font-weight: bold; color: #fbbf24; margin: 15px 0; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📺 Watch & Earn</h1>
+    <p>Watch videos. Earn 10 points each</p>
+  </div>
+  
+  <div class="progress-card">
+    <h3>DAILY PROGRESS</h3>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text"><span id="watchedCount">0</span> / 5 Videos Watched Today</div>
+  </div>
+
+  <div class="video-grid" id="videoGrid"></div>
+  
+  <div class="timer" id="timer" style="display:none;">30s</div>
+  <button class="watch-btn" id="watchBtn" onclick="startWatch()">Watch Now +10 Points</button>
+
+  <button class="back-btn" onclick="window.location.href='home.html'">Back Home</button>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, updateDoc, increment, serverTimestamp, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = { apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d" };
+  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+  enableIndexedDbPersistence(db).catch(() => {});
+  
+  let currentUser = null;
+  let watchedToday = 0;
+  let watching = false;
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return window.location.href = "log.html";
+    currentUser = user;
+    loadData();
+  });
+
+  function getTodayString() {
+    const now = new Date();
+    return now.getFullYear() + "-" + (now.getMonth()+1) + "-" + now.getDate();
+  }
+
+  async function loadData() {
+    const snap = await getDoc(doc(db, "users", currentUser.uid));
+    if(!snap.exists()) return;
+    const data = snap.data();
+    
+    const today = getTodayString();
+    watchedToday = (data.lastVideoDate === today) ? (data.videosWatchedToday || 0) : 0;
+    
+    document.getElementById('watchedCount').innerText = watchedToday;
+    document.getElementById('progressFill').style.width = (watchedToday / 5 * 100) + '%';
+    
+    const grid = document.getElementById('videoGrid');
+    grid.innerHTML = '';
+    for(let i=1; i<=5; i++){
+      const card = document.createElement('div');
+      card.className = 'video-card';
+      if(i <= watchedToday) card.classList.add('completed');
+      card.innerHTML = `
+        <div class="video-icon">▶️</div>
+        <div class="video-info">
+          <h4>Video ${i}</h4>
+          <p>Watch for 30 seconds</p>
+        </div>
+        <div class="video-reward">+10</div>
+      `;
+      grid.appendChild(card);
+    }
+    
+    const btn = document.getElementById('watchBtn');
+    if(watchedToday >= 5){
+      btn.disabled = true;
+      btn.innerText = "✓ Daily Limit Reached. Come back tomorrow";
+    }
+  }
+
+  window.startWatch = function() {
+    if(watching || watchedToday >= 5) return;
+    watching = true;
+    
+    const timerEl = document.getElementById('timer');
+    const btn = document.getElementById('watchBtn');
+    let time = 30;
+    timerEl.style.display = 'block';
+    btn.disabled = true;
+    btn.innerText = "Watching...";
+    
+    // HERE YOU WOULD LOAD ADMOB/UNITY REWARDED AD
+    // Example: admob.showRewardedAd()
+    
+    const interval = setInterval(async () => {
+      time--;
+      timerEl.innerText = time + 's';
+      if(time <= 0){
+        clearInterval(interval);
+        timerEl.style.display = 'none';
+        await giveReward();
+        watching = false;
+      }
+    }, 1000);
+  }
+  
+  async function giveReward() {
+    const today = getTodayString();
+    await updateDoc(doc(db, "users", currentUser.uid), {
+      balance: increment(10),
+      videosWatchedToday: increment(1),
+      lastVideoDate: today
+    });
+    alert("Success! +10 points added");
+    loadData();
+  }
+</script>
+</body>
+</html>
