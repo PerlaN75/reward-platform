@@ -76,7 +76,7 @@
   </div>
   
   <div id="quizSection"></div>
-  <button class="start-btn" id="startBtn" onclick="startQuiz()">Start Quiz</button> <!-- CHANGED -->
+  <button class="start-btn" id="startBtn" onclick="startQuiz()">Start Quiz</button>
   <button class="back-btn" onclick="window.location.href='home.html'">Back Home</button>
   <button class="reset-btn" onclick="resetQuiz()">Reset for Testing</button>
 
@@ -93,6 +93,7 @@
   let todayQuestions = [];
   let score = 0;
   let answeredCount = 0;
+  let quizStarted = false;
 
   const QUESTION_POOL = {
     general: [
@@ -151,7 +152,6 @@
   }
   window.closePopup = function() {
     document.getElementById('popup').style.display = 'none';
-    loadData();
   }
 
   window.resetQuiz = async function() {
@@ -161,6 +161,11 @@
     await updateDoc(doc(db, "users", currentUser.uid), {
       lastQuizDate: ""
     });
+    quizStarted = false;
+    score = 0;
+    answeredCount = 0;
+    document.getElementById('quizSection').innerHTML = '';
+    document.getElementById('startBtn').style.display = 'block';
     showPopup("🔄 Quiz Reset!", "Click Start Quiz to test again");
   }
 
@@ -174,11 +179,15 @@
     const data = snap.data();
     
     if(data.lastQuizDate === today || (cached && JSON.parse(cached).completed)){
+      document.getElementById('startBtn').style.display = 'none';
       showCompleted();
     }
   }
 
-  window.startQuiz = function() { // NEW FUNCTION
+  window.startQuiz = function() {
+    if(quizStarted) return; // prevent double click
+    quizStarted = true;
+    
     const seed = currentUser.uid.length + getTodayString().length + new Date().getDate();
     let allQuestions = [...QUESTION_POOL.general,...QUESTION_POOL.biology,...QUESTION_POOL.english,...QUESTION_POOL.math];
     todayQuestions = shuffleArray(allQuestions, seed).slice(0, 2);
@@ -194,27 +203,25 @@
         <p>You finished today's quiz.<br>Come back tomorrow</p>
       </div>
     `;
-    document.getElementById('startBtn').style.display = 'none';
   }
 
   function renderQuiz() {
     const section = document.getElementById('quizSection');
     section.innerHTML = '';
     todayQuestions.forEach((q, i) => {
-      let html = `<div class="quiz-card"><h3>Question ${i+1}</h3><p>${q.q}</p>`;
+      let html = `<div class="quiz-card" id="card${i}"><h3>Question ${i+1}</h3><p>${q.q}</p>`;
       if(q.type === "mcq"){
         q.options.forEach(opt => {
           html += `<div class="option" data-q="${i}" data-ans="${opt}" onclick="checkAnswer(${i}, '${opt}', this)">${opt}</div>`;
         });
       } else {
-        html += `<input type="text" class="fill-input" data-q="${i}" id="input${i}" placeholder="Type your answer" onblur="checkFillAnswer(${i}, this)">`;
+        html += `<input type="text" class="fill-input" data-q="${i}" id="input${i}" placeholder="Type your answer and press Enter" onkeypress="if(event.key==='Enter') checkFillAnswer(${i}, this)">`;
       }
       html += `</div>`;
       section.innerHTML += html;
     });
   }
   
-  // INSTANT CHECK + INSTANT POINTS
   window.checkAnswer = async function(index, value, el) {
     if(el.classList.contains('disabled')) return;
     
@@ -248,6 +255,8 @@
     if(inputEl.disabled) return;
     const q = todayQuestions[index];
     const userAns = inputEl.value.trim().toLowerCase();
+    if(userAns === '') return; // don't submit empty
+    
     const isCorrect = userAns === q.answer.toLowerCase();
     
     if(isCorrect){
@@ -265,7 +274,6 @@
   }
   
   async function addPoints(points) {
-    const today = getTodayString();
     await updateDoc(doc(db, "users", currentUser.uid), {
       balance: increment(points)
     });
@@ -280,7 +288,9 @@
       lastQuizDate: today
     });
     
-    showPopup("✓ Quiz Complete!", `You scored ${score}/20 points`);
+    setTimeout(() => {
+      showPopup("✓ Quiz Complete!", `You scored ${score}/20 points`);
+    }, 500);
   }
 </script>
 </body>
