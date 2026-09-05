@@ -137,7 +137,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, updateDoc, addDoc, collection, serverTimestamp, runTransaction, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, updateDoc, addDoc, collection, serverTimestamp, runTransaction, increment, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"; // ADDED enableIndexedDbPersistence
 
   // YOUR FIREBASE CONFIG
   const firebaseConfig = {
@@ -149,6 +149,7 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+  enableIndexedDbPersistence(db).catch(() => {}); // ADDED: OFFLINE CACHE
   const RATE = 0.0005; // 1000 pts = $0.50
 
   let currentUser = null;
@@ -162,6 +163,21 @@
   });
 
   async function loadUserData() {
+    const cacheKey = 'wallet_' + currentUser.uid; // ADDED
+    const cached = localStorage.getItem(cacheKey); // ADDED
+    
+    // STEP 1: Show from cache instantly
+    if(cached){
+      try {
+        const data = JSON.parse(cached);
+        userBalance = data.balance || 0;
+        document.getElementById('balance').innerText = userBalance;
+        document.getElementById('usdValue').innerText = (userBalance * RATE).toFixed(2);
+        document.getElementById('totalEarned').innerText = data.totalEarned || 0;
+        document.getElementById('totalWithdrawn').innerText = data.totalWithdrawn || 0;
+      } catch(e){}
+    }
+    
     const userRef = doc(db, "users", currentUser.uid);
     const snap = await getDoc(userRef);
     if (snap.exists()) {
@@ -171,6 +187,13 @@
       document.getElementById('usdValue').innerText = (userBalance * RATE).toFixed(2);
       document.getElementById('totalEarned').innerText = data.totalEarned || 0;
       document.getElementById('totalWithdrawn').innerText = data.totalWithdrawn || 0;
+      
+      // STEP 3: Save to cache
+      localStorage.setItem(cacheKey, JSON.stringify({ // ADDED
+        balance: data.balance,
+        totalEarned: data.totalEarned,
+        totalWithdrawn: data.totalWithdrawn
+      }));
     }
   }
 
@@ -228,6 +251,7 @@
       document.getElementById('withdrawAmount').value = '';
       document.getElementById('withdrawEmail').value = '';
       closePopup('withdraw');
+      localStorage.removeItem('wallet_' + currentUser.uid); // ADDED: clear cache so it reloads fresh
       loadUserData(); // refresh balance
 
     } catch (e) {
