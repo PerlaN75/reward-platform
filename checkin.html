@@ -18,9 +18,9 @@
     .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 25px; }
     .day { 
       background: #1a2410; padding: 15px 5px; border-radius: 12px; font-size: 12px;
-      border: 2px solid #2f3e1a;
+      border: 2px solid #2f3e1a; font-weight: bold;
     }
-    .day.done { background: linear-gradient(180deg, #22c55e, #16a34a); border-color: #22c55e; }
+    .day.done { background: linear-gradient(180deg, #22c55e, #16a34a); border-color: #22c55e; color: white; }
     .day.today { border-color: #fbbf24; box-shadow: 0 0 10px #fbbf24; }
     
     .checkin-btn { 
@@ -36,7 +36,6 @@
       border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; 
     }
 
-    /* CUSTOM POPUP - same as watch.html */
     .popup-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
     .popup-box { background: #1a2410; padding: 25px; border-radius: 20px; text-align: center; width: 85%; max-width: 320px; border: 2px solid #fbbf24; }
     .popup-box h2 { color: #fbbf24; font-size: 20px; margin-bottom: 10px; }
@@ -45,7 +44,6 @@
   </style>
 </head>
 <body>
-  <!-- CUSTOM POPUP -->
   <div class="popup-overlay" id="popup">
     <div class="popup-box">
       <h2>✓ Checkin Success!</h2>
@@ -98,34 +96,25 @@
   }
   window.closePopup = function() {
     document.getElementById('popup').style.display = 'none';
-    loadData(); // Instant refresh after clicking OK
+    loadData();
   }
-
-  async function loadData() {
-    const snap = await getDoc(doc(db, "users", currentUser.uid));
-    if(!snap.exists()) return;
-    userData = snap.data();
+  
+  function renderUI(data) { // NEW: Separate render
+    document.getElementById('streak').innerText = data.streak + ' Days';
     
-    const today = getTodayString();
-    const lastCheckin = userData.lastCheckinDate;
-    const streak = userData.streak || 0;
-    
-    document.getElementById('streak').innerText = streak + ' Days';
-    
-    // Build 7 day calendar
     const cal = document.getElementById('calendar');
     cal.innerHTML = '';
     for(let i = 1; i <= 7; i++){
       const div = document.createElement('div');
       div.className = 'day';
       div.innerText = 'Day ' + i;
-      if(i <= streak) div.classList.add('done');
-      if(i === streak + 1 && lastCheckin !== today) div.classList.add('today');
+      if(i <= data.streak) div.classList.add('done');
+      if(i === data.streak + 1 && data.lastCheckinDate !== getTodayString()) div.classList.add('today');
       cal.appendChild(div);
     }
     
     const btn = document.getElementById('checkinBtn');
-    if(lastCheckin === today){
+    if(data.lastCheckinDate === getTodayString()){
       btn.innerText = 'Already Checked In Today';
       btn.disabled = true;
     } else {
@@ -134,25 +123,55 @@
     }
   }
 
+  async function loadData() {
+    const cacheKey = 'checkin_' + currentUser.uid;
+    const cached = localStorage.getItem(cacheKey);
+    
+    // STEP 1: Show from cache instantly
+    if(cached){
+      try {
+        const data = JSON.parse(cached);
+        userData = data;
+        renderUI(userData);
+      } catch(e){}
+    }
+    
+    // STEP 2: Get real data from Firebase
+    const snap = await getDoc(doc(db, "users", currentUser.uid));
+    if(!snap.exists()) return;
+    userData = snap.data();
+    renderUI(userData);
+    
+    // STEP 3: Save to cache
+    localStorage.setItem(cacheKey, JSON.stringify(userData));
+  }
+
   window.doCheckin = async function() {
     const today = getTodayString();
     const lastCheckin = userData.lastCheckinDate;
     let newStreak = userData.streak || 0;
     
-    // If checked yesterday, streak +1. Else reset to 1
     const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
     const yestStr = yesterday.getFullYear() + "-" + (yesterday.getMonth()+1) + "-" + yesterday.getDate();
     
     if(lastCheckin === yestStr) newStreak++;
     else newStreak = 1;
     
+    // INSTANT: Update cache + UI first
+    userData.streak = newStreak;
+    userData.lastCheckinDate = today;
+    const cacheKey = 'checkin_' + currentUser.uid;
+    localStorage.setItem(cacheKey, JSON.stringify(userData));
+    renderUI(userData);
+    
+    // Then update Firebase
     await updateDoc(doc(db, "users", currentUser.uid), {
       balance: increment(15),
       streak: newStreak,
       lastCheckinDate: today
     });
     
-    showPopup(15); // Show custom popup instead of alert
+    showPopup(15);
   }
 </script>
 </body>
