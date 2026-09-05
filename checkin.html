@@ -69,19 +69,19 @@
   
   <div class="streak-box">
     <h3>CURRENT STREAK</h3>
-    <h2 id="streak">0 Days</h2>
+    <h2 id="streak">Loading...</h2>
   </div>
 
   <div class="days-grid" id="daysGrid"></div>
 
-  <button class="checkin-btn" id="checkinBtn" onclick="dailyCheckin()">Claim 5 Points</button>
+  <button class="checkin-btn" id="checkinBtn" disabled>Loading...</button>
   <button class="back-btn" onclick="window.location.href='home.html'">Back Home</button>
   <p class="note">Day 7 = 50 bonus points. Miss a day and streak resets.</p>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, updateDoc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, updateDoc, increment, serverTimestamp, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { 
     apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", 
@@ -91,6 +91,8 @@
   const app = initializeApp(firebaseConfig); 
   const auth = getAuth(app); 
   const db = getFirestore(app);
+  enableIndexedDbPersistence(db).catch(() => {}); // ADDED: Firebase offline cache
+  
   let currentUser = null;
 
   onAuthStateChanged(auth, async (user) => {
@@ -99,17 +101,31 @@
     loadData();
   });
 
-  // Fix: Run loadData every time page becomes visible again
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') loadData();
   });
 
   function getTodayString() {
     const now = new Date();
-    return now.getFullYear() + "-" + (now.getMonth()+1) + "-" + now.getDate(); // YYYY-M-D
+    return now.getFullYear() + "-" + (now.getMonth()+1) + "-" + now.getDate();
   }
 
   async function loadData() {
+    const btn = document.getElementById('checkinBtn');
+    const cacheKey = 'lastCheckin_' + currentUser.uid;
+    const cachedDate = localStorage.getItem(cacheKey);
+    const todayStr = getTodayString();
+    
+    // ADDED: Show from cache immediately
+    if(cachedDate === todayStr){
+      btn.disabled = true;
+      btn.innerText = "✓ Already Claimed Today";
+    } else {
+      btn.disabled = false;
+      btn.innerText = "Claim 5 Points";
+    }
+    
+    // This still runs and updates from Firebase
     const snap = await getDoc(doc(db, "users", currentUser.uid));
     if(!snap.exists()) return;
     const data = snap.data();
@@ -127,24 +143,25 @@
       grid.appendChild(div);
     }
     
-    // FIX: Proper date check
     const lastCheckin = data.lastCheckin?.toDate ? data.lastCheckin.toDate() : null;
-    const todayStr = getTodayString();
     const lastStr = lastCheckin ? lastCheckin.getFullYear() + "-" + (lastCheckin.getMonth()+1) + "-" + lastCheckin.getDate() : "";
     
-    const btn = document.getElementById('checkinBtn');
+    if(lastStr) localStorage.setItem(cacheKey, lastStr); // ADDED: Save to cache
+    
     if(lastStr === todayStr){
       btn.disabled = true;
       btn.innerText = "✓ Already Claimed Today";
     } else {
       btn.disabled = false;
       btn.innerText = "Claim 5 Points";
+      btn.onclick = dailyCheckin;
     }
   }
 
-  window.dailyCheckin = async function() {
+  async function dailyCheckin() {
     const btn = document.getElementById('checkinBtn');
-    btn.disabled = true; // prevent double click
+    btn.disabled = true;
+    btn.innerText = "Claiming...";
     
     const userRef = doc(db, "users", currentUser.uid);
     const snap = await getDoc(userRef); 
@@ -167,29 +184,20 @@
       const yesterday = new Date(now); 
       yesterday.setDate(yesterday.getDate()-1);
       const yestStr = yesterday.getFullYear() + "-" + (yesterday.getMonth()+1) + "-" + yesterday.getDate();
-      if(lastStr === yestStr) {
-        streak += 1;
-      } else {
-        streak = 1;
-      }
-    } else {
-      streak = 1;
-    }
+      if(lastStr === yestStr) streak += 1; else streak = 1;
+    } else streak = 1;
 
-    if(streak >= 7){ 
-      points += 50; 
-      streak = 0;
-      alert("7 Day Streak! +50 bonus points 🔥"); 
-    }
+    if(streak >= 7){ points += 50; streak = 0; alert("7 Day Streak! +50 bonus points 🔥"); }
     
-    await updateDoc(userRef, { 
+    await updateDoc(userRef, { // STILL FIREBASE
       balance: increment(points), 
       streak: streak, 
       lastCheckin: serverTimestamp() 
     });
     
+    localStorage.setItem('lastCheckin_' + currentUser.uid, todayStr); // ADDED: Update cache
     alert(`Success! +${points} points added to your wallet`);
-    loadData(); // reload to disable button immediately
+    loadData();
   }
 </script>
 </body>
