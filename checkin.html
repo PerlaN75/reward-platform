@@ -69,7 +69,7 @@
   
   <div class="streak-box">
     <h3>CURRENT STREAK</h3>
-    <h2 id="streak">Loading...</h2>
+    <h2 id="streak">0 Days</h2> <!-- CHANGED: Default 0 instead of Loading -->
   </div>
 
   <div class="days-grid" id="daysGrid"></div>
@@ -91,7 +91,7 @@
   const app = initializeApp(firebaseConfig); 
   const auth = getAuth(app); 
   const db = getFirestore(app);
-  enableIndexedDbPersistence(db).catch(() => {}); // ADDED: Firebase offline cache
+  enableIndexedDbPersistence(db).catch(() => {}); // OFFLINE CACHE
   
   let currentUser = null;
 
@@ -112,41 +112,47 @@
 
   async function loadData() {
     const btn = document.getElementById('checkinBtn');
-    const cacheKey = 'lastCheckin_' + currentUser.uid;
-    const cachedDate = localStorage.getItem(cacheKey);
+    const streakEl = document.getElementById('streak');
+    const grid = document.getElementById('daysGrid');
+    const cacheKey = 'checkin_' + currentUser.uid;
+    const cached = localStorage.getItem(cacheKey);
     const todayStr = getTodayString();
     
-    // ADDED: Show from cache immediately
-    if(cachedDate === todayStr){
-      btn.disabled = true;
-      btn.innerText = "✓ Already Claimed Today";
-    } else {
-      btn.disabled = false;
-      btn.innerText = "Claim 5 Points";
+    // STEP 1: Show from cache instantly - 0ms
+    if(cached){
+      try {
+        const data = JSON.parse(cached);
+        const streak = data.streak || 0;
+        streakEl.innerText = `${streak} Days`;
+        renderGrid(streak, grid);
+        
+        if(data.lastCheckin === todayStr){
+          btn.disabled = true;
+          btn.innerText = "✓ Already Claimed Today";
+        } else {
+          btn.disabled = false;
+          btn.innerText = "Claim 5 Points";
+        }
+      } catch(e){}
     }
     
-    // This still runs and updates from Firebase
+    // STEP 2: Get real data from Firebase
     const snap = await getDoc(doc(db, "users", currentUser.uid));
     if(!snap.exists()) return;
     const data = snap.data();
     const streak = data.streak || 0;
-    document.getElementById('streak').innerText = `${streak} Days`;
     
-    const grid = document.getElementById('daysGrid');
-    grid.innerHTML = '';
-    for(let i=1; i<=7; i++){
-      const div = document.createElement('div');
-      div.className = 'day';
-      if(i <= streak) div.classList.add('completed');
-      if(i === streak + 1) div.classList.add('today');
-      div.innerHTML = `<span>Day ${i}</span><div class="points">${i===7 ? '50' : '5'}</div>`;
-      grid.appendChild(div);
-    }
+    streakEl.innerText = `${streak} Days`;
+    renderGrid(streak, grid);
     
     const lastCheckin = data.lastCheckin?.toDate ? data.lastCheckin.toDate() : null;
     const lastStr = lastCheckin ? lastCheckin.getFullYear() + "-" + (lastCheckin.getMonth()+1) + "-" + lastCheckin.getDate() : "";
     
-    if(lastStr) localStorage.setItem(cacheKey, lastStr); // ADDED: Save to cache
+    // STEP 3: Save to cache
+    localStorage.setItem(cacheKey, JSON.stringify({
+      streak: streak,
+      lastCheckin: lastStr
+    }));
     
     if(lastStr === todayStr){
       btn.disabled = true;
@@ -155,6 +161,18 @@
       btn.disabled = false;
       btn.innerText = "Claim 5 Points";
       btn.onclick = dailyCheckin;
+    }
+  }
+  
+  function renderGrid(streak, container){
+    container.innerHTML = '';
+    for(let i=1; i<=7; i++){
+      const div = document.createElement('div');
+      div.className = 'day';
+      if(i <= streak) div.classList.add('completed');
+      if(i === streak + 1) div.classList.add('today');
+      div.innerHTML = `<span>Day ${i}</span><div class="points">${i===7 ? '50' : '5'}</div>`;
+      container.appendChild(div);
     }
   }
 
@@ -189,13 +207,17 @@
 
     if(streak >= 7){ points += 50; streak = 0; alert("7 Day Streak! +50 bonus points 🔥"); }
     
-    await updateDoc(userRef, { // STILL FIREBASE
+    await updateDoc(userRef, { 
       balance: increment(points), 
       streak: streak, 
       lastCheckin: serverTimestamp() 
     });
     
-    localStorage.setItem('lastCheckin_' + currentUser.uid, todayStr); // ADDED: Update cache
+    localStorage.setItem('checkin_' + currentUser.uid, JSON.stringify({ // UPDATE CACHE
+      streak: streak,
+      lastCheckin: todayStr
+    }));
+    
     alert(`Success! +${points} points added to your wallet`);
     loadData();
   }
