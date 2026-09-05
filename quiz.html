@@ -24,8 +24,8 @@
 .submit-btn:disabled { background: #555; box-shadow: 0 5px 0 #333; cursor: not-allowed; }
 .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: linear-gradient(90deg, #fbbf24, #f97316); color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; box-shadow: 0 4px 0 #b45309; }
 .reset-btn { width: 50%; margin: 10px auto 0 auto; display: block; padding: 10px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 13px; }
-.completed-msg { text-align: center; padding: 30px 20px; background: #1a2410; border-radius: 15px; border: 2px solid #22c55e; }
-.completed-msg h2 { font-size: 20px; color: #22c55e; margin-bottom: 8px; }
+.completed-msg { text-align: center; padding: 40px 20px; background: #1a2410; border-radius: 15px; border: 2px solid #22c55e; margin-top: 20px; }
+.completed-msg h2 { font-size: 22px; color: #22c55e; margin-bottom: 10px; }
 .popup-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
 .popup-box { background: #1a2410; padding: 25px; border-radius: 20px; text-align: center; width: 85%; max-width: 320px; border: 2px solid #3b82f6; }
 .popup-box h2 { color: #3b82f6; font-size: 20px; margin-bottom: 10px; }
@@ -41,17 +41,20 @@
       <button class="popup-btn" onclick="closePopup()">OK</button>
     </div>
   </div>
-  
+
   <div class="header">
     <h1>🧠 Daily Quiz</h1>
     <p>Answer 2 questions. Earn 20 points</p>
   </div>
-  
+
   <div id="quizSection"></div>
-  <button class="submit-btn" id="startBtn" onclick="startQuiz()">Start Quiz</button>
-  <button class="submit-btn" id="submitBtn" onclick="submitQuiz()" style="display:none;">Submit Answers</button>
-  <button class="back-btn" onclick="window.location.href='home.html'">Back Home</button>
-  <button class="reset-btn" onclick="resetQuiz()">Reset for Testing</button>
+  <!-- ALL BUTTONS ARE NOW INSIDE A WRAPPER WE CAN HIDE -->
+  <div id="buttonWrapper">
+    <button class="submit-btn" id="startBtn" onclick="startQuiz()">Start Quiz</button>
+    <button class="submit-btn" id="submitBtn" onclick="submitQuiz()" style="display:none;">Submit Answers</button>
+    <button class="back-btn" onclick="window.location.href='home.html'">Back Home</button>
+    <button class="reset-btn" onclick="resetQuiz()">Reset for Testing</button>
+  </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -61,13 +64,13 @@
   const firebaseConfig = { apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d" };
   const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
   enableIndexedDbPersistence(db).catch(() => {});
-  
+
   let currentUser = null;
   let todayQuestions = [];
   let userAnswers = {};
   let quizStarted = false;
 
-  const QUESTION_POOL = { /* SAME 20 QUESTIONS */
+  const QUESTION_POOL = {
     general: [
       {type: "mcq", q: "What is the capital of Rwanda?", options: ["Kigali","Nairobi","Kampala","Bujumbura"], answer: "Kigali"},
       {type: "fill", q: "The currency of Rwanda is _____", answer: "franc"},
@@ -101,7 +104,7 @@
   onAuthStateChanged(auth, async (user) => {
     if (!user) return window.location.href = "log.html";
     currentUser = user;
-    checkIfCompleted(); // CHECK ON LOAD
+    checkIfCompleted();
   });
 
   function getTodayString() { const now = new Date(); return now.getFullYear() + "-" + (now.getMonth()+1) + "-" + now.getDate(); }
@@ -118,22 +121,22 @@
     await updateDoc(doc(db, "users", currentUser.uid), { lastQuizDate: "" });
     quizStarted = false; userAnswers = {};
     document.getElementById('quizSection').innerHTML = '';
-    document.getElementById('startBtn').style.display = 'block';
-    document.getElementById('submitBtn').style.display = 'none';
+    document.getElementById('buttonWrapper').style.display = 'block';
     showPopup("🔄 Quiz Reset!", "Click Start Quiz to test again");
   }
 
-  async function checkIfCompleted() { // THIS IS THE LOCK
+  async function checkIfCompleted() {
     const today = getTodayString();
     const cacheKey = 'quiz_' + currentUser.uid + '_' + today;
     const cached = localStorage.getItem(cacheKey);
     const snap = await getDoc(doc(db, "users", currentUser.uid));
     if(!snap.exists()) return;
     const data = snap.data();
+
+    // IF QUIZ DONE TODAY: HIDE EVERYTHING AND SHOW ONLY MESSAGE
     if(data.lastQuizDate === today || (cached && JSON.parse(cached).completed)){
-      document.getElementById('startBtn').style.display = 'none';
-      document.getElementById('submitBtn').style.display = 'none';
-      showCompleted(); // SHOWS YOUR SCREENSHOT
+      document.getElementById('buttonWrapper').style.display = 'none'; // HIDE ALL BUTTONS
+      showCompleted();
     }
   }
 
@@ -146,8 +149,9 @@
     document.getElementById('submitBtn').style.display = 'block';
     renderQuiz();
   }
-  
-  function showCompleted() { // EXACT SCREEN FROM YOUR IMAGE
+
+  function showCompleted() {
+    // ONLY THIS SHOWS. NO BUTTONS
     document.getElementById('quizSection').innerHTML = `
       <div class="completed-msg">
         <h2>✓ Already Completed</h2>
@@ -170,13 +174,13 @@
       html += `</div>`; section.innerHTML += html;
     });
   }
-  
+
   window.selectOption = function(index, value, el) {
     userAnswers[index] = value;
     el.parentElement.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
     el.classList.add('selected');
     const q = todayQuestions[index];
-    if(value.toLowerCase() === q.answer.toLowerCase()){ el.classList.add('correct'); } 
+    if(value.toLowerCase() === q.answer.toLowerCase()){ el.classList.add('correct'); }
     else {
       el.classList.add('wrong');
       el.parentElement.querySelectorAll('.option').forEach(o => {
@@ -185,33 +189,36 @@
     }
     el.parentElement.querySelectorAll('.option').forEach(o => o.classList.add('disabled'));
   }
-  
+
   window.submitQuiz = async function() {
     let score = 0;
     todayQuestions.forEach((q, i) => {
       let userAns = q.type === "mcq"? userAnswers[i] : document.getElementById('input'+i)?.value.trim().toLowerCase();
       if(q.type === "fill" && userAns){
         const inputEl = document.getElementById('input'+i);
-        if(userAns === q.answer.toLowerCase()){ inputEl.classList.add('correct'); score += 10; } 
+        if(userAns === q.answer.toLowerCase()){ inputEl.classList.add('correct'); score += 10; }
         else { inputEl.classList.add('wrong'); }
         inputEl.disabled = true;
       }
       if(q.type === "mcq" && userAns && userAns === q.answer.toLowerCase()) score += 10;
     });
-    
+
     const points = score;
     const today = getTodayString();
     const cacheKey = 'quiz_' + currentUser.uid + '_' + today;
     localStorage.setItem(cacheKey, JSON.stringify({completed: true}));
-    
+
     await updateDoc(doc(db, "users", currentUser.uid), {
       balance: increment(points),
       lastQuizDate: today
     });
-    
+
     document.getElementById('submitBtn').disabled = true;
     showPopup("✓ Quiz Complete!", `You scored ${score}/20 points. +${points} Added to Wallet`);
-    setTimeout(() => { showCompleted(); }, 1500); // Auto show completed screen after popup
+    setTimeout(() => {
+      document.getElementById('buttonWrapper').style.display = 'none'; // HIDE BUTTONS
+      showCompleted();
+    }, 1500);
   }
 </script>
 </body>
