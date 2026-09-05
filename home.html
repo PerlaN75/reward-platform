@@ -67,15 +67,15 @@
       <div class="menu-icon">📺</div>
       <div class="menu-text">Watch & Earn</div>
     </div>
-    <div class="menu-btn" onclick="goTo('quiz.html')">
+    <div class="menu-btn" onclick="goTo('quiz.html')"> <!-- NOW WORKS -->
       <div class="menu-icon">🧠</div>
       <div class="menu-text">Daily Quiz</div>
     </div>
-    <div class="menu-btn" onclick="window.location.href='referrals.html'">
+    <div class="menu-btn" onclick="goTo('referrals.html')">
       <div class="menu-icon">👥</div>
       <div class="menu-text">Refer & Earn</div>
     </div>
-    <div class="menu-btn" onclick="window.location.href='wallet.html'">
+    <div class="menu-btn" onclick="goTo('wallet.html')">
       <div class="menu-icon">💰</div>
       <div class="menu-text">Wallet</div>
     </div>
@@ -104,11 +104,6 @@
 
   const welcomeEl = document.getElementById('welcomeText');
   const pointsEl = document.getElementById('points');
-
-  const savedName = localStorage.getItem('username');
-  if(savedName) {
-    welcomeEl.innerText = "Welcome back " + savedName;
-  }
 
   onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -154,7 +149,8 @@
   }
 
   window.goTo = function(page) {
-    if(page === 'checkin.html' || page === 'watch.html'){ // NOW ALLOWS WATCH.HTML
+    // NOW ALLOWS: checkin, watch, quiz
+    if(page === 'checkin.html' || page === 'watch.html' || page === 'quiz.html'){
       window.location.href = page;
     } else {
       alert(page.replace('.html','') + " page coming soon!");
