@@ -99,6 +99,16 @@
     loadData();
   });
 
+  // Fix: Run loadData every time page becomes visible again
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') loadData();
+  });
+
+  function getTodayString() {
+    const now = new Date();
+    return now.getFullYear() + "-" + (now.getMonth()+1) + "-" + now.getDate(); // YYYY-M-D
+  }
+
   async function loadData() {
     const snap = await getDoc(doc(db, "users", currentUser.uid));
     if(!snap.exists()) return;
@@ -117,24 +127,36 @@
       grid.appendChild(div);
     }
     
+    // FIX: Proper date check
     const lastCheckin = data.lastCheckin?.toDate ? data.lastCheckin.toDate() : null;
-    const today = new Date().toDateString();
-    if(lastCheckin && lastCheckin.toDateString() === today){
-      document.getElementById('checkinBtn').disabled = true;
-      document.getElementById('checkinBtn').innerText = "✓ Already Claimed Today";
+    const todayStr = getTodayString();
+    const lastStr = lastCheckin ? lastCheckin.getFullYear() + "-" + (lastCheckin.getMonth()+1) + "-" + lastCheckin.getDate() : "";
+    
+    const btn = document.getElementById('checkinBtn');
+    if(lastStr === todayStr){
+      btn.disabled = true;
+      btn.innerText = "✓ Already Claimed Today";
+    } else {
+      btn.disabled = false;
+      btn.innerText = "Claim 5 Points";
     }
   }
 
   window.dailyCheckin = async function() {
+    const btn = document.getElementById('checkinBtn');
+    btn.disabled = true; // prevent double click
+    
     const userRef = doc(db, "users", currentUser.uid);
     const snap = await getDoc(userRef); 
     const data = snap.data();
     const now = new Date(); 
-    const today = now.toDateString();
+    const todayStr = getTodayString();
     const lastCheckin = data.lastCheckin?.toDate ? data.lastCheckin.toDate() : null;
+    const lastStr = lastCheckin ? lastCheckin.getFullYear() + "-" + (lastCheckin.getMonth()+1) + "-" + lastCheckin.getDate() : "";
     
-    if(lastCheckin && lastCheckin.toDateString() === today){
+    if(lastStr === todayStr){
       alert("You already checked in today!");
+      loadData();
       return;
     }
     
@@ -144,7 +166,8 @@
     if(lastCheckin){
       const yesterday = new Date(now); 
       yesterday.setDate(yesterday.getDate()-1);
-      if(lastCheckin.toDateString() === yesterday.toDateString()) {
+      const yestStr = yesterday.getFullYear() + "-" + (yesterday.getMonth()+1) + "-" + yesterday.getDate();
+      if(lastStr === yestStr) {
         streak += 1;
       } else {
         streak = 1;
@@ -166,7 +189,7 @@
     });
     
     alert(`Success! +${points} points added to your wallet`);
-    window.location.href = "home.html";
+    loadData(); // reload to disable button immediately
   }
 </script>
 </body>
