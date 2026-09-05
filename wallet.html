@@ -6,12 +6,48 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #2f3e1a; min-height: 100vh; padding: 20px; color: white; text-align: center; }
-    h1 { font-size: 26px; margin-bottom: 20px; color: #fbbf24; }
-    .card { background: #1a2410; padding: 25px; border-radius: 15px; margin-bottom: 15px; }
-    .card h3 { font-size: 14px; color: #ccc; margin-bottom: 10px; }
-    .points { font-size: 48px; color: #f59e0b; font-weight: bold; }
-    .withdraw-btn { width: 100%; padding: 16px; margin-top: 15px; background: linear-gradient(90deg, #22c55e, #16a34a); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 18px; cursor: pointer; }
-    .back-btn { width: 40%; padding: 14px; margin-top: 20px; background: #fbbf24; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
+    
+    h1 { font-size: 26px; margin-bottom: 20px; color: #fbbf24; font-weight: bold; }
+    
+    .card { 
+      background: #1a2410; 
+      padding: 25px 20px; 
+      border-radius: 15px; 
+      margin-bottom: 15px; 
+    }
+    .card h3 { font-size: 13px; color: #ccc; margin-bottom: 10px; font-weight: bold; letter-spacing: 1px; }
+    .points { font-size: 52px; color: #f59e0b; font-weight: bold; margin-bottom: 15px; }
+    
+    .withdraw-btn { 
+      width: 100%; 
+      padding: 16px; 
+      background: linear-gradient(180deg, #22c55e, #16a34a); 
+      color: white; 
+      border: none; 
+      border-radius: 12px; 
+      font-weight: bold; 
+      font-size: 17px; 
+      cursor: pointer; 
+      box-shadow: 0 4px 0 #15803d;
+      transition: 0.1s;
+    }
+    .withdraw-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #15803d; }
+
+    .back-btn { 
+      width: 50%; 
+      padding: 14px; 
+      margin-top: 15px; 
+      background: linear-gradient(180deg, #fbbf24, #f59e0b); 
+      color: #000; 
+      border: none; 
+      border-radius: 12px; 
+      font-weight: bold; 
+      cursor: pointer; 
+      font-size: 15px;
+      box-shadow: 0 4px 0 #d97706;
+      transition: 0.1s;
+    }
+    .back-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #d97706; }
   </style>
 </head>
 <body>
@@ -28,18 +64,51 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = { apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d" };
-  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+  const firebaseConfig = { 
+    apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", 
+    authDomain: "reward-platform-rw-2e13d.firebaseapp.com", 
+    projectId: "reward-platform-rw-2e13d" 
+  };
+  const app = initializeApp(firebaseConfig); 
+  const auth = getAuth(app); 
+  const db = getFirestore(app);
+  enableIndexedDbPersistence(db).catch(() => {});
+
+  const balanceEl = document.getElementById('balance');
 
   onAuthStateChanged(auth, async (user) => {
     if(!user) return window.location.href = "log.html";
-    const snap = await getDoc(doc(db, "users", user.uid));
-    if(snap.exists()){
-      document.getElementById('balance').innerText = snap.data().balance || 0;
-    }
+    loadWallet(user.uid);
   });
+
+  async function loadWallet(uid) {
+    const cacheKey = 'wallet_' + uid;
+    const cached = localStorage.getItem(cacheKey);
+    
+    // Instant cache
+    if(cached){
+      try {
+        const data = JSON.parse(cached);
+        balanceEl.innerText = data.balance || 0;
+      } catch(e){}
+    }
+    
+    // Update from Firebase
+    try {
+      const snap = await getDoc(doc(db, "users", uid));
+      if(snap.exists()){
+        const data = snap.data();
+        balanceEl.innerText = data.balance || 0;
+        localStorage.setItem(cacheKey, JSON.stringify({
+          balance: data.balance || 0
+        }));
+      }
+    } catch(e) {
+      console.log(e);
+    }
+  }
 </script>
 </body>
 </html>
