@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Referrals</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body { background: #2f3e1a; color: white; font-family: Arial; padding: 20px; text-align: center; }
+.card { background: #1a2410; padding: 20px; border-radius: 15px; margin-top: 20px; }
+.ref-link { background: #0f1408; padding: 15px; border-radius: 10px; word-break: break-all; margin: 15px 0; }
+.copy-btn { padding: 12px; background: #3b82f6; border: none; border-radius: 10px; color: white; font-weight: bold; width: 100%; }
+.back-btn { margin-top: 20px; padding: 14px; background: #fbbf24; color: #000; border: none; border-radius: 12px; font-weight: bold; width: 40%; }
+</style>
+</head>
+<body>
+<h1>👥 Refer & Earn</h1>
+<div class="card">
+  <p>Invite friends and earn <b>50 points</b> per referral!</p>
+  <p>Your Referral Link:</p>
+  <div class="ref-link" id="refLink">Loading...</div>
+  <button class="copy-btn" onclick="copyLink()">Copy Link</button>
+</div>
+<button class="back-btn" onclick="window.location.href='home.html'">Back Home</button>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = { apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d" };
+const app = initializeApp(firebaseConfig); const auth = getAuth(app);
+
+onAuthStateChanged(auth, (user) => {
+  if(!user) return window.location.href = "log.html";
+  document.getElementById('refLink').innerText = `https://perlan75.github.io/rev/?ref=${user.uid}`;
+});
+
+window.copyLink = function() {
+  navigator.clipboard.writeText(document.getElementById('refLink').innerText);
+  alert("Link Copied!");
+}
+</script>
+</body>
+</html>
