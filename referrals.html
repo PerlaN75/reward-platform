@@ -59,30 +59,60 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, query, where, getDocs, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"; // ADDED
 
   const firebaseConfig = { apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d" };
   const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+  enableIndexedDbPersistence(db).catch(() => {}); // ADDED: OFFLINE CACHE
 
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      const docSnap = await getDoc(doc(db, "users", user.uid));
-      if(docSnap.exists()) {
-        const data = docSnap.data();
-        const username = data.username;
-        document.getElementById('balance').innerText = data.balance || 0;
-        
-        // CORRECT LINK WITH REPO NAME
-        const referralLink = `https://perlan75.github.io/reward-platform/reg.html?ref=${username}`;
-        document.getElementById('referralLink').value = referralLink;
-        
-        const q = query(collection(db, "users"), where("referredBy", "==", username));
-        const querySnapshot = await getDocs(q);
-        document.getElementById('totalReferred').innerText = querySnapshot.size;
-        document.getElementById('pointsEarned').innerText = querySnapshot.size * 100;
-      }
+      loadReferrals(user.uid); // CHANGED
     } else { window.location.href = "log.html"; }
   });
+
+  async function loadReferrals(uid) { // ADDED: New function with cache
+    const cacheKey = 'referrals_' + uid;
+    const cached = localStorage.getItem(cacheKey);
+    
+    // STEP 1: Show from cache instantly
+    if(cached){
+      try {
+        const data = JSON.parse(cached);
+        document.getElementById('balance').innerText = data.balance || 0;
+        document.getElementById('referralLink').value = data.referralLink;
+        document.getElementById('totalReferred').innerText = data.totalReferred || 0;
+        document.getElementById('pointsEarned').innerText = data.pointsEarned || 0;
+      } catch(e){}
+    }
+    
+    const docSnap = await getDoc(doc(db, "users", uid));
+    if(docSnap.exists()) {
+      const data = docSnap.data();
+      const username = data.username;
+      document.getElementById('balance').innerText = data.balance || 0;
+      
+      // CORRECT LINK WITH REPO NAME
+      const referralLink = `https://perlan75.github.io/reward-platform/reg.html?ref=${username}`;
+      document.getElementById('referralLink').value = referralLink;
+      
+      const q = query(collection(db, "users"), where("referredBy", "==", username));
+      const querySnapshot = await getDocs(q);
+      const totalReferred = querySnapshot.size;
+      const pointsEarned = totalReferred * 100;
+      
+      document.getElementById('totalReferred').innerText = totalReferred;
+      document.getElementById('pointsEarned').innerText = pointsEarned;
+      
+      // STEP 3: Save to cache
+      localStorage.setItem(cacheKey, JSON.stringify({
+        balance: data.balance,
+        referralLink: referralLink,
+        totalReferred: totalReferred,
+        pointsEarned: pointsEarned
+      }));
+    }
+  }
 
   window.copyLink = function() {
     document.getElementById('referralLink').select();
