@@ -12,33 +12,30 @@
 .header p { color: #d1fae5; font-size: 14px; margin-top: 5px; }
     
 .quiz-card { background: #1a2410; padding: 20px; border-radius: 15px; margin-bottom: 15px; }
-.quiz-card h3 { font-size: 14px; color: #f97316; margin-bottom: 10px; display: flex; justify-content: space-between; }
+.quiz-card h3 { font-size: 14px; color: #f97316; margin-bottom: 10px; }
 .quiz-card p { font-size: 16px; font-weight: bold; margin-bottom: 15px; }
-    
-.timer-badge { background: #22c55e; color: white; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-.timer-badge.warning { background: #f97316; }
-.timer-badge.danger { background: #ef4444; animation: pulse 0.5s infinite; }
- @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
     
 .option { 
       background: #2f3e1a; padding: 12px; border-radius: 10px; margin-bottom: 10px; 
-      cursor: pointer; border: 2px solid #2f3e1a;
+      cursor: pointer; border: 2px solid #2f3e1a; transition: 0.2s;
     }
-.option.selected { border-color: #3b82f6; background: #1e293b; }
-.option.disabled { opacity: 0.5; pointer-events: none; }
+.option.correct { border-color: #22c55e; background: #052e16; }
+.option.wrong { border-color: #ef4444; background: #450a0a; }
+.option.disabled { pointer-events: none; opacity: 0.8; }
     
 .fill-input { 
       width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #2f3e1a; 
       background: #0f1408; color: white; font-size: 16px;
     }
 .fill-input:disabled { opacity: 0.5; }
+.fill-input.correct { border-color: #22c55e; background: #052e16; }
+.fill-input.wrong { border-color: #ef4444; background: #450a0a; }
     
-.submit-btn { 
-      width: 100%; padding: 16px; background: linear-gradient(90deg, #3b82f6, #06b6d4); 
+.start-btn { 
+      width: 100%; padding: 16px; background: linear-gradient(90deg, #22c55e, #16a34a); 
       color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; 
-      font-size: 18px; margin-top: 10px; box-shadow: 0 5px 0 #1d4ed8;
+      font-size: 18px; margin-top: 10px; box-shadow: 0 5px 0 #15803d;
     }
-.submit-btn:disabled { background: #555; box-shadow: 0 5px 0 #333; cursor: not-allowed; }
     
 .back-btn { 
       width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; 
@@ -58,10 +55,10 @@
 .completed-msg h2 { font-size: 20px; color: #22c55e; margin-bottom: 8px; }
     
 .popup-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
-.popup-box { background: #1a2410; padding: 25px; border-radius: 20px; text-align: center; width: 85%; max-width: 320px; border: 2px solid #3b82f6; }
-.popup-box h2 { color: #3b82f6; font-size: 20px; margin-bottom: 10px; }
+.popup-box { background: #1a2410; padding: 25px; border-radius: 20px; text-align: center; width: 85%; max-width: 320px; border: 2px solid #22c55e; }
+.popup-box h2 { color: #22c55e; font-size: 20px; margin-bottom: 10px; }
 .popup-box p { color: #ddd; font-size: 14px; margin-bottom: 20px; }
-.popup-btn { width: 100%; padding: 14px; background: linear-gradient(90deg, #3b82f6, #06b6d4); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
+.popup-btn { width: 100%; padding: 14px; background: linear-gradient(90deg, #22c55e, #16a34a); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -75,11 +72,11 @@
   
   <div class="header">
     <h1>🧠 Daily Quiz</h1>
-    <p>Answer 2 questions. 30s each. Earn 20 points</p>
+    <p>Answer 2 questions. Earn 20 points</p>
   </div>
   
   <div id="quizSection"></div>
-  <button class="submit-btn" id="submitBtn" onclick="submitQuiz()">Submit Answers</button>
+  <button class="start-btn" id="startBtn" onclick="startQuiz()">Start Quiz</button> <!-- CHANGED -->
   <button class="back-btn" onclick="window.location.href='home.html'">Back Home</button>
   <button class="reset-btn" onclick="resetQuiz()">Reset for Testing</button>
 
@@ -94,9 +91,8 @@
   
   let currentUser = null;
   let todayQuestions = [];
-  let userAnswers = {};
-  let timerInterval = null;
-  let timeLeft = 30; // CHANGED TO 30
+  let score = 0;
+  let answeredCount = 0;
 
   const QUESTION_POOL = {
     general: [
@@ -105,16 +101,6 @@
       {type: "mcq", q: "How many continents are there?", options: ["5","6","7","8"], answer: "7"},
       {type: "mcq", q: "Which is the largest ocean?", options: ["Atlantic","Indian","Arctic","Pacific"], answer: "Pacific"},
       {type: "fill", q: "The internet was invented in _____", answer: "1969"},
-      {type: "mcq", q: "What is the largest country in the world?", options: ["China","USA","Canada","Russia"], answer: "Russia"},
-      {type: "fill", q: "Mount Everest is in the _____ mountain range", answer: "himalayas"},
-      {type: "mcq", q: "Which color is in the middle of the rainbow?", options: ["Blue","Green","Yellow","Red"], answer: "Green"},
-      {type: "mcq", q: "How many players in a football team?", options: ["9","10","11","12"], answer: "11"},
-      {type: "fill", q: "The national animal of Rwanda is _____", answer: "lion"},
-      {type: "mcq", q: "Which year did Rwanda get independence?", options: ["1959","1962","1965","1970"], answer: "1962"},
-      {type: "mcq", q: "What is the tallest building in the world?", options: ["Burj Khalifa","Eiffel Tower","Empire State","Shanghai Tower"], answer: "Burj Khalifa"},
-      {type: "fill", q: "UNESCO stands for _____", answer: "unesco"},
-      {type: "mcq", q: "Which planet is known as Red Planet?", options: ["Venus","Mars","Jupiter","Saturn"], answer: "Mars"},
-      {type: "mcq", q: "How many hours in a day?", options: ["22","23","24","25"], answer: "24"},
     ],
     biology: [
       {type: "mcq", q: "What is the powerhouse of the cell?", options: ["Nucleus","Mitochondria","Ribosome","Chloroplast"], answer: "Mitochondria"},
@@ -122,16 +108,6 @@
       {type: "mcq", q: "Which gas do plants absorb?", options: ["Oxygen","Nitrogen","CO2","Hydrogen"], answer: "CO2"},
       {type: "fill", q: "The study of animals is called _____", answer: "zoology"},
       {type: "mcq", q: "What is the largest organ in human body?", options: ["Liver","Brain","Skin","Heart"], answer: "Skin"},
-      {type: "fill", q: "Photosynthesis happens in _____", answer: "chloroplast"},
-      {type: "mcq", q: "How many chambers does a human heart have?", options: ["2","3","4","5"], answer: "4"},
-      {type: "mcq", q: "Which blood cells fight infection?", options: ["RBC","WBC","Platelets","Plasma"], answer: "WBC"},
-      {type: "fill", q: "DNA stands for _____", answer: "dna"},
-      {type: "mcq", q: "What do bees collect from flowers?", options: ["Water","Nectar","Leaves","Seeds"], answer: "Nectar"},
-      {type: "mcq", q: "Which vitamin do we get from sunlight?", options: ["A","B","C","D"], answer: "D"},
-      {type: "fill", q: "The basic unit of life is _____", answer: "cell"},
-      {type: "mcq", q: "Fish breathe using _____", options: ["Lungs","Gills","Skin","Nose"], answer: "Gills"},
-      {type: "fill", q: "A baby frog is called a _____", answer: "tadpole"},
-      {type: "mcq", q: "Which part of plant makes food?", options: ["Root","Stem","Leaf","Flower"], answer: "Leaf"},
     ],
     english: [
       {type: "mcq", q: "Synonym of 'Happy'?", options: ["Sad","Joyful","Angry","Tired"], answer: "Joyful"},
@@ -139,16 +115,6 @@
       {type: "mcq", q: "Opposite of 'Expand'?", options: ["Grow","Contract","Increase","Spread"], answer: "Contract"},
       {type: "fill", q: "Plural of 'child' is _____", answer: "children"},
       {type: "mcq", q: "Choose correct spelling:", options: ["Recieve","Receive","Receve","Recive"], answer: "Receive"},
-      {type: "fill", q: "Antonym of 'Hot' is _____", answer: "cold"},
-      {type: "mcq", q: "What is a group of birds called?", options: ["Herd","Flock","Pack","School"], answer: "Flock"},
-      {type: "mcq", q: "Which is a noun?", options: ["Run","Beautiful","Dog","Quickly"], answer: "Dog"},
-      {type: "fill", q: "Past tense of 'eat' is _____", answer: "ate"},
-      {type: "mcq", q: "Idiom: 'Break the ice' means?", options: ["Fight","Start conversation","Break something","Be cold"], answer: "Start conversation"},
-      {type: "fill", q: "The opposite of 'Begin' is _____", answer: "end"},
-      {type: "mcq", q: "Which is an adverb?", options: ["Fast","Table","Apple","Car"], answer: "Fast"},
-      {type: "fill", q: "A person who writes books is an _____", answer: "author"},
-      {type: "mcq", q: "Choose the question word for place:", options: ["Who","What","Where","When"], answer: "Where"},
-      {type: "fill", q: "Complete: If I _____ you, I would study", answer: "were"},
     ],
     math: [
       {type: "mcq", q: "What is 15 x 4?", options: ["40","50","60","70"], answer: "60"},
@@ -156,23 +122,13 @@
       {type: "mcq", q: "What is 25% of 200?", options: ["25","50","75","100"], answer: "50"},
       {type: "fill", q: "10 squared is _____", answer: "100"},
       {type: "mcq", q: "What is 7 + 8 x 2?", options: ["22","30","16","23"], answer: "23"},
-      {type: "fill", q: "Half of 360 is _____", answer: "180"},
-      {type: "mcq", q: "How many sides does a hexagon have?", options: ["5","6","7","8"], answer: "6"},
-      {type: "mcq", q: "What is 1000 / 25?", options: ["20","40","50","100"], answer: "40"},
-      {type: "fill", q: "The next prime number after 7 is _____", answer: "11"},
-      {type: "mcq", q: "Area of rectangle 5x3?", options: ["8","15","18","20"], answer: "15"},
-      {type: "fill", q: "1 dozen = _____", answer: "12"},
-      {type: "mcq", q: "What is 2^5?", options: ["10","16","25","32"], answer: "32"},
-      {type: "fill", q: "90 degrees angle is called _____ angle", answer: "right"},
-      {type: "mcq", q: "If x + 5 = 12, then x =?", options: ["5","6","7","8"], answer: "7"},
-      {type: "fill", q: "LCM of 4 and 6 is _____", answer: "12"},
     ]
   };
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) return window.location.href = "log.html";
     currentUser = user;
-    loadData();
+    checkIfCompleted();
   });
 
   function getTodayString() {
@@ -205,124 +161,126 @@
     await updateDoc(doc(db, "users", currentUser.uid), {
       lastQuizDate: ""
     });
-    alert("Quiz reset! Reload page to test again");
-    window.location.reload();
+    showPopup("🔄 Quiz Reset!", "Click Start Quiz to test again");
   }
 
-  async function loadData() {
+  async function checkIfCompleted() {
     const today = getTodayString();
     const cacheKey = 'quiz_' + currentUser.uid + '_' + today;
     const cached = localStorage.getItem(cacheKey);
-    
-    if(cached){
-      const data = JSON.parse(cached);
-      if(data.completed){
-        showCompleted();
-        return;
-      }
-    }
     
     const snap = await getDoc(doc(db, "users", currentUser.uid));
     if(!snap.exists()) return;
     const data = snap.data();
     
-    if(data.lastQuizDate === today){
-      localStorage.setItem(cacheKey, JSON.stringify({completed: true}));
+    if(data.lastQuizDate === today || (cached && JSON.parse(cached).completed)){
       showCompleted();
-      return;
     }
-    
-    const seed = currentUser.uid.length + today.length + new Date().getDate();
+  }
+
+  window.startQuiz = function() { // NEW FUNCTION
+    const seed = currentUser.uid.length + getTodayString().length + new Date().getDate();
     let allQuestions = [...QUESTION_POOL.general,...QUESTION_POOL.biology,...QUESTION_POOL.english,...QUESTION_POOL.math];
     todayQuestions = shuffleArray(allQuestions, seed).slice(0, 2);
     
+    document.getElementById('startBtn').style.display = 'none';
     renderQuiz();
-    startTimer();
   }
   
   function showCompleted() {
-    clearInterval(timerInterval);
     document.getElementById('quizSection').innerHTML = `
       <div class="completed-msg">
         <h2>✓ Already Completed</h2>
         <p>You finished today's quiz.<br>Come back tomorrow</p>
       </div>
     `;
-    document.getElementById('submitBtn').style.display = 'none';
+    document.getElementById('startBtn').style.display = 'none';
   }
 
   function renderQuiz() {
     const section = document.getElementById('quizSection');
     section.innerHTML = '';
     todayQuestions.forEach((q, i) => {
-      let html = `<div class="quiz-card"><h3>Question ${i+1} <span class="timer-badge" id="timer${i}">30s</span></h3><p>${q.q}</p>`;
+      let html = `<div class="quiz-card"><h3>Question ${i+1}</h3><p>${q.q}</p>`;
       if(q.type === "mcq"){
         q.options.forEach(opt => {
-          html += `<div class="option" id="opt${i}" onclick="selectOption(${i}, '${opt}', this)">${opt}</div>`;
+          html += `<div class="option" data-q="${i}" data-ans="${opt}" onclick="checkAnswer(${i}, '${opt}', this)">${opt}</div>`;
         });
       } else {
-        html += `<input type="text" class="fill-input" id="input${i}" placeholder="Type your answer">`;
+        html += `<input type="text" class="fill-input" data-q="${i}" id="input${i}" placeholder="Type your answer" onblur="checkFillAnswer(${i}, this)">`;
       }
       html += `</div>`;
       section.innerHTML += html;
     });
   }
   
-  function startTimer() {
-    timeLeft = 30; // 30 SECONDS
-    timerInterval = setInterval(() => {
-      timeLeft--;
-      todayQuestions.forEach((q, i) => {
-        const timerEl = document.getElementById('timer' + i);
-        if(timerEl){
-          timerEl.innerText = timeLeft + 's';
-          if(timeLeft <= 5) timerEl.classList.add('danger'); // Red at 5s
-          else if(timeLeft <= 10) timerEl.classList.add('warning'); // Orange at 10s
+  // INSTANT CHECK + INSTANT POINTS
+  window.checkAnswer = async function(index, value, el) {
+    if(el.classList.contains('disabled')) return;
+    
+    const q = todayQuestions[index];
+    const isCorrect = value.toLowerCase() === q.answer.toLowerCase();
+    
+    // Mark green or red
+    if(isCorrect){
+      el.classList.add('correct');
+      score += 10;
+    } else {
+      el.classList.add('wrong');
+      // also show correct answer
+      el.parentElement.querySelectorAll('.option').forEach(o => {
+        if(o.getAttribute('data-ans').toLowerCase() === q.answer.toLowerCase()){
+          o.classList.add('correct');
         }
       });
-      
-      if(timeLeft <= 0){
-        clearInterval(timerInterval);
-        lockQuiz();
-        submitQuiz();
-      }
-    }, 1000);
-  }
-  
-  function lockQuiz() {
-    document.querySelectorAll('.option').forEach(o => o.classList.add('disabled'));
-    document.querySelectorAll('.fill-input').forEach(i => i.disabled = true);
-    document.getElementById('submitBtn').disabled = true;
-  }
-  
-  window.selectOption = function(index, value, el) {
-    userAnswers[index] = value;
-    el.parentElement.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
-    el.classList.add('selected');
-  }
-
-  window.submitQuiz = async function() {
-    clearInterval(timerInterval);
+    }
     
-    let score = 0;
-    todayQuestions.forEach((q, i) => {
-      let userAns = q.type === "mcq"? userAnswers[i] : document.getElementById('input'+i)?.value.trim().toLowerCase();
-      if(userAns && userAns === q.answer.toLowerCase()) score++;
+    // Disable all options for this question
+    el.parentElement.querySelectorAll('.option').forEach(o => o.classList.add('disabled'));
+    
+    answeredCount++;
+    await addPoints(10); // ADD POINTS INSTANTLY
+    
+    if(answeredCount === 2) finishQuiz();
+  }
+  
+  window.checkFillAnswer = async function(index, inputEl) {
+    if(inputEl.disabled) return;
+    const q = todayQuestions[index];
+    const userAns = inputEl.value.trim().toLowerCase();
+    const isCorrect = userAns === q.answer.toLowerCase();
+    
+    if(isCorrect){
+      inputEl.classList.add('correct');
+      score += 10;
+    } else {
+      inputEl.classList.add('wrong');
+    }
+    inputEl.disabled = true;
+    
+    answeredCount++;
+    await addPoints(10); // ADD POINTS INSTANTLY
+    
+    if(answeredCount === 2) finishQuiz();
+  }
+  
+  async function addPoints(points) {
+    const today = getTodayString();
+    await updateDoc(doc(db, "users", currentUser.uid), {
+      balance: increment(points)
     });
-    
-    const points = score * 10;
+  }
+  
+  async function finishQuiz() {
     const today = getTodayString();
     const cacheKey = 'quiz_' + currentUser.uid + '_' + today;
     
     localStorage.setItem(cacheKey, JSON.stringify({completed: true}));
-    
     await updateDoc(doc(db, "users", currentUser.uid), {
-      balance: increment(points),
       lastQuizDate: today
     });
     
-    showPopup("✓ Quiz Complete!", `You got ${score}/2 correct. +${points} Points Added`);
-    showCompleted();
+    showPopup("✓ Quiz Complete!", `You scored ${score}/20 points`);
   }
 </script>
 </body>
