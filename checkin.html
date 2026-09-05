@@ -5,104 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { background: #2f3e1a; min-height: 100vh; padding: 20px; color: white; }
+    body { background: #2f3e1a; min-height: 100vh; padding: 20px; color: white; text-align: center; }
     
-    .header { text-align: center; margin-bottom: 20px; padding-top: 40px; }
-    .header h1 { font-size: 32px; background: linear-gradient(90deg, #fbbf24, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
+    .header { padding-top: 30px; margin-bottom: 20px; }
+    .header h1 { font-size: 28px; color: #fbbf24; font-weight: bold; }
     .header p { color: #d1fae5; font-size: 14px; margin-top: 5px; }
     
-    .streak-box { background: linear-gradient(135deg, #fbbf24, #ec4899); padding: 20px; border-radius: 20px; text-align: center; margin-bottom: 25px; }
-    .streak-box h3 { color: #000; font-size: 14px; font-weight: bold; }
-    .streak-box h2 { color: #000; font-size: 40px; font-weight: bold; }
+    .streak-box { background: #1a2410; padding: 20px; border-radius: 15px; margin-bottom: 25px; }
+    .streak-box h3 { font-size: 14px; color: #aaa; }
+    .streak-box h2 { font-size: 40px; color: #f97316; font-weight: bold; margin: 5px 0; }
     
-    .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 30px; }
+    .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 25px; }
     .day { 
-      background: rgba(0,0,0,0.3); 
-      padding: 12px 5px; 
-      border-radius: 15px; 
-      text-align: center; 
-      transition: 0.3s;
+      background: #1a2410; padding: 15px 5px; border-radius: 12px; font-size: 12px;
+      border: 2px solid #2f3e1a;
     }
-    .day.completed { background: linear-gradient(135deg, #22c55e, #16a34a); }
-    .day.today { border: 2px solid #fbbf24; background: rgba(251,191,36,0.2); }
-    .day span { font-size: 11px; display: block; color: #ccc; }
-    .day .points { font-size: 16px; font-weight: bold; margin-top: 4px; color: #fbbf24; }
-    .day.completed .points { color: white; }
+    .day.done { background: linear-gradient(180deg, #22c55e, #16a34a); border-color: #22c55e; }
+    .day.today { border-color: #fbbf24; box-shadow: 0 0 10px #fbbf24; }
     
     .checkin-btn { 
-      width: 100%; 
-      padding: 16px; 
-      background: linear-gradient(90deg, #fbbf24, #f97316); 
-      color: #000; 
-      border: none; 
-      border-radius: 12px; 
-      font-weight: bold; 
-      cursor: pointer; 
-      font-size: 18px; 
-      margin-bottom: 15px; 
-      box-shadow: 0 8px 0 #b45309;
+      width: 100%; padding: 18px; background: linear-gradient(90deg, #fbbf24, #f97316); 
+      color: #000; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; 
+      font-size: 18px; margin-bottom: 15px; box-shadow: 0 6px 0 #b45309;
     }
-    .checkin-btn:active { transform: translateY(4px); box-shadow: 0 4px 0 #b45309; }
-    .checkin-btn:disabled { background: #555; color: #888; cursor: not-allowed; box-shadow: none; transform: none; }
+    .checkin-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 #b45309; }
+    .checkin-btn:disabled { background: #555; color: #aaa; box-shadow: 0 6px 0 #333; cursor: not-allowed; }
     
     .back-btn { 
-  width: 40%; 
-  margin: 0 auto; 
-  display: block; 
-  padding: 14px; 
-  background: linear-gradient(90deg, #fbbf24, #f97316); /* CHANGED: gold-orange gradient */
-  color: #000; /* CHANGED: black text for contrast */
-  border: none; 
-  border-radius: 12px; 
-  font-weight: bold; 
-  cursor: pointer; 
-  font-size: 16px; 
-}
-    .note { text-align: center; font-size: 12px; color: #aaa; margin-top: 15px; }
+      width: 40%; padding: 14px; background: #555; color: white; 
+      border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; 
+    }
+
+    /* CUSTOM POPUP - same as watch.html */
+    .popup-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
+    .popup-box { background: #1a2410; padding: 25px; border-radius: 20px; text-align: center; width: 85%; max-width: 320px; border: 2px solid #fbbf24; }
+    .popup-box h2 { color: #fbbf24; font-size: 20px; margin-bottom: 10px; }
+    .popup-box p { color: #ddd; font-size: 14px; margin-bottom: 20px; }
+    .popup-btn { width: 100%; padding: 14px; background: linear-gradient(90deg, #fbbf24, #f97316); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
   </style>
 </head>
 <body>
+  <!-- CUSTOM POPUP -->
+  <div class="popup-overlay" id="popup">
+    <div class="popup-box">
+      <h2>✓ Checkin Success!</h2>
+      <p id="popupText">+15 Points Added to Your Balance</p>
+      <button class="popup-btn" onclick="closePopup()">OK</button>
+    </div>
+  </div>
+
   <div class="header">
     <h1>📅 Daily Checkin</h1>
-    <p>Come back every day to build your streak!</p>
+    <p>Come back every day for bonus points</p>
   </div>
-  
+
   <div class="streak-box">
     <h3>CURRENT STREAK</h3>
-    <h2 id="streak">0 Days</h2> <!-- CHANGED: Default 0 instead of Loading -->
+    <h2 id="streak">0 Days</h2>
   </div>
 
-  <div class="days-grid" id="daysGrid"></div>
+  <div class="calendar" id="calendar"></div>
 
-  <button class="checkin-btn" id="checkinBtn" disabled>Loading...</button>
+  <button class="checkin-btn" id="checkinBtn" onclick="doCheckin()">Check In Now +15</button>
   <button class="back-btn" onclick="window.location.href='home.html'">Back Home</button>
-  <p class="note">Day 7 = 50 bonus points. Miss a day and streak resets.</p>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, updateDoc, increment, serverTimestamp, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, updateDoc, increment, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = { 
-    apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", 
-    authDomain: "reward-platform-rw-2e13d.firebaseapp.com", 
-    projectId: "reward-platform-rw-2e13d" 
-  };
-  const app = initializeApp(firebaseConfig); 
-  const auth = getAuth(app); 
-  const db = getFirestore(app);
-  enableIndexedDbPersistence(db).catch(() => {}); // OFFLINE CACHE
+  const firebaseConfig = { apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d" };
+  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+  enableIndexedDbPersistence(db).catch(() => {});
   
   let currentUser = null;
+  let userData = {};
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) return window.location.href = "log.html";
-    currentUser = user; 
+    currentUser = user;
     loadData();
-  });
-
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') loadData();
   });
 
   function getTodayString() {
@@ -110,116 +92,67 @@
     return now.getFullYear() + "-" + (now.getMonth()+1) + "-" + now.getDate();
   }
 
+  function showPopup(points) {
+    document.getElementById('popupText').innerText = `+${points} Points Added to Your Balance`;
+    document.getElementById('popup').style.display = 'flex';
+  }
+  window.closePopup = function() {
+    document.getElementById('popup').style.display = 'none';
+    loadData(); // Instant refresh after clicking OK
+  }
+
   async function loadData() {
-    const btn = document.getElementById('checkinBtn');
-    const streakEl = document.getElementById('streak');
-    const grid = document.getElementById('daysGrid');
-    const cacheKey = 'checkin_' + currentUser.uid;
-    const cached = localStorage.getItem(cacheKey);
-    const todayStr = getTodayString();
-    
-    // STEP 1: Show from cache instantly - 0ms
-    if(cached){
-      try {
-        const data = JSON.parse(cached);
-        const streak = data.streak || 0;
-        streakEl.innerText = `${streak} Days`;
-        renderGrid(streak, grid);
-        
-        if(data.lastCheckin === todayStr){
-          btn.disabled = true;
-          btn.innerText = "✓ Already Claimed Today";
-        } else {
-          btn.disabled = false;
-          btn.innerText = "Claim 5 Points";
-        }
-      } catch(e){}
-    }
-    
-    // STEP 2: Get real data from Firebase
     const snap = await getDoc(doc(db, "users", currentUser.uid));
     if(!snap.exists()) return;
-    const data = snap.data();
-    const streak = data.streak || 0;
+    userData = snap.data();
     
-    streakEl.innerText = `${streak} Days`;
-    renderGrid(streak, grid);
+    const today = getTodayString();
+    const lastCheckin = userData.lastCheckinDate;
+    const streak = userData.streak || 0;
     
-    const lastCheckin = data.lastCheckin?.toDate ? data.lastCheckin.toDate() : null;
-    const lastStr = lastCheckin ? lastCheckin.getFullYear() + "-" + (lastCheckin.getMonth()+1) + "-" + lastCheckin.getDate() : "";
+    document.getElementById('streak').innerText = streak + ' Days';
     
-    // STEP 3: Save to cache
-    localStorage.setItem(cacheKey, JSON.stringify({
-      streak: streak,
-      lastCheckin: lastStr
-    }));
-    
-    if(lastStr === todayStr){
-      btn.disabled = true;
-      btn.innerText = "✓ Already Claimed Today";
-    } else {
-      btn.disabled = false;
-      btn.innerText = "Claim 5 Points";
-      btn.onclick = dailyCheckin;
-    }
-  }
-  
-  function renderGrid(streak, container){
-    container.innerHTML = '';
-    for(let i=1; i<=7; i++){
+    // Build 7 day calendar
+    const cal = document.getElementById('calendar');
+    cal.innerHTML = '';
+    for(let i = 1; i <= 7; i++){
       const div = document.createElement('div');
       div.className = 'day';
-      if(i <= streak) div.classList.add('completed');
-      if(i === streak + 1) div.classList.add('today');
-      div.innerHTML = `<span>Day ${i}</span><div class="points">${i===7 ? '50' : '5'}</div>`;
-      container.appendChild(div);
+      div.innerText = 'Day ' + i;
+      if(i <= streak) div.classList.add('done');
+      if(i === streak + 1 && lastCheckin !== today) div.classList.add('today');
+      cal.appendChild(div);
+    }
+    
+    const btn = document.getElementById('checkinBtn');
+    if(lastCheckin === today){
+      btn.innerText = 'Already Checked In Today';
+      btn.disabled = true;
+    } else {
+      btn.innerText = `Check In Now +15`;
+      btn.disabled = false;
     }
   }
 
-  async function dailyCheckin() {
-    const btn = document.getElementById('checkinBtn');
-    btn.disabled = true;
-    btn.innerText = "Claiming...";
+  window.doCheckin = async function() {
+    const today = getTodayString();
+    const lastCheckin = userData.lastCheckinDate;
+    let newStreak = userData.streak || 0;
     
-    const userRef = doc(db, "users", currentUser.uid);
-    const snap = await getDoc(userRef); 
-    const data = snap.data();
-    const now = new Date(); 
-    const todayStr = getTodayString();
-    const lastCheckin = data.lastCheckin?.toDate ? data.lastCheckin.toDate() : null;
-    const lastStr = lastCheckin ? lastCheckin.getFullYear() + "-" + (lastCheckin.getMonth()+1) + "-" + lastCheckin.getDate() : "";
+    // If checked yesterday, streak +1. Else reset to 1
+    const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+    const yestStr = yesterday.getFullYear() + "-" + (yesterday.getMonth()+1) + "-" + yesterday.getDate();
     
-    if(lastStr === todayStr){
-      alert("You already checked in today!");
-      loadData();
-      return;
-    }
+    if(lastCheckin === yestStr) newStreak++;
+    else newStreak = 1;
     
-    let streak = data.streak || 0; 
-    let points = 5;
-    
-    if(lastCheckin){
-      const yesterday = new Date(now); 
-      yesterday.setDate(yesterday.getDate()-1);
-      const yestStr = yesterday.getFullYear() + "-" + (yesterday.getMonth()+1) + "-" + yesterday.getDate();
-      if(lastStr === yestStr) streak += 1; else streak = 1;
-    } else streak = 1;
-
-    if(streak >= 7){ points += 50; streak = 0; alert("7 Day Streak! +50 bonus points 🔥"); }
-    
-    await updateDoc(userRef, { 
-      balance: increment(points), 
-      streak: streak, 
-      lastCheckin: serverTimestamp() 
+    await updateDoc(doc(db, "users", currentUser.uid), {
+      balance: increment(15),
+      streak: newStreak,
+      lastCheckinDate: today
     });
     
-    localStorage.setItem('checkin_' + currentUser.uid, JSON.stringify({ // UPDATE CACHE
-      streak: streak,
-      lastCheckin: todayStr
-    }));
-    
-    alert(`Success! +${points} points added to your wallet`);
-    loadData();
+    showPopup(15); // Show custom popup instead of alert
   }
 </script>
 </body>
