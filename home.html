@@ -7,49 +7,65 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #2f3e1a; min-height: 100vh; padding: 20px; color: white; text-align: center; }
     h1 { font-size: 26px; margin-top: 10px; color: white; }
- .tagline { color: #fbbf24; font-size: 13px; margin: 8px 0 20px 0; }
- .points-box { background: #1a2410; padding: 25px; border-radius: 20px; margin-bottom: 25px; }
- .points-box h3 { font-size: 14px; color: #ccc; margin-bottom: 8px; text-transform: uppercase; }
- .points-box h2 { font-size: 56px; color: #f59e0b; font-weight: bold; }
- .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
- .menu-btn { background: linear-gradient(180deg, #ffffff, #f0f0f0); padding: 20px 10px; border-radius: 18px; text-align: center; cursor: pointer; box-shadow: 0 8px 0 #c7c7c7, 0 12px 20px rgba(0,0,0,0.25); transition: all 0.1s ease; border: none; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
- .menu-btn:active { transform: translateY(5px); box-shadow: 0 3px 0 #c7c7c7, 0 6px 10px rgba(0,0,0,0.2); }
- .menu-icon { font-size: 40px; margin-bottom: 10px; }
- .menu-text { font-size: 14px; font-weight: bold; color: #2f3e1a; }
- .logout-btn { width: 40%; padding: 16px 12px; margin-top: 30px; background: linear-gradient(180deg, #ef4444, #dc2626); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; box-shadow: 0 5px 0 #b91c1c; transition: 0.1s; }
- .logout-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #b91c1c; }
- .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
- .modal-content { background: #4a6128; border: 3px solid #fbbf24; border-radius: 20px; padding: 20px; width: 100%; max-width: 420px; color: white; }
- .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
- .modal-header h2 { font-size: 22px; color: #fbbf24; display:flex; align-items:center; gap:8px; }
- .close-btn { font-size: 28px; color: white; cursor: pointer; font-weight: bold; }
- .tabs { display: flex; gap: 8px; margin-bottom: 15px; }
- .tab { flex: 1; padding: 10px; background: #2f3e1a; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 13px; box-shadow: 0 3px 0 #1a2410; }
- .tab:active { transform: translateY(2px); box-shadow: 0 1px 0 #1a2410; }
- .tab.active { background: #fbbf24; color: #000; box-shadow: 0 3px 0 #d97706; }
- .tab-content { display: none; }
- .tab-content.active { display: block; }
- .input-box { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 1px solid #444; border-radius: 10px; color: white; font-size: 15px; }
- .action-btn { width: 100%; padding: 15px; background: #fbbf24; color: #000; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; }
- .action-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #d97706; }
- .balance-card { background: #000; border: 2px solid #fbbf24; border-radius: 15px; padding: 20px; margin: 15px 0; text-align: center; } 
- .balance-label { font-size: 14px; color: #ccc; margin-bottom: 8px; }
- .balance-big { font-size: 42px; color: #f59e0b; font-weight: bold; }
- .crypto-balance { background: #1a2410; padding: 12px; border-radius: 10px; margin: 8px 0; display: flex; justify-content: space-between; font-size: 14px; }
- .rate-info { font-size: 12px; color: #fbbf24; margin: 10px 0; font-weight: bold; }
- .history-item { background: #1a2410; padding: 10px; border-radius: 8px; margin: 8px 0; font-size: 12px; text-align: left; }
- .checkin-subtitle { color: #ccc; font-size: 13px; margin-bottom: 20px; }
- .streak-box { background: #1a2410; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
- .streak-label { font-size: 12px; color: #999; margin-bottom: 8px; text-transform: uppercase; }
- .streak-number { font-size: 40px; color: #f97316; font-weight: bold; }
- .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 20px; }
- .day-box { background: #1a2410; padding: 12px 5px; border-radius: 10px; font-size: 12px; font-weight: bold; color: #ccc; }
- .day-box.active { background: #22c55e; color: white; border: 2px solid #4ade80; }
- .day-box.completed { background: #16a34a; color: white; }
- .checkin-btn { width: 100%; padding: 16px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; margin-bottom: 12px; }
- .checkin-btn:disabled { background: #4b5563; color: #9ca3af; box-shadow: 0 4px 0 #374151; cursor: not-allowed; }
- .back-btn { width: 40%; margin: 0 auto; display: block; padding: 15px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; }
- .back-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #d97706; }
+.tagline { color: #fbbf24; font-size: 13px; margin: 8px 0 20px 0; }
+.points-box { background: #1a2410; padding: 25px; border-radius: 20px; margin-bottom: 25px; }
+.points-box h3 { font-size: 14px; color: #ccc; margin-bottom: 8px; text-transform: uppercase; }
+.points-box h2 { font-size: 56px; color: #f59e0b; font-weight: bold; }
+.menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.menu-btn { background: linear-gradient(180deg, #ffffff, #f0f0f0); padding: 20px 10px; border-radius: 18px; text-align: center; cursor: pointer; box-shadow: 0 8px 0 #c7c7c7, 0 12px 20px rgba(0,0,0,0.25); transition: all 0.1s ease; border: none; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+.menu-btn:active { transform: translateY(5px); box-shadow: 0 3px 0 #c7c7c7, 0 6px 10px rgba(0,0,0,0.2); }
+.menu-btn.disabled { opacity: 0.5; cursor: not-allowed; }
+.menu-icon { font-size: 40px; margin-bottom: 10px; }
+.menu-text { font-size: 14px; font-weight: bold; color: #2f3e1a; }
+.menu-subtext { font-size: 11px; color: #666; margin-top: 4px; }
+.logout-btn { width: 40%; padding: 16px 12px; margin-top: 30px; background: linear-gradient(180deg, #ef4444, #dc2626); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; box-shadow: 0 5px 0 #b91c1c; transition: 0.1s; }
+.logout-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #b91c1c; }
+.modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
+.modal-content { background: #4a6128; border: 3px solid #fbbf24; border-radius: 20px; padding: 20px; width: 100%; max-width: 420px; color: white; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.modal-header h2 { font-size: 22px; color: #fbbf24; display:flex; align-items:center; gap:8px; }
+.close-btn { font-size: 28px; color: white; cursor: pointer; font-weight: bold; }
+.tabs { display: flex; gap: 8px; margin-bottom: 15px; }
+.tab { flex: 1; padding: 10px; background: #2f3e1a; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 13px; box-shadow: 0 3px 0 #1a2410; }
+.tab:active { transform: translateY(2px); box-shadow: 0 1px 0 #1a2410; }
+.tab.active { background: #fbbf24; color: #000; box-shadow: 0 3px 0 #d97706; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.input-box { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 1px solid #444; border-radius: 10px; color: white; font-size: 15px; }
+.action-btn { width: 100%; padding: 15px; background: #fbbf24; color: #000; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; }
+.action-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #d97706; }
+.balance-card { background: #000; border: 2px solid #fbbf24; border-radius: 15px; padding: 20px; margin: 15px 0; text-align: center; }
+.balance-label { font-size: 14px; color: #ccc; margin-bottom: 8px; }
+.balance-big { font-size: 42px; color: #f59e0b; font-weight: bold; }
+.crypto-balance { background: #1a2410; padding: 12px; border-radius: 10px; margin: 8px 0; display: flex; justify-content: space-between; font-size: 14px; }
+.rate-info { font-size: 12px; color: #fbbf24; margin: 10px 0; font-weight: bold; }
+.history-item { background: #1a2410; padding: 10px; border-radius: 8px; margin: 8px 0; font-size: 12px; text-align: left; }
+.checkin-subtitle { color: #ccc; font-size: 13px; margin-bottom: 20px; }
+.streak-box { background: #1a2410; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
+.streak-label { font-size: 12px; color: #999; margin-bottom: 8px; text-transform: uppercase; }
+.streak-number { font-size: 40px; color: #f97316; font-weight: bold; }
+.days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 20px; }
+.day-box { background: #1a2410; padding: 12px 5px; border-radius: 10px; font-size: 12px; font-weight: bold; color: #ccc; }
+.day-box.active { background: #22c55e; color: white; border: 2px solid #4ade80; }
+.day-box.completed { background: #16a34a; color: white; }
+.checkin-btn { width: 100%; padding: 16px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; margin-bottom: 12px; }
+.checkin-btn:disabled { background: #4b5563; color: #9ca3af; box-shadow: 0 4px 0 #374151; cursor: not-allowed; }
+.back-btn { width: 40%; margin: 0 auto; display: block; padding: 15px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; }
+.back-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #d97706; }
+
+ /* WATCH & EARN STYLES */
+.watch-header { text-align: center; margin-bottom: 15px; }
+.watch-count { font-size: 14px; color: #ccc; margin-bottom: 10px; }
+.progress-bar { background: #1a2410; border-radius: 10px; height: 10px; overflow: hidden; margin-bottom: 15px; }
+.progress-fill { background: #22c55e; height: 100%; transition: width 0.3s; }
+.video-list { display: flex; flex-direction: column; gap: 10px; }
+.video-item { background: #1a2410; padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
+.video-info { text-align: left; }
+.video-title { font-weight: bold; font-size: 14px; }
+.video-reward { font-size: 12px; color: #fbbf24; }
+.watch-video-btn { padding: 10px 20px; background: #fbbf24; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+.watch-video-btn:disabled { background: #4b5563; color: #9ca3af; }
+.timer-box { font-size: 48px; color: #fbbf24; font-weight: bold; margin: 20px 0; }
   </style>
 </head>
 <body>
@@ -59,7 +75,7 @@
 
   <div class="menu-grid">
     <div class="menu-btn" onclick="openCheckin()"><div class="menu-icon">📅</div><div class="menu-text">Daily Checkin</div></div>
-    <div class="menu-btn" onclick="goTo('watch.html')"><div class="menu-icon">📺</div><div class="menu-text">Watch & Earn</div></div>
+    <div class="menu-btn" id="watchBtn" onclick="openWatch()"><div class="menu-icon">📺</div><div class="menu-text">Watch & Earn</div><div class="menu-subtext" id="watchLeft">5 left today</div></div>
     <div class="menu-btn" onclick="goTo('quiz.html')"><div class="menu-icon">🧠</div><div class="menu-text">Daily Quiz</div></div>
     <div class="menu-btn" onclick="goTo('referrals.html')"><div class="menu-icon">👥</div><div class="menu-text">Refer & Earn</div></div>
     <div class="menu-btn" onclick="openWallet()"><div class="menu-icon">💰</div><div class="menu-text">Wallet</div></div>
@@ -68,7 +84,8 @@
 
   <button class="logout-btn" onclick="logout()">Logout</button>
 
-  <div id="walletModal" class="modal">
+  <!-- WALLET MODAL -->
+  <div id="walletModal" class="modal">... same as before...
     <div class="modal-content">
       <div class="modal-header"><h2>💰 Wallet</h2><span class="close-btn" onclick="closeWallet()">X</span></div>
       <div class="tabs">
@@ -100,7 +117,8 @@
     </div>
   </div>
 
-  <div id="checkinModal" class="modal">
+  <!-- CHECKIN MODAL -->
+  <div id="checkinModal" class="modal">... same as before...
     <div class="modal-content">
       <div class="modal-header"><h2>📅 Daily Checkin</h2><span class="close-btn" onclick="closeCheckin()">X</span></div>
       <p class="checkin-subtitle">Come back every day for bonus points</p>
@@ -108,6 +126,25 @@
       <div class="days-grid" id="daysGrid"></div>
       <button class="checkin-btn" id="checkinBtn" onclick="doCheckin()">Check In Now</button>
       <button class="back-btn" onclick="closeCheckin()">Back Home</button>
+    </div>
+  </div>
+
+  <!-- WATCH & EARN MODAL NEW -->
+  <div id="watchModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header"><h2>📺 Watch & Earn</h2><span class="close-btn" onclick="closeWatch()">X</span></div>
+      <div class="watch-header">
+        <div class="watch-count" id="watchCount">0 / 5 Videos Watched Today</div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 0%"></div></div>
+        <div style="font-size:12px; color:#fbbf24;">10 Points per video • 30 seconds each</div>
+      </div>
+      <div class="video-list" id="videoList"></div>
+      <div id="watchTimer" style="display:none; text-align:center;">
+        <div>Watching...</div>
+        <div class="timer-box" id="timerBox">30</div>
+        <button class="back-btn" onclick="cancelWatch()">Cancel</button>
+      </div>
+      <button class="back-btn" onclick="closeWatch()">Back Home</button>
     </div>
   </div>
 
@@ -121,20 +158,21 @@
 
   let currentUser = null;
   let userData = { points: 0, usdt: 0, bnb: 0, xrp: 0, xlm: 0, streak: 0, lastCheckin: "" };
+  let watchTimer = null;
   const POINT_VALUE = 0.0005;
   const CHECKIN_REWARDS = [10, 20, 30, 40, 50, 70, 100];
+  const MAX_WATCH_PER_DAY = 5;
 
   const welcomeEl = document.getElementById('welcomeText');
   const pointsEl = document.getElementById('points');
 
-  // INSTANT CACHE
   const cachedName = localStorage.getItem('username');
   const cachedPoints = localStorage.getItem('points');
   if(cachedName){ welcomeEl.innerText = "Welcome back " + cachedName; }
   if(cachedPoints){ pointsEl.innerText = cachedPoints; }
 
   onAuthStateChanged(auth, async (user) => {
-    if (user) { currentUser = user; loadHome(user.uid); } 
+    if (user) { currentUser = user; loadHome(user.uid); }
     else { localStorage.clear(); window.location.href = "log.html"; }
   });
 
@@ -150,40 +188,36 @@
         localStorage.setItem('points', data.points || 0);
         localStorage.setItem('streak', data.streak || 0);
         localStorage.setItem('lastCheckin', data.lastCheckin || "");
-        localStorage.setItem('usdt', data.usdt || 0); // NEW: cache crypto too
+        localStorage.setItem('usdt', data.usdt || 0);
         localStorage.setItem('bnb', data.bnb || 0);
         localStorage.setItem('xrp', data.xrp || 0);
         localStorage.setItem('xlm', data.xlm || 0);
         updateWalletUI();
         loadHistory();
+        updateWatchUI();
       }
     } catch(e) { console.log(e); }
   }
 
   function updateWalletUI() {
-    // NEW: Read from cache first for instant
     const cPoints = localStorage.getItem('points') || 0;
     const cUsdt = localStorage.getItem('usdt') || 0;
     const cBnb = localStorage.getItem('bnb') || 0;
     const cXrp = localStorage.getItem('xrp') || 0;
     const cXlm = localStorage.getItem('xlm') || 0;
-
     document.getElementById('modalPoints').innerText = cPoints;
     document.getElementById('usdtBal').innerText = '$' + parseFloat(cUsdt).toFixed(2);
     document.getElementById('bnbBal').innerText = '$' + parseFloat(cBnb).toFixed(2);
     document.getElementById('xrpBal').innerText = '$' + parseFloat(cXrp).toFixed(2);
     document.getElementById('xlmBal').innerText = '$' + parseFloat(cXlm).toFixed(2);
   }
-  
-  window.openWallet = function() { 
-    updateWalletUI(); // Call instantly when opening
-    document.getElementById('walletModal').style.display = 'flex'; 
-  }
+
+  window.openWallet = function() { updateWalletUI(); document.getElementById('walletModal').style.display = 'flex'; }
   window.closeWallet = function() { document.getElementById('walletModal').style.display = 'none'; }
-  window.showTab = function(tabName, btn) { 
+  window.showTab = function(tabName, btn) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    btn.classList.add('active'); document.getElementById(tabName).classList.add('active'); 
+    btn.classList.add('active'); document.getElementById(tabName).classList.add('active');
   }
 
   window.openCheckin = function() { document.getElementById('checkinModal').style.display = 'flex'; renderCheckin(); }
@@ -196,7 +230,7 @@
     const today = new Date().toISOString().split('T')[0];
     const alreadyChecked = cachedLastCheckin === today;
     const btn = document.getElementById('checkinBtn');
-    if(alreadyChecked){ btn.innerText = "Already Checked In Today"; btn.disabled = true; } 
+    if(alreadyChecked){ btn.innerText = "Already Checked In Today"; btn.disabled = true; }
     else { btn.innerText = "Check In Now"; btn.disabled = false; }
     let gridHtml = '';
     for(let i = 1; i <= 7; i++){
@@ -212,72 +246,126 @@
     const today = new Date().toISOString().split('T')[0];
     const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
     if(userData.lastCheckin === today) return;
-
     let newStreak = 1;
-    if(userData.lastCheckin === yesterday) {
-      newStreak = userData.streak + 1;
-      if(newStreak > 7) newStreak = 1;
-    } 
-
+    if(userData.lastCheckin === yesterday) { newStreak = userData.streak + 1; if(newStreak > 7) newStreak = 1; }
     let reward = CHECKIN_REWARDS[newStreak - 1];
-    userData.points += reward;
-    userData.streak = newStreak;
-    userData.lastCheckin = today;
+    userData.points += reward; userData.streak = newStreak; userData.lastCheckin = today;
+    await updateDoc(doc(db, "users", currentUser.uid), { points: userData.points, streak: userData.streak, lastCheckin: userData.lastCheckin });
+    pointsEl.innerText = userData.points;
+    localStorage.setItem('points', userData.points); localStorage.setItem('streak', userData.streak); localStorage.setItem('lastCheckin', userData.lastCheckin);
+    addHistory(`Daily Checkin Day ${newStreak} +${reward} points`);
+    renderCheckin(); updateWalletUI();
+  }
 
-    await updateDoc(doc(db, "users", currentUser.uid), {
-      points: userData.points, streak: userData.streak, lastCheckin: userData.lastCheckin
-    });
+  // WATCH & EARN LOGIC NEW
+  window.openWatch = function() {
+    document.getElementById('watchModal').style.display = 'flex';
+    renderWatchVideos();
+  }
+  window.closeWatch = function() {
+    clearInterval(watchTimer);
+    document.getElementById('watchModal').style.display = 'none';
+    document.getElementById('watchTimer').style.display = 'none';
+    document.getElementById('videoList').style.display = 'flex';
+  }
+
+  function getTodayWatchKey() {
+    const today = new Date().toISOString().split('T')[0];
+    return `watch_count_${today}`;
+  }
+
+  function updateWatchUI() {
+    const today = new Date().toISOString().split('T')[0];
+    const watched = parseInt(localStorage.getItem(getTodayWatchKey()) || '0');
+    const left = MAX_WATCH_PER_DAY - watched;
+    document.getElementById('watchCount').innerText = `${watched} / ${MAX_WATCH_PER_DAY} Videos Watched Today`;
+    document.getElementById('progressFill').style.width = `${(watched/MAX_WATCH_PER_DAY)*100}%`;
+    document.getElementById('watchLeft').innerText = `${left} left today`;
+    if(left <= 0) {
+      document.getElementById('watchBtn').classList.add('disabled');
+      document.getElementById('watchLeft').innerText = `Come back tomorrow`;
+    }
+  }
+
+  function renderWatchVideos() {
+    const watched = parseInt(localStorage.getItem(getTodayWatchKey()) || '0');
+    let html = '';
+    for(let i = 1; i <= MAX_WATCH_PER_DAY; i++) {
+      const disabled = i > watched? '' : 'disabled';
+      const text = i > watched? 'Watch +10' : 'Watched';
+      html += `<div class="video-item">
+        <div class="video-info"><div class="video-title">Video #${i}</div><div class="video-reward">+10 Points</div></div>
+        <button class="watch-video-btn" ${disabled} onclick="startWatch(${i})">${text}</button>
+      </div>`;
+    }
+    document.getElementById('videoList').innerHTML = html;
+  }
+
+  window.startWatch = function(videoNum) {
+    const watched = parseInt(localStorage.getItem(getTodayWatchKey()) || '0');
+    if(watched >= MAX_WATCH_PER_DAY) return;
+
+    document.getElementById('videoList').style.display = 'none';
+    document.getElementById('watchTimer').style.display = 'block';
+
+    let timeLeft = 30;
+    document.getElementById('timerBox').innerText = timeLeft;
+
+    watchTimer = setInterval(() => {
+      timeLeft--;
+      document.getElementById('timerBox').innerText = timeLeft;
+      if(timeLeft <= 0) {
+        clearInterval(watchTimer);
+        finishWatch();
+      }
+    }, 1000);
+  }
+
+  async function finishWatch() {
+    const todayKey = getTodayWatchKey();
+    let watched = parseInt(localStorage.getItem(todayKey) || '0') + 1;
+    localStorage.setItem(todayKey, watched);
+
+    userData.points += 10;
+    await updateDoc(doc(db, "users", currentUser.uid), { points: userData.points });
 
     pointsEl.innerText = userData.points;
     localStorage.setItem('points', userData.points);
-    localStorage.setItem('streak', userData.streak);
-    localStorage.setItem('lastCheckin', userData.lastCheckin);
-    
-    addHistory(`Daily Checkin Day ${newStreak} +${reward} points`);
-    renderCheckin();
-    updateWalletUI();
+
+    addHistory(`Watched Video +10 points`);
+    closeWatch();
+    updateWatchUI();
+  }
+
+  window.cancelWatch = function() {
+    clearInterval(watchTimer);
+    closeWatch();
   }
 
   window.convertPoints = async function() {
     let pts = parseFloat(document.getElementById('pointsToConvert').value);
     let coin = document.getElementById('coinSelect').value;
-    if(!pts || pts <= 0) return;
-    if(pts > userData.points) return;
+    if(!pts || pts <= 0) return; if(pts > userData.points) return;
     let usdValue = pts * POINT_VALUE;
-    userData.points -= pts;
-    userData[coin.toLowerCase()] += usdValue;
+    userData.points -= pts; userData[coin.toLowerCase()] += usdValue;
     await updateDoc(doc(db, "users", currentUser.uid), userData);
-    
-    // NEW: Update cache for all
     localStorage.setItem('points', userData.points);
-    localStorage.setItem('usdt', userData.usdt);
-    localStorage.setItem('bnb', userData.bnb);
-    localStorage.setItem('xrp', userData.xrp);
-    localStorage.setItem('xlm', userData.xlm);
-    
+    localStorage.setItem('usdt', userData.usdt); localStorage.setItem('bnb', userData.bnb);
+    localStorage.setItem('xrp', userData.xrp); localStorage.setItem('xlm', userData.xlm);
     addHistory(`Converted ${pts} pts to $${usdValue.toFixed(2)} ${coin}`);
-    updateWalletUI();
-    pointsEl.innerText = userData.points;
-    document.getElementById('pointsToConvert').value = '';
+    updateWalletUI(); pointsEl.innerText = userData.points; document.getElementById('pointsToConvert').value = '';
   }
 
   window.withdrawRequest = async function() {
     let coin = document.getElementById('withdrawCoin').value;
     let addr = document.getElementById('withdrawAddress').value;
     let amt = parseFloat(document.getElementById('withdrawAmount').value);
-    if(!addr) return;
-    if(!amt || amt <= 0) return;
-    if(amt > userData[coin.toLowerCase()]) return;
+    if(!addr) return; if(!amt || amt <= 0) return; if(amt > userData[coin.toLowerCase()]) return;
     userData[coin.toLowerCase()] -= amt;
     await updateDoc(doc(db, "users", currentUser.uid), userData);
-    
-    // NEW: Update cache
     localStorage.setItem(coin.toLowerCase(), userData[coin.toLowerCase()]);
-    
     addHistory(`Withdrew $${amt} ${coin} to ${addr.slice(0,8)}...`);
-    updateWalletUI();
-    document.getElementById('withdrawAmount').value = '';
-    document.getElementById('withdrawAddress').value = '';
+    updateWalletUI(); document.getElementById('withdrawAmount').value = ''; document.getElementById('withdrawAddress').value = '';
   }
 
   function addHistory(text) {
@@ -292,14 +380,8 @@
     document.getElementById('historyList').innerHTML = html || '<p style="text-align:center; color:#ccc;">No transactions yet</p>';
   }
 
-  window.goTo = function(page) { 
-    if(page === 'more.html'){ return; }
-    window.location.href = page; 
-  }
-  window.logout = function() { 
-    localStorage.clear();
-    signOut(auth).then(() => { window.location.href = "index.html"; }); 
-  }
+  window.goTo = function(page) { if(page === 'more.html'){ return; } window.location.href = page; }
+  window.logout = function() { localStorage.clear(); signOut(auth).then(() => { window.location.href = "index.html"; }); }
 </script>
 </body>
 </html>
