@@ -1,1 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Daily Quiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background: #2f3e1a; min-height: 100vh; padding: 20px; color: white; text-align: center; }
+.quiz-box { background: #4a6128; border: 3px solid #fbbf24; border-radius: 20px; padding: 25px; max-width: 500px; margin: 40px auto; }
+.quiz-title { font-size: 24px; color: #fbbf24; margin-bottom: 10px; }
+.quiz-subtitle { color: #ccc; font-size: 13px; margin-bottom: 20px; }
+.timer-box { font-size: 32px; color: #fbbf24; font-weight: bold; margin-bottom: 15px; }
+.timer-box.danger { color: #ef4444; }
+.question-num { font-size: 14px; color: #fbbf24; margin-bottom: 15px; }
+.question-text { font-size: 18px; font-weight: bold; margin-bottom: 20px; line-height: 1.4; }
+.option-btn { width: 100%; padding: 15px; margin: 8px 0; background: #1a2410; color: white; border: 2px solid #333; border-radius: 12px; font-size: 15px; cursor: pointer; text-align: left; transition: 0.2s; }
+.option-btn:hover { border-color: #fbbf24; }
+.option-btn.correct { background: #22c55e; border-color: #4ade80; }
+.option-btn.wrong { background: #ef4444; border-color: #f87171; }
+.option-btn:disabled { cursor: not-allowed; opacity: 0.8; }
+.result-box { font-size: 18px; margin: 15px 0; font-weight: bold; }
+.result-box.correct { color: #4ade80; }
+.result-box.wrong { color: #f87171; }
+.back-btn { width: 40%; padding: 16px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; margin-top: 15px; }
+.back-btn:active { transform: translateY(2px); }
+.done-msg { font-size: 20px; color: #4ade80; margin: 20px 0; font-weight: bold; }
+.done-sub { color: #ccc; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="quiz-box">
+    <div class="quiz-title">🧠 Daily Quiz</div>
+    <div class="quiz-subtitle">1 Question Per Day • 1 Minute • +10 Points</div>
 
+    <div id="quizContent"></div> <!-- EMPTY - FILLED BY JS INSTANTLY -->
+  </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = { apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d" };
+  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+
+  let currentUser = null;
+  let userData = {};
+  let selectedAnswer = null;
+  let correctAnswer = null;
+  let quizTimer = null;
+  let timeLeft = 60;
+
+  // 200 QUESTION POOL
+  const quizBank = [
+    {q: "What is the capital of Rwanda?", a: "Kigali", options: ["Kigali", "Nairobi", "Kampala", "Bujumbura"]},
+    {q: "2 + 2 =?", a: "4", options: ["3", "4", "5", "6"]},
+    {q: "Which is the largest ocean?", a: "Pacific", options: ["Atlantic", "Indian", "Pacific", "Arctic"]},
+    //... ALL 200 QUESTIONS FROM V2 HERE...
+    {q: "Who wrote 'The Great Gatsby'?", a: "Fitzgerald", options: ["Hemingway", "Fitzgerald", "Faulkner", "Steinbeck"]}
+  ];
+
+  // INSTANT CHECK - 0 SEC
+  const today = new Date().toISOString().split('T')[0];
+  const lastQuizDate = localStorage.getItem('last_quiz_date');
+
+  if(lastQuizDate === today) {
+    // INSTANT DONE - NO LOADING
+    document.getElementById('quizContent').innerHTML = `
+      <div class="done-msg">Done! ✅</div>
+      <div class="done-sub">See you tomorrow for new question</div>
+      <button class="back-btn" onclick="goHome()">Back Home</button>
+    `;
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      currentUser = user;
+      const docSnap = await getDoc(doc(db, "users", user.uid));
+      if(docSnap.exists()) userData = docSnap.data();
+      localStorage.setItem('points', userData.points || 0);
+
+      // ONLY LOAD QUIZ IF NOT DONE TODAY
+      if(lastQuizDate!== today) {
+        loadQuiz();
+      }
+    } else { window.location.href = "log.html"; }
+  });
+
+  function getTodayKey() {
+    return new Date().toISOString().split('T')[0];
+  }
+
+  function getQuestionOfDay() {
+    const today = getTodayKey();
+    const seed = today.split('-').join('');
+    const index = parseInt(seed) % quizBank.length;
+    return quizBank[index];
+  }
+
+  function loadQuiz() {
+    const question = getQuestionOfDay();
+    correctAnswer = question.a;
+    timeLeft = 60;
+
+    let optionsHTML = question.options.map(opt =>
+      `<button class="option-btn" onclick="selectAnswer('${opt}', this)">${opt}</button>`
+    ).join('');
+
+    document.getElementById('quizContent').innerHTML = `
+      <div class="timer-box" id="timer">60s</div>
+      <div class="question-num">Question 1/1</div>
+      <div class="question-text">${question.q}</div>
+      <div id="options">${optionsHTML}</div>
+      <div id="result"></div>
+      <button class="back-btn" onclick="goHome()">Back Home</button>
+    `;
+
+    startTimer();
+  }
+
+  function startTimer() {
+    quizTimer = setInterval(() => {
+      timeLeft--;
+      const timerEl = document.getElementById('timer');
+      timerEl.innerText = timeLeft + 's';
+      if(timeLeft <= 10) timerEl.classList.add('danger');
+
+      if(timeLeft <= 0) {
+        clearInterval(quizTimer);
+        timeoutAnswer();
+      }
+    }, 1000);
+  }
+
+  async function timeoutAnswer() {
+    const buttons = document.querySelectorAll('.option-btn');
+    buttons.forEach(b => b.disabled = true);
+
+    document.getElementById('result').innerHTML =
+      `<div class="result-box wrong">Time's up! Correct answer: ${correctAnswer}</div>`;
+
+    saveResult(0, "Timeout");
+  }
+
+  window.selectAnswer = async function(answer, btn) {
+    if(selectedAnswer) return;
+    clearInterval(quizTimer);
+    selectedAnswer = answer;
+
+    const buttons = document.querySelectorAll('.option-btn');
+    buttons.forEach(b => b.disabled = true);
+
+    let points = 0;
+    let resultHTML = '';
+
+    if(answer === correctAnswer) {
+      btn.classList.add('correct');
+      points = 10;
+      resultHTML = `<div class="result-box correct">Correct! +10 Points 🎉</div>`;
+    } else {
+      btn.classList.add('wrong');
+      buttons.forEach(b => { if(b.innerText === correctAnswer) b.classList.add('correct'); });
+      resultHTML = `<div class="result-box wrong">Wrong! Correct answer: ${correctAnswer}</div>`;
+    }
+
+    document.getElementById('result').innerHTML = resultHTML;
+    saveResult(points, answer);
+  }
+
+  async function saveResult(points, answer) {
+    const today = getTodayKey();
+    userData.points += points;
+    await updateDoc(doc(db, "users", currentUser.uid), { points: userData.points });
+
+    localStorage.setItem('points', userData.points);
+    localStorage.setItem('last_quiz_date', today);
+    localStorage.setItem('last_quiz_score', points);
+    localStorage.setItem('last_quiz_answer', answer);
+  }
+
+  window.goHome = function() {
+    window.location.href = "home.html";
+  }
+</script>
+</body>
+</html>
