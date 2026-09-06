@@ -79,7 +79,7 @@
     <div class="menu-btn" onclick="openCheckin()"><div class="menu-icon">📅</div><div class="menu-text">Daily Checkin</div></div>
     <div class="menu-btn" id="watchBtn" onclick="openWatch()"><div class="menu-icon">📺</div><div class="menu-text">Watch & Earn</div></div>
     <div class="menu-btn" onclick="goTo('quiz.html')"><div class="menu-icon">🧠</div><div class="menu-text">Daily Quiz</div></div>
-    <div class="menu-btn" onclick="goTo('referrals.html')"><div class="menu-icon">👥</div><div class="menu-text">Refer & Earn</div></div>
+    <div class="menu-btn" onclick="goTo('referrals.html')"><div class="menu-icon">👥</div><div class="menu-text">Refer & Earn</div></div> <!-- LINKED -->
     <div class="menu-btn" onclick="openWallet()"><div class="menu-icon">💰</div><div class="menu-text">Wallet</div></div>
     <div class="menu-btn" onclick="goTo('more.html')"><div class="menu-icon">⚙️</div><div class="menu-text">More</div></div>
   </div>
@@ -139,24 +139,17 @@
         <div class="watch-count" id="watchCount">0 / 5 Videos Watched Today</div>
         <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
       </div>
-      
-      <!-- STATE 1: SHOW 1 VIDEO -->
-      <div id="videoCard" class="video-card"></div>
 
-      <!-- STATE 2: TIMER -->
+      <div id="videoCard" class="video-card"></div>
       <div id="watchTimer" style="display:none; text-align:center;">
         <div>Watch the full ad</div>
         <div class="timer-box" id="timerBox">30</div>
         <button class="back-btn" style="background:#ef4444; box-shadow:0 4px 0 #b91c1c;" onclick="cancelWatch()">Cancel</button>
       </div>
-
-      <!-- STATE 3: CLAIM -->
       <div id="claimBox" style="display:none; text-align:center;">
         <div style="font-size:18px; margin-bottom:10px;">Video Completed! 🎉</div>
         <button class="claim-btn" onclick="claimReward()">OK +10 Points</button>
       </div>
-
-      <!-- STATE 4: ALL DONE -->
       <div id="allDoneBox" style="display:none; text-align:center;">
         <div class="done-msg">All 5 videos watched today ✅</div>
         <div class="done-sub">Come back tomorrow for more</div>
@@ -285,7 +278,6 @@
     renderCheckin(); updateWalletUI();
   }
 
-  // WATCH & EARN FINAL V7 - NO SUBTEXT
   window.openWatch = function() {
     document.getElementById('watchModal').style.display = 'flex';
     updateWatchUI();
@@ -307,25 +299,21 @@
   function updateWatchUI() {
     const watched = parseInt(localStorage.getItem(getTodayWatchKey()) || '0');
     const progressPercent = (watched/MAX_WATCH_PER_DAY)*100;
-    
     document.getElementById('watchCount').innerText = `${watched} / ${MAX_WATCH_PER_DAY} Videos Watched Today`;
     document.getElementById('progressFill').style.width = `${progressPercent}%`;
   }
 
   function renderSingleVideo() {
     const watched = parseInt(localStorage.getItem(getTodayWatchKey()) || '0');
-    
     document.getElementById('videoCard').style.display = 'block';
     document.getElementById('watchTimer').style.display = 'none';
     document.getElementById('claimBox').style.display = 'none';
     document.getElementById('allDoneBox').style.display = 'none';
-
     if(watched >= MAX_WATCH_PER_DAY) {
       document.getElementById('videoCard').style.display = 'none';
       document.getElementById('allDoneBox').style.display = 'block';
       return;
     }
-
     const nextVideo = watched + 1;
     document.getElementById('videoCard').innerHTML = `
       <div class="video-title">Video #${nextVideo}</div>
@@ -337,13 +325,10 @@
   window.startWatch = function(num) {
     const watched = parseInt(localStorage.getItem(getTodayWatchKey()) || '0');
     if(watched >= MAX_WATCH_PER_DAY) return;
-
     document.getElementById('videoCard').style.display = 'none';
     document.getElementById('watchTimer').style.display = 'block';
-
     let timeLeft = 30;
     document.getElementById('timerBox').innerText = timeLeft;
-
     watchTimer = setInterval(() => {
       timeLeft--;
       document.getElementById('timerBox').innerText = timeLeft;
@@ -360,16 +345,11 @@
     const todayKey = getTodayWatchKey();
     let watched = parseInt(localStorage.getItem(todayKey) || '0') + 1;
     localStorage.setItem(todayKey, watched);
-
-    // INSTANT POINTS UPDATE
     userData.points += 10;
     pointsEl.innerText = userData.points;
     localStorage.setItem('points', userData.points);
     updateWalletUI();
-
-    // SAVE TO FIREBASE
     await updateDoc(doc(db, "users", currentUser.uid), { points: userData.points });
-
     addHistory(`Watched Video #${watched} +10 points`);
     updateWatchUI();
     renderSingleVideo();
@@ -389,7 +369,7 @@
     await updateDoc(doc(db, "users", currentUser.uid), userData);
     localStorage.setItem('points', userData.points);
     localStorage.setItem('usdt', userData.usdt); localStorage.setItem('bnb', userData.bnb);
-    localStorage.setItem('xrp', userData.xrp); localStorage.setItem('xlm', userData.xlm);
+    localStorage.setItem('xrp', userData.xrp); localStorage.setItem('xlm', data.xlm);
     addHistory(`Converted ${pts} pts to $${usdValue.toFixed(2)} ${coin}`);
     updateWalletUI(); pointsEl.innerText = userData.points; document.getElementById('pointsToConvert').value = '';
   }
