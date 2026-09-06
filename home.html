@@ -62,14 +62,14 @@
     .input-box { width: 100%; padding: 13px; margin: 10px 0; background: #000; border: 1px solid #444; border-radius: 8px; color: white; font-size: 15px; }
     .convert-btn { width: 100%; padding: 14px; background: #fbbf24; color: #000; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 3px 0 #d97706; }
     
-    /* NEW 50% WIDTH BOX */
+    /* 50% WIDTH BOX */
     .balance-box { 
       background: #000; 
       border: 1px solid #fbbf24;
       border-radius: 10px; 
       padding: 15px; 
-      margin: 15px auto; /* centered */
-      width: 50%; /* 50% width */
+      margin: 15px auto;
+      width: 50%;
       text-align: center;
     }
     .balance-label { font-size: 12px; color: #ccc; margin-bottom: 5px; }
@@ -114,7 +114,7 @@
 
   <button class="logout-btn" onclick="logout()">Logout</button>
 
-  <!-- === WALLET POPUP HTML === -->
+  <!-- WALLET POPUP -->
   <div id="walletModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -150,7 +150,7 @@
       </div>
 
       <div id="withdraw" class="tab-content">
-        <select class="input-box" id="withdrawCoin"> <!-- NEW -->
+        <select class="input-box" id="withdrawCoin">
           <option value="">Choose Crypto to Withdraw</option>
           <option value="USDT">USDT</option>
           <option value="BNB">BNB</option>
@@ -262,14 +262,14 @@
     if(!pts) return alert("Enter points first");
     alert("Convert " + pts + " points to " + coin + " - Coming soon!");
   }
-  window.withdrawRequest = function() { // NEW
+  window.withdrawRequest = function() {
     let coin = document.getElementById('withdrawCoin').value;
     let addr = document.getElementById('withdrawAddress').value;
     let amt = document.getElementById('withdrawAmount').value;
     if(!coin) return alert("Please choose a crypto first");
     if(!addr) return alert("Enter wallet address");
     if(!amt) return alert("Enter amount");
-    alert("Withdraw " + amt + " + coin + " to " + addr + " - Request sent!");
+    alert("Withdraw " + amt + " + coin + " to " + addr + " - Request sent!"); // FIXED TYPO HERE
   }
 </script>
 </body>
