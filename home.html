@@ -62,17 +62,18 @@
     .input-box { width: 100%; padding: 13px; margin: 10px 0; background: #000; border: 1px solid #444; border-radius: 8px; color: white; font-size: 15px; }
     .convert-btn { width: 100%; padding: 14px; background: #fbbf24; color: #000; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 3px 0 #d97706; }
     
-    /* NEW SMALL BOX FOR BALANCE */
+    /* NEW 50% WIDTH BOX */
     .balance-box { 
       background: #000; 
       border: 1px solid #fbbf24;
       border-radius: 10px; 
       padding: 15px; 
-      margin: 15px 0;
+      margin: 15px auto; /* centered */
+      width: 50%; /* 50% width */
       text-align: center;
     }
     .balance-label { font-size: 12px; color: #ccc; margin-bottom: 5px; }
-    .balance-big { font-size: 36px; color: #f59e0b; font-weight: bold; }
+    .balance-big { font-size: 32px; color: #f59e0b; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -149,9 +150,18 @@
       </div>
 
       <div id="withdraw" class="tab-content">
-        <input type="text" class="input-box" placeholder="Wallet Address">
-        <input type="number" class="input-box" placeholder="Amount">
-        <button class="convert-btn" onclick="alert('Withdraw request sent!')">Withdraw Now</button>
+        <select class="input-box" id="withdrawCoin"> <!-- NEW -->
+          <option value="">Choose Crypto to Withdraw</option>
+          <option value="USDT">USDT</option>
+          <option value="BNB">BNB</option>
+          <option value="SOL">SOL</option>
+          <option value="XRP">XRP</option>
+          <option value="XLM">XLM</option>
+          <option value="USDC">USDC</option>
+        </select>
+        <input type="text" class="input-box" id="withdrawAddress" placeholder="Enter Wallet Address">
+        <input type="number" class="input-box" id="withdrawAmount" placeholder="Amount">
+        <button class="convert-btn" onclick="withdrawRequest()">Withdraw Now</button>
       </div>
 
       <div id="history" class="tab-content">
@@ -251,6 +261,15 @@
     let coin = document.getElementById('coinSelect').value;
     if(!pts) return alert("Enter points first");
     alert("Convert " + pts + " points to " + coin + " - Coming soon!");
+  }
+  window.withdrawRequest = function() { // NEW
+    let coin = document.getElementById('withdrawCoin').value;
+    let addr = document.getElementById('withdrawAddress').value;
+    let amt = document.getElementById('withdrawAmount').value;
+    if(!coin) return alert("Please choose a crypto first");
+    if(!addr) return alert("Enter wallet address");
+    if(!amt) return alert("Enter amount");
+    alert("Withdraw " + amt + " + coin + " to " + addr + " - Request sent!");
   }
 </script>
 </body>
