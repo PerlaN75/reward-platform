@@ -7,38 +7,41 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #2f3e1a; min-height: 100vh; padding: 20px; color: white; }
-    .header { text-align: center; margin-bottom: 20px; }
-    .header h1 { font-size: 24px; color: #fbbf24; margin-bottom: 5px; }
-    .header p { font-size: 13px; color: #ccc; }
-    
-    .card { background: #4a6128; border: 3px solid #fbbf24; border-radius: 20px; padding: 20px; margin-bottom: 15px; }
-    .card-title { font-size: 16px; font-weight: bold; color: #fbbf24; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
-    
-    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .stat-box { background: #000; border: 2px solid #fbbf24; border-radius: 15px; padding: 15px; text-align: center; }
-    .stat-label { font-size: 12px; color: #ccc; margin-bottom: 5px; }
-    .stat-num { font-size: 28px; color: #f59e0b; font-weight: bold; }
-    
-    .link-box { background: #000; padding: 12px; border-radius: 10px; border: 1px solid #444; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-    .link-text { flex: 1; font-size: 13px; color: #fbbf24; word-break: break-all; }
-    .action-btn { width: 100%; padding: 15px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; margin-bottom: 10px; }
-    .action-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #d97706; }
-    .action-btn.secondary { background: linear-gradient(180deg, #22c55e, #16a34a); box-shadow: 0 4px 0 #15803d; }
-    
-    .steps { background: #1a2410; padding: 15px; border-radius: 12px; }
-    .step { display: flex; gap: 10px; margin-bottom: 12px; font-size: 14px; }
-    .step:last-child { margin-bottom: 0; }
-    .step-num { font-size: 20px; }
-    
-    .referral-item { background: #1a2410; padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
-    .referral-name { font-weight: bold; }
-    .referral-status { font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: bold; }
-    .status-active { background: #22c55e; color: #000; }
-    .status-progress { background: #fbbf24; color: #000; }
-    .referral-points { color: #f59e0b; font-weight: bold; }
-    
-    .back-btn { width: 100%; padding: 15px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; margin-top: 10px; }
-    .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #22c55e; color: #000; padding: 12px 20px; border-radius: 10px; font-weight: bold; display: none; z-index: 9999; }
+   .header { text-align: center; margin-bottom: 20px; }
+   .header h1 { font-size: 24px; color: #fbbf24; margin-bottom: 5px; }
+   .header p { font-size: 13px; color: #ccc; }
+
+   .card { background: #4a6128; border: 3px solid #fbbf24; border-radius: 20px; padding: 20px; margin-bottom: 15px; }
+   .card-title { font-size: 16px; font-weight: bold; color: #fbbf24; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+
+   .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+   .stat-box { background: #000; border: 2px solid #fbbf24; border-radius: 15px; padding: 15px; text-align: center; }
+   .stat-label { font-size: 12px; color: #ccc; margin-bottom: 5px; }
+   .stat-num { font-size: 28px; color: #f59e0b; font-weight: bold; }
+
+   .link-box { background: #000; padding: 12px; border-radius: 10px; border: 1px solid #444; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+   .link-text { flex: 1; font-size: 13px; color: #fbbf24; word-break: break-all; }
+
+   .button-row { display: flex; gap: 10px; margin-bottom: 10px; }
+   .action-btn { width: 40%; padding: 15px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; }
+   .action-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #d97706; }
+   .action-btn.whatsapp { width: 40%; background: linear-gradient(180deg, #22c55e, #16a34a); box-shadow: 0 4px 0 #15803d; font-size: 24px; }
+
+   .steps { background: #1a2410; padding: 15px; border-radius: 12px; }
+   .step { display: flex; gap: 10px; margin-bottom: 12px; font-size: 14px; }
+   .step:last-child { margin-bottom: 0; }
+   .step-num { font-size: 20px; }
+
+   .referral-item { background: #1a2410; padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+   .referral-name { font-weight: bold; }
+   .referral-status { font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: bold; }
+   .status-active { background: #22c55e; color: #000; }
+   .status-progress { background: #fbbf24; color: #000; }
+   .referral-points { color: #f59e0b; font-weight: bold; }
+
+   .back-btn { width: 40%; padding: 15px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; margin-top: 10px; display: block; margin-left: auto; margin-right: auto; }
+   .back-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #d97706; }
+   .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #22c55e; color: #000; padding: 12px 20px; border-radius: 10px; font-weight: bold; display: none; z-index: 9999; }
   </style>
 </head>
 <body>
@@ -69,8 +72,10 @@
     <div class="link-box">
       <div class="link-text" id="refLink">Loading...</div>
     </div>
-    <button class="action-btn" onclick="copyLink()">Copy Link</button>
-    <button class="action-btn secondary" onclick="shareLink()">Share on WhatsApp</button>
+    <div class="button-row">
+      <button class="action-btn" onclick="copyLink()">Copy Link</button>
+      <button class="action-btn whatsapp" onclick="shareLink()">📲</button>
+    </div>
   </div>
 
   <!-- CARD 3: HOW IT WORKS -->
@@ -106,9 +111,9 @@
   let userData = {};
 
   onAuthStateChanged(auth, async (user) => {
-    if (user) { 
-      currentUser = user; 
-      loadReferrals(user.uid); 
+    if (user) {
+      currentUser = user;
+      loadReferrals(user.uid);
     }
     else { window.location.href = "log.html"; }
   });
@@ -117,29 +122,26 @@
     const docSnap = await getDoc(doc(db, "users", uid));
     if(docSnap.exists()) {
       userData = docSnap.data();
-      
-      // 1. Set stats
+
       document.getElementById('totalRefs').innerText = userData.referrals_count || 0;
       document.getElementById('totalEarned').innerText = userData.referrals_earned || 0;
-      
-      // 2. Set referral link
-      const refLink = `https://yourapp.com/r/${uid}`;
+
+      const refLink = `https://perlan75.github.io/reward-platform/?ref=${userData.username}`;
       document.getElementById('refLink').innerText = refLink;
-      
-      // 3. Set referral list
+
       renderReferralList(userData.referrals || []);
     }
   }
 
   function renderReferralList(referrals) {
     if(referrals.length === 0) return;
-    
+
     let html = '';
     referrals.forEach(ref => {
-      const statusClass = ref.earned ? 'status-active' : 'status-progress';
-      const statusText = ref.earned ? 'Active ✅' : `${ref.progress || 0}/3 Done ⏳`;
-      const pointsText = ref.earned ? '+50 pts' : '0 pts';
-      
+      const statusClass = ref.earned? 'status-active' : 'status-progress';
+      const statusText = ref.earned? 'Active ✅' : `${ref.progress || 0}/3 Done ⏳`;
+      const pointsText = ref.earned? '+50 pts' : '0 pts';
+
       html += `
         <div class="referral-item">
           <div>
