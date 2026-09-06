@@ -50,10 +50,10 @@
 .day-box.completed { background: #16a34a; color: white; }
 .checkin-btn { width: 100%; padding: 16px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; margin-bottom: 12px; }
 .checkin-btn:disabled { background: #4b5563; color: #9ca3af; box-shadow: 0 4px 0 #374151; cursor: not-allowed; }
-.back-btn { width: 40%; margin: 0 auto; display: block; padding: 15px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; }
+.back-btn { width: 100%; margin: 8px 0 0 0; display: block; padding: 15px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; }
 .back-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #d97706; }
 
- /* WATCH & EARN STYLES */
+ /* WATCH & EARN STYLES MATCH YOUR SCREENSHOT */
 .watch-header { text-align: center; margin-bottom: 15px; }
 .watch-count { font-size: 14px; color: #ccc; margin-bottom: 10px; }
 .progress-bar { background: #1a2410; border-radius: 10px; height: 10px; overflow: hidden; margin-bottom: 15px; }
@@ -66,6 +66,7 @@
 .watch-video-btn { padding: 10px 20px; background: #fbbf24; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
 .watch-video-btn:disabled { background: #4b5563; color: #9ca3af; }
 .timer-box { font-size: 48px; color: #fbbf24; font-weight: bold; margin: 20px 0; }
+.claim-btn { width: 100%; padding: 15px; background: #22c55e; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #16a34a; margin-bottom: 10px; }
   </style>
 </head>
 <body>
@@ -84,8 +85,8 @@
 
   <button class="logout-btn" onclick="logout()">Logout</button>
 
-  <!-- WALLET MODAL -->
-  <div id="walletModal" class="modal">... same as before...
+  <!-- WALLET + CHECKIN MODALS SAME AS BEFORE -->
+  <div id="walletModal" class="modal">
     <div class="modal-content">
       <div class="modal-header"><h2>💰 Wallet</h2><span class="close-btn" onclick="closeWallet()">X</span></div>
       <div class="tabs">
@@ -117,8 +118,7 @@
     </div>
   </div>
 
-  <!-- CHECKIN MODAL -->
-  <div id="checkinModal" class="modal">... same as before...
+  <div id="checkinModal" class="modal">
     <div class="modal-content">
       <div class="modal-header"><h2>📅 Daily Checkin</h2><span class="close-btn" onclick="closeCheckin()">X</span></div>
       <p class="checkin-subtitle">Come back every day for bonus points</p>
@@ -129,7 +129,7 @@
     </div>
   </div>
 
-  <!-- WATCH & EARN MODAL NEW -->
+  <!-- WATCH & EARN MODAL UPDATED -->
   <div id="watchModal" class="modal">
     <div class="modal-content">
       <div class="modal-header"><h2>📺 Watch & Earn</h2><span class="close-btn" onclick="closeWatch()">X</span></div>
@@ -138,12 +138,23 @@
         <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 0%"></div></div>
         <div style="font-size:12px; color:#fbbf24;">10 Points per video • 30 seconds each</div>
       </div>
+      
+      <!-- STATE 1: LIST OF VIDEOS -->
       <div class="video-list" id="videoList"></div>
+
+      <!-- STATE 2: TIMER RUNNING -->
       <div id="watchTimer" style="display:none; text-align:center;">
         <div>Watching...</div>
         <div class="timer-box" id="timerBox">30</div>
-        <button class="back-btn" onclick="cancelWatch()">Cancel</button>
+        <button class="back-btn" style="background:#ef4444; box-shadow:0 4px 0 #b91c1c;" onclick="cancelWatch()">Cancel</button>
       </div>
+
+      <!-- STATE 3: CLAIM REWARD -->
+      <div id="claimBox" style="display:none; text-align:center;">
+        <div style="font-size:18px; margin-bottom:10px;">Video Completed! 🎉</div>
+        <button class="claim-btn" onclick="claimReward()">OK +10 Points</button>
+      </div>
+
       <button class="back-btn" onclick="closeWatch()">Back Home</button>
     </div>
   </div>
@@ -159,6 +170,7 @@
   let currentUser = null;
   let userData = { points: 0, usdt: 0, bnb: 0, xrp: 0, xlm: 0, streak: 0, lastCheckin: "" };
   let watchTimer = null;
+  let currentVideoNum = 0;
   const POINT_VALUE = 0.0005;
   const CHECKIN_REWARDS = [10, 20, 30, 40, 50, 70, 100];
   const MAX_WATCH_PER_DAY = 5;
@@ -257,7 +269,7 @@
     renderCheckin(); updateWalletUI();
   }
 
-  // WATCH & EARN LOGIC NEW
+  // WATCH & EARN LOGIC UPDATED FOR 1 BY 1
   window.openWatch = function() {
     document.getElementById('watchModal').style.display = 'flex';
     renderWatchVideos();
@@ -266,6 +278,7 @@
     clearInterval(watchTimer);
     document.getElementById('watchModal').style.display = 'none';
     document.getElementById('watchTimer').style.display = 'none';
+    document.getElementById('claimBox').style.display = 'none';
     document.getElementById('videoList').style.display = 'flex';
   }
 
@@ -289,22 +302,37 @@
 
   function renderWatchVideos() {
     const watched = parseInt(localStorage.getItem(getTodayWatchKey()) || '0');
+    document.getElementById('videoList').style.display = 'flex';
+    document.getElementById('watchTimer').style.display = 'none';
+    document.getElementById('claimBox').style.display = 'none';
+
     let html = '';
     for(let i = 1; i <= MAX_WATCH_PER_DAY; i++) {
-      const disabled = i > watched? '' : 'disabled';
-      const text = i > watched? 'Watch +10' : 'Watched';
-      html += `<div class="video-item">
-        <div class="video-info"><div class="video-title">Video #${i}</div><div class="video-reward">+10 Points</div></div>
-        <button class="watch-video-btn" ${disabled} onclick="startWatch(${i})">${text}</button>
-      </div>`;
+      if(i <= watched) {
+        html += `<div class="video-item">
+          <div class="video-info"><div class="video-title">Video #${i}</div><div class="video-reward">+10 Points</div></div>
+          <button class="watch-video-btn" disabled>Watched</button>
+        </div>`;
+      } else if(i === watched + 1) {
+        html += `<div class="video-item" style="border:2px solid #fbbf24;">
+          <div class="video-info"><div class="video-title">Video #${i}</div><div class="video-reward">+10 Points</div></div>
+          <button class="watch-video-btn" onclick="startWatch(${i})">Watch +10</button>
+        </div>`;
+      } else {
+        html += `<div class="video-item" style="opacity:0.5;">
+          <div class="video-info"><div class="video-title">Video #${i}</div><div class="video-reward">+10 Points</div></div>
+          <button class="watch-video-btn" disabled>Locked</button>
+        </div>`;
+      }
     }
     document.getElementById('videoList').innerHTML = html;
   }
 
   window.startWatch = function(videoNum) {
     const watched = parseInt(localStorage.getItem(getTodayWatchKey()) || '0');
-    if(watched >= MAX_WATCH_PER_DAY) return;
+    if(videoNum!== watched + 1) return; // force 1 by 1
 
+    currentVideoNum = videoNum;
     document.getElementById('videoList').style.display = 'none';
     document.getElementById('watchTimer').style.display = 'block';
 
@@ -316,12 +344,13 @@
       document.getElementById('timerBox').innerText = timeLeft;
       if(timeLeft <= 0) {
         clearInterval(watchTimer);
-        finishWatch();
+        document.getElementById('watchTimer').style.display = 'none';
+        document.getElementById('claimBox').style.display = 'block';
       }
     }, 1000);
   }
 
-  async function finishWatch() {
+  window.claimReward = async function() {
     const todayKey = getTodayWatchKey();
     let watched = parseInt(localStorage.getItem(todayKey) || '0') + 1;
     localStorage.setItem(todayKey, watched);
@@ -332,14 +361,14 @@
     pointsEl.innerText = userData.points;
     localStorage.setItem('points', userData.points);
 
-    addHistory(`Watched Video +10 points`);
-    closeWatch();
+    addHistory(`Watched Video #${currentVideoNum} +10 points`);
+    renderWatchVideos(); // Show next video
     updateWatchUI();
   }
 
   window.cancelWatch = function() {
     clearInterval(watchTimer);
-    closeWatch();
+    renderWatchVideos();
   }
 
   window.convertPoints = async function() {
@@ -351,7 +380,7 @@
     await updateDoc(doc(db, "users", currentUser.uid), userData);
     localStorage.setItem('points', userData.points);
     localStorage.setItem('usdt', userData.usdt); localStorage.setItem('bnb', userData.bnb);
-    localStorage.setItem('xrp', userData.xrp); localStorage.setItem('xlm', userData.xlm);
+    localStorage.setItem('xrp', userData.xrp); localStorage.setItem('xlm', data.xlm);
     addHistory(`Converted ${pts} pts to $${usdValue.toFixed(2)} ${coin}`);
     updateWalletUI(); pointsEl.innerText = userData.points; document.getElementById('pointsToConvert').value = '';
   }
