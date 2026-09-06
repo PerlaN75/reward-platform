@@ -15,7 +15,6 @@
     .points-box h2 { font-size: 56px; color: #f59e0b; font-weight: bold; }
     
     .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-    
     .menu-btn { 
       background: linear-gradient(180deg, #ffffff, #f0f0f0); 
       padding: 20px 10px; border-radius: 18px; 
@@ -29,29 +28,11 @@
       justify-content: center;
       align-items: center;
     }
-    .menu-btn:active { 
-      transform: translateY(5px);
-      box-shadow: 0 3px 0 #c7c7c7, 0 6px 10px rgba(0,0,0,0.2); 
-    }
-    
+    .menu-btn:active { transform: translateY(5px); box-shadow: 0 3px 0 #c7c7c7, 0 6px 10px rgba(0,0,0,0.2); }
     .menu-icon { font-size: 40px; margin-bottom: 10px; }
     .menu-text { font-size: 14px; font-weight: bold; color: #2f3e1a; }
     
-    /* CHANGED: Logout now 40% width */
-    .logout-btn { 
-      width: 40%; 
-      padding: 16px 12px; 
-      margin-top: 30px; 
-      background: linear-gradient(180deg, #ef4444, #dc2626); 
-      color: white; 
-      border: none; 
-      border-radius: 12px; 
-      font-weight: bold; 
-      cursor: pointer; 
-      font-size: 16px; 
-      box-shadow: 0 5px 0 #b91c1c;
-      transition: 0.1s;
-    }
+    .logout-btn { width: 40%; padding: 16px 12px; margin-top: 30px; background: linear-gradient(180deg, #ef4444, #dc2626); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; box-shadow: 0 5px 0 #b91c1c; transition: 0.1s; }
     .logout-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #b91c1c; }
 
     .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; padding: 20px; }
@@ -80,10 +61,7 @@
   <h1 id="welcomeText">Loading...</h1>
   <div class="tagline">🐒 From Nothing to Something 🍇</div>
   
-  <div class="points-box">
-    <h3>YOUR POINTS</h3>
-    <h2 id="points">0</h2>
-  </div>
+  <div class="points-box"><h3>YOUR POINTS</h3><h2 id="points">0</h2></div>
 
   <div class="menu-grid">
     <div class="menu-btn" onclick="goTo('checkin.html')"><div class="menu-icon">📅</div><div class="menu-text">Daily Checkin</div></div>
@@ -144,28 +122,29 @@
   const welcomeEl = document.getElementById('welcomeText');
   const pointsEl = document.getElementById('points');
 
+  // ===== KEY CHANGE: INSTANT 0 SEC LOAD =====
+  // This runs immediately when page loads, before firebase
+  const cachedName = localStorage.getItem('username');
+  if(cachedName){
+    welcomeEl.innerText = "Welcome back " + cachedName;
+  }
+
   onAuthStateChanged(auth, async (user) => {
     if (user) { currentUser = user; loadHome(user.uid); } 
     else { localStorage.removeItem('username'); window.location.href = "log.html"; }
   });
 
   async function loadHome(uid) {
-    // INSTANT CACHE: Show name immediately from localStorage
-    const cachedName = localStorage.getItem('username');
-    if(cachedName){
-      welcomeEl.innerText = "Welcome back " + cachedName;
-    }
-
     try {
       const docSnap = await getDoc(doc(db, "users", uid));
       if(docSnap.exists()) {
         const data = docSnap.data();
         userData = {...userData,...data };
-        // Update with real data from Firebase
+        // Update with real data and refresh cache
         welcomeEl.innerText = "Welcome back " + data.username;
         pointsEl.innerText = data.points || 0;
-        // Save to cache for next load
         localStorage.setItem('username', data.username);
+        localStorage.setItem('points', data.points || 0); // cache points too
         updateWalletUI();
         loadHistory();
       }
@@ -197,6 +176,7 @@
     userData.points -= pts;
     userData[coin.toLowerCase()] += usdValue;
     await updateDoc(doc(db, "users", currentUser.uid), userData);
+    localStorage.setItem('points', userData.points); // update cache
     addHistory(`Converted ${pts} pts to $${usdValue.toFixed(2)} ${coin}`);
     updateWalletUI();
     pointsEl.innerText = userData.points;
@@ -238,6 +218,7 @@
   }
   window.logout = function() { 
     localStorage.removeItem('username');
+    localStorage.removeItem('points');
     signOut(auth).then(() => { window.location.href = "index.html"; }); 
   }
 </script>
