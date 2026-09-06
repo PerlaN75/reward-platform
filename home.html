@@ -48,6 +48,7 @@
     }
     .logout-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b91c1c; }
 
+    /* === WALLET POPUP === */
     .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; }
     .modal-content { background: #3a4d20; border: 2px solid #fbbf24; border-radius: 15px; padding: 20px; width: 92%; max-width: 400px; color: white; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
@@ -61,15 +62,15 @@
     .input-box { width: 100%; padding: 13px; margin: 10px 0; background: #000; border: 1px solid #444; border-radius: 8px; color: white; font-size: 15px; }
     .convert-btn { width: 100%; padding: 14px; background: #fbbf24; color: #000; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 3px 0 #d97706; }
     
+    /* NEW SMALL BOX FOR BALANCE */
     .balance-box { 
       background: #000; 
       border: 1px solid #fbbf24;
       border-radius: 10px; 
       padding: 15px; 
-      margin: 15px auto;
-      width: 50%;
+      margin: 15px 0;
       text-align: center;
-    } 
+    }
     .balance-label { font-size: 12px; color: #ccc; margin-bottom: 5px; }
     .balance-big { font-size: 36px; color: #f59e0b; font-weight: bold; }
   </style>
@@ -84,40 +85,78 @@
   </div>
 
   <div class="menu-grid">
-    <div class="menu-btn" onclick="goTo('checkin.html')"><div class="menu-icon">📅</div><div class="menu-text">Daily Checkin</div></div>
-    <div class="menu-btn" onclick="goTo('watch.html')"><div class="menu-icon">📺</div><div class="menu-text">Watch & Earn</div></div>
-    <div class="menu-btn" onclick="goTo('quiz.html')"><div class="menu-icon">🧠</div><div class="menu-text">Daily Quiz</div></div>
-    <div class="menu-btn" onclick="goTo('referrals.html')"><div class="menu-icon">👥</div><div class="menu-text">Refer & Earn</div></div>
-    <div class="menu-btn" onclick="goTo('wallet.html')"><div class="menu-icon">💰</div><div class="menu-text">Wallet</div></div>
-    <div class="menu-btn" onclick="goTo('more.html')"><div class="menu-icon">⚙️</div><div class="menu-text">More</div></div>
+    <div class="menu-btn" onclick="goTo('checkin.html')">
+      <div class="menu-icon">📅</div>
+      <div class="menu-text">Daily Checkin</div>
+    </div>
+    <div class="menu-btn" onclick="goTo('watch.html')">
+      <div class="menu-icon">📺</div>
+      <div class="menu-text">Watch & Earn</div>
+    </div>
+    <div class="menu-btn" onclick="goTo('quiz.html')">
+      <div class="menu-icon">🧠</div>
+      <div class="menu-text">Daily Quiz</div>
+    </div>
+    <div class="menu-btn" onclick="goTo('referrals.html')">
+      <div class="menu-icon">👥</div>
+      <div class="menu-text">Refer & Earn</div>
+    </div>
+    <div class="menu-btn" onclick="goTo('wallet.html')">
+      <div class="menu-icon">💰</div>
+      <div class="menu-text">Wallet</div>
+    </div>
+    <div class="menu-btn" onclick="goTo('more.html')">
+      <div class="menu-icon">⚙️</div>
+      <div class="menu-text">More</div>
+    </div>
   </div>
 
   <button class="logout-btn" onclick="logout()">Logout</button>
 
+  <!-- === WALLET POPUP HTML === -->
   <div id="walletModal" class="modal">
     <div class="modal-content">
-      <div class="modal-header"><h2>💰 Wallet</h2><span class="close-btn" onclick="closeWallet()">X</span></div>
+      <div class="modal-header">
+        <h2>💰 Wallet</h2>
+        <span class="close-btn" onclick="closeWallet()">X</span>
+      </div>
+
       <div class="tabs">
         <button class="tab active" onclick="showTab('balance', this)">Balance</button>
         <button class="tab" onclick="showTab('convert', this)">Convert</button>
         <button class="tab" onclick="showTab('withdraw', this)">Withdraw</button>
         <button class="tab" onclick="showTab('history', this)">History</button>
       </div>
+
       <div id="balance" class="tab-content active">
-        <div class="balance-box"><div class="balance-label">YOUR POINTS</div><div class="balance-big" id="modalBalance">0</div></div>
+        <div class="balance-box">
+          <div class="balance-label">YOUR POINTS</div>
+          <div class="balance-big" id="modalBalance">0</div>
+        </div>
       </div>
+
       <div id="convert" class="tab-content">
-        <select class="input-box" id="coinSelect"><option value="USDT">USDT</option><option value="BNB">BNB</option><option value="SOL">SOL</option><option value="XRP">XRP</option><option value="XLM">XLM</option><option value="USDC">USDC</option></select>
+        <select class="input-box" id="coinSelect">
+          <option value="USDT">USDT</option>
+          <option value="BNB">BNB</option>
+          <option value="SOL">SOL</option>
+          <option value="XRP">XRP</option>
+          <option value="XLM">XLM</option>
+          <option value="USDC">USDC</option>
+        </select>
         <input type="number" class="input-box" id="pointsToConvert" placeholder="Enter points">
         <button class="convert-btn" onclick="convertPoints()">Convert Now</button>
       </div>
+
       <div id="withdraw" class="tab-content">
-        <select class="input-box" id="withdrawCoin"><option value="">Choose Crypto</option><option value="USDT">USDT</option><option value="BNB">BNB</option><option value="SOL">SOL</option><option value="XRP">XRP</option><option value="XLM">XLM</option><option value="USDC">USDC</option></select>
-        <input type="text" class="input-box" id="withdrawAddress" placeholder="Wallet Address">
-        <input type="number" class="input-box" id="withdrawAmount" placeholder="Amount">
-        <button class="convert-btn" onclick="withdrawRequest()">Withdraw Now</button>
+        <input type="text" class="input-box" placeholder="Wallet Address">
+        <input type="number" class="input-box" placeholder="Amount">
+        <button class="convert-btn" onclick="alert('Withdraw request sent!')">Withdraw Now</button>
       </div>
-      <div id="history" class="tab-content"><p style="text-align:center; color:#ccc;">No transactions yet</p></div>
+
+      <div id="history" class="tab-content">
+        <p style="text-align:center; color:#ccc;">No transactions yet</p>
+      </div>
     </div>
   </div>
 
@@ -126,21 +165,40 @@
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, getDoc, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = { apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d" };
-  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+  const firebaseConfig = { 
+    apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", 
+    authDomain: "reward-platform-rw-2e13d.firebaseapp.com", 
+    projectId: "reward-platform-rw-2e13d"
+  };
+  const app = initializeApp(firebaseConfig); 
+  const auth = getAuth(app);
+  const db = getFirestore(app);
   enableIndexedDbPersistence(db).catch(() => {});
 
   const welcomeEl = document.getElementById('welcomeText');
   const pointsEl = document.getElementById('points');
 
   onAuthStateChanged(auth, async (user) => {
-    if (user) { loadHome(user.uid); } 
-    else { localStorage.removeItem('username'); window.location.href = "log.html"; }
+    if (user) {
+      loadHome(user.uid);
+    } else {
+      localStorage.removeItem('username'); 
+      window.location.href = "log.html"; 
+    }
   });
 
   async function loadHome(uid) {
-    const cacheKey = 'home_' + uid; const cached = localStorage.getItem(cacheKey);
-    if(cached){ try { const data = JSON.parse(cached); welcomeEl.innerText = "Welcome back " + data.username; pointsEl.innerText = data.balance || 0; } catch(e){} }
+    const cacheKey = 'home_' + uid;
+    const cached = localStorage.getItem(cacheKey);
+    
+    if(cached){
+      try {
+        const data = JSON.parse(cached);
+        welcomeEl.innerText = "Welcome back " + data.username;
+        pointsEl.innerText = data.balance || 0;
+      } catch(e){}
+    }
+    
     try {
       const docSnap = await getDoc(doc(db, "users", uid));
       if(docSnap.exists()) {
@@ -148,32 +206,51 @@
         welcomeEl.innerText = "Welcome back " + data.username;
         pointsEl.innerText = data.balance || 0;
         localStorage.setItem('username', data.username);
-        localStorage.setItem(cacheKey, JSON.stringify({ username: data.username, balance: data.balance || 0 }));
+        localStorage.setItem(cacheKey, JSON.stringify({
+          username: data.username,
+          balance: data.balance || 0
+        }));
       }
-    } catch(e) { console.log(e); }
+    } catch(e) {
+      console.log(e);
+    }
   }
 
   window.goTo = function(page) {
     if(page === 'wallet.html'){ openWallet(); return; }
-    if(page === 'checkin.html' || page === 'watch.html' || page === 'quiz.html' || page === 'referrals.html'){ window.location.href = page; } 
-    else { alert(page.replace('.html','') + " page coming soon!"); }
+    if(page === 'checkin.html' || page === 'watch.html' || page === 'quiz.html' || page === 'referrals.html'){
+      window.location.href = page;
+    } else {
+      alert(page.replace('.html','') + " page coming soon!");
+    }
   }
   
-  window.logout = function() { localStorage.removeItem('username'); signOut(auth).then(() => { window.location.href = "index.html"; }); }
+  window.logout = function() {
+    localStorage.removeItem('username'); 
+    signOut(auth).then(() => {
+      window.location.href = "index.html";
+    });
+  }
 
-  window.openWallet = function() { document.getElementById('walletModal').style.display = 'flex'; document.getElementById('modalBalance').innerText = document.getElementById('points').innerText; }
-  window.closeWallet = function() { document.getElementById('walletModal').style.display = 'none'; }
-  window.showTab = function(tabName, btn) { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); btn.classList.add('active'); document.getElementById(tabName).classList.add('active'); }
-  window.convertPoints = function() { let pts = document.getElementById('pointsToConvert').value; let coin = document.getElementById('coinSelect').value; if(!pts) return alert("Enter points first"); alert("Convert " + pts + " points to " + coin + " - Coming soon!"); }
-  
-  window.withdrawRequest = function() {
-    let coin = document.getElementById('withdrawCoin').value;
-    let addr = document.getElementById('withdrawAddress').value;
-    let amt = document.getElementById('withdrawAmount').value;
-    if(!coin) return alert("Please choose crypto first");
-    if(!addr) return alert("Enter wallet address");
-    if(!amt) return alert("Enter amount");
-    alert("Withdraw " + amt + " + coin + " to " + addr + " - Request sent!"); // FIXED
+  // === WALLET POPUP JS ===
+  window.openWallet = function() {
+    document.getElementById('walletModal').style.display = 'flex';
+    document.getElementById('modalBalance').innerText = document.getElementById('points').innerText;
+  }
+  window.closeWallet = function() {
+    document.getElementById('walletModal').style.display = 'none';
+  }
+  window.showTab = function(tabName, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(tabName).classList.add('active');
+  }
+  window.convertPoints = function() {
+    let pts = document.getElementById('pointsToConvert').value;
+    let coin = document.getElementById('coinSelect').value;
+    if(!pts) return alert("Enter points first");
+    alert("Convert " + pts + " points to " + coin + " - Coming soon!");
   }
 </script>
 </body>
