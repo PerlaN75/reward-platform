@@ -48,7 +48,7 @@
     }
     .logout-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b91c1c; }
 
-    /* === WALLET POPUP ADDED === */
+    /* === WALLET POPUP === */
     .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; }
     .modal-content { background: #3a4d20; border: 2px solid #fbbf24; border-radius: 15px; padding: 20px; width: 92%; max-width: 400px; color: white; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
@@ -61,7 +61,18 @@
     .tab-content.active { display: block; }
     .input-box { width: 100%; padding: 13px; margin: 10px 0; background: #000; border: 1px solid #444; border-radius: 8px; color: white; font-size: 15px; }
     .convert-btn { width: 100%; padding: 14px; background: #fbbf24; color: #000; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 3px 0 #d97706; }
-    .balance-big { font-size: 42px; color: #f59e0b; font-weight: bold; text-align: center; margin: 20px 0; }
+    
+    /* NEW SMALL BOX FOR BALANCE */
+    .balance-box { 
+      background: #000; 
+      border: 1px solid #fbbf24;
+      border-radius: 10px; 
+      padding: 15px; 
+      margin: 15px 0;
+      text-align: center;
+    }
+    .balance-label { font-size: 12px; color: #ccc; margin-bottom: 5px; }
+    .balance-big { font-size: 36px; color: #f59e0b; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -90,7 +101,7 @@
       <div class="menu-icon">👥</div>
       <div class="menu-text">Refer & Earn</div>
     </div>
-    <div class="menu-btn" onclick="goTo('wallet.html')"> <!-- CHANGED THIS LINE -->
+    <div class="menu-btn" onclick="goTo('wallet.html')">
       <div class="menu-icon">💰</div>
       <div class="menu-text">Wallet</div>
     </div>
@@ -102,7 +113,7 @@
 
   <button class="logout-btn" onclick="logout()">Logout</button>
 
-  <!-- === WALLET POPUP HTML ADDED === -->
+  <!-- === WALLET POPUP HTML === -->
   <div id="walletModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -118,13 +129,20 @@
       </div>
 
       <div id="balance" class="tab-content active">
-        <h3 style="text-align:center; color:#ccc; font-size:13px;">YOUR POINTS</h3>
-        <div class="balance-big" id="modalBalance">0</div>
+        <div class="balance-box">
+          <div class="balance-label">YOUR POINTS</div>
+          <div class="balance-big" id="modalBalance">0</div>
+        </div>
       </div>
 
       <div id="convert" class="tab-content">
         <select class="input-box" id="coinSelect">
           <option value="USDT">USDT</option>
+          <option value="BNB">BNB</option>
+          <option value="SOL">SOL</option>
+          <option value="XRP">XRP</option>
+          <option value="XLM">XLM</option>
+          <option value="USDC">USDC</option>
         </select>
         <input type="number" class="input-box" id="pointsToConvert" placeholder="Enter points">
         <button class="convert-btn" onclick="convertPoints()">Convert Now</button>
@@ -199,7 +217,7 @@
   }
 
   window.goTo = function(page) {
-    if(page === 'wallet.html'){ openWallet(); return; } // CHANGED THIS LINE
+    if(page === 'wallet.html'){ openWallet(); return; }
     if(page === 'checkin.html' || page === 'watch.html' || page === 'quiz.html' || page === 'referrals.html'){
       window.location.href = page;
     } else {
@@ -214,7 +232,7 @@
     });
   }
 
-  // === WALLET POPUP JS ADDED ===
+  // === WALLET POPUP JS ===
   window.openWallet = function() {
     document.getElementById('walletModal').style.display = 'flex';
     document.getElementById('modalBalance').innerText = document.getElementById('points').innerText;
