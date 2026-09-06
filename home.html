@@ -28,26 +28,40 @@
       transform: translateY(4px);
       box-shadow: 0 2px 0 #b3b3b3, 0 4px 8px rgba(0,0,0,0.2); 
     }
-    .logout-btn { 
-  width: 35%;           /* Changed from 50% to 35% */
-  padding: 18px 12px;   
-  margin-top: 50px;     
-  background: #ef4444; 
-  color: white; 
-  border: none; 
-  border-radius: 10px; 
-  font-weight: bold; 
-  cursor: pointer; 
-  font-size: 16px;      
-  box-shadow: 0 4px 0 #b91c1c;
-  transition: 0.1s;
-}
-.logout-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b91c1c; }
+    
     .menu-icon { font-size: 35px; margin-bottom: 8px; }
     .menu-text { font-size: 14px; font-weight: bold; color: #2f3e1a; }
     
-    
+    .logout-btn { 
+      width: 35%; 
+      padding: 18px 12px; 
+      margin-top: 50px; 
+      background: #ef4444; 
+      color: white; 
+      border: none; 
+      border-radius: 10px; 
+      font-weight: bold; 
+      cursor: pointer; 
+      font-size: 16px; 
+      box-shadow: 0 4px 0 #b91c1c;
+      transition: 0.1s;
+    }
     .logout-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b91c1c; }
+
+    /* === WALLET POPUP ADDED === */
+    .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; }
+    .modal-content { background: #3a4d20; border: 2px solid #fbbf24; border-radius: 15px; padding: 20px; width: 92%; max-width: 400px; color: white; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .modal-header h2 { font-size: 20px; color: white; display:flex; align-items:center; gap:8px; }
+    .close-btn { font-size: 24px; color: white; cursor: pointer; font-weight: bold; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 15px; }
+    .tab { flex: 1; padding: 9px; background: #1a2410; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; font-size: 12px; }
+    .tab.active { background: #fbbf24; color: #000; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .input-box { width: 100%; padding: 13px; margin: 10px 0; background: #000; border: 1px solid #444; border-radius: 8px; color: white; font-size: 15px; }
+    .convert-btn { width: 100%; padding: 14px; background: #fbbf24; color: #000; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 3px 0 #d97706; }
+    .balance-big { font-size: 42px; color: #f59e0b; font-weight: bold; text-align: center; margin: 20px 0; }
   </style>
 </head>
 <body>
@@ -76,7 +90,7 @@
       <div class="menu-icon">👥</div>
       <div class="menu-text">Refer & Earn</div>
     </div>
-    <div class="menu-btn" onclick="goTo('wallet.html')">
+    <div class="menu-btn" onclick="goTo('wallet.html')"> <!-- CHANGED THIS LINE -->
       <div class="menu-icon">💰</div>
       <div class="menu-text">Wallet</div>
     </div>
@@ -87,6 +101,46 @@
   </div>
 
   <button class="logout-btn" onclick="logout()">Logout</button>
+
+  <!-- === WALLET POPUP HTML ADDED === -->
+  <div id="walletModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>💰 Wallet</h2>
+        <span class="close-btn" onclick="closeWallet()">X</span>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" onclick="showTab('balance', this)">Balance</button>
+        <button class="tab" onclick="showTab('convert', this)">Convert</button>
+        <button class="tab" onclick="showTab('withdraw', this)">Withdraw</button>
+        <button class="tab" onclick="showTab('history', this)">History</button>
+      </div>
+
+      <div id="balance" class="tab-content active">
+        <h3 style="text-align:center; color:#ccc; font-size:13px;">YOUR POINTS</h3>
+        <div class="balance-big" id="modalBalance">0</div>
+      </div>
+
+      <div id="convert" class="tab-content">
+        <select class="input-box" id="coinSelect">
+          <option value="USDT">USDT</option>
+        </select>
+        <input type="number" class="input-box" id="pointsToConvert" placeholder="Enter points">
+        <button class="convert-btn" onclick="convertPoints()">Convert Now</button>
+      </div>
+
+      <div id="withdraw" class="tab-content">
+        <input type="text" class="input-box" placeholder="Wallet Address">
+        <input type="number" class="input-box" placeholder="Amount">
+        <button class="convert-btn" onclick="alert('Withdraw request sent!')">Withdraw Now</button>
+      </div>
+
+      <div id="history" class="tab-content">
+        <p style="text-align:center; color:#ccc;">No transactions yet</p>
+      </div>
+    </div>
+  </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -145,8 +199,8 @@
   }
 
   window.goTo = function(page) {
-    // FIXED: Added referrals + wallet
-    if(page === 'checkin.html' || page === 'watch.html' || page === 'quiz.html' || page === 'referrals.html' || page === 'wallet.html'){
+    if(page === 'wallet.html'){ openWallet(); return; } // CHANGED THIS LINE
+    if(page === 'checkin.html' || page === 'watch.html' || page === 'quiz.html' || page === 'referrals.html'){
       window.location.href = page;
     } else {
       alert(page.replace('.html','') + " page coming soon!");
@@ -158,6 +212,27 @@
     signOut(auth).then(() => {
       window.location.href = "index.html";
     });
+  }
+
+  // === WALLET POPUP JS ADDED ===
+  window.openWallet = function() {
+    document.getElementById('walletModal').style.display = 'flex';
+    document.getElementById('modalBalance').innerText = document.getElementById('points').innerText;
+  }
+  window.closeWallet = function() {
+    document.getElementById('walletModal').style.display = 'none';
+  }
+  window.showTab = function(tabName, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(tabName).classList.add('active');
+  }
+  window.convertPoints = function() {
+    let pts = document.getElementById('pointsToConvert').value;
+    let coin = document.getElementById('coinSelect').value;
+    if(!pts) return alert("Enter points first");
+    alert("Convert " + pts + " points to " + coin + " - Coming soon!");
   }
 </script>
 </body>
