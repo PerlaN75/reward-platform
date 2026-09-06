@@ -52,10 +52,10 @@
 .day-box.completed { background: #16a34a; color: white; }
 .checkin-btn { width: 100%; padding: 16px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; margin-bottom: 12px; }
 .checkin-btn:disabled { background: #4b5563; color: #9ca3af; box-shadow: 0 4px 0 #374151; cursor: not-allowed; }
-.back-btn { width: 100%; margin: 8px 0 0 0; display: block; padding: 15px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; }
+.back-btn { width: 40%; margin: 8px auto 0 auto; display: block; padding: 15px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; }
 .back-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #d97706; }
 
- /* WATCH & EARN FINAL V2 */
+ /* WATCH & EARN FINAL V3 */
 .watch-header { text-align: center; margin-bottom: 15px; }
 .watch-count { font-size: 14px; color: #ccc; margin-bottom: 10px; }
 .progress-bar { background: #1a2410; border-radius: 10px; height: 12px; overflow: hidden; margin-bottom: 15px; border: 1px solid #333; }
@@ -131,7 +131,7 @@
     </div>
   </div>
 
-  <!-- WATCH & EARN MODAL FINAL V2 -->
+  <!-- WATCH & EARN MODAL FINAL V3 -->
   <div id="watchModal" class="modal">
     <div class="modal-content">
       <div class="modal-header"><h2>📺 Watch & Earn</h2><span class="close-btn" onclick="closeWatch()">X</span></div>
@@ -212,7 +212,7 @@
         localStorage.setItem('xlm', data.xlm || 0);
         updateWalletUI();
         loadHistory();
-        updateWatchUI();
+        updateWatchUI(); // THIS MAKES PROGRESS BAR INSTANT ON REFRESH
       }
     } catch(e) { console.log(e); }
   }
@@ -275,7 +275,7 @@
     renderCheckin(); updateWalletUI();
   }
 
-  // WATCH & EARN FINAL V2 - MAX 5 + INSTANT MESSAGE
+  // WATCH & EARN FINAL V3
   window.openWatch = function() {
     document.getElementById('watchModal').style.display = 'flex';
     renderSingleVideo();
@@ -297,7 +297,7 @@
     const watched = parseInt(localStorage.getItem(getTodayWatchKey()) || '0');
     const left = MAX_WATCH_PER_DAY - watched;
     document.getElementById('watchCount').innerText = `${watched} / ${MAX_WATCH_PER_DAY} Videos Watched Today`;
-    document.getElementById('progressFill').style.width = `${(watched/MAX_WATCH_PER_DAY)*100}%`;
+    document.getElementById('progressFill').style.width = `${(watched/MAX_WATCH_PER_DAY)*100}%`; // INSTANT ON REFRESH
     document.getElementById('watchLeft').innerText = left > 0? `${left} left today` : `0 left today`;
   }
 
@@ -311,7 +311,7 @@
 
     if(watched >= MAX_WATCH_PER_DAY) {
       document.getElementById('videoCard').style.display = 'none';
-      document.getElementById('allDoneBox').style.display = 'block'; // INSTANT MESSAGE
+      document.getElementById('allDoneBox').style.display = 'block';
       return;
     }
 
@@ -359,7 +359,7 @@
     await updateDoc(doc(db, "users", currentUser.uid), { points: userData.points });
 
     addHistory(`Watched Video #${watched} +10 points`);
-    renderSingleVideo(); // Next video or "All done" message
+    renderSingleVideo();
     updateWatchUI();
   }
 
@@ -376,7 +376,7 @@
     userData.points -= pts; userData[coin.toLowerCase()] += usdValue;
     await updateDoc(doc(db, "users", currentUser.uid), userData);
     localStorage.setItem('points', userData.points);
-    localStorage.setItem('usdt', userData.usdt); localStorage.setItem('bnb', data.bnb);
+    localStorage.setItem('usdt', userData.usdt); localStorage.setItem('bnb', userData.bnb);
     localStorage.setItem('xrp', userData.xrp); localStorage.setItem('xlm', userData.xlm);
     addHistory(`Converted ${pts} pts to $${usdValue.toFixed(2)} ${coin}`);
     updateWalletUI(); pointsEl.innerText = userData.points; document.getElementById('pointsToConvert').value = '';
