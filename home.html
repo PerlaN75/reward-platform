@@ -170,7 +170,7 @@
   let currentUser = null;
   let userData = { points: 0, usdt: 0, bnb: 0, xrp: 0, xlm: 0, streak: 0, lastCheckin: "", watchCount: 0, lastWatchDate: "" };
   let watchTimer = null;
-  let dataLoaded = false; // NEW: Flag to prevent rendering before Firebase loads
+  let dataLoaded = false;
   const POINT_VALUE = 0.0005;
   const CHECKIN_REWARDS = [10, 20, 30, 40, 50, 70, 100];
   const MAX_WATCH_PER_DAY = 5;
@@ -184,7 +184,7 @@
   if(cachedPoints){ pointsEl.innerText = cachedPoints; }
 
   onAuthStateChanged(auth, async (user) => {
-    if (user) { currentUser = user; await loadHome(user.uid); } // ADDED await
+    if (user) { currentUser = user; await loadHome(user.uid); }
     else { localStorage.clear(); window.location.href = "log.html"; }
   });
 
@@ -204,7 +204,9 @@
         localStorage.setItem('bnb', data.bnb || 0);
         localStorage.setItem('xrp', data.xrp || 0);
         localStorage.setItem('xlm', data.xlm || 0);
-        dataLoaded = true; // NEW: Mark data as loaded
+        localStorage.setItem('watchCount', data.watchCount || 0); // CACHE WATCH
+        localStorage.setItem('lastWatchDate', data.lastWatchDate || ""); // CACHE DATE
+        dataLoaded = true;
         updateWalletUI();
         loadHistory();
         updateWatchUI();
@@ -271,13 +273,32 @@
     renderCheckin(); updateWalletUI();
   }
 
-  // WATCH & EARN - FINAL FIX
-  window.openWatch = async function() { // ADDED async
+  // WATCH & EARN - INSTANT FIX
+  window.openWatch = function() {
     clearInterval(watchTimer);
-    if(!dataLoaded) await loadHome(currentUser.uid); // NEW: Reload if needed
-    document.getElementById('watchModal').style.display = 'flex';
+    document.getElementById('watchModal').style.display = 'flex'; // OPEN INSTANT
+
+    // Load from cache first for 0ms delay
+    userData.watchCount = parseInt(localStorage.getItem('watchCount')) || 0;
+    userData.lastWatchDate = localStorage.getItem('lastWatchDate') || "";
+
     updateWatchUI();
     renderSingleVideo();
+
+    // Sync with Firebase in background
+    if(currentUser && dataLoaded) {
+      getDoc(doc(db, "users", currentUser.uid)).then(docSnap => {
+        if(docSnap.exists()) {
+          const fbData = docSnap.data();
+          if(fbData.watchCount!== userData.watchCount || fbData.lastWatchDate!== userData.lastWatchDate) {
+            userData.watchCount = fbData.watchCount || 0;
+            userData.lastWatchDate = fbData.lastWatchDate || "";
+            updateWatchUI();
+            renderSingleVideo();
+          }
+        }
+      });
+    }
   }
   window.closeWatch = function() {
     clearInterval(watchTimer);
@@ -293,13 +314,13 @@
 
   function updateWatchUI() {
     const today = getTodayString();
-    // HARD RESET: If date changed, force 0
-    if(userData.lastWatchDate!== today){
-      userData.watchCount = 0;
-      userData.lastWatchDate = today;
-      setDoc(doc(db, "users", currentUser.uid), {watchCount: 0, lastWatchDate: today}, {merge: true}); // Save reset
+    let watched = userData.watchCount || 0;
+    let lastDate = userData.lastWatchDate || "";
+
+    if(lastDate!== today){
+      watched = 0;
     }
-    const watched = userData.watchCount || 0;
+
     const progressPercent = (watched/MAX_WATCH_PER_DAY)*100;
     document.getElementById('watchCount').innerText = `${watched} / ${MAX_WATCH_PER_DAY} Videos Watched Today`;
     document.getElementById('progressFill').style.width = `${progressPercent}%`;
@@ -307,21 +328,21 @@
 
   function renderSingleVideo() {
     const watched = userData.watchCount || 0;
+    const today = getTodayString();
+    const lastDate = userData.lastWatchDate || "";
+    const actualWatched = lastDate!== today? 0 : watched;
 
-    // Reset all states first
     document.getElementById('videoCard').style.display = 'none';
     document.getElementById('watchTimer').style.display = 'none';
     document.getElementById('claimBox').style.display = 'none';
     document.getElementById('allDoneBox').style.display = 'none';
 
-    // HARD LOCK: If 5/5 show done and return
-    if(watched >= MAX_WATCH_PER_DAY) {
+    if(actualWatched >= MAX_WATCH_PER_DAY) {
       document.getElementById('allDoneBox').style.display = 'block';
       return;
     }
 
-    // Else show video card
-    const nextVideo = watched + 1;
+    const nextVideo = actualWatched + 1;
     document.getElementById('videoCard').style.display = 'block';
     document.getElementById('videoCard').innerHTML = `
       <div class="video-title">Video #${nextVideo}</div>
@@ -332,7 +353,10 @@
 
   window.startWatch = function(num) {
     const watched = userData.watchCount || 0;
-    if(watched >= MAX_WATCH_PER_DAY) return;
+    const today = getTodayString();
+    const lastDate = userData.lastWatchDate || "";
+    const actualWatched = lastDate!== today? 0 : watched;
+    if(actualWatched >= MAX_WATCH_PER_DAY) return;
 
     clearInterval(watchTimer);
     document.getElementById('videoCard').style.display = 'none';
@@ -368,8 +392,11 @@
       lastWatchDate: userData.lastWatchDate
     }, {merge: true});
 
-    pointsEl.innerText = userData.points;
     localStorage.setItem('points', userData.points);
+    localStorage.setItem('watchCount', userData.watchCount); // CACHE
+    localStorage.setItem('lastWatchDate', userData.lastWatchDate); // CACHE
+
+    pointsEl.innerText = userData.points;
     updateWalletUI();
     addHistory(`Watched Video #${userData.watchCount} +10 points`);
     updateWatchUI();
