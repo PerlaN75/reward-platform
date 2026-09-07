@@ -15,6 +15,8 @@
     .option { background: #1a2410; padding: 15px; border-radius: 12px; cursor: pointer; border: 2px solid #333; transition: 0.2s; }
     .option:hover { border-color: #fbbf24; }
     .option.selected { background: #fbbf24; color: #000; border-color: #fbbf24; }
+    .option.correct { background: #22c55e; color: #000; border-color: #22c55e; }
+    .option.wrong { background: #ef4444; color: #fff; border-color: #ef4444; }
     .submit-btn { width: 100%; padding: 16px; background: #22c55e; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 0 #16a34a; }
     .submit-btn:disabled { background: #4b5563; color: #9ca3af; cursor: not-allowed; }
     .done-box { text-align: center; padding: 40px 20px; }
@@ -28,7 +30,7 @@
     <button class="back-btn" onclick="window.location.href='home.html'">Back</button>
   </div>
 
-  <div id="quizContainer" class="quiz-card"></div>
+  <div id="quizContainer" class="quiz-card">Loading...</div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -46,11 +48,27 @@
   const QUESTIONS = [
     { q: "What is the capital of Rwanda?", options: ["Kigali", "Nairobi", "Kampala", "Bujumbura"], answer: "Kigali" },
     { q: "How many points = $1 USDT?", options: ["1000", "2000", "500", "1500"], answer: "2000" },
-    { q: "Max videos per day in Watch & Earn?", options: ["3", "5", "10", "7"], answer: "5" }
+    { q: "Max videos per day in Watch & Earn?", options: ["3", "5", "10", "7"], answer: "5" },
+    { q: "Which coin is used for gas fees on BSC?", options: ["USDT", "BNB", "XRP", "BTC"], answer: "BNB" },
+    { q: "What does 'Streak' mean in Daily Checkin?", options: ["Total Points", "Consecutive Days", "Referrals", "Videos"], answer: "Consecutive Days" },
+    { q: "1 Day = How many hours?", options: ["12", "24", "48", "36"], answer: "24" },
+    { q: "Which is a stablecoin?", options: ["BNB", "XRP", "USDT", "DOGE"], answer: "USDT" }
   ];
 
   function getTodayString() {
     return new Date().toISOString().split('T')[0];
+  }
+
+  // Get same random question for the whole day using date as seed
+  function getQuestionForToday() {
+    const today = getTodayString();
+    let hash = 0;
+    for (let i = 0; i < today.length; i++) {
+      hash = ((hash << 5) - hash) + today.charCodeAt(i);
+      hash = hash & hash; // Convert to 32bit
+    }
+    const index = Math.abs(hash) % QUESTIONS.length;
+    return QUESTIONS[index];
   }
 
   onAuthStateChanged(auth, async (user) => {
@@ -66,8 +84,8 @@
   function renderQuiz() {
     const today = getTodayString();
     const quizDate = userData.lastQuizDate || "";
-
     const container = document.getElementById('quizContainer');
+    const todaysQuestion = getQuestionForToday();
 
     // HARD LOCK: If already done today
     if(quizDate === today) {
@@ -75,26 +93,25 @@
         <div class="done-box">
           <h2>✅ Quiz Completed</h2>
           <p>You already did today's quiz. Come back tomorrow for +${QUIZ_REWARD} points</p>
+          <p style="margin-top:15px; font-size:14px;">Today's Question: ${todaysQuestion.q}</p>
         </div>
       `;
       return;
     }
 
-    // Pick random question for today
-    const randomQ = QUESTIONS[Math.floor(Math.random() * QUESTIONS.length)];
-
-    let optionsHtml = randomQ.options.map(opt => 
+    let optionsHtml = todaysQuestion.options.map(opt => 
       `<div class="option" onclick="selectOption(this, '${opt}')">${opt}</div>`
     ).join('');
 
     container.innerHTML = `
-      <div class="question">${randomQ.q}</div>
+      <div class="question">${todaysQuestion.q}</div>
       <div class="options" id="options">${optionsHtml}</div>
-      <button class="submit-btn" id="submitBtn" onclick="submitAnswer('${randomQ.answer}')">Submit Answer</button>
+      <button class="submit-btn" id="submitBtn" onclick="submitAnswer('${todaysQuestion.answer}')">Submit Answer</button>
     `;
   }
 
   window.selectOption = function(el, val) {
+    if(selectedAnswer) return; // lock after 1 click
     document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
     el.classList.add('selected');
     selectedAnswer = val;
@@ -103,26 +120,33 @@
   window.submitAnswer = async function(correctAnswer) {
     if(!selectedAnswer) return alert("Please select an answer");
     document.getElementById('submitBtn').disabled = true;
+    document.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'none');
 
     const today = getTodayString();
     let pointsEarned = 0;
 
+    // Show correct/wrong colors
+    document.querySelectorAll('.option').forEach(o => {
+      if(o.innerText === correctAnswer) o.classList.add('correct');
+      if(o.innerText === selectedAnswer && selectedAnswer !== correctAnswer) o.classList.add('wrong');
+    });
+
     if(selectedAnswer === correctAnswer) {
       pointsEarned = QUIZ_REWARD;
       userData.points = (userData.points || 0) + pointsEarned;
-      alert(`Correct! +${pointsEarned} Points 🎉`);
+      setTimeout(() => alert(`Correct! +${pointsEarned} Points 🎉`), 500);
     } else {
-      alert(`Wrong! Correct answer: ${correctAnswer}`);
+      setTimeout(() => alert(`Wrong! Correct answer: ${correctAnswer}`), 500);
     }
 
-    // SAVE TO FIREBASE - THIS STOPS RE-DO AFTER LOGOUT
+    // SAVE TO FIREBASE - LOCKS FOR 24H
     userData.lastQuizDate = today;
     await setDoc(doc(db, "users", currentUser.uid), {
       points: userData.points,
       lastQuizDate: userData.lastQuizDate
     }, {merge: true});
 
-    renderQuiz(); // Show "completed" screen
+    setTimeout(() => renderQuiz(), 1500); // Show "completed" screen after 1.5s
   }
 
 </script>
