@@ -162,7 +162,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"; // ADDED setDoc
 
   const firebaseConfig = { apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d" };
   const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
@@ -263,19 +263,40 @@
     document.getElementById('daysGrid').innerHTML = gridHtml;
   }
 
+  // REPLACED THIS ENTIRE FUNCTION
   window.doCheckin = async function() {
     const today = new Date().toISOString().split('T')[0];
     const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-    if(userData.lastCheckin === today) return;
+
+    if(userData.lastCheckin === today) return alert("You already checked in today!");
+
     let newStreak = 1;
-    if(userData.lastCheckin === yesterday) { newStreak = userData.streak + 1; if(newStreak > 7) newStreak = 1; }
+    if(userData.lastCheckin === yesterday) {
+      newStreak = userData.streak + 1;
+      if(newStreak > 7) newStreak = 1;
+    }
+
     let reward = CHECKIN_REWARDS[newStreak - 1];
-    userData.points += reward; userData.streak = newStreak; userData.lastCheckin = today;
-    await updateDoc(doc(db, "users", currentUser.uid), { points: userData.points, streak: userData.streak, lastCheckin: userData.lastCheckin });
+    userData.points += reward;
+    userData.streak = newStreak;
+    userData.lastCheckin = today;
+
+    // SAVE TO FIREBASE FIRST
+    await setDoc(doc(db, "users", currentUser.uid), {
+      points: userData.points,
+      streak: userData.streak,
+      lastCheckin: userData.lastCheckin
+    }, {merge: true}); // merge so we don't delete other fields
+
+    // THEN UPDATE UI
     pointsEl.innerText = userData.points;
-    localStorage.setItem('points', userData.points); localStorage.setItem('streak', userData.streak); localStorage.setItem('lastCheckin', userData.lastCheckin);
+    localStorage.setItem('points', userData.points);
+    localStorage.setItem('streak', userData.streak);
+    localStorage.setItem('lastCheckin', userData.lastCheckin);
     addHistory(`Daily Checkin Day ${newStreak} +${reward} points`);
-    renderCheckin(); updateWalletUI();
+    alert(`Check-in Complete! +${reward} Points. Streak: ${newStreak} Days`);
+    renderCheckin();
+    updateWalletUI();
   }
 
   window.openWatch = function() {
