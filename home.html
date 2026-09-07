@@ -269,8 +269,9 @@
     renderCheckin(); updateWalletUI();
   }
 
-  // WATCH & EARN - FIXED
+  // WATCH & EARN - FULLY REVISED
   window.openWatch = function() {
+    clearInterval(watchTimer); // FIX: Kill any running timer first
     document.getElementById('watchModal').style.display = 'flex';
     updateWatchUI();
     renderSingleVideo();
@@ -301,19 +302,22 @@
 
   function renderSingleVideo() {
     const watched = userData.watchCount || 0;
-    document.getElementById('videoCard').style.display = 'block';
+
+    // Reset all states first
+    document.getElementById('videoCard').style.display = 'none';
     document.getElementById('watchTimer').style.display = 'none';
     document.getElementById('claimBox').style.display = 'none';
     document.getElementById('allDoneBox').style.display = 'none';
 
-    // FIX 1: If 5/5, show "all done" and hide video card
+    // HARD LOCK: If 5/5 show done and return
     if(watched >= MAX_WATCH_PER_DAY) {
-      document.getElementById('videoCard').style.display = 'none';
       document.getElementById('allDoneBox').style.display = 'block';
       return;
     }
 
+    // Else show video card
     const nextVideo = watched + 1;
+    document.getElementById('videoCard').style.display = 'block';
     document.getElementById('videoCard').innerHTML = `
       <div class="video-title">Video #${nextVideo}</div>
       <div class="video-reward">Watch full 30s • Earn +10 Points</div>
@@ -323,7 +327,9 @@
 
   window.startWatch = function(num) {
     const watched = userData.watchCount || 0;
-    if(watched >= MAX_WATCH_PER_DAY) return; // Just return, no alert
+    if(watched >= MAX_WATCH_PER_DAY) return; // Double check
+
+    clearInterval(watchTimer); // Prevent double timers
     document.getElementById('videoCard').style.display = 'none';
     document.getElementById('watchTimer').style.display = 'block';
     let timeLeft = 30;
@@ -340,12 +346,12 @@
   }
 
   window.claimReward = async function() {
+    clearInterval(watchTimer); // Stop timer
     const today = getTodayString();
     if(userData.lastWatchDate!== today){
       userData.watchCount = 0;
       userData.lastWatchDate = today;
     }
-    // FIX 2: Removed ugly alert. Just return
     if(userData.watchCount >= MAX_WATCH_PER_DAY) return;
 
     userData.watchCount += 1;
@@ -379,7 +385,7 @@
     await updateDoc(doc(db, "users", currentUser.uid), userData);
     localStorage.setItem('points', userData.points);
     localStorage.setItem('usdt', userData.usdt); localStorage.setItem('bnb', userData.bnb);
-    localStorage.setItem('xrp', data.xrp); localStorage.setItem('xlm', data.xlm);
+    localStorage.setItem('xrp', userData.xrp); localStorage.setItem('xlm', userData.xlm);
     addHistory(`Converted ${pts} pts to $${usdValue.toFixed(2)} ${coin}`);
     updateWalletUI(); pointsEl.innerText = userData.points; document.getElementById('pointsToConvert').value = '';
   }
