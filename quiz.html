@@ -5,11 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { background: #2f3e1a; min-height: 100vh; padding: 20px; color: white; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    body { background: #2f3e1a; min-height: 100vh; padding: 20px; color: white; display: flex; flex-direction: column; align-items: center; }
+    .header { width: 100%; max-width: 420px; text-align: center; margin-bottom: 20px; }
     .header h1 { font-size: 24px; color: #fbbf24; }
-    .back-btn { padding: 10px 18px; background: #fbbf24; color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
-    .quiz-card { background: #4a6128; border: 2px solid #fbbf24; border-radius: 20px; padding: 20px; }
+    .quiz-card { width: 100%; max-width: 420px; background: #4a6128; border: 2px solid #fbbf24; border-radius: 20px; padding: 20px; margin-bottom: 20px; min-height: 200px; }
     .question { font-size: 18px; font-weight: bold; margin-bottom: 15px; }
     .options { display: flex; flex-direction: column; gap: 12px; }
     .option { background: #1a2410; padding: 15px; border-radius: 12px; cursor: pointer; border: 2px solid #333; transition: 0.2s; }
@@ -19,18 +18,21 @@
     .option.wrong { background: #ef4444; color: #fff; border-color: #ef4444; }
     .submit-btn { width: 100%; padding: 16px; background: #22c55e; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 0 #16a34a; }
     .submit-btn:disabled { background: #4b5563; color: #9ca3af; cursor: not-allowed; }
-    .done-box { text-align: center; padding: 40px 20px; }
+    .done-box { text-align: center; padding: 20px 10px; }
     .done-box h2 { color: #22c55e; font-size: 24px; margin-bottom: 10px; }
-    .done-box p { color: #ccc; }
+    .done-box p { color: #ccc; margin-bottom: 8px; }
+    .back-btn-bottom { width: 40%; padding: 15px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; }
+    .back-btn-bottom:active { transform: translateY(2px); box-shadow: 0 2px 0 #d97706; }
   </style>
 </head>
 <body>
   <div class="header">
     <h1>🧠 Daily Quiz</h1>
-    <button class="back-btn" onclick="window.location.href='home.html'">Back</button>
   </div>
 
   <div id="quizContainer" class="quiz-card">Loading...</div>
+
+  <button class="back-btn-bottom" onclick="window.location.href='home.html'">Back Home</button>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -59,24 +61,59 @@
     return new Date().toISOString().split('T')[0];
   }
 
-  // Get same random question for the whole day using date as seed
   function getQuestionForToday() {
     const today = getTodayString();
     let hash = 0;
     for (let i = 0; i < today.length; i++) {
       hash = ((hash << 5) - hash) + today.charCodeAt(i);
-      hash = hash & hash; // Convert to 32bit
+      hash = hash & hash;
     }
     const index = Math.abs(hash) % QUESTIONS.length;
     return QUESTIONS[index];
   }
 
+  // INSTANT RENDER FROM CACHE FIRST
+  function renderFromCache() {
+    const today = getTodayString();
+    const cachedDate = localStorage.getItem('lastQuizDate') || "";
+    const todaysQuestion = getQuestionForToday();
+    
+    if(cachedDate === today) {
+      document.getElementById('quizContainer').innerHTML = `
+        <div class="done-box">
+          <h2>✅ Quiz Completed</h2>
+          <p>You already did today's quiz. Come back tomorrow for +${QUIZ_REWARD} points</p>
+          <p style="margin-top:15px; font-size:14px;">Today's Question: ${todaysQuestion.q}</p>
+        </div>
+      `;
+      return true;
+    }
+    return false;
+  }
+
   onAuthStateChanged(auth, async (user) => {
     if (user) { 
       currentUser = user; 
+      
+      // 1. Try instant render from cache
+      const renderedFromCache = renderFromCache();
+
+      // 2. Then sync with Firebase in background
       const docSnap = await getDoc(doc(db, "users", user.uid));
-      if(docSnap.exists()) userData = docSnap.data();
-      renderQuiz();
+      if(docSnap.exists()) {
+        userData = docSnap.data();
+        localStorage.setItem('lastQuizDate', userData.lastQuizDate || ""); // Update cache
+        
+        // If Firebase says different, re-render
+        if(userData.lastQuizDate === today && !renderedFromCache) {
+          renderQuiz();
+        } else if(userData.lastQuizDate !== today && renderedFromCache) {
+          renderQuiz();
+        }
+      }
+      
+      // If cache had nothing, render now
+      if(!renderedFromCache) renderQuiz();
     }
     else { window.location.href = "log.html"; }
   });
@@ -87,7 +124,6 @@
     const container = document.getElementById('quizContainer');
     const todaysQuestion = getQuestionForToday();
 
-    // HARD LOCK: If already done today
     if(quizDate === today) {
       container.innerHTML = `
         <div class="done-box">
@@ -99,6 +135,7 @@
       return;
     }
 
+    selectedAnswer = null;
     let optionsHtml = todaysQuestion.options.map(opt => 
       `<div class="option" onclick="selectOption(this, '${opt}')">${opt}</div>`
     ).join('');
@@ -111,7 +148,7 @@
   }
 
   window.selectOption = function(el, val) {
-    if(selectedAnswer) return; // lock after 1 click
+    if(selectedAnswer) return;
     document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
     el.classList.add('selected');
     selectedAnswer = val;
@@ -125,7 +162,6 @@
     const today = getTodayString();
     let pointsEarned = 0;
 
-    // Show correct/wrong colors
     document.querySelectorAll('.option').forEach(o => {
       if(o.innerText === correctAnswer) o.classList.add('correct');
       if(o.innerText === selectedAnswer && selectedAnswer !== correctAnswer) o.classList.add('wrong');
@@ -139,14 +175,16 @@
       setTimeout(() => alert(`Wrong! Correct answer: ${correctAnswer}`), 500);
     }
 
-    // SAVE TO FIREBASE - LOCKS FOR 24H
     userData.lastQuizDate = today;
     await setDoc(doc(db, "users", currentUser.uid), {
       points: userData.points,
       lastQuizDate: userData.lastQuizDate
     }, {merge: true});
 
-    setTimeout(() => renderQuiz(), 1500); // Show "completed" screen after 1.5s
+    localStorage.setItem('lastQuizDate', today); // Cache it
+    localStorage.setItem('points', userData.points);
+
+    setTimeout(() => renderQuiz(), 1500);
   }
 
 </script>
