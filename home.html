@@ -170,6 +170,7 @@
   let currentUser = null;
   let userData = { points: 0, usdt: 0, bnb: 0, xrp: 0, xlm: 0, streak: 0, lastCheckin: "", watchCount: 0, lastWatchDate: "" };
   let watchTimer = null;
+  let dataLoaded = false; // NEW: Flag to prevent rendering before Firebase loads
   const POINT_VALUE = 0.0005;
   const CHECKIN_REWARDS = [10, 20, 30, 40, 50, 70, 100];
   const MAX_WATCH_PER_DAY = 5;
@@ -183,7 +184,7 @@
   if(cachedPoints){ pointsEl.innerText = cachedPoints; }
 
   onAuthStateChanged(auth, async (user) => {
-    if (user) { currentUser = user; loadHome(user.uid); }
+    if (user) { currentUser = user; await loadHome(user.uid); } // ADDED await
     else { localStorage.clear(); window.location.href = "log.html"; }
   });
 
@@ -203,6 +204,7 @@
         localStorage.setItem('bnb', data.bnb || 0);
         localStorage.setItem('xrp', data.xrp || 0);
         localStorage.setItem('xlm', data.xlm || 0);
+        dataLoaded = true; // NEW: Mark data as loaded
         updateWalletUI();
         loadHistory();
         updateWatchUI();
@@ -269,9 +271,10 @@
     renderCheckin(); updateWalletUI();
   }
 
-  // WATCH & EARN - FULLY REVISED
-  window.openWatch = function() {
-    clearInterval(watchTimer); // FIX: Kill any running timer first
+  // WATCH & EARN - FINAL FIX
+  window.openWatch = async function() { // ADDED async
+    clearInterval(watchTimer);
+    if(!dataLoaded) await loadHome(currentUser.uid); // NEW: Reload if needed
     document.getElementById('watchModal').style.display = 'flex';
     updateWatchUI();
     renderSingleVideo();
@@ -290,9 +293,11 @@
 
   function updateWatchUI() {
     const today = getTodayString();
+    // HARD RESET: If date changed, force 0
     if(userData.lastWatchDate!== today){
       userData.watchCount = 0;
       userData.lastWatchDate = today;
+      setDoc(doc(db, "users", currentUser.uid), {watchCount: 0, lastWatchDate: today}, {merge: true}); // Save reset
     }
     const watched = userData.watchCount || 0;
     const progressPercent = (watched/MAX_WATCH_PER_DAY)*100;
@@ -327,9 +332,9 @@
 
   window.startWatch = function(num) {
     const watched = userData.watchCount || 0;
-    if(watched >= MAX_WATCH_PER_DAY) return; // Double check
+    if(watched >= MAX_WATCH_PER_DAY) return;
 
-    clearInterval(watchTimer); // Prevent double timers
+    clearInterval(watchTimer);
     document.getElementById('videoCard').style.display = 'none';
     document.getElementById('watchTimer').style.display = 'block';
     let timeLeft = 30;
@@ -346,7 +351,7 @@
   }
 
   window.claimReward = async function() {
-    clearInterval(watchTimer); // Stop timer
+    clearInterval(watchTimer);
     const today = getTodayString();
     if(userData.lastWatchDate!== today){
       userData.watchCount = 0;
