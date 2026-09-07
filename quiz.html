@@ -30,7 +30,7 @@
     <h1>🧠 Daily Quiz</h1>
   </div>
 
-  <div id="quizContainer" class="quiz-card">Loading...</div>
+  <div id="quizContainer" class="quiz-card"></div> <!-- NO "Loading..." HERE -->
 
   <button class="back-btn-bottom" onclick="window.location.href='home.html'">Back Home</button>
 
@@ -72,59 +72,18 @@
     return QUESTIONS[index];
   }
 
-  // INSTANT RENDER FROM CACHE FIRST
-  function renderFromCache() {
+  // RENDER INSTANTLY ON PAGE LOAD USING CACHE
+  function renderInstant() {
     const today = getTodayString();
     const cachedDate = localStorage.getItem('lastQuizDate') || "";
+    const cachedPoints = localStorage.getItem('points') || 0;
     const todaysQuestion = getQuestionForToday();
-    
-    if(cachedDate === today) {
-      document.getElementById('quizContainer').innerHTML = `
-        <div class="done-box">
-          <h2>✅ Quiz Completed</h2>
-          <p>You already did today's quiz. Come back tomorrow for +${QUIZ_REWARD} points</p>
-          <p style="margin-top:15px; font-size:14px;">Today's Question: ${todaysQuestion.q}</p>
-        </div>
-      `;
-      return true;
-    }
-    return false;
-  }
-
-  onAuthStateChanged(auth, async (user) => {
-    if (user) { 
-      currentUser = user; 
-      
-      // 1. Try instant render from cache
-      const renderedFromCache = renderFromCache();
-
-      // 2. Then sync with Firebase in background
-      const docSnap = await getDoc(doc(db, "users", user.uid));
-      if(docSnap.exists()) {
-        userData = docSnap.data();
-        localStorage.setItem('lastQuizDate', userData.lastQuizDate || ""); // Update cache
-        
-        // If Firebase says different, re-render
-        if(userData.lastQuizDate === today && !renderedFromCache) {
-          renderQuiz();
-        } else if(userData.lastQuizDate !== today && renderedFromCache) {
-          renderQuiz();
-        }
-      }
-      
-      // If cache had nothing, render now
-      if(!renderedFromCache) renderQuiz();
-    }
-    else { window.location.href = "log.html"; }
-  });
-
-  function renderQuiz() {
-    const today = getTodayString();
-    const quizDate = userData.lastQuizDate || "";
     const container = document.getElementById('quizContainer');
-    const todaysQuestion = getQuestionForToday();
 
-    if(quizDate === today) {
+    userData.points = parseInt(cachedPoints);
+    userData.lastQuizDate = cachedDate;
+
+    if(cachedDate === today) {
       container.innerHTML = `
         <div class="done-box">
           <h2>✅ Quiz Completed</h2>
@@ -132,9 +91,13 @@
           <p style="margin-top:15px; font-size:14px;">Today's Question: ${todaysQuestion.q}</p>
         </div>
       `;
-      return;
+    } else {
+      renderQuizUI(todaysQuestion);
     }
+  }
 
+  function renderQuizUI(todaysQuestion) {
+    const container = document.getElementById('quizContainer');
     selectedAnswer = null;
     let optionsHtml = todaysQuestion.options.map(opt => 
       `<div class="option" onclick="selectOption(this, '${opt}')">${opt}</div>`
@@ -146,6 +109,26 @@
       <button class="submit-btn" id="submitBtn" onclick="submitAnswer('${todaysQuestion.answer}')">Submit Answer</button>
     `;
   }
+
+  // Run instantly
+  renderInstant();
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) { 
+      currentUser = user; 
+      // Sync with Firebase in background, no visual delay
+      const docSnap = await getDoc(doc(db, "users", user.uid));
+      if(docSnap.exists()) {
+        userData = docSnap.data();
+        localStorage.setItem('lastQuizDate', userData.lastQuizDate || "");
+        localStorage.setItem('points', userData.points || 0);
+        
+        // If Firebase disagrees with cache, correct it silently
+        renderInstant();
+      }
+    }
+    else { window.location.href = "log.html"; }
+  });
 
   window.selectOption = function(el, val) {
     if(selectedAnswer) return;
@@ -181,10 +164,10 @@
       lastQuizDate: userData.lastQuizDate
     }, {merge: true});
 
-    localStorage.setItem('lastQuizDate', today); // Cache it
+    localStorage.setItem('lastQuizDate', today);
     localStorage.setItem('points', userData.points);
 
-    setTimeout(() => renderQuiz(), 1500);
+    setTimeout(() => renderInstant(), 1500);
   }
 
 </script>
