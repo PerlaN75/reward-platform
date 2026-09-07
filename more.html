@@ -30,11 +30,13 @@
    .balance-card { background: #000; border: 2px solid #fbbf24; border-radius: 15px; padding: 20px; margin: 15px 0; text-align: center; }
    .balance-label { font-size: 14px; color: #ccc; margin-bottom: 8px; }
    .balance-big { font-size: 42px; color: #f59e0b; font-weight: bold; }
-   .crypto-balance { background: #1a2410; padding: 12px; border-radius: 10px; margin: 8px 0; display: flex; justify-content: space-between; font-size: 14px; align-items:center; }
+   .crypto-balance { background: #1a2410; padding: 12px; border-radius: 10px; margin: 8px 0; display: flex; justify-content: space-between; font-size: 14px; align-items:center; cursor:pointer; }
+   .crypto-balance.selected { border: 2px solid #22c55e; background: #1a2e1a; }
    .input-box { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 1px solid #444; border-radius: 10px; color: white; font-size: 15px; }
-   .action-btn { width: 100%; padding: 15px; background: #fbbf24; color: #000; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; }
-   .section-title { font-size: 16px; color: #fbbf24; margin: 15px 0 8px 0; font-weight:bold; text-align:left; }
-   .close-btn-bottom { margin-top: 20px; } /* MOVED DOWN */
+   .action-btn { width: 100%; padding: 15px; background: #fbbf24; color: #000; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; margin-top:10px; }
+   .settings-btn { width: 100%; padding: 16px; background: #1a2410; color: white; border: 2px solid #fbbf24; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; margin: 10px 0; text-align:left; }
+   .tick { color: #22c55e; font-weight:bold; font-size:18px; display:none; }
+   .crypto-balance.selected .tick { display:block; }
   </style>
 </head>
 <body>
@@ -87,33 +89,36 @@
     </div>
   </div>
 
-  <!-- SETTINGS MODAL UPDATED -->
+  <!-- SETTINGS MAIN MODAL -->
   <div id="settingsModal" class="modal">
     <div class="modal-content">
       <div class="modal-header"><h2>⚙️ Settings</h2><span class="close-btn" onclick="closeSettings()">X</span></div>
       
-      <div class="section-title">a. Change Password</div>
+      <button class="settings-btn" onclick="openPasswordPopup()">🔒 Change Password</button>
+      <button class="settings-btn" onclick="openLanguagePopup()">🌍 Language: <span id="currentLangText">English</span></button>
+
+      <button class="back-btn" style="margin-top: 20px;" onclick="closeSettings()">Close</button>
+    </div>
+  </div>
+
+  <!-- PASSWORD POPUP -->
+  <div id="passwordModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header"><h2>🔒 Change Password</h2><span class="close-btn" onclick="closePasswordPopup()">X</span></div>
+      <input type="email" class="input-box" id="emailForPass" placeholder="Account Email" readonly>
       <input type="password" class="input-box" id="currentPassword" placeholder="Current Password">
       <input type="password" class="input-box" id="newPassword" placeholder="New Password">
       <input type="password" class="input-box" id="confirmPassword" placeholder="Confirm New Password">
-      <button class="action-btn" onclick="changePassword()">Save Password</button>
+      <button class="action-btn" onclick="changePassword()">Save</button>
+    </div>
+  </div>
 
-      <div class="section-title">b. Language</div>
-      <select class="input-box" id="languageSelect">
-        <option value="en">English</option>
-        <option value="fr">French</option>
-        <option value="es">Spanish</option>
-        <option value="ar">Arabic</option>
-        <option value="pt">Portuguese</option>
-        <option value="sw">Swahili</option>
-        <option value="hi">Hindi</option>
-        <option value="zh">Chinese</option>
-        <option value="de">German</option>
-        <option value="rw">Kinyarwanda</option>
-      </select>
-      <button class="action-btn" onclick="saveLanguage()">Save Language</button>
-
-      <button class="back-btn close-btn-bottom" onclick="closeSettings()">Close</button>
+  <!-- LANGUAGE POPUP -->
+  <div id="languageModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header"><h2>🌍 Choose Language</h2><span class="close-btn" onclick="closeLanguagePopup()">X</span></div>
+      <div id="langList"></div>
+      <button class="action-btn" onclick="saveLanguage()">Save</button>
     </div>
   </div>
 
@@ -132,7 +137,7 @@
     <div class="modal-content">
       <div class="modal-header"><h2>💬 Help/Support</h2><span class="close-btn" onclick="closeSupport()">X</span></div>
       <p style="text-align:center; margin:15px 0; color:#ccc;">Need help? Contact us on WhatsApp</p>
-      <button class="action-btn" onclick="window.open('https://wa.me/250788000000','_blank')">Chat on WhatsApp</button>
+      <button class="action-btn" onclick="window.open('https://wa.me/250788000','_blank')">Chat on WhatsApp</button>
       <button class="back-btn" onclick="closeSupport()">Close</button>
     </div>
   </div>
@@ -142,6 +147,14 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   const firebaseConfig = { apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d" };
   const app = initializeApp(firebaseConfig); const auth = getAuth(app);
+
+  const LANGUAGES = [
+    {code:'en', name:'English'}, {code:'fr', name:'French'}, {code:'es', name:'Spanish'},
+    {code:'ar', name:'Arabic'}, {code:'pt', name:'Portuguese'}, {code:'sw', name:'Swahili'},
+    {code:'hi', name:'Hindi'}, {code:'zh', name:'Chinese'}, {code:'de', name:'German'},
+    {code:'rw', name:'Kinyarwanda'}
+  ];
+  let selectedLang = localStorage.getItem('language') || 'en';
 
   // PROFILE
   window.openProfile = function() { 
@@ -156,17 +169,27 @@
   // SETTINGS
   window.openSettings = function() { 
     document.getElementById('settingsModal').style.display = 'flex'; 
-    document.getElementById('languageSelect').value = localStorage.getItem('language') || 'en';
+    const lang = LANGUAGES.find(l => l.code === selectedLang);
+    document.getElementById('currentLangText').innerText = lang ? lang.name : 'English';
   }
   window.closeSettings = function() { document.getElementById('settingsModal').style.display = 'none'; }
   
+  // PASSWORD POPUP
+  window.openPasswordPopup = function() {
+    document.getElementById('passwordModal').style.display = 'flex';
+    document.getElementById('emailForPass').value = auth.currentUser?.email || '';
+  }
+  window.closePasswordPopup = function() { document.getElementById('passwordModal').style.display = 'none'; }
+  
   window.changePassword = async function() {
+    const email = document.getElementById('emailForPass').value;
     const currentPass = document.getElementById('currentPassword').value;
     const newPass = document.getElementById('newPassword').value;
     const confirmPass = document.getElementById('confirmPassword').value;
     const user = auth.currentUser;
 
-    if(!currentPass || !newPass || !confirmPass) return alert("Fill all password fields");
+    if(email !== user.email) return alert("Email must match account email");
+    if(!currentPass || !newPass || !confirmPass) return alert("Fill all fields");
     if(newPass !== confirmPass) return alert("New passwords do not match");
     if(newPass.length < 6) return alert("New password must be 6+ characters");
 
@@ -175,16 +198,38 @@
       await reauthenticateWithCredential(user, credential);
       await updatePassword(user, newPass);
       alert("Password updated successfully!");
-      document.getElementById('currentPassword').value = '';
-      document.getElementById('newPassword').value = '';
-      document.getElementById('confirmPassword').value = '';
+      closePasswordPopup();
     } catch(e){ alert("Error: " + e.message) }
   }
 
+  // LANGUAGE POPUP
+  window.openLanguagePopup = function() {
+    document.getElementById('languageModal').style.display = 'flex';
+    renderLanguages();
+  }
+  window.closeLanguagePopup = function() { document.getElementById('languageModal').style.display = 'none'; }
+
+  function renderLanguages() {
+    let html = '';
+    LANGUAGES.forEach(lang => {
+      const isSelected = lang.code === selectedLang;
+      html += `<div class="crypto-balance ${isSelected ? 'selected' : ''}" onclick="selectLanguage('${lang.code}')">
+        <span>${lang.name}</span>
+        <span class="tick">✓</span>
+      </div>`;
+    });
+    document.getElementById('langList').innerHTML = html;
+  }
+  window.selectLanguage = function(code) {
+    selectedLang = code;
+    renderLanguages();
+  }
   window.saveLanguage = function() {
-    const lang = document.getElementById('languageSelect').value;
-    localStorage.setItem('language', lang);
-    alert("Language saved: " + document.getElementById('languageSelect').options[document.getElementById('languageSelect').selectedIndex].text);
+    localStorage.setItem('language', selectedLang);
+    const lang = LANGUAGES.find(l => l.code === selectedLang);
+    document.getElementById('currentLangText').innerText = lang.name;
+    alert("Language saved: " + lang.name);
+    closeLanguagePopup();
   }
 
   // NOTIFICATIONS
