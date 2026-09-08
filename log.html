@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { background: #2f3e1a; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 60px 20px 20px 20px; } /* MOVED UP */
+    body { background: #2f3e1a; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 60px 20px 20px 20px; }
     
     .login-card { background: #4a6128; padding: 30px 25px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; border: 3px solid #fbbf24; }
     .logo { font-size: 60px; margin-bottom: 10px; filter: drop-shadow(0 0 8px #fbbf24); }
@@ -17,14 +17,12 @@
     .btn-login:active { transform: translateY(2px); box-shadow: 0 2px 0 #d97706; }
     .link-register { color: #fbbf24; margin-top: 15px; font-size: 14px; cursor: pointer; }
     .error { color: #ef4444; font-size: 13px; margin-top: 10px; }
-
-    /* BACK BUTTON OUTSIDE + 40% WIDTH */
     .btn-back-outside { width: 40%; padding: 14px; background: transparent; color: #fbbf24; border: 2px solid #fbbf24; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; }
   </style>
 </head>
 <body>
   <div class="login-card">
-   <div class="logo">🔑</div> <!-- CHANGED FROM MONKEY TO TARGET - REWARDS PLATFORM -->
+   <div class="logo">🔑</div>
     <h1>Login</h1>
     <div class="tagline">From Nothing to Something</div>
     <input type="email" id="email" placeholder="Email">
@@ -34,13 +32,11 @@
     <div class="link-register" onclick="window.location.href='./reg.html'">Don't have an account? Register</div>
   </div>
 
-  <!-- BACK BUTTON OUTSIDE -->
   <button class="btn-back-outside" onclick="window.location.href='./index.html'">Back</button>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"; // ADDED THIS
 
   const firebaseConfig = {
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
@@ -52,10 +48,6 @@
   };
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const db = getFirestore(app); // ADDED THIS
-
-  // PRE-INITIALIZE AUTH TO REMOVE 2SEC DELAY
-  auth.onAuthStateChanged(()=>{});
 
   window.login = async function() {
     const email = document.getElementById('email').value;
@@ -65,17 +57,12 @@
     if(!email || !password){ errorEl.innerText = "Fill all fields"; return; }
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      // NEW: GET USER DATA AND SAVE TO CACHE FOR INSTANT HOME LOAD
-      const docSnap = await getDoc(doc(db, "users", user.uid));
-      if (docSnap.exists()) {
-        localStorage.setItem('userData', JSON.stringify(docSnap.data()));
-      }
-
-      // 0 SEC DELAY - DIRECT
+      // 1. LOGIN ONLY - NO WAITING
+      await signInWithEmailAndPassword(auth, email, password);
+      
+      // 2. JUMP INSTANTLY - 0 SEC
       window.location.replace("./home.html");
+
     } catch(e) {
       errorEl.innerText = "Invalid email or password";
     }
