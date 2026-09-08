@@ -14,7 +14,6 @@
  .day { padding:8px; border-radius:8px; background:#222; font-size:12px; }
  .day.active { background:#00ff88; color:#000; }
   #points { font-size:24px; font-weight:bold; color:#00ff88; }
- .restore-btn { background:#ff9800;color:#fff;border:none;padding:8px 12px;border-radius:8px;margin-top:10px;font-size:13px;width:100%; }
 </style>
 </head>
 <body>
@@ -22,7 +21,6 @@
   <div class="card">
     <h2 id="welcome">Welcome</h2>
     <p>Points: <span id="points">0</span></p>
-    <button class="restore-btn" onclick="restorePriya()">Restore 230 Points</button>
   </div>
 
   <div class="card">
@@ -161,15 +159,6 @@
     alert(`Check-in Complete! +${reward} Points. Streak: ${newStreak} Days`);
     renderCheckin();
     updateWalletUI();
-  }
-
-  window.restorePriya = async function() {
-    const correctPoints = 230;
-    await updateDoc(doc(db, "users", currentUser.uid), { points: correctPoints });
-    userData.points = correctPoints;
-    pointsEl.innerText = correctPoints;
-    localStorage.setItem('points', correctPoints);
-    alert("Points Restored to 230. DELETE THIS BUTTON NOW.");
   }
 
   function addHistory(text){
