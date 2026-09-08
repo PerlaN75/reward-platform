@@ -7,14 +7,14 @@
 <style>
     body { margin:0; font-family: Arial, sans-serif; background:#1a2e05; color:#fff; text-align:center; }
     h1 { margin-top: 20px; font-size: 24px; }
-   .tagline { font-size: 14px; color: #ffc107; margin-bottom: 20px; }
-   .points-box { background:#0f1a03; border-radius: 15px; padding: 20px; margin: 0 15px 25px 15px; }
-   .points-box h2 { margin: 0; font-size: 14px; color: #aaa; }
-   .points-box p { font-size: 48px; font-weight: bold; color: #ffa500; margin: 10px 0 0 0; }
-   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 15px; }
-   .card { background:#fff; color:#000; border-radius: 15px; padding: 20px 10px; cursor: pointer; font-weight: bold; }
-   .card.icon { font-size: 32px; margin-bottom: 8px; }
-   .logout-btn { background: red; color: #fff; border: none; padding: 12px 40px; border-radius: 10px; font-size: 16px; font-weight: bold; margin: 25px 0; cursor: pointer; }
+  .tagline { font-size: 14px; color: #ffc107; margin-bottom: 20px; }
+  .points-box { background:#0f1a03; border-radius: 15px; padding: 20px; margin: 0 15px 25px 15px; }
+  .points-box h2 { margin: 0; font-size: 14px; color: #aaa; }
+  .points-box p { font-size: 48px; font-weight: bold; color: #ffa500; margin: 10px 0 0 0; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 15px; }
+  .card { background:#fff; color:#000; border-radius: 15px; padding: 20px 10px; cursor: pointer; font-weight: bold; }
+  .card.icon { font-size: 32px; margin-bottom: 8px; }
+  .logout-btn { background: red; color: #fff; border: none; padding: 12px 40px; border-radius: 10px; font-size: 16px; font-weight: bold; margin: 25px 0; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -40,7 +40,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -55,6 +55,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// ADDED: Keep login saved
+await setPersistence(auth, browserLocalPersistence);
 
 const welcomeEl = document.getElementById("welcomeText");
 const pointsEl = document.getElementById("points");
@@ -75,7 +78,7 @@ if(userData.points!== null) {
 // 2. THEN VERIFY/UPDATE FROM FIRESTORE
 onAuthStateChanged(auth, async (user) => {
   if(!user) {
-    window.location.href = "log.html";
+    window.location.href = "./log.html"; // CHANGED: added./
     return;
   }
   await loadHome(user.uid, user.email);
@@ -131,7 +134,7 @@ async function loadHome(uid, email) {
 
 window.logout = function() {
   localStorage.clear();
-  signOut(auth).then(() => { window.location.href = "log.html"; });
+  signOut(auth).then(() => { window.location.href = "./log.html"; }); // CHANGED: added./
 }
 </script>
 
