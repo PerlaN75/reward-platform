@@ -40,6 +40,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"; // ADDED THIS
 
   const firebaseConfig = {
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
@@ -51,6 +52,7 @@
   };
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getFirestore(app); // ADDED THIS
 
   // PRE-INITIALIZE AUTH TO REMOVE 2SEC DELAY
   auth.onAuthStateChanged(()=>{});
@@ -63,7 +65,15 @@
     if(!email || !password){ errorEl.innerText = "Fill all fields"; return; }
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // NEW: GET USER DATA AND SAVE TO CACHE FOR INSTANT HOME LOAD
+      const docSnap = await getDoc(doc(db, "users", user.uid));
+      if (docSnap.exists()) {
+        localStorage.setItem('userData', JSON.stringify(docSnap.data()));
+      }
+
       // 0 SEC DELAY - DIRECT
       window.location.replace("./home.html");
     } catch(e) {
