@@ -6,20 +6,22 @@
 <title>RevApp Home</title>
 <style>
   body { background:#0a0a0a; color:#fff; font-family:Arial; margin:0; padding:15px; }
- .container { max-width:500px; margin:auto; }
- .card { background:#1a1a1a; padding:15px; border-radius:12px; margin-bottom:15px; }
- .btn { background:#00ff88; color:#000; border:none; padding:12px; border-radius:10px; width:100%; font-weight:bold; cursor:pointer; margin-top:8px; }
- .btn:disabled { background:#333; color:#777; }
- .checkin-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; text-align:center; }
- .day { padding:8px; border-radius:8px; background:#222; font-size:12px; }
- .day.active { background:#00ff88; color:#000; }
-  #points { font-size:24px; font-weight:bold; color:#00ff88; }
+.container { max-width:500px; margin:auto; }
+.card { background:#1a1a1a; padding:15px; border-radius:12px; margin-bottom:15px; }
+.btn { background:#00ff88; color:#000; border:none; padding:12px; border-radius:10px; width:100%; font-weight:bold; cursor:pointer; margin-top:8px; font-size:15px; }
+.btn:disabled { background:#333; color:#777; }
+.btn-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.checkin-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; text-align:center; }
+.day { padding:6px; border-radius:8px; background:#222; font-size:10px; }
+.day.active { background:#00ff88; color:#000; font-weight:bold; }
+  #points { font-size:28px; font-weight:bold; color:#00ff88; }
+  #welcome { font-size:20px; }
 </style>
 </head>
 <body>
 <div class="container">
   <div class="card">
-    <h2 id="welcome">Welcome</h2>
+    <h2 id="welcome">Loading...</h2>
     <p>Points: <span id="points">0</span></p>
   </div>
 
@@ -30,40 +32,54 @@
   </div>
 
   <div class="card">
+    <h3>Earn</h3>
+    <div class="btn-row">
+      <button class="btn" onclick="watchAd()">Watch Ad</button>
+      <button class="btn" onclick="referFriend()">Refer</button>
+    </div>
+  </div>
+
+  <div class="card">
     <h3>Wallet</h3>
     <p>USDT: <span id="usdt">0</span></p>
     <p>BNB: <span id="bnb">0</span></p>
     <p>XRP: <span id="xrp">0</span></p>
     <p>XLM: <span id="xlm">0</span></p>
+    <div class="btn-row">
+      <button class="btn" onclick="redeem()">Redeem</button>
+      <button class="btn" onclick="withdraw()">Withdraw</button>
+    </div>
+    <button class="btn" onclick="deposit()">Deposit</button>
   </div>
 
   <div class="card">
     <h3>History</h3>
-    <div id="history"></div>
+    <div id="history">Loading...</div>
   </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  const firebaseConfig = { /* YOUR CONFIG HERE */ };
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
   let userData = { points:0, streak:0, lastCheckin:"", usdt:0, bnb:0, xrp:0, xlm:0, watchCount:0, lastWatchDate:"" };
   let currentUser = null;
-  let dataLoaded = false;
 
   const CHECKIN_REWARDS = [10, 20, 30, 40, 50, 60, 100];
-  const welcomeEl = document.getElementById('welcome');
-  const pointsEl = document.getElementById('points');
-  const usdtEl = document.getElementById('usdt');
-  const bnbEl = document.getElementById('bnb');
-  const xrpEl = document.getElementById('xrp');
-  const xlmEl = document.getElementById('xlm');
 
   onAuthStateChanged(auth, (user) => {
     if(user) {
@@ -75,36 +91,20 @@
   });
 
   async function loadHome(uid) {
-    try {
-      const docSnap = await getDoc(doc(db, "users", uid));
-      if(docSnap.exists()) {
-        const data = docSnap.data();
-        userData = {...userData,...data };
-        welcomeEl.innerText = "Welcome back " + data.username;
-        pointsEl.innerText = data.points || 0;
-        localStorage.setItem('username', data.username);
-        localStorage.setItem('points', data.points || 0);
-        localStorage.setItem('streak', data.streak || 0);
-        localStorage.setItem('lastCheckin', data.lastCheckin || "");
-        localStorage.setItem('usdt', data.usdt || 0);
-        localStorage.setItem('bnb', data.bnb || 0);
-        localStorage.setItem('xrp', data.xrp || 0);
-        localStorage.setItem('xlm', data.xlm || 0);
-        localStorage.setItem('watchCount', data.watchCount || 0);
-        localStorage.setItem('lastWatchDate', data.lastWatchDate || "");
-        dataLoaded = true;
-        updateWalletUI();
-        loadHistory();
-        renderCheckin();
-      }
-    } catch(e) { console.log(e); }
-  }
+    const docSnap = await getDoc(doc(db, "users", uid));
+    if(docSnap.exists()) {
+      const data = docSnap.data();
+      userData = data; // READ FIREBASE FIRST
 
-  function updateWalletUI(){
-    usdtEl.innerText = userData.usdt || 0;
-    bnbEl.innerText = userData.bnb || 0;
-    xrpEl.innerText = userData.xrp || 0;
-    xlmEl.innerText = userData.xlm || 0;
+      document.getElementById('welcome').innerText = "Welcome back " + (data.username || "User");
+      document.getElementById('points').innerText = data.points || 0;
+      document.getElementById('usdt').innerText = data.usdt || 0;
+      document.getElementById('bnb').innerText = data.bnb || 0;
+      document.getElementById('xrp').innerText = data.xrp || 0;
+      document.getElementById('xlm').innerText = data.xlm || 0;
+
+      renderCheckin();
+    }
   }
 
   function renderCheckin(){
@@ -128,7 +128,7 @@
     const docSnap = await getDoc(doc(db, "users", currentUser.uid));
     if(docSnap.exists()) userData = docSnap.data();
 
-    if(userData.lastCheckin === today) return alert("You already checked in today!");
+    if(userData.lastCheckin === today) return alert("Already checked in today!");
 
     let oldStreak = userData.streak || 0;
     let newStreak = 1;
@@ -150,26 +150,17 @@
     userData.streak = newStreak;
     userData.lastCheckin = today;
 
-    pointsEl.innerText = userData.points;
-    localStorage.setItem('points', userData.points);
-    localStorage.setItem('streak', userData.streak);
-    localStorage.setItem('lastCheckin', userData.lastCheckin);
-
-    addHistory(`Daily Checkin Day ${newStreak} +${reward} points`);
+    document.getElementById('points').innerText = userData.points;
     alert(`Check-in Complete! +${reward} Points. Streak: ${newStreak} Days`);
     renderCheckin();
-    updateWalletUI();
   }
 
-  function addHistory(text){
-    const div = document.getElementById('history');
-    const p = document.createElement('p');
-    p.innerText = new Date().toLocaleString() + ' - ' + text;
-    div.prepend(p);
-  }
-  function loadHistory(){
-    document.getElementById('history').innerHTML = '<p>History loaded</p>';
-  }
+  // YOUR 6 BUTTONS - KEEP YOUR OLD LOGIC HERE
+  window.watchAd = function(){ alert("Watch Ad clicked") }
+  window.referFriend = function(){ alert("Refer clicked") }
+  window.redeem = function(){ alert("Redeem clicked") }
+  window.withdraw = function(){ alert("Withdraw clicked") }
+  window.deposit = function(){ alert("Deposit clicked") }
 
 </script>
 </body>
