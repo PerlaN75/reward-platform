@@ -6,7 +6,6 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
 
-    /* d. NEW BACKGROUND COLOR - Dark Green to Black gradient */
     body {
       background: linear-gradient(180deg, #1a2410 0%, #0f1508 100%);
       min-height: 100vh;
@@ -14,14 +13,12 @@
       color: white;
     }
 
-   .container { max-width: 500px; margin: 0 auto; }
+    .container { max-width: 500px; margin: 0 auto; }
 
-    /* a. Hi [Username] CENTERED + Capital letter */
    .header { text-align: center; margin-bottom: 20px; padding-top: 10px; }
    .header h2 { font-size: 22px; font-weight: 500; }
-   .header h2 span { color: #fbbf24; font-weight: bold; text-transform: capitalize; } /* Capital first letter */
+   .header h2 span { color: #fbbf24; font-weight: bold; text-transform: capitalize; }
 
-    /* Balance Card */
    .balance-card {
       background: #2f3e1a;
       border: 2px solid #fbbf24;
@@ -31,15 +28,15 @@
       margin-bottom: 25px;
       box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
     }
-   .balance-card.label { font-size: 14px; color: #ccc; }
-   .balance-card.amount { font-size: 32px; font-weight: bold; color: #fbbf24; margin-top: 5px; }
+   .balance-card .label { font-size: 14px; color: #ccc; }
+   .balance-card .amount { font-size: 32px; font-weight: bold; color: #fbbf24; margin-top: 5px; }
 
-    /* c. 3D BUTTONS GRID - 2 per row */
    .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
 
+    /* BUTTON = WHITE BACKGROUND */
    .menu-btn {
-      background: linear-gradient(180deg, #4a6128, #3a4d1f); /* 3D Gradient */
-      color: white; /* WHITE TEXT */
+      background: linear-gradient(180deg, #ffffff, #e5e5e5); /* WHITE 3D */
+      color: #1a2410; /* DARK TEXT SO IT'S VISIBLE */
       border: none;
       border-radius: 15px;
       padding: 20px 10px;
@@ -47,55 +44,70 @@
       font-weight: bold;
       cursor: pointer;
       text-align: center;
-      border-bottom: 4px solid #2a380f; /* 3D Shadow */
+      border-bottom: 4px solid #cccccc; /* 3D Shadow */
       transition: all 0.1s ease;
     }
    .menu-btn:active {
       transform: translateY(2px);
-      border-bottom: 2px solid #2a380f; /* Press down effect */
+      border-bottom: 2px solid #cccccc;
     }
+   .menu-btn .emoji { font-size: 22px; display: block; margin-bottom: 5px; }
 
-    /* b. LOGOUT DOWN 40% WIDTH */
+    /* LOGOUT = ORANGE BG, BLACK TEXT */
    .logout-btn {
       width: 40%;
       margin: 0 auto;
       display: block;
       padding: 14px;
-      background: transparent;
-      color: #ef4444;
-      border: 2px solid #ef4444;
+      background: #f59e0b; /* ORANGE */
+      color: #000; /* BLACK TEXT */
+      border: none;
       border-radius: 12px;
       font-weight: bold;
       font-size: 16px;
       cursor: pointer;
+      border-bottom: 3px solid #d97706;
+    }
+   .logout-btn:active {
+      transform: translateY(2px);
+      border-bottom: 1px solid #d97706;
     }
   </style>
 </head>
 <body>
   <div class="container">
 
-    <!-- a. CENTERED USERNAME -->
     <div class="header">
       <h2>Hi, <span id="username">Guest</span></h2>
     </div>
 
-    <!-- Balance -->
     <div class="balance-card">
       <div class="label">Your Balance</div>
       <div class="amount" id="balance">0 RWF</div>
     </div>
 
-    <!-- c. 6 BUTTONS: 3D + WHITE -->
     <div class="menu-grid">
-      <button class="menu-btn" onclick="window.location.href='./wallet.html'">Wallet</button>
-      <button class="menu-btn" onclick="window.location.href='./checkin.html'">Daily Checkin</button>
-      <button class="menu-btn" onclick="window.location.href='./quiz.html'">Quiz</button>
-      <button class="menu-btn" onclick="window.location.href='./referrals.html'">Refer & Earn</button>
-      <button class="menu-btn" onclick="alert('Coming Soon')">Gifts</button>
-      <button class="menu-btn" onclick="alert('Coming Soon')">More</button>
+      <!-- ADDED EMOJIS -->
+      <button class="menu-btn" onclick="window.location.href='./wallet.html'">
+        <span class="emoji">💰</span> Wallet
+      </button>
+      <button class="menu-btn" onclick="window.location.href='./checkin.html'">
+        <span class="emoji">📅</span> Daily Checkin
+      </button>
+      <button class="menu-btn" onclick="window.location.href='./quiz.html'">
+        <span class="emoji">🧠</span> Quiz
+      </button>
+      <button class="menu-btn" onclick="window.location.href='./referrals.html'">
+        <span class="emoji">🤝</span> Refer & Earn
+      </button>
+      <button class="menu-btn" onclick="alert('Coming Soon')">
+        <span class="emoji">🎁</span> Gifts
+      </button>
+      <button class="menu-btn" onclick="alert('Coming Soon')">
+        <span class="emoji">⚙️</span> More
+      </button>
     </div>
 
-    <!-- b. LOGOUT BUTTON DOWN -->
     <button class="logout-btn" onclick="logout()">Logout</button>
 
   </div>
@@ -117,16 +129,15 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // e. USERNAME APPEARS INSTANTLY FROM CACHE
+  // INSTANT LOAD FROM CACHE
   const cached = JSON.parse(localStorage.getItem('userData') || '{}');
   if(cached.name){
-    document.getElementById('username').innerText = cached.name; // CSS will capitalize
+    document.getElementById('username').innerText = cached.name;
   }
-  if(cached.balance!== undefined){
+  if(cached.balance !== undefined){
     document.getElementById('balance').innerText = cached.balance + ' RWF';
   }
 
-  // Then update from Firebase in background
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       const docSnap = await getDoc(doc(db, "users", user.uid));
