@@ -235,7 +235,7 @@
     btn.classList.add('active'); document.getElementById(tabName).classList.add('active');
   }
 
-    window.openCheckin = function() { document.getElementById('checkinModal').style.display = 'flex'; renderCheckin(); }
+   window.openCheckin = function() { document.getElementById('checkinModal').style.display = 'flex'; renderCheckin(); }
   window.closeCheckin = function() { document.getElementById('checkinModal').style.display = 'none'; }
 
   function renderCheckin() {
@@ -245,7 +245,13 @@
     const cachedStreak = parseInt(localStorage.getItem('streak')) || userData.streak || 0;
     const cachedLastCheckin = localStorage.getItem('lastCheckin') || userData.lastCheckin || "";
 
-    document.getElementById('streakNumber').innerText = cachedStreak + " Days";
+    // Auto-fix streak if user missed yesterday
+    let displayStreak = cachedStreak;
+    if(cachedLastCheckin!== today && cachedLastCheckin!== yesterday && cachedStreak > 0) {
+      displayStreak = 0; // streak broken
+    }
+
+    document.getElementById('streakNumber').innerText = displayStreak + " Days";
 
     const alreadyChecked = cachedLastCheckin === today;
     const btn = document.getElementById('checkinBtn');
@@ -261,8 +267,8 @@
     let gridHtml = '';
     for(let i = 1; i <= 7; i++){
       let className = 'day-box';
-      if(i <= cachedStreak) className += ' completed';
-      if(i === cachedStreak + 1 &&!alreadyChecked) className += ' active';
+      if(i <= displayStreak) className += ' completed';
+      if(i === displayStreak + 1 &&!alreadyChecked) className += ' active';
       gridHtml += `<div class="${className}">Day ${i}</div>`;
     }
     document.getElementById('daysGrid').innerHTML = gridHtml;
@@ -275,6 +281,7 @@
     if(userData.lastCheckin === today) return alert("You already checked in today!");
 
     let newStreak = 1;
+    // If checked yesterday, continue. Else reset
     if(userData.lastCheckin === yesterday) {
       newStreak = (userData.streak || 0) + 1;
       if(newStreak > 7) newStreak = 1;
