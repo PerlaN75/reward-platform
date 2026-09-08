@@ -173,7 +173,7 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const db = getFirestore(app); // ADDED THIS
+  const db = getFirestore(app);
 
   let currentUser = null;
   let userData = { points: 0, usdt: 0, bnb: 0, xrp: 0, xlm: 0, streak: 0, lastCheckin: "" };
@@ -185,19 +185,24 @@
   const welcomeEl = document.getElementById('welcomeText');
   const pointsEl = document.getElementById('points');
 
+  // INSTANT LOAD: Show cached data immediately so no 3sec delay
   const cachedName = localStorage.getItem('username');
   const cachedPoints = localStorage.getItem('points');
-  if(cachedName){ welcomeEl.innerText = "Welcome back " + cachedName; }
+  if(cachedName){
+    welcomeEl.innerText = "Welcome back " + cachedName;
+  } else {
+    welcomeEl.innerText = "Loading...";
+  }
   if(cachedPoints){ pointsEl.innerText = cachedPoints; }
 
-  // FIXED: CHECK AUTH
+  // Then check auth and update in background
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       currentUser = user;
       await loadHome(user.uid);
     } else {
       localStorage.clear();
-      window.location.href = "./log.html"; // go to login if not logged in
+      window.location.href = "./log.html";
     }
   });
 
@@ -207,8 +212,12 @@
       if(docSnap.exists()) {
         const data = docSnap.data();
         userData = {...userData,...data };
+
+        // Update UI with fresh Firebase data
         welcomeEl.innerText = "Welcome back " + data.username;
         pointsEl.innerText = data.points || 0;
+
+        // Save to cache for next instant load
         localStorage.setItem('username', data.username);
         localStorage.setItem('points', data.points || 0);
         localStorage.setItem('streak', data.streak || 0);
@@ -217,18 +226,15 @@
         localStorage.setItem('bnb', data.bnb || 0);
         localStorage.setItem('xrp', data.xrp || 0);
         localStorage.setItem('xlm', data.xlm || 0);
+
         checkAndResetWatchCounter();
         updateWalletUI();
         loadHistory();
         updateWatchUI();
       } else {
-        // If user doc doesn't exist, log out
         await signOut(auth);
       }
-    } catch(e) {
-      console.log(e);
-      welcomeEl.innerText = "Error loading data";
-    }
+    } catch(e) { console.log(e); }
   }
 
   function checkAndResetWatchCounter() {
@@ -420,7 +426,6 @@
 
   window.goTo = function(page) { window.location.href = `./${page}`; }
 
-  // FIXED LOGOUT
   window.logout = async function() {
     await signOut(auth);
     localStorage.clear();
