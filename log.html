@@ -57,12 +57,9 @@
     if(!email || !password){ errorEl.innerText = "Fill all fields"; return; }
 
     try {
-      // 1. LOGIN ONLY - NO WAITING
       await signInWithEmailAndPassword(auth, email, password);
-      
-      // 2. JUMP INSTANTLY - 0 SEC
+      // JUMP IMMEDIATELY. NO WAITING FOR FIRESTORE
       window.location.replace("./home.html");
-
     } catch(e) {
       errorEl.innerText = "Invalid email or password";
     }
