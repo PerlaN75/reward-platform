@@ -17,25 +17,8 @@
     .btn-login:active { transform: translateY(2px); box-shadow: 0 2px 0 #d97706; }
     .link-register { color: #fbbf24; margin-top: 15px; font-size: 14px; cursor: pointer; }
     .error { color: #ef4444; font-size: 13px; margin-top: 10px; }
-
-    /* UPDATED: BACK BUTTON = WHITE BG, BLACK TEXT */
-    .btn-back-outside { 
-  width: 40%; 
-  padding: 14px; 
-  background: white; /* WHITE */
-  color: black; /* BLACK TEXT */
-  border: none;
-  border-radius: 12px; 
-  font-weight: bold; 
-  font-size: 16px; 
-  cursor: pointer; 
-  margin-top: 40px; /* MOVED DOWN MORE */
-  box-shadow: 0 3px 0 #ccc; /* 3D effect */
-}
-.btn-back-outside:active { 
-  transform: translateY(2px); 
-  box-shadow: 0 1px 0 #ccc; 
-}
+    .btn-back-outside { width: 40%; padding: 14px; background: white; color: black; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 40px; box-shadow: 0 3px 0 #ccc; }
+    .btn-back-outside:active { transform: translateY(2px); box-shadow: 0 1px 0 #ccc; }
   </style>
 </head>
 <body>
@@ -55,6 +38,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"; // ADDED
 
   const firebaseConfig = {
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
@@ -66,6 +50,7 @@
   };
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getFirestore(app); // ADDED
 
   window.login = async function() {
     const email = document.getElementById('email').value;
@@ -75,8 +60,14 @@
     if(!email || !password){ errorEl.innerText = "Fill all fields"; return; }
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // JUMP IMMEDIATELY. NO WAITING FOR FIRESTORE
+      const userCred = await signInWithEmailAndPassword(auth, email, password);
+      
+      // NEW: GET USER DATA AND SAVE TO CACHE INSTANTLY
+      const docSnap = await getDoc(doc(db, "users", userCred.user.uid));
+      if (docSnap.exists()) {
+        localStorage.setItem('userData', JSON.stringify(docSnap.data()));
+      }
+
       window.location.replace("./home.html");
     } catch(e) {
       errorEl.innerText = "Invalid email or password";
