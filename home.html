@@ -235,18 +235,29 @@
     btn.classList.add('active'); document.getElementById(tabName).classList.add('active');
   }
 
-  window.openCheckin = function() { document.getElementById('checkinModal').style.display = 'flex'; renderCheckin(); }
+    window.openCheckin = function() { document.getElementById('checkinModal').style.display = 'flex'; renderCheckin(); }
   window.closeCheckin = function() { document.getElementById('checkinModal').style.display = 'none'; }
 
   function renderCheckin() {
-    const cachedStreak = parseInt(localStorage.getItem('streak')) || userData.streak;
-    const cachedLastCheckin = localStorage.getItem('lastCheckin') || userData.lastCheckin;
-    document.getElementById('streakNumber').innerText = cachedStreak + " Days";
     const today = new Date().toISOString().split('T')[0];
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+
+    const cachedStreak = parseInt(localStorage.getItem('streak')) || userData.streak || 0;
+    const cachedLastCheckin = localStorage.getItem('lastCheckin') || userData.lastCheckin || "";
+
+    document.getElementById('streakNumber').innerText = cachedStreak + " Days";
+
     const alreadyChecked = cachedLastCheckin === today;
     const btn = document.getElementById('checkinBtn');
-    if(alreadyChecked){ btn.innerText = "Already Checked In Today"; btn.disabled = true; }
-    else { btn.innerText = "Check In Now"; btn.disabled = false; }
+
+    if(alreadyChecked){
+      btn.innerText = "Already Checked In Today";
+      btn.disabled = true;
+    } else {
+      btn.innerText = "Check In Now";
+      btn.disabled = false;
+    }
+
     let gridHtml = '';
     for(let i = 1; i <= 7; i++){
       let className = 'day-box';
@@ -260,17 +271,31 @@
   window.doCheckin = async function() {
     const today = new Date().toISOString().split('T')[0];
     const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+
     if(userData.lastCheckin === today) return alert("You already checked in today!");
+
     let newStreak = 1;
-    if(userData.lastCheckin === yesterday) { newStreak = userData.streak + 1; if(newStreak > 7) newStreak = 1; }
+    if(userData.lastCheckin === yesterday) {
+      newStreak = (userData.streak || 0) + 1;
+      if(newStreak > 7) newStreak = 1;
+    }
+
     let reward = CHECKIN_REWARDS[newStreak - 1];
-    userData.points += reward; userData.streak = newStreak; userData.lastCheckin = today;
+    userData.points += reward;
+    userData.streak = newStreak;
+    userData.lastCheckin = today;
+
     await setDoc(doc(db, "users", currentUser.uid), { points: userData.points, streak: userData.streak, lastCheckin: userData.lastCheckin }, {merge: true});
+
     pointsEl.innerText = userData.points;
-    localStorage.setItem('points', userData.points); localStorage.setItem('streak', userData.streak); localStorage.setItem('lastCheckin', userData.lastCheckin);
+    localStorage.setItem('points', userData.points);
+    localStorage.setItem('streak', userData.streak);
+    localStorage.setItem('lastCheckin', userData.lastCheckin);
+
     addHistory(`Daily Checkin Day ${newStreak} +${reward} points`);
     alert(`Check-in Complete! +${reward} Points. Streak: ${newStreak} Days`);
-    renderCheckin(); updateWalletUI();
+    renderCheckin();
+    updateWalletUI();
   }
 
   // WATCH & EARN - INSTANT FIX
