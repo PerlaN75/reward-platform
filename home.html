@@ -273,26 +273,37 @@
     }
     document.getElementById('daysGrid').innerHTML = gridHtml;
   }
-
+  
   window.doCheckin = async function() {
     const today = new Date().toISOString().split('T')[0];
     const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
 
+    // Get latest data from Firebase first so we don't overwrite with 0
+    const docSnap = await getDoc(doc(db, "users", currentUser.uid));
+    if(docSnap.exists()) userData = docSnap.data();
+
     if(userData.lastCheckin === today) return alert("You already checked in today!");
 
+    let oldStreak = userData.streak || 0;
     let newStreak = 1;
-    // If checked yesterday, continue. Else reset
+
     if(userData.lastCheckin === yesterday) {
-      newStreak = (userData.streak || 0) + 1;
+      newStreak = oldStreak + 1;
       if(newStreak > 7) newStreak = 1;
     }
 
     let reward = CHECKIN_REWARDS[newStreak - 1];
-    userData.points += reward;
+    const newPoints = (userData.points || 0) + reward;
+
+    await setDoc(doc(db, "users", currentUser.uid), {
+      points: newPoints,
+      streak: newStreak,
+      lastCheckin: today
+    }, {merge: true});
+
+    userData.points = newPoints;
     userData.streak = newStreak;
     userData.lastCheckin = today;
-
-    await setDoc(doc(db, "users", currentUser.uid), { points: userData.points, streak: userData.streak, lastCheckin: userData.lastCheckin }, {merge: true});
 
     pointsEl.innerText = userData.points;
     localStorage.setItem('points', userData.points);
@@ -304,7 +315,6 @@
     renderCheckin();
     updateWalletUI();
   }
-
   // WATCH & EARN - INSTANT FIX
   window.openWatch = function() {
     clearInterval(watchTimer);
