@@ -6,7 +6,6 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #2f3e1a; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 60px 20px 20px 20px; }
-    
     .login-card { background: #4a6128; padding: 30px 25px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; border: 3px solid #fbbf24; }
     .logo { font-size: 60px; margin-bottom: 10px; filter: drop-shadow(0 0 8px #fbbf24); }
     h1 { color: #fbbf24; font-size: 28px; margin-bottom: 8px; }
@@ -38,7 +37,6 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"; // ADDED
 
   const firebaseConfig = {
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
@@ -50,7 +48,6 @@
   };
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const db = getFirestore(app); // ADDED
 
   window.login = async function() {
     const email = document.getElementById('email').value;
@@ -60,14 +57,8 @@
     if(!email || !password){ errorEl.innerText = "Fill all fields"; return; }
 
     try {
-      const userCred = await signInWithEmailAndPassword(auth, email, password);
-      
-      // NEW: GET USER DATA AND SAVE TO CACHE INSTANTLY
-      const docSnap = await getDoc(doc(db, "users", userCred.user.uid));
-      if (docSnap.exists()) {
-        localStorage.setItem('userData', JSON.stringify(docSnap.data()));
-      }
-
+      await signInWithEmailAndPassword(auth, email, password);
+      // 0 SEC DELAY - JUMP IMMEDIATELY
       window.location.replace("./home.html");
     } catch(e) {
       errorEl.innerText = "Invalid email or password";
