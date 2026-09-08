@@ -1,42 +1,108 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Home</title>
+  <title>Home - Rewards</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { background: #2f3e1a; color: white; padding: 20px; }
-   .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-   .welcome { font-size: 18px; }
-   .welcome span { color: #fbbf24; font-weight: bold; }
-   .balance-card { background: #4a6128; padding: 20px; border-radius: 15px; border: 2px solid #fbbf24; text-align: center; }
-   .balance { font-size: 32px; color: #fbbf24; font-weight: bold; }
-   .menu { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-   .btn { background: #4a6128; padding: 20px; border-radius: 15px; text-align: center; border: 2px solid #fbbf24; cursor: pointer; font-weight: bold; }
-   .btn:active { transform: scale(0.95); }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+
+    /* d. NEW BACKGROUND COLOR - Dark Green to Black gradient */
+    body {
+      background: linear-gradient(180deg, #1a2410 0%, #0f1508 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: white;
+    }
+
+   .container { max-width: 500px; margin: 0 auto; }
+
+    /* a. Hi [Username] CENTERED + Capital letter */
+   .header { text-align: center; margin-bottom: 20px; padding-top: 10px; }
+   .header h2 { font-size: 22px; font-weight: 500; }
+   .header h2 span { color: #fbbf24; font-weight: bold; text-transform: capitalize; } /* Capital first letter */
+
+    /* Balance Card */
+   .balance-card {
+      background: #2f3e1a;
+      border: 2px solid #fbbf24;
+      border-radius: 20px;
+      padding: 25px;
+      text-align: center;
+      margin-bottom: 25px;
+      box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+    }
+   .balance-card.label { font-size: 14px; color: #ccc; }
+   .balance-card.amount { font-size: 32px; font-weight: bold; color: #fbbf24; margin-top: 5px; }
+
+    /* c. 3D BUTTONS GRID - 2 per row */
+   .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+
+   .menu-btn {
+      background: linear-gradient(180deg, #4a6128, #3a4d1f); /* 3D Gradient */
+      color: white; /* WHITE TEXT */
+      border: none;
+      border-radius: 15px;
+      padding: 20px 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      border-bottom: 4px solid #2a380f; /* 3D Shadow */
+      transition: all 0.1s ease;
+    }
+   .menu-btn:active {
+      transform: translateY(2px);
+      border-bottom: 2px solid #2a380f; /* Press down effect */
+    }
+
+    /* b. LOGOUT DOWN 40% WIDTH */
+   .logout-btn {
+      width: 40%;
+      margin: 0 auto;
+      display: block;
+      padding: 14px;
+      background: transparent;
+      color: #ef4444;
+      border: 2px solid #ef4444;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="welcome">Hi, <span id="userName">User</span></div> <!-- INSTANT -->
-    <button onclick="logout()" style="background:transparent; color:#fbbf24; border:1px solid #fbbf24; padding:8px 12px; border-radius:8px;">Logout</button>
-  </div>
+  <div class="container">
 
-  <div class="balance-card">
-    <div>Your Balance</div>
-    <div class="balance" id="balance">0 RWF</div> <!-- INSTANT -->
-  </div>
+    <!-- a. CENTERED USERNAME -->
+    <div class="header">
+      <h2>Hi, <span id="username">Guest</span></h2>
+    </div>
 
-  <div class="menu">
-    <div class="btn" onclick="window.location.href='./quiz.html'">Quiz</div>
-    <div class="btn" onclick="window.location.href='./referrals.html'">Referrals</div>
-    <div class="btn" onclick="window.location.href='./wallet.html'">Wallet</div>
-    <div class="btn" onclick="window.location.href='./checkin.html'">Daily Checkin</div>
+    <!-- Balance -->
+    <div class="balance-card">
+      <div class="label">Your Balance</div>
+      <div class="amount" id="balance">0 RWF</div>
+    </div>
+
+    <!-- c. 6 BUTTONS: 3D + WHITE -->
+    <div class="menu-grid">
+      <button class="menu-btn" onclick="window.location.href='./wallet.html'">Wallet</button>
+      <button class="menu-btn" onclick="window.location.href='./checkin.html'">Daily Checkin</button>
+      <button class="menu-btn" onclick="window.location.href='./quiz.html'">Quiz</button>
+      <button class="menu-btn" onclick="window.location.href='./referrals.html'">Refer & Earn</button>
+      <button class="menu-btn" onclick="alert('Coming Soon')">Gifts</button>
+      <button class="menu-btn" onclick="alert('Coming Soon')">More</button>
+    </div>
+
+    <!-- b. LOGOUT BUTTON DOWN -->
+    <button class="logout-btn" onclick="logout()">Logout</button>
+
   </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -51,34 +117,34 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // 1. SHOW CACHED DATA INSTANTLY - 0 SEC
-  const cachedUser = JSON.parse(localStorage.getItem('userData') || '{}');
-  document.getElementById('userName').innerText = cachedUser.name || 'User';
-  document.getElementById('balance').innerText = (cachedUser.balance || 0) + " RWF";
+  // e. USERNAME APPEARS INSTANTLY FROM CACHE
+  const cached = JSON.parse(localStorage.getItem('userData') || '{}');
+  if(cached.name){
+    document.getElementById('username').innerText = cached.name; // CSS will capitalize
+  }
+  if(cached.balance!== undefined){
+    document.getElementById('balance').innerText = cached.balance + ' RWF';
+  }
 
-  // 2. UPDATE IN BACKGROUND
+  // Then update from Firebase in background
   onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      window.location.replace("./log.html");
-      return;
-    }
-
-    const docRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      document.getElementById('userName').innerText = data.name || user.email.split('@')[0];
-      document.getElementById('balance').innerText = (data.balance || 0) + " RWF";
-
-      // SAVE TO CACHE FOR NEXT TIME
-      localStorage.setItem('userData', JSON.stringify({name: data.name, balance: data.balance}));
+    if (user) {
+      const docSnap = await getDoc(doc(db, "users", user.uid));
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        localStorage.setItem('userData', JSON.stringify(data));
+        document.getElementById('username').innerText = data.name;
+        document.getElementById('balance').innerText = data.balance + ' RWF';
+      }
+    } else {
+      window.location.replace('./log.html');
     }
   });
 
-  window.logout = () => {
-    localStorage.removeItem('userData'); // clear cache on logout
-    signOut(auth);
-    window.location.replace("./index.html");
+  window.logout = async function() {
+    await signOut(auth);
+    localStorage.removeItem('userData');
+    window.location.replace('./index.html');
   }
 </script>
 </body>
