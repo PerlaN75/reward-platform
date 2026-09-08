@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { background: #2f3e1a; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+    body { background: #2f3e1a; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 60px 20px 20px 20px; } /* MOVED UP */
     
     .login-card { background: #4a6128; padding: 30px 25px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; border: 3px solid #fbbf24; }
-    .logo { font-size: 60px; margin-bottom: 10px; }
+    .logo { font-size: 50px; margin-bottom: 10px; } /* NEW ICON */
     h1 { color: #fbbf24; font-size: 28px; margin-bottom: 8px; }
     .tagline { color: #fff; font-size: 13px; margin-bottom: 25px; }
     input { width: 100%; padding: 15px; margin: 10px 0; background: #1a2410; border: 1px solid #333; border-radius: 10px; color: white; font-size: 15px; }
@@ -18,13 +18,13 @@
     .link-register { color: #fbbf24; margin-top: 15px; font-size: 14px; cursor: pointer; }
     .error { color: #ef4444; font-size: 13px; margin-top: 10px; }
 
-    /* BACK BUTTON OUTSIDE THE CARD */
-    .btn-back-outside { width: 100%; max-width: 400px; padding: 14px; background: transparent; color: #fbbf24; border: 2px solid #fbbf24; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; }
+    /* BACK BUTTON OUTSIDE + 40% WIDTH */
+    .btn-back-outside { width: 40%; padding: 14px; background: transparent; color: #fbbf24; border: 2px solid #fbbf24; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; }
   </style>
 </head>
 <body>
   <div class="login-card">
-    <div class="logo">🐒</div>
+    <div class="logo">🎯</div> <!-- CHANGED FROM MONKEY TO TARGET - REWARDS PLATFORM -->
     <h1>Login</h1>
     <div class="tagline">From Nothing to Something</div>
     <input type="email" id="email" placeholder="Email">
@@ -52,6 +52,9 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
+  // PRE-INITIALIZE AUTH TO REMOVE 2SEC DELAY
+  auth.onAuthStateChanged(()=>{});
+
   window.login = async function() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -61,8 +64,8 @@
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // INSTANT REDIRECT - 0 SEC DELAY
-      window.location.href = "./home.html";
+      // 0 SEC DELAY - DIRECT
+      window.location.replace("./home.html");
     } catch(e) {
       errorEl.innerText = "Invalid email or password";
     }
