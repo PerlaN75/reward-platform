@@ -11,7 +11,10 @@
     h1 { color: #fbbf24; font-size: 28px; margin-bottom: 8px; }
     .tagline { color: #fff; font-size: 13px; margin-bottom: 25px; }
     input { width: 100%; padding: 15px; margin: 10px 0; background: #1a2410; border: 1px solid #333; border-radius: 10px; color: white; font-size: 15px; }
+    input::placeholder { color: #888; }
     .btn { width: 100%; padding: 16px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 0 #d97706; }
+    .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #d97706; }
+    .back-btn { width: 100%; padding: 14px; background: transparent; color: #fbbf24; border: 2px solid #fbbf24; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
     .link { color: #fbbf24; margin-top: 15px; font-size: 14px; cursor: pointer; }
     .error { color: #ef4444; font-size: 13px; margin-top: 10px; }
   </style>
@@ -19,11 +22,12 @@
 <body>
   <div class="login-box">
     <div class="logo">🐒</div>
-    <h1>Welcome Back</h1>
+    <h1>Login</h1> <!-- CHANGED -->
     <div class="tagline">From Nothing to Something</div>
     <input type="email" id="email" placeholder="Email">
     <input type="password" id="password" placeholder="Password">
     <button class="btn" onclick="login()">Login</button>
+    <button class="back-btn" onclick="window.location.href='./reg.html'">Back</button> <!-- NEW -->
     <div class="error" id="error"></div>
     <div class="link" onclick="window.location.href='./reg.html'">Don't have an account? Register</div>
   </div>
@@ -31,7 +35,6 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
@@ -43,27 +46,17 @@
   };
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const db = getFirestore(app);
 
   window.login = async function() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const errorEl = document.getElementById('error');
     errorEl.innerText = "";
-
     if(!email || !password){ errorEl.innerText = "Fill all fields"; return; }
 
     try {
-      const userCred = await signInWithEmailAndPassword(auth, email, password);
-      const uid = userCred.user.uid;
-
-      // SAVE TO CACHE BEFORE GOING TO HOME
-      const userDoc = await getDoc(doc(db, "users", uid));
-      if(userDoc.exists()){
-        localStorage.setItem('username', userDoc.data().username);
-        localStorage.setItem('points', userDoc.data().points || 0);
-      }
-      
+      await signInWithEmailAndPassword(auth, email, password);
+      // INSTANT REDIRECT - NO WAITING
       window.location.href = "./home.html";
     } catch(e) {
       errorEl.innerText = "Invalid email or password";
