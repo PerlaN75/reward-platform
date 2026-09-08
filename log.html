@@ -47,14 +47,26 @@
   <div id="errorMsg" class="error"></div>
 </div>
 
-<button class="back-btn" onclick="window.location.href='index.html'">Back</button>
+<button class="back-btn" onclick="window.location.href='./index.html'">Back</button>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-  const firebaseConfig = { apiKey: "AIzaSyBdvTVt5wGMueeos9Pg5FJf4y7f6lZZbqE", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d" };
-  const app = initializeApp(firebaseConfig); const auth = getAuth(app);
+  const firebaseConfig = {
+    apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
+    authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
+    projectId: "reward-platform-rw-2e13d",
+    storageBucket: "reward-platform-rw-2e13d.firebasestorage.app",
+    messagingSenderId: "787550951987",
+    appId: "1:787550951987:web:724b1463e821b99c90a146"
+  };
+  
+  const app = initializeApp(firebaseConfig); 
+  const auth = getAuth(app);
+
+  // Keep login saved
+  await setPersistence(auth, browserLocalPersistence);
   
   window.login = async function() {
     const email = document.getElementById('email').value;
@@ -64,7 +76,7 @@
     
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      window.location.href = "home.html";
+      window.location.href = "./home.html";
     } catch (e) {
       errorMsg.innerText = e.message;
     }
