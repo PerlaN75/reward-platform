@@ -19,16 +19,28 @@
     .menu-btn .emoji { font-size: 24px; display: block; margin-bottom: 6px; }
     .logout-btn { width: 40%; margin: 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 3px 0 #d97706; }
   </style>
+
+  <!-- KEY: THIS SCRIPT RUNS BEFORE PAGE SHOWS -->
+  <script>
+    function getUserName(data){ return data.name || data.username || data.fullName || ""; }
+    const cached = JSON.parse(localStorage.getItem('userData') || '{}');
+    const instantName = getUserName(cached);
+    const instantBalance = cached.balance !== undefined ? cached.balance + ' RWF' : '0 RWF';
+  </script>
+
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h2>Hi, <span id="username"></span></h2>
+      <!-- WRITE NAME DIRECTLY WITH JS -->
+      <h2 id="headerText"></h2>
     </div>
+
     <div class="balance-card">
       <div class="label">Your Balance</div>
-      <div class="amount" id="balance">0 RWF</div>
+      <div class="amount" id="balance"></div>
     </div>
+
     <div class="menu-grid">
       <button class="menu-btn" onclick="window.location.href='./wallet.html'"><span class="emoji">💰</span> Wallet</button>
       <button class="menu-btn" onclick="window.location.href='./checkin.html'"><span class="emoji">📅</span> Daily Checkin</button>
@@ -37,6 +49,7 @@
       <button class="menu-btn" onclick="alert('Coming Soon')"><span class="emoji">🎁</span> Gifts</button>
       <button class="menu-btn" onclick="alert('Coming Soon')"><span class="emoji">⚙️</span> More</button>
     </div>
+
     <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 
@@ -57,21 +70,19 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
+  // 1. PAINT INSTANTLY FROM CACHE
+  document.getElementById('headerText').innerHTML = `Hi, <span>${instantName}</span>`;
+  document.getElementById('balance').innerText = instantBalance;
+
+  // 2. BACKGROUND: UPDATE FROM FIREBASE
   function getUserName(data){ return data.name || data.username || data.fullName || ""; }
-
-  // 1. INSTANT: READ FROM CACHE
-  const cached = JSON.parse(localStorage.getItem('userData') || '{}');
-  document.getElementById('username').innerText = getUserName(cached);
-  if(cached.balance !== undefined) document.getElementById('balance').innerText = cached.balance + ' RWF';
-
-  // 2. BACKGROUND: UPDATE CACHE
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       const docSnap = await getDoc(doc(db, "users", user.uid));
       if (docSnap.exists()) {
         const data = docSnap.data();
         localStorage.setItem('userData', JSON.stringify(data));
-        document.getElementById('username').innerText = getUserName(data);
+        document.getElementById('headerText').innerHTML = `Hi, <span>${getUserName(data)}</span>`;
         document.getElementById('balance').innerText = (data.balance || 0) + ' RWF';
       }
     } else {
