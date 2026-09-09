@@ -5,7 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { background: #2f3e1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; flex-direction: column; }
+    body { 
+      background: #2f3e1a; 
+      display: flex; 
+      justify-content: flex-start; /* CHANGED: was center */
+      align-items: center; 
+      min-height: 100vh; 
+      padding: 50px 20px 20px 20px; /* CHANGED: added 50px top padding */
+      flex-direction: column; 
+    }
     
     .container { background: #3a4a22; padding: 40px 25px; border-radius: 25px; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; }
     
@@ -120,7 +128,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, updateProfile, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"; // ADDED updateProfile
+  import { getAuth, createUserWithEmailAndPassword, updateProfile, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, updateDoc, increment, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { 
@@ -243,7 +251,6 @@
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCred.user;
 
-      // KEY LINE: SAVE NAME TO FIREBASE AUTH SO IT LOADS INSTANTLY
       await updateProfile(user, { displayName: username });
 
       await setDoc(doc(db, "users", user.uid), {
