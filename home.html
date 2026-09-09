@@ -6,97 +6,102 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #0f1508; min-height: 100vh; padding: 20px; color: white; }
- .container { max-width: 500px; margin: 0 auto; }
+.container { max-width: 500px; margin: 0 auto; }
 
- .header { text-align: center; margin: 40px 0 30px 0; }
- .header h2 { font-size: 34px; font-weight: bold; color: #fff; }
- .header h2 span { color: #fbbf24; font-weight: bold; text-transform: capitalize; }
+.header { text-align: center; margin: 40px 0 30px 0; }
+.header h2 { font-size: 34px; font-weight: bold; color: #fff; }
+.header h2 span { color: #fbbf24; font-weight: bold; text-transform: capitalize; }
 
- .balance-card { background: #2f3e1a; border: 2px solid #fbbf24; border-radius: 20px; padding: 25px; text-align: center; margin-bottom: 30px; }
- .balance-card.label { font-size: 14px; color: #ccc; }
- .balance-card.amount { font-size: 32px; font-weight: bold; color: #fbbf24; margin-top: 5px; }
- .balance-card.usd { font-size: 16px; color: #aaa; margin-top: 8px; }
+.balance-card { background: #2f3e1a; border: 2px solid #fbbf24; border-radius: 20px; padding: 25px; text-align: center; margin-bottom: 30px; }
+.balance-card.label { font-size: 14px; color: #ccc; }
+.balance-card.amount { font-size: 32px; font-weight: bold; color: #fbbf24; margin-top: 5px; }
+.balance-card.usd { font-size: 16px; color: #aaa; margin-top: 8px; }
 
- .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+.menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
 
- .menu-btn {
+.menu-btn {
       background: linear-gradient(180deg, #ffffff, #e8e8e8);
       color: #000; border: none; border-radius: 15px; padding: 20px 10px;
       font-size: 15px; font-weight: bold; cursor: pointer; text-align: center;
       box-shadow: 0 6px 0 #bbbbbb, 0 8px 15px rgba(0,0,0,0.3);
       transition: all 0.1s ease; display: flex; flex-direction: column; align-items: center; gap: 8px;
     }
- .menu-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #bbbbbb; }
- .menu-btn.emoji { font-size: 32px; }
+.menu-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #bbbbbb; }
+.menu-btn.emoji { font-size: 32px; }
 
- .logout-btn {
+.logout-btn {
       width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px;
       background: #f59e0b; color: #000; border: none; border-radius: 12px;
       font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706;
     }
 
     /* WALLET POPUP */
- .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
- .modal-content { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 25px; width: 100%; max-width: 420px; color: white; }
- .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
- .modal-header h2 { font-size: 22px; color: #fbbf24; }
- .close-btn { font-size: 28px; color: white; cursor: pointer; font-weight: bold; }
- .popup-balance { background: #000; border: 2px solid #fbbf24; border-radius: 15px; padding: 20px; margin: 15px 0; text-align: center; }
- .popup-balance.label { font-size: 14px; color: #ccc; margin-bottom: 8px; }
- .popup-balance.amount { font-size: 36px; color: #f59e0b; font-weight: bold; }
- .input-box,.select-box { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
- .input-box::placeholder { color: #777; }
- .action-btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top:10px; }
- .note { font-size: 12px; color: #aaa; margin-top: 8px; text-align: center; }
+.modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
+.modal-content { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 25px; width: 100%; max-width: 420px; color: white; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.modal-header h2 { font-size: 22px; color: #fbbf24; }
+.close-btn { font-size: 28px; color: white; cursor: pointer; font-weight: bold; }
+.popup-balance { background: #000; border: 2px solid #fbbf24; border-radius: 15px; padding: 20px; margin: 15px 0; text-align: center; }
+.popup-balance.label { font-size: 14px; color: #ccc; margin-bottom: 8px; }
+.popup-balance.amount { font-size: 36px; color: #f59e0b; font-weight: bold; }
+.input-box,.select-box { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
+.input-box::placeholder { color: #777; }
+.action-btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top:10px; }
+.note { font-size: 12px; color: #aaa; margin-top: 8px; text-align: center; }
 
     /* NEW WALLET STYLES */
- .tabs { display: flex; gap: 8px; margin: 15px 0; }
- .tab-btn { flex: 1; padding: 10px; background: #1a2410; border: 2px solid #555; border-radius: 10px; color: #ccc; font-weight: bold; cursor: pointer; font-size: 14px; }
- .tab-btn.active { background: #fbbf24; color: #000; border-color: #fbbf24; }
- .tab-content { display: none; }
- .tab-content.active { display: block; }
- .crypto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
- .crypto-item { background: #1a2410; padding: 15px; border-radius: 12px; border: 2px solid #444; text-align: center; cursor: pointer; }
- .crypto-item.selected { border-color: #22c55e; background: #1a2e1a; }
- .crypto-item.icon { font-size: 24px; }
- .crypto-item.name { font-weight: bold; margin-top: 5px; font-size: 14px; }
- .info-row { background: #1a2410; padding: 12px; border-radius: 10px; margin: 8px 0; display: flex; justify-content: space-between; font-size: 14px; }
- .convert-result { background: #000; padding: 15px; border-radius: 10px; text-align: center; margin: 10px 0; border: 1px dashed #fbbf24; }
- .crypto-balances { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 15px 0; }
- .crypto-balance-card { background: #000; border: 1px solid #444; padding: 12px; border-radius: 10px; text-align: center; }
- .crypto-balance-card.name { font-size: 12px; color: #aaa; }
- .crypto-balance-card.value { font-size: 18px; font-weight: bold; color: #fbbf24; margin-top: 4px; }
- .history-item { background: #1a2410; padding: 12px; border-radius: 10px; margin: 8px 0; border-left: 4px solid #fbbf24; }
- .history-item.type { font-weight: bold; font-size: 14px; }
- .history-item.status { font-size: 12px; padding: 4px 8px; border-radius: 6px; float: right; }
- .status.pending { background: #f59e0b; color: #000; }
- .status.approved { background: #22c55e; color: #000; }
- .history-item.details { font-size: 12px; color: #aaa; margin-top: 5px; }
+.tabs { display: flex; gap: 8px; margin: 15px 0; }
+.tab-btn { flex: 1; padding: 10px; background: #1a2410; border: 2px solid #555; border-radius: 10px; color: #ccc; font-weight: bold; cursor: pointer; font-size: 14px; }
+.tab-btn.active { background: #fbbf24; color: #000; border-color: #fbbf24; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.crypto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
+.crypto-item { background: #1a2410; padding: 15px; border-radius: 12px; border: 2px solid #444; text-align: center; cursor: pointer; }
+.crypto-item.selected { border-color: #22c55e; background: #1a2e1a; }
+.crypto-item.icon { font-size: 24px; }
+.crypto-item.name { font-weight: bold; margin-top: 5px; font-size: 14px; }
+.info-row { background: #1a2410; padding: 12px; border-radius: 10px; margin: 8px 0; display: flex; justify-content: space-between; font-size: 14px; }
+.convert-result { background: #000; padding: 15px; border-radius: 10px; text-align: center; margin: 10px 0; border: 1px dashed #fbbf24; }
+.crypto-balances { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 15px 0; }
+.crypto-balance-card { background: #000; border: 1px solid #444; padding: 12px; border-radius: 10px; text-align: center; }
+.crypto-balance-card.name { font-size: 12px; color: #aaa; }
+.crypto-balance-card.value { font-size: 18px; font-weight: bold; color: #fbbf24; margin-top: 4px; }
+
+    /* REDESIGNED HISTORY */
+.history-item { background: #1a2410; padding: 14px; border-radius: 12px; margin: 10px 0; display: flex; align-items: center; gap: 12px; border: 1px solid #333; }
+.history-icon { font-size: 24px; width: 40px; height: 40px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fbbf24; }
+.history-info { flex: 1; }
+.history-main { font-weight: bold; font-size: 15px; color: #fff; }
+.history-sub { font-size: 12px; color: #aaa; margin-top: 3px; }
+.history-status { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: bold; }
+.status.pending { background: #f59e0b; color: #000; }
+.status.approved { background: #22c55e; color: #000; }
+.status.rejected { background: #ef4444; color: #fff; }
 
     /* CUSTOM CRYPTO DROPDOWN */
- .custom-select { position: relative; margin: 10px 0; }
- .select-selected {
+.custom-select { position: relative; margin: 10px 0; }
+.select-selected {
     background: #000; border: 2px solid #444; border-radius: 10px;
     padding: 14px; color: white; cursor: pointer; display: flex;
     align-items: center; gap: 10px; font-size: 15px; position: relative;
   }
- .select-selected:after {
+.select-selected:after {
     content: ""; position: absolute; right: 14px; top: 18px;
     border: 6px solid transparent; border-color: #fbbf24 transparent transparent transparent;
   }
- .select-items {
+.select-items {
     position: absolute; background: #1a2410; border: 2px solid #fbbf24;
     border-radius: 10px; top: 100%; left: 0; right: 0; z-index: 99;
     max-height: 200px; overflow-y: auto; display: none;
   }
- .select-items div {
+.select-items div {
     padding: 14px; color: white; cursor: pointer; display: flex;
     align-items: center; gap: 10px; border-bottom: 1px solid #333;
   }
- .select-items div:last-child { border-bottom: none; }
- .select-items div:hover { background: #2f3e1a; }
- .select-items div.active { background: #fbbf24; color: #000; font-weight: bold; }
- .crypto-icon { font-size: 20px; }
+.select-items div:last-child { border-bottom: none; }
+.select-items div:hover { background: #2f3e1a; }
+.select-items div.active { background: #fbbf24; color: #000; font-weight: bold; }
+.crypto-icon { font-size: 20px; }
   </style>
 </head>
 <body>
@@ -174,7 +179,6 @@
         <div class="info-row"><span>Email</span><span id="wEmail">-</span></div>
 
         <label style="font-size:14px; color:#ccc;">Select Crypto</label>
-        <!-- CHANGED: Custom dropdown instead of select -->
         <div class="custom-select">
           <div class="select-selected" id="selectedCrypto" onclick="toggleDropdown()">
             <span class="crypto-icon">💵</span> USDT - Tether
@@ -336,16 +340,42 @@
     const convertSnap = await db.collection("convertRequests").where("uid", "==", currentUser.uid).orderBy("timestamp", "desc").get();
     const withdrawSnap = await db.collection("withdrawRequests").where("uid", "==", currentUser.uid).orderBy("timestamp", "desc").get();
 
-    let html = '';
+    let items = [];
     convertSnap.forEach(doc => {
       const d = doc.data();
-      html += `<div class="history-item"><div class="type">CONVERT <span class="status ${d.status}">${d.status}</span></div><div class="details">${d.points} pts -> ${d.amount.toFixed(4)} ${d.crypto}</div></div>`;
+      items.push({...d, type: 'convert', id: doc.id});
     });
     withdrawSnap.forEach(doc => {
       const d = doc.data();
-      html += `<div class="history-item"><div class="type">WITHDRAW <span class="status ${d.status}">${d.status}</span></div><div class="details">${d.amount} ${d.crypto} to ${d.address.slice(0,8)}...</div></div>`;
+      items.push({...d, type: 'withdraw', id: doc.id});
     });
-    list.innerHTML = html || 'No transactions yet';
+
+    // sort by timestamp
+    items.sort((a,b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+
+    let html = '';
+    items.forEach(d => {
+      const date = d.timestamp? new Date(d.timestamp.seconds * 1000).toLocaleDateString() : '';
+      const icon = d.type === 'convert'? '🔄' : '📤';
+      const mainText = d.type === 'convert'?
+        `${d.points} pts → ${d.amount.toFixed(4)} ${d.crypto}` :
+        `${d.amount} ${d.crypto}`;
+      const subText = d.type === 'convert'?
+        `Converted to ${d.crypto}` :
+        `To: ${d.address.slice(0,8)}...${d.address.slice(-4)}`;
+
+      html += `
+        <div class="history-item">
+          <div class="history-icon">${icon}</div>
+          <div class="history-info">
+            <div class="history-main">${mainText}</div>
+            <div class="history-sub">${subText} • ${date}</div>
+          </div>
+          <div class="history-status ${d.status}">${d.status}</div>
+        </div>
+      `;
+    });
+    list.innerHTML = html || '<div style="text-align:center; color:#aaa; padding:20px;">No transactions yet</div>';
   }
 
   document.getElementById('walletModal').addEventListener('click', function(e){
