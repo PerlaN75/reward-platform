@@ -35,63 +35,16 @@
       font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706;
     }
 
-    /* MODAL - CENTERED */
 .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
 .modal-content { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 18px; width: 100%; max-width: 400px; color: white; }
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .modal-header h2 { font-size: 20px; color: #fbbf24; display: flex; align-items: center; gap: 8px; }
 .close-btn { font-size: 24px; color: white; cursor: pointer; font-weight: bold; }
-.popup-balance { background: #000; border: 2px solid #fbbf24; border-radius: 15px; padding: 15px; margin: 10px 0; text-align: center; }
-.popup-balance.label { font-size: 13px; color: #ccc; margin-bottom: 6px; }
-.popup-balance.amount { font-size: 28px; color: #f59e0b; font-weight: bold; }
-.input-box { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 14px; outline: none; }
+
 .action-btn { width: 100%; padding: 14px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top:8px; }
 .action-btn:disabled { background: #444; color: #888; cursor: not-allowed; box-shadow: none; }
 .note { font-size: 12px; color: #aaa; margin-top: 6px; text-align: center; }
 
-    /* WALLET STYLES */
-.tabs { display: flex; gap: 8px; margin: 10px 0; }
-.tab-btn { flex: 1; padding: 10px; background: #1a2410; border: 2px solid #555; border-radius: 10px; color: #ccc; font-weight: bold; cursor: pointer; font-size: 13px; }
-.tab-btn.active { background: #fbbf24; color: #000; border-color: #fbbf24; }
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-.crypto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
-.crypto-item { background: #1a2410; padding: 12px; border-radius: 12px; border: 2px solid #444; text-align: center; cursor: pointer; }
-.crypto-item.selected { border-color: #22c55e; background: #1a2e1a; }
-.crypto-item.icon { font-size: 20px; }
-.crypto-item.name { font-weight: bold; margin-top: 4px; font-size: 13px; }
-.info-row { background: #1a2410; padding: 10px; border-radius: 10px; margin: 6px 0; display: flex; justify-content: space-between; font-size: 13px; }
-.convert-result { background: #000; padding: 12px; border-radius: 10px; text-align: center; margin: 8px 0; border: 1px dashed #fbbf24; font-size: 13px; }
-.crypto-balances { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 10px 0; }
-.crypto-balance-card { background: #000; border: 1px solid #444; padding: 10px; border-radius: 10px; text-align: center; }
-.crypto-balance-card.name { font-size: 11px; color: #aaa; }
-.crypto-balance-card.value { font-size: 16px; font-weight: bold; color: #fbbf24; margin-top: 3px; }
-
-    /* CUSTOM DROPDOWN */
-.custom-select { position: relative; margin: 8px 0; }
-.select-selected {
-    background: #000; border: 2px solid #444; border-radius: 10px;
-    padding: 12px; color: white; cursor: pointer; display: flex;
-    align-items: center; gap: 8px; font-size: 14px; position: relative;
-  }
-.select-selected:after {
-    content: ""; position: absolute; right: 12px; top: 16px;
-    border: 6px solid transparent; border-color: #fbbf24 transparent transparent transparent;
-  }
-.select-items {
-    position: absolute; background: #1a2410; border: 2px solid #fbbf24;
-    border-radius: 10px; top: 100%; left: 0; right: 0; z-index: 99;
-    max-height: 180px; overflow-y: auto; display: none;
-  }
-.select-items div {
-    padding: 12px; color: white; cursor: pointer; display: flex;
-    align-items: center; gap: 8px; border-bottom: 1px solid #333;
-  }
-.select-items div:last-child { border-bottom: none; }
-.select-items div:hover { background: #2f3e1a; }
-.select-items div.active { background: #fbbf24; color: #000; font-weight: bold; }
-
-    /* DAILY CHECKIN STYLES - CENTERED CARD */
 .checkin-card { background: #000; border: 2px dashed #fbbf24; border-radius: 15px; padding: 20px; text-align: center; margin: 10px 0; }
 .checkin-card.big-emoji { font-size: 50px; margin-bottom: 8px; }
 .checkin-card h3 { font-size: 20px; color: #fbbf24; margin-bottom: 6px; }
@@ -99,6 +52,7 @@
 .claimed-text { color: #22c55e; font-weight: bold; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 6px; }
 .countdown { font-size: 18px; color: #fbbf24; font-weight: bold; margin-top: 8px; }
 .success-msg { background: #1a2e1a; border: 1px solid #22c55e; color: #22c55e; padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 14px; display: none; }
+
   </style>
 </head>
 <body>
@@ -125,22 +79,6 @@
     <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 
-  <!-- WALLET POPUP -->
-  <div id="walletModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>💰 My Wallet</h2>
-        <span class="close-btn" onclick="closeWallet()">X</span>
-      </div>
-      <div class="popup-balance">
-        <div class="label">Points Balance</div>
-        <div class="amount" id="popupPoints">0 points</div>
-        <div class="usd" id="popupUSD">≈ $0.00 USD</div>
-      </div>
-      <!-- wallet tabs same as before -->
-    </div>
-  </div>
-
   <!-- DAILY CHECKIN POPUP -->
   <div id="checkinModal" class="modal">
     <div class="modal-content">
@@ -163,32 +101,24 @@
   </div>
 
 <script>
-  let selectedCrypto = 'USDT';
-  const RATES = { USDT: 1, BNB: 600, XRP: 0.6, XLM: 0.12 };
   const POINT_RATE = 0.0005;
   const DAILY_REWARD = 20;
   let currentUser = null;
   let countdownInterval = null;
+  let userData = {};
 
   function loadData() {
-    const data = JSON.parse(localStorage.getItem('userData') || '{}');
-    document.getElementById('headerText').innerText = data.name || "Manzi";
-    document.getElementById('balance').innerText = (data.balance || 0) + ' points';
-    document.getElementById('usdBalance').innerText = `≈ $${((data.balance || 0) * POINT_RATE).toFixed(2)} USD`;
+    userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    document.getElementById('headerText').innerText = userData.name || "Manzi";
+    document.getElementById('balance').innerText = (userData.balance || 0) + ' points';
+    document.getElementById('usdBalance').innerText = `≈ $${((userData.balance || 0) * POINT_RATE).toFixed(2)} USD`;
   }
   loadData();
 
-  // WALLET
-  window.openWallet = async function() {
-    const data = JSON.parse(localStorage.getItem('userData') || '{}');
-    const points = data.balance || 0;
-    document.getElementById('popupPoints').innerText = points + ' points';
-    document.getElementById('popupUSD').innerText = `≈ $${(points * POINT_RATE).toFixed(2)} USD`;
-    document.getElementById('walletModal').style.display = 'flex';
-  }
+  window.openWallet = function() { document.getElementById('walletModal').style.display = 'flex'; }
   window.closeWallet = function() { document.getElementById('walletModal').style.display = 'none'; }
 
-  // DAILY CHECKIN
+  // DAILY CHECKIN - FIXED
   window.openCheckin = function() {
     document.getElementById('successMsg').style.display = 'none';
     checkClaimStatus();
@@ -197,6 +127,10 @@
   window.closeCheckin = function() {
     document.getElementById('checkinModal').style.display = 'none';
     clearInterval(countdownInterval);
+  }
+
+  function getToday() {
+    return new Date().toISOString().split('T')[0]; // YYYY-MM-DD server independent
   }
 
   function getNextClaimTime() {
@@ -217,17 +151,15 @@
       checkClaimStatus();
       return;
     }
-
     const hours = Math.floor(diff / 1000 / 60 / 60);
     const minutes = Math.floor(diff / 1000 / 60) % 60;
     const seconds = Math.floor(diff / 1000) % 60;
-
     document.getElementById('countdown').innerText = `Next claim in: ${hours}h ${minutes}m ${seconds}s`;
   }
 
   function checkClaimStatus() {
-    const today = new Date().toISOString().split('T')[0];
-    const lastClaim = localStorage.getItem('lastCheckin');
+    const today = getToday();
+    const lastClaim = userData.lastCheckin; // CHECK FIREBASE DATA NOW
     const btn = document.getElementById('claimBtn');
     const note = document.getElementById('checkinNote');
     const countdown = document.getElementById('countdown');
@@ -251,20 +183,19 @@
   }
 
   window.claimDaily = async function() {
-    const today = new Date().toISOString().split('T')[0];
-    const lastClaim = localStorage.getItem('lastCheckin');
+    const today = getToday();
 
-    if(lastClaim === today) return; // no alert
+    if(userData.lastCheckin === today) return; // Block if already claimed
 
-    let data = JSON.parse(localStorage.getItem('userData') || '{}');
-    data.balance = (data.balance || 0) + DAILY_REWARD;
-    localStorage.setItem('userData', JSON.stringify(data));
-    localStorage.setItem('lastCheckin', today);
+    // 1. Update local
+    userData.balance = (userData.balance || 0) + DAILY_REWARD;
+    userData.lastCheckin = today;
+    localStorage.setItem('userData', JSON.stringify(userData));
 
-    // Update Firebase
+    // 2. Update Firebase - THIS IS THE KEY
     if(currentUser) {
       await db.collection("users").doc(currentUser.uid).update({
-        balance: data.balance,
+        balance: userData.balance,
         lastCheckin: today
       });
     }
@@ -274,10 +205,6 @@
     checkClaimStatus();
   }
 
-  // Close modal on background click
-  document.getElementById('walletModal').addEventListener('click', function(e){
-    if(e.target.id === 'walletModal') closeWallet();
-  })
   document.getElementById('checkinModal').addEventListener('click', function(e){
     if(e.target.id === 'checkinModal') closeCheckin();
   })
@@ -301,6 +228,7 @@
       currentUser = user;
       const doc = await db.collection("users").doc(user.uid).get();
       if (doc.exists) {
+        // ALWAYS LOAD FROM FIREBASE FIRST
         localStorage.setItem('userData', JSON.stringify(doc.data()));
         loadData();
       }
@@ -312,7 +240,6 @@
   window.logout = async function() {
     await auth.signOut();
     localStorage.removeItem('userData');
-    localStorage.removeItem('lastCheckin');
     window.location.replace('./index.html');
   }
 </script>
