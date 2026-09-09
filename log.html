@@ -35,7 +35,6 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
@@ -47,7 +46,6 @@
   };
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const db = getFirestore(app);
 
   window.login = async function() {
     const email = document.getElementById('email').value;
@@ -57,15 +55,9 @@
     if(!email || !password){ errorEl.innerText = "Fill all fields"; return; }
 
     try {
-      const userCred = await signInWithEmailAndPassword(auth, email, password);
-      
-      // KEY: GET DATA AND SAVE TO CACHE BEFORE JUMPING
-      const docSnap = await getDoc(doc(db, "users", userCred.user.uid));
-      if (docSnap.exists()) {
-        localStorage.setItem('userData', JSON.stringify(docSnap.data()));
-      }
-
-      window.location.replace("./home.html"); // NOW JUMP
+      await signInWithEmailAndPassword(auth, email, password);
+      // 0 SEC - JUMP IMMEDIATELY. NO WAITING FOR FIRESTORE
+      window.location.replace("./home.html");
     } catch(e) {
       errorEl.innerText = "Invalid email or password";
     }
