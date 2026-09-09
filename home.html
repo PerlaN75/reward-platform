@@ -27,7 +27,7 @@
       transition: all 0.1s ease; display: flex; flex-direction: column; align-items: center; gap: 8px;
     }
 .menu-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #bbbbbb; }
-.menu-btn.emoji { font-size: 70px; } /* ONLY THIS LINE CHANGED */
+.menu-btn.emoji { font-size: 70px; }
 
 .logout-btn {
       width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px;
@@ -96,7 +96,7 @@
 <body>
   <div class="container">
     <div class="header">
-      <h2>Welcome, <span id="headerText"></span></h2>
+      <h2>Welcome, <span id="headerText">Manzi</span></h2>
     </div>
 
     <div class="balance-card">
@@ -197,7 +197,8 @@
 
   function loadData() {
     const data = JSON.parse(localStorage.getItem('userData') || '{}');
-    document.getElementById('headerText').innerText = data.name || data.username || "User";
+    // Will still update from firebase if name exists, else stays "Manzi"
+    document.getElementById('headerText').innerText = data.name || "Manzi";
     document.getElementById('balance').innerText = (data.balance || 0) + ' points';
     document.getElementById('usdBalance').innerText = `≈ $${((data.balance || 0) * POINT_RATE).toFixed(2)} USD`;
   }
