@@ -17,7 +17,6 @@
     .link-register { color: #fbbf24; margin-top: 15px; font-size: 14px; cursor: pointer; }
     .error { color: #ef4444; font-size: 13px; margin-top: 10px; }
     .btn-back-outside { width: 40%; padding: 14px; background: white; color: black; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 40px; box-shadow: 0 3px 0 #ccc; }
-    .btn-back-outside:active { transform: translateY(2px); box-shadow: 0 1px 0 #ccc; }
   </style>
 </head>
 <body>
@@ -31,12 +30,12 @@
     <div class="error" id="error"></div>
     <div class="link-register" onclick="window.location.href='./reg.html'">Don't have an account? Register</div>
   </div>
-
   <button class="btn-back-outside" onclick="window.location.href='./index.html'">Back</button>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
@@ -48,6 +47,7 @@
   };
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getFirestore(app);
 
   window.login = async function() {
     const email = document.getElementById('email').value;
@@ -57,9 +57,15 @@
     if(!email || !password){ errorEl.innerText = "Fill all fields"; return; }
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // 0 SEC DELAY - JUMP IMMEDIATELY
-      window.location.replace("./home.html");
+      const userCred = await signInWithEmailAndPassword(auth, email, password);
+      
+      // KEY: GET DATA AND SAVE TO CACHE BEFORE JUMPING
+      const docSnap = await getDoc(doc(db, "users", userCred.user.uid));
+      if (docSnap.exists()) {
+        localStorage.setItem('userData', JSON.stringify(docSnap.data()));
+      }
+
+      window.location.replace("./home.html"); // NOW JUMP
     } catch(e) {
       errorEl.innerText = "Invalid email or password";
     }
