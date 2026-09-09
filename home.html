@@ -15,7 +15,7 @@
     .balance-card { background: #2f3e1a; border: 2px solid #fbbf24; border-radius: 20px; padding: 25px; text-align: center; margin-bottom: 30px; }
     .balance-card .label { font-size: 14px; color: #ccc; }
     .balance-card .amount { font-size: 32px; font-weight: bold; color: #fbbf24; margin-top: 5px; }
-    .balance-card .usd { font-size: 16px; color: #aaa; margin-top: 8px; } /* NEW USD LINE */
+    .balance-card .usd { font-size: 16px; color: #aaa; margin-top: 8px; }
     
     .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
 
@@ -66,43 +66,101 @@
       transform: translateY(4px);
       box-shadow: 0 0 0 #d97706;
     }
+
+    /* WALLET POPUP STYLE */
+    .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; padding: 20px; }
+    .modal-content { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 25px; width: 100%; max-width: 420px; color: white; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .modal-header h2 { font-size: 22px; color: #fbbf24; }
+    .close-btn { font-size: 28px; color: white; cursor: pointer; font-weight: bold; }
+    .popup-balance { background: #000; border: 2px solid #fbbf24; border-radius: 15px; padding: 20px; margin: 15px 0; text-align: center; }
+    .popup-balance .label { font-size: 14px; color: #ccc; margin-bottom: 8px; }
+    .popup-balance .amount { font-size: 36px; color: #f59e0b; font-weight: bold; }
+    .popup-balance .usd { font-size: 16px; color: #aaa; margin-top: 5px; }
+    .input-box { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
+    .input-box::placeholder { color: #777; }
+    .action-btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top:10px; }
+    .note { font-size: 12px; color: #aaa; margin-top: 8px; text-align: center; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h2><span id="headerText"></span></h2>
+      <h2>Welcome, <span id="headerText"></span></h2>
     </div>
 
     <div class="balance-card">
       <div class="label">Your Balance</div>
       <div class="amount" id="balance"></div>
-      <div class="usd" id="usdBalance"></div> <!-- NEW -->
+      <div class="usd" id="usdBalance"></div>
     </div>
 
     <div class="menu-grid">
-      <button class="menu-btn" onclick="window.location.href='./wallet.html'"><span class="emoji">💰</span>Wallet</button>
+      <button class="menu-btn" onclick="openWallet()"><span class="emoji">💰</span>Wallet</button> <!-- CHANGED -->
       <button class="menu-btn" onclick="window.location.href='./checkin.html'"><span class="emoji">📅</span>Daily Checkin</button>
       <button class="menu-btn" onclick="window.location.href='./quiz.html'"><span class="emoji">🧠</span>Quiz</button>
       <button class="menu-btn" onclick="window.location.href='./referrals.html'"><span class="emoji">🤝</span>Refer & Earn</button>
       <button class="menu-btn" onclick="alert('Coming Soon')"><span class="emoji">🎁</span>Gifts</button>
-      <button class="menu-btn" onclick="alert('Coming Soon')"><span class="emoji">⚙️</span>More</button>
+      <button class="menu-btn" onclick="window.location.href='./more.html'"><span class="emoji">⚙️</span>More</button>
     </div>
 
     <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 
+  <!-- WALLET POPUP -->
+  <div id="walletModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>💰 My Wallet</h2>
+        <span class="close-btn" onclick="closeWallet()">X</span>
+      </div>
+      <div class="popup-balance">
+        <div class="label">Current Balance</div>
+        <div class="amount" id="popupPoints">0 points</div>
+        <div class="usd" id="popupUSD">≈ $0.00 USD</div>
+      </div>
+      <input type="number" class="input-box" id="withdrawAmount" placeholder="Enter points to withdraw">
+      <button class="action-btn" onclick="withdraw()">Request Withdraw</button>
+      <div class="note">Min withdraw: 1000 points = $0.50</div>
+    </div>
+  </div>
+
 <script>
   const cached = JSON.parse(localStorage.getItem('userData') || '{}');
-  const instantName = cached.name || cached.username || "";
-  const instantPoints = cached.balance !== undefined ? cached.balance : 0; // treat balance as points
-  
-  // CALCULATE USD: 1000 points = $0.5  => 1 point = $0.0005
+  const instantName = cached.name || cached.username || "User";
+  const instantPoints = cached.balance !== undefined ? cached.balance : 0;
   const instantUSD = (instantPoints * 0.0005).toFixed(2);
 
   document.getElementById('headerText').innerText = instantName;
-  document.getElementById('balance').innerText = instantPoints + ' points'; // CHANGED
-  document.getElementById('usdBalance').innerText = `≈ $${instantUSD} USD`; // NEW
+  document.getElementById('balance').innerText = instantPoints + ' points';
+  document.getElementById('usdBalance').innerText = `≈ $${instantUSD} USD`;
+
+  // WALLET POPUP FUNCTIONS
+  window.openWallet = function() {
+    const cached = JSON.parse(localStorage.getItem('userData') || '{}');
+    const points = cached.balance || 0;
+    const usd = (points * 0.0005).toFixed(2);
+    document.getElementById('popupPoints').innerText = points + ' points';
+    document.getElementById('popupUSD').innerText = `≈ $${usd} USD`;
+    document.getElementById('walletModal').style.display = 'flex';
+  }
+  window.closeWallet = function() {
+    document.getElementById('walletModal').style.display = 'none';
+  }
+  window.withdraw = function() {
+    const amount = parseInt(document.getElementById('withdrawAmount').value);
+    if(!amount || amount < 1000) {
+      alert('Minimum withdraw is 1000 points');
+      return;
+    }
+    alert(`Withdraw request for ${amount} points sent!`);
+    document.getElementById('withdrawAmount').value = '';
+    closeWallet();
+  }
+  // close if click outside
+  document.getElementById('walletModal').addEventListener('click', function(e){
+    if(e.target.id === 'walletModal') closeWallet();
+  })
 </script>
 
 <script type="module">
@@ -129,12 +187,12 @@
         const data = docSnap.data();
         localStorage.setItem('userData', JSON.stringify(data));
         
-        const points = data.balance || 0; // treat balance as points
+        const points = data.balance || 0;
         const usd = (points * 0.0005).toFixed(2);
 
         document.getElementById('headerText').innerText = data.name || data.username || user.displayName;
-        document.getElementById('balance').innerText = points + ' points'; // CHANGED
-        document.getElementById('usdBalance').innerText = `≈ $${usd} USD`; // NEW
+        document.getElementById('balance').innerText = points + ' points';
+        document.getElementById('usdBalance').innerText = `≈ $${usd} USD`;
       }
     } else {
       window.location.replace('./log.html');
