@@ -61,9 +61,14 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
+  // FUNCTION TO GET NAME SAFELY
+  function getUserName(data){
+    return data.name || data.username || data.fullName || "User";
+  }
+
   // 1. SHOW FROM CACHE INSTANTLY
   const cached = JSON.parse(localStorage.getItem('userData') || '{}');
-  if(cached.name) document.getElementById('username').innerText = cached.name;
+  document.getElementById('username').innerText = getUserName(cached);
   if(cached.balance !== undefined) document.getElementById('balance').innerText = cached.balance + ' RWF';
 
   // 2. UPDATE FROM FIREBASE IN BACKGROUND
@@ -73,8 +78,8 @@
       if (docSnap.exists()) {
         const data = docSnap.data();
         localStorage.setItem('userData', JSON.stringify(data)); // UPDATE CACHE
-        document.getElementById('username').innerText = data.name;
-        document.getElementById('balance').innerText = data.balance + ' RWF';
+        document.getElementById('username').innerText = getUserName(data); // NO MORE UNDEFINED
+        document.getElementById('balance').innerText = (data.balance || 0) + ' RWF';
       }
     } else {
       window.location.replace('./log.html');
