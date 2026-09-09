@@ -19,6 +19,7 @@
 .menu-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #bbbbbb; }
 .menu-btn.emoji { font-size: 40px; }
 .logout-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; }
+.logout-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #d97706; }
 .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
 .modal-content { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 18px; width: 100%; max-width: 420px; color: white; max-height: 95vh; overflow-y: auto; }
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
@@ -72,6 +73,11 @@
 .gift-points { font-size: 14px; color: #22c55e; font-weight: bold; margin-top: 4px; }
 .gift-history { background: #000; padding: 10px; border-radius: 10px; font-size: 13px; margin-top: 10px; text-align: center; }
   </style>
+  
+  <!-- FIREBASE MUST LOAD BEFORE SCRIPT -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
   <div class="container">
@@ -295,12 +301,13 @@
     userData.balance = (userData.balance || 0) + DAILY_REWARD;
     userData.lastCheckin = today;
     localStorage.setItem('userData', JSON.stringify(userData));
+    loadData(); // INSTANT UPDATE
     document.getElementById('successMsg').style.display = 'block';
-    loadData();
     checkClaimStatus();
+    if(currentUser) db.collection("users").doc(currentUser.uid).update({balance: userData.balance, lastCheckin: today}); // sync in background
   }
 
-  // GIFT - NO CONFETTI
+  // GIFT - INSTANT
   function getRotatedPool() {
     const startDate = new Date('2026-01-01');
     const today = new Date();
@@ -358,22 +365,28 @@
   }
   window.pickGift = async function(index, points, el) {
     if(userData.lastGiftClaim === getToday()) return;
-    el.classList.add('burst'); // Only burst, no confetti
+    el.classList.add('burst');
 
-    // INSTANT MESSAGE
-    const msg = points === 0? `You won 0 points 💀` : `You won ${points} points 🎉`;
-    document.getElementById('giftSuccessMsg').innerText = msg;
-    document.getElementById('giftSuccessMsg').style.display = 'block';
-
-    // ADD POINTS INSTANTLY
+    // INSTANT UPDATE FIRST
     userData.balance = (userData.balance || 0) + points;
     userData.lastGiftClaim = getToday();
     userData.lastGiftPoints = points;
     localStorage.setItem('userData', JSON.stringify(userData));
-    loadData(); // Update balance immediately
+    loadData(); // Balance updates immediately
+
+    // THEN SHOW MESSAGE
+    const msg = points === 0? `You won 0 points 💀` : `You won ${points} points 🎉`;
+    document.getElementById('giftSuccessMsg').innerText = msg;
+    document.getElementById('giftSuccessMsg').style.display = 'block';
 
     el.innerHTML = points === 0? '💀<div class="gift-points">0 pts</div>' : `+${points}<div class="gift-points">pts</div>`;
     document.querySelectorAll('.gift-box').forEach(b => b.classList.add('disabled'));
+    
+    if(currentUser) db.collection("users").doc(currentUser.uid).update({ // sync in background
+      balance: userData.balance,
+      lastGiftClaim: userData.lastGiftClaim,
+      lastGiftPoints: points
+    });
     setTimeout(checkGiftStatus, 1000);
   }
 
@@ -381,6 +394,7 @@
   document.getElementById('checkinModal').addEventListener('click', function(e){ if(e.target.id === 'checkinModal') closeCheckin(); })
   document.getElementById('giftModal').addEventListener('click', function(e){ if(e.target.id === 'giftModal') closeGift(); })
 
+  // FIREBASE INIT
   const firebaseConfig = {
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
     authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
@@ -389,6 +403,7 @@
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db = firebase.firestore();
+  
   auth.onAuthStateChanged(async (user) => {
     if (user) {
       currentUser = user;
@@ -401,10 +416,14 @@
       window.location.replace('./log.html');
     }
   });
+
+  // FIXED LOGOUT
   window.logout = async function() {
-    await auth.signOut();
-    localStorage.removeItem('userData');
-    window.location.replace('./index.html');
+    try {
+      await auth.signOut(); // Now auth is defined
+    } catch(e) { console.log(e) }
+    localStorage.clear(); // Clear everything
+    window.location.replace('./log.html'); // Go to login
   }
 </script>
 </body>
