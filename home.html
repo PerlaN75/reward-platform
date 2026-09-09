@@ -15,17 +15,66 @@
     .balance-card .amount { font-size: 32px; font-weight: bold; color: #fbbf24; margin-top: 5px; }
     
     .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-    .menu-btn { background: linear-gradient(180deg, #ffffff, #e8e8e8); color: #000; border: none; border-radius: 15px; padding: 18px 10px; font-size: 15px; font-weight: bold; cursor: pointer; text-align: center; box-shadow: 0 4px 0 #cccccc; }
-    .menu-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #cccccc; }
-    .menu-btn .emoji { font-size: 20px; margin-right: 6px; }
+
+    /* NEW 3D BUTTONS WITH EMOJI ON TOP */
+    .menu-btn { 
+      background: linear-gradient(180deg, #ffffff, #e8e8e8); 
+      color: #000; 
+      border: none; 
+      border-radius: 15px; 
+      padding: 20px 10px; 
+      font-size: 15px; 
+      font-weight: bold; 
+      cursor: pointer; 
+      text-align: center; 
+      
+      /* 3D EFFECT */
+      box-shadow: 0 6px 0 #bbbbbb, 0 8px 15px rgba(0,0,0,0.3); 
+      transition: all 0.1s ease;
+      
+      /* EMOJI ABOVE TEXT */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .menu-btn:active { 
+      /* PRESS DOWN EFFECT */
+      transform: translateY(6px); 
+      box-shadow: 0 0 0 #bbbbbb, 0 2px 5px rgba(0,0,0,0.2); 
+    }
+    .menu-btn .emoji { 
+      font-size: 32px; /* BIG EMOJI ON TOP */
+      margin-right: 0;
+      line-height: 1;
+    }
     
-    .logout-btn { width: 40%; margin: 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 3px 0 #d97706; }
+    .logout-btn { 
+      width: 40%; 
+      margin: 0 auto; 
+      display: block; 
+      padding: 14px; 
+      background: #f59e0b; 
+      color: #000; 
+      border: none; 
+      border-radius: 12px; 
+      font-weight: bold; 
+      font-size: 16px; 
+      cursor: pointer; 
+      box-shadow: 0 4px 0 #d97706;
+      transition: all 0.1s ease;
+    }
+    .logout-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 0 0 #d97706;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <!-- WRITE NAME DIRECTLY HERE. NO "HI" -->
+      <!-- SHOWS USERNAME INSTANTLY. NO "HI" -->
       <h2><span id="headerText"></span></h2>
     </div>
 
@@ -46,13 +95,12 @@
     <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 
-<!-- KEY: THIS SCRIPT RUNS IMMEDIATELY AS PAGE LOADS -->
+<!-- INSTANT LOAD FROM CACHE -->
 <script>
   const cached = JSON.parse(localStorage.getItem('userData') || '{}');
   const instantName = cached.name || cached.username || "";
   const instantBalance = cached.balance !== undefined ? cached.balance + ' RWF' : '0 RWF';
   
-  // Write instantly, no waiting for DOMContentLoaded
   document.getElementById('headerText').innerText = instantName;
   document.getElementById('balance').innerText = instantBalance;
 </script>
@@ -74,7 +122,7 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // BACKGROUND: UPDATE FROM FIREBASE
+  // UPDATE FROM FIREBASE IN BACKGROUND
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       const docSnap = await getDoc(doc(db, "users", user.uid));
