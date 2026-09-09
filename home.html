@@ -14,34 +14,19 @@
     .balance-card .label { font-size: 14px; color: #ccc; }
     .balance-card .amount { font-size: 32px; font-weight: bold; color: #fbbf24; margin-top: 5px; }
     
-    /* YOUR ORIGINAL BUTTON DESIGN */
     .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
     .menu-btn { background: linear-gradient(180deg, #ffffff, #e8e8e8); color: #000; border: none; border-radius: 15px; padding: 18px 10px; font-size: 15px; font-weight: bold; cursor: pointer; text-align: center; box-shadow: 0 4px 0 #cccccc; }
     .menu-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #cccccc; }
-    .menu-btn .emoji { font-size: 20px; margin-right: 6px; } /* Same size as your screenshot */
+    .menu-btn .emoji { font-size: 20px; margin-right: 6px; }
     
     .logout-btn { width: 40%; margin: 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 3px 0 #d97706; }
   </style>
-
-  <!-- THIS RUNS BEFORE PAGE RENDERS = NO FLASH -->
-  <script>
-    const cached = JSON.parse(localStorage.getItem('userData') || '{}');
-    const instantName = cached.name || cached.username || "";
-    const instantBalance = cached.balance !== undefined ? cached.balance + ' RWF' : '0 RWF';
-    
-    // Write directly so browser paints it on first frame
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('headerText').innerHTML = `Hi, <span>${instantName}</span>`;
-      document.getElementById('balance').innerText = instantBalance;
-    });
-  </script>
-
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <!-- EMPTY INITIALLY, FILLED INSTANTLY BY SCRIPT ABOVE -->
-      <h2 id="headerText"></h2>
+      <!-- WRITE NAME DIRECTLY HERE. NO "HI" -->
+      <h2><span id="headerText"></span></h2>
     </div>
 
     <div class="balance-card">
@@ -50,7 +35,6 @@
     </div>
 
     <div class="menu-grid">
-      <!-- BACK TO YOUR ORIGINAL BUTTONS -->
       <button class="menu-btn" onclick="window.location.href='./wallet.html'"><span class="emoji">💰</span>Wallet</button>
       <button class="menu-btn" onclick="window.location.href='./checkin.html'"><span class="emoji">📅</span>Daily Checkin</button>
       <button class="menu-btn" onclick="window.location.href='./quiz.html'"><span class="emoji">🧠</span>Quiz</button>
@@ -61,6 +45,17 @@
 
     <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
+
+<!-- KEY: THIS SCRIPT RUNS IMMEDIATELY AS PAGE LOADS -->
+<script>
+  const cached = JSON.parse(localStorage.getItem('userData') || '{}');
+  const instantName = cached.name || cached.username || "";
+  const instantBalance = cached.balance !== undefined ? cached.balance + ' RWF' : '0 RWF';
+  
+  // Write instantly, no waiting for DOMContentLoaded
+  document.getElementById('headerText').innerText = instantName;
+  document.getElementById('balance').innerText = instantBalance;
+</script>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -79,14 +74,14 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // BACKGROUND: UPDATE FROM FIREBASE AND KEEP CACHE FRESH
+  // BACKGROUND: UPDATE FROM FIREBASE
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       const docSnap = await getDoc(doc(db, "users", user.uid));
       if (docSnap.exists()) {
         const data = docSnap.data();
         localStorage.setItem('userData', JSON.stringify(data));
-        document.getElementById('headerText').innerHTML = `Hi, <span>${data.name || data.username || user.displayName}</span>`;
+        document.getElementById('headerText').innerText = data.name || data.username || user.displayName;
         document.getElementById('balance').innerText = (data.balance || 0) + ' RWF';
       }
     } else {
