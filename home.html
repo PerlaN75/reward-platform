@@ -18,13 +18,12 @@
     .menu-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #cccccc; }
     .menu-btn .emoji { font-size: 24px; display: block; margin-bottom: 6px; }
     .logout-btn { width: 40%; margin: 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 3px 0 #d97706; }
-    .logout-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #d97706; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h2>Hi, <span id="username">Guest</span></h2>
+      <h2>Hi, <span id="username"></span></h2> <!-- EMPTY BY DEFAULT -->
     </div>
 
     <div class="balance-card">
@@ -49,7 +48,7 @@
   import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = {
+  const firebaseConfig = { /* your config */ 
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
     authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
     projectId: "reward-platform-rw-2e13d",
@@ -61,24 +60,23 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // FUNCTION TO GET NAME SAFELY
   function getUserName(data){
-    return data.name || data.username || data.fullName || "User";
+    return data.name || data.username || data.fullName || "";
   }
 
-  // 1. SHOW FROM CACHE INSTANTLY
+  // INSTANT: READ FROM CACHE
   const cached = JSON.parse(localStorage.getItem('userData') || '{}');
   document.getElementById('username').innerText = getUserName(cached);
   if(cached.balance !== undefined) document.getElementById('balance').innerText = cached.balance + ' RWF';
 
-  // 2. UPDATE FROM FIREBASE IN BACKGROUND
+  // BACKGROUND: UPDATE FROM FIREBASE
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       const docSnap = await getDoc(doc(db, "users", user.uid));
       if (docSnap.exists()) {
         const data = docSnap.data();
-        localStorage.setItem('userData', JSON.stringify(data)); // UPDATE CACHE
-        document.getElementById('username').innerText = getUserName(data); // NO MORE UNDEFINED
+        localStorage.setItem('userData', JSON.stringify(data));
+        document.getElementById('username').innerText = getUserName(data);
         document.getElementById('balance').innerText = (data.balance || 0) + ' RWF';
       }
     } else {
