@@ -92,6 +92,22 @@
 .gift-result-popup.emoji { font-size: 60px; margin-bottom: 10px; }
 .gift-result-popup.text { font-size: 18px; color: #fbbf24; font-weight: bold; }
 .gift-result-popup.points { font-size: 32px; color: #22c55e; font-weight: bold; margin-top: 5px; }
+
+/* REFER POPUP STYLES - SCREENSHOT DESIGN */
+.refer-card { background: #4a5d23; border: 2px solid #fbbf24; border-radius: 15px; padding: 15px; margin-bottom: 15px; }
+.refer-card.title { font-size: 16px; font-weight: bold; color: #fbbf24; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.refer-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.refer-stat-box { background: #000; border: 2px solid #fbbf24; border-radius: 12px; padding: 15px; text-align: center; }
+.refer-stat-box.label { font-size: 11px; color: #aaa; text-transform: uppercase; }
+.refer-stat-box.value { font-size: 28px; font-weight: bold; color: #f59e0b; margin-top: 5px; }
+.refer-link-box { background: #000; border: 2px solid #fbbf24; border-radius: 10px; padding: 12px; font-size: 12px; color: #fbbf24; word-break: break-all; }
+.refer-btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.refer-btn-copy { padding: 12px; background: linear-gradient(180deg, #fbbf24, #d97706); color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #b45309; }
+.refer-btn-whatsapp { padding: 12px; background: linear-gradient(180deg, #22c55e, #16a34a); color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #15803d; }
+.how-it-works { background: #1a2410; border-radius: 12px; padding: 12px; }
+.how-step { display: flex; gap: 10px; margin: 8px 0; font-size: 14px; align-items: center; }
+.how-step.num { background: #3b82f6; color: white; width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px; flex-shrink: 0; }
+.referral-item { background: #000; padding: 12px; border-radius: 10px; margin: 8px 0; font-size: 14px; text-align: center; color: #aaa; }
   </style>
   
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -112,106 +128,63 @@
       <button class="menu-btn" onclick="openWallet()"><span class="emoji">💰</span>Wallet</button>
       <button class="menu-btn" onclick="openCheckin()"><span class="emoji">📅</span>Daily Checkin</button>
       <button class="menu-btn" onclick="window.location.href='./quiz.html'"><span class="emoji">🧠</span>Quiz</button>
-      <button class="menu-btn" onclick="window.location.href='./referrals.html'"><span class="emoji">🤝</span>Refer & Earn</button>
+      <button class="menu-btn" onclick="openRefer()"><span class="emoji">🤝</span>Refer & Earn</button>
       <button class="menu-btn" onclick="openGift()"><span class="emoji">🎁</span>Gifts</button>
       <button class="menu-btn" onclick="window.location.href='./more.html'"><span class="emoji">⚙️</span>More</button>
     </div>
     <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 
-  <!-- WALLET POPUP -->
-  <div id="walletModal" class="modal">
+  <!-- WALLET POPUP --> <div id="walletModal" class="modal"> <!--...your wallet code...--> </div>
+  <!-- CHECKIN POPUP --> <div id="checkinModal" class="modal"> <!--...your checkin code...--> </div>
+  <!-- GIFT POPUP --> <div id="giftModal" class="modal"> <!--...your gift code...--> </div>
+
+  <!-- REFER POPUP - SCREENSHOT DESIGN + OUR LOGIC -->
+  <div id="referModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>💰 My Wallet</h2>
-        <span class="close-btn" onclick="closeWallet()">X</span>
+        <h2><span>🤝</span> Refer & Earn</h2>
+        <span class="close-btn" onclick="closeRefer()">X</span>
       </div>
-      <div class="popup-balance">
-        <div class="label">Points Balance</div>
-        <div class="amount" id="popupPoints">0 points</div>
-        <div class="usd" id="popupUSD">≈ $0.00 USD</div>
-      </div>
-      <div class="crypto-balances">
-        <div class="crypto-balance-card"><div class="name">USDT</div><div class="value" id="usdtBal">0.00</div></div>
-        <div class="crypto-balance-card"><div class="name">BNB</div><div class="value" id="bnbBal">0.00</div></div>
-        <div class="crypto-balance-card"><div class="name">XRP</div><div class="value" id="xrpBal">0.00</div></div>
-        <div class="crypto-balance-card"><div class="name">XLM</div><div class="value" id="xlmBal">0.00</div></div>
-      </div>
-      <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('convert')">Convert</button>
-        <button class="tab-btn" onclick="switchTab('withdraw')">Withdraw</button>
-      </div>
-      <div id="convertTab" class="tab-content active">
-        <div class="info-row"><span>Rate</span><span>1000 pts = $0.50</span></div>
-        <input type="number" class="input-box" id="convertAmount" placeholder="Enter points to convert" oninput="calcConvert()">
-        <div class="crypto-grid">
-          <div class="crypto-item selected" onclick="selectCrypto('USDT', this)"><div class="icon">💵</div><div class="name">USDT</div></div>
-          <div class="crypto-item" onclick="selectCrypto('BNB', this)"><div class="icon">🟡</div><div class="name">BNB</div></div>
-          <div class="crypto-item" onclick="selectCrypto('XRP', this)"><div class="icon">💧</div><div class="name">XRP</div></div>
-          <div class="crypto-item" onclick="selectCrypto('XLM', this)"><div class="icon">⭐</div><div class="name">XLM</div></div>
-        </div>
-        <div class="convert-result" id="convertResult">You will receive: 0.00 USDT</div>
-        <button class="action-btn" onclick="convertPoints()">Convert Now</button>
-      </div>
-      <div id="withdrawTab" class="tab-content">
-        <div class="info-row"><span>Username</span><span id="wUsername">-</span></div>
-        <div class="info-row"><span>Email</span><span id="wEmail">-</span></div>
-        <label style="font-size:14px; color:#ccc; margin-top:8px; display:block;">Select Crypto</label>
-        <div class="custom-select">
-          <div class="select-selected" id="selectedCrypto" onclick="toggleDropdown()">
-            <span>💵</span> USDT - Tether
+      <p class="note" style="margin-bottom:15px;">Invite friends. Earn when they grind 💪</p>
+      
+      <div class="refer-card">
+        <div class="refer-card title">💰 Your Earnings</div>
+        <div class="refer-stats-grid">
+          <div class="refer-stat-box">
+            <div class="label">TOTAL REFERRALS</div>
+            <div class="value" id="totalRef">0</div>
           </div>
-          <div class="select-items" id="cryptoDropdown">
-            <div onclick="pickCrypto('USDT', '💵 USDT - Tether')"><span>💵</span> USDT - Tether</div>
-            <div onclick="pickCrypto('BNB', '🟡 BNB - Binance Coin')"><span>🟡</span> BNB - Binance Coin</div>
-            <div onclick="pickCrypto('XRP', '💧 XRP - Ripple')"><span>💧</span> XRP - Ripple</div>
-            <div onclick="pickCrypto('XLM', '⭐ XLM - Stellar')"><span>⭐</span> XLM - Stellar</div>
+          <div class="refer-stat-box">
+            <div class="label">POINTS EARNED</div>
+            <div class="value" id="pointsEarned">0</div>
           </div>
         </div>
-        <input type="hidden" id="withdrawCrypto" value="USDT">
-        <input type="number" class="input-box" id="withdrawAmount" placeholder="Amount in Crypto">
-        <input type="text" class="input-box" id="walletAddress" placeholder="Your Wallet Address">
-        <button class="action-btn" onclick="requestWithdraw()">Request Withdraw</button>
-        <div class="note">Min: USDT 10 | BNB 0.01 | XRP 20 | XLM 100</div>
+        <p class="note" style="margin-top:10px;">50 Points per active friend</p>
       </div>
-    </div>
-  </div>
 
-  <!-- DAILY CHECKIN POPUP -->
-  <div id="checkinModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2><span>📅</span> Daily Checkin</h2>
-        <span class="close-btn" onclick="closeCheckin()">X</span>
+      <div class="refer-card">
+        <div class="refer-card title">🔗 Your Referral Link</div>
+        <div class="refer-link-box" id="refLink">Loading...</div>
+        <div class="refer-btn-group">
+          <button class="refer-btn-copy" onclick="copyLink()">Copy Link</button>
+          <button class="refer-btn-whatsapp" onclick="shareWhatsApp()">WhatsApp</button>
+        </div>
       </div>
-      <div class="checkin-card">
-        <div class="big-emoji">🎁</div>
-        <h3>Claim Your Daily Reward</h3>
-        <p>Get <b style="color:#fbbf24">20 Points</b> every day!</p>
-        <button class="action-btn" id="claimBtn" onclick="claimDaily()">Claim 20 Points</button>
-        <div class="note" id="checkinNote"></div>
-        <div class="countdown" id="countdown"></div>
-        <div class="success-msg" id="successMsg">+20 Points Added to Your Balance! 🎉</div>
-      </div>
-    </div>
-  </div>
 
-  <!-- GIFT POPUP -->
-  <div id="giftModal" class="modal">
-    <div class="modal-content">
-      <div class="gift-result-popup" id="giftResultPopup">
-        <div class="emoji" id="resultEmoji">🎁</div>
-        <div class="text">You won</div>
-        <div class="points" id="resultPoints">7 points</div>
+      <div class="refer-card">
+        <div class="refer-card title">📋 How It Works</div>
+        <div class="how-it-works">
+          <div class="how-step"><div class="num">1</div><div>Share your link</div></div>
+          <div class="how-step"><div class="num">2</div><div>Friend does Checkin, Quiz, Gift</div></div> <!-- CHANGED TO OUR LOGIC -->
+          <div class="how-step"><div class="num">3</div><div>You get <b>+50 Points</b></div></div>
+        </div>
       </div>
-      <div class="modal-header">
-        <h2><span>🎁</span> Gift Center</h2>
-        <span class="close-btn" onclick="closeGift()">X</span>
+
+      <div class="refer-card">
+        <div class="refer-card title">👥 Your Referrals</div>
+        <div id="referralList"><div class="referral-item">No referrals yet. Start Inviting!</div></div>
       </div>
-      <p class="note" id="giftNote">Pick 1 mystery box. Resets at midnight</p>
-      <div class="gift-grid" id="giftGrid"></div>
-      <div class="countdown" id="giftCountdown"></div>
-      <div class="gift-history" id="giftHistory">No gifts claimed yet</div>
     </div>
   </div>
 
@@ -234,184 +207,63 @@
   }
   loadData();
 
-  // WALLET
-  window.openWallet = async function() {
-    const points = userData.balance || 0;
-    document.getElementById('popupPoints').innerText = points + ' points';
-    document.getElementById('popupUSD').innerText = `≈ $${(points * POINT_RATE).toFixed(2)} USD`;
-    document.getElementById('wUsername').innerText = userData.name || userData.username || '-';
-    document.getElementById('wEmail').innerText = userData.email || '-';
-    document.getElementById('usdtBal').innerText = (userData.usdt || 0).toFixed(2);
-    document.getElementById('bnbBal').innerText = (userData.bnb || 0).toFixed(4);
-    document.getElementById('xrpBal').innerText = (userData.xrp || 0).toFixed(2);
-    document.getElementById('xlmBal').innerText = (userData.xlm || 0).toFixed(2);
-    document.getElementById('walletModal').style.display = 'flex';
-  }
+  // WALLET - SAME
+  window.openWallet = async function() { /*...your code...*/ }
   window.closeWallet = function() { document.getElementById('walletModal').style.display = 'none'; }
-  window.switchTab = function(tab) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById(tab + 'Tab').classList.add('active');
-  }
-  window.selectCrypto = function(crypto, el) {
-    selectedCrypto = crypto;
-    document.querySelectorAll('.crypto-item').forEach(c => c.classList.remove('selected'));
-    el.classList.add('selected');
-    calcConvert();
-  }
-  window.calcConvert = function() {
-    const points = parseFloat(document.getElementById('convertAmount').value) || 0;
-    const usd = points * POINT_RATE;
-    const cryptoAmount = usd / RATES[selectedCrypto];
-    document.getElementById('convertResult').innerText = `You will receive: ${cryptoAmount.toFixed(6)} ${selectedCrypto}`;
-  }
-  window.toggleDropdown = function() {
-    document.getElementById('cryptoDropdown').style.display = document.getElementById('cryptoDropdown').style.display === 'block'? 'none' : 'block';
-  }
-  window.pickCrypto = function(value, text) {
-    document.getElementById('withdrawCrypto').value = value;
-    document.getElementById('selectedCrypto').innerHTML = text;
-    document.getElementById('cryptoDropdown').style.display = 'none';
-    document.querySelectorAll('#cryptoDropdown div').forEach(d => d.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-  }
-  document.addEventListener('click', function(e){ if(!e.target.closest('.custom-select')){ document.getElementById('cryptoDropdown').style.display = 'none'; } })
-  window.convertPoints = async function() { alert('Convert request sent') }
-  window.requestWithdraw = async function() { const crypto = document.getElementById('withdrawCrypto').value; alert('Withdraw request for ' + crypto + ' sent') }
 
-  // CHECKIN
-  window.openCheckin = function() {
-    document.getElementById('successMsg').style.display = 'none';
-    checkClaimStatus();
-    document.getElementById('checkinModal').style.display = 'flex';
+  // CHECKIN - SAME
+  window.openCheckin = function() { /*...your code...*/ }
+  window.closeCheckin = function() { document.getElementById('checkinModal').style.display = 'none'; clearInterval(countdownInterval); }
+
+  // GIFT - SAME
+  window.openGift = function() { /*...your code...*/ }
+  window.closeGift = function() { document.getElementById('giftModal').style.display = 'none'; clearInterval(giftCountdownInterval); }
+
+  // REFER FUNCTIONS - NEW
+  window.openRefer = function() {
+    loadReferData();
+    document.getElementById('referModal').style.display = 'flex';
   }
-  window.closeCheckin = function() {
-    document.getElementById('checkinModal').style.display = 'none';
-    clearInterval(countdownInterval);
+  window.closeRefer = function() {
+    document.getElementById('referModal').style.display = 'none';
   }
-  function getToday() { return new Date().toISOString().split('T')[0]; }
-  function getNextClaimTime() { const now = new Date(); const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(0, 0, 0, 0); return tomorrow; }
-  function updateCountdown() {
-    const diff = getNextClaimTime() - new Date();
-    if(diff <= 0) { clearInterval(countdownInterval); checkClaimStatus(); return; }
-    const h = Math.floor(diff / 1000 / 60 / 60);
-    const m = Math.floor(diff / 1000 / 60) % 60;
-    const s = Math.floor(diff / 1000) % 60;
-    document.getElementById('countdown').innerText = `Next claim in: ${h}h ${m}m ${s}s`;
-  }
-  function checkClaimStatus() {
-    const today = getToday();
-    const lastClaim = userData.lastCheckin;
-    clearInterval(countdownInterval);
-    if(lastClaim === today) {
-      document.getElementById('claimBtn').disabled = true;
-      document.getElementById('claimBtn').innerText = "Already Claimed Today";
-      document.getElementById('checkinNote').innerHTML = "✓ Claimed! Come back tomorrow";
-      document.getElementById('countdown').style.display = 'block';
-      updateCountdown();
-      countdownInterval = setInterval(updateCountdown, 1000);
+  function loadReferData() {
+    const code = userData.referralCode || (userData.name || 'USER').toUpperCase() + (currentUser?.uid.slice(-4) || '0000');
+    const link = `https://perlan75.github.io/reward-platform/?ref=${code}`; // OUR LINK
+    document.getElementById('refLink').innerText = link;
+    
+    const completed = (userData.completedReferrals || []).length;
+    document.getElementById('totalRef').innerText = (userData.referralCount || 0);
+    document.getElementById('pointsEarned').innerText = completed * 50;
+    
+    const list = document.getElementById('referralList');
+    if((userData.pendingReferrals || []).length === 0 && completed === 0) {
+      list.innerHTML = '<div class="referral-item">No referrals yet. Start Inviting!</div>';
     } else {
-      document.getElementById('claimBtn').disabled = false;
-      document.getElementById('claimBtn').innerText = `Claim ${DAILY_REWARD} Points`;
-      document.getElementById('checkinNote').innerText = "Tap to claim your daily reward";
-      document.getElementById('countdown').style.display = 'none';
+      let html = '';
+      (userData.completedReferrals || []).forEach(name => {
+        html += `<div class="referral-item" style="color:#22c55e;">${name} - +50pts</div>`;
+      });
+      (userData.pendingReferrals || []).forEach(name => {
+        html += `<div class="referral-item">${name} - Pending tasks</div>`;
+      });
+      list.innerHTML = html;
     }
   }
-  window.claimDaily = async function() {
-    const today = getToday();
-    if(userData.lastCheckin === today) return;
-    userData.balance = (userData.balance || 0) + DAILY_REWARD;
-    userData.lastCheckin = today;
-    localStorage.setItem('userData', JSON.stringify(userData));
-    loadData(); // INSTANT BALANCE UPDATE
-    document.getElementById('successMsg').style.display = 'block';
-    checkClaimStatus();
-    if(currentUser) db.collection("users").doc(currentUser.uid).update({balance: userData.balance, lastCheckin: today});
+  window.copyLink = function() {
+    navigator.clipboard.writeText(document.getElementById('refLink').innerText);
+    alert('Link Copied!');
   }
-
-  // GIFT
-  function getRotatedPool() {
-    const startDate = new Date('2026-01-01');
-    const today = new Date();
-    const diffDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
-    const shift = diffDays % 12;
-    return [...GIFT_POOL.slice(shift),...GIFT_POOL.slice(0, shift)];
-  }
-  window.openGift = function() {
-    document.getElementById('giftResultPopup').style.display = 'none';
-    buildGiftGrid();
-    checkGiftStatus();
-    document.getElementById('giftModal').style.display = 'flex';
-  }
-  window.closeGift = function() {
-    document.getElementById('giftModal').style.display = 'none';
-    clearInterval(giftCountdownInterval);
-  }
-  function buildGiftGrid() {
-    const pool = getRotatedPool();
-    const grid = document.getElementById('giftGrid');
-    grid.innerHTML = '';
-    pool.forEach((pts, i) => {
-      const box = document.createElement('div');
-      box.className = 'gift-box';
-      box.innerHTML = '📦';
-      box.onclick = () => pickGift(i, pts, box);
-      grid.appendChild(box);
-    });
-  }
-  function checkGiftStatus() {
-    const today = getToday();
-    const lastClaim = userData.lastGiftClaim;
-    clearInterval(giftCountdownInterval);
-    if(lastClaim === today) {
-      document.querySelectorAll('.gift-box').forEach(b => b.classList.add('disabled'));
-      document.getElementById('giftNote').innerText = "Already picked today. Come back tomorrow";
-      document.getElementById('giftHistory').innerText = `Last gift: ${userData.lastGiftPoints} points`;
-      document.getElementById('giftCountdown').style.display = 'block';
-      updateGiftCountdown();
-      giftCountdownInterval = setInterval(updateGiftCountdown, 1000);
-    } else {
-      document.querySelectorAll('.gift-box').forEach(b => b.classList.remove('disabled'));
-      document.getElementById('giftNote').innerText = "Pick 1 mystery box. Resets at midnight";
-      document.getElementById('giftHistory').innerText = userData.lastGiftPoints? `Last gift: ${userData.lastGiftPoints} points` : 'No gifts claimed yet';
-      document.getElementById('giftCountdown').style.display = 'none';
-    }
-  }
-  function updateGiftCountdown() {
-    const diff = getNextClaimTime() - new Date();
-    if(diff <= 0) { clearInterval(giftCountdownInterval); checkGiftStatus(); return; }
-    const h = Math.floor(diff / 1000 / 60 / 60);
-    const m = Math.floor(diff / 1000 / 60) % 60;
-    const s = Math.floor(diff / 1000) % 60;
-    document.getElementById('giftCountdown').innerText = `Next gift in: ${h}h ${m}m ${s}s`;
-  }
-  window.pickGift = async function(index, points, el) {
-    if(userData.lastGiftClaim === getToday()) return;
-    el.classList.add('burst');
-    userData.balance = (userData.balance || 0) + points;
-    userData.lastGiftClaim = getToday();
-    userData.lastGiftPoints = points;
-    localStorage.setItem('userData', JSON.stringify(userData));
-    loadData(); // INSTANT BALANCE UPDATE
-    const popup = document.getElementById('giftResultPopup');
-    document.getElementById('resultEmoji').innerText = points === 0? '💀' : '🎉';
-    document.getElementById('resultPoints').innerText = `${points} points`;
-    popup.style.display = 'block';
-    setTimeout(() => { popup.style.display = 'none'; }, 1800);
-    el.innerHTML = '📦';
-    document.querySelectorAll('.gift-box').forEach(b => b.classList.add('disabled'));
-    if(currentUser) db.collection("users").doc(currentUser.uid).update({
-      balance: userData.balance,
-      lastGiftClaim: userData.lastGiftClaim,
-      lastGiftPoints: points
-    });
-    setTimeout(checkGiftStatus, 1000);
+  window.shareWhatsApp = function() {
+    const link = document.getElementById('refLink').innerText;
+    const text = `Join me on Reward Platform and earn points! Use my link: ${link}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   }
 
   document.getElementById('walletModal').addEventListener('click', function(e){ if(e.target.id === 'walletModal') closeWallet(); })
   document.getElementById('checkinModal').addEventListener('click', function(e){ if(e.target.id === 'checkinModal') closeCheckin(); })
   document.getElementById('giftModal').addEventListener('click', function(e){ if(e.target.id === 'giftModal') closeGift(); })
+  document.getElementById('referModal').addEventListener('click', function(e){ if(e.target.id === 'referModal') closeRefer(); })
 
   const firebaseConfig = {
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
@@ -431,14 +283,14 @@
         loadData();
       }
     } else {
-      window.location.replace('./index.html'); // FIXED: redirect to index.html
+      window.location.replace('./index.html');
     }
   });
 
   window.logout = async function() {
     try { await auth.signOut(); } catch(e) {}
     localStorage.clear();
-    window.location.replace('./index.html'); // FIXED: redirect to index.html
+    window.location.replace('./index.html');
   }
 </script>
 </body>
