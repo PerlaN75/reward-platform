@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Refer & Earn - Perlan75</title>
+<style>
+  :root { --bg:#0a0a0a; --card:#151515; --gold:#FFD700; --gold-dark:#D4AF37; --text:#fff; --muted:#a0a0a0; --success:#22c55e; }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+  body{background:var(--bg);color:var(--text);padding:20px}
+ .container{max-width:600px;margin:0 auto}
+  h1{color:var(--gold);text-align:center;margin-bottom:20px}
+ .card{background:var(--card);border:1px solid #222;border-radius:12px;padding:18px;margin-bottom:16px}
+ .stat-row{display:flex;justify-content:space-between;margin:10px 0}
+ .stat-value{color:var(--gold);font-weight:700;font-size:18px}
+ .link-box{background:#0f0f0f;border:1px dashed var(--gold-dark);border-radius:8px;padding:12px;word-break:break-all;margin:12px 0;font-size:14px}
+ .btn{width:100%;background:var(--gold);color:#000;border:none;padding:12px;border-radius:8px;font-weight:700;cursor:pointer;margin-top:8px}
+ .btn-outline{background:transparent;border:1px solid var(--gold);color:var(--gold)}
+ .referral-item{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #222}
+ .pts{color:var(--success);font-weight:700}
+ .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--success);color:#000;padding:10px 16px;border-radius:8px;display:none;font-weight:700}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>💰 Refer & Earn</h1>
+  <div class="card">
+    <div class="stat-row"><span>Total Referred</span><span class="stat-value" id="totalReferred">0</span></div>
+    <div class="stat-row"><span>Points Earned</span><span class="stat-value" id="pointsEarned">0 pts</span></div>
+  </div>
+  <div class="card">
+    <b>🔗 Your Referral Link</b>
+    <div class="link-box" id="referralLink">Loading...</div>
+    <button class="btn" id="copyBtn">Copy Link</button>
+    <button class="btn btn-outline" id="whatsappBtn">Share on WhatsApp</button>
+  </div>
+  <div class="card">
+    <b>👥 Your Referrals</b>
+    <div id="referralsList" style="margin-top:10px;"><p style="color:var(--muted);">No referrals yet</p></div>
+  </div>
+</div>
+<div class="toast" id="toast">Copied!</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = { /* YOUR CONFIG */ };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(); const db = getFirestore();
+  const BASE_URL = "https://perlan75.github.io/rev/";
+
+  const genCode = (uid, name) => (name||"USER").toUpperCase().slice(0,5) + uid.slice(-3).toUpperCase();
+
+  onAuthStateChanged(auth, async (user) => {
+    if(!user) return window.location.href="index.html";
+    const ref = doc(db,"users",user.uid);
+    let data = (await getDoc(ref)).data();
+
+    if(!data.referralCode){
+      data.referralCode = genCode(user.uid, data.name);
+      await updateDoc(ref, {referralCode: data.referralCode});
+    }
+
+    document.getElementById('referralLink').textContent = `${BASE_URL}?ref=${data.referralCode}`;
+    document.getElementById('totalReferred').textContent = data.referralCount || 0;
+    document.getElementById('pointsEarned').textContent = (data.totalReferralEarnings || 0) + " pts";
+
+    const list = document.getElementById('referralsList');
+    if(data.referredUsers?.length){
+      list.innerHTML = '';
+      for(const uid of data.referredUsers){
+        const u = (await getDoc(doc(db,"users",uid))).data();
+        list.innerHTML += `<div class="referral-item"><span>${u.name}</span><span class="pts">+50pts</span></div>`;
+      }
+    }
+  });
+
+  document.getElementById('copyBtn').onclick = () => {
+    navigator.clipboard.writeText(document.getElementById('referralLink').textContent);
+    const t=document.getElementById('toast'); t.style.display='block'; setTimeout(()=>t.style.display='none',2000);
+  }
+  document.getElementById('whatsappBtn').onclick = () => {
+    const link = document.getElementById('referralLink').textContent;
+    window.open(`https://wa.me/?text=${encodeURIComponent(`Join Perlan75 and get 20pts! ${link}`)}`,'_blank');
+  }
+</script>
+</body>
+</html>
