@@ -5,65 +5,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { 
-      background: #2f3e1a; 
-      display: flex; 
-      justify-content: flex-start; 
-      align-items: center; 
-      min-height: 100vh; 
-      padding: 50px 20px 20px 20px; 
-      flex-direction: column; 
+    body {
+      background: #2f3e1a;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      min-height: 100vh;
+      padding: 50px 20px 20px 20px;
+      flex-direction: column;
     }
-    
-    .container { background: #3a4a22; padding: 40px 25px; border-radius: 25px; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; }
-    
+
+   .container { background: #3a4a22; padding: 40px 25px; border-radius: 25px; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; }
+
     h2 { color: white; font-size: 32px; margin-bottom: 5px; font-weight: bold; }
-    .tagline { color: #fbbf24; font-size: 14px; margin-bottom: 30px; }
-    
+   .tagline { color: #fbbf24; font-size: 14px; margin-bottom: 30px; }
+
     label { display: block; text-align: left; color: #ddd; margin: 15px 0 6px 4px; font-size: 15px; font-weight: 500; }
-    
-    .input-row { display: flex; gap: 8px; align-items: center; }
-    
-    input { 
-      width: 100%; 
-      padding: 14px 16px; 
-      background: #000; /* CHANGED: was #fff0f5 */
-      border: 2px solid #555; /* CHANGED: darker border */
-      border-radius: 12px; 
-      color: #ffffff; /* CHANGED: was #1f2937 */
-      font-size: 15px; 
-      outline: none; 
+
+   .input-row { display: flex; gap: 8px; align-items: center; }
+
+    input {
+      width: 100%;
+      padding: 14px 16px;
+      background: #000;
+      border: 2px solid #555;
+      border-radius: 12px;
+      color: #ffffff;
+      font-size: 15px;
+      outline: none;
       transition: 0.3s;
     }
-    input::placeholder { color: #888; } /* CHANGED: lighter gray for placeholder */
-    input:focus { 
-      border: 2px solid #fbbf24; /* CHANGED: gold border on focus */
-      background: #111111; /* CHANGED: slightly lighter black */
+    input::placeholder { color: #888; }
+    input:focus {
+      border: 2px solid #fbbf24;
+      background: #111111;
       box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
     }
-    
-    .verify-btn { padding: 14px 18px; background: #3b82f6; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px; white-space: nowrap; }
-    .verify-btn:disabled { background: #555; cursor: not-allowed; }
-    
-    .register-btn { width: 100%; padding: 16px; margin: 25px 0 15px 0; background: linear-gradient(90deg, #fbbf24, #f59e0b, #ec4899); color: black; border: none; border-radius: 12px; cursor: pointer; font-size: 17px; font-weight: bold; }
-    .register-btn:disabled { background: #555; color: #888; cursor: not-allowed; }
-    
-    .back-btn { width: 35%; max-width: 160px; padding: 14px; background: #f59e0b; color: black; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: bold; }
-    
-    .login-link { color: #ccc; font-size: 14px; margin-top: 10px; }
-    .login-link a { color: #3b82f6; text-decoration: none; font-weight: bold; }
-    .referral-banner { background: #065f46; color: #d1fae5; padding: 12px; border-radius: 10px; margin-bottom: 20px; font-size: 14px; font-weight: bold; }
-    .error { color: #ef4444; font-size: 13px; margin-top: 10px; }
-    .status { font-size: 13px; margin-top: 6px; text-align: left; }
-    
-    .rules { text-align: left; margin-top: 8px; font-size: 12px; display: none; }
-    .rules.show { display: block; }
-    .rule { color: #888; margin: 4px 0; transition: 0.3s; }
-    .rule.valid { color: #22c55e; font-weight: bold; }
-    .rule.valid::before { content: "✅ "; }
-    .rule::before { content: "⭕ "; }
 
-    .toast {
+   .verify-btn { padding: 14px 18px; background: #3b82f6; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px; white-space: nowrap; }
+   .verify-btn:disabled { background: #555; cursor: not-allowed; }
+
+   .register-btn { width: 100%; padding: 16px; margin: 25px 0 15px 0; background: linear-gradient(90deg, #fbbf24, #f59e0b, #ec4899); color: black; border: none; border-radius: 12px; cursor: pointer; font-size: 17px; font-weight: bold; }
+   .register-btn:disabled { background: #555; color: #888; cursor: not-allowed; }
+
+   .back-btn { width: 35%; max-width: 160px; padding: 14px; background: #f59e0b; color: black; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: bold; }
+
+   .login-link { color: #ccc; font-size: 14px; margin-top: 10px; }
+   .login-link a { color: #3b82f6; text-decoration: none; font-weight: bold; }
+   .referral-banner { background: #065f46; color: #d1fae5; padding: 12px; border-radius: 10px; margin-bottom: 20px; font-size: 14px; font-weight: bold; }
+   .error { color: #ef4444; font-size: 13px; margin-top: 10px; }
+   .status { font-size: 13px; margin-top: 6px; text-align: left; }
+
+   .rules { text-align: left; margin-top: 8px; font-size: 12px; display: none; }
+   .rules.show { display: block; }
+   .rule { color: #888; margin: 4px 0; transition: 0.3s; }
+   .rule.valid { color: #22c55e; font-weight: bold; }
+   .rule.valid::before { content: "✅ "; }
+   .rule::before { content: "⭕ "; }
+
+   .toast {
       position: fixed;
       top: 20px;
       left: 50%;
@@ -89,9 +89,9 @@
 <div class="container">
   <h2>Register</h2>
   <div class="tagline">🐒 From Nothing to Something 🍇</div>
-  
+
   <div id="referralBanner" class="referral-banner" style="display:none;"></div>
-  
+
   <label>Username</label>
   <input id="username" type="text" placeholder="Choose username" onfocus="showRules('uRules')" oninput="checkUsername()">
   <div id="uRules" class="rules">
@@ -99,7 +99,7 @@
     <div id="u2" class="rule">Only letters</div>
     <div id="u3" class="rule">First letter CAPITAL</div>
   </div>
-  
+
   <label>Email</label>
   <div class="input-row">
     <input id="email" type="email" placeholder="your@gmail.com">
@@ -107,18 +107,18 @@
   </div>
   <input id="otp" type="text" placeholder="Enter 6 digit code" style="margin-top:10px; display:none;" oninput="checkOTP()">
   <div id="emailStatus" class="status"></div>
-  
+
   <label>Password</label>
   <input id="password" type="password" placeholder="Min 6 characters" onfocus="showRules('pRules')" oninput="checkPassword()">
   <div id="pRules" class="rules">
     <div id="p1" class="rule">Min 6 characters</div>
     <div id="p2" class="rule">At least 1 Capital letter</div>
     <div id="p3" class="rule">At least 1 digit</div>
-    <div id="p4" class="rule">At least 1 special: $ & # @ + % = ? !</div>
+    <div id="p4" class="rule">At least 1 special: $ & # @ + % =?!</div>
   </div>
-  
+
   <button class="register-btn" id="createBtn" onclick="register()" disabled>Create Account</button>
-  
+
   <div class="login-link">Already have account? <a href="log.html">Login Here</a></div>
   <div id="errorMsg" class="error"></div>
 </div>
@@ -128,9 +128,9 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, updateProfile, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, updateDoc, increment, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, updateDoc, increment, collection, query, where, getDocs, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = { 
+  const firebaseConfig = {
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
     authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
     projectId: "reward-platform-rw-2e13d",
@@ -138,7 +138,7 @@
     messagingSenderId: "787550951987",
     appId: "1:787550951987:web:724b1463e821b99c90a146"
   };
-  const app = initializeApp(firebaseConfig); 
+  const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
@@ -170,7 +170,7 @@
   }
 
   function checkCanSubmit(){
-    document.getElementById('createBtn').disabled = !(usernameValid && passwordValid && emailVerified);
+    document.getElementById('createBtn').disabled =!(usernameValid && passwordValid && emailVerified);
   }
 
   window.checkUsername = function(){
@@ -244,7 +244,7 @@
       return;
     }
 
-    const refUsername = localStorage.getItem('referredBy');
+    const refCode = localStorage.getItem('referredBy');
 
     try {
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
@@ -252,30 +252,47 @@
 
       await updateProfile(user, { displayName: username });
 
+      // Create user doc with referral code
       await setDoc(doc(db, "users", user.uid), {
         username: username,
         email: email,
         balance: 0,
-        referredBy: refUsername || null,
+        referralCode: username.charAt(0).toUpperCase() + username.slice(1).toLowerCase(), // NEW
+        referredBy: refCode || null,
+        referralCount: 0,
+        totalReferralEarnings: 0,
         createdAt: new Date()
       });
 
-      if(refUsername){
+      // CLIENT-SIDE REFERRAL REWARDS - No Cloud Function needed
+      if(refCode){
         const usersRef = collection(db, "users");
-        const q = query(usersRef, where("username", "==", refUsername));
+        const q = query(usersRef, where("referralCode", "==", refCode), limit(1));
         const snap = await getDocs(q);
-        snap.forEach(async (d) => {
-          await updateDoc(doc(db, "users", d.id), { balance: increment(100) });
-        });
-        await updateDoc(doc(db, "users", user.uid), { balance: increment(100) });
+        if(!snap.empty){
+          const inviterId = snap.docs[0].id;
+          if(inviterId!== user.uid){ // prevent self referral
+            // Give inviter +50
+            await updateDoc(doc(db, "users", inviterId), {
+              balance: increment(50),
+              referralCount: increment(1),
+              totalReferralEarnings: increment(50)
+            });
+            // Give new user +20
+            await updateDoc(doc(db, "users", user.uid), {
+              balance: increment(20)
+            });
+            showToast(`Welcome! +20 points. Inviter got +50 points`);
+          }
+        }
       }
 
       localStorage.removeItem('referredBy');
-      
-      showToast("Account created successfully! +100 points");
-      
+
+      if(!refCode) showToast("Account created successfully!");
+
       setTimeout(() => { window.location.href = "./home.html"; }, 1500);
-      
+
     } catch (e) {
       errorMsg.innerText = e.message;
     }
