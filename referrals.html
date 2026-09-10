@@ -44,23 +44,52 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = { /* YOUR CONFIG */ };
+  // YOUR FIREBASE CONFIG FROM home.html
+  const firebaseConfig = {
+    apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
+    authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
+    projectId: "reward-platform-rw-2e13d"
+  };
+
   const app = initializeApp(firebaseConfig);
-  const auth = getAuth(); const db = getFirestore();
+  const auth = getAuth(); 
+  const db = getFirestore();
   const BASE_URL = "https://perlan75.github.io/rev/";
 
-  const genCode = (uid, name) => (name||"USER").toUpperCase().slice(0,5) + uid.slice(-3).toUpperCase();
+  const genCode = (uid, name) => (name||"USER").toUpperCase().replace(/[^A-Z]/g,'').slice(0,5) + uid.slice(-3).toUpperCase();
+
+  const showToast = (msg) => {
+    const t=document.getElementById('toast'); 
+    t.textContent = msg;
+    t.style.display='block'; 
+    setTimeout(()=>t.style.display='none',2000);
+  }
 
   onAuthStateChanged(auth, async (user) => {
     if(!user) return window.location.href="index.html";
-    const ref = doc(db,"users",user.uid);
-    let data = (await getDoc(ref)).data();
+    
+    const userRef = doc(db,"users",user.uid);
+    let snap = await getDoc(userRef);
+    let data = snap.data();
+
+    if(!snap.exists()){
+      data = {
+        name: user.displayName || "User",
+        balance: 0,
+        referralCount: 0,
+        totalReferralEarnings: 0,
+        referredUsers: [],
+        referredBy: null,
+        createdAt: new Date()
+      };
+      await setDoc(userRef, data);
+    }
 
     if(!data.referralCode){
       data.referralCode = genCode(user.uid, data.name);
-      await updateDoc(ref, {referralCode: data.referralCode});
+      await updateDoc(userRef, {referralCode: data.referralCode});
     }
 
     document.getElementById('referralLink').textContent = `${BASE_URL}?ref=${data.referralCode}`;
@@ -68,22 +97,25 @@
     document.getElementById('pointsEarned').textContent = (data.totalReferralEarnings || 0) + " pts";
 
     const list = document.getElementById('referralsList');
-    if(data.referredUsers?.length){
+    if(data.referredUsers && data.referredUsers.length > 0){
       list.innerHTML = '';
       for(const uid of data.referredUsers){
-        const u = (await getDoc(doc(db,"users",uid))).data();
-        list.innerHTML += `<div class="referral-item"><span>${u.name}</span><span class="pts">+50pts</span></div>`;
+        const uSnap = await getDoc(doc(db,"users",uid));
+        if(uSnap.exists()){
+          const u = uSnap.data();
+          list.innerHTML += `<div class="referral-item"><span>${u.name || 'User'}</span><span class="pts">+50pts</span></div>`;
+        }
       }
     }
   });
 
   document.getElementById('copyBtn').onclick = () => {
     navigator.clipboard.writeText(document.getElementById('referralLink').textContent);
-    const t=document.getElementById('toast'); t.style.display='block'; setTimeout(()=>t.style.display='none',2000);
+    showToast('Link Copied!');
   }
   document.getElementById('whatsappBtn').onclick = () => {
     const link = document.getElementById('referralLink').textContent;
-    window.open(`https://wa.me/?text=${encodeURIComponent(`Join Perlan75 and get 20pts! ${link}`)}`,'_blank');
+    window.open(`https://wa.me/?text=${encodeURIComponent(`Join Perlan75 and get 20pts bonus! ${link}`)}`,'_blank');
   }
 </script>
 </body>
