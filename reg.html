@@ -1,300 +1,144 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Register</title>
+  <title>Register - Rewards</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body {
-      background: #2f3e1a;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      min-height: 100vh;
-      padding: 50px 20px 20px 20px;
-      flex-direction: column;
-    }
-
-   .container { background: #3a4a22; padding: 40px 25px; border-radius: 25px; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; }
-
-    h2 { color: white; font-size: 32px; margin-bottom: 5px; font-weight: bold; }
-   .tagline { color: #fbbf24; font-size: 14px; margin-bottom: 30px; }
-
-    label { display: block; text-align: left; color: #ddd; margin: 15px 0 6px 4px; font-size: 15px; font-weight: 500; }
-
-   .input-row { display: flex; gap: 8px; align-items: center; }
-
-    input {
-      width: 100%;
-      padding: 14px 16px;
-      background: #000;
-      border: 2px solid #555;
-      border-radius: 12px;
-      color: #ffffff;
-      font-size: 15px;
-      outline: none;
-      transition: 0.3s;
-    }
-    input::placeholder { color: #888; }
-    input:focus {
-      border: 2px solid #fbbf24;
-      background: #111111;
-      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
-    }
-
-   .verify-btn { padding: 14px 18px; background: #3b82f6; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px; white-space: nowrap; }
-   .verify-btn:disabled { background: #555; cursor: not-allowed; }
-
-   .register-btn { width: 100%; padding: 16px; margin: 25px 0 15px 0; background: linear-gradient(90deg, #fbbf24, #f59e0b, #ec4899); color: black; border: none; border-radius: 12px; cursor: pointer; font-size: 17px; font-weight: bold; }
-   .register-btn:disabled { background: #555; color: #888; cursor: not-allowed; }
-
-   .back-btn { width: 35%; max-width: 160px; padding: 14px; background: #f59e0b; color: black; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: bold; }
-
-   .login-link { color: #ccc; font-size: 14px; margin-top: 10px; }
-   .login-link a { color: #3b82f6; text-decoration: none; font-weight: bold; }
-   .referral-banner { background: #065f46; color: #d1fae5; padding: 12px; border-radius: 10px; margin-bottom: 20px; font-size: 14px; font-weight: bold; }
-   .error { color: #ef4444; font-size: 13px; margin-top: 10px; }
-   .status { font-size: 13px; margin-top: 6px; text-align: left; }
-
-   .rules { text-align: left; margin-top: 8px; font-size: 12px; display: none; }
-   .rules.show { display: block; }
-   .rule { color: #888; margin: 4px 0; transition: 0.3s; }
-   .rule.valid { color: #22c55e; font-weight: bold; }
-   .rule.valid::before { content: "✅ "; }
-   .rule::before { content: "⭕ "; }
-
-   .toast {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #22c55e;
-      color: white;
-      padding: 14px 20px;
-      border-radius: 12px;
-      font-weight: bold;
-      font-size: 15px;
-      z-index: 9999;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      animation: slideDown 0.3s ease;
-    }
-    @keyframes slideDown {
-      from { top: -50px; opacity: 0; }
-      to { top: 20px; opacity: 1; }
-    }
+    body { background: #0f1508; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+   .container { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 30px 25px; width: 100%; max-width: 420px; color: white; }
+    h1 { text-align: center; font-size: 32px; margin-bottom: 5px; color: #fff; }
+   .subtitle { text-align: center; color: #fbbf24; margin-bottom: 20px; font-size: 14px; }
+   .ref-banner { background: #0f6b4f; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; }
+    label { font-size: 14px; color: #ccc; margin-top: 12px; display: block; margin-bottom: 5px; }
+   .input-box { width: 100%; padding: 14px; margin-bottom: 10px; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
+   .input-box:focus { border-color: #fbbf24; }
+   .btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+   .btn:disabled { background: #444; color: #888; cursor: not-allowed; }
+   .note { text-align: center; margin-top: 15px; font-size: 14px; color: #aaa; }
+   .note a { color: #60a5fa; text-decoration: none; font-weight: bold; }
+   .error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; }
+   .success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
   </style>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
+  <div class="container">
+    <h1>Register</h1>
+    <div class="subtitle">🐒 From Nothing to Something 🍇</div>
 
-<div class="container">
-  <h2>Register</h2>
-  <div class="tagline">🐒 From Nothing to Something 🍇</div>
+    <div class="ref-banner" id="refBanner" style="display:none;">Invited by: <span id="refName"></span></div>
 
-  <div id="referralBanner" class="referral-banner" style="display:none;"></div>
+    <label>Username</label>
+    <input type="text" class="input-box" id="username" placeholder="Choose username">
 
-  <label>Username</label>
-  <input id="username" type="text" placeholder="Choose username" onfocus="showRules('uRules')" oninput="checkUsername()">
-  <div id="uRules" class="rules">
-    <div id="u1" class="rule">5-12 characters</div>
-    <div id="u2" class="rule">Only letters</div>
-    <div id="u3" class="rule">First letter CAPITAL</div>
+    <label>Email</label>
+    <input type="email" class="input-box" id="email" placeholder="your@email.com">
+
+    <label>Password</label>
+    <input type="password" class="input-box" id="password" placeholder="********">
+
+    <button class="btn" id="createBtn" onclick="createAccount()">Create Account</button>
+
+    <div class="error" id="errorMsg"></div>
+    <div class="success" id="successMsg"></div>
+
+    <div class="note">Already have account? <a href="./index.html">Login Here</a></div>
   </div>
 
-  <label>Email</label>
-  <div class="input-row">
-    <input id="email" type="email" placeholder="your@gmail.com">
-    <button class="verify-btn" id="verifyBtn" onclick="sendOTP()">Verify</button>
-  </div>
-  <input id="otp" type="text" placeholder="Enter 6 digit code" style="margin-top:10px; display:none;" oninput="checkOTP()">
-  <div id="emailStatus" class="status"></div>
-
-  <label>Password</label>
-  <input id="password" type="password" placeholder="Min 6 characters" onfocus="showRules('pRules')" oninput="checkPassword()">
-  <div id="pRules" class="rules">
-    <div id="p1" class="rule">Min 6 characters</div>
-    <div id="p2" class="rule">At least 1 Capital letter</div>
-    <div id="p3" class="rule">At least 1 digit</div>
-    <div id="p4" class="rule">At least 1 special: $ & # @ + % =?!</div>
-  </div>
-
-  <button class="register-btn" id="createBtn" onclick="register()" disabled>Create Account</button>
-
-  <div class="login-link">Already have account? <a href="log.html">Login Here</a></div>
-  <div id="errorMsg" class="error"></div>
-</div>
-
-<button class="back-btn" onclick="window.location.href='./index.html'">Back</button>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, updateProfile, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, updateDoc, increment, collection, query, where, getDocs, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
+<script>
   const firebaseConfig = {
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
     authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
-    projectId: "reward-platform-rw-2e13d",
-    storageBucket: "reward-platform-rw-2e13d.firebasestorage.app",
-    messagingSenderId: "787550951987",
-    appId: "1:787550951987:web:724b1463e821b99c90a146"
+    projectId: "reward-platform-rw-2e13d"
   };
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
 
-  await setPersistence(auth, browserLocalPersistence);
+  let referredByCode = null;
 
-  let emailVerified = false;
-  let generatedOTP = "";
-  let usernameValid = false;
-  let passwordValid = false;
-
-  function showToast(msg) {
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.innerText = msg;
-    document.body.appendChild(toast);
-    setTimeout(() => { toast.remove(); }, 2500);
-  }
-
+  // 1. GET REFERRER CODE FROM URL?ref=abeza4821
   const urlParams = new URLSearchParams(window.location.search);
-  const ref = urlParams.get('ref');
-  if(ref) {
-    document.getElementById('referralBanner').innerText = `Referred by: ${ref}`;
-    document.getElementById('referralBanner').style.display = 'block';
-    localStorage.setItem('referredBy', ref);
+  referredByCode = urlParams.get('ref');
+  if(referredByCode){
+    document.getElementById('refBanner').style.display = 'block';
+    document.getElementById('refName').innerText = referredByCode;
   }
 
-  window.showRules = function(id){
-    document.getElementById(id).classList.add('show');
-  }
-
-  function checkCanSubmit(){
-    document.getElementById('createBtn').disabled =!(usernameValid && passwordValid && emailVerified);
-  }
-
-  window.checkUsername = function(){
-    const u = document.getElementById('username').value;
-    const r1 = u.length >= 5 && u.length <= 12;
-    const r2 = /^[A-Za-z]+$/.test(u);
-    const r3 = /^[A-Z]/.test(u);
-    document.getElementById('u1').classList.toggle('valid', r1);
-    document.getElementById('u2').classList.toggle('valid', r2);
-    document.getElementById('u3').classList.toggle('valid', r3);
-    usernameValid = r1 && r2 && r3;
-    if(usernameValid) document.getElementById('uRules').classList.remove('show');
-    checkCanSubmit();
-  }
-
-  window.checkPassword = function(){
-    const p = document.getElementById('password').value;
-    const r1 = p.length >= 6;
-    const r2 = /[A-Z]/.test(p);
-    const r3 = /[0-9]/.test(p);
-    const r4 = /[\$&#@+%=?!]/.test(p);
-    document.getElementById('p1').classList.toggle('valid', r1);
-    document.getElementById('p2').classList.toggle('valid', r2);
-    document.getElementById('p3').classList.toggle('valid', r3);
-    document.getElementById('p4').classList.toggle('valid', r4);
-    passwordValid = r1 && r2 && r3 && r4;
-    if(passwordValid) document.getElementById('pRules').classList.remove('show');
-    checkCanSubmit();
-  }
-
-  window.sendOTP = async function(){
-    const email = document.getElementById('email').value.trim();
-    if(!email.includes('@')){
-      document.getElementById('errorMsg').innerText = "Enter valid email first";
-      return;
-    }
-    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-    document.getElementById('otp').style.display = 'block';
-    document.getElementById('emailStatus').innerHTML = `Code sent. Check console: <b>${generatedOTP}</b>`;
-    console.log("OTP:", generatedOTP);
-    document.getElementById('verifyBtn').innerText = "Resend";
-  }
-
-  window.checkOTP = function(){
-    const entered = document.getElementById('otp').value;
-    const status = document.getElementById('emailStatus');
-    if(entered.length === 6){
-      if(entered === generatedOTP){
-        emailVerified = true;
-        status.innerHTML = "✅ <span style='color:#22c55e'>Email Verified</span>";
-      } else {
-        emailVerified = false;
-        status.innerHTML = "❌ <span style='color:#ef4444'>Unverified</span>";
-      }
-    } else {
-      emailVerified = false;
-      status.innerHTML = "";
-    }
-    checkCanSubmit();
-  }
-
-  window.register = async function() {
+  // 2. CREATE ACCOUNT + HANDLE REFERRAL
+  window.createAccount = async function() {
     const username = document.getElementById('username').value.trim();
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
-    const errorMsg = document.getElementById('errorMsg');
-    errorMsg.innerText = "";
+    const errorEl = document.getElementById('errorMsg');
+    const successEl = document.getElementById('successMsg');
+    const btn = document.getElementById('createBtn');
 
-    if(!emailVerified){
-      errorMsg.innerText = "Please verify email with code first";
+    errorEl.innerText = '';
+    successEl.innerText = '';
+    btn.disabled = true;
+    btn.innerText = "Creating...";
+
+    if(!username ||!email ||!password){
+      errorEl.innerText = "Please fill all fields";
+      btn.disabled = false;
+      btn.innerText = "Create Account";
       return;
     }
 
-    const refCode = localStorage.getItem('referredBy');
-
     try {
-      const userCred = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCred.user;
+      // STEP A: CREATE AUTH USER FIRST
+      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+      const user = userCredential.user;
+      let referrerUsername = null;
 
-      await updateProfile(user, { displayName: username });
-
-      // Create user doc with referral code
-      await setDoc(doc(db, "users", user.uid), {
-        username: username,
-        email: email,
-        balance: 0,
-        referralCode: username.charAt(0).toUpperCase() + username.slice(1).toLowerCase(), // NEW
-        referredBy: refCode || null,
-        referralCount: 0,
-        totalReferralEarnings: 0,
-        createdAt: new Date()
-      });
-
-      // CLIENT-SIDE REFERRAL REWARDS - No Cloud Function needed
-      if(refCode){
-        const usersRef = collection(db, "users");
-        const q = query(usersRef, where("referralCode", "==", refCode), limit(1));
-        const snap = await getDocs(q);
-        if(!snap.empty){
-          const inviterId = snap.docs[0].id;
-          if(inviterId!== user.uid){ // prevent self referral
-            // Give inviter +50
-            await updateDoc(doc(db, "users", inviterId), {
-              balance: increment(50),
-              referralCount: increment(1),
-              totalReferralEarnings: increment(50)
-            });
-            // Give new user +20
-            await updateDoc(doc(db, "users", user.uid), {
-              balance: increment(20)
-            });
-            showToast(`Welcome! +20 points. Inviter got +50 points`);
-          }
+      // STEP B: FIND WHO REFERRED USING CODE
+      if(referredByCode){
+        const refQuery = await db.collection("users").where("referralCode", "==", referredByCode).limit(1).get();
+        if(!refQuery.empty){
+          referrerUsername = refQuery.docs[0].data().username;
         }
       }
 
-      localStorage.removeItem('referredBy');
+      // STEP C: CREATE FIRESTORE DOC
+      const userData = {
+        username: username,
+        email: email,
+        balance: 0,
+        usdt: 0, bnb: 0, xrp: 0, xlm: 0,
+        referralCode: null, // will be generated on referrals page
+        referredBy: referrerUsername, // save username of referrer
+        referralCount: 0,
+        totalReferralEarnings: 0,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
 
-      if(!refCode) showToast("Account created successfully!");
+      await db.collection("users").doc(user.uid).set(userData);
 
-      setTimeout(() => { window.location.href = "./home.html"; }, 1500);
+      // STEP D: GIVE BONUS TO REFERRER
+      if(referrerUsername){
+        const refQuery = await db.collection("users").where("username", "==", referrerUsername).limit(1).get();
+        refQuery.forEach(doc => {
+          doc.ref.update({
+            balance: firebase.firestore.FieldValue.increment(50),
+            referralCount: firebase.firestore.FieldValue.increment(1),
+            totalReferralEarnings: firebase.firestore.FieldValue.increment(50)
+          })
+        })
+      }
 
-    } catch (e) {
-      errorMsg.innerText = e.message;
+      successEl.innerText = "Account created! Redirecting...";
+      setTimeout(() => { window.location.href = './home.html'; }, 1500);
+
+    } catch (error) {
+      errorEl.innerText = error.message;
+      btn.disabled = false;
+      btn.innerText = "Create Account";
+      console.log(error);
     }
   }
 </script>
