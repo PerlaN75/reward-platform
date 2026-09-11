@@ -89,7 +89,7 @@
 <body>
   <div class="container">
     <div class="header">
-      <h2><span id="headerText"></span></h2> <!-- BLANK: will be filled instantly from cache -->
+      <h2><span id="headerText"></span></h2>
     </div>
     <div class="balance-card">
       <div class="label">Your Balance</div>
@@ -99,9 +99,10 @@
     <div class="menu-grid">
       <button class="menu-btn" onclick="openWallet()"><span class="emoji">💰</span>Wallet</button>
       <button class="menu-btn" onclick="openCheckin()"><span class="emoji">📅</span>Daily Checkin</button>
-      <button class="menu-btn" onclick="window.location.href='./watch.html'">
-  📺 Watch & Earn
-</button>
+      
+      <!-- FIXED: Watch & Earn emoji now above -->
+      <button class="menu-btn" onclick="window.location.href='./watch.html'"><span class="emoji">📺</span>Watch & Earn</button>
+      
       <button class="menu-btn" onclick="window.location.href='./referrals.html'"><span class="emoji">🤝</span>Refer & Earn</button>
       <button class="menu-btn" onclick="openGift()"><span class="emoji">🎁</span>Gifts</button>
       <button class="menu-btn" onclick="window.location.href='./more.html'"><span class="emoji">⚙️</span>More</button>
@@ -424,8 +425,8 @@
       const doc = await db.collection("users").doc(user.uid).get();
       if (doc.exists) {
         const data = doc.data();
-        localStorage.setItem('userData', JSON.stringify(data)); // update cache
-        loadData(data); // confirm with real data
+        localStorage.setItem('userData', JSON.stringify(data));
+        loadData(data);
       }
     } else {
       localStorage.clear();
