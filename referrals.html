@@ -2,6 +2,9 @@
 <html>
 <head>
   <title>Refer & Earn</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
@@ -68,26 +71,16 @@
   let myLink = "";
   let myUsername = "";
 
-  function generateCode(username) {
-    return username.toLowerCase().replace(/\s+/g, '') + Math.floor(Math.random() * 9000 + 1000);
-  }
-
   auth.onAuthStateChanged(async (user) => {
     if(user){
       const docRef = db.collection("users").doc(user.uid);
       const doc = await docRef.get();
       if(doc.exists){
         const data = doc.data();
-        myUsername = data.username;
+        myUsername = data.username; // THIS IS NOW "Hogoza"
 
-        // 1. CREATE REFERRAL CODE IF MISSING
-        let code = data.referralCode;
-        if(!code){
-          code = generateCode(data.username);
-          await docRef.update({ referralCode: code });
-        }
-
-        myLink = `https://perlan75.github.io/reward-platform/reg.html?ref=${code}`;
+        // USE USERNAME IN LINK INSTEAD OF CODE
+        myLink = `https://perlan75.github.io/reward-platform/reg.html?ref=${myUsername}`;
         document.getElementById('referralLink').innerText = myLink;
         document.getElementById('totalReferred').innerText = data.referralCount || 0;
         document.getElementById('pointsEarned').innerText = (data.totalReferralEarnings || 0) + ' pts';
@@ -99,7 +92,7 @@
     }
   });
 
-  // 2. LOAD PEOPLE WHO USED THIS USER'S LINK
+  // LOAD PEOPLE WHO USED THIS USER'S LINK
   async function loadReferrals(username) {
     const snapshot = await db.collection("users").where("referredBy", "==", username).get();
     const listEl = document.getElementById('referralsList');
