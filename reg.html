@@ -6,19 +6,22 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #0f1508; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-   .container { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 30px 25px; width: 100%; max-width: 420px; color: white; }
+  .container { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 30px 25px; width: 100%; max-width: 420px; color: white; }
     h1 { text-align: center; font-size: 32px; margin-bottom: 5px; color: #fff; }
-   .subtitle { text-align: center; color: #fbbf24; margin-bottom: 20px; font-size: 14px; }
-   .ref-banner { background: #0f6b4f; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; }
+  .subtitle { text-align: center; color: #fbbf24; margin-bottom: 20px; font-size: 14px; }
+  .ref-banner { background: #0f6b4f; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; }
     label { font-size: 14px; color: #ccc; margin-top: 12px; display: block; margin-bottom: 5px; }
-   .input-box { width: 100%; padding: 14px; margin-bottom: 10px; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
-   .input-box:focus { border-color: #fbbf24; }
-   .btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
-   .btn:disabled { background: #444; color: #888; cursor: not-allowed; }
-   .note { text-align: center; margin-top: 15px; font-size: 14px; color: #aaa; }
-   .note a { color: #60a5fa; text-decoration: none; font-weight: bold; }
-   .error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; }
-   .success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
+  .input-box { width: 100%; padding: 14px; margin-bottom: 10px; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
+  .input-box:focus { border-color: #fbbf24; }
+  .input-group { display: flex; gap: 8px; }
+  .resend { background: #2563eb; color: white; padding: 14px 16px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+  .btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+  .btn:disabled { background: #444; color: #888; cursor: not-allowed; }
+  .note { text-align: center; margin-top: 15px; font-size: 14px; color: #aaa; }
+  .note a { color: #60a5fa; text-decoration: none; font-weight: bold; }
+  .error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; }
+  .success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
+  .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
   </style>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -36,7 +39,13 @@
     <input type="text" class="input-box" id="username" placeholder="Choose username">
 
     <label>Email</label>
-    <input type="email" class="input-box" id="email" placeholder="your@email.com">
+    <div class="input-group">
+      <input type="email" class="input-box" id="email" placeholder="your@email.com" style="margin-bottom:0;">
+      <button class="resend" onclick="sendCode()">Resend</button>
+    </div>
+
+    <input type="text" class="input-box" id="code" placeholder="Enter 6 digit code">
+    <div class="success" id="verifiedMsg" style="display:none;">✓ Email Verified</div>
 
     <label>Password</label>
     <input type="password" class="input-box" id="password" placeholder="********">
@@ -47,6 +56,8 @@
     <div class="success" id="successMsg"></div>
 
     <div class="note">Already have account? <a href="./index.html">Login Here</a></div>
+    
+    <button class="back-btn" onclick="window.location.href='./index.html'">Back</button>
   </div>
 
 <script>
@@ -60,6 +71,7 @@
   const db = firebase.firestore();
 
   let referredByCode = null;
+  let isVerified = false;
 
   // 1. GET REFERRER CODE FROM URL?ref=abeza4821
   const urlParams = new URLSearchParams(window.location.search);
@@ -67,6 +79,15 @@
   if(referredByCode){
     document.getElementById('refBanner').style.display = 'block';
     document.getElementById('refName').innerText = referredByCode;
+  }
+
+  // FAKE EMAIL VERIFY FOR NOW
+  window.sendCode = function(){
+    const email = document.getElementById('email').value.trim();
+    if(!email){ alert("Enter email first"); return; }
+    isVerified = true;
+    document.getElementById('verifiedMsg').style.display = 'block';
+    showToast("Code sent to " + email);
   }
 
   // 2. CREATE ACCOUNT + HANDLE REFERRAL
@@ -85,6 +106,12 @@
 
     if(!username ||!email ||!password){
       errorEl.innerText = "Please fill all fields";
+      btn.disabled = false;
+      btn.innerText = "Create Account";
+      return;
+    }
+    if(!isVerified){
+      errorEl.innerText = "Please verify your email first";
       btn.disabled = false;
       btn.innerText = "Create Account";
       return;
@@ -110,8 +137,8 @@
         email: email,
         balance: 0,
         usdt: 0, bnb: 0, xrp: 0, xlm: 0,
-        referralCode: null, // will be generated on referrals page
-        referredBy: referrerUsername, // save username of referrer
+        referralCode: null,
+        referredBy: referrerUsername,
         referralCount: 0,
         totalReferralEarnings: 0,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -140,6 +167,14 @@
       btn.innerText = "Create Account";
       console.log(error);
     }
+  }
+  
+  function showToast(msg) {
+    const toast = document.createElement('div');
+    toast.style = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#22c55e;color:white;padding:14px 20px;border-radius:12px;font-weight:bold;z-index:9999;';
+    toast.innerText = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => { toast.remove(); }, 2000);
   }
 </script>
 </body>
