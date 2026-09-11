@@ -18,7 +18,7 @@
 .menu-btn { background: linear-gradient(180deg, #ffffff, #e8e8e8); color: #000; border: none; border-radius: 15px; padding: 20px 10px; font-size: 15px; font-weight: bold; cursor: pointer; text-align: center; box-shadow: 0 6px 0 #bbbbbb, 0 8px 15px rgba(0,0,0,0.3); transition: all 0.1s ease; display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .menu-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #bbbbbb; }
 .menu-btn.emoji { font-size: 40px; }
-.logout-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; }
+.logout-btn { width: 40%; height: 52px; margin: 20px auto 0 auto; display: block; padding: 0; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; } /* UPDATED: width 40% + height */
 .logout-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #d97706; }
 .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
 .modal-content { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 18px; width: 100%; max-width: 420px; color: white; max-height: 95vh; overflow-y: auto; position: relative; }
@@ -101,7 +101,7 @@
 <body>
   <div class="container">
     <div class="header">
-      <h2>Welcome, <span id="headerText">Manzi</span></h2>
+      <h2>Welcome, <span id="headerText">Amina</span></h2> <!-- REMOVED "Welcome user" -->
     </div>
     <div class="balance-card">
       <div class="label">Your Balance</div>
@@ -228,7 +228,7 @@
 
   function loadData() {
     userData = JSON.parse(localStorage.getItem('userData') || '{}');
-    document.getElementById('headerText').innerText = userData.username || "User"; // FIXED: use username
+    document.getElementById('headerText').innerText = userData.username || "User";
     document.getElementById('balance').innerText = (userData.balance || 0) + ' points';
     document.getElementById('usdBalance').innerText = `≈ $${((userData.balance || 0) * POINT_RATE).toFixed(2)} USD`;
   }
@@ -239,7 +239,7 @@
     const points = userData.balance || 0;
     document.getElementById('popupPoints').innerText = points + ' points';
     document.getElementById('popupUSD').innerText = `≈ $${(points * POINT_RATE).toFixed(2)} USD`;
-    document.getElementById('wUsername').innerText = userData.username || '-'; // FIXED
+    document.getElementById('wUsername').innerText = userData.username || '-';
     document.getElementById('wEmail').innerText = userData.email || '-';
     document.getElementById('usdtBal').innerText = (userData.usdt || 0).toFixed(2);
     document.getElementById('bnbBal').innerText = (userData.bnb || 0).toFixed(4);
@@ -324,7 +324,7 @@
     userData.balance = (userData.balance || 0) + DAILY_REWARD;
     userData.lastCheckin = today;
     localStorage.setItem('userData', JSON.stringify(userData));
-    loadData(); // INSTANT BALANCE UPDATE
+    loadData();
     document.getElementById('successMsg').style.display = 'block';
     checkClaimStatus();
     if(currentUser) db.collection("users").doc(currentUser.uid).update({balance: userData.balance, lastCheckin: today});
@@ -393,7 +393,7 @@
     userData.lastGiftClaim = getToday();
     userData.lastGiftPoints = points;
     localStorage.setItem('userData', JSON.stringify(userData));
-    loadData(); // INSTANT BALANCE UPDATE
+    loadData();
     const popup = document.getElementById('giftResultPopup');
     document.getElementById('resultEmoji').innerText = points === 0? '💀' : '🎉';
     document.getElementById('resultPoints').innerText = `${points} points`;
@@ -428,8 +428,8 @@
       const doc = await db.collection("users").doc(user.uid).get();
       if (doc.exists) {
         const data = doc.data();
-        localStorage.setItem('userData', JSON.stringify(data)); // now saves referralCode too
-        document.getElementById('headerText').innerText = data.username || "User"; // show real username
+        localStorage.setItem('userData', JSON.stringify(data));
+        document.getElementById('headerText').innerText = data.username || "User";
         loadData();
       }
     } else {
