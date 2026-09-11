@@ -155,10 +155,12 @@
     }
 
     try {
+      // STEP A: CREATE AUTH USER
       const userCredential = await auth.createUserWithEmailAndPassword(email, password);
       const user = userCredential.user;
       let referrerUsername = null;
 
+      // STEP B: FIND WHO REFERRED USING USERNAME
       if(referredByCode){
         const refQuery = await db.collection("users").where("username", "==", referredByCode).limit(1).get();
         if(!refQuery.empty){
@@ -166,12 +168,12 @@
         }
       }
 
+      // STEP C: CREATE FIRESTORE DOC FOR NEW USER WITH 50 BONUS
       const userData = {
         username: username,
         email: email,
-        balance: 0,
+        balance: referrerUsername? 50 : 0, // Give 50 if came from referral
         usdt: 0, bnb: 0, xrp: 0, xlm: 0,
-        referralCode: null,
         referredBy: referrerUsername,
         referralCount: 0,
         totalReferralEarnings: 0,
@@ -180,6 +182,7 @@
 
       await db.collection("users").doc(user.uid).set(userData);
 
+      // STEP D: GIVE 50 BONUS TO REFERRER
       if(referrerUsername){
         const refQuery = await db.collection("users").where("username", "==", referrerUsername).limit(1).get();
         refQuery.forEach(doc => {
