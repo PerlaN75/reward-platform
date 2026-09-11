@@ -2,27 +2,30 @@
 <html>
 <head>
   <title>Register - Rewards</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #0f1508; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
- .container { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 30px 25px; width: 100%; max-width: 420px; color: white; }
+.container { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 30px 25px; width: 100%; max-width: 420px; color: white; }
     h1 { text-align: center; font-size: 32px; margin-bottom: 5px; color: #fff; }
- .subtitle { text-align: center; color: #fbbf24; margin-bottom: 20px; font-size: 14px; }
- .ref-banner { background: #0f6b4f; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; }
+.subtitle { text-align: center; color: #fbbf24; margin-bottom: 20px; font-size: 14px; }
+.ref-banner { background: #0f6b4f; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; }
     label { font-size: 14px; color: #ccc; margin-top: 12px; display: block; margin-bottom: 5px; }
- .input-box { width: 100%; padding: 14px; margin-bottom: 10px; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
- .input-box:focus { border-color: #fbbf24; }
- .input-group { display: flex; gap: 8px; }
- .verify-btn { background: #2563eb; color: white; padding: 14px 16px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
- .code-box { background: #001a00; border: 2px dashed #22c55e; color: #22c55e; text-align: center; font-weight: bold; letter-spacing: 3px; }
- .btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
- .btn:disabled { background: #444; color: #888; cursor: not-allowed; }
- .note { text-align: center; margin-top: 15px; font-size: 14px; color: #aaa; }
- .note a { color: #60a5fa; text-decoration: none; font-weight: bold; }
- .error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; }
- .success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
- .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
+.input-box { width: 100%; padding: 14px; margin-bottom: 10px; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
+.input-box:focus { border-color: #fbbf24; }
+.input-group { display: flex; gap: 8px; }
+.verify-btn { background: #2563eb; color: white; padding: 14px 16px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+.code-box { background: #001a00; border: 2px dashed #22c55e; color: #22c55e; text-align: center; font-weight: bold; letter-spacing: 3px; }
+.btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+.btn:disabled { background: #444; color: #888; cursor: not-allowed; }
+.note { text-align: center; margin-top: 15px; font-size: 14px; color: #aaa; }
+.note a { color: #60a5fa; text-decoration: none; font-weight: bold; }
+.error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; }
+.success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
+.back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
   </style>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -76,7 +79,6 @@
   let isVerified = false;
   let currentCode = "";
 
-  // 1. GET REFERRER CODE FROM URL?ref=abeza4821
   const urlParams = new URLSearchParams(window.location.search);
   referredByCode = urlParams.get('ref');
   if(referredByCode){
@@ -84,25 +86,22 @@
     document.getElementById('refName').innerText = referredByCode;
   }
 
-  // 2. FORMAT USERNAME: First CAPS, no numbers/specials
   window.formatUsername = function(){
     let val = document.getElementById('username').value;
-    val = val.replace(/[^a-zA-Z]/g, ''); // remove numbers and special chars
+    val = val.replace(/[^a-zA-Z]/g, '');
     val = val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
     document.getElementById('username').value = val;
   }
 
-  // 3. VERIFY BUTTON: Generate code and show it
   window.sendCode = function(){
     const email = document.getElementById('email').value.trim();
     if(!email){ alert("Enter email first"); return; }
-    currentCode = Math.floor(100000 + Math.random() * 900000).toString(); // 6 digit
+    currentCode = Math.floor(100000 + Math.random() * 900000).toString();
     document.getElementById('generatedCode').value = currentCode;
     document.getElementById('generatedCode').style.display = 'block';
-    showToast("Code generated. Copy and paste below");
+    showToast("Code: " + currentCode + " - Copy it");
   }
 
-  // 4. CHECK CODE
   document.getElementById('code').addEventListener('input', function(){
     if(this.value === currentCode && currentCode!== ""){
       isVerified = true;
@@ -113,7 +112,6 @@
     }
   })
 
-  // 5. PASSWORD VALIDATION
   function validatePassword(password){
     if(password.length < 5 || password.length > 10) return "Password must be 5-10 characters";
     if(!/[A-Z]/.test(password)) return "Password needs at least 1 capital letter";
@@ -122,7 +120,6 @@
     return null;
   }
 
-  // 6. CREATE ACCOUNT + HANDLE REFERRAL
   window.createAccount = async function() {
     const username = document.getElementById('username').value.trim();
     const email = document.getElementById('email').value.trim();
@@ -158,12 +155,10 @@
     }
 
     try {
-      // STEP A: CREATE AUTH USER FIRST
       const userCredential = await auth.createUserWithEmailAndPassword(email, password);
       const user = userCredential.user;
       let referrerUsername = null;
 
-      // STEP B: FIND WHO REFERRED USING CODE
       if(referredByCode){
         const refQuery = await db.collection("users").where("referralCode", "==", referredByCode).limit(1).get();
         if(!refQuery.empty){
@@ -171,7 +166,6 @@
         }
       }
 
-      // STEP C: CREATE FIRESTORE DOC
       const userData = {
         username: username,
         email: email,
@@ -186,7 +180,6 @@
 
       await db.collection("users").doc(user.uid).set(userData);
 
-      // STEP D: GIVE BONUS TO REFERRER
       if(referrerUsername){
         const refQuery = await db.collection("users").where("username", "==", referrerUsername).limit(1).get();
         refQuery.forEach(doc => {
@@ -214,7 +207,7 @@
     toast.style = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#22c55e;color:white;padding:14px 20px;border-radius:12px;font-weight:bold;z-index:9999;';
     toast.innerText = msg;
     document.body.appendChild(toast);
-    setTimeout(() => { toast.remove(); }, 2000);
+    setTimeout(() => { toast.remove(); }, 3000);
   }
 </script>
 </body>
