@@ -15,6 +15,7 @@
     .timer { font-size: 20px; font-weight: bold; color: #22c55e; margin: 10px 0; }
     .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; }
     .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #22c55e; color: white; padding: 14px 20px; border-radius: 12px; font-weight: bold; z-index: 9999; }
+    .cooldown { font-size: 18px; color: #fbbf24; font-weight: bold; }
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -25,7 +26,7 @@
   <div class="container">
     <div class="header">📺 Watch & Earn</div>
     <div class="video-card">
-      <div id="status">Loading video...</div>
+      <div id="status">Checking...</div>
       <div id="player"></div>
       <div class="timer" id="timer">Watch for 30s</div>
       <button class="btn" id="claimBtn" onclick="rewardUser()" style="display:none;">Claim +5 Points</button>
@@ -39,51 +40,68 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // ADD YOUR YOUTUBE VIDEO IDS HERE. Not full link, just ID
-  const videos = [
-    "dQw4w9WgXcQ",
-    "9bZkp7q19f0",
-  ];
-  
+  const videos = ["dQw4w9WgXcQ","9bZkp7q19f0"];
   let player;
   let timerInterval;
   let secondsWatched = 0;
   let started = false;
   let currentUser = null;
+  let onCooldown = false;
 
-  // 1. Check cooldown
+  // INSTANT CHECK WITH LOCALSTORAGE FIRST
+  function checkCooldownInstant() {
+    const cached = JSON.parse(localStorage.getItem('userData') || '{}');
+    const lastWatch = cached.lastWatchTime ? new Date(cached.lastWatchTime) : null;
+    const now = new Date();
+    
+    if(lastWatch && (now - lastWatch) < 3600000){
+      const wait = Math.ceil((3600000 - (now - lastWatch)) / 60000);
+      document.getElementById('status').innerHTML = `<div class="cooldown">Come back in ${wait} minutes</div>`;
+      document.getElementById('player').style.display = 'none';
+      document.getElementById('timer').style.display = 'none';
+      onCooldown = true;
+      return true;
+    }
+    return false;
+  }
+
+  // Run instant check on page load
+  if(checkCooldownInstant()){
+    // blocked instantly
+  }
+
   auth.onAuthStateChanged(async (user) => {
     if(!user) return window.location.replace('./index.html');
     currentUser = user;
+    
+    // Double check with Firebase
     const doc = await db.collection("users").doc(user.uid).get();
     const data = doc.data();
     const lastWatch = data.lastWatchTime?.toDate();
     const now = new Date();
     
-    if(lastWatch && (now - lastWatch) < 3600000){
+    if(lastWatch && (now - lastWatch) < 3600000 && !onCooldown){
       const wait = Math.ceil((3600000 - (now - lastWatch)) / 60000);
-      document.getElementById('status').innerText = `Come back in ${wait} minutes`;
+      document.getElementById('status').innerHTML = `<div class="cooldown">Come back in ${wait} minutes</div>`;
       document.getElementById('player').style.display = 'none';
+      document.getElementById('timer').style.display = 'none';
       return;
     }
-    document.getElementById('status').innerText = "Press PLAY to start earning";
+    if(!onCooldown) document.getElementById('status').innerText = "Press PLAY to start earning";
   });
 
-  // 2. Load random youtube video
   function onYouTubeIframeAPIReady() {
+    if(onCooldown) return; // Don't load player if on cooldown
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
     player = new YT.Player('player', {
       height: '220',
       width: '100%',
       videoId: randomVideo,
       playerVars: { 'controls': 1, 'rel': 0 },
-      events: {
-        'onStateChange': onPlayerStateChange
-      }
+      events: { 'onStateChange': onPlayerStateChange }
     });
   }
 
-  // 3. Timer only starts on PLAY
   function onPlayerStateChange(event) {
     if (event.data == YT.PlayerState.PLAYING && !started) {
       started = true;
@@ -110,7 +128,6 @@
     }, 1000);
   }
 
-  // 4. Claim reward
   window.rewardUser = async function(){
     if(!currentUser) return;
     document.getElementById('claimBtn').disabled = true;
@@ -121,6 +138,7 @@
       lastWatchTime: firebase.firestore.FieldValue.serverTimestamp()
     })
 
+    // Save to localStorage instantly for next page load
     const cached = JSON.parse(localStorage.getItem('userData') || '{}');
     cached.balance = (cached.balance || 0) + 5;
     cached.lastWatchTime = new Date().toISOString();
