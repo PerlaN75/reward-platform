@@ -160,7 +160,7 @@
       let referrerUsername = null;
 
       if(referredByCode){
-        const refQuery = await db.collection("users").where("referralCode", "==", referredByCode).limit(1).get();
+        const refQuery = await db.collection("users").where("username", "==", referredByCode).limit(1).get();
         if(!refQuery.empty){
           referrerUsername = refQuery.docs[0].data().username;
         }
