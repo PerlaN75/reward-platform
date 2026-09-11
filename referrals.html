@@ -15,9 +15,12 @@
     .link-card { background: #1a2410; border: 2px solid #fbbf24; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
     .link-label { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: bold; margin-bottom: 12px; }
     .link-box { background: #000; border: 1px dashed #555; border-radius: 10px; padding: 12px; font-size: 13px; word-break: break-all; margin-bottom: 15px; }
-    .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-bottom: 10px; }
-    .btn-copy { background: #fbbf24; color: #000; }
-    .btn-whatsapp { background: transparent; color: #fbbf24; border: 2px solid #fbbf24; }
+    
+    .btn-row { display: flex; gap: 10px; } /* NEW: put buttons side by side */
+    .btn { padding: 14px; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-bottom: 10px; }
+    .btn-copy { width: 40%; background: #fbbf24; color: #000; } /* NEW: 40% width, left */
+    .btn-whatsapp { flex: 1; background: #22c55e; color: #000; } /* NEW: green bg, black text */
+    
     .referrals-card { background: #1a2410; border-radius: 15px; padding: 20px; }
     .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
     .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #22c55e; color: white; padding: 14px 20px; border-radius: 12px; font-weight: bold; z-index: 9999; }
@@ -35,8 +38,11 @@
     <div class="link-card">
       <div class="link-label">🔗 Your Referral Link</div>
       <div class="link-box" id="referralLink">Loading...</div>
-      <button class="btn btn-copy" onclick="copyLink()">Copy Link</button>
-      <button class="btn btn-whatsapp" onclick="shareWhatsApp()">Share on WhatsApp</button>
+      
+      <div class="btn-row"> <!-- NEW WRAPPER -->
+        <button class="btn btn-copy" onclick="copyLink()">Copy Link</button>
+        <button class="btn btn-whatsapp" onclick="shareWhatsApp()">WhatsApp</button> <!-- CHANGED TEXT -->
+      </div>
     </div>
 
     <div class="referrals-card">
@@ -67,7 +73,7 @@
       const doc = await db.collection("users").doc(user.uid).get();
       if(doc.exists){
         const data = doc.data();
-        const code = data.referralCode; // This will be "Manzi"
+        const code = data.referralCode;
         myLink = `https://perlan75.github.io/reward-platform/reg.html?ref=${code}`;
         document.getElementById('referralLink').innerText = myLink;
         document.getElementById('totalReferred').innerText = data.referralCount || 0;
