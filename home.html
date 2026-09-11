@@ -429,12 +429,14 @@
       if (doc.exists) {
         const data = doc.data();
         localStorage.setItem('userData', JSON.stringify(data));
-        loadData(); // only call this once
+        document.getElementById('headerText').innerText = data.username || "User";
+        loadData();
       }
     } else {
       window.location.replace('./index.html');
     }
   });
+
   window.logout = async function() {
     try { await auth.signOut(); } catch(e) {}
     localStorage.clear();
