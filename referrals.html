@@ -1,31 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Register - Rewards</title>
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
+  <title>Refer & Earn</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { background: #0f1508; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-.container { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 30px 25px; width: 100%; max-width: 420px; color: white; }
-    h1 { text-align: center; font-size: 32px; margin-bottom: 5px; color: #fff; }
-.subtitle { text-align: center; color: #fbbf24; margin-bottom: 20px; font-size: 14px; }
-.ref-banner { background: #0f6b4f; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; }
-    label { font-size: 14px; color: #ccc; margin-top: 12px; display: block; margin-bottom: 5px; }
-.input-box { width: 100%; padding: 14px; margin-bottom: 10px; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
-.input-box:focus { border-color: #fbbf24; }
-.input-group { display: flex; gap: 8px; }
-.verify-btn { background: #2563eb; color: white; padding: 14px 16px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
-.code-box { background: #001a00; border: 2px dashed #22c55e; color: #22c55e; text-align: center; font-weight: bold; letter-spacing: 3px; }
-.btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
-.btn:disabled { background: #444; color: #888; cursor: not-allowed; }
-.note { text-align: center; margin-top: 15px; font-size: 14px; color: #aaa; }
-.note a { color: #60a5fa; text-decoration: none; font-weight: bold; }
-.error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; }
-.success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
-.back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
+    body { background: #0f1508; min-height: 100vh; padding: 20px; color: white; }
+    .container { max-width: 500px; margin: 0 auto; }
+    .header { text-align: center; margin: 20px 0 30px 0; }
+    .header h2 { font-size: 28px; font-weight: bold; color: #fbbf24; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .stats-card { background: #1a2410; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
+    .stat-row { display: flex; justify-content: space-between; margin: 10px 0; font-size: 15px; }
+    .stat-row .value { color: #fbbf24; font-weight: bold; }
+    .link-card { background: #1a2410; border: 2px solid #fbbf24; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
+    .link-label { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: bold; margin-bottom: 12px; }
+    .link-box { background: #000; border: 1px dashed #555; border-radius: 10px; padding: 12px; font-size: 13px; word-break: break-all; margin-bottom: 15px; }
+    .btn-row { display: flex; gap: 10px; }
+    .btn { padding: 14px; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-bottom: 10px; }
+    .btn-copy { width: 40%; background: #fbbf24; color: #000; }
+    .btn-whatsapp { flex: 1; background: #22c55e; color: #000; }
+    .referrals-card { background: #1a2410; border-radius: 15px; padding: 20px; }
+    .referral-item { display: flex; justify-content: space-between; background: #000; padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 14px; }
+    .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
+    .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #22c55e; color: white; padding: 14px 20px; border-radius: 12px; font-weight: bold; z-index: 9999; }
   </style>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -34,35 +31,28 @@
 </head>
 <body>
   <div class="container">
-    <h1>Register</h1>
-    <div class="subtitle">🐒 From Nothing to Something 🍇</div>
-
-    <div class="ref-banner" id="refBanner" style="display:none;">Invited by: <span id="refName"></span></div>
-
-    <label>Username</label>
-    <input type="text" class="input-box" id="username" placeholder="Choose username" oninput="formatUsername()">
-
-    <label>Email</label>
-    <div class="input-group">
-      <input type="email" class="input-box" id="email" placeholder="your@email.com" style="margin-bottom:0;">
-      <button class="verify-btn" onclick="sendCode()">Verify</button>
+    <div class="header"><h2>💰 Refer & Earn</h2></div>
+    
+    <div class="stats-card">
+      <div class="stat-row"><span>Total Referred</span><span class="value" id="totalReferred">0</span></div>
+      <div class="stat-row"><span>Points Earned</span><span class="value" id="pointsEarned">0 pts</span></div>
     </div>
 
-    <input type="text" class="input-box code-box" id="generatedCode" placeholder="Your code will appear here" readonly style="display:none;">
-    <input type="text" class="input-box" id="code" placeholder="Enter 6 digit code">
-    <div class="success" id="verifiedMsg" style="display:none;">✓ Email Verified</div>
+    <div class="link-card">
+      <div class="link-label">🔗 Your Referral Link</div>
+      <div class="link-box" id="referralLink">Loading...</div>
+      <div class="btn-row">
+        <button class="btn btn-copy" onclick="copyLink()">Copy Link</button>
+        <button class="btn btn-whatsapp" onclick="shareWhatsApp()">WhatsApp</button>
+      </div>
+    </div>
 
-    <label>Password</label>
-    <input type="password" class="input-box" id="password" placeholder="Min 5 chars, 1A, 1#, 1number">
+    <div class="referrals-card">
+      <div class="link-label">👥 Your Referrals</div>
+      <div id="referralsList" style="color:#aaa; font-size:14px;">Loading...</div>
+    </div>
 
-    <button class="btn" id="createBtn" onclick="createAccount()">Create Account</button>
-
-    <div class="error" id="errorMsg"></div>
-    <div class="success" id="successMsg"></div>
-
-    <div class="note">Already have account? <a href="./index.html">Login Here</a></div>
-
-    <button class="back-btn" onclick="window.location.href='./index.html'">Back</button>
+    <button class="back-btn" onclick="window.location.href='./home.html'">Back</button>
   </div>
 
 <script>
@@ -75,139 +65,75 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  let referredByCode = null;
-  let isVerified = false;
-  let currentCode = "";
+  let myLink = "";
+  let myUsername = "";
 
-  const urlParams = new URLSearchParams(window.location.search);
-  referredByCode = urlParams.get('ref');
-  if(referredByCode){
-    document.getElementById('refBanner').style.display = 'block';
-    document.getElementById('refName').innerText = referredByCode;
+  function generateCode(username) {
+    return username.toLowerCase().replace(/\s+/g, '') + Math.floor(Math.random() * 9000 + 1000);
   }
 
-  window.formatUsername = function(){
-    let val = document.getElementById('username').value;
-    val = val.replace(/[^a-zA-Z]/g, '');
-    val = val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
-    document.getElementById('username').value = val;
-  }
+  auth.onAuthStateChanged(async (user) => {
+    if(user){
+      const docRef = db.collection("users").doc(user.uid);
+      const doc = await docRef.get();
+      if(doc.exists){
+        const data = doc.data();
+        myUsername = data.username;
 
-  window.sendCode = function(){
-    const email = document.getElementById('email').value.trim();
-    if(!email){ alert("Enter email first"); return; }
-    currentCode = Math.floor(100000 + Math.random() * 900000).toString();
-    document.getElementById('generatedCode').value = currentCode;
-    document.getElementById('generatedCode').style.display = 'block';
-    showToast("Code: " + currentCode + " - Copy it");
-  }
-
-  document.getElementById('code').addEventListener('input', function(){
-    if(this.value === currentCode && currentCode!== ""){
-      isVerified = true;
-      document.getElementById('verifiedMsg').style.display = 'block';
-    } else {
-      isVerified = false;
-      document.getElementById('verifiedMsg').style.display = 'none';
-    }
-  })
-
-  function validatePassword(password){
-    if(password.length < 5 || password.length > 10) return "Password must be 5-10 characters";
-    if(!/[A-Z]/.test(password)) return "Password needs at least 1 capital letter";
-    if(!/[0-9]/.test(password)) return "Password needs at least 1 number";
-    if(!/[!@#$%^&*(),.?":{}|<>]/.test(password)) return "Password needs at least 1 special character";
-    return null;
-  }
-
-  window.createAccount = async function() {
-    const username = document.getElementById('username').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-    const errorEl = document.getElementById('errorMsg');
-    const successEl = document.getElementById('successMsg');
-    const btn = document.getElementById('createBtn');
-
-    errorEl.innerText = '';
-    successEl.innerText = '';
-    btn.disabled = true;
-    btn.innerText = "Creating...";
-
-    if(!username ||!email ||!password){
-      errorEl.innerText = "Please fill all fields";
-      btn.disabled = false;
-      btn.innerText = "Create Account";
-      return;
-    }
-    if(!isVerified){
-      errorEl.innerText = "Please verify your email first";
-      btn.disabled = false;
-      btn.innerText = "Create Account";
-      return;
-    }
-
-    const passError = validatePassword(password);
-    if(passError){
-      errorEl.innerText = passError;
-      btn.disabled = false;
-      btn.innerText = "Create Account";
-      return;
-    }
-
-    try {
-      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-      const user = userCredential.user;
-      let referrerUsername = null;
-
-      if(referredByCode){
-        const refQuery = await db.collection("users").where("referralCode", "==", referredByCode).limit(1).get();
-        if(!refQuery.empty){
-          referrerUsername = refQuery.docs[0].data().username;
+        // 1. CREATE REFERRAL CODE IF MISSING
+        let code = data.referralCode;
+        if(!code){
+          code = generateCode(data.username);
+          await docRef.update({ referralCode: code });
         }
+
+        myLink = `https://perlan75.github.io/reward-platform/reg.html?ref=${code}`;
+        document.getElementById('referralLink').innerText = myLink;
+        document.getElementById('totalReferred').innerText = data.referralCount || 0;
+        document.getElementById('pointsEarned').innerText = (data.totalReferralEarnings || 0) + ' pts';
+        
+        loadReferrals(data.username);
       }
-
-      const userData = {
-        username: username,
-        email: email,
-        balance: 0,
-        usdt: 0, bnb: 0, xrp: 0, xlm: 0,
-        referralCode: null,
-        referredBy: referrerUsername,
-        referralCount: 0,
-        totalReferralEarnings: 0,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      };
-
-      await db.collection("users").doc(user.uid).set(userData);
-
-      if(referrerUsername){
-        const refQuery = await db.collection("users").where("username", "==", referrerUsername).limit(1).get();
-        refQuery.forEach(doc => {
-          doc.ref.update({
-            balance: firebase.firestore.FieldValue.increment(50),
-            referralCount: firebase.firestore.FieldValue.increment(1),
-            totalReferralEarnings: firebase.firestore.FieldValue.increment(50)
-          })
-        })
-      }
-
-      successEl.innerText = "Account created! Redirecting...";
-      setTimeout(() => { window.location.href = './home.html'; }, 1500);
-
-    } catch (error) {
-      errorEl.innerText = error.message;
-      btn.disabled = false;
-      btn.innerText = "Create Account";
-      console.log(error);
+    } else {
+      window.location.replace('./index.html');
     }
+  });
+
+  // 2. LOAD PEOPLE WHO USED THIS USER'S LINK
+  async function loadReferrals(username) {
+    const snapshot = await db.collection("users").where("referredBy", "==", username).get();
+    const listEl = document.getElementById('referralsList');
+    if(snapshot.empty){
+      listEl.innerHTML = 'No referrals yet';
+      return;
+    }
+    let html = '';
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      html += `<div class="referral-item">
+        <span>${d.username}</span>
+        <span style="color:#22c55e;">+50 pts</span>
+      </div>`;
+    })
+    listEl.innerHTML = html;
+  }
+
+  window.copyLink = function(){
+    navigator.clipboard.writeText(myLink);
+    showToast("Link Copied!");
+  }
+
+  window.shareWhatsApp = function(){
+    const msg = `Join me on Rewards and earn points! Use my link: ${myLink}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
   function showToast(msg) {
     const toast = document.createElement('div');
-    toast.style = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#22c55e;color:white;padding:14px 20px;border-radius:12px;font-weight:bold;z-index:9999;';
+    toast.className = 'toast';
     toast.innerText = msg;
     document.body.appendChild(toast);
-    setTimeout(() => { toast.remove(); }, 3000);
+    setTimeout(() => { toast.remove(); }, 2000);
   }
 </script>
 </body>
