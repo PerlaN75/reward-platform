@@ -9,7 +9,7 @@
     .container { max-width: 500px; margin: 0 auto; }
     .header { text-align: center; margin: 20px 0; color: #fbbf24; font-size: 28px; font-weight: bold; }
     .video-card { background: #1a2410; border: 2px solid #fbbf24; border-radius: 15px; padding: 20px; text-align: center; }
-    .video-frame { width: 100%; height: 220px; background: #000; border-radius: 10px; margin-bottom: 15px; }
+    #player { width: 100%; height: 220px; background: #000; border-radius: 10px; margin-bottom: 15px; }
     .btn { width: 100%; padding: 15px; background: #ef4444; color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
     .btn:disabled { background: #444; color: #888; }
     .timer { font-size: 20px; font-weight: bold; color: #22c55e; margin: 10px 0; }
@@ -19,16 +19,17 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
   <div class="container">
     <div class="header">📺 Watch & Earn</div>
     <div class="video-card">
       <div id="status">Loading video...</div>
-      <iframe id="videoFrame" class="video-frame" src="" frameborder="0" allowfullscreen style="display:none;"></iframe>
-      <div class="timer" id="timer"></div>
-      <button class="btn" id="watchBtn" onclick="startWatch()" style="display:none;">Watch Video +5 pts</button>
-      <p style="font-size:12px;color:#aaa;margin-top:10px;">Watch full 30s to earn. 1 video per hour.</p>
+      <div id="player"></div>
+      <div class="timer" id="timer">Watch for 30s</div>
+      <button class="btn" id="claimBtn" onclick="rewardUser()" style="display:none;">Claim +5 Points</button>
+      <p style="font-size:12px;color:#aaa;margin-top:10px;">Press PLAY and watch full 30s. 1 video per hour.</p>
     </div>
     <button class="back-btn" onclick="window.location.href='./home.html'">Back</button>
   </div>
@@ -38,57 +39,104 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // ADD YOUR AD/YOUTUBE VIDEO LINKS HERE
+  // ADD YOUR YOUTUBE VIDEO IDS HERE. Not full link, just ID
   const videos = [
-    "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    "https://www.youtube.com/embed/9bZkp7q19f0",
+    "dQw4w9WgXcQ",
+    "9bZkp7q19f0",
   ];
+  
+  let player;
   let timerInterval;
-  let seconds = 30;
+  let secondsWatched = 0;
+  let started = false;
+  let currentUser = null;
 
+  // 1. Check cooldown
   auth.onAuthStateChanged(async (user) => {
     if(!user) return window.location.replace('./index.html');
+    currentUser = user;
     const doc = await db.collection("users").doc(user.uid).get();
-    const lastWatch = doc.data().lastWatchTime?.toDate();
+    const data = doc.data();
+    const lastWatch = data.lastWatchTime?.toDate();
     const now = new Date();
     
     if(lastWatch && (now - lastWatch) < 3600000){
       const wait = Math.ceil((3600000 - (now - lastWatch)) / 60000);
       document.getElementById('status').innerText = `Come back in ${wait} minutes`;
+      document.getElementById('player').style.display = 'none';
       return;
     }
-    document.getElementById('status').innerText = "Ready to watch!";
-    document.getElementById('watchBtn').style.display = 'block';
+    document.getElementById('status').innerText = "Press PLAY to start earning";
   });
 
-  window.startWatch = function(){
+  // 2. Load random youtube video
+  function onYouTubeIframeAPIReady() {
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
-    document.getElementById('videoFrame').src = randomVideo;
-    document.getElementById('videoFrame').style.display = 'block';
-    document.getElementById('watchBtn').style.display = 'none';
-    document.getElementById('status').innerText = "Watch full 30 seconds...";
-    
+    player = new YT.Player('player', {
+      height: '220',
+      width: '100%',
+      videoId: randomVideo,
+      playerVars: { 'controls': 1, 'rel': 0 },
+      events: {
+        'onStateChange': onPlayerStateChange
+      }
+    });
+  }
+
+  // 3. Timer only starts on PLAY
+  function onPlayerStateChange(event) {
+    if (event.data == YT.PlayerState.PLAYING && !started) {
+      started = true;
+      document.getElementById('status').innerText = "Watching... Do not skip";
+      startTimer();
+    }
+    if (event.data == YT.PlayerState.PAUSED) {
+      document.getElementById('status').innerText = "Paused. Resume to continue";
+      clearInterval(timerInterval);
+    }
+  }
+
+  function startTimer(){
     timerInterval = setInterval(() => {
-      seconds--;
-      document.getElementById('timer').innerText = `00:${seconds < 10 ? '0' : ''}${seconds}`;
-      if(seconds <= 0){
+      secondsWatched++;
+      document.getElementById('timer').innerText = `Watched: ${secondsWatched}s / 30s`;
+      if(secondsWatched >= 30){
         clearInterval(timerInterval);
-        rewardUser();
+        player.stopVideo();
+        document.getElementById('status').innerText = "Done! Claim your reward";
+        document.getElementById('claimBtn').style.display = 'block';
+        document.getElementById('timer').style.color = '#22c55e';
       }
     }, 1000);
   }
 
-  async function rewardUser(){
-    const user = auth.currentUser;
-    await db.collection("users").doc(user.uid).update({
+  // 4. Claim reward
+  window.rewardUser = async function(){
+    if(!currentUser) return;
+    document.getElementById('claimBtn').disabled = true;
+    const userRef = db.collection("users").doc(currentUser.uid);
+    
+    await userRef.update({
       balance: firebase.firestore.FieldValue.increment(5),
       lastWatchTime: firebase.firestore.FieldValue.serverTimestamp()
     })
+
+    const cached = JSON.parse(localStorage.getItem('userData') || '{}');
+    cached.balance = (cached.balance || 0) + 5;
+    cached.lastWatchTime = new Date().toISOString();
+    localStorage.setItem('userData', JSON.stringify(cached));
+
     showToast("+5 points added!");
-    setTimeout(() => { window.location.reload(); }, 2000);
+    setTimeout(() => { window.location.href = './home.html'; }, 2000);
   }
 
-  function showToast(msg) { const toast = document.createElement('div'); toast.className = 'toast'; toast.innerText = msg; document.body.appendChild(toast); setTimeout(() => { toast.remove(); }, 2000); }
+  function showToast(msg) { 
+    const toast = document.createElement('div'); 
+    toast.className = 'toast'; 
+    toast.innerText = msg; 
+    document.body.appendChild(toast); 
+    setTimeout(() => { toast.remove(); }, 2000); 
+  }
 </script>
 </body>
 </html>
