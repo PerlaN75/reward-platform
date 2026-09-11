@@ -15,16 +15,19 @@
     .link-card { background: #1a2410; border: 2px solid #fbbf24; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
     .link-label { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: bold; margin-bottom: 12px; }
     .link-box { background: #000; border: 1px dashed #555; border-radius: 10px; padding: 12px; font-size: 13px; word-break: break-all; margin-bottom: 15px; }
-    
-    .btn-row { display: flex; gap: 10px; } /* NEW: put buttons side by side */
+    .btn-row { display: flex; gap: 10px; }
     .btn { padding: 14px; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-bottom: 10px; }
-    .btn-copy { width: 40%; background: #fbbf24; color: #000; } /* NEW: 40% width, left */
-    .btn-whatsapp { flex: 1; background: #22c55e; color: #000; } /* NEW: green bg, black text */
-    
+    .btn-copy { width: 40%; background: #fbbf24; color: #000; }
+    .btn-whatsapp { flex: 1; background: #22c55e; color: #000; }
     .referrals-card { background: #1a2410; border-radius: 15px; padding: 20px; }
+    .referral-item { display: flex; justify-content: space-between; background: #000; padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 14px; }
     .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
     .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #22c55e; color: white; padding: 14px 20px; border-radius: 12px; font-weight: bold; z-index: 9999; }
   </style>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
   <div class="container">
@@ -38,24 +41,20 @@
     <div class="link-card">
       <div class="link-label">🔗 Your Referral Link</div>
       <div class="link-box" id="referralLink">Loading...</div>
-      
-      <div class="btn-row"> <!-- NEW WRAPPER -->
+      <div class="btn-row">
         <button class="btn btn-copy" onclick="copyLink()">Copy Link</button>
-        <button class="btn btn-whatsapp" onclick="shareWhatsApp()">WhatsApp</button> <!-- CHANGED TEXT -->
+        <button class="btn btn-whatsapp" onclick="shareWhatsApp()">WhatsApp</button>
       </div>
     </div>
 
     <div class="referrals-card">
       <div class="link-label">👥 Your Referrals</div>
-      <div id="referralsList" style="color:#aaa; font-size:14px;">No referrals yet</div>
+      <div id="referralsList" style="color:#aaa; font-size:14px;">Loading...</div>
     </div>
 
     <button class="back-btn" onclick="window.location.href='./home.html'">Back</button>
   </div>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
@@ -67,22 +66,57 @@
   const db = firebase.firestore();
 
   let myLink = "";
+  let myUsername = "";
+
+  function generateCode(username) {
+    return username.toLowerCase().replace(/\s+/g, '') + Math.floor(Math.random() * 9000 + 1000);
+  }
 
   auth.onAuthStateChanged(async (user) => {
     if(user){
-      const doc = await db.collection("users").doc(user.uid).get();
+      const docRef = db.collection("users").doc(user.uid);
+      const doc = await docRef.get();
       if(doc.exists){
         const data = doc.data();
-        const code = data.referralCode;
+        myUsername = data.username;
+
+        // 1. CREATE REFERRAL CODE IF MISSING
+        let code = data.referralCode;
+        if(!code){
+          code = generateCode(data.username);
+          await docRef.update({ referralCode: code });
+        }
+
         myLink = `https://perlan75.github.io/reward-platform/reg.html?ref=${code}`;
         document.getElementById('referralLink').innerText = myLink;
         document.getElementById('totalReferred').innerText = data.referralCount || 0;
         document.getElementById('pointsEarned').innerText = (data.totalReferralEarnings || 0) + ' pts';
+        
+        loadReferrals(data.username);
       }
     } else {
       window.location.replace('./index.html');
     }
   });
+
+  // 2. LOAD PEOPLE WHO USED THIS USER'S LINK
+  async function loadReferrals(username) {
+    const snapshot = await db.collection("users").where("referredBy", "==", username).get();
+    const listEl = document.getElementById('referralsList');
+    if(snapshot.empty){
+      listEl.innerHTML = 'No referrals yet';
+      return;
+    }
+    let html = '';
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      html += `<div class="referral-item">
+        <span>${d.username}</span>
+        <span style="color:#22c55e;">+50 pts</span>
+      </div>`;
+    })
+    listEl.innerHTML = html;
+  }
 
   window.copyLink = function(){
     navigator.clipboard.writeText(myLink);
@@ -90,7 +124,7 @@
   }
 
   window.shareWhatsApp = function(){
-    const msg = `Join me and earn points! Use my link: ${myLink}`;
+    const msg = `Join me on Rewards and earn points! Use my link: ${myLink}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
