@@ -18,7 +18,7 @@
 .menu-btn { background: linear-gradient(180deg, #ffffff, #e8e8e8); color: #000; border: none; border-radius: 15px; padding: 20px 10px; font-size: 15px; font-weight: bold; cursor: pointer; text-align: center; box-shadow: 0 6px 0 #bbbbbb, 0 8px 15px rgba(0,0,0,0.3); transition: all 0.1s ease; display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .menu-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #bbbbbb; }
 .menu-btn.emoji { font-size: 40px; }
-.logout-btn { width: 40%; height: 52px; margin: 20px auto 0 auto; display: block; padding: 0; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; } /* UPDATED: width 40% + height */
+.logout-btn { width: 40%; height: 52px; margin: 20px auto 0 auto; display: block; padding: 0; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; }
 .logout-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #d97706; }
 .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
 .modal-content { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 18px; width: 100%; max-width: 420px; color: white; max-height: 95vh; overflow-y: auto; position: relative; }
@@ -54,7 +54,6 @@
 .checkin-card p { font-size: 14px; color: #ccc; margin-bottom: 12px; }
 .countdown { font-size: 18px; color: #fbbf24; font-weight: bold; margin-top: 8px; text-align: center; }
 .success-msg { background: #1a2e1a; border: 1px solid #22c55e; color: #22c55e; padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 14px; display: none; text-align: center; }
-
 .custom-select { position: relative; margin: 8px 0; }
 .select-selected { background: #000; border: 2px solid #444; border-radius: 10px; padding: 12px; color: white; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 14px; position: relative; }
 .select-selected:after { content: ""; position: absolute; right: 12px; top: 16px; border: 6px solid transparent; border-color: #fbbf24 transparent; }
@@ -63,7 +62,6 @@
 .select-items div:last-child { border-bottom: none; }
 .select-items div:hover { background: #2f3e1a; }
 .select-items div.active { background: #fbbf24; color: #000; font-weight: bold; }
-
 .gift-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
 .gift-box { background: #1a2410; border: 2px solid #fbbf24; border-radius: 15px; font-size: 55px; text-align: center; padding: 15px 0; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
 .gift-box:hover { transform: scale(1.05); border-color: #f59e0b; }
@@ -72,20 +70,10 @@
 @keyframes burst { 0% { transform: scale(1); } 50% { transform: scale(1.3) rotate(10deg); } 100% { transform: scale(1); } }
 .gift-points { font-size: 14px; color: #22c55e; font-weight: bold; margin-top: 4px; }
 .gift-history { background: #000; padding: 10px; border-radius: 10px; font-size: 13px; margin-top: 10px; text-align: center; }
-
 .gift-result-popup {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #000;
-  border: 3px solid #fbbf24;
-  border-radius: 20px;
-  padding: 25px 30px;
-  text-align: center;
-  z-index: 1000;
-  display: none;
-  animation: popupIn 0.4s ease;
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: #000; border: 3px solid #fbbf24; border-radius: 20px; padding: 25px 30px;
+  text-align: center; z-index: 1000; display: none; animation: popupIn 0.4s ease;
   box-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
 }
 @keyframes popupIn { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
@@ -101,12 +89,12 @@
 <body>
   <div class="container">
     <div class="header">
-      <h2>Welcome, <span id="headerText">Amina</span></h2> <!-- REMOVED "Welcome user" -->
+      <h2><span id="headerText"></span></h2> <!-- BLANK: will be filled instantly from cache -->
     </div>
     <div class="balance-card">
       <div class="label">Your Balance</div>
-      <div class="amount" id="balance"></div>
-      <div class="usd" id="usdBalance"></div>
+      <div class="amount" id="balance">0 points</div>
+      <div class="usd" id="usdBalance">≈ $0.00 USD</div>
     </div>
     <div class="menu-grid">
       <button class="menu-btn" onclick="openWallet()"><span class="emoji">💰</span>Wallet</button>
@@ -226,13 +214,18 @@
   let giftCountdownInterval = null;
   let userData = {};
 
-  function loadData() {
-    userData = JSON.parse(localStorage.getItem('userData') || '{}');
-    document.getElementById('headerText').innerText = userData.username || "User";
-    document.getElementById('balance').innerText = (userData.balance || 0) + ' points';
-    document.getElementById('usdBalance').innerText = `≈ $${((userData.balance || 0) * POINT_RATE).toFixed(2)} USD`;
+  function loadData(data) {
+    userData = data;
+    document.getElementById('headerText').innerText = `Welcome, ${data.username}`;
+    document.getElementById('balance').innerText = (data.balance || 0) + ' points';
+    document.getElementById('usdBalance').innerText = `≈ $${((data.balance || 0) * POINT_RATE).toFixed(2)} USD`;
   }
-  loadData();
+
+  // STEP 1: SHOW CACHED DATA INSTANTLY
+  const cachedData = JSON.parse(localStorage.getItem('userData') || '{}');
+  if(cachedData.username){
+    loadData(cachedData);
+  }
 
   // WALLET
   window.openWallet = async function() {
@@ -324,7 +317,7 @@
     userData.balance = (userData.balance || 0) + DAILY_REWARD;
     userData.lastCheckin = today;
     localStorage.setItem('userData', JSON.stringify(userData));
-    loadData();
+    loadData(userData);
     document.getElementById('successMsg').style.display = 'block';
     checkClaimStatus();
     if(currentUser) db.collection("users").doc(currentUser.uid).update({balance: userData.balance, lastCheckin: today});
@@ -393,7 +386,7 @@
     userData.lastGiftClaim = getToday();
     userData.lastGiftPoints = points;
     localStorage.setItem('userData', JSON.stringify(userData));
-    loadData();
+    loadData(userData);
     const popup = document.getElementById('giftResultPopup');
     document.getElementById('resultEmoji').innerText = points === 0? '💀' : '🎉';
     document.getElementById('resultPoints').innerText = `${points} points`;
@@ -422,19 +415,22 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
+  // STEP 2: CONFIRM WITH FIREBASE IN BACKGROUND
   auth.onAuthStateChanged(async (user) => {
     if (user) {
       currentUser = user;
       const doc = await db.collection("users").doc(user.uid).get();
       if (doc.exists) {
         const data = doc.data();
-        localStorage.setItem('userData', JSON.stringify(data));
-        loadData(); // only call this once
+        localStorage.setItem('userData', JSON.stringify(data)); // update cache
+        loadData(data); // confirm with real data
       }
     } else {
+      localStorage.clear();
       window.location.replace('./index.html');
     }
   });
+
   window.logout = async function() {
     try { await auth.signOut(); } catch(e) {}
     localStorage.clear();
