@@ -22,31 +22,27 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
   
-  <!-- CRITICAL: DECIDE BEFORE BODY RENDERS -->
   <script>
     const COOLDOWN = 3600000;
     const cached = JSON.parse(localStorage.getItem('userData') || '{}');
     const lastWatch = cached.lastWatchTime? new Date(cached.lastWatchTime) : null;
     const now = new Date();
-    const onCooldown = lastWatch && (now - lastWatch) < COOLDOWN;
-    const leftMs = onCooldown ? COOLDOWN - (now - lastWatch) : 0;
-    
-    // Write the correct class directly so browser never shows wrong card
-    document.write(`<style>#cooldownCard{display:${onCooldown?'block':'none'}}#watchCard{display:${onCooldown?'none':'block'}}</style>`);
+    window.onCooldown = lastWatch && (now - lastWatch) < COOLDOWN; // make it global
+    window.leftMs = window.onCooldown ? COOLDOWN - (now - lastWatch) : 0;
   </script>
 </head>
 <body>
   <div class="container">
     <div class="header">📺 Watch & Earn</div>
     
-    <div class="video-card" id="cooldownCard">
+    <div class="video-card" id="cooldownCard" style="display:none">
       <div class="cooldown-text" id="cooldownText"></div>
       <p style="font-size:12px;color:#aaa;margin-top:10px;">1 video per hour.</p>
     </div>
 
-    <div class="video-card" id="watchCard">
+    <div class="video-card" id="watchCard" style="display:none">
       <div id="status">Press PLAY to start earning</div>
-      <div id="player"></div>
+      <div id="playerContainer"></div> <!-- EMPTY CONTAINER -->
       <div class="timer" id="timer">Watch for 30s</div>
       <button class="btn" id="claimBtn" onclick="rewardUser()" style="display:none;">Claim +5 Points</button>
       <p style="font-size:12px;color:#aaa;margin-top:10px;">Press PLAY and watch full 30s. 1 video per hour.</p>
@@ -64,14 +60,18 @@
   let player, timerInterval, cooldownInterval;
   let secondsWatched = 0, started = false, currentUser = null;
 
-  // INSTANT COUNTDOWN ON LOAD
-  if(onCooldown){
-    const minutes = Math.floor(leftMs / 60000);
-    const seconds = Math.floor((leftMs % 60000) / 1000);
+  // INSTANT RENDER DECISION
+  if(window.onCooldown){
+    document.getElementById('cooldownCard').style.display = 'block';
+    const minutes = Math.floor(window.leftMs / 60000);
+    const seconds = Math.floor((window.leftMs % 60000) / 1000);
     document.getElementById('cooldownText').innerText = `Come back in ${minutes}m ${seconds}s`;
-    startCooldownTimer(leftMs);
+    startCooldownTimer(window.leftMs);
   } else {
-    loadYouTubeAPI(); // Only load YT if not on cooldown
+    document.getElementById('watchCard').style.display = 'block';
+    // ONLY NOW inject the player div
+    document.getElementById('playerContainer').innerHTML = `<div id="player"></div>`;
+    loadYouTubeAPI();
   }
 
   function startCooldownTimer(msLeft) {
@@ -171,7 +171,6 @@
     if(!user) return window.location.replace('./index.html');
     currentUser = user;
 
-    // Firestore security double-check
     const userDoc = await db.collection("users").doc(currentUser.uid).get();
     const data = userDoc.data();
     const lastWatchDB = data?.lastWatchTime?.toDate();
