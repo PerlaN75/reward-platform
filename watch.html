@@ -21,15 +21,14 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <!-- DO NOT LOAD YT API HERE -->
 </head>
 <body>
   <div class="container">
     <div class="header">📺 Watch & Earn</div>
     
-    <div class="video-card" id="cooldownCard">
-      <div class="cooldown-text" id="cooldownText">Checking...</div>
-      <p style="font-size:12px;color:#aaa;margin-top:10px;">Press PLAY and watch full 30s. 1 video per hour.</p>
+    <div class="video-card hidden" id="cooldownCard">
+      <div class="cooldown-text" id="cooldownText"></div>
+      <p style="font-size:12px;color:#aaa;margin-top:10px;">1 video per hour.</p>
     </div>
 
     <div class="video-card hidden" id="watchCard">
@@ -53,52 +52,44 @@
   let secondsWatched = 0, started = false, currentUser = null;
   const COOLDOWN = 3600000;
 
-  // STEP 1: INSTANT CHECK FROM LOCALSTORAGE
-  function instantCheck(){
+  // RUNS IMMEDIATELY - NO "CHECKING"
+  (function instantCheck(){
     const cached = JSON.parse(localStorage.getItem('userData') || '{}');
     const lastWatch = cached.lastWatchTime? new Date(cached.lastWatchTime) : null;
     const now = new Date();
     
     if(lastWatch && (now - lastWatch) < COOLDOWN){
       const leftMs = COOLDOWN - (now - lastWatch);
-      showCooldown(leftMs);
-      return false; // on cooldown
-    } 
-    return true; // can watch
-  }
-
-  function showCooldown(msLeft){
-    document.getElementById('cooldownText').innerText = `Come back in ${Math.ceil(msLeft / 60000)} minutes`;
-    document.getElementById('cooldownCard').classList.remove('hidden');
-    document.getElementById('watchCard').classList.add('hidden');
-    startCooldownTimer(msLeft);
-  }
-
-  function showWatchScreen(){
-    document.getElementById('cooldownCard').classList.add('hidden');
-    document.getElementById('watchCard').classList.remove('hidden');
-    loadYouTubeAPI(); // ONLY load YT now
-  }
+      const minutes = Math.floor(leftMs / 60000);
+      const seconds = Math.floor((leftMs % 60000) / 1000);
+      document.getElementById('cooldownText').innerText = `Come back in ${minutes}m ${seconds}s`;
+      document.getElementById('cooldownCard').classList.remove('hidden');
+      startCooldownTimer(leftMs);
+    } else {
+      document.getElementById('watchCard').classList.remove('hidden');
+      loadYouTubeAPI();
+    }
+  })();
 
   function startCooldownTimer(msLeft) {
     clearInterval(cooldownInterval);
     cooldownInterval = setInterval(() => {
-      msLeft -= 60000;
+      msLeft -= 1000;
       if(msLeft <= 0){
         clearInterval(cooldownInterval);
         location.reload();
         return;
       }
-      document.getElementById('cooldownText').innerText = `Come back in ${Math.ceil(msLeft / 60000)} minutes`;
-    }, 60000);
+      const minutes = Math.floor(msLeft / 60000);
+      const seconds = Math.floor((msLeft % 60000) / 1000);
+      document.getElementById('cooldownText').innerText = `Come back in ${minutes}m ${seconds}s`;
+    }, 1000);
   }
 
-  // STEP 2: DYNAMICALLY LOAD YOUTUBE ONLY IF NEEDED
   function loadYouTubeAPI(){
     const tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    document.head.appendChild(tag);
   }
 
   window.onYouTubeIframeAPIReady = function() {
@@ -173,23 +164,24 @@
     setTimeout(() => { toast.remove(); }, 2000); 
   }
 
-  // MAIN FLOW
   auth.onAuthStateChanged(async (user) => {
     if(!user) return window.location.replace('./index.html');
     currentUser = user;
 
-    const canWatch = instantCheck(); // 0ms check
-
-    // Double check with Firestore in background
+    // Firestore security check in background
     const userDoc = await db.collection("users").doc(currentUser.uid).get();
     const data = userDoc.data();
     const lastWatchDB = data?.lastWatchTime?.toDate();
     const now = new Date();
     
     if(lastWatchDB && (now - lastWatchDB) < COOLDOWN){
-      showCooldown(COOLDOWN - (now - lastWatchDB));
-    } else if(canWatch){
-      showWatchScreen(); // Only now we load video
+      const leftMs = COOLDOWN - (now - lastWatchDB);
+      const minutes = Math.floor(leftMs / 60000);
+      const seconds = Math.floor((leftMs % 60000) / 1000);
+      document.getElementById('cooldownText').innerText = `Come back in ${minutes}m ${seconds}s`;
+      document.getElementById('cooldownCard').classList.remove('hidden');
+      document.getElementById('watchCard').classList.add('hidden');
+      startCooldownTimer(leftMs);
     }
   });
 </script>
