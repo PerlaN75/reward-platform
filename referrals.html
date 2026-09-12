@@ -62,6 +62,7 @@
 
   let myLink = "";
   let myUsername = "";
+  let loadedReferrals = []; // track to prevent double reward
 
   auth.onAuthStateChanged(async (user) => {
     if(user){
@@ -88,6 +89,20 @@
     let html = '';
     snapshot.forEach(doc => {
       const d = doc.data();
+      const refUsername = d.username;
+      
+      // NEW: Add to history only if this is a new referral
+      if(!loadedReferrals.includes(refUsername)){
+        loadedReferrals.push(refUsername);
+        
+        // Call history function from home.html if available
+        if(window.opener && window.opener.addReferralHistory) {
+          window.opener.addReferralHistory(refUsername); // +50 pts + history
+        } else if(window.addReferralHistory) {
+          window.addReferralHistory(refUsername); // if same tab
+        }
+      }
+
       html += `<div class="referral-item">
         <span>${d.username}</span>
         <span style="color:#22c55e;">+50 pts</span>
