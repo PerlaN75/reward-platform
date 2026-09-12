@@ -8,14 +8,14 @@
     body { background: #0f1508; min-height: 100vh; padding: 20px; color: white; }
     .container { max-width: 500px; margin: 0 auto; }
     .header { text-align: center; margin: 20px 0; color: #fbbf24; font-size: 28px; font-weight: bold; }
-    .card { background: #1a2410; border: 2px solid #fbbf24; border-radius: 15px; padding: 20px; text-align: center; }
+    .card { background: #1a2410; border: 2px solid #fbbf24; border-radius: 15px; padding: 20px; text-align: center; min-height: 250px; }
     #player { width: 100%; height: 220px; background: #000; border-radius: 10px; margin: 15px 0; }
     .btn { width: 100%; padding: 15px; background: #ef4444; color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
     .btn:disabled { background: #444; color: #888; }
     .timer { font-size: 22px; font-weight: bold; color: #22c55e; margin: 10px 0; }
     .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; }
     .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #22c55e; color: white; padding: 14px 20px; border-radius: 12px; font-weight: bold; z-index: 9999; }
-    .cooldown-text { font-size: 24px; color: #fbbf24; font-weight: bold; }
+    .cooldown-text { font-size: 26px; color: #fbbf24; font-weight: bold; }
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -24,11 +24,7 @@
 <body>
   <div class="container">
     <div class="header">📺 Watch & Earn</div>
-    
-    <div class="card" id="mainCard">
-      Loading...
-    </div>
-
+    <div class="card" id="mainCard">Loading...</div>
     <button class="back-btn" onclick="window.location.href='./home.html'">Back</button>
   </div>
 
@@ -38,20 +34,21 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  const COOLDOWN = 3600 * 1000; // 1 hour
+  const COOLDOWN = 60 * 60 * 1000; // 60 minutes
   const WATCH_TIME = 30; // seconds
   const REWARD = 5;
-  const videos = ["dQw4w9WgXcQ", "9bZkp7q19f0", "kJQP7kiw5Fk"]; // Add more here
+  const videos = ["dQw4w9WgXcQ", "9bZkp7q19f0", "kJQP7kiw5Fk", "L0MK7qz13bU"]; // add more
 
-  let player, watchInterval, currentUser, lastWatchTime = 0;
+  let player, watchInterval, currentUser;
 
-  // SINGLE RENDER FUNCTION
-  function renderCooldown(msLeft){
+  // 1. COOLDOWN SCREEN - ONLY THIS SHOWS FOR 60MIN
+  function showCooldown(msLeft){
     const m = Math.floor(msLeft / 60000);
     const s = Math.floor((msLeft % 60000) / 1000);
     document.getElementById('mainCard').innerHTML = `
       <div class="cooldown-text">Come back in ${m}m ${s}s</div>
-      <p style="font-size:12px;color:#aaa;margin-top:10px;">1 video per hour</p>
+      <p style="font-size:14px;color:#aaa;margin-top:15px;">No video available</p>
+      <p style="font-size:12px;color:#888;margin-top:5px;">1 video per hour</p>
     `;
     clearInterval(watchInterval);
     watchInterval = setInterval(() => {
@@ -63,25 +60,26 @@
     }, 1000);
   }
 
-  function renderWatchScreen(){
+  // 2. WATCH SCREEN - ONLY SHOWS IF OFF COOLDOWN
+  function showWatchScreen(){
     document.getElementById('mainCard').innerHTML = `
-      <div id="status">Press PLAY on video to start 30s timer</div>
+      <div id="status">Press PLAY to start ${WATCH_TIME}s timer</div>
       <div id="player"></div>
       <div class="timer" id="timer">Watch for ${WATCH_TIME}s</div>
       <button class="btn" id="claimBtn" style="display:none;">Claim +${REWARD} Points</button>
-      <p style="font-size:12px;color:#aaa;margin-top:10px;">Watch full ${WATCH_TIME}s without pausing</p>
     `;
     loadYouTube();
   }
 
-  // LOAD YOUTUBE ONLY WHEN NEEDED
   function loadYouTube(){
+    if(window.YT) return initPlayer();
     const tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
     document.head.appendChild(tag);
   }
 
-  window.onYouTubeIframeAPIReady = function() {
+  window.onYouTubeIframeAPIReady = initPlayer;
+  function initPlayer() {
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
     player = new YT.Player('player', {
       videoId: randomVideo,
@@ -90,17 +88,15 @@
     });
   }
 
-  let secondsWatched = 0;
+  let secondsWatched = 0, timerRunning = false;
   function onPlayerStateChange(e){
-    if(e.data == YT.PlayerState.PLAYING){
-      document.getElementById('status').innerText = "Watching... Do not pause or skip";
+    if(e.data == YT.PlayerState.PLAYING && !timerRunning){
+      timerRunning = true;
+      document.getElementById('status').innerText = "Watching... Do not pause";
       startWatchTimer();
     }
     if(e.data == YT.PlayerState.PAUSED){
       document.getElementById('status').innerText = "Paused. Resume to continue";
-      clearInterval(watchInterval);
-    }
-    if(e.data == YT.PlayerState.ENDED){
       clearInterval(watchInterval);
     }
   }
@@ -122,30 +118,27 @@
   }
 
   async function rewardUser(){
-    document.getElementById('claimBtn').disabled = true;
+    const btn = document.getElementById('claimBtn');
+    btn.disabled = true; btn.innerText = "Claiming...";
+    
     const userRef = db.collection("users").doc(currentUser.uid);
+    const serverTime = firebase.firestore.FieldValue.serverTimestamp();
     
     const batch = db.batch();
     batch.update(userRef, {
       balance: firebase.firestore.FieldValue.increment(REWARD),
-      lastWatchTime: firebase.firestore.FieldValue.serverTimestamp()
+      lastWatchTime: serverTime // THIS LOCKS IT FOR 60MIN
     });
     
     batch.set(userRef.collection("history").doc(), {
-      type: "Watch & Earn",
-      points: REWARD,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      type: "Watch & Earn", points: REWARD, timestamp: serverTime
     });
 
     await batch.commit();
-
-    // Update cache so refresh works instantly
-    const cached = JSON.parse(localStorage.getItem('userData') || '{}');
-    cached.lastWatchTime = new Date().toISOString();
-    localStorage.setItem('userData', JSON.stringify(cached));
-
     showToast(`+${REWARD} points added!`);
-    setTimeout(() => location.reload(), 1500); // reload to show cooldown
+    
+    // INSTANTLY SWITCH TO COOLDOWN - NO VIDEO ANYMORE
+    setTimeout(() => location.reload(), 1500);
   }
 
   function showToast(msg) { 
@@ -156,21 +149,19 @@
     setTimeout(() => t.remove(), 2000); 
   }
 
-  // MAIN: Check auth + cooldown from Firestore first
+  // MAIN CHECK - FIRESTORE IS SOURCE OF TRUTH
   auth.onAuthStateChanged(async (user) => {
     if(!user) return window.location.replace('./index.html');
     currentUser = user;
 
     const doc = await db.collection("users").doc(currentUser.uid).get();
-    const data = doc.data();
-    lastWatchTime = data?.lastWatchTime?.toDate()?.getTime() || 0;
-    const now = Date.now();
-    const timeSince = now - lastWatchTime;
+    const lastWatch = doc.data()?.lastWatchTime?.toDate()?.getTime() || 0;
+    const timeSince = Date.now() - lastWatch;
 
     if(timeSince < COOLDOWN){
-      renderCooldown(COOLDOWN - timeSince); // Show ONLY cooldown
+      showCooldown(COOLDOWN - timeSince); // LOCKED: No video
     } else {
-      renderWatchScreen(); // Show video
+      showWatchScreen(); // UNLOCKED: Show video
     }
   });
 </script>
