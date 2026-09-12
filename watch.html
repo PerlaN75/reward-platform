@@ -27,11 +27,13 @@
   <div class="container">
     <div class="header">📺 Watch & Earn</div>
     
+    <!-- COOLDOWN SCREEN - Rendered by default, hidden by JS if not needed -->
     <div class="video-card" id="cooldownCard">
       <div class="cooldown-text" id="cooldownText">Checking...</div>
       <p style="font-size:12px;color:#aaa;margin-top:10px;">Press PLAY and watch full 30s. 1 video per hour.</p>
     </div>
 
+    <!-- WATCH SCREEN - Hidden by default -->
     <div class="video-card hidden" id="watchCard">
       <div id="status">Press PLAY to start earning</div>
       <div id="player"></div>
@@ -53,7 +55,7 @@
   let secondsWatched = 0, started = false, currentUser = null;
   const COOLDOWN = 3600000; // 60 min
 
-  // INSTANT CHECK - RUNS IMMEDIATELY BEFORE FIREBASE
+  // INSTANT CHECK - RUNS IMMEDIATELY
   (function instantCheck(){
     const cached = JSON.parse(localStorage.getItem('userData') || '{}');
     const lastWatch = cached.lastWatchTime ? new Date(cached.lastWatchTime) : null;
@@ -65,7 +67,7 @@
       document.getElementById('cooldownText').innerText = `Come back in ${minutesLeft} minutes`;
       startCooldownTimer(leftMs);
     } else {
-      // Not on cooldown, show watch screen instantly
+      // Not on cooldown, show watch screen
       document.getElementById('cooldownCard').classList.add('hidden');
       document.getElementById('watchCard').classList.remove('hidden');
     }
@@ -89,7 +91,7 @@
     if(!user) return window.location.replace('./index.html');
     currentUser = user;
     
-    // Double check with Firestore for security
+    // Security double-check with Firestore
     const userDoc = await db.collection("users").doc(currentUser.uid).get();
     const data = userDoc.data();
     const lastWatchDB = data?.lastWatchTime?.toDate();
@@ -105,7 +107,9 @@
   });
 
   function onYouTubeIframeAPIReady() {
+    // Only load player if watchCard is visible
     if(document.getElementById('watchCard').classList.contains('hidden')) return;
+    
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
     player = new YT.Player('player', {
       height: '220', width: '100%', videoId: randomVideo,
@@ -161,7 +165,6 @@
 
     await batch.commit();
 
-    // Update localStorage instantly for next instant check
     const cached = JSON.parse(localStorage.getItem('userData') || '{}');
     cached.balance = (cached.balance || 0) + 5;
     cached.lastWatchTime = new Date().toISOString();
