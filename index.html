@@ -82,6 +82,13 @@
     font-size: 26px;
   }
 </style>
+
+<!-- ADDED: Firebase so we can auto-load if user is already logged in -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<!-- END ADDED -->
+
 </head>
 <body>
   
@@ -101,6 +108,41 @@
     <div class="icon-box">🏆</div>
     <div class="icon-box">🎁</div>
   </div>
+
+<script>
+// ADDED: This makes sure if Hirwa is already logged in, his data loads to localStorage
+const firebaseConfig = {
+  apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
+  authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
+  projectId: "reward-platform-rw-2e13d"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+async function loadUserToLocal(uid) {
+  const userDoc = await db.collection("users").doc(uid).get();
+  if(userDoc.exists){
+    const data = userDoc.data();
+    localStorage.setItem('username', data.username || 'Guest');
+    localStorage.setItem('email', data.email || '');
+    localStorage.setItem('points', (data.balance || 0).toString());
+    localStorage.setItem('referrals', (data.referralCount || 0).toString());
+    
+    let joined = data.createdAt ? data.createdAt.toDate() : new Date();
+    let joinedDate = joined.toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric'});
+    localStorage.setItem('dateJoined', joinedDate);
+  }
+}
+
+// If user is already logged in, load his data immediately
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    loadUserToLocal(user.uid);
+  }
+});
+// END ADDED
+</script>
 
 </body>
 </html>
