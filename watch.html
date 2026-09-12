@@ -27,13 +27,11 @@
   <div class="container">
     <div class="header">📺 Watch & Earn</div>
     
-    <!-- COOLDOWN SCREEN - Rendered by default, hidden by JS if not needed -->
     <div class="video-card" id="cooldownCard">
       <div class="cooldown-text" id="cooldownText">Checking...</div>
       <p style="font-size:12px;color:#aaa;margin-top:10px;">Press PLAY and watch full 30s. 1 video per hour.</p>
     </div>
 
-    <!-- WATCH SCREEN - Hidden by default -->
     <div class="video-card hidden" id="watchCard">
       <div id="status">Press PLAY to start earning</div>
       <div id="player"></div>
@@ -53,24 +51,33 @@
   const videos = ["dQw4w9WgXcQ","9bZkp7q19f0"];
   let player, timerInterval, cooldownInterval;
   let secondsWatched = 0, started = false, currentUser = null;
+  const COOLDOWN = 3600000; // 60 min
 
-  // INSTANT CHECK - RUNS IMMEDIATELY
-  (function instantCheck(){
-    const cached = JSON.parse(localStorage.getItem('userData') || '{}');
-    const lastWatch = cached.lastWatchTime ? new Date(cached.lastWatchTime) : null;
+  auth.onAuthStateChanged(async (user) => {
+    if(!user) return window.location.replace('./index.html');
+    currentUser = user;
+    await checkCooldownFromDB(); // Check Firestore first
+  });
+
+  async function checkCooldownFromDB() {
+    const userDoc = await db.collection("users").doc(currentUser.uid).get();
+    const data = userDoc.data();
+    const lastWatch = data?.lastWatchTime?.toDate(); // Firestore timestamp
     const now = new Date();
     
-    if(lastWatch && (now - lastWatch) < 3600000){
-      const leftMs = 3600000 - (now - lastWatch);
-      const minutesLeft = Math.ceil(leftMs / 60000);
-      document.getElementById('cooldownText').innerText = `Come back in ${minutesLeft} minutes`;
+    if(lastWatch && (now - lastWatch) < COOLDOWN){
+      const leftMs = COOLDOWN - (now - lastWatch);
+      document.getElementById('cooldownText').innerText = `Come back in ${Math.ceil(leftMs / 60000)} minutes`;
+      document.getElementById('cooldownCard').classList.remove('hidden');
+      document.getElementById('watchCard').classList.add('hidden');
       startCooldownTimer(leftMs);
     } else {
-      // Not on cooldown, show watch screen
+      // Not on cooldown
       document.getElementById('cooldownCard').classList.add('hidden');
       document.getElementById('watchCard').classList.remove('hidden');
+      loadPlayer();
     }
-  })();
+  }
 
   function startCooldownTimer(msLeft) {
     clearInterval(cooldownInterval);
@@ -81,18 +88,11 @@
         location.reload();
         return;
       }
-      const m = Math.ceil(msLeft / 60000);
-      document.getElementById('cooldownText').innerText = `Come back in ${m} minutes`;
+      document.getElementById('cooldownText').innerText = `Come back in ${Math.ceil(msLeft / 60000)} minutes`;
     }, 60000);
   }
 
-  auth.onAuthStateChanged(async (user) => {
-    if(!user) return window.location.replace('./index.html');
-    currentUser = user;
-  });
-
-  function onYouTubeIframeAPIReady() {
-    if(document.getElementById('watchCard').classList.contains('hidden')) return;
+  function loadPlayer() {
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
     player = new YT.Player('player', {
       height: '220', width: '100%', videoId: randomVideo,
@@ -115,6 +115,9 @@
 
   function startTimer(){
     timerInterval = setInterval(() => {
+      // Anti-cheat: make sure video is actually playing
+      if(player && player.getPlayerState() !== YT.PlayerState.PLAYING) return;
+      
       secondsWatched++;
       document.getElementById('timer').innerText = `Watched: ${secondsWatched}s / 30s`;
       if(secondsWatched >= 30){
@@ -131,15 +134,21 @@
     document.getElementById('claimBtn').disabled = true;
     const userRef = db.collection("users").doc(currentUser.uid);
     
-    await userRef.update({
+    const batch = db.batch();
+    batch.update(userRef, {
       balance: firebase.firestore.FieldValue.increment(5),
       lastWatchTime: firebase.firestore.FieldValue.serverTimestamp()
-    })
+    });
+    
+    // NEW: Save to history
+    const historyRef = db.collection("users").doc(currentUser.uid).collection("history").doc();
+    batch.set(historyRef, {
+      type: "Watch & Earn",
+      points: 5,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
 
-    const cached = JSON.parse(localStorage.getItem('userData') || '{}');
-    cached.balance = (cached.balance || 0) + 5;
-    cached.lastWatchTime = new Date().toISOString();
-    localStorage.setItem('userData', JSON.stringify(cached));
+    await batch.commit();
 
     showToast("+5 points added!");
     setTimeout(() => { window.location.href = './home.html'; }, 2000);
@@ -152,6 +161,8 @@
     document.body.appendChild(toast); 
     setTimeout(() => { toast.remove(); }, 2000); 
   }
+  
+  function onYouTubeIframeAPIReady() { /* loaded by checkCooldownFromDB */ }
 </script>
 </body>
 </html>
