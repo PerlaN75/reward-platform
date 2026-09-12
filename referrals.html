@@ -62,7 +62,6 @@
 
   let myLink = "";
   let myUsername = "";
-  let loadedReferrals = []; // track to prevent double reward
 
   auth.onAuthStateChanged(async (user) => {
     if(user){
@@ -82,6 +81,10 @@
   async function loadReferrals(username) {
     const snapshot = await db.collection("users").where("referredBy", "==", username).get();
     const listEl = document.getElementById('referralsList');
+    
+    // NEW: Load already rewarded referrals from localStorage
+    let rewardedReferrals = JSON.parse(localStorage.getItem('rewardedReferrals') || '[]');
+
     if(snapshot.empty){
       listEl.innerHTML = 'No referrals yet';
       return;
@@ -90,16 +93,18 @@
     snapshot.forEach(doc => {
       const d = doc.data();
       const refUsername = d.username;
+      const refUid = doc.id;
       
-      // NEW: Add to history only if this is a new referral
-      if(!loadedReferrals.includes(refUsername)){
-        loadedReferrals.push(refUsername);
+      // NEW: Only reward if this username was NOT rewarded before
+      if(!rewardedReferrals.includes(refUid)){
+        rewardedReferrals.push(refUid); // save UID, not username
+        localStorage.setItem('rewardedReferrals', JSON.stringify(rewardedReferrals));
         
-        // Call history function from home.html if available
+        // Call history function from home.html
         if(window.opener && window.opener.addReferralHistory) {
           window.opener.addReferralHistory(refUsername); // +50 pts + history
         } else if(window.addReferralHistory) {
-          window.addReferralHistory(refUsername); // if same tab
+          window.addReferralHistory(refUsername);
         }
       }
 
