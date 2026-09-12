@@ -35,6 +35,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"; // ADDED
 
   const firebaseConfig = {
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
@@ -46,6 +47,24 @@
   };
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getFirestore(app); // ADDED
+
+  // ADDED: Function to save user data to localStorage
+  async function loadUserToLocal(uid) {
+    const userDocRef = doc(db, "users", uid);
+    const userDoc = await getDoc(userDocRef);
+    if(userDoc.exists()){
+      const data = userDoc.data();
+      localStorage.setItem('username', data.username || 'Guest');
+      localStorage.setItem('email', data.email || '');
+      localStorage.setItem('points', (data.balance || 0).toString());
+      localStorage.setItem('referrals', (data.referralCount || 0).toString());
+      
+      let joined = data.createdAt ? data.createdAt.toDate() : new Date();
+      let joinedDate = joined.toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric'});
+      localStorage.setItem('dateJoined', joinedDate);
+    }
+  }
 
   window.login = async function() {
     const email = document.getElementById('email').value;
@@ -55,7 +74,10 @@
     if(!email || !password){ errorEl.innerText = "Fill all fields"; return; }
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      
+      await loadUserToLocal(userCredential.user.uid); // ADDED: Save Hirwa's data before redirect
+
       // JUMP INSTANTLY. NO WAITING
       window.location.replace("./home.html");
     } catch(e) {
