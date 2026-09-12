@@ -31,7 +31,6 @@
     const onCooldown = lastWatch && (now - lastWatch) < COOLDOWN;
     const leftMs = onCooldown ? COOLDOWN - (now - lastWatch) : 0;
     
-    // Write the correct class directly so browser never shows wrong card
     document.write(`<style>#cooldownCard{display:${onCooldown?'block':'none'}}#watchCard{display:${onCooldown?'none':'block'}}</style>`);
   </script>
 </head>
@@ -64,14 +63,13 @@
   let player, timerInterval, cooldownInterval;
   let secondsWatched = 0, started = false, currentUser = null;
 
-  // INSTANT COUNTDOWN ON LOAD
   if(onCooldown){
     const minutes = Math.floor(leftMs / 60000);
     const seconds = Math.floor((leftMs % 60000) / 1000);
     document.getElementById('cooldownText').innerText = `Come back in ${minutes}m ${seconds}s`;
     startCooldownTimer(leftMs);
   } else {
-    loadYouTubeAPI(); // Only load YT if not on cooldown
+    loadYouTubeAPI();
   }
 
   function startCooldownTimer(msLeft) {
@@ -155,6 +153,13 @@
     cached.lastWatchTime = new Date().toISOString();
     localStorage.setItem('userData', JSON.stringify(cached));
 
+    // NEW: Add to Earn History popup
+    if(window.opener && window.opener.addWatchHistory) {
+      window.opener.addWatchHistory(); // +5 pts + history in popup
+    } else if(window.addWatchHistory) {
+      window.addWatchHistory(); // if same tab
+    }
+
     showToast("+5 points added!");
     setTimeout(() => { window.location.href = './home.html'; }, 2000);
   }
@@ -171,7 +176,6 @@
     if(!user) return window.location.replace('./index.html');
     currentUser = user;
 
-    // Firestore security double-check
     const userDoc = await db.collection("users").doc(currentUser.uid).get();
     const data = userDoc.data();
     const lastWatchDB = data?.lastWatchTime?.toDate();
