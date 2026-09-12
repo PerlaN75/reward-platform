@@ -120,6 +120,15 @@
     return null;
   }
 
+  // ADDED: Helper functions to keep localStorage in sync
+  window.updateLocalPoints = function(newPoints){
+    localStorage.setItem('points', newPoints.toString());
+  }
+  window.updateLocalReferrals = function(newReferrals){
+    localStorage.setItem('referrals', newReferrals.toString());
+  }
+  // END ADDED
+
   window.createAccount = async function() {
     const username = document.getElementById('username').value.trim();
     const email = document.getElementById('email').value.trim();
@@ -172,11 +181,12 @@
       const batch = db.batch();
 
       // 1. Create new user doc with 50 bonus if referred
+      const startingPoints = referrerDocRef? 50 : 0;
       const newUserRef = db.collection("users").doc(user.uid);
       batch.set(newUserRef, {
         username: username,
         email: email,
-        balance: referrerDocRef? 50 : 0,
+        balance: startingPoints,
         usdt: 0, bnb: 0, xrp: 0, xlm: 0,
         referredBy: referredByCode,
         referralCount: 0,
@@ -195,6 +205,15 @@
 
       // COMMIT BOTH AT ONCE - This fixes Hirwa getting 0
       await batch.commit();
+
+      // ADDED: SAVE TO LOCALSTORAGE FOR PROFILE POPUP
+      const joinedDate = new Date().toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric'});
+      localStorage.setItem('username', username);
+      localStorage.setItem('email', email);
+      localStorage.setItem('points', startingPoints.toString());
+      localStorage.setItem('referrals', '0');
+      localStorage.setItem('dateJoined', joinedDate);
+      // END ADDED
 
       successEl.innerText = "Account created! Redirecting...";
       setTimeout(() => { window.location.href = './home.html'; }, 1500);
