@@ -6,34 +6,32 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #0f1508; min-height: 100vh; padding: 20px; color: white; }
-    .container { max-width: 500px; margin: 0 auto; }
-    .header { text-align: center; margin: 20px 0; color: #fbbf24; font-size: 28px; font-weight: bold; }
-    .video-card { background: #1a2410; border: 2px solid #fbbf24; border-radius: 15px; padding: 20px; text-align: center; min-height: 100px; }
+   .container { max-width: 500px; margin: 0 auto; }
+   .header { text-align: center; margin: 20px 0; color: #fbbf24; font-size: 28px; font-weight: bold; }
+   .video-card { background: #1a2410; border: 2px solid #fbbf24; border-radius: 15px; padding: 20px; text-align: center; min-height: 100px; }
     #player { width: 100%; height: 220px; background: #000; border-radius: 10px; margin-bottom: 15px; }
-    .btn { width: 100%; padding: 15px; background: #ef4444; color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
-    .btn:disabled { background: #444; color: #888; }
-    .timer { font-size: 20px; font-weight: bold; color: #22c55e; margin: 10px 0; }
-    .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; }
-    .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #22c55e; color: white; padding: 14px 20px; border-radius: 12px; font-weight: bold; z-index: 9999; }
-    .cooldown-text { font-size: 22px; color: #fbbf24; font-weight: bold; margin-bottom: 8px; }
-    .hidden { display: none !important; }
+   .btn { width: 100%; padding: 15px; background: #ef4444; color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
+   .btn:disabled { background: #444; color: #888; }
+   .timer { font-size: 20px; font-weight: bold; color: #22c55e; margin: 10px 0; }
+   .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; }
+   .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #22c55e; color: white; padding: 14px 20px; border-radius: 12px; font-weight: bold; z-index: 9999; }
+   .cooldown-text { font-size: 22px; color: #fbbf24; font-weight: bold; margin-bottom: 8px; }
+   .hidden { display: none!important; }
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <script src="https://www.youtube.com/iframe_api"></script>
+  <!-- DO NOT LOAD YT API HERE -->
 </head>
 <body>
   <div class="container">
     <div class="header">📺 Watch & Earn</div>
     
-    <!-- COOLDOWN SCREEN - Rendered by default, hidden by JS if not needed -->
     <div class="video-card" id="cooldownCard">
       <div class="cooldown-text" id="cooldownText">Checking...</div>
       <p style="font-size:12px;color:#aaa;margin-top:10px;">Press PLAY and watch full 30s. 1 video per hour.</p>
     </div>
 
-    <!-- WATCH SCREEN - Hidden by default -->
     <div class="video-card hidden" id="watchCard">
       <div id="status">Press PLAY to start earning</div>
       <div id="player"></div>
@@ -53,25 +51,34 @@
   const videos = ["dQw4w9WgXcQ","9bZkp7q19f0"];
   let player, timerInterval, cooldownInterval;
   let secondsWatched = 0, started = false, currentUser = null;
-  const COOLDOWN = 3600000; // 60 min
+  const COOLDOWN = 3600000;
 
-  // INSTANT CHECK - RUNS IMMEDIATELY
-  (function instantCheck(){
+  // STEP 1: INSTANT CHECK FROM LOCALSTORAGE
+  function instantCheck(){
     const cached = JSON.parse(localStorage.getItem('userData') || '{}');
-    const lastWatch = cached.lastWatchTime ? new Date(cached.lastWatchTime) : null;
+    const lastWatch = cached.lastWatchTime? new Date(cached.lastWatchTime) : null;
     const now = new Date();
     
     if(lastWatch && (now - lastWatch) < COOLDOWN){
       const leftMs = COOLDOWN - (now - lastWatch);
-      const minutesLeft = Math.ceil(leftMs / 60000);
-      document.getElementById('cooldownText').innerText = `Come back in ${minutesLeft} minutes`;
-      startCooldownTimer(leftMs);
-    } else {
-      // Not on cooldown, show watch screen
-      document.getElementById('cooldownCard').classList.add('hidden');
-      document.getElementById('watchCard').classList.remove('hidden');
-    }
-  })();
+      showCooldown(leftMs);
+      return false; // on cooldown
+    } 
+    return true; // can watch
+  }
+
+  function showCooldown(msLeft){
+    document.getElementById('cooldownText').innerText = `Come back in ${Math.ceil(msLeft / 60000)} minutes`;
+    document.getElementById('cooldownCard').classList.remove('hidden');
+    document.getElementById('watchCard').classList.add('hidden');
+    startCooldownTimer(msLeft);
+  }
+
+  function showWatchScreen(){
+    document.getElementById('cooldownCard').classList.add('hidden');
+    document.getElementById('watchCard').classList.remove('hidden');
+    loadYouTubeAPI(); // ONLY load YT now
+  }
 
   function startCooldownTimer(msLeft) {
     clearInterval(cooldownInterval);
@@ -82,34 +89,19 @@
         location.reload();
         return;
       }
-      const m = Math.ceil(msLeft / 60000);
-      document.getElementById('cooldownText').innerText = `Come back in ${m} minutes`;
+      document.getElementById('cooldownText').innerText = `Come back in ${Math.ceil(msLeft / 60000)} minutes`;
     }, 60000);
   }
 
-  auth.onAuthStateChanged(async (user) => {
-    if(!user) return window.location.replace('./index.html');
-    currentUser = user;
-    
-    // Security double-check with Firestore
-    const userDoc = await db.collection("users").doc(currentUser.uid).get();
-    const data = userDoc.data();
-    const lastWatchDB = data?.lastWatchTime?.toDate();
-    const now = new Date();
-    
-    if(lastWatchDB && (now - lastWatchDB) < COOLDOWN){
-      const leftMs = COOLDOWN - (now - lastWatchDB);
-      document.getElementById('cooldownText').innerText = `Come back in ${Math.ceil(leftMs / 60000)} minutes`;
-      document.getElementById('cooldownCard').classList.remove('hidden');
-      document.getElementById('watchCard').classList.add('hidden');
-      startCooldownTimer(leftMs);
-    }
-  });
+  // STEP 2: DYNAMICALLY LOAD YOUTUBE ONLY IF NEEDED
+  function loadYouTubeAPI(){
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  }
 
-  function onYouTubeIframeAPIReady() {
-    // Only load player if watchCard is visible
-    if(document.getElementById('watchCard').classList.contains('hidden')) return;
-    
+  window.onYouTubeIframeAPIReady = function() {
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
     player = new YT.Player('player', {
       height: '220', width: '100%', videoId: randomVideo,
@@ -119,7 +111,7 @@
   }
 
   function onPlayerStateChange(event) {
-    if (event.data == YT.PlayerState.PLAYING && !started) {
+    if (event.data == YT.PlayerState.PLAYING &&!started) {
       started = true;
       document.getElementById('status').innerText = "Watching... Do not skip";
       startTimer();
@@ -132,8 +124,7 @@
 
   function startTimer(){
     timerInterval = setInterval(() => {
-      if(player && player.getPlayerState() !== YT.PlayerState.PLAYING) return;
-      
+      if(player && player.getPlayerState()!== YT.PlayerState.PLAYING) return;
       secondsWatched++;
       document.getElementById('timer').innerText = `Watched: ${secondsWatched}s / 30s`;
       if(secondsWatched >= 30){
@@ -181,6 +172,26 @@
     document.body.appendChild(toast); 
     setTimeout(() => { toast.remove(); }, 2000); 
   }
+
+  // MAIN FLOW
+  auth.onAuthStateChanged(async (user) => {
+    if(!user) return window.location.replace('./index.html');
+    currentUser = user;
+
+    const canWatch = instantCheck(); // 0ms check
+
+    // Double check with Firestore in background
+    const userDoc = await db.collection("users").doc(currentUser.uid).get();
+    const data = userDoc.data();
+    const lastWatchDB = data?.lastWatchTime?.toDate();
+    const now = new Date();
+    
+    if(lastWatchDB && (now - lastWatchDB) < COOLDOWN){
+      showCooldown(COOLDOWN - (now - lastWatchDB));
+    } else if(canWatch){
+      showWatchScreen(); // Only now we load video
+    }
+  });
 </script>
 </body>
 </html>
