@@ -53,31 +53,23 @@
   let secondsWatched = 0, started = false, currentUser = null;
   const COOLDOWN = 3600000; // 60 min
 
-  auth.onAuthStateChanged(async (user) => {
-    if(!user) return window.location.replace('./index.html');
-    currentUser = user;
-    await checkCooldownFromDB(); // Check Firestore first
-  });
-
-  async function checkCooldownFromDB() {
-    const userDoc = await db.collection("users").doc(currentUser.uid).get();
-    const data = userDoc.data();
-    const lastWatch = data?.lastWatchTime?.toDate(); // Firestore timestamp
+  // INSTANT CHECK - RUNS IMMEDIATELY BEFORE FIREBASE
+  (function instantCheck(){
+    const cached = JSON.parse(localStorage.getItem('userData') || '{}');
+    const lastWatch = cached.lastWatchTime ? new Date(cached.lastWatchTime) : null;
     const now = new Date();
     
     if(lastWatch && (now - lastWatch) < COOLDOWN){
       const leftMs = COOLDOWN - (now - lastWatch);
-      document.getElementById('cooldownText').innerText = `Come back in ${Math.ceil(leftMs / 60000)} minutes`;
-      document.getElementById('cooldownCard').classList.remove('hidden');
-      document.getElementById('watchCard').classList.add('hidden');
+      const minutesLeft = Math.ceil(leftMs / 60000);
+      document.getElementById('cooldownText').innerText = `Come back in ${minutesLeft} minutes`;
       startCooldownTimer(leftMs);
     } else {
-      // Not on cooldown
+      // Not on cooldown, show watch screen instantly
       document.getElementById('cooldownCard').classList.add('hidden');
       document.getElementById('watchCard').classList.remove('hidden');
-      loadPlayer();
     }
-  }
+  })();
 
   function startCooldownTimer(msLeft) {
     clearInterval(cooldownInterval);
@@ -88,11 +80,32 @@
         location.reload();
         return;
       }
-      document.getElementById('cooldownText').innerText = `Come back in ${Math.ceil(msLeft / 60000)} minutes`;
+      const m = Math.ceil(msLeft / 60000);
+      document.getElementById('cooldownText').innerText = `Come back in ${m} minutes`;
     }, 60000);
   }
 
-  function loadPlayer() {
+  auth.onAuthStateChanged(async (user) => {
+    if(!user) return window.location.replace('./index.html');
+    currentUser = user;
+    
+    // Double check with Firestore for security
+    const userDoc = await db.collection("users").doc(currentUser.uid).get();
+    const data = userDoc.data();
+    const lastWatchDB = data?.lastWatchTime?.toDate();
+    const now = new Date();
+    
+    if(lastWatchDB && (now - lastWatchDB) < COOLDOWN){
+      const leftMs = COOLDOWN - (now - lastWatchDB);
+      document.getElementById('cooldownText').innerText = `Come back in ${Math.ceil(leftMs / 60000)} minutes`;
+      document.getElementById('cooldownCard').classList.remove('hidden');
+      document.getElementById('watchCard').classList.add('hidden');
+      startCooldownTimer(leftMs);
+    }
+  });
+
+  function onYouTubeIframeAPIReady() {
+    if(document.getElementById('watchCard').classList.contains('hidden')) return;
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
     player = new YT.Player('player', {
       height: '220', width: '100%', videoId: randomVideo,
@@ -115,7 +128,6 @@
 
   function startTimer(){
     timerInterval = setInterval(() => {
-      // Anti-cheat: make sure video is actually playing
       if(player && player.getPlayerState() !== YT.PlayerState.PLAYING) return;
       
       secondsWatched++;
@@ -140,7 +152,6 @@
       lastWatchTime: firebase.firestore.FieldValue.serverTimestamp()
     });
     
-    // NEW: Save to history
     const historyRef = db.collection("users").doc(currentUser.uid).collection("history").doc();
     batch.set(historyRef, {
       type: "Watch & Earn",
@@ -149,6 +160,12 @@
     });
 
     await batch.commit();
+
+    // Update localStorage instantly for next instant check
+    const cached = JSON.parse(localStorage.getItem('userData') || '{}');
+    cached.balance = (cached.balance || 0) + 5;
+    cached.lastWatchTime = new Date().toISOString();
+    localStorage.setItem('userData', JSON.stringify(cached));
 
     showToast("+5 points added!");
     setTimeout(() => { window.location.href = './home.html'; }, 2000);
@@ -161,8 +178,6 @@
     document.body.appendChild(toast); 
     setTimeout(() => { toast.remove(); }, 2000); 
   }
-  
-  function onYouTubeIframeAPIReady() { /* loaded by checkCooldownFromDB */ }
 </script>
 </body>
 </html>
