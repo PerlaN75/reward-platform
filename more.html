@@ -7,33 +7,69 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #0f1508; min-height: 100vh; padding: 20px; color: white; }
     .container { max-width: 500px; margin: 0 auto; }
-    .header { text-align: center; margin: 20px 0 30px 0; color: #fbbf24; font-size: 28px; font-weight: bold; }
     
-    .menu-list button {
+    .header { 
+      text-align: center; 
+      margin: 20px 0 20px 0; 
+      color: #fbbf24; 
+      font-size: 28px; 
+      font-weight: bold; 
+    }
+    
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+
+    .menu-list a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       width: 100%;
-      background: #1a2410;
-      border: 1px solid #fbbf24;
-      border-radius: 12px;
-      padding: 18px;
-      margin: 10px 0;
-      color: white;
-      text-align: left;
+      padding: 18px 16px;
+      color: #000000;
+      text-decoration: none;
       font-size: 16px;
       font-weight: bold;
-      cursor: pointer;
-      transition: 0.2s;
+      border-radius: 10px;
+      transition: background 0.2s;
     }
-    .menu-list button:hover { background: #222e15; border-color: #fcd34d; }
-    .menu-list button span {
-      display: block;
-      font-size: 12px;
-      color: #aaa;
-      font-weight: normal;
-      margin-top: 4px;
+    .menu-list a:hover { background: #f5f5f5; }
+    .menu-list a:active { background: #eeeeee; }
+    
+    .menu-list a:not(:last-child) {
+      border-bottom: 1px solid #e5e5e5;
     }
-    .icon { font-size: 20px; margin-right: 8px; }
 
-    .back-btn { width: 100%; margin: 30px 0 0 0; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
+    .left {
+      display: flex;
+      align-items: center;
+    }
+
+    .icon { font-size: 22px; margin-right: 14px; line-height: 1; }
+
+    .arrow {
+      font-size: 24px;
+      font-weight: 900;
+      color: #999;
+      margin-left: 10px;
+      line-height: 1;
+    }
+
+    .back-btn { 
+      width: 100%; 
+      margin: 20px 0 0 0; 
+      padding: 14px; 
+      background: #f59e0b; 
+      color: #000; 
+      border: none; 
+      border-radius: 12px; 
+      font-weight: bold; 
+      font-size: 16px; 
+      cursor: pointer; 
+    }
     .back-btn:hover { background: #fbbf24; }
   </style>
 </head>
@@ -41,31 +77,43 @@
   <div class="container">
     <div class="header">⚙️ More</div>
     
-    <div class="menu-list">
-      <button onclick="window.location.href='./profile.html'">
-        <span class="icon">👤</span> Profile
-        <span>View name, email, stats</span>
-      </button>
+    <div class="card">
+      <div class="menu-list">
+        <a href="./profile.html">
+          <div class="left">
+            <span class="icon">👤</span> Profile
+          </div>
+          <span class="arrow">›</span>
+        </a>
 
-      <button onclick="window.location.href='./history.html'">
-        <span class="icon">📜</span> Earn History
-        <span>All points from Watch, Daily, Refer</span>
-      </button>
+        <a href="./history.html">
+          <div class="left">
+            <span class="icon">📜</span> Earn History
+          </div>
+          <span class="arrow">›</span>
+        </a>
 
-      <button onclick="window.location.href='./settings.html'">
-        <span class="icon">⚙️</span> Settings
-        <span>Notifications, Sound, Language</span>
-      </button>
+        <a href="./settings.html">
+          <div class="left">
+            <span class="icon">⚙️</span> Settings
+          </div>
+          <span class="arrow">›</span>
+        </a>
 
-      <button onclick="window.location.href='./help.html'">
-        <span class="icon">❓</span> Help & FAQ
-        <span>How to earn, Withdraw rules</span>
-      </button>
+        <a href="./help.html">
+          <div class="left">
+            <span class="icon">❓</span> Help & FAQ
+          </div>
+          <span class="arrow">›</span>
+        </a>
 
-      <button onclick="window.location.href='./about.html'">
-        <span class="icon">ℹ️</span> About Us
-        <span>Version 1.0.0 | Contact</span>
-      </button>
+        <a href="./about.html">
+          <div class="left">
+            <span class="icon">ℹ️</span> About Us
+          </div>
+          <span class="arrow">›</span>
+        </a>
+      </div>
     </div>
 
     <button class="back-btn" onclick="window.location.href='./home.html'">Back to Home</button>
