@@ -22,6 +22,7 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://www.youtube.com/iframe_api"></script> <!-- CHANGED 1: Load YouTube instantly -->
 </head>
 <body>
   <div class="container">
@@ -57,7 +58,7 @@
   function showWatchCard() {
     document.getElementById('cooldownCard').classList.add('hidden');
     document.getElementById('watchCard').classList.remove('hidden');
-    loadYouTubeAPI();
+    loadPlayer(); // CHANGED 2: was loadYouTubeAPI()
   }
   
   function showCooldownCard(msLeft) {
@@ -87,13 +88,7 @@
     }, 1000);
   }
 
-  function loadYouTubeAPI(){ 
-    const tag = document.createElement('script'); 
-    tag.src = "https://www.youtube.com/iframe_api"; 
-    document.head.appendChild(tag); 
-  }
-  
-  window.onYouTubeIframeAPIReady = function() {
+  function loadPlayer(){ // CHANGED 3: renamed function
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
     player = new YT.Player('player', { 
       height: '220', 
@@ -103,6 +98,8 @@
       events: { 'onStateChange': onPlayerStateChange } 
     });
   }
+  
+  window.onYouTubeIframeAPIReady = function() {} // Keep empty, we call loadPlayer() manually
   
   function onPlayerStateChange(event) {
     if (event.data == YT.PlayerState.PLAYING && !started) { 
@@ -176,7 +173,6 @@
     if(!user) return window.location.replace('./index.html');
     currentUser = user;
     
-    // ALWAYS CHECK FIREBASE FIRST - prevents logout/login bypass
     const userDoc = await db.collection("users").doc(currentUser.uid).get();
     const data = userDoc.data();
     const lastWatchDB = data?.lastWatchTime?.toDate();
