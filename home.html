@@ -8,17 +8,17 @@
     body { background: #0f1508; min-height: 100vh; padding: 10px; color: white; overflow-x: hidden; }
 .container { max-width: 500px; margin: 0 auto; }
 .header { text-align: center; margin: 30px 0 20px 0; }
-.header h2 { font-size: 30px; font-weight: bold; color: #fff; }
+.header h2 { font-size: 30px; font-weight: bold; color: #fbbf24; } /* Yellow like screenshot */
 .header h2 span { color: #fbbf24; font-weight: bold; text-transform: capitalize; }
 .balance-card { background: #2f3e1a; border: 2px solid #fbbf24; border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 20px; }
 .balance-card.label { font-size: 14px; color: #ccc; }
 .balance-card.amount { font-size: 28px; font-weight: bold; color: #fbbf24; margin-top: 5px; }
 .balance-card.usd { font-size: 15px; color: #aaa; margin-top: 6px; }
 .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-.menu-btn { background: linear-gradient(180deg, #ffffff, #e8e8e8); color: #000; border: none; border-radius: 15px; padding: 18px 10px; font-size: 20px; font-weight: bold; cursor: pointer; text-align: center; box-shadow: 0 6px 0 #bbbbbb, 0 8px 15px rgba(0,0,0,0.3); transition: all 0.1s ease; display: flex; flex-direction: column; align-items: center; gap: 6px; } /* CHANGED: 14px to 20px */
+.menu-btn { background: linear-gradient(180deg, #ffffff, #e8e8e8); color: #000; border: none; border-radius: 15px; padding: 18px 10px; font-size: 15px; font-weight: bold; cursor: pointer; text-align: center; box-shadow: 0 6px 0 #bbbbbb, 0 8px 15px rgba(0,0,0,0.3); transition: all 0.1s ease; display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .menu-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #bbbbbb; }
-.menu-btn.emoji { font-size: 40px; } /* CHANGED: 36px to 40px */
-.logout-btn { width: 40%; height: 48px; margin: 40px auto 0 auto; display: block; padding: 0; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 0 #d97706; } /* CHANGED: 45% to 40% and margin-top 15px to 40px */
+.menu-btn.emoji { font-size: 28px; }
+.logout-btn { width: 60%; height: 50px; margin: 25px auto 0 auto; display: block; padding: 0; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; }
 .logout-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #d97706; }
 .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; padding: 10px; overflow-y: auto; }
 .modal-content { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 15px; width: 92%; max-width: 420px; color: white; max-height: 90vh; overflow-y: auto; position: relative; }
@@ -30,15 +30,15 @@
 .popup-balance.amount { font-size: 24px; color: #f59e0b; font-weight: bold; }
 .input-box { width: 100%; padding: 12px; margin: 6px 0; background: #000; border: 2px solid #444; border-radius: 12px; color: white; font-size: 14px; outline: none; transition: 0.2s; }
 .input-box:focus { border-color: #fbbf24; }
-select.input-box {
-  appearance: none;
+select.input-box { 
+  appearance: none; 
   background-color: #2f3e1a;
   color: #fff;
   border: 2px solid #fbbf24;
-  background-image: url("data:image/svg+xml,%3Csvg fill='%23fbbf24' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg fill='%23fbbf24' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); 
+  background-repeat: no-repeat; 
+  background-position: right 12px center; 
+  padding-right: 40px; 
 }
 .withdraw-field { position: relative; margin: 8px 0; }
 .withdraw-field.label { font-size: 12px; color: #aaa; margin-bottom: 3px; margin-left: 4px; }
@@ -78,9 +78,6 @@ select.input-box {
 .gift-result-popup.points { font-size: 28px; color: #22c55e; font-weight: bold; margin-top: 4px; }
 
 /* WALLET */
-.info-row { display: flex; justify-content: space-between; align-items: center; background: #1a2410; padding: 12px; border-radius: 12px; margin: 6px 0; font-size: 13px; }
-.info-row.key { color: #ccc; }
-.info-row.val-input { background: #000; border: 1px solid #444; color: #fff; font-weight: bold; text-align: right; width: 55%; padding: 6px 8px; border-radius: 8px; outline: none; }
 .crypto-balances { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 8px 0; }
 .crypto-bal { background: #000; border: 2px solid #333; padding: 10px; border-radius: 12px; text-align: center; font-size: 12px; }
 .crypto-bal.name { color: #ccc; }
@@ -93,17 +90,18 @@ select.input-box {
 </head>
 <body>
   <div class="container">
-    <div class="header"><h2><span id="headerText"></span></h2></div>
+    <div class="header"><h2>Welcome, <span id="headerText">User</span></h2></div>
 
     <div class="balance-card">
       <div class="label">Your Balance</div>
       <div class="amount" id="balance">0 points</div>
       <div class="usd" id="usdBalance">≈ $0.00 USD</div>
     </div>
+    
     <div class="menu-grid">
       <button class="menu-btn" onclick="openWallet()"><span class="emoji">💰</span>Wallet</button>
       <button class="menu-btn" onclick="openCheckin()"><span class="emoji">📅</span>Daily Checkin</button>
-      <button class="menu-btn" onclick="window.location.href='./watch.html'"><span class="emoji">📺</span>Watch & Earn</button>
+      <button class="menu-btn" onclick="window.location.href='./quiz.html'"><span class="emoji">🧠</span>Quiz</button>
       <button class="menu-btn" onclick="window.location.href='./referrals.html'"><span class="emoji">🤝</span>Refer & Earn</button>
       <button class="menu-btn" onclick="openGift()"><span class="emoji">🎁</span>Gifts</button>
       <button class="menu-btn" onclick="window.location.href='./more.html'"><span class="emoji">⚙️</span>More</button>
@@ -196,7 +194,7 @@ select.input-box {
 
   function loadData(data) {
     userData = data;
-    document.getElementById('headerText').innerText = `Welcome, ${data.username || 'User'}`;
+    document.getElementById('headerText').innerText = data.username || 'User';
     document.getElementById('balance').innerText = (data.balance || 0) + ' points';
     document.getElementById('usdBalance').innerText = `≈ $${((data.balance || 0) * POINT_RATE).toFixed(2)} USD`;
   }
@@ -263,7 +261,7 @@ select.input-box {
   function getToday() { return new Date().toISOString().split('T')[0]; }
   function getNextClaimTime() { const now = new Date(); const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(0, 0, 0, 0); return tomorrow; }
   function updateCountdown() { const diff = getNextClaimTime() - new Date(); if(diff <= 0) { clearInterval(countdownInterval); checkClaimStatus(); return; } const h = Math.floor(diff / 1000 / 60 / 60); const m = Math.floor(diff / 1000 / 60) % 60; const s = Math.floor(diff / 1000) % 60; document.getElementById('countdown').innerText = `Next claim in: ${h}h ${m}m ${s}s`; }
-  function checkClaimStatus() { const today = getToday(); const lastClaim = userData.lastCheckin; clearInterval(countdownInterval); if(lastClaim === today) { document.getElementById('claimBtn').disabled = true; document.getElementById('claimBtn').innerText = "Already Claimed Today"; document.getElementById('checkinNote').innerHTML = "✓ Claimed! Come back tomorrow"; document.getElementById('countdown').style.display = 'block'; updateCountdown(); countdownInterval = setInterval(updateCountdown, 1000); } else { document.getElementById('claimBtn').disabled = false; document.getElementById('claimBtn').innerText = `Claim ${DAILY_REWARD} Points`; document.getElementById('checkinNote').innerText = "Tap to claim your daily reward"; document.getElementById('countdown').style.display = 'none'; } }
+  function checkClaimStatus() { const today = getToday(); const lastClaim = userData.lastCheckin; clearInterval(countdownInterval); if(lastClaim === today) { document.getElementById('claimBtn').disabled = true; document.getElementById('claimBtn').innerText = "Already Claimed Today"; document.getElementById('checkinNote').innerHTML = "✓ Claimed! Come back tomorrow"; document.getElementById('countdown').style.display = 'block'; updateCountdown(); countdownInterval = setInterval(updateCountdown, 1000); } else { document.getElementById('claimBtn').disabled = false; document.getElementById('claimBtn').innerText = `Claim ${DAILY_REWARD} Points`; document.getElementById('checkinNote').innerText = "Tap to claim your daily reward"; document.getElementById('countdown').style.display = 'none'; }
   window.claimDaily = async function() { const today = getToday(); if(userData.lastCheckin === today) return; addHistory("Daily Login", DAILY_REWARD); userData.lastCheckin = today; localStorage.setItem('userData', JSON.stringify(userData)); document.getElementById('successMsg').style.display = 'block'; checkClaimStatus(); if(currentUser) db.collection("users").doc(currentUser.uid).update({balance: userData.balance, lastCheckin: today}); }
 
   // GIFT
