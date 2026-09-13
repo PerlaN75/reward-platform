@@ -10,12 +10,12 @@
    .header { text-align: center; margin: 20px 0; color: #fbbf24; font-size: 28px; font-weight: bold; }
    .video-card { background: #1a2410; border: 2px solid #fbbf24; border-radius: 15px; padding: 20px; text-align: center; min-height: 100px; }
     #player { width: 100%; height: 220px; background: #000; border-radius: 10px; margin-bottom: 15px; }
-   .btn { width: 100%; padding: 15px; background: #ef4444; color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
+   .btn { width: 100%; padding: 15px; background: #ef4444; color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; display:none; } /* HIDDEN NOW */
    .btn:disabled { background: #444; color: #888; cursor: not-allowed; }
    .timer { font-size: 20px; font-weight: bold; color: #22c55e; margin: 10px 0; }
    .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; }
    .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #22c55e; color: white; padding: 14px 20px; border-radius: 12px; font-weight: bold; z-index: 9999; animation: slideDown 0.3s ease; }
-   @keyframes slideDown { from { top: -50px; opacity: 0; } to { top: 20px; opacity: 1; } }
+   @keyframes slideDown { from { top: -50px; opacity: 0; } to { top: 20px; opacity: 1; }
    .cooldown-text { font-size: 22px; color: #fbbf24; font-weight: bold; margin-bottom: 8px; }
    .hidden { display: none!important; }
   </style>
@@ -36,7 +36,7 @@
       <div id="status">Press PLAY to start earning</div>
       <div id="player"></div>
       <div class="timer" id="timer">Watch for 30s</div>
-      <button class="btn" id="claimBtn" onclick="rewardUser()" style="display:none;">Claim +5 Points</button>
+      <button class="btn" id="claimBtn" onclick="rewardUser()">Claim +5 Points</button> <!-- KEPT FOR SAFETY BUT HIDDEN -->
       <p style="font-size:12px;color:#aaa;margin-top:10px;">Watch the full 30 seconds. No skipping.</p>
     </div>
 
@@ -121,11 +121,11 @@
       if(player && player.getPlayerState() !== YT.PlayerState.PLAYING) return;
       secondsWatched++;
       document.getElementById('timer').innerText = `Watched: ${secondsWatched}s / 30s`;
-      if(secondsWatched >= 30){
+      if(secondsWatched >= 30 && !claimed){ // ONLY CHANGE 1
         clearInterval(timerInterval);
         player.stopVideo();
-        document.getElementById('status').innerText = "Done! Claim your reward";
-        document.getElementById('claimBtn').style.display = 'block';
+        document.getElementById('status').innerText = "Reward claimed! +5 Points"; // ONLY CHANGE 2
+        rewardUser(); // ONLY CHANGE 3: Auto claim
       }
     }, 1000);
   }
@@ -133,7 +133,6 @@
   window.rewardUser = async function(){
     if(!currentUser || claimed) return;
     claimed = true;
-    document.getElementById('claimBtn').disabled = true;
     
     try {
       const userRef = db.collection("users").doc(currentUser.uid);
@@ -156,11 +155,10 @@
       }
 
       showToast("+5 points added!");
-      setTimeout(() => { window.location.href = './home.html'; }, 1500);
+      setTimeout(() => { window.location.href = './home.html'; }, 1200); // faster redirect
     } catch(e) {
       alert("Error: " + e.message);
       claimed = false;
-      document.getElementById('claimBtn').disabled = false;
     }
   }
 
@@ -176,7 +174,6 @@
     if(!user) return window.location.replace('./index.html');
     currentUser = user;
     
-    // ALWAYS CHECK FIREBASE FIRST - prevents logout/login bypass
     const userDoc = await db.collection("users").doc(currentUser.uid).get();
     const data = userDoc.data();
     const lastWatchDB = data?.lastWatchTime?.toDate();
