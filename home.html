@@ -5,77 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { background: #0f1508; min-height: 100vh; padding: 20px; color: white; overflow-x: hidden; }
+    body { background: #0f1508; min-height: 100vh; padding: 10px; color: white; overflow-x: hidden; }
 .container { max-width: 500px; margin: 0 auto; }
-.header { text-align: center; margin: 40px 0 30px 0; }
-.header h2 { font-size: 34px; font-weight: bold; color: #fff; }
+.header { text-align: center; margin: 30px 0 20px 0; }
+.header h2 { font-size: 30px; font-weight: bold; color: #fff; }
 .header h2 span { color: #fbbf24; font-weight: bold; text-transform: capitalize; }
-.balance-card { background: #2f3e1a; border: 2px solid #fbbf24; border-radius: 20px; padding: 25px; text-align: center; margin-bottom: 30px; }
+.balance-card { background: #2f3e1a; border: 2px solid #fbbf24; border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 20px; }
 .balance-card.label { font-size: 14px; color: #ccc; }
-.balance-card.amount { font-size: 32px; font-weight: bold; color: #fbbf24; margin-top: 5px; }
-.balance-card.usd { font-size: 16px; color: #aaa; margin-top: 8px; }
-.menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
-.menu-btn { background: linear-gradient(180deg, #ffffff, #e8e8e8); color: #000; border: none; border-radius: 15px; padding: 20px 10px; font-size: 15px; font-weight: bold; cursor: pointer; text-align: center; box-shadow: 0 6px 0 #bbbbbb, 0 8px 15px rgba(0,0,0,0.3); transition: all 0.1s ease; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.balance-card.amount { font-size: 28px; font-weight: bold; color: #fbbf24; margin-top: 5px; }
+.balance-card.usd { font-size: 15px; color: #aaa; margin-top: 6px; }
+.menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.menu-btn { background: linear-gradient(180deg, #ffffff, #e8e8e8); color: #000; border: none; border-radius: 15px; padding: 18px 10px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; box-shadow: 0 6px 0 #bbbbbb, 0 8px 15px rgba(0,0,0,0.3); transition: all 0.1s ease; display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .menu-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #bbbbbb; }
-.menu-btn.emoji { font-size: 40px; }
-.logout-btn { width: 40%; height: 52px; margin: 20px auto 0 auto; display: block; padding: 0; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; }
+.menu-btn.emoji { font-size: 36px; }
+.logout-btn { width: 45%; height: 48px; margin: 15px auto 0 auto; display: block; padding: 0; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 0 #d97706; }
 .logout-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #d97706; }
-.modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
-.modal-content { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 18px; width: 95%; max-width: 100%; color: white; max-height: 95vh; overflow-y: auto; position: relative; } /* CHANGED: a. fit screen */
-.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.modal-header h2 { font-size: 20px; color: #fbbf24; display: flex; align-items: center; gap: 8px; }
-.close-btn { font-size: 24px; color: white; cursor: pointer; font-weight: bold; }
-.popup-balance { background: #000; border: 2px solid #fbbf24; border-radius: 15px; padding: 15px; margin: 10px 0; text-align: center; }
-.popup-balance.label { font-size: 13px; color: #ccc; margin-bottom: 6px; }
-.popup-balance.amount { font-size: 28px; color: #f59e0b; font-weight: bold; }
-.input-box { width: 100%; padding: 14px; margin: 8px 0; background: #000; border: 2px solid #444; border-radius: 12px; color: white; font-size: 15px; outline: none; transition: 0.2s; }
+.modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; padding: 10px; overflow-y: auto; }
+.modal-content { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 15px; width: 92%; max-width: 420px; color: white; max-height: 90vh; overflow-y: auto; position: relative; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.modal-header h2 { font-size: 18px; color: #fbbf24; display: flex; align-items: center; gap: 8px; }
+.close-btn { font-size: 22px; color: white; cursor: pointer; font-weight: bold; }
+.popup-balance { background: #000; border: 2px solid #fbbf24; border-radius: 15px; padding: 12px; margin: 8px 0; text-align: center; }
+.popup-balance.label { font-size: 12px; color: #ccc; margin-bottom: 4px; }
+.popup-balance.amount { font-size: 24px; color: #f59e0b; font-weight: bold; }
+.input-box { width: 100%; padding: 12px; margin: 6px 0; background: #000; border: 2px solid #444; border-radius: 12px; color: white; font-size: 14px; outline: none; transition: 0.2s; }
 .input-box:focus { border-color: #fbbf24; }
-select.input-box { appearance: none; background-color: #2f3e1a; background-image: url("data:image/svg+xml,%3Csvg fill='%23fbbf24' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 40px; border: 2px solid #fbbf24; } /* CHANGED: b. crypto window color */
-.withdraw-field { position: relative; margin: 10px 0; }
-.withdraw-field.label { font-size: 12px; color: #aaa; margin-bottom: 4px; margin-left: 4px; }
-.withdraw-estimate { background: #1a2410; border: 1px dashed #ef4444; border-radius: 10px; padding: 10px; margin: 8px 0; font-size: 13px; text-align: center; color: #ef4444; display: none; }
-.action-btn { width: 100%; padding: 16px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top:8px; box-shadow: 0 4px 0 #d97706; transition: 0.1s; }
+select.input-box { 
+  appearance: none; 
+  background-color: #2f3e1a; /* same as background */
+  color: #fff; /* white text */
+  border: 2px solid #fbbf24; /* yellow border */
+  background-image: url("data:image/svg+xml,%3Csvg fill='%23fbbf24' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); 
+  background-repeat: no-repeat; 
+  background-position: right 12px center; 
+  padding-right: 40px; 
+}
+.withdraw-field { position: relative; margin: 8px 0; }
+.withdraw-field.label { font-size: 12px; color: #aaa; margin-bottom: 3px; margin-left: 4px; }
+.withdraw-estimate { background: #1a2410; border: 1px dashed #ef4444; border-radius: 10px; padding: 8px; margin: 6px 0; font-size: 12px; text-align: center; color: #ef4444; display: none; }
+.action-btn { width: 100%; padding: 14px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top:8px; box-shadow: 0 4px 0 #d97706; transition: 0.1s; }
 .action-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #d97706; }
 .action-btn:disabled { background: #444; color: #888; cursor: not-allowed; box-shadow: none; }
-.note { font-size: 12px; color: #aaa; margin-top: 6px; text-align: center; }
-.tabs { display: flex; gap: 8px; margin: 10px 0; }
-.tab-btn { flex: 1; padding: 12px; background: #1a2410; border: 2px solid #555; border-radius: 12px; color: #ccc; font-weight: bold; cursor: pointer; font-size: 14px; }
+.note { font-size: 11px; color: #aaa; margin-top: 5px; text-align: center; }
+.tabs { display: flex; gap: 8px; margin: 8px 0; }
+.tab-btn { flex: 1; padding: 10px; background: #1a2410; border: 2px solid #555; border-radius: 12px; color: #ccc; font-weight: bold; cursor: pointer; font-size: 13px; }
 .tab-btn.active { background: #fbbf24; color: #000; border-color: #fbbf24; }
 .tab-content { display: none; }
 .tab-content.active { display: block; }
-.crypto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
-.crypto-item { background: #1a2410; padding: 12px; border-radius: 12px; border: 2px solid #444; text-align: center; cursor: pointer; }
+.crypto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; }
+.crypto-item { background: #1a2410; padding: 10px; border-radius: 12px; border: 2px solid #444; text-align: center; cursor: pointer; }
 .crypto-item.selected { border-color: #22c55e; background: #1a2e1a; }
-.crypto-item.icon { font-size: 20px; }
-.crypto-item.name { font-weight: bold; margin-top: 4px; font-size: 13px; }
-.convert-result { background: #000; padding: 12px; border-radius: 10px; text-align: center; margin: 8px 0; border: 1px dashed #fbbf24; font-size: 13px; }
-.checkin-card { background: #000; border: 2px dashed #fbbf24; border-radius: 15px; padding: 20px; text-align: center; margin: 10px 0; }
-.checkin-card.big-emoji { font-size: 50px; margin-bottom: 8px; }
-.checkin-card h3 { font-size: 20px; color: #fbbf24; margin-bottom: 6px; }
-.checkin-card p { font-size: 14px; color: #ccc; margin-bottom: 12px; }
-.countdown { font-size: 18px; color: #fbbf24; font-weight: bold; margin-top: 8px; text-align: center; }
-.success-msg { background: #1a2e1a; border: 1px solid #22c55e; color: #22c55e; padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 14px; display: none; text-align: center; }
-.gift-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
-.gift-box { background: #1a2410; border: 2px solid #fbbf24; border-radius: 15px; font-size: 55px; text-align: center; padding: 15px 0; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
+.crypto-item.icon { font-size: 18px; }
+.crypto-item.name { font-weight: bold; margin-top: 3px; font-size: 12px; }
+.convert-result { background: #000; padding: 10px; border-radius: 10px; text-align: center; margin: 6px 0; border: 1px dashed #fbbf24; font-size: 12px; }
+.checkin-card { background: #000; border: 2px dashed #fbbf24; border-radius: 15px; padding: 18px; text-align: center; margin: 8px 0; }
+.checkin-card.big-emoji { font-size: 45px; margin-bottom: 6px; }
+.checkin-card h3 { font-size: 18px; color: #fbbf24; margin-bottom: 5px; }
+.checkin-card p { font-size: 13px; color: #ccc; margin-bottom: 10px; }
+.countdown { font-size: 16px; color: #fbbf24; font-weight: bold; margin-top: 6px; text-align: center; }
+.success-msg { background: #1a2e1a; border: 1px solid #22c55e; color: #22c55e; padding: 8px; border-radius: 8px; margin-top: 8px; font-size: 13px; display: none; text-align: center; }
+.gift-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 12px 0; }
+.gift-box { background: #1a2410; border: 2px solid #fbbf24; border-radius: 15px; font-size: 45px; text-align: center; padding: 12px 0; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
 .gift-box:hover { transform: scale(1.05); border-color: #f59e0b; }
 .gift-box.disabled { opacity: 0.3; pointer-events: none; }
 .gift-box.burst { animation: burst 0.6s ease; }
 @keyframes burst { 0% { transform: scale(1); } 50% { transform: scale(1.3) rotate(10deg); } 100% { transform: scale(1); } }
-.gift-history { background: #000; padding: 10px; border-radius: 10px; font-size: 13px; margin-top: 10px; text-align: center; }
-.gift-result-popup { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #000; border: 3px solid #fbbf24; border-radius: 20px; padding: 25px 30px; text-align: center; z-index: 1000; display: none; animation: popupIn 0.4s ease; box-shadow: 0 0 30px rgba(251, 191, 36, 0.5); }
+.gift-history { background: #000; padding: 8px; border-radius: 10px; font-size: 12px; margin-top: 8px; text-align: center; }
+.gift-result-popup { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #000; border: 3px solid #fbbf24; border-radius: 20px; padding: 20px 25px; text-align: center; z-index: 1000; display: none; animation: popupIn 0.4s ease; box-shadow: 0 0 30px rgba(251, 191, 36, 0.5); }
 @keyframes popupIn { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
-.gift-result-popup.emoji { font-size: 60px; margin-bottom: 10px; }
-.gift-result-popup.text { font-size: 18px; color: #fbbf24; font-weight: bold; }
-.gift-result-popup.points { font-size: 32px; color: #22c55e; font-weight: bold; margin-top: 5px; }
+.gift-result-popup.emoji { font-size: 50px; margin-bottom: 8px; }
+.gift-result-popup.text { font-size: 16px; color: #fbbf24; font-weight: bold; }
+.gift-result-popup.points { font-size: 28px; color: #22c55e; font-weight: bold; margin-top: 4px; }
 
-/* FOR WALLET SCREENSHOT */
-.info-row { display: flex; justify-content: space-between; align-items: center; background: #1a2410; padding: 14px; border-radius: 12px; margin: 8px 0; font-size: 14px; }
+/* WALLET */
+.info-row { display: flex; justify-content: space-between; align-items: center; background: #1a2410; padding: 12px; border-radius: 12px; margin: 6px 0; font-size: 13px; }
 .info-row.key { color: #ccc; }
-.info-row.val-input { background: transparent; border: none; color: #fff; font-weight: bold; text-align: right; width: 60%; outline: none; } /* CHANGED: c. editable */
-.crypto-balances { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
-.crypto-bal { background: #000; border: 2px solid #333; padding: 12px; border-radius: 12px; text-align: center; font-size: 13px; }
+.info-row.val-input { background: #000; border: 1px solid #444; color: #fff; font-weight: bold; text-align: right; width: 55%; padding: 6px 8px; border-radius: 8px; outline: none; }
+.crypto-balances { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 8px 0; }
+.crypto-bal { background: #000; border: 2px solid #333; padding: 10px; border-radius: 12px; text-align: center; font-size: 12px; }
 .crypto-bal.name { color: #ccc; }
-.crypto-bal.val { color: #fff; font-weight: bold; margin-top: 4px; }
+.crypto-bal.val { color: #fff; font-weight: bold; margin-top: 3px; }
   </style>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -122,10 +131,9 @@ select.input-box { appearance: none; background-color: #2f3e1a; background-image
 
   <div id="convertTab" class="tab-content active"><div class="note">1000 points = $0.50 USD</div><input type="number" id="convertAmount" class="input-box" placeholder="Enter points to convert" oninput="calcConvert()"><div class="convert-result" id="convertResult">You will receive: 0.00 USDT</div><div class="crypto-grid"><div class="crypto-item selected" onclick="selectCrypto('USDT', this)"><div class="icon">₮</div><div class="name">USDT</div></div><div class="crypto-item" onclick="selectCrypto('BNB', this)"><div class="icon">🟡</div><div class="name">BNB</div></div><div class="crypto-item" onclick="selectCrypto('XRP', this)"><div class="icon">💧</div><div class="name">XRP</div></div><div class="crypto-item" onclick="selectCrypto('XLM', this)"><div class="icon">⭐</div><div class="name">XLM</div></div></div><button class="action-btn" onclick="convertPoints()">Convert Points</button></div>
 
-  <!-- WITHDRAW TAB -->
+  <!-- WITHDRAW TAB - REMOVED USERNAME + EMAIL -->
   <div id="withdrawTab" class="tab-content">
-    <div class="info-row"><span class="key">Username</span><input type="text" id="withdrawUsername" class="val-input" placeholder="Enter username"></div> <!-- CHANGED: c -->
-    <div class="info-row"><span class="key">Email</span><input type="email" id="withdrawEmail" class="val-input" placeholder="Enter email"></div> <!-- CHANGED: c -->
+    <!-- REMOVED Username and Email fields -->
 
     <div class="withdraw-field"><div class="label">Select Crypto</div>
       <select id="withdrawCrypto" class="input-box" onchange="updateWithdrawMin()">
@@ -182,7 +190,7 @@ select.input-box { appearance: none; background-color: #2f3e1a; background-image
     localStorage.setItem('userData', JSON.stringify(userData));
     localStorage.setItem('points', newPoints);
     loadData(userData);
-    if(currentUser) db.collection("users").doc(currentUser.uid).update({balance: newPoints, username: userData.username, email: userData.email}); // Added username/email save
+    if(currentUser) db.collection("users").doc(currentUser.uid).update({balance: newPoints});
   }
 
   window.rewardWatchAd = function() { addHistory("Watch Ad", 5, "Watched video"); }
@@ -202,8 +210,6 @@ select.input-box { appearance: none; background-color: #2f3e1a; background-image
   window.openWallet = function() {
     document.getElementById('popupBalance').innerText = (userData.balance || 0) + ' points';
     document.getElementById('popupUsd').innerText = `≈ $${((userData.balance || 0) * POINT_RATE).toFixed(2)} USD`;
-    document.getElementById('withdrawUsername').value = userData.username || ''; // CHANGED: c
-    document.getElementById('withdrawEmail').value = userData.email || ''; // CHANGED: c
     document.getElementById('walletModal').style.display = 'flex';
     calcConvert();
     updateWithdrawMin();
@@ -233,17 +239,11 @@ select.input-box { appearance: none; background-color: #2f3e1a; background-image
   }
 
   window.requestWithdraw = async function() {
-    // Save username/email first
-    userData.username = document.getElementById('withdrawUsername').value.trim();
-    userData.email = document.getElementById('withdrawEmail').value.trim();
-
     const amt = parseFloat(document.getElementById('withdrawAmount').value);
     const address = document.getElementById('walletAddress').value.trim();
     const crypto = document.getElementById('withdrawCrypto').value;
     const min = MIN_WITHDRAW[crypto];
 
-    if(!userData.username) return alert('Enter username'); // Added
-    if(!userData.email) return alert('Enter email'); // Added
     if(!address) return alert('Enter wallet address');
     if(!amt || amt <= 0) return alert(`Enter amount`);
     if(amt < min) return alert(`Minimum withdraw for ${crypto} is ${min}`);
@@ -253,7 +253,7 @@ select.input-box { appearance: none; background-color: #2f3e1a; background-image
     if(ptsNeeded > userData.balance) return alert('Not enough points');
 
     addHistory("Withdraw Request", -ptsNeeded, `Withdrew ${amt} ${crypto} to ${address}`);
-    if(currentUser) db.collection("users").doc(currentUser.uid).update({balance: userData.balance, username: userData.username, email: userData.email});
+    if(currentUser) db.collection("users").doc(currentUser.uid).update({balance: userData.balance});
 
     alert(`Withdraw request sent! \n${amt} ${crypto} ≈ $${usdValue.toFixed(2)}\nTo: ${address}`);
     closeWallet();
