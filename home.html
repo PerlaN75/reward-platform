@@ -15,10 +15,10 @@
 .balance-card.amount { font-size: 28px; font-weight: bold; color: #fbbf24; margin-top: 5px; }
 .balance-card.usd { font-size: 15px; color: #aaa; margin-top: 6px; }
 .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-.menu-btn { background: linear-gradient(180deg, #ffffff, #e8e8e8); color: #000; border: none; border-radius: 15px; padding: 18px 10px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; box-shadow: 0 6px 0 #bbbbbb, 0 8px 15px rgba(0,0,0,0.3); transition: all 0.1s ease; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.menu-btn { background: linear-gradient(180deg, #ffffff, #e8e8e8); color: #000; border: none; border-radius: 15px; padding: 18px 10px; font-size: 20px; font-weight: bold; cursor: pointer; text-align: center; box-shadow: 0 6px 0 #bbbbbb, 0 8px 15px rgba(0,0,0,0.3); transition: all 0.1s ease; display: flex; flex-direction: column; align-items: center; gap: 6px; } /* CHANGED: 14px to 20px */
 .menu-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #bbbbbb; }
-.menu-btn.emoji { font-size: 36px; }
-.logout-btn { width: 45%; height: 48px; margin: 15px auto 0 auto; display: block; padding: 0; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 0 #d97706; }
+.menu-btn.emoji { font-size: 40px; } /* CHANGED: 36px to 40px */
+.logout-btn { width: 40%; height: 48px; margin: 40px auto 0 auto; display: block; padding: 0; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 4px 0 #d97706; } /* CHANGED: 45% to 40% and margin-top 15px to 40px */
 .logout-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #d97706; }
 .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; padding: 10px; overflow-y: auto; }
 .modal-content { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 15px; width: 92%; max-width: 420px; color: white; max-height: 90vh; overflow-y: auto; position: relative; }
@@ -30,15 +30,15 @@
 .popup-balance.amount { font-size: 24px; color: #f59e0b; font-weight: bold; }
 .input-box { width: 100%; padding: 12px; margin: 6px 0; background: #000; border: 2px solid #444; border-radius: 12px; color: white; font-size: 14px; outline: none; transition: 0.2s; }
 .input-box:focus { border-color: #fbbf24; }
-select.input-box { 
-  appearance: none; 
-  background-color: #2f3e1a; /* same as background */
-  color: #fff; /* white text */
-  border: 2px solid #fbbf24; /* yellow border */
-  background-image: url("data:image/svg+xml,%3Csvg fill='%23fbbf24' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); 
-  background-repeat: no-repeat; 
-  background-position: right 12px center; 
-  padding-right: 40px; 
+select.input-box {
+  appearance: none;
+  background-color: #2f3e1a;
+  color: #fff;
+  border: 2px solid #fbbf24;
+  background-image: url("data:image/svg+xml,%3Csvg fill='%23fbbf24' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 40px;
 }
 .withdraw-field { position: relative; margin: 8px 0; }
 .withdraw-field.label { font-size: 12px; color: #aaa; margin-bottom: 3px; margin-left: 4px; }
@@ -131,10 +131,8 @@ select.input-box {
 
   <div id="convertTab" class="tab-content active"><div class="note">1000 points = $0.50 USD</div><input type="number" id="convertAmount" class="input-box" placeholder="Enter points to convert" oninput="calcConvert()"><div class="convert-result" id="convertResult">You will receive: 0.00 USDT</div><div class="crypto-grid"><div class="crypto-item selected" onclick="selectCrypto('USDT', this)"><div class="icon">₮</div><div class="name">USDT</div></div><div class="crypto-item" onclick="selectCrypto('BNB', this)"><div class="icon">🟡</div><div class="name">BNB</div></div><div class="crypto-item" onclick="selectCrypto('XRP', this)"><div class="icon">💧</div><div class="name">XRP</div></div><div class="crypto-item" onclick="selectCrypto('XLM', this)"><div class="icon">⭐</div><div class="name">XLM</div></div></div><button class="action-btn" onclick="convertPoints()">Convert Points</button></div>
 
-  <!-- WITHDRAW TAB - REMOVED USERNAME + EMAIL -->
+  <!-- WITHDRAW TAB -->
   <div id="withdrawTab" class="tab-content">
-    <!-- REMOVED Username and Email fields -->
-
     <div class="withdraw-field"><div class="label">Select Crypto</div>
       <select id="withdrawCrypto" class="input-box" onchange="updateWithdrawMin()">
         <option value="USDT">💵 USDT - Tether</option>
