@@ -33,8 +33,8 @@
 select.input-box { appearance: none; background-image: url("data:image/svg+xml,%3Csvg fill='%23fbbf24' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 40px; }
 .withdraw-field { position: relative; margin: 10px 0; }
 .withdraw-field.label { font-size: 12px; color: #aaa; margin-bottom: 4px; margin-left: 4px; }
-.withdraw-estimate { background: #1a2410; border: 1px dashed #22c55e; border-radius: 10px; padding: 10px; margin: 8px 0; font-size: 13px; text-align: center; color: #22c55e; }
-.withdraw-error { background: #2e1a1a; border: 1px dashed #ef4444; border-radius: 10px; padding: 10px; margin: 8px 0; font-size: 13px; text-align: center; color: #ef4444; display: none; }
+.withdraw-estimate { background: #1a2410; border: 1px dashed #22c55e; border-radius: 10px; padding: 10px; margin: 8px 0; font-size: 13px; text-align: center; color: #22c55e; } /* CHANGED COLOR */
+.withdraw-error { background: #2e1a1a; border: 1px dashed #ef4444; border-radius: 10px; padding: 10px; margin: 8px 0; font-size: 13px; text-align: center; color: #ef4444; display: none; } /* NEW */
 .action-btn { width: 100%; padding: 16px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top:8px; box-shadow: 0 4px 0 #d97706; transition: 0.1s; }
 .action-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #d97706; }
 .action-btn:disabled { background: #444; color: #888; cursor: not-allowed; box-shadow: none; }
@@ -61,10 +61,10 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
 .gift-box:hover { transform: scale(1.05); border-color: #f59e0b; }
 .gift-box.disabled { opacity: 0.3; pointer-events: none; }
 .gift-box.burst { animation: burst 0.6s ease; }
-@keyframes burst { 0% { transform: scale(1); } 50% { transform: scale(1.3) rotate(10deg); } 100% { transform: scale(1); } }
+@keyframes burst { 0% { transform: scale(1); } 50% { transform: scale(1.3) rotate(10deg); } 100% { transform: scale(1); }
 .gift-history { background: #000; padding: 10px; border-radius: 10px; font-size: 13px; margin-top: 10px; text-align: center; }
 .gift-result-popup { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #000; border: 3px solid #fbbf24; border-radius: 20px; padding: 25px 30px; text-align: center; z-index: 1000; display: none; animation: popupIn 0.4s ease; box-shadow: 0 0 30px rgba(251, 191, 36, 0.5); }
-@keyframes popupIn { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+@keyframes popupIn { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
 .gift-result-popup.emoji { font-size: 60px; margin-bottom: 10px; }
 .gift-result-popup.text { font-size: 18px; color: #fbbf24; font-weight: bold; }
 .gift-result-popup.points { font-size: 32px; color: #22c55e; font-weight: bold; margin-top: 5px; }
@@ -101,28 +101,14 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
 
   <!-- UPDATED WITHDRAW TAB -->
   <div id="withdrawTab" class="tab-content">
-    <div class="withdraw-field">
-      <div class="label">1. Select Crypto</div>
-      <select id="withdrawCrypto" class="input-box" onchange="updateWithdrawEstimate()">
-        <option value="USDT">USDT - Tether</option>
-        <option value="BNB">BNB - Binance Coin</option>
-        <option value="XRP">XRP - Ripple</option>
-        <option value="XLM">XLM - Stellar</option>
-      </select>
-    </div>
-    <div class="withdraw-field">
-      <div class="label">2. Enter Wallet Address</div>
-      <input type="text" id="walletAddress" class="input-box" placeholder="0x... or r... or bnb...">
-    </div>
-    <div class="withdraw-field">
-      <div class="label">3. Enter Amount</div>
-      <input type="number" id="withdrawAmount" class="input-box" placeholder="Min $5 USD" oninput="updateWithdrawEstimate()">
-    </div>
-
-    <!-- REMOVED "You will spend" line. Added this instead -->
+    <div class="withdraw-field"><div class="label">1. Select Crypto</div><select id="withdrawCrypto" class="input-box" onchange="updateWithdrawEstimate()"><option value="USDT">USDT - Tether</option><option value="BNB">BNB - Binance Coin</option><option value="XRP">XRP - Ripple</option><option value="XLM">XLM - Stellar</option></select></div>
+    <div class="withdraw-field"><div class="label">2. Enter Wallet Address</div><input type="text" id="walletAddress" class="input-box" placeholder="0x... or r... or bnb..."></div>
+    <div class="withdraw-field"><div class="label">3. Enter Amount</div><input type="number" id="withdrawAmount" class="input-box" placeholder="Min $5 USD" oninput="updateWithdrawEstimate()"></div>
+    
+    <!-- REMOVED "You will spend" ADDED THESE 2 LINES -->
     <div class="withdraw-estimate" id="withdrawEstimate">Enter amount to see USD value</div>
     <div class="withdraw-error" id="withdrawError">Minimum withdraw is $5.00 USD</div>
-    
+
     <button class="action-btn" id="withdrawBtn" onclick="requestWithdraw()">🚀 Request Withdraw</button>
   </div>
   <div class="note">Min withdraw: $5. Processing: 24-48h</div></div></div>
@@ -136,10 +122,10 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
 <script>
   let selectedCrypto = 'USDT';
   const RATES = { USDT: 1, BNB: 600, XRP: 0.6, XLM: 0.12 }; // 1 coin = $USD
-  const POINT_RATE = 0.0005; // 1 point = $0.0005
-  const MIN_WITHDRAW_USD = 5;
+  const POINT_RATE = 0.0005;
+  const MIN_WITHDRAW_USD = 5; // NEW
   const DAILY_REWARD = 20;
-  const GIFT_POOL = [4][5][7][0][10][12][0][15][20][22][0][25];
+  const GIFT_POOL = [4,5,7,0,10,12,0,15,20,22,0,25];
   let currentUser = null;
   let countdownInterval = null;
   let giftCountdownInterval = null;
@@ -188,7 +174,7 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   window.calcConvert = function() { const pts = parseFloat(document.getElementById('convertAmount').value) || 0; const usd = pts * POINT_RATE; const cryptoAmt = usd / RATES[selectedCrypto]; document.getElementById('convertResult').innerText = `You will receive: ${cryptoAmt.toFixed(6)} ${selectedCrypto}`; }
   window.convertPoints = async function() { const pts = parseFloat(document.getElementById('convertAmount').value); if(!pts || pts < 1000) return alert('Min 1000 points'); if(pts > userData.balance) return alert('Not enough points'); addHistory("Convert Points", -pts, `Converted to ${selectedCrypto}`); alert('Convert request sent!'); closeWallet(); }
   
-  // UPDATED: Show USD value and check $5 min
+  // UPDATED FUNCTION 1: Show USD value instead of points
   window.updateWithdrawEstimate = function() { 
     const amt = parseFloat(document.getElementById('withdrawAmount').value) || 0; 
     const crypto = document.getElementById('withdrawCrypto').value;
@@ -213,7 +199,7 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
     }
   }
 
-  // UPDATED: Reject if less than $5
+  // UPDATED FUNCTION 2: Reject if less than $5
   window.requestWithdraw = async function() { 
     const amt = parseFloat(document.getElementById('withdrawAmount').value); 
     const address = document.getElementById('walletAddress').value.trim(); 
@@ -235,13 +221,13 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
     closeWallet(); 
   }
 
-  // CHECKIN
+  // CHECKIN - FIXED: Added missing }
   window.openCheckin = function() { document.getElementById('successMsg').style.display = 'none'; checkClaimStatus(); document.getElementById('checkinModal').style.display = 'flex'; }
   window.closeCheckin = function() { document.getElementById('checkinModal').style.display = 'none'; clearInterval(countdownInterval); }
   function getToday() { return new Date().toISOString().split('T')[0]; }
   function getNextClaimTime() { const now = new Date(); const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(0, 0, 0, 0); return tomorrow; }
   function updateCountdown() { const diff = getNextClaimTime() - new Date(); if(diff <= 0) { clearInterval(countdownInterval); checkClaimStatus(); return; } const h = Math.floor(diff / 1000 / 60 / 60); const m = Math.floor(diff / 1000 / 60) % 60; const s = Math.floor(diff / 1000) % 60; document.getElementById('countdown').innerText = `Next claim in: ${h}h ${m}m ${s}s`; }
-  function checkClaimStatus() { const today = getToday(); const lastClaim = userData.lastCheckin; clearInterval(countdownInterval); if(lastClaim === today) { document.getElementById('claimBtn').disabled = true; document.getElementById('claimBtn').innerText = "Already Claimed Today"; document.getElementById('checkinNote').innerHTML = "✓ Claimed! Come back tomorrow"; document.getElementById('countdown').style.display = 'block'; updateCountdown(); countdownInterval = setInterval(updateCountdown, 1000); } else { document.getElementById('claimBtn').disabled = false; document.getElementById('claimBtn').innerText = `Claim ${DAILY_REWARD} Points`; document.getElementById('checkinNote').innerText = "Tap to claim your daily reward"; document.getElementById('countdown').style.display = 'none'; }
+  function checkClaimStatus() { const today = getToday(); const lastClaim = userData.lastCheckin; clearInterval(countdownInterval); if(lastClaim === today) { document.getElementById('claimBtn').disabled = true; document.getElementById('claimBtn').innerText = "Already Claimed Today"; document.getElementById('checkinNote').innerHTML = "✓ Claimed! Come back tomorrow"; document.getElementById('countdown').style.display = 'block'; updateCountdown(); countdownInterval = setInterval(updateCountdown, 1000); } else { document.getElementById('claimBtn').disabled = false; document.getElementById('claimBtn').innerText = `Claim ${DAILY_REWARD} Points`; document.getElementById('checkinNote').innerText = "Tap to claim your daily reward"; document.getElementById('countdown').style.display = 'none'; } }
   window.claimDaily = async function() { const today = getToday(); if(userData.lastCheckin === today) return; addHistory("Daily Login", DAILY_REWARD); userData.lastCheckin = today; localStorage.setItem('userData', JSON.stringify(userData)); document.getElementById('successMsg').style.display = 'block'; checkClaimStatus(); if(currentUser) db.collection("users").doc(currentUser.uid).update({balance: userData.balance, lastCheckin: today}); }
 
   // GIFT
@@ -249,7 +235,7 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   window.openGift = function() { document.getElementById('giftResultPopup').style.display = 'none'; buildGiftGrid(); checkGiftStatus(); document.getElementById('giftModal').style.display = 'flex'; }
   window.closeGift = function() { document.getElementById('giftModal').style.display = 'none'; clearInterval(giftCountdownInterval); }
   function buildGiftGrid() { const pool = getRotatedPool(); const grid = document.getElementById('giftGrid'); grid.innerHTML = ''; pool.forEach((pts, i) => { const box = document.createElement('div'); box.className = 'gift-box'; box.innerHTML = '📦'; box.onclick = () => pickGift(i, pts, box); grid.appendChild(box); }); }
-  function checkGiftStatus() { const today = getToday(); const lastClaim = userData.lastGiftClaim; clearInterval(giftCountdownInterval); if(lastClaim === today) { document.querySelectorAll('.gift-box').forEach(b => b.classList.add('disabled')); document.getElementById('giftNote').innerText = "Already picked today. Come back tomorrow"; document.getElementById('giftHistory').innerText = `Last gift: ${userData.lastGiftPoints} points`; document.getElementById('giftCountdown').style.display = 'block'; updateGiftCountdown(); giftCountdownInterval = setInterval(updateGiftCountdown, 1000); } else { document.querySelectorAll('.gift-box').forEach(b => b.classList.remove('disabled')); document.getElementById('giftNote').innerText = "Pick 1 mystery box. Resets at midnight"; document.getElementById('giftHistory').innerText = userData.lastGiftPoints? `Last gift: ${userData.lastGiftPoints} points` : 'No gifts claimed yet'; document.getElementById('giftCountdown').style.display = 'none'; }
+  function checkGiftStatus() { const today = getToday(); const lastClaim = userData.lastGiftClaim; clearInterval(giftCountdownInterval); if(lastClaim === today) { document.querySelectorAll('.gift-box').forEach(b => b.classList.add('disabled')); document.getElementById('giftNote').innerText = "Already picked today. Come back tomorrow"; document.getElementById('giftHistory').innerText = `Last gift: ${userData.lastGiftPoints} points`; document.getElementById('giftCountdown').style.display = 'block'; updateGiftCountdown(); giftCountdownInterval = setInterval(updateGiftCountdown, 1000); } else { document.querySelectorAll('.gift-box').forEach(b => b.classList.remove('disabled')); document.getElementById('giftNote').innerText = "Pick 1 mystery box. Resets at midnight"; document.getElementById('giftHistory').innerText = userData.lastGiftPoints? `Last gift: ${userData.lastGiftPoints} points` : 'No gifts claimed yet'; document.getElementById('giftCountdown').style.display = 'none'; } }
   function updateGiftCountdown() { const diff = getNextClaimTime() - new Date(); if(diff <= 0) { clearInterval(giftCountdownInterval); checkGiftStatus(); return; } const h = Math.floor(diff / 1000 / 60 / 60); const m = Math.floor(diff / 1000 / 60) % 60; const s = Math.floor(diff / 1000) % 60; document.getElementById('giftCountdown').innerText = `Next gift in: ${h}h ${m}m ${s}s`; }
   window.pickGift = async function(index, points, el) { if(userData.lastGiftClaim === getToday()) return; el.classList.add('burst'); addHistory("Gift Box", points, `Mystery Box Reward`); userData.lastGiftClaim = getToday(); userData.lastGiftPoints = points; localStorage.setItem('userData', JSON.stringify(userData)); const popup = document.getElementById('giftResultPopup'); document.getElementById('resultEmoji').innerText = points === 0? '💀' : '🎉'; document.getElementById('resultPoints').innerText = `${points} points`; popup.style.display = 'block'; setTimeout(() => { popup.style.display = 'none'; }, 1800); el.innerHTML = '📦'; document.querySelectorAll('.gift-box').forEach(b => b.classList.add('disabled')); if(currentUser) db.collection("users").doc(currentUser.uid).update({ balance: userData.balance, lastGiftClaim: userData.lastGiftClaim, lastGiftPoints: points }); setTimeout(checkGiftStatus, 1000); }
 
