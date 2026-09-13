@@ -29,6 +29,7 @@
 .popup-balance.label { font-size: 13px; color: #ccc; margin-bottom: 6px; }
 .popup-balance.amount { font-size: 28px; color: #f59e0b; font-weight: bold; }
 .input-box { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 14px; outline: none; }
+select.input-box { appearance: none; } /* NEW: for dropdown */
 .action-btn { width: 100%; padding: 14px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top:8px; }
 .action-btn:disabled { background: #444; color: #888; cursor: not-allowed; }
 .note { font-size: 12px; color: #aaa; margin-top: 6px; text-align: center; }
@@ -59,7 +60,7 @@
 .gift-box:hover { transform: scale(1.05); border-color: #f59e0b; }
 .gift-box.disabled { opacity: 0.3; pointer-events: none; }
 .gift-box.burst { animation: burst 0.6s ease; }
-@keyframes burst { 0% { transform: scale(1); } 50% { transform: scale(1.3) rotate(10deg); } 100% { transform: scale(1); } } /* FIXED } */
+@keyframes burst { 0% { transform: scale(1); } 50% { transform: scale(1.3) rotate(10deg); } 100% { transform: scale(1); } }
 .gift-history { background: #000; padding: 10px; border-radius: 10px; font-size: 13px; margin-top: 10px; text-align: center; }
 .gift-result-popup { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #000; border: 3px solid #fbbf24; border-radius: 20px; padding: 25px 30px; text-align: center; z-index: 1000; display: none; animation: popupIn 0.4s ease; box-shadow: 0 0 30px rgba(251, 191, 36, 0.5); }
 @keyframes popupIn { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
@@ -92,7 +93,27 @@
   </div>
 
   <!-- WALLET POPUP -->
-  <div id="walletModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>💰 Wallet</h2><span class="close-btn" onclick="closeWallet()">&times;</span></div><div class="popup-balance"><div class="label">Your Balance</div><div class="amount" id="popupBalance">0 points</div></div><div class="tabs"><button class="tab-btn active" onclick="switchTab('convert')">Convert</button><button class="tab-btn" onclick="switchTab('withdraw')">Withdraw</button></div><div id="convertTab" class="tab-content active"><div class="note">1000 points = $0.50 USD</div><input type="number" id="convertAmount" class="input-box" placeholder="Enter points to convert" oninput="calcConvert()"><div class="convert-result" id="convertResult">You will receive: 0.00 USDT</div><div class="crypto-grid"><div class="crypto-item selected" onclick="selectCrypto('USDT', this)"><div class="icon">₮</div><div class="name">USDT</div></div><div class="crypto-item" onclick="selectCrypto('BNB', this)"><div class="icon">🟡</div><div class="name">BNB</div></div><div class="crypto-item" onclick="selectCrypto('XRP', this)"><div class="icon">💧</div><div class="name">XRP</div></div><div class="crypto-item" onclick="selectCrypto('XLM', this)"><div class="icon">⭐</div><div class="name">XLM</div></div></div><button class="action-btn" onclick="convertPoints()">Convert Points</button></div><div id="withdrawTab" class="tab-content"><input type="text" id="walletAddress" class="input-box" placeholder="Enter Wallet Address"><input type="number" id="withdrawAmount" class="input-box" placeholder="Amount in USD"><button class="action-btn" onclick="requestWithdraw()">Request Withdraw</button></div><div class="note">Min withdraw: $5. Processing: 24-48h</div></div></div>
+  <div id="walletModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>💰 Wallet</h2><span class="close-btn" onclick="closeWallet()">&times;</span></div><div class="popup-balance"><div class="label">Your Balance</div><div class="amount" id="popupBalance">0 points</div></div><div class="tabs"><button class="tab-btn active" onclick="switchTab('convert')">Convert</button><button class="tab-btn" onclick="switchTab('withdraw')">Withdraw</button></div>
+  
+  <div id="convertTab" class="tab-content active"><div class="note">1000 points = $0.50 USD</div><input type="number" id="convertAmount" class="input-box" placeholder="Enter points to convert" oninput="calcConvert()"><div class="convert-result" id="convertResult">You will receive: 0.00 USDT</div><div class="crypto-grid"><div class="crypto-item selected" onclick="selectCrypto('USDT', this)"><div class="icon">₮</div><div class="name">USDT</div></div><div class="crypto-item" onclick="selectCrypto('BNB', this)"><div class="icon">🟡</div><div class="name">BNB</div></div><div class="crypto-item" onclick="selectCrypto('XRP', this)"><div class="icon">💧</div><div class="name">XRP</div></div><div class="crypto-item" onclick="selectCrypto('XLM', this)"><div class="icon">⭐</div><div class="name">XLM</div></div></div><button class="action-btn" onclick="convertPoints()">Convert Points</button></div>
+  
+  <!-- WITHDRAW TAB WITH DROPDOWN -->
+  <div id="withdrawTab" class="tab-content">
+    <input type="text" id="walletAddress" class="input-box" placeholder="Enter Wallet Address">
+    
+    <!-- NEW DROPDOWN -->
+    <select id="withdrawCrypto" class="input-box">
+      <option value="USDT">USDT - Tether</option>
+      <option value="BNB">BNB - Binance Coin</option>
+      <option value="XRP">XRP - Ripple</option>
+      <option value="XLM">XLM - Stellar</option>
+    </select>
+    
+    <input type="number" id="withdrawAmount" class="input-box" placeholder="Amount in USD">
+    <button class="action-btn" onclick="requestWithdraw()">Request Withdraw</button>
+  </div>
+  
+  <div class="note">Min withdraw: $5. Processing: 24-48h</div></div></div>
 
   <!-- DAILY CHECKIN POPUP -->
   <div id="checkinModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📅 Daily Checkin</h2><span class="close-btn" onclick="closeCheckin()">&times;</span></div><div class="checkin-card"><div class="big-emoji">🎁</div><h3>Daily Reward</h3><p>Claim 20 points every 24 hours</p><button class="action-btn" id="claimBtn" onclick="claimDaily()">Claim 20 Points</button><div class="countdown" id="countdown"></div><div class="success-msg" id="successMsg">✓ 20 Points Added!</div><p class="note" id="checkinNote">Tap to claim your daily reward</p></div></div></div>
@@ -152,7 +173,23 @@
   window.selectCrypto = function(crypto, el) { selectedCrypto = crypto; document.querySelectorAll('.crypto-item').forEach(i => i.classList.remove('selected')); el.classList.add('selected'); calcConvert(); }
   window.calcConvert = function() { const pts = parseFloat(document.getElementById('convertAmount').value) || 0; const usd = pts * POINT_RATE; const cryptoAmt = usd / RATES[selectedCrypto]; document.getElementById('convertResult').innerText = `You will receive: ${cryptoAmt.toFixed(6)} ${selectedCrypto}`; }
   window.convertPoints = async function() { const pts = parseFloat(document.getElementById('convertAmount').value); if(!pts || pts < 1000) return alert('Min 1000 points'); if(pts > userData.balance) return alert('Not enough points'); addHistory("Convert Points", -pts, `Converted to ${selectedCrypto}`); alert('Convert request sent!'); closeWallet(); }
-  window.requestWithdraw = async function() { const amt = parseFloat(document.getElementById('withdrawAmount').value); if(!amt || amt < 5) return alert('Min $5'); const ptsNeeded = amt / POINT_RATE; if(ptsNeeded > userData.balance) return alert('Not enough points'); addHistory("Withdraw Request", -ptsNeeded, `$${amt} to wallet`); alert('Withdraw request sent!'); closeWallet(); }
+  
+  // UPDATED: WITHDRAW WITH CRYPTO SELECT
+  window.requestWithdraw = async function() { 
+    const amt = parseFloat(document.getElementById('withdrawAmount').value); 
+    const address = document.getElementById('walletAddress').value.trim();
+    const crypto = document.getElementById('withdrawCrypto').value; // NEW
+    
+    if(!address) return alert('Enter wallet address');
+    if(!amt || amt < 5) return alert('Min $5'); 
+    
+    const ptsNeeded = amt / POINT_RATE; 
+    if(ptsNeeded > userData.balance) return alert('Not enough points'); 
+    
+    addHistory("Withdraw Request", -ptsNeeded, `$${amt} ${crypto} to ${address}`); // NEW: save crypto
+    alert(`Withdraw request sent! \n$${amt} ${crypto}\nTo: ${address}`);
+    closeWallet(); 
+  }
 
   // CHECKIN
   window.openCheckin = function() { document.getElementById('successMsg').style.display = 'none'; checkClaimStatus(); document.getElementById('checkinModal').style.display = 'flex'; }
