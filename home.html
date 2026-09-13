@@ -68,7 +68,7 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
 .gift-result-popup.text { font-size: 18px; color: #fbbf24; font-weight: bold; }
 .gift-result-popup.points { font-size: 32px; color: #22c55e; font-weight: bold; margin-top: 5px; }
 
-/* NEW FOR WALLET SCREENSHOT */
+/* FOR WALLET SCREENSHOT */
 .info-row { display: flex; justify-content: space-between; background: #1a2410; padding: 14px; border-radius: 12px; margin: 8px 0; font-size: 14px; }
 .info-row.key { color: #ccc; }
 .info-row.val { color: #fff; font-weight: bold; }
@@ -85,7 +85,7 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
 <body>
   <div class="container">
     <div class="header"><h2><span id="headerText"></span></h2></div>
-    
+
     <div class="balance-card">
       <div class="label">Your Balance</div>
       <div class="amount" id="balance">0 points</div>
@@ -104,15 +104,13 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
 
   <!-- WALLET POPUP -->
   <div id="walletModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>💰 My Wallet</h2><span class="close-btn" onclick="closeWallet()">&times;</span></div>
-  
-  <!-- UPDATED BALANCE BOX -->
+
   <div class="popup-balance">
     <div class="label">Points Balance</div>
     <div class="amount" id="popupBalance">0 points</div>
     <div class="label" id="popupUsd">≈ $0.00 USD</div>
   </div>
 
-  <!-- CRYPTO BALANCES -->
   <div class="crypto-balances">
     <div class="crypto-bal"><div class="name">USDT</div><div class="val" id="usdtBal">0.00</div></div>
     <div class="crypto-bal"><div class="name">BNB</div><div class="val" id="bnbBal">0.0000</div></div>
@@ -124,23 +122,23 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
 
   <div id="convertTab" class="tab-content active"><div class="note">1000 points = $0.50 USD</div><input type="number" id="convertAmount" class="input-box" placeholder="Enter points to convert" oninput="calcConvert()"><div class="convert-result" id="convertResult">You will receive: 0.00 USDT</div><div class="crypto-grid"><div class="crypto-item selected" onclick="selectCrypto('USDT', this)"><div class="icon">₮</div><div class="name">USDT</div></div><div class="crypto-item" onclick="selectCrypto('BNB', this)"><div class="icon">🟡</div><div class="name">BNB</div></div><div class="crypto-item" onclick="selectCrypto('XRP', this)"><div class="icon">💧</div><div class="name">XRP</div></div><div class="crypto-item" onclick="selectCrypto('XLM', this)"><div class="icon">⭐</div><div class="name">XLM</div></div></div><button class="action-btn" onclick="convertPoints()">Convert Points</button></div>
 
-  <!-- WITHDRAW TAB UPDATED TO MATCH NEW SCREENSHOT -->
+  <!-- WITHDRAW TAB - SELECT CRYPTO UPDATED WITH EMOJIS -->
   <div id="withdrawTab" class="tab-content">
     <div class="info-row"><span class="key">Username</span><span class="val" id="withdrawUsername">-</span></div>
     <div class="info-row"><span class="key">Email</span><span class="val" id="withdrawEmail">-</span></div>
-    
+
     <div class="withdraw-field"><div class="label">Select Crypto</div>
       <select id="withdrawCrypto" class="input-box" onchange="updateWithdrawMin()">
-        <option value="USDT">USDT - Tether</option>
-        <option value="BNB">BNB - Binance Coin</option>
-        <option value="XRP">XRP - Ripple</option>
-        <option value="XLM">XLM - Stellar</option>
+        <option value="USDT">💵 USDT - Tether</option>
+        <option value="BNB">🟡 BNB - Binance Coin</option>
+        <option value="XRP">💧 XRP - Ripple</option>
+        <option value="XLM">⭐ XLM - Stellar</option>
       </select>
     </div>
 
     <div class="withdraw-field"><div class="label">Wallet Address</div><input type="text" id="walletAddress" class="input-box" placeholder="Enter your wallet address"></div>
     <div class="withdraw-field"><div class="label">Amount</div><input type="number" id="withdrawAmount" class="input-box" placeholder="Enter amount" oninput="updateWithdrawMin()"></div>
-    
+
     <div class="withdraw-estimate" id="withdrawEstimate">Min: USDT 10</div>
     <button class="action-btn" id="withdrawBtn" onclick="requestWithdraw()">Request Withdraw</button>
     <div class="note" id="minNote">Min: USDT 10 | BNB 0.01 | XRP 20 | XLM 100</div>
@@ -156,7 +154,7 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
 <script>
   let selectedCrypto = 'USDT';
   const RATES = { USDT: 1, BNB: 600, XRP: 0.6, XLM: 0.12 };
-  const MIN_WITHDRAW = { USDT: 10, BNB: 0.01, XRP: 20, XLM: 100 }; // NEW
+  const MIN_WITHDRAW = { USDT: 10, BNB: 0.01, XRP: 20, XLM: 100 };
   const POINT_RATE = 0.0005;
   const DAILY_REWARD = 20;
   const GIFT_POOL = [4,5,7,0,10,12,0,15,20,22,0,25];
@@ -196,18 +194,18 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
     document.getElementById('balance').innerText = (data.balance || 0) + ' points';
     document.getElementById('usdBalance').innerText = `≈ $${((data.balance || 0) * POINT_RATE).toFixed(2)} USD`;
   }
-  
+
   const cachedData = JSON.parse(localStorage.getItem('userData') || '{}');
   if(cachedData.username){ loadData(cachedData); }
 
   // WALLET
-  window.openWallet = function() { 
-    document.getElementById('popupBalance').innerText = (userData.balance || 0) + ' points'; 
+  window.openWallet = function() {
+    document.getElementById('popupBalance').innerText = (userData.balance || 0) + ' points';
     document.getElementById('popupUsd').innerText = `≈ $${((userData.balance || 0) * POINT_RATE).toFixed(2)} USD`;
     document.getElementById('withdrawUsername').innerText = userData.username || '-';
     document.getElementById('withdrawEmail').innerText = userData.email || '-';
-    document.getElementById('walletModal').style.display = 'flex'; 
-    calcConvert(); 
+    document.getElementById('walletModal').style.display = 'flex';
+    calcConvert();
     updateWithdrawMin();
   }
   window.closeWallet = function() { document.getElementById('walletModal').style.display = 'none'; }
@@ -216,14 +214,13 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   window.calcConvert = function() { const pts = parseFloat(document.getElementById('convertAmount').value) || 0; const usd = pts * POINT_RATE; const cryptoAmt = usd / RATES[selectedCrypto]; document.getElementById('convertResult').innerText = `You will receive: ${cryptoAmt.toFixed(6)} ${selectedCrypto}`; }
   window.convertPoints = async function() { const pts = parseFloat(document.getElementById('convertAmount').value); if(!pts || pts < 1000) return alert('Min 1000 points'); if(pts > userData.balance) return alert('Not enough points'); addHistory("Convert Points", -pts, `Converted to ${selectedCrypto}`); alert('Convert request sent!'); closeWallet(); }
 
-  // UPDATED FOR SCREENSHOT
   window.updateWithdrawMin = function() {
     const crypto = document.getElementById('withdrawCrypto').value;
     const amt = parseFloat(document.getElementById('withdrawAmount').value) || 0;
     const min = MIN_WITHDRAW[crypto];
     document.getElementById('withdrawEstimate').innerText = `Min: ${crypto} ${min}`;
     document.getElementById('withdrawAmount').placeholder = `Min ${min} ${crypto}`;
-    
+
     const errorBox = document.getElementById('withdrawEstimate');
     const btn = document.getElementById('withdrawBtn');
     if(amt > 0 && amt < min) {
