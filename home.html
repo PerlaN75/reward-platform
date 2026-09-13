@@ -60,10 +60,10 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
 .gift-box:hover { transform: scale(1.05); border-color: #f59e0b; }
 .gift-box.disabled { opacity: 0.3; pointer-events: none; }
 .gift-box.burst { animation: burst 0.6s ease; }
-@keyframes burst { 0% { transform: scale(1); } 50% { transform: scale(1.3) rotate(10deg); } 100% { transform: scale(1); } }
+@keyframes burst { 0% { transform: scale(1); } 50% { transform: scale(1.3) rotate(10deg); } 100% { transform: scale(1); }
 .gift-history { background: #000; padding: 10px; border-radius: 10px; font-size: 13px; margin-top: 10px; text-align: center; }
 .gift-result-popup { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #000; border: 3px solid #fbbf24; border-radius: 20px; padding: 25px 30px; text-align: center; z-index: 1000; display: none; animation: popupIn 0.4s ease; box-shadow: 0 0 30px rgba(251, 191, 36, 0.5); }
-@keyframes popupIn { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } } /* FIXED: added } */
+@keyframes popupIn { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
 .gift-result-popup .emoji { font-size: 60px; margin-bottom: 10px; }
 .gift-result-popup .text { font-size: 18px; color: #fbbf24; font-weight: bold; }
 .gift-result-popup .points { font-size: 32px; color: #22c55e; font-weight: bold; margin-top: 5px; }
@@ -75,7 +75,6 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
 </head>
 <body>
   <div class="container">
-    <!-- FIXED: Added headerText back -->
     <div class="header"><h2><span id="headerText"></span></h2></div>
     
     <div class="balance-card">
@@ -100,23 +99,9 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   <div id="convertTab" class="tab-content active"><div class="note">1000 points = $0.50 USD</div><input type="number" id="convertAmount" class="input-box" placeholder="Enter points to convert" oninput="calcConvert()"><div class="convert-result" id="convertResult">You will receive: 0.00 USDT</div><div class="crypto-grid"><div class="crypto-item selected" onclick="selectCrypto('USDT', this)"><div class="icon">₮</div><div class="name">USDT</div></div><div class="crypto-item" onclick="selectCrypto('BNB', this)"><div class="icon">🟡</div><div class="name">BNB</div></div><div class="crypto-item" onclick="selectCrypto('XRP', this)"><div class="icon">💧</div><div class="name">XRP</div></div><div class="crypto-item" onclick="selectCrypto('XLM', this)"><div class="icon">⭐</div><div class="name">XLM</div></div></div><button class="action-btn" onclick="convertPoints()">Convert Points</button></div>
 
   <div id="withdrawTab" class="tab-content">
-    <div class="withdraw-field">
-      <div class="label">1. Select Crypto</div>
-      <select id="withdrawCrypto" class="input-box" onchange="updateWithdrawEstimate()">
-        <option value="USDT" data-icon="₮">USDT - Tether</option>
-        <option value="BNB" data-icon="🟡">BNB - Binance Coin</option>
-        <option value="XRP" data-icon="💧">XRP - Ripple</option>
-        <option value="XLM" data-icon="⭐">XLM - Stellar</option>
-      </select>
-    </div>
-    <div class="withdraw-field">
-      <div class="label">2. Enter Wallet Address</div>
-      <input type="text" id="walletAddress" class="input-box" placeholder="0x... or r... or bnb...">
-    </div>
-    <div class="withdraw-field">
-      <div class="label">3. Enter Amount</div>
-      <input type="number" id="withdrawAmount" class="input-box" placeholder="Min 5 USDT" oninput="updateWithdrawEstimate()">
-    </div>
+    <div class="withdraw-field"><div class="label">1. Select Crypto</div><select id="withdrawCrypto" class="input-box" onchange="updateWithdrawEstimate()"><option value="USDT">USDT - Tether</option><option value="BNB">BNB - Binance Coin</option><option value="XRP">XRP - Ripple</option><option value="XLM">XLM - Stellar</option></select></div>
+    <div class="withdraw-field"><div class="label">2. Enter Wallet Address</div><input type="text" id="walletAddress" class="input-box" placeholder="0x... or r... or bnb..."></div>
+    <div class="withdraw-field"><div class="label">3. Enter Amount</div><input type="number" id="withdrawAmount" class="input-box" placeholder="Min 5 USDT" oninput="updateWithdrawEstimate()"></div>
     <div class="withdraw-estimate" id="withdrawEstimate">You will spend: 0 points</div>
     <button class="action-btn" onclick="requestWithdraw()">🚀 Request Withdraw</button>
   </div>
@@ -166,12 +151,11 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
 
   function loadData(data) {
     userData = data;
-    document.getElementById('headerText').innerText = `Welcome, ${data.username || 'User'}`; // FIXED
+    document.getElementById('headerText').innerText = `Welcome, ${data.username || 'User'}`;
     document.getElementById('balance').innerText = (data.balance || 0) + ' points';
     document.getElementById('usdBalance').innerText = `≈ $${((data.balance || 0) * POINT_RATE).toFixed(2)} USD`;
   }
   
-  // FIXED: Load from cache OR wait for firebase
   const cachedData = JSON.parse(localStorage.getItem('userData') || '{}');
   if(cachedData.username){ loadData(cachedData); }
 
@@ -185,13 +169,13 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   window.updateWithdrawEstimate = function() { const amt = parseFloat(document.getElementById('withdrawAmount').value) || 0; const crypto = document.getElementById('withdrawCrypto').value; const pointsNeeded = (amt / RATES[crypto]) / POINT_RATE; document.getElementById('withdrawEstimate').innerText = `You will spend: ${Math.ceil(pointsNeeded)} points`; document.getElementById('withdrawAmount').placeholder = `Min 5 ${crypto}`; }
   window.requestWithdraw = async function() { const amt = parseFloat(document.getElementById('withdrawAmount').value); const address = document.getElementById('walletAddress').value.trim(); const crypto = document.getElementById('withdrawCrypto').value; if(!address) return alert('Enter wallet address'); if(!amt || amt < 5) return alert(`Min 5 ${crypto}`); const usdValue = amt * RATES[crypto]; const ptsNeeded = usdValue / POINT_RATE; if(ptsNeeded > userData.balance) return alert('Not enough points'); addHistory("Withdraw Request", -ptsNeeded, `Withdrew ${amt} ${crypto} to ${address}`); if(currentUser) db.collection("users").doc(currentUser.uid).update({balance: userData.balance}); alert(`Withdraw request sent! \n${amt} ${crypto} ≈ $${usdValue.toFixed(2)}\nTo: ${address}`); closeWallet(); }
 
-  // CHECKIN
+  // CHECKIN - FIXED: Added missing }
   window.openCheckin = function() { document.getElementById('successMsg').style.display = 'none'; checkClaimStatus(); document.getElementById('checkinModal').style.display = 'flex'; }
   window.closeCheckin = function() { document.getElementById('checkinModal').style.display = 'none'; clearInterval(countdownInterval); }
   function getToday() { return new Date().toISOString().split('T')[0]; }
   function getNextClaimTime() { const now = new Date(); const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(0, 0, 0, 0); return tomorrow; }
   function updateCountdown() { const diff = getNextClaimTime() - new Date(); if(diff <= 0) { clearInterval(countdownInterval); checkClaimStatus(); return; } const h = Math.floor(diff / 1000 / 60 / 60); const m = Math.floor(diff / 1000 / 60) % 60; const s = Math.floor(diff / 1000) % 60; document.getElementById('countdown').innerText = `Next claim in: ${h}h ${m}m ${s}s`; }
-  function checkClaimStatus() { const today = getToday(); const lastClaim = userData.lastCheckin; clearInterval(countdownInterval); if(lastClaim === today) { document.getElementById('claimBtn').disabled = true; document.getElementById('claimBtn').innerText = "Already Claimed Today"; document.getElementById('checkinNote').innerHTML = "✓ Claimed! Come back tomorrow"; document.getElementById('countdown').style.display = 'block'; updateCountdown(); countdownInterval = setInterval(updateCountdown, 1000); } else { document.getElementById('claimBtn').disabled = false; document.getElementById('claimBtn').innerText = `Claim ${DAILY_REWARD} Points`; document.getElementById('checkinNote').innerText = "Tap to claim your daily reward"; document.getElementById('countdown').style.display = 'none'; }
+  function checkClaimStatus() { const today = getToday(); const lastClaim = userData.lastCheckin; clearInterval(countdownInterval); if(lastClaim === today) { document.getElementById('claimBtn').disabled = true; document.getElementById('claimBtn').innerText = "Already Claimed Today"; document.getElementById('checkinNote').innerHTML = "✓ Claimed! Come back tomorrow"; document.getElementById('countdown').style.display = 'block'; updateCountdown(); countdownInterval = setInterval(updateCountdown, 1000); } else { document.getElementById('claimBtn').disabled = false; document.getElementById('claimBtn').innerText = `Claim ${DAILY_REWARD} Points`; document.getElementById('checkinNote').innerText = "Tap to claim your daily reward"; document.getElementById('countdown').style.display = 'none'; } } // <-- ADDED THIS }
   window.claimDaily = async function() { const today = getToday(); if(userData.lastCheckin === today) return; addHistory("Daily Login", DAILY_REWARD); userData.lastCheckin = today; localStorage.setItem('userData', JSON.stringify(userData)); document.getElementById('successMsg').style.display = 'block'; checkClaimStatus(); if(currentUser) db.collection("users").doc(currentUser.uid).update({balance: userData.balance, lastCheckin: today}); }
 
   // GIFT
@@ -212,7 +196,6 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // FIXED: Load real balance from firebase
   auth.onAuthStateChanged(async (user) => {
     if (user) {
       currentUser = user;
@@ -221,7 +204,7 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
         const data = doc.data();
         localStorage.setItem('userData', JSON.stringify(data));
         localStorage.setItem('points', data.balance || 0);
-        loadData(data); // This will now show "Welcome, Abeza" and real balance
+        loadData(data);
       }
     } else {
       localStorage.clear();
