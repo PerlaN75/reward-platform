@@ -102,7 +102,7 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
     <div class="withdraw-field"><div class="label">1. Select Crypto</div><select id="withdrawCrypto" class="input-box" style="background:#0f1508; color:#fbbf24; border-color:#fbbf24;" onchange="updateWithdrawEstimate()"><option value="USDT">💵 USDT - Tether</option><option value="BNB">🟡 BNB - Binance Coin</option><option value="XRP">💧 XRP - Ripple</option><option value="XLM">⭐ XLM - Stellar</option></select></div>
     <div class="withdraw-field"><div class="label">2. Enter Wallet Address</div><input type="text" id="walletAddress" class="input-box" placeholder="0x... or r... or bnb..."></div>
     <div class="withdraw-field"><div class="label">3. Enter Amount</div><input type="number" id="withdrawAmount" class="input-box" placeholder="Min $5 value" oninput="updateWithdrawEstimate()"></div>
-    <div class="withdraw-estimate" id="usdValueText" style="display:none;">Value: $0.00 USD</div> <!-- NEW LINE -->
+    <!-- REMOVED: You will spend: 0 points -->
     <button class="action-btn" onclick="requestWithdraw()">🚀 Request Withdraw</button>
   </div>
   <div class="note">Min withdraw: $5. Processing: 24-48h</div></div></div>
@@ -118,7 +118,7 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   const RATES = { USDT: 1, BNB: 600, XRP: 0.6, XLM: 0.12 };
   const POINT_RATE = 0.0005;
   const DAILY_REWARD = 20;
-  const GIFT_POOL = [4][5][7][0][10][12][0][15][20][22][0][25];
+  const GIFT_POOL = [4,5,7,0,10,12,0,15,20,22,0,25];
   let currentUser = null;
   let countdownInterval = null;
   let giftCountdownInterval = null;
@@ -166,22 +166,9 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   window.selectCrypto = function(crypto, el) { selectedCrypto = crypto; document.querySelectorAll('.crypto-item').forEach(i => i.classList.remove('selected')); el.classList.add('selected'); calcConvert(); }
   window.calcConvert = function() { const pts = parseFloat(document.getElementById('convertAmount').value) || 0; const usd = pts * POINT_RATE; const cryptoAmt = usd / RATES[selectedCrypto]; document.getElementById('convertResult').innerText = `You will receive: ${cryptoAmt.toFixed(6)} ${selectedCrypto}`; }
   window.convertPoints = async function() { const pts = parseFloat(document.getElementById('convertAmount').value); if(!pts || pts < 1000) return alert('Min 1000 points'); if(pts > userData.balance) return alert('Not enough points'); addHistory("Convert Points", -pts, `Converted to ${selectedCrypto}`); alert('Convert request sent!'); closeWallet(); }
+  window.updateWithdrawEstimate = function() { const amt = parseFloat(document.getElementById('withdrawAmount').value) || 0; const crypto = document.getElementById('withdrawCrypto').value; document.getElementById('withdrawAmount').placeholder = `Min $5 value`; }
 
-  // UPDATED: Now shows live USD value
-  window.updateWithdrawEstimate = function() {
-    const amt = parseFloat(document.getElementById('withdrawAmount').value) || 0;
-    const crypto = document.getElementById('withdrawCrypto').value;
-    const usdValue = amt * RATES[crypto];
-    const usdText = document.getElementById('usdValueText');
-    if(amt > 0){
-      usdText.style.display = 'block';
-      usdText.innerText = `Value: $${usdValue.toFixed(2)} USD ${usdValue < 5? ' - Below $5 minimum' : ''}`;
-      usdText.style.color = usdValue < 5? '#ff4444' : '#fbbf24';
-    } else {
-      usdText.style.display = 'none';
-    }
-  }
-
+  // ONLY CHANGE: MIN $5 CHECK
   window.requestWithdraw = async function() {
     const amt = parseFloat(document.getElementById('withdrawAmount').value);
     const address = document.getElementById('walletAddress').value.trim();
