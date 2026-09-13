@@ -22,7 +22,7 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <script src="https://www.youtube.com/iframe_api"></script> <!-- Load API early -->
+  <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
   <div class="container">
@@ -33,9 +33,9 @@
       <p style="font-size:12px;color:#aaa;margin-top:10px;">You can watch 1 video every 1 hour</p>
     </div>
 
-    <div class="video-card hidden" id="watchCard">
+    <!-- CHANGED 1: Removed 'hidden' so it shows instantly -->
+    <div class="video-card" id="watchCard">
       <div id="status">Press PLAY to start earning</div>
-      <!-- CHANGED: iframe loads instantly with random video -->
       <iframe id="player" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       <div class="timer" id="timer">Watch for 30s</div>
       <button class="btn" id="claimBtn" onclick="rewardUser()" style="display:none;">Claim +5 Points</button>
@@ -58,18 +58,16 @@
 
   function showWatchCard() {
     document.getElementById('cooldownCard').classList.add('hidden');
-    document.getElementById('watchCard').classList.remove('hidden');
+    document.getElementById('watchCard').classList.remove('hidden'); // now redundant but keep
     
-    // CHANGED: Set iframe src instantly so video appears in 0s
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
     document.getElementById('player').src = `https://www.youtube.com/embed/${randomVideo}?enablejsapi=1&controls=1&rel=0&modestbranding=1`;
     
-    // Attach API to the existing iframe after 200ms
     setTimeout(attachYTAPI, 200);
   }
   
   function showCooldownCard(msLeft) {
-    document.getElementById('watchCard').classList.add('hidden');
+    document.getElementById('watchCard').classList.add('hidden'); // CHANGED 2: Hide video if on cooldown
     document.getElementById('cooldownCard').classList.remove('hidden');
     updateCooldownText(msLeft);
     startCooldownTimer(msLeft);
@@ -102,7 +100,7 @@
     });
   }
   
-  window.onYouTubeIframeAPIReady = function() {} // we handle it manually
+  window.onYouTubeIframeAPIReady = function() {}
   
   function onPlayerStateChange(event) {
     if (event.data == YT.PlayerState.PLAYING && !started) { 
@@ -172,6 +170,11 @@
     setTimeout(() => { toast.remove(); }, 2000); 
   }
 
+  // CHANGED 3: Load video instantly on page load
+  window.onload = function(){
+    showWatchCard(); // load video immediately
+  }
+
   auth.onAuthStateChanged(async (user) => {
     if(!user) return window.location.replace('./index.html');
     currentUser = user;
@@ -183,10 +186,9 @@
     
     if(lastWatchDB && (now - lastWatchDB) < COOLDOWN){
       const leftMsDB = COOLDOWN - (now - lastWatchDB);
-      showCooldownCard(leftMsDB);
-    } else {
-      showWatchCard(); // iframe appears instantly here
+      showCooldownCard(leftMsDB); // will hide video if needed
     }
+    // else do nothing, video is already showing
   });
 </script>
 </body>
