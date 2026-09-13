@@ -21,7 +21,7 @@
 .logout-btn { width: 40%; height: 52px; margin: 20px auto 0 auto; display: block; padding: 0; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #d97706; }
 .logout-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #d97706; }
 .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
-.modal-content { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 18px; width: 100%; max-width: 420px; color: white; max-height: 95vh; overflow-y: auto; position: relative; }
+.modal-content { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 18px; width: 95%; max-width: 100%; color: white; max-height: 95vh; overflow-y: auto; position: relative; } /* CHANGED: a. fit screen */
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .modal-header h2 { font-size: 20px; color: #fbbf24; display: flex; align-items: center; gap: 8px; }
 .close-btn { font-size: 24px; color: white; cursor: pointer; font-weight: bold; }
@@ -30,7 +30,7 @@
 .popup-balance.amount { font-size: 28px; color: #f59e0b; font-weight: bold; }
 .input-box { width: 100%; padding: 14px; margin: 8px 0; background: #000; border: 2px solid #444; border-radius: 12px; color: white; font-size: 15px; outline: none; transition: 0.2s; }
 .input-box:focus { border-color: #fbbf24; }
-select.input-box { appearance: none; background-image: url("data:image/svg+xml,%3Csvg fill='%23fbbf24' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 40px; }
+select.input-box { appearance: none; background-color: #2f3e1a; background-image: url("data:image/svg+xml,%3Csvg fill='%23fbbf24' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 40px; border: 2px solid #fbbf24; } /* CHANGED: b. crypto window color */
 .withdraw-field { position: relative; margin: 10px 0; }
 .withdraw-field.label { font-size: 12px; color: #aaa; margin-bottom: 4px; margin-left: 4px; }
 .withdraw-estimate { background: #1a2410; border: 1px dashed #ef4444; border-radius: 10px; padding: 10px; margin: 8px 0; font-size: 13px; text-align: center; color: #ef4444; display: none; }
@@ -69,9 +69,9 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
 .gift-result-popup.points { font-size: 32px; color: #22c55e; font-weight: bold; margin-top: 5px; }
 
 /* FOR WALLET SCREENSHOT */
-.info-row { display: flex; justify-content: space-between; background: #1a2410; padding: 14px; border-radius: 12px; margin: 8px 0; font-size: 14px; }
+.info-row { display: flex; justify-content: space-between; align-items: center; background: #1a2410; padding: 14px; border-radius: 12px; margin: 8px 0; font-size: 14px; }
 .info-row.key { color: #ccc; }
-.info-row.val { color: #fff; font-weight: bold; }
+.info-row.val-input { background: transparent; border: none; color: #fff; font-weight: bold; text-align: right; width: 60%; outline: none; } /* CHANGED: c. editable */
 .crypto-balances { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
 .crypto-bal { background: #000; border: 2px solid #333; padding: 12px; border-radius: 12px; text-align: center; font-size: 13px; }
 .crypto-bal.name { color: #ccc; }
@@ -122,10 +122,10 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
 
   <div id="convertTab" class="tab-content active"><div class="note">1000 points = $0.50 USD</div><input type="number" id="convertAmount" class="input-box" placeholder="Enter points to convert" oninput="calcConvert()"><div class="convert-result" id="convertResult">You will receive: 0.00 USDT</div><div class="crypto-grid"><div class="crypto-item selected" onclick="selectCrypto('USDT', this)"><div class="icon">₮</div><div class="name">USDT</div></div><div class="crypto-item" onclick="selectCrypto('BNB', this)"><div class="icon">🟡</div><div class="name">BNB</div></div><div class="crypto-item" onclick="selectCrypto('XRP', this)"><div class="icon">💧</div><div class="name">XRP</div></div><div class="crypto-item" onclick="selectCrypto('XLM', this)"><div class="icon">⭐</div><div class="name">XLM</div></div></div><button class="action-btn" onclick="convertPoints()">Convert Points</button></div>
 
-  <!-- WITHDRAW TAB - SELECT CRYPTO UPDATED WITH EMOJIS -->
+  <!-- WITHDRAW TAB -->
   <div id="withdrawTab" class="tab-content">
-    <div class="info-row"><span class="key">Username</span><span class="val" id="withdrawUsername">-</span></div>
-    <div class="info-row"><span class="key">Email</span><span class="val" id="withdrawEmail">-</span></div>
+    <div class="info-row"><span class="key">Username</span><input type="text" id="withdrawUsername" class="val-input" placeholder="Enter username"></div> <!-- CHANGED: c -->
+    <div class="info-row"><span class="key">Email</span><input type="email" id="withdrawEmail" class="val-input" placeholder="Enter email"></div> <!-- CHANGED: c -->
 
     <div class="withdraw-field"><div class="label">Select Crypto</div>
       <select id="withdrawCrypto" class="input-box" onchange="updateWithdrawMin()">
@@ -182,7 +182,7 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
     localStorage.setItem('userData', JSON.stringify(userData));
     localStorage.setItem('points', newPoints);
     loadData(userData);
-    if(currentUser) db.collection("users").doc(currentUser.uid).update({balance: newPoints});
+    if(currentUser) db.collection("users").doc(currentUser.uid).update({balance: newPoints, username: userData.username, email: userData.email}); // Added username/email save
   }
 
   window.rewardWatchAd = function() { addHistory("Watch Ad", 5, "Watched video"); }
@@ -202,8 +202,8 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   window.openWallet = function() {
     document.getElementById('popupBalance').innerText = (userData.balance || 0) + ' points';
     document.getElementById('popupUsd').innerText = `≈ $${((userData.balance || 0) * POINT_RATE).toFixed(2)} USD`;
-    document.getElementById('withdrawUsername').innerText = userData.username || '-';
-    document.getElementById('withdrawEmail').innerText = userData.email || '-';
+    document.getElementById('withdrawUsername').value = userData.username || ''; // CHANGED: c
+    document.getElementById('withdrawEmail').value = userData.email || ''; // CHANGED: c
     document.getElementById('walletModal').style.display = 'flex';
     calcConvert();
     updateWithdrawMin();
@@ -233,11 +233,17 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   }
 
   window.requestWithdraw = async function() {
+    // Save username/email first
+    userData.username = document.getElementById('withdrawUsername').value.trim();
+    userData.email = document.getElementById('withdrawEmail').value.trim();
+
     const amt = parseFloat(document.getElementById('withdrawAmount').value);
     const address = document.getElementById('walletAddress').value.trim();
     const crypto = document.getElementById('withdrawCrypto').value;
     const min = MIN_WITHDRAW[crypto];
 
+    if(!userData.username) return alert('Enter username'); // Added
+    if(!userData.email) return alert('Enter email'); // Added
     if(!address) return alert('Enter wallet address');
     if(!amt || amt <= 0) return alert(`Enter amount`);
     if(amt < min) return alert(`Minimum withdraw for ${crypto} is ${min}`);
@@ -247,7 +253,7 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
     if(ptsNeeded > userData.balance) return alert('Not enough points');
 
     addHistory("Withdraw Request", -ptsNeeded, `Withdrew ${amt} ${crypto} to ${address}`);
-    if(currentUser) db.collection("users").doc(currentUser.uid).update({balance: userData.balance});
+    if(currentUser) db.collection("users").doc(currentUser.uid).update({balance: userData.balance, username: userData.username, email: userData.email});
 
     alert(`Withdraw request sent! \n${amt} ${crypto} ≈ $${usdValue.toFixed(2)}\nTo: ${address}`);
     closeWallet();
