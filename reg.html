@@ -80,7 +80,7 @@
   let currentCode = "";
 
   const urlParams = new URLSearchParams(window.location.search);
-  referredByCode = urlParams.get('ref'); // link should be reg.html?ref=Karisa
+  referredByCode = urlParams.get('ref');
   if(referredByCode){
     document.getElementById('refBanner').style.display = 'block';
     document.getElementById('refName').innerText = referredByCode;
@@ -120,13 +120,6 @@
     return null;
   }
 
-  window.updateLocalPoints = function(newPoints){
-    localStorage.setItem('points', newPoints.toString());
-  }
-  window.updateLocalReferrals = function(newReferrals){
-    localStorage.setItem('referrals', newReferrals.toString());
-  }
-
   window.createAccount = async function() {
     const username = document.getElementById('username').value.trim();
     const email = document.getElementById('email').value.trim();
@@ -162,59 +155,49 @@
     }
 
     try {
-      // STEP 1: CREATE AUTH USER FIRST
+      // 1. CREATE AUTH USER FIRST
       const userCredential = await auth.createUserWithEmailAndPassword(email, password);
       const user = userCredential.user;
-      let referrerDocRef = null;
-      let referrerUsername = referredByCode;
+      let referrerDoc = null;
 
-      // STEP 2: FIND WHO REFERRED USING USERNAME
+      // 2. FIND REFERRER
       if(referredByCode){
         const refQuery = await db.collection("users").where("username", "==", referredByCode).limit(1).get();
         if(!refQuery.empty){
-          referrerDocRef = refQuery.docs[0].ref;
+          referrerDoc = refQuery.docs[0];
         }
       }
 
-      // STEP 3: BATCH - Create new user + reward referrer
-      const batch = db.batch();
-
-      // 1. Create new user doc with 50 bonus if referred
-      const startingPoints = referrerDocRef? 50 : 0;
-      const newUserRef = db.collection("users").doc(user.uid);
-      batch.set(newUserRef, {
+      // 3. CREATE NEW USER - NO BATCH
+      const startingPoints = referrerDoc? 50 : 0;
+      await db.collection("users").doc(user.uid).set({
         username: username,
         email: email,
         balance: startingPoints,
         usdt: 0, bnb: 0, xrp: 0, xlm: 0,
-        invitedBy: referrerUsername, // CHANGED: now saves who invited
-        referredBy: referrerUsername, 
+        invitedBy: referredByCode || "",
         referralCount: 0,
         totalReferralEarnings: 0,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
 
-      // 2. Give 50 to referrer if exists
-      if(referrerDocRef){
-  batch.update(referrerDocRef, {
-    balance: firebase.firestore.FieldValue.increment(50),
-    referralCount: firebase.firestore.FieldValue.increment(1),
-    totalReferralEarnings: firebase.firestore.FieldValue.increment(50)
-  })
-} else if(referredByCode){
-  console.log("Referrer not found:", referredByCode) // so Ganza still gets 0 points but account creates
-}
+      // 4. REWARD REFERRER SEPARATELY
+      if(referrerDoc){
+        await referrerDoc.ref.update({
+          balance: firebase.firestore.FieldValue.increment(50),
+          referralCount: firebase.firestore.FieldValue.increment(1),
+          totalReferralEarnings: firebase.firestore.FieldValue.increment(50)
+        })
+      }
 
-      await batch.commit(); // This fixes permission error
-
-      // STEP 4: SAVE TO LOCALSTORAGE
+      // 5. SAVE LOCAL
       const joinedDate = new Date().toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric'});
       localStorage.setItem('username', username);
       localStorage.setItem('email', email);
       localStorage.setItem('points', startingPoints.toString());
       localStorage.setItem('referrals', '0');
       localStorage.setItem('dateJoined', joinedDate);
-      localStorage.setItem('invitedBy', referrerUsername || '');
+      localStorage.setItem('invitedBy', referredByCode || '');
 
       successEl.innerText = "Account created! Redirecting...";
       setTimeout(() => { window.location.href = './home.html'; }, 1500);
