@@ -80,7 +80,7 @@
   let currentCode = "";
 
   const urlParams = new URLSearchParams(window.location.search);
-  referredByCode = urlParams.get('ref');
+  referredByCode = urlParams.get('ref'); // link should be reg.html?ref=Karisa
   if(referredByCode){
     document.getElementById('refBanner').style.display = 'block';
     document.getElementById('refName').innerText = referredByCode;
@@ -120,14 +120,12 @@
     return null;
   }
 
-  // ADDED: Helper functions to keep localStorage in sync
   window.updateLocalPoints = function(newPoints){
     localStorage.setItem('points', newPoints.toString());
   }
   window.updateLocalReferrals = function(newReferrals){
     localStorage.setItem('referrals', newReferrals.toString());
   }
-  // END ADDED
 
   window.createAccount = async function() {
     const username = document.getElementById('username').value.trim();
@@ -164,12 +162,13 @@
     }
 
     try {
-      // STEP A: CREATE AUTH USER
+      // STEP 1: CREATE AUTH USER FIRST
       const userCredential = await auth.createUserWithEmailAndPassword(email, password);
       const user = userCredential.user;
       let referrerDocRef = null;
+      let referrerUsername = referredByCode;
 
-      // STEP B: FIND WHO REFERRED USING USERNAME
+      // STEP 2: FIND WHO REFERRED USING USERNAME
       if(referredByCode){
         const refQuery = await db.collection("users").where("username", "==", referredByCode).limit(1).get();
         if(!refQuery.empty){
@@ -177,7 +176,7 @@
         }
       }
 
-      // STEP C + D: USE BATCH TO UPDATE BOTH AT SAME TIME
+      // STEP 3: BATCH - Create new user + reward referrer
       const batch = db.batch();
 
       // 1. Create new user doc with 50 bonus if referred
@@ -188,7 +187,8 @@
         email: email,
         balance: startingPoints,
         usdt: 0, bnb: 0, xrp: 0, xlm: 0,
-        referredBy: referredByCode,
+        invitedBy: referrerUsername, // CHANGED: now saves who invited
+        referredBy: referrerUsername, 
         referralCount: 0,
         totalReferralEarnings: 0,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -203,17 +203,16 @@
         })
       }
 
-      // COMMIT BOTH AT ONCE - This fixes Hirwa getting 0
-      await batch.commit();
+      await batch.commit(); // This fixes permission error
 
-      // ADDED: SAVE TO LOCALSTORAGE FOR PROFILE POPUP
+      // STEP 4: SAVE TO LOCALSTORAGE
       const joinedDate = new Date().toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric'});
       localStorage.setItem('username', username);
       localStorage.setItem('email', email);
       localStorage.setItem('points', startingPoints.toString());
       localStorage.setItem('referrals', '0');
       localStorage.setItem('dateJoined', joinedDate);
-      // END ADDED
+      localStorage.setItem('invitedBy', referrerUsername || '');
 
       successEl.innerText = "Account created! Redirecting...";
       setTimeout(() => { window.location.href = './home.html'; }, 1500);
