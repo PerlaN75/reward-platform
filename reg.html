@@ -196,12 +196,14 @@
 
       // 2. Give 50 to referrer if exists
       if(referrerDocRef){
-        batch.update(referrerDocRef, {
-          balance: firebase.firestore.FieldValue.increment(50),
-          referralCount: firebase.firestore.FieldValue.increment(1),
-          totalReferralEarnings: firebase.firestore.FieldValue.increment(50)
-        })
-      }
+  batch.update(referrerDocRef, {
+    balance: firebase.firestore.FieldValue.increment(50),
+    referralCount: firebase.firestore.FieldValue.increment(1),
+    totalReferralEarnings: firebase.firestore.FieldValue.increment(50)
+  })
+} else if(referredByCode){
+  console.log("Referrer not found:", referredByCode) // so Ganza still gets 0 points but account creates
+}
 
       await batch.commit(); // This fixes permission error
 
