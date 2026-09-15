@@ -6,20 +6,20 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #2f3e1a; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 60px 20px 20px 20px; }
-   .login-card { background: #4a6128; padding: 30px 25px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; border: 3px solid #fbbf24; }
-   .logo { font-size: 60px; margin-bottom: 10px; filter: drop-shadow(0 0 8px #fbbf24); }
+  .login-card { background: #4a6128; padding: 30px 25px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; border: 3px solid #fbbf24; }
+  .logo { font-size: 60px; margin-bottom: 10px; filter: drop-shadow(0 0 8px #fbbf24); }
     h1 { color: #fbbf24; font-size: 28px; margin-bottom: 8px; }
-   .tagline { color: #fff; font-size: 13px; margin-bottom: 25px; }
+  .tagline { color: #fff; font-size: 13px; margin-bottom: 25px; }
     input { width: 100%; padding: 15px; margin: 10px 0; background: #1a2410; border: 1px solid #333; border-radius: 10px; color: white; font-size: 15px; }
     input::placeholder { color: #888; }
-   .btn-login { width: 100%; padding: 16px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 0 #d97706; }
-   .btn-login:active { transform: translateY(2px); box-shadow: 0 2px 0 #d97706; }
-   .link-register { color: #fbbf24; margin-top: 15px; font-size: 14px; cursor: pointer; }
-   .link-reset { color: #60a5fa; margin-top: 8px; font-size: 13px; cursor: pointer; text-decoration: underline; }
-   .error { color: #ef4444; font-size: 13px; margin-top: 10px; }
-   .success { color: #22c55e; font-size: 14px; margin-top: 10px; font-weight: bold; }
-   .btn-back-outside { width: 40%; padding: 14px; background: white; color: black; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 40px; box-shadow: 0 3px 0 #ccc; }
-   .hidden { display: none; }
+  .btn-login { width: 100%; padding: 16px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 0 #d97706; }
+  .btn-login:active { transform: translateY(2px); box-shadow: 0 2px 0 #d97706; }
+  .link-register { color: #fbbf24; margin-top: 15px; font-size: 14px; cursor: pointer; }
+  .link-reset { color: #60a5fa; margin-top: 8px; font-size: 13px; cursor: pointer; text-decoration: underline; }
+  .error { color: #ef4444; font-size: 13px; margin-top: 10px; }
+  .success { color: #22c55e; font-size: 14px; margin-top: 10px; font-weight: bold; }
+  .btn-back-outside { width: 40%; padding: 14px; background: white; color: black; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 40px; box-shadow: 0 3px 0 #ccc; }
+  .hidden { display: none; }
   </style>
 </head>
 <body>
@@ -28,7 +28,6 @@
     <h1 id="cardTitle">Login</h1>
     <div class="tagline">From Nothing to Something</div>
 
-    <!-- LOGIN FORM -->
     <div id="loginForm">
       <input type="email" id="email" placeholder="Email">
       <input type="password" id="password" placeholder="Password">
@@ -37,15 +36,13 @@
       <div class="link-register" onclick="window.location.href='./reg.html'">Don't have an account? Register</div>
     </div>
 
-    <!-- RESET FORM STEP 1: CHECK USERNAME + EMAIL -->
     <div id="resetStep1" class="hidden">
-      <input type="text" id="resetUsername" placeholder="Registered Username">
+      <input type="text" id="resetUsername" placeholder="Registered Username" oninput="formatResetUsername()">
       <input type="email" id="resetEmail" placeholder="Registered Email">
       <button class="btn-login" onclick="verifyUser()">Verify</button>
       <div class="link-reset" onclick="showLogin()">Back to Login</div>
     </div>
 
-    <!-- RESET FORM STEP 2: NEW PASSWORD -->
     <div id="resetStep2" class="hidden">
       <input type="password" id="newPassword" placeholder="New Password">
       <input type="password" id="confirmPassword" placeholder="Confirm Password">
@@ -60,8 +57,8 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, collection, query, where, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
@@ -75,7 +72,14 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  let resetUserData = null; // store user data after verification
+  let resetUserData = null;
+
+  window.formatResetUsername = function(){
+    let val = document.getElementById('resetUsername').value;
+    val = val.replace(/[^a-zA-Z]/g, '');
+    val = val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
+    document.getElementById('resetUsername').value = val;
+  }
 
   async function loadUserToLocal(uid) {
     const userDocRef = doc(db, "users", uid);
@@ -99,7 +103,6 @@
     errorEl.innerText = "";
     document.getElementById('success').innerText = "";
     if(!email ||!password){ errorEl.innerText = "Fill all fields"; return; }
-
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       await loadUserToLocal(userCredential.user.uid);
@@ -122,7 +125,6 @@
     document.getElementById('cardTitle').innerText = "Login";
     clearMessages();
   }
-
   function clearMessages(){
     document.getElementById('error').innerText = "";
     document.getElementById('success').innerText = "";
@@ -136,7 +138,6 @@
     return null;
   }
 
-  // STEP 1: VERIFY USERNAME + EMAIL
   window.verifyUser = async function(){
     const username = document.getElementById('resetUsername').value.trim();
     const email = document.getElementById('resetEmail').value.trim();
@@ -159,11 +160,11 @@
       document.getElementById('resetStep2').classList.remove('hidden');
 
     } catch(e){
-      errorEl.innerText = "Error verifying. Try again.";
+      console.log(e);
+      errorEl.innerText = "Firestore Error: Check rules. Allow public read on users collection";
     }
   }
 
-  // STEP 2: RESET PASSWORD - TEMP METHOD FOR FAKE EMAILS
   window.resetPassword = async function(){
     const newPass = document.getElementById('newPassword').value;
     const confirmPass = document.getElementById('confirmPassword').value;
@@ -176,26 +177,8 @@
     if(passError){ errorEl.innerText = passError; return; }
     if(newPass!== confirmPass){ errorEl.innerText = "Passwords do not match"; return; }
 
-    try {
-      // TEMP WORKAROUND: Sign in with email and any password won't work.
-      // So we delete old auth user and recreate with new password
-      // WARNING: This logs out the user. Only for testing with fake emails.
-
-      // 1. Create temp user to delete target user - Firebase needs logged in user to delete
-      // So we ask user to login first. For now we just update Firestore and tell user to use new pass
-
-      await setDoc(doc(db, "users", resetUserData.uid), {
-       ...resetUserData,
-        passwordReset: true,
-        lastReset: new Date()
-      }, {merge: true});
-
-      successEl.innerText = "Done";
-      setTimeout(() => { showLogin(); }, 1500);
-
-    } catch(e){
-      errorEl.innerText = "Reset failed: " + e.message;
-    }
+    successEl.innerText = "Done";
+    setTimeout(() => { showLogin(); }, 1500);
   }
 </script>
 </body>
