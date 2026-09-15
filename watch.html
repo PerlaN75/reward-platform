@@ -6,30 +6,37 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #2f3e1a; min-height: 100vh; color: white; padding: 20px; text-align: center; }
-    h1 { color: #fbbf24; margin-bottom: 20px; }
+    h1 { color: #fbbf24; margin-bottom: 20px; font-size: 28px; }
     .video-box { background: #4a6128; padding: 20px; border-radius: 20px; border: 3px solid #fbbf24; max-width: 500px; margin: 0 auto; }
     video { width: 100%; border-radius: 12px; background: #000; }
-    .timer { font-size: 24px; font-weight: bold; color: #fbbf24; margin: 15px 0; }
-   .btn-claim { width: 100%; padding: 16px; background: linear-gradient(180deg, #22c55e, #16a34a); color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; display: none; }
-   .btn-claim:disabled { background: #555; cursor: not-allowed; }
-   .cooldown { color: #ef4444; font-weight: bold; margin-top: 15px; }
-    .success { color: #22c55e; font-weight: bold; margin-top: 15px; }
-    .btn-back { width: 40%; padding: 14px; background: white; color: black; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 20px; }
+    .timer { font-size: 20px; font-weight: bold; color: #fbbf24; margin: 15px 0; }
+   .btn-claim { width: 100%; padding: 16px; background: linear-gradient(180deg, #22c55e, #16a34a); color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; display: none; box-shadow: 0 4px 0 #15803d; }
+   .btn-claim:active { transform: translateY(2px); box-shadow: 0 2px 0 #15803d; }
+   .cooldown { color: #ef4444; font-weight: bold; margin-top: 15px; font-size: 15px; }
+    .success { color: #22c55e; font-weight: bold; margin-top: 15px; font-size: 16px; }
+    .btn-back { width: 40%; padding: 14px; background: white; color: black; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 20px; box-shadow: 0 3px 0 #ccc; }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
   <h1>📺 Watch & Earn</h1>
+  
+  <div id="cooldownBox" class="hidden">
+    <div class="cooldown" id="cooldownMsg"></div>
+    <button class="btn-back" onclick="window.location.href='./home.html'">Back</button>
+  </div>
+
   <div class="video-box" id="videoBox">
-    <video id="videoPlayer" controls>
-      <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"> <!-- change this to your video -->
+    <video id="videoPlayer" controls controlsList="nodownload noremoteplayback">
+      <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
       Your browser does not support video.
     </video>
     <div class="timer" id="timer">Watch 30s to claim</div>
     <button class="btn-claim" id="claimBtn" onclick="claimReward()">Claim +10 Points</button>
-    <div class="cooldown" id="cooldownMsg"></div>
     <div class="success" id="successMsg"></div>
   </div>
-  <button class="btn-back" onclick="window.location.href='./home.html'">Back</button>
+  
+  <button class="btn-back" id="backBtn" onclick="window.location.href='./home.html'">Back</button>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -51,13 +58,13 @@
   const video = document.getElementById('videoPlayer');
   const timerEl = document.getElementById('timer');
   const claimBtn = document.getElementById('claimBtn');
+  const videoBox = document.getElementById('videoBox');
+  const cooldownBox = document.getElementById('cooldownBox');
   const cooldownMsg = document.getElementById('cooldownMsg');
   const successMsg = document.getElementById('successMsg');
-  const videoBox = document.getElementById('videoBox');
 
-  let watchTime = 0;
-  let timerInterval;
   let currentUid = null;
+  const WATCH_REQUIRED = 30; // 30 seconds
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) return window.location.href = './log.html';
@@ -78,31 +85,32 @@
       const cooldown = 60 * 60 * 1000; // 60 min
       if(diff < cooldown){
         const remaining = Math.ceil((cooldown - diff) / 60000);
-        videoBox.style.display = 'none';
-        cooldownMsg.innerText = `Come back in ${remaining} minutes to watch again`;
+        videoBox.classList.add('hidden');
+        document.getElementById('backBtn').classList.add('hidden');
+        cooldownBox.classList.remove('hidden');
+        cooldownMsg.innerText = `You already claimed. Come back in ${remaining} minutes`;
         return;
       }
     }
-    startVideoLogic();
   }
 
-  function startVideoLogic(){
-    video.addEventListener('timeupdate', () => {
-      if(video.currentTime > watchTime) watchTime = video.currentTime;
-      let remaining = Math.max(0, 30 - Math.floor(watchTime));
-      timerEl.innerText = `Watch ${remaining}s to claim`;
-      
-      if(watchTime >= 30){
-        clearInterval(timerInterval);
-        claimBtn.style.display = 'block';
-        timerEl.innerText = 'Done! Claim your reward';
-        video.pause();
-      }
-    });
-  }
+  // Stop video at exactly 30s and show claim
+  video.addEventListener('timeupdate', () => {
+    let current = Math.floor(video.currentTime);
+    let remaining = Math.max(0, WATCH_REQUIRED - current);
+    timerEl.innerText = `Watch ${remaining}s to claim`;
+
+    if(current >= WATCH_REQUIRED){
+      video.pause();
+      video.currentTime = WATCH_REQUIRED; // lock at 30s
+      claimBtn.style.display = 'block';
+      timerEl.innerText = 'Done! Claim your reward';
+    }
+  });
 
   window.claimReward = async function(){
     claimBtn.disabled = true;
+    claimBtn.innerText = 'Claiming...';
     try {
       const userRef = doc(db, "users", currentUid);
       await updateDoc(userRef, {
@@ -116,13 +124,16 @@
       localStorage.setItem('points', currentPoints.toString());
 
       successMsg.innerText = '+10 Points Added';
-      videoBox.style.display = 'none';
+      videoBox.classList.add('hidden');
+      document.getElementById('backBtn').classList.add('hidden');
+      cooldownBox.classList.remove('hidden');
       cooldownMsg.innerText = 'Come back in 60 minutes to watch again';
 
     } catch(e){
       console.log(e);
       alert("Error: " + e.message + ". Check Firestore Rules");
       claimBtn.disabled = false;
+      claimBtn.innerText = 'Claim +10 Points';
     }
   }
 </script>
