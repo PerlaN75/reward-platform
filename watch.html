@@ -26,8 +26,7 @@
   </div>
 
   <div class="video-box" id="videoBox">
-    <video id="videoPlayer" playsinline controlsList="nodownload">
-      <!-- THIS VIDEO WORKS ON GITHUB PAGES -->
+    <video id="videoPlayer" playsinline controls controlsList="nodownload">
       <source src="https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4">
     </video>
     <div class="timer" id="timer">Tap play and watch 30s to claim</div>
@@ -93,8 +92,6 @@
     }
   }
 
-  video.addEventListener('play', () => { video.currentTime = 0; }); // always start from 0
-
   video.addEventListener('timeupdate', () => {
     let current = Math.floor(video.currentTime);
     let remaining = Math.max(0, WATCH_REQUIRED - current);
@@ -102,7 +99,6 @@
 
     if(current >= WATCH_REQUIRED){
       video.pause();
-      video.currentTime = WATCH_REQUIRED;
       claimBtn.style.display = 'block';
       timerEl.innerText = 'Done! Claim your reward';
     }
@@ -110,7 +106,6 @@
 
   window.claimReward = async function(){
     claimBtn.disabled = true;
-    claimBtn.innerText = 'Claiming...';
     try {
       const userRef = doc(db, "users", currentUid);
       await updateDoc(userRef, {
@@ -131,7 +126,6 @@
     } catch(e){
       alert("Error: " + e.message);
       claimBtn.disabled = false;
-      claimBtn.innerText = 'Claim +10 Points';
     }
   }
 </script>
