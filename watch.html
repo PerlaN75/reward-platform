@@ -11,7 +11,6 @@
     video { width: 100%; border-radius: 12px; background: #000; }
     .timer { font-size: 20px; font-weight: bold; color: #fbbf24; margin: 15px 0; }
    .btn-claim { width: 100%; padding: 16px; background: linear-gradient(180deg, #22c55e, #16a34a); color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; display: none; box-shadow: 0 4px 0 #15803d; }
-   .btn-claim:active { transform: translateY(2px); box-shadow: 0 2px 0 #15803d; }
    .cooldown { color: #ef4444; font-weight: bold; margin-top: 15px; font-size: 15px; }
     .success { color: #22c55e; font-weight: bold; margin-top: 15px; font-size: 16px; }
     .btn-back { width: 40%; padding: 14px; background: white; color: black; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 20px; box-shadow: 0 3px 0 #ccc; }
@@ -27,11 +26,11 @@
   </div>
 
   <div class="video-box" id="videoBox">
-    <video id="videoPlayer" controls controlsList="nodownload noremoteplayback">
-      <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
-      Your browser does not support video.
+    <video id="videoPlayer" playsinline controlsList="nodownload">
+      <!-- THIS VIDEO WORKS ON GITHUB PAGES -->
+      <source src="https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4">
     </video>
-    <div class="timer" id="timer">Watch 30s to claim</div>
+    <div class="timer" id="timer">Tap play and watch 30s to claim</div>
     <button class="btn-claim" id="claimBtn" onclick="claimReward()">Claim +10 Points</button>
     <div class="success" id="successMsg"></div>
   </div>
@@ -64,7 +63,7 @@
   const successMsg = document.getElementById('successMsg');
 
   let currentUid = null;
-  const WATCH_REQUIRED = 30; // 30 seconds
+  const WATCH_REQUIRED = 30;
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) return window.location.href = './log.html';
@@ -82,19 +81,20 @@
     
     if(lastWatch){
       const diff = Date.now() - lastWatch.getTime();
-      const cooldown = 60 * 60 * 1000; // 60 min
+      const cooldown = 60 * 60 * 1000;
       if(diff < cooldown){
         const remaining = Math.ceil((cooldown - diff) / 60000);
         videoBox.classList.add('hidden');
         document.getElementById('backBtn').classList.add('hidden');
         cooldownBox.classList.remove('hidden');
-        cooldownMsg.innerText = `You already claimed. Come back in ${remaining} minutes`;
+        cooldownMsg.innerText = `Come back in ${remaining} minutes to watch again`;
         return;
       }
     }
   }
 
-  // Stop video at exactly 30s and show claim
+  video.addEventListener('play', () => { video.currentTime = 0; }); // always start from 0
+
   video.addEventListener('timeupdate', () => {
     let current = Math.floor(video.currentTime);
     let remaining = Math.max(0, WATCH_REQUIRED - current);
@@ -102,7 +102,7 @@
 
     if(current >= WATCH_REQUIRED){
       video.pause();
-      video.currentTime = WATCH_REQUIRED; // lock at 30s
+      video.currentTime = WATCH_REQUIRED;
       claimBtn.style.display = 'block';
       timerEl.innerText = 'Done! Claim your reward';
     }
@@ -118,7 +118,6 @@
         lastWatchClaim: serverTimestamp()
       });
 
-      // update local
       let currentPoints = parseInt(localStorage.getItem('points') || '0');
       currentPoints += 10;
       localStorage.setItem('points', currentPoints.toString());
@@ -130,8 +129,7 @@
       cooldownMsg.innerText = 'Come back in 60 minutes to watch again';
 
     } catch(e){
-      console.log(e);
-      alert("Error: " + e.message + ". Check Firestore Rules");
+      alert("Error: " + e.message);
       claimBtn.disabled = false;
       claimBtn.innerText = 'Claim +10 Points';
     }
