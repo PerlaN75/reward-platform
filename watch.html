@@ -26,8 +26,10 @@
   </div>
 
   <div class="video-box" id="videoBox">
-    <video id="videoPlayer" playsinline controls controlsList="nodownload">
-      <source src="https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4">
+    <video id="videoPlayer" controls playsinline>
+      <!-- WORKING VIDEO LINK -->
+      <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+      Your browser does not support video.
     </video>
     <div class="timer" id="timer">Tap play and watch 30s to claim</div>
     <button class="btn-claim" id="claimBtn" onclick="claimReward()">Claim +10 Points</button>
@@ -74,10 +76,8 @@
     const userRef = doc(db, "users", currentUid);
     const snap = await getDoc(userRef);
     if(!snap.exists()) return;
-
     const data = snap.data();
     const lastWatch = data.lastWatchClaim?.toDate();
-    
     if(lastWatch){
       const diff = Date.now() - lastWatch.getTime();
       const cooldown = 60 * 60 * 1000;
@@ -96,7 +96,6 @@
     let current = Math.floor(video.currentTime);
     let remaining = Math.max(0, WATCH_REQUIRED - current);
     timerEl.innerText = `Watch ${remaining}s to claim`;
-
     if(current >= WATCH_REQUIRED){
       video.pause();
       claimBtn.style.display = 'block';
@@ -112,17 +111,14 @@
         balance: increment(10),
         lastWatchClaim: serverTimestamp()
       });
-
       let currentPoints = parseInt(localStorage.getItem('points') || '0');
       currentPoints += 10;
       localStorage.setItem('points', currentPoints.toString());
-
       successMsg.innerText = '+10 Points Added';
       videoBox.classList.add('hidden');
       document.getElementById('backBtn').classList.add('hidden');
       cooldownBox.classList.remove('hidden');
       cooldownMsg.innerText = 'Come back in 60 minutes to watch again';
-
     } catch(e){
       alert("Error: " + e.message);
       claimBtn.disabled = false;
