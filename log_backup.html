@@ -1,1 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background: #2f3e1a; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 60px 20px 20px 20px; }
+    .login-card { background: #4a6128; padding: 30px 25px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; border: 3px solid #fbbf24; }
+    .logo { font-size: 60px; margin-bottom: 10px; filter: drop-shadow(0 0 8px #fbbf24); }
+    h1 { color: #fbbf24; font-size: 28px; margin-bottom: 8px; }
+    .tagline { color: #fff; font-size: 13px; margin-bottom: 25px; }
+    input { width: 100%; padding: 15px; margin: 10px 0; background: #1a2410; border: 1px solid #333; border-radius: 10px; color: white; font-size: 15px; }
+    input::placeholder { color: #888; }
+    .btn-login { width: 100%; padding: 16px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 0 #d97706; }
+    .btn-login:active { transform: translateY(2px); box-shadow: 0 2px 0 #d97706; }
+    .link-register { color: #fbbf24; margin-top: 15px; font-size: 14px; cursor: pointer; }
+    .error { color: #ef4444; font-size: 13px; margin-top: 10px; }
+    .btn-back-outside { width: 40%; padding: 14px; background: white; color: black; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 40px; box-shadow: 0 3px 0 #ccc; }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+   <div class="logo">🔑</div>
+    <h1>Login</h1>
+    <div class="tagline">From Nothing to Something</div>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button class="btn-login" onclick="login()">Login</button>
+    <div class="error" id="error"></div>
+    <div class="link-register" onclick="window.location.href='./reg.html'">Don't have an account? Register</div>
+  </div>
+  <button class="btn-back-outside" onclick="window.location.href='./index.html'">Back</button>
 
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"; // ADDED
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
+    authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
+    projectId: "reward-platform-rw-2e13d",
+    storageBucket: "reward-platform-rw-2e13d.firebasestorage.app",
+    messagingSenderId: "787550951987",
+    appId: "1:787550951987:web:724b1463e821b99c90a146"
+  };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app); // ADDED
+
+  // ADDED: Function to save user data to localStorage
+  async function loadUserToLocal(uid) {
+    const userDocRef = doc(db, "users", uid);
+    const userDoc = await getDoc(userDocRef);
+    if(userDoc.exists()){
+      const data = userDoc.data();
+      localStorage.setItem('username', data.username || 'Guest');
+      localStorage.setItem('email', data.email || '');
+      localStorage.setItem('points', (data.balance || 0).toString());
+      localStorage.setItem('referrals', (data.referralCount || 0).toString());
+      
+      let joined = data.createdAt ? data.createdAt.toDate() : new Date();
+      let joinedDate = joined.toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric'});
+      localStorage.setItem('dateJoined', joinedDate);
+    }
+  }
+
+  window.login = async function() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const errorEl = document.getElementById('error');
+    errorEl.innerText = "";
+    if(!email || !password){ errorEl.innerText = "Fill all fields"; return; }
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      
+      await loadUserToLocal(userCredential.user.uid); // ADDED: Save Hirwa's data before redirect
+
+      // JUMP INSTANTLY. NO WAITING
+      window.location.replace("./home.html");
+    } catch(e) {
+      errorEl.innerText = "Invalid email or password";
+    }
+  }
+</script>
+</body>
+</html>
