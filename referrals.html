@@ -65,9 +65,24 @@
 
   let myLink = "";
   let myUsername = "";
+  let currentUser = null;
+
+  // NEW: helper to log to Earn History
+  async function logEarnHistory(action, points, desc){
+    if(!currentUser) return;
+    try{
+      await db.collection("users").doc(currentUser.uid).collection("earnHistory").add({
+        action: action,
+        points: points,
+        desc: desc,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }catch(e){ console.log("history log error", e); }
+  }
 
   auth.onAuthStateChanged(async (user) => {
     if(user){
+      currentUser = user;
       const doc = await db.collection("users").doc(user.uid).get();
       if(doc.exists){
         const data = doc.data();
@@ -82,7 +97,6 @@
   });
 
   async function loadReferrals(username) {
-    // FIX: Query by referredBy field
     const snapshot = await db.collection("users").where("referredBy", "==", username).get();
     const listEl = document.getElementById('referralsList');
 
@@ -91,6 +105,11 @@
       return;
     }
     
+    // NEW: check existing history to avoid duplicate logs
+    const historySnap = await db.collection("users").doc(currentUser.uid).collection("earnHistory").where("action","==","Referral Bonus").get();
+    const existingDescs = new Set();
+    historySnap.forEach(h=>{ if(h.data().desc) existingDescs.add(h.data().desc); });
+
     let html = '';
     snapshot.forEach(doc => {
       const d = doc.data();
@@ -103,6 +122,12 @@
         </div>
         <span style="color:#22c55e; font-weight:bold;">+50 pts</span>
       </div>`;
+
+      // NEW: if this referral not yet in history, log it (backfill for old referrals too)
+      const logKey = `Invited ${d.username}`;
+      if(!existingDescs.has(logKey)){
+        logEarnHistory('Referral Bonus', 50, logKey);
+      }
     })
     listEl.innerHTML = html;
   }
