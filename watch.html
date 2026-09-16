@@ -6,19 +6,25 @@
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
     body{background:#0f1508;min-height:100vh;padding:20px;color:white;display:flex;justify-content:center}
-   .container{background:#2f3e1a;border:3px solid #fbbf24;border-radius:20px;padding:25px;width:100%;max-width:420px}
+  .container{background:#2f3e1a;border:3px solid #fbbf24;border-radius:20px;padding:25px;width:100%;max-width:420px}
     h1{text-align:center;color:#fbbf24;font-size:26px}
-   .balance{background:#0f1508;border:2px solid #fbbf24;border-radius:14px;padding:14px;text-align:center;margin:15px 0}
-   .task{background:#000;border:2px solid #444;border-radius:14px;padding:14px;margin-bottom:12px}
-   .task.active{border-color:#22c55e}
-   .task.done{opacity:0.5;border-color:#22c55e}
-   .video-box{background:#000;border-radius:10px;height:190px;display:flex;justify-content:center;align-items:center;margin:10px 0;overflow:hidden;position:relative}
-   .video-box iframe{width:100%;height:100%;border:none}
-   .btn{width:100%;padding:14px;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer;margin-top:10px}
-   .btn:disabled{background:#444;color:#888}
-   .timer{color:#fbbf24;font-weight:bold;text-align:center;margin-top:8px}
-   .back{background:#f59e0b;color:#000;border:none;padding:12px 20px;border-radius:12px;font-weight:bold;width:40%;margin:20px auto 0;display:block;cursor:pointer}
-   .note{font-size:12px;color:#aaa;text-align:center;margin-top:10px}
+  .balance{background:#0f1508;border:2px solid #fbbf24;border-radius:14px;padding:14px;text-align:center;margin:15px 0}
+  .task{background:#000;border:2px solid #444;border-radius:14px;padding:14px;margin-bottom:12px}
+  .task.active{border-color:#22c55e}
+  .task.done{opacity:0.5;border-color:#22c55e}
+  .video-box{background:#000;border-radius:10px;height:190px;display:flex;justify-content:center;align-items:center;margin:10px 0;overflow:hidden;position:relative}
+  .video-box iframe{width:100%;height:100%;border:none}
+  .btn{width:100%;padding:14px;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer;margin-top:10px}
+  .btn:disabled{background:#444;color:#888}
+  .timer{color:#fbbf24;font-weight:bold;text-align:center;margin-top:8px}
+  .back{background:#f59e0b;color:#000;border:none;padding:12px 20px;border-radius:12px;font-weight:bold;width:40%;margin:20px auto 0;display:block;cursor:pointer}
+  .note{font-size:12px;color:#aaa;text-align:center;margin-top:10px}
+   /* NEW BEAUTIFUL MODAL ONLY */
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;justify-content:center;align-items:center;z-index:9999;padding:20px}
+  .modal-box{background:#2f3e1a;border:3px solid #fbbf24;border-radius:18px;padding:22px;width:100%;max-width:340px;text-align:center}
+  .modal-box h3{color:#fbbf24;margin-bottom:10px;font-size:18px}
+  .modal-box p{color:#fff;font-size:14px;margin-bottom:18px;line-height:1.4}
+  .modal-ok{background:linear-gradient(90deg,#fbbf24,#f59e0b);border:none;padding:10px 22px;border-radius:10px;font-weight:bold;cursor:pointer}
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -37,6 +43,15 @@
   <button class="back" onclick="location.href='./home.html'">Back</button>
 </div>
 
+<!-- BEAUTIFUL ALERT MODAL -->
+<div class="modal-bg" id="customAlert">
+  <div class="modal-box">
+    <h3 id="alertTitle">Notice</h3>
+    <p id="alertMsg"></p>
+    <button class="modal-ok" onclick="closeAlert()">OK</button>
+  </div>
+</div>
+
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
@@ -47,7 +62,6 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // EDIT THIS LATER FOR PAID PARTNERSHIP - NO CODE CHANGE NEEDED ELSEWHERE
     const VIDEOS = [
     {id:'v1', title:'Earning Tips (30s)', reward:10, duration:30, youtubeId:'dQw4w9WgXcQ', adLink:''},
     {id:'v2', title:'Partner Promo 1 (30s)', reward:10, duration:30, youtubeId:'jNQXAC9IVRw', adLink:''},
@@ -62,14 +76,22 @@
   ];
   let currentUser=null, userDoc=null, watchData={};
 
+  // REPLACEMENT FOR UGLY ALERT
+  function showAlert(msg, title='Notice'){
+    document.getElementById('alertTitle').innerText=title;
+    document.getElementById('alertMsg').innerText=msg;
+    document.getElementById('customAlert').style.display='flex';
+  }
+  function closeAlert(){
+    document.getElementById('customAlert').style.display='none';
+  }
+
   auth.onAuthStateChanged(async (user)=>{
     if(!user){location.href='./index.html';return;}
     currentUser=user;
     const doc = await db.collection('users').doc(user.uid).get();
     userDoc=doc.data();
     document.getElementById('bal').innerText=userDoc.balance||0;
-
-    // get today's watches
     const today = new Date().toISOString().slice(0,10);
     const snap = await db.collection('users').doc(user.uid).collection('watchHistory').where('date','==',today).get();
     snap.forEach(d=> watchData[d.id]=true);
@@ -100,23 +122,18 @@
     const box=document.getElementById('box-'+videoId);
     const btn=document.getElementById('btn-'+videoId);
     const timerEl=document.getElementById('timer-'+videoId);
-
-    // For future ad partnership: if adLink exists, open it in new tab + still require timer
     if(v.adLink){
       window.open(v.adLink, '_blank');
       box.innerHTML=`<div style="padding:20px;text-align:center;color:#22c55e">Ad opened in new tab - Keep this tab active!<br>Reward after ${v.duration}s</div>`;
     } else {
       box.innerHTML=`<iframe src="https://www.youtube.com/embed/${v.youtubeId}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay"></iframe>`;
     }
-
     let left=v.duration;
     btn.disabled=true;
     btn.innerText='Watching...';
     document.querySelectorAll('.task').forEach(t=>t.classList.remove('active'));
     document.getElementById('box-'+videoId).parentElement.classList.add('active');
-
     intervals[videoId]=setInterval(async ()=>{
-      // Anti-cheat: if user switches tab, pause
       if(document.hidden){
         timerEl.innerText=`Paused - return to tab!`;
         return;
@@ -140,20 +157,15 @@
     const btn=document.getElementById('btn-'+videoId);
     btn.disabled=true;
     btn.innerText='Claiming...';
-
     try{
-      // double check not already claimed
       const check = await db.collection('users').doc(currentUser.uid).collection('watchHistory').doc(videoId+'_'+today).get();
-      if(check.exists){alert('Already claimed today');return;}
-
+      if(check.exists){showAlert('Already claimed today — come back tomorrow for this video!','Oops!');btn.innerText='Claimed ✅';return;}
       await db.collection('users').doc(currentUser.uid).collection('watchHistory').doc(videoId+'_'+today).set({
         videoId, reward:v.reward, date:today, timestamp:firebase.firestore.FieldValue.serverTimestamp()
       });
       await db.collection('users').doc(currentUser.uid).update({
         balance: firebase.firestore.FieldValue.increment(v.reward)
       });
-
-      // update UI
       const newBal=(parseInt(document.getElementById('bal').innerText)+v.reward);
       document.getElementById('bal').innerText=newBal;
       localStorage.setItem('points', newBal);
@@ -161,7 +173,7 @@
       watchData[videoId]=true;
       btn.innerText='Claimed ✅';
       document.getElementById('box-'+videoId).innerHTML='<b style="color:#22c55e">+'+v.reward+' pts Added!</b>';
-    }catch(e){alert(e.message);btn.disabled=false;}
+    }catch(e){showAlert(e.message,'Error');btn.disabled=false;}
   }
 </script>
 </body>
