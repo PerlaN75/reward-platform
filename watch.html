@@ -1,1 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Watch & Earn</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+    body{background:#0f1508;min-height:100vh;padding:20px;color:white;display:flex;justify-content:center}
+   .container{background:#2f3e1a;border:3px solid #fbbf24;border-radius:20px;padding:25px;width:100%;max-width:420px}
+    h1{text-align:center;color:#fbbf24;font-size:26px}
+   .balance{background:#0f1508;border:2px solid #fbbf24;border-radius:14px;padding:14px;text-align:center;margin:15px 0}
+   .task{background:#000;border:2px solid #444;border-radius:14px;padding:14px;margin-bottom:12px}
+   .task.active{border-color:#22c55e}
+   .task.done{opacity:0.5;border-color:#22c55e}
+   .video-box{background:#000;border-radius:10px;height:190px;display:flex;justify-content:center;align-items:center;margin:10px 0;overflow:hidden;position:relative}
+   .video-box iframe{width:100%;height:100%;border:none}
+   .btn{width:100%;padding:14px;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer;margin-top:10px}
+   .btn:disabled{background:#444;color:#888}
+   .timer{color:#fbbf24;font-weight:bold;text-align:center;margin-top:8px}
+   .back{background:#f59e0b;color:#000;border:none;padding:12px 20px;border-radius:12px;font-weight:bold;width:40%;margin:20px auto 0;display:block;cursor:pointer}
+   .note{font-size:12px;color:#aaa;text-align:center;margin-top:10px}
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+</head>
+<body>
+<div class="container">
+  <h1>Watch & Earn</h1>
+  <div class="balance">
+    Balance: <span id="bal">0</span> pts<br>
+    <small>Today: <span id="todayCount">0</span>/10 videos</small>
+  </div>
 
+  <div id="tasks"></div>
+  <div class="note">Leave this page = timer resets. Watch full video to claim.<br>Ad partners slot ready - we will swap YouTube with paid ads later.</div>
+  <button class="back" onclick="location.href='./home.html'">Back</button>
+</div>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
+    authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
+    projectId: "reward-platform-rw-2e13d"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  // EDIT THIS LATER FOR PAID PARTNERSHIP - NO CODE CHANGE NEEDED ELSEWHERE
+  const VIDEOS = [
+    {id:'v1', title:'Learn Earning Tips (30s)', reward:10, duration:30, youtubeId:'dQw4w9WgXcQ', adLink:''},
+    {id:'v2', title:'Partner Promo 1 (30s)', reward:10, duration:30, youtubeId:'dQw4w9WgXcQ', adLink:''},
+    {id:'v3', title:'Partner Promo 2 (30s)', reward:10, duration:30, youtubeId:'dQw4w9WgXcQ', adLink:''},
+    {id:'v4', title:'Daily Motivation (30s)', reward:10, duration:30, youtubeId:'dQw4w9WgXcQ', adLink:''},
+  ];
+
+  let currentUser=null, userDoc=null, watchData={};
+
+  auth.onAuthStateChanged(async (user)=>{
+    if(!user){location.href='./index.html';return;}
+    currentUser=user;
+    const doc = await db.collection('users').doc(user.uid).get();
+    userDoc=doc.data();
+    document.getElementById('bal').innerText=userDoc.balance||0;
+
+    // get today's watches
+    const today = new Date().toISOString().slice(0,10);
+    const snap = await db.collection('users').doc(user.uid).collection('watchHistory').where('date','==',today).get();
+    snap.forEach(d=> watchData[d.id]=true);
+    document.getElementById('todayCount').innerText=snap.size;
+    renderTasks();
+  });
+
+  function renderTasks(){
+    const wrap=document.getElementById('tasks');
+    wrap.innerHTML='';
+    VIDEOS.forEach(v=>{
+      const isDone =!!watchData[v.id];
+      const div=document.createElement('div');
+      div.className='task'+(isDone?' done':'');
+      div.innerHTML=`
+        <b>${v.title}</b> - ${v.reward} pts ${isDone?'✅ Done':''}
+        <div class="video-box" id="box-${v.id}"><small>Click Start to watch</small></div>
+        <div class="timer" id="timer-${v.id}"></div>
+        <button class="btn" id="btn-${v.id}" ${isDone?'disabled':''} onclick="startWatch('${v.id}')">${isDone?'Claimed':'Start & Earn'}</button>
+      `;
+      wrap.appendChild(div);
+    });
+  }
+
+  let intervals={};
+  window.startWatch=function(videoId){
+    const v=VIDEOS.find(x=>x.id===videoId);
+    const box=document.getElementById('box-'+videoId);
+    const btn=document.getElementById('btn-'+videoId);
+    const timerEl=document.getElementById('timer-'+videoId);
+
+    // For future ad partnership: if adLink exists, open it in new tab + still require timer
+    if(v.adLink){
+      window.open(v.adLink, '_blank');
+      box.innerHTML=`<div style="padding:20px;text-align:center;color:#22c55e">Ad opened in new tab - Keep this tab active!<br>Reward after ${v.duration}s</div>`;
+    } else {
+      box.innerHTML=`<iframe src="https://www.youtube.com/embed/${v.youtubeId}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay"></iframe>`;
+    }
+
+    let left=v.duration;
+    btn.disabled=true;
+    btn.innerText='Watching...';
+    document.querySelectorAll('.task').forEach(t=>t.classList.remove('active'));
+    document.getElementById('box-'+videoId).parentElement.classList.add('active');
+
+    intervals[videoId]=setInterval(async ()=>{
+      // Anti-cheat: if user switches tab, pause
+      if(document.hidden){
+        timerEl.innerText=`Paused - return to tab!`;
+        return;
+      }
+      left--;
+      timerEl.innerText=`Claim in ${left}s - Don't leave`;
+      if(left<=0){
+        clearInterval(intervals[videoId]);
+        btn.disabled=false;
+        btn.innerText=`Claim ${v.reward} pts`;
+        btn.onclick=()=>claimReward(videoId);
+        timerEl.innerText=`✅ Ready to claim!`;
+        timerEl.style.color='#22c55e';
+      }
+    },1000);
+  }
+
+  async function claimReward(videoId){
+    const v=VIDEOS.find(x=>x.id===videoId);
+    const today = new Date().toISOString().slice(0,10);
+    const btn=document.getElementById('btn-'+videoId);
+    btn.disabled=true;
+    btn.innerText='Claiming...';
+
+    try{
+      // double check not already claimed
+      const check = await db.collection('users').doc(currentUser.uid).collection('watchHistory').doc(videoId+'_'+today).get();
+      if(check.exists){alert('Already claimed today');return;}
+
+      await db.collection('users').doc(currentUser.uid).collection('watchHistory').doc(videoId+'_'+today).set({
+        videoId, reward:v.reward, date:today, timestamp:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      await db.collection('users').doc(currentUser.uid).update({
+        balance: firebase.firestore.FieldValue.increment(v.reward)
+      });
+
+      // update UI
+      const newBal=(parseInt(document.getElementById('bal').innerText)+v.reward);
+      document.getElementById('bal').innerText=newBal;
+      localStorage.setItem('points', newBal);
+      document.getElementById('todayCount').innerText=parseInt(document.getElementById('todayCount').innerText)+1;
+      watchData[videoId]=true;
+      btn.innerText='Claimed ✅';
+      document.getElementById('box-'+videoId).innerHTML='<b style="color:#22c55e">+'+v.reward+' pts Added!</b>';
+    }catch(e){alert(e.message);btn.disabled=false;}
+  }
+</script>
+</body>
+</html>
