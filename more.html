@@ -6,42 +6,53 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #0f1508; min-height: 100vh; padding: 20px; color: white; }
-.container { max-width: 500px; margin: 0 auto; }
-.header { text-align: center; margin: 20px 0 20px 0; color: #fbbf24; font-size: 28px; font-weight: bold; }
-.card { background: #ffffff; border-radius: 16px; padding: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
-.menu-list a { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 18px 16px; color: #000; text-decoration: none; font-size: 16px; font-weight: bold; border-radius: 10px; transition: background 0.2s; cursor: pointer; }
-.menu-list a:hover { background: #f5f5f5; }
-.menu-list a:not(:last-child) { border-bottom: 1px solid #e5e5e5; }
-.left { display: flex; align-items: center; }
-.icon { font-size: 22px; margin-right: 14px; }
-.arrow { width: 20px; height: 20px; color: #888; }
-.back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
-.back-btn:hover { background: #fbbf24; }
-.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px; }
-.modal-content { background: #fff; border-radius: 16px; padding: 24px; width: 100%; max-width: 400px; color: #000; animation: slideUp 0.3s ease; max-height: 80vh; overflow-y: auto; }
+    .container { max-width: 500px; margin: 0 auto; }
+    .header { text-align: center; margin: 20px 0 20px 0; color: #fbbf24; font-size: 28px; font-weight: bold; }
+    .card { background: #ffffff; border-radius: 16px; padding: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+    .menu-list a { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 18px 16px; color: #000; text-decoration: none; font-size: 16px; font-weight: bold; border-radius: 10px; transition: background 0.2s; cursor: pointer; }
+    .menu-list a:hover { background: #f5f5f5; }
+    .menu-list a:not(:last-child) { border-bottom: 1px solid #e5e5e5; }
+    .left { display: flex; align-items: center; }
+    .icon { font-size: 22px; margin-right: 14px; }
+    .arrow { width: 20px; height: 20px; color: #888; }
+    .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
+    .back-btn:hover { background: #fbbf24; }
+    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px; }
+    .modal-content { background: #fff; border-radius: 16px; padding: 24px; width: 100%; max-width: 400px; color: #000; animation: slideUp 0.3s ease; max-height: 80vh; overflow-y: auto; }
     @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-.modal-header h2 { font-size: 20px; color: #000; font-weight: bold; }
-.close-btn { font-size: 28px; color: #888; cursor: pointer; border: none; background: none; }
-.profile-avatar-wrap { text-align: center; margin-bottom: 12px; position: relative; display: inline-block; }
-.profile-avatar { width: 90px; height: 90px; border-radius: 50%; background: #fbbf24; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto; overflow: hidden; border: 3px solid #fbbf24; }
-.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.edit-pen-btn { position: absolute; bottom: 0; right: 0; background: #f59e0b; border: 2px solid #fff; border-radius: 50%; width: 28px; height: 28px; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.edit-pen-btn:hover { background: #fbbf24; }
-.profile-info { text-align: center; margin-bottom: 20px; margin-top: 10px; }
-.profile-info h3 { font-size: 18px; margin-bottom: 4px; color: #000; }
-.profile-info p { font-size: 14px; color: #666; font-weight: bold; }
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-.stat-box { background: #f5f5f5; padding: 14px; border-radius: 10px; text-align: center; }
-.stat-box.label { font-size: 12px; color: #666; }
-.stat-box.value { font-size: 18px; font-weight: bold; color: #000; margin-top: 4px; }
-.total-box { background: #f59e0b; color: #000; text-align: center; padding: 14px; border-radius: 10px; font-weight: bold; margin-bottom: 16px; }
-.history-item { background: #f5f5f5; padding: 12px; border-radius: 10px; margin-bottom: 10px; }
-.history-top { display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; }
-.history-desc { font-size: 12px; color: #666; margin-top: 4px; }
-.points { color: #16a34a; }
-.empty-text { text-align: center; color: #999; padding: 20px; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .modal-header h2 { font-size: 20px; color: #000; font-weight: bold; }
+    .close-btn { font-size: 28px; color: #888; cursor: pointer; border: none; background: none; }
+    .profile-avatar-wrap { text-align: center; margin-bottom: 12px; position: relative; display: inline-block; }
+    .profile-avatar { width: 90px; height: 90px; border-radius: 50%; background: #fbbf24; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto; overflow: hidden; border: 3px solid #fbbf24; }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .edit-pen-btn { position: absolute; bottom: 0; right: 0; background: #f59e0b; border: 2px solid #fff; border-radius: 50%; width: 28px; height: 28px; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .profile-info { text-align: center; margin-bottom: 20px; margin-top: 10px; }
+    .profile-info h3 { font-size: 18px; margin-bottom: 4px; color: #000; }
+    .profile-info p { font-size: 14px; color: #666; font-weight: bold; }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .stat-box { background: #f5f5f5; padding: 14px; border-radius: 10px; text-align: center; }
+    .stat-box .label { font-size: 12px; color: #666; }
+    .stat-box .value { font-size: 18px; font-weight: bold; color: #000; margin-top: 4px; }
+    .total-box { background: #f59e0b; color: #000; text-align: center; padding: 14px; border-radius: 10px; font-weight: bold; margin-bottom: 16px; }
+    .history-item { background: #f5f5f5; padding: 12px; border-radius: 10px; margin-bottom: 10px; }
+    .history-top { display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; }
+    .history-desc { font-size: 12px; color: #666; margin-top: 4px; }
+    .points { color: #16a34a; }
+    .empty-text { text-align: center; color: #999; padding: 20px; }
     #avatarInput { display: none; }
+    /* Settings / Help / About styles */
+    .setting-item{display:flex;justify-content:space-between;align-items:center;padding:14px;background:#f5f5f5;border-radius:10px;margin-bottom:10px;font-weight:bold}
+    .setting-input{width:100%;padding:12px;background:#f5f5f5;border:1px solid #ddd;border-radius:10px;margin-top:8px}
+    .btn{width:100%;padding:12px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin-top:10px}
+    .btn-yellow{background:#f59e0b;color:#000}
+    .btn-red{background:#ef4444;color:#fff}
+    .btn-black{background:#000;color:#fff}
+    .faq{border-bottom:1px solid #eee;padding:12px 0;cursor:pointer}
+    .faq .q{font-weight:bold;display:flex;justify-content:space-between}
+    .faq .a{font-size:13px;color:#555;margin-top:8px;display:none;line-height:1.5}
+    .faq.open .a{display:block}
+    .badge{background:#f59e0b;color:#000;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:bold;display:inline-block;margin:3px}
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -54,14 +65,15 @@
       <div class="menu-list">
         <a onclick="openProfile()"><div class="left"><span class="icon">👤</span> Profile</div><svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 18l6-6-6-6"/></svg></a>
         <a onclick="openHistory()"><div class="left"><span class="icon">📜</span> Earn History</div><svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 18l6-6-6-6"/></svg></a>
-        <a href="./settings.html"><div class="left"><span class="icon">⚙️</span> Settings</div><svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 18l6-6-6-6"/></svg></a>
-        <a href="./help.html"><div class="left"><span class="icon">❓</span> Help & FAQ</div><svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 18l6-6-6-6"/></svg></a>
-        <a href="./about.html"><div class="left"><span class="icon">ℹ️</span> About Us</div><svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 18l6-6-6-6"/></svg></a>
+        <a onclick="openSettings()"><div class="left"><span class="icon">⚙️</span> Settings</div><svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 18l6-6-6-6"/></svg></a>
+        <a onclick="openHelp()"><div class="left"><span class="icon">❓</span> Help & FAQ</div><svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 18l6-6-6-6"/></svg></a>
+        <a onclick="openAbout()"><div class="left"><span class="icon">ℹ️</span> About Us</div><svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 18l6-6-6-6"/></svg></a>
       </div>
     </div>
     <button class="back-btn" onclick="window.location.href='./home.html'">Back Home</button>
   </div>
 
+  <!-- PROFILE POPUP -->
   <div id="profileModal" class="modal" onclick="this.style.display='none'">
     <div class="modal-content" onclick="event.stopPropagation()">
       <div class="modal-header"><h2>Profile</h2><button class="close-btn" onclick="document.getElementById('profileModal').style.display='none'">&times;</button></div>
@@ -75,11 +87,47 @@
     </div>
   </div>
 
+  <!-- HISTORY POPUP -->
   <div id="historyModal" class="modal" onclick="this.style.display='none'">
     <div class="modal-content" onclick="event.stopPropagation()">
       <div class="modal-header"><h2>📜 Earn History</h2><button class="close-btn" onclick="document.getElementById('historyModal').style.display='none'">&times;</button></div>
       <div class="total-box">Total Earned: <span id="totalPoints">0</span> pts</div>
       <div id="historyList"><div class="empty-text">Loading...</div></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS POPUP -->
+  <div id="settingsModal" class="modal" onclick="this.style.display='none'">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header"><h2>⚙️ Settings</h2><button class="close-btn" onclick="document.getElementById('settingsModal').style.display='none'">&times;</button></div>
+      <div class="setting-item"><span>🔔 Notifications</span><input type="checkbox" id="notif" checked></div>
+      <div class="setting-item"><span>🌙 Dark Mode</span><span style="font-size:11px;color:#888">Always ON</span></div>
+      <div style="margin-top:12px"><b>Change Password</b><input class="setting-input" type="password" id="newPass" placeholder="New password"><button class="btn btn-black" onclick="changePass()">Update Password</button><div id="passMsg" style="font-size:12px;color:#16a34a;text-align:center;margin-top:6px"></div></div>
+      <div style="margin-top:16px"><div style="font-size:13px">Logged as: <b id="setEmail"></b></div></div>
+      <button class="btn btn-red" style="margin-top:16px" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- HELP POPUP -->
+  <div id="helpModal" class="modal" onclick="this.style.display='none'">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header"><h2>❓ Help & FAQ</h2><button class="close-btn" onclick="document.getElementById('helpModal').style.display='none'">&times;</button></div>
+      <div class="faq open" onclick="this.classList.toggle('open')"><div class="q">How do I earn points? <span>▼</span></div><div class="a">Watch videos (10 pts), Daily Checkin (20 pts), Gift Box, Referral (50 pts each).</div></div>
+      <div class="faq" onclick="this.classList.toggle('open')"><div class="q">Referral bonus not showing? <span>▼</span></div><div class="a">After fix, new referrals show instantly in Earn History as Referral Bonus. Old ones before fix need manual check.</div></div>
+      <div class="faq" onclick="this.classList.toggle('open')"><div class="q">How to withdraw? <span>▼</span></div><div class="a">Convert points to USDT/BNB in Home, then withdraw when minimum reached.</div></div>
+      <div class="faq" onclick="this.classList.toggle('open')"><div class="q">Contact support? <span>▼</span></div><div class="a">Email: support@rewards.rw</div></div>
+    </div>
+  </div>
+
+  <!-- ABOUT POPUP -->
+  <div id="aboutModal" class="modal" onclick="this.style.display='none'">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header"><h2>ℹ️ About Us</h2><button class="close-btn" onclick="document.getElementById('aboutModal').style.display='none'">&times;</button></div>
+      <div style="text-align:center"><div style="font-size:48px">🐒🍇</div><div style="font-weight:bold;font-size:18px">From Nothing to Something</div></div>
+      <p style="font-size:13px;color:#555;text-align:center;margin:12px 0">Reward Platform RW is built in Rwanda for everyone. Watch, invite, checkin daily and grow your balance.</p>
+      <div style="text-align:center"><span class="badge">V 1.0</span><span class="badge">Made in RW</span><span class="badge">2026</span></div>
+      <p style="font-size:13px;margin-top:12px"><b>Mission:</b> Simple earning from your time online.</p>
+      <p style="font-size:12px;color:#888;text-align:center;margin-top:16px">© 2026 Rewards RW<br>perlan75.github.io/rev</p>
     </div>
   </div>
 
@@ -96,12 +144,12 @@
 
   function formatDateDDMMYYYY(dateObj) {
     if(!dateObj) return "00/00/0000";
-    const d = dateObj.toDate? dateObj.toDate() : new Date(dateObj);
+    const d = dateObj.toDate ? dateObj.toDate() : new Date(dateObj);
     return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
   }
   function formatDateTime(dateObj){
     if(!dateObj) return "";
-    const d = dateObj.toDate? dateObj.toDate() : new Date(dateObj);
+    const d = dateObj.toDate ? dateObj.toDate() : new Date(dateObj);
     return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
   }
 
@@ -111,14 +159,17 @@
     const doc = await db.collection('users').doc(user.uid).get();
     userData = doc.data();
     loadProfileData();
+    document.getElementById('setEmail').innerText = userData.email || user.email;
   });
 
   function loadProfileData() {
-    document.getElementById('profileUsername').innerText = userData.username || userData.displayName || 'User';
+    document.getElementById('profileUsername').innerText = userData.username || 'User';
     document.getElementById('profileEmail').innerText = userData.email || currentUser.email;
     document.getElementById('profilePoints').innerText = userData.balance || 0;
-    document.getElementById('profileReferrals').innerText = userData.referralCount || userData.referralsCount || 0;
-    document.getElementById('profileJoined').innerText = formatDateDDMMYYYY(userData.createdAt || userData.dateJoined);
+    document.getElementById('profileReferrals').innerText = userData.referralCount || 0;
+    document.getElementById('profileJoined').innerText = formatDateDDMMYYYY(userData.createdAt);
+    const savedAvatar = localStorage.getItem('userAvatar_'+currentUser.uid);
+    if(savedAvatar) document.getElementById('avatarDisplay').innerHTML = `<img src="${savedAvatar}">`;
   }
 
   async function loadHistory() {
@@ -127,72 +178,33 @@
     try{
       const watchSnap = await db.collection('users').doc(currentUser.uid).collection('watchHistory').orderBy('timestamp','desc').get();
       const earnSnap = await db.collection('users').doc(currentUser.uid).collection('earnHistory').orderBy('timestamp','desc').get().catch(()=>({empty:true, forEach:()=>{}}));
-
       let all = [];
-      if(!earnSnap.empty){
-        earnSnap.forEach(d=>{
-          const x = d.data();
-          all.push({
-            action: x.action,
-            points: x.points,
-            date: x.timestamp || x.date,
-            desc: x.desc || ''
-          });
-        });
-      }
-      watchSnap.forEach(d=>{
-        const data=d.data();
-        all.push({
-          action: data.videoId? `Watch: ${data.videoId}` : 'Video Watched',
-          points: data.reward || 10,
-          date: data.timestamp,
-          desc: 'Watch & Earn',
-          type: 'watch'
-        });
-      });
-
-      if(all.length===0 && userData.balance>0){
-        all=[{action:'Sign Up Bonus', points:userData.balance, date:userData.createdAt || new Date(), desc:'Welcome!'}];
-      }
-
-      all.sort((a,b)=>{
-        const ta = a.date?.toDate? a.date.toDate() : new Date(a.date);
-        const tb = b.date?.toDate? b.date.toDate() : new Date(b.date);
-        return tb - ta;
-      });
-
-      // FIXED: total is SUM of history, not balance
-      const totalEarned = all.reduce((sum, item)=> sum + (Number(item.points)||0), 0);
+      if(!earnSnap.empty){ earnSnap.forEach(d=>{ const x=d.data(); all.push({action:x.action, points:x.points, date:x.timestamp||x.date, desc:x.desc||''}); }); }
+      watchSnap.forEach(d=>{ const data=d.data(); all.push({action: data.videoId ? `Watch: ${data.videoId}` : 'Video Watched', points: data.reward || 10, date: data.timestamp, desc: 'Watch & Earn'}); });
+      if(all.length===0 && userData.balance>0){ all=[{action:'Sign Up Bonus', points:userData.balance, date:userData.createdAt||new Date(), desc:'Welcome!'}]; }
+      all.sort((a,b)=>{ const ta=a.date?.toDate?a.date.toDate():new Date(a.date); const tb=b.date?.toDate?b.date.toDate():new Date(b.date); return tb-ta; });
+      const totalEarned = all.reduce((sum,i)=> sum + (Number(i.points)||0),0);
       document.getElementById('totalPoints').innerText = totalEarned;
-
-      if(all.length===0){
-        listEl.innerHTML = '<div class="empty-text">No earnings yet</div>';
-        return;
-      }
-
-      listEl.innerHTML = all.map(item => `
-        <div class="history-item">
-          <div class="history-top"><span>${item.action}</span><span class="points">+${item.points}</span></div>
-          <div class="history-desc">${formatDateTime(item.date)} ${item.desc? '• ' + item.desc : ''}</div>
-        </div>
-      `).join('');
-    }catch(e){
-      listEl.innerHTML = `<div class="empty-text">Error: ${e.message}</div>`;
-    }
+      if(all.length===0){ listEl.innerHTML='<div class="empty-text">No earnings yet</div>'; return; }
+      listEl.innerHTML = all.map(item => `<div class="history-item"><div class="history-top"><span>${item.action}</span><span class="points">+${item.points}</span></div><div class="history-desc">${formatDateTime(item.date)} ${item.desc?'• '+item.desc:''}</div></div>`).join('');
+    }catch(e){ listEl.innerHTML = `<div class="empty-text">Error: ${e.message}</div>`; }
   }
 
-  function openProfile() { loadProfileData(); document.getElementById('profileModal').style.display = 'flex'; }
-  function openHistory() { loadHistory(); document.getElementById('historyModal').style.display = 'flex'; }
-
+  function openProfile() { loadProfileData(); document.getElementById('profileModal').style.display='flex'; }
+  function openHistory() { loadHistory(); document.getElementById('historyModal').style.display='flex'; }
+  function openSettings() { document.getElementById('settingsModal').style.display='flex'; }
+  function openHelp() { document.getElementById('helpModal').style.display='flex'; }
+  function openAbout() { document.getElementById('aboutModal').style.display='flex'; }
+  function logout(){auth.signOut().then(()=>{localStorage.clear();location.href='./index.html'})}
+  async function changePass(){
+    const p=document.getElementById('newPass').value;
+    if(p.length<5)return alert("Min 5 chars");
+    try{await auth.currentUser.updatePassword(p);document.getElementById('passMsg').innerText="Password updated!";}catch(e){alert(e.message)}
+  }
   document.getElementById('avatarInput').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if(!file) return;
+    const file = e.target.files[0]; if(!file) return;
     const reader = new FileReader();
-    reader.onload = function(event) {
-      const imgSrc = event.target.result;
-      document.getElementById('avatarDisplay').innerHTML = `<img src="${imgSrc}">`;
-      localStorage.setItem('userAvatar_'+currentUser.uid, imgSrc);
-    }
+    reader.onload = function(ev){ const imgSrc=ev.target.result; document.getElementById('avatarDisplay').innerHTML=`<img src="${imgSrc}">`; localStorage.setItem('userAvatar_'+currentUser.uid, imgSrc); }
     reader.readAsDataURL(file);
   });
 </script>
