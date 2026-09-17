@@ -128,12 +128,21 @@
     const listEl = document.getElementById('historyList');
     listEl.innerHTML = '<div class="empty-text">Loading...</div>';
     try{
-      // 1. Get all history: watchHistory + general earnHistory collection (if you have)
       const watchSnap = await db.collection('users').doc(currentUser.uid).collection('watchHistory').orderBy('timestamp','desc').get();
       const earnSnap = await db.collection('users').doc(currentUser.uid).collection('earnHistory').orderBy('timestamp','desc').get().catch(()=>({empty:true, forEach:()=>{}}));
 
       let all = [];
-      if(!earnSnap.empty){ earnSnap.forEach(d=>{ all.push(d.data()); }); }
+      if(!earnSnap.empty){ 
+        earnSnap.forEach(d=>{ 
+          const x = d.data();
+          all.push({ 
+            action: x.action, 
+            points: x.points, 
+            date: x.timestamp || x.date, 
+            desc: x.desc || '' 
+          }); 
+        }); 
+      }
       watchSnap.forEach(d=>{
         const data=d.data();
         all.push({
@@ -145,16 +154,17 @@
         });
       });
 
-      // Add signup bonus if exists in userData
       if(userData.signupBonus){
         all.push({action:'Sign Up Bonus', points:userData.signupBonus, date:userData.createdAt, desc:'Welcome!'});
       }
 
-      // sort by date desc
-      all.sort((a,b)=>{ const ta = a.date?.toDate ? a.date.toDate() : new Date(a.date); const tb = b.date?.toDate ? b.date.toDate() : new Date(b.date); return tb - ta; });
+      all.sort((a,b)=>{ 
+        const ta = a.date?.toDate ? a.date.toDate() : new Date(a.date); 
+        const tb = b.date?.toDate ? b.date.toDate() : new Date(b.date); 
+        return tb - ta; 
+      });
 
       if(all.length===0){
-        // First time - show at least signup
         all=[{action:'Sign Up Bonus', points:80, date:new Date(), desc:'Welcome!'}];
       }
 
