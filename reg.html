@@ -176,19 +176,31 @@
         balance: startingPoints,
         usdt: 0, bnb: 0, xrp: 0, xlm: 0,
         invitedBy: referredByCode || "",
-        referredBy: referredByCode || "", // ADDED THIS 1 LINE
+        referredBy: referredByCode || "",
         referralCount: 0,
         totalReferralEarnings: 0,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
 
-      // 4. REWARD REFERRER SEPARATELY
+      // 4. REWARD REFERRER SEPARATELY + ADD HISTORY
       if(referrerDoc){
         await referrerDoc.ref.update({
           balance: firebase.firestore.FieldValue.increment(50),
           referralCount: firebase.firestore.FieldValue.increment(1),
           totalReferralEarnings: firebase.firestore.FieldValue.increment(50)
-        })
+        });
+
+        // --- NEW: HISTORY FOR REFERRER ---
+        try {
+          await db.collection("users").doc(referrerDoc.id).collection("earnHistory").add({
+            action: 'Referral Bonus',
+            points: 50,
+            desc: 'Referred: ' + username,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        } catch (e) {
+          console.log("History write failed:", e.message);
+        }
       }
 
       // 5. SAVE LOCAL
