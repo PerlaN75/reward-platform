@@ -5,46 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-    body{background:#0f1508;min-height:100vh;padding:20px;color:white}
-   .container{max-width:500px;margin:0 auto}
-   .header{text-align:center;margin:20px 0;color:#fbbf24;font-size:28px;font-weight:bold}
-   .card{background:#fff;border-radius:16px;padding:8px;box-shadow:0 4px 12px rgba(0,0,0,0.25)}
-   .menu-list a{display:flex;align-items:center;justify-content:space-between;width:100%;padding:18px 16px;color:#000;text-decoration:none;font-size:16px;font-weight:bold;border-radius:10px;cursor:pointer}
-   .menu-list a:not(:last-child){border-bottom:1px solid #e5e5e5}
-   .left{display:flex;align-items:center}
-   .icon{font-size:22px;margin-right:14px}
-   .arrow{width:20px;height:20px;color:#888}
-   .back-btn{width:40%;margin:20px auto 0;display:block;padding:14px;background:#f59e0b;color:#000;border:none;border-radius:12px;font-weight:bold;cursor:pointer}
-   .modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;padding:20px}
-   .modal-content{background:#fff;border-radius:16px;padding:24px;width:100%;max-width:400px;color:#000;max-height:80vh;overflow-y:auto}
-   .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-   .close-btn{font-size:28px;color:#888;border:none;background:none;cursor:pointer}
-   .profile-avatar-wrap{text-align:center;margin-bottom:12px;position:relative;display:inline-block}
-   .profile-avatar{width:90px;height:90px;border-radius:50%;background:#fbbf24;display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto;overflow:hidden;border:3px solid #fbbf24}
-   .profile-avatar img{width:100%;height:100%;object-fit:cover}
-   .edit-pen-btn{position:absolute;bottom:0;right:0;background:#f59e0b;border:2px solid #fff;border-radius:50%;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-   .profile-info{text-align:center;margin-bottom:20px;margin-top:10px}
-   .stat-box{background:#f5f5f5;padding:14px;border-radius:10px;text-align:center}
-   .stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-   .label{font-size:12px;color:#666}
-   .value{font-size:18px;font-weight:bold;margin-top:4px}
-   .total-box{background:#f59e0b;color:#000;text-align:center;padding:14px;border-radius:10px;font-weight:bold;margin-bottom:16px}
-   .history-item{background:#f5f5f5;padding:12px;border-radius:10px;margin-bottom:10px}
-   .history-top{display:flex;justify-content:space-between;font-weight:bold;font-size:14px}
-   .history-desc{font-size:12px;color:#666;margin-top:4px}
-   .points{color:#16a34a}
-   .empty-text{text-align:center;color:#999;padding:20px}
-    #avatarInput{display:none}
-   .setting-item{display:flex;justify-content:space-between;align-items:center;padding:14px;background:#f5f5f5;border-radius:10px;margin-bottom:10px;font-weight:bold}
-   .setting-input,.setting-select{width:100%;padding:12px;background:#f5f5f5;border:1px solid #ddd;border-radius:10px;margin-top:8px}
-   .btn{width:100%;padding:12px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin-top:10px}
-   .btn-red{background:#ef4444;color:#fff}
-   .btn-black{background:#000;color:#fff}
-   .faq{border-bottom:1px solid #eee;padding:12px 0;cursor:pointer}
-   .faq.q{font-weight:bold;display:flex;justify-content:space-between}
-   .faq.a{font-size:13px;color:#555;margin-top:8px;display:none}
-   .faq.open.a{display:block}
-   .badge{background:#f59e0b;color:#000;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:bold;display:inline-block;margin:3px}
+    body{background:#0f1508;min-height:100vh;padding:20px;color:white;transition:0.3s}
+  .container{max-width:500px;margin:0 auto}
+  .header{text-align:center;margin:20px 0;color:#fbbf24;font-size:28px;font-weight:bold}
+  .card{background:#fff;border-radius:16px;padding:8px;box-shadow:0 4px 12px rgba(0,0,0,0.25)}
+  .menu-list a{display:flex;align-items:center;justify-content:space-between;width:100%;padding:18px 16px;color:#000;text-decoration:none;font-size:16px;font-weight:bold;border-radius:10px;cursor:pointer}
+  .menu-list a:not(:last-child){border-bottom:1px solid #e5e5e5}
+  .left{display:flex;align-items:center}
+  .icon{font-size:22px;margin-right:14px}
+  .back-btn{width:40%;margin:20px auto 0;display:block;padding:14px;background:#f59e0b;color:#000;border:none;border-radius:12px;font-weight:bold;cursor:pointer}
+  .modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;padding:20px}
+  .modal-content{background:#fff;border-radius:16px;padding:24px;width:100%;max-width:400px;color:#000;max-height:80vh;overflow-y:auto}
+  .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .close-btn{font-size:28px;color:#888;border:none;background:none;cursor:pointer}
+  .profile-avatar-wrap{text-align:center;margin-bottom:12px;position:relative;display:inline-block}
+  .profile-avatar{width:90px;height:90px;border-radius:50%;background:#fbbf24;display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto;overflow:hidden;border:3px solid #fbbf24}
+  .profile-avatar img{width:100%;height:100%;object-fit:cover}
+  .edit-pen-btn{position:absolute;bottom:0;right:0;background:#f59e0b;border:2px solid #fff;border-radius:50%;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .profile-info{text-align:center;margin-bottom:20px;margin-top:10px}
+  .stat-box{background:#f5f5f5;padding:14px;border-radius:10px;text-align:center}
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .label{font-size:12px;color:#666}
+  .value{font-size:18px;font-weight:bold;margin-top:4px}
+  .total-box{background:#f59e0b;color:#000;text-align:center;padding:14px;border-radius:10px;font-weight:bold;margin-bottom:16px}
+  .history-item{background:#f5f5f5;padding:12px;border-radius:10px;margin-bottom:10px}
+  .history-top{display:flex;justify-content:space-between;font-weight:bold;font-size:14px}
+  .history-desc{font-size:12px;color:#666;margin-top:4px}
+  .points{color:#16a34a}
+  .empty-text{text-align:center;color:#999;padding:20px}
+   #avatarInput{display:none}
+  .setting-item{display:flex;justify-content:space-between;align-items:center;padding:14px;background:#f5f5f5;border-radius:10px;margin-bottom:10px;font-weight:bold;cursor:pointer}
+  .setting-input,.setting-select{width:100%;padding:12px;background:#f5f5f5;border:1px solid #ddd;border-radius:10px;margin-top:8px}
+  .btn{width:100%;padding:12px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin-top:10px}
+  .btn-red{background:#ef4444;color:#fff}
+  .btn-black{background:#000;color:#fff}
+  .btn-yellow{background:#f59e0b;color:#000}
+  .faq{border-bottom:1px solid #eee;padding:12px 0;cursor:pointer}
+  .faq.open.a{display:block}
+  .faq.a{font-size:13px;color:#555;margin-top:8px;display:none}
+  .badge{background:#f59e0b;color:#000;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:bold;display:inline-block;margin:3px}
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -82,10 +81,17 @@
   <div id="historyList"><div class="empty-text">Loading...</div></div>
 </div></div>
 
+<!-- SETTINGS WITH NEW MODE PICKER -->
 <div id="settingsModal" class="modal" onclick="this.style.display='none'"><div class="modal-content" onclick="event.stopPropagation()">
   <div class="modal-header"><h2 id="t_settingsTitle">⚙️ Settings</h2><button class="close-btn" onclick="document.getElementById('settingsModal').style.display='none'">&times;</button></div>
-  <div class="setting-item"><span id="t_notif">🔔 Notifications</span><input type="checkbox" checked></div>
-  <div class="setting-item"><span id="t_dark">🌙 Dark Mode</span><span id="t_alwaysOn" style="font-size:11px;color:#888">Always ON</span></div>
+  <div class="setting-item"><span id="t_notif">🔔 Notifications</span><input type="checkbox" checked onclick="event.stopPropagation()"></div>
+
+  <!-- CHANGED ONLY THIS ROW -->
+  <div class="setting-item" onclick="openModePicker()">
+    <span id="t_dark">🌙 Mode</span>
+    <span id="modeValue" style="font-size:12px;color:#f59e0b;font-weight:bold">Dark</span>
+  </div>
+
   <div style="margin-top:14px"><b id="t_language">🌐 Language</b>
     <select id="langSelect" class="setting-select" onchange="changeLanguage(this.value)">
       <option value="en">🇺🇸 English</option>
@@ -105,12 +111,21 @@
   <button class="btn btn-red" style="margin-top:16px;width:40%;margin-left:auto;margin-right:auto;display:block" onclick="document.getElementById('settingsModal').style.display='none'" id="t_moreBtn">More</button>
 </div></div>
 
+<!-- MODE CHOOSER POPUP -->
+<div id="modePicker" class="modal" style="z-index:1200" onclick="this.style.display='none'">
+  <div class="modal-content" style="max-width:280px;text-align:center" onclick="event.stopPropagation()">
+    <h3 style="margin-bottom:14px">Choose Mode</h3>
+    <button class="btn btn-black" onclick="chooseMode('Light')">☀️ Light</button>
+    <button class="btn btn-yellow" onclick="chooseMode('Dark')">🌙 Dark</button>
+  </div>
+</div>
+
 <div id="helpModal" class="modal" onclick="this.style.display='none'"><div class="modal-content" onclick="event.stopPropagation()">
   <div class="modal-header"><h2 id="t_helpTitle">❓ Help & FAQ</h2><button class="close-btn" onclick="document.getElementById('helpModal').style.display='none'">&times;</button></div>
-  <div class="faq open" onclick="this.classList.toggle('open')"><div class="q"><span id="t_q1">How do I earn points?</span><span>▼</span></div><div class="a" id="t_a1">Watch videos (10), Daily Checkin (20), Gift Box, Referral (50).</div></div>
-  <div class="faq" onclick="this.classList.toggle('open')"><div class="q"><span id="t_q2">Referral not showing?</span><span>▼</span></div><div class="a" id="t_a2">New referrals show instantly in Earn History.</div></div>
-  <div class="faq" onclick="this.classList.toggle('open')"><div class="q"><span id="t_q3">How to withdraw?</span><span>▼</span></div><div class="a" id="t_a3">Convert points to USDT/BNB in Home, then withdraw.</div></div>
-  <div class="faq" onclick="this.classList.toggle('open')"><div class="q"><span id="t_q4">Contact support?</span><span>▼</span></div><div class="a">support@rewards.rw</div></div>
+  <div class="faq open" onclick="this.classList.toggle('open')"><div style="font-weight:bold;display:flex;justify-content:space-between"><span id="t_q1">How do I earn points?</span><span>▼</span></div><div class="a" id="t_a1">Watch videos (10), Daily Checkin (20), Gift Box, Referral (50).</div></div>
+  <div class="faq" onclick="this.classList.toggle('open')"><div style="font-weight:bold;display:flex;justify-content:space-between"><span id="t_q2">Referral not showing?</span><span>▼</span></div><div class="a" id="t_a2">New referrals show instantly in Earn History.</div></div>
+  <div class="faq" onclick="this.classList.toggle('open')"><div style="font-weight:bold;display:flex;justify-content:space-between"><span id="t_q3">How to withdraw?</span><span>▼</span></div><div class="a" id="t_a3">Convert points to USDT/BNB in Home, then withdraw.</div></div>
+  <div class="faq" onclick="this.classList.toggle('open')"><div style="font-weight:bold;display:flex;justify-content:space-between"><span id="t_q4">Contact support?</span><span>▼</span></div><div class="a">support@rewards.rw</div></div>
 </div></div>
 
 <div id="aboutModal" class="modal" onclick="this.style.display='none'"><div class="modal-content" onclick="event.stopPropagation()">
@@ -127,25 +142,37 @@ const auth=firebase.auth(), db=firebase.firestore();
 let currentUser=null,userData=null;
 
 const i18n={
-en:{moreTitle:"⚙️ More",profile:"Profile",earn:"Earn History",settings:"Settings",help:"Help & FAQ",about:"About Us",backHome:"Back Home",profileTitle:"Profile",totalPointsLabel:"Total Points",joinedLabel:"Joined",refLabel:"Referrals",historyTitle:"📜 Earn History",totalEarnedText:"Total Earned:",settingsTitle:"⚙️ Settings",notif:"🔔 Notifications",dark:"🌙 Dark Mode",alwaysOn:"Always ON",language:"🌐 Language",changePass:"Change Password",updatePass:"Update Password",loggedAs:"Logged as:",moreBtn:"More",helpTitle:"❓ Help & FAQ",q1:"How do I earn points?",a1:"Watch videos (10 pts), Daily Checkin (20 pts), Gift Box, Referral (50 pts each).",q2:"Referral bonus not showing?",a2:"After fix, new referrals show instantly in Earn History as Referral Bonus.",q3:"How to withdraw?",a3:"Convert points to USDT/BNB in Home, then withdraw when minimum reached.",q4:"Contact support?",aboutTitle:"ℹ️ About Us",motto:"From Nothing to Something",aboutDesc:"Reward Platform RW is built in Rwanda for everyone. Watch, invite, checkin daily and grow your balance."},
-rw:{moreTitle:"⚙️ Byinshi",profile:"Umwirondoro",earn:"Amateka",settings:"Igenamiterere",help:"Ubufasha",about:"Abo Turibo",backHome:"Subira Ahabanza",profileTitle:"Umwirondoro",totalPointsLabel:"Amanota Yose",joinedLabel:"Yinjiye",refLabel:"Abatumiwe",historyTitle:"📜 Amateka",totalEarnedText:"Yose:",settingsTitle:"⚙️ Igenamiterere",notif:"🔔 Amamenyesha",dark:"🌙 Umwijima",alwaysOn:"Buri gihe",language:"🌐 Ururimi",changePass:"Hindura Ijambo",updatePass:"Vugurura",loggedAs:"Winjiye nka:",moreBtn:"Byinshi",helpTitle:"❓ Ubufasha",q1:"Nigute nabona amanota?",a1:"Reba video (10), Kwinjira (20), Agasanduku, Gutumira (50).",q2:"Bonus ntiboneka?",a2:"Abatumiwe bashya baboneka ako kanya.",q3:"Nigute nabikuza?",a3:"Hindura muri USDT/BNB mu Ahabanza.",q4:"Twandikire?",aboutTitle:"ℹ️ Abo Turibo",motto:"Kuva ku Busa kugera kuri byinshi",aboutDesc:"Reward Platform RW yakorewe u Rwanda. Reba, tumira, injira buri munsi."},
-fr:{moreTitle:"⚙️ Plus",profile:"Profil",earn:"Historique",settings:"Paramètres",help:"Aide & FAQ",about:"À Propos",backHome:"Accueil",profileTitle:"Profil",totalPointsLabel:"Total Points",joinedLabel:"Inscrit",refLabel:"Parrainages",historyTitle:"📜 Historique",totalEarnedText:"Total Gagné:",settingsTitle:"⚙️ Paramètres",notif:"🔔 Notifications",dark:"🌙 Sombre",alwaysOn:"Toujours ON",language:"🌐 Langue",changePass:"Changer mot de passe",updatePass:"Mettre à jour",loggedAs:"Connecté:",moreBtn:"Plus",helpTitle:"❓ Aide",q1:"Comment gagner des points?",a1:"Vidéos (10), Checkin (20), Cadeau, Parrainage (50).",q2:"Bonus invisible?",a2:"Les nouveaux parrainages s'affichent instantanément.",q3:"Comment retirer?",a3:"Convertissez en USDT/BNB puis retirez.",q4:"Support?",aboutTitle:"ℹ️ À Propos",motto:"De Rien à Quelque Chose",aboutDesc:"Construit au Rwanda pour tous. Regardez, invitez, checkin quotidien."},
-sw:{moreTitle:"⚙️ Zaidi",profile:"Wasifu",earn:"Historia",settings:"Mipangilio",help:"Msaada",about:"Kuhusu Sisi",backHome:"Rudi Nyumbani",profileTitle:"Wasifu",totalPointsLabel:"Jumla ya Pointi",joinedLabel:"Alijiunga",refLabel:"Walioalikwa",historyTitle:"📜 Historia",totalEarnedText:"Jumla:",settingsTitle:"⚙️ Mipangilio",notif:"🔔 Arifa",dark:"🌙 Giza",alwaysOn:"Kila Wakati",language:"🌐 Lugha",changePass:"Badilisha Nenosiri",updatePass:"Sasisha",loggedAs:"Umeingia kama:",moreBtn:"Zaidi",helpTitle:"❓ Msaada",q1:"Napataje pointi?",a1:"Tazama video (10), Ingia kila siku (20), Zawadi, Mwaliko (50).",q2:"Bonus haionekani?",a2:"Mialiko mipya inaonekana mara moja.",q3:"Jinsi ya kutoa?",a3:"Badilisha kuwa USDT/BNB nyumbani kisha toa.",q4:"Msaada?",aboutTitle:"ℹ️ Kuhusu Sisi",motto:"Kutoka Hakuna hadi Kitu",aboutDesc:"Imejengwa Rwanda kwa kila mtu. Tazama, alika, ingia kila siku."},
-lg:{moreTitle:"⚙️ Ebisingawo",profile:"Profile",earn:"Ebyafuniddwa",settings:"Enteekateeka",help:"Obuyambi",about:"Ebikwata ku Ffe",backHome:"Ddayo Ewaka",profileTitle:"Profile",totalPointsLabel:"Obubonero",joinedLabel:"Yayingira",refLabel:"Boyite",historyTitle:"📜 Ebyafuniddwa",totalEarnedText:"Byonna:",settingsTitle:"⚙️ Enteekateeka",notif:"🔔 Okutegeeza",dark:"🌙 Ekizikiza",alwaysOn:"Bulijjo",language:"🌐 Olulimi",changePass:"Kyusa Password",updatePass:"Tereeza",loggedAs:"Oyingidde nga:",moreBtn:"Ebisingawo",helpTitle:"❓ Obuyambi",q1:"Nfuna ntya obubonero?",a1:"Laba video (10), Yingira buli lunaku (20), Kirabo, Kuyita (50).",q2:"Bonus telabika?",a2:"Abayitiddwa abapya balabika amangu.",q3:"Nzijja ntya?",a3:"Kyusa mu USDT/BNB eka.",q4:"Tukwasaganye?",aboutTitle:"ℹ️ Ebikwata ku Ffe",motto:"Okuva ku Tali ku kintu",aboutDesc:"Kikolebwa mu Rwanda ku buli muntu. Laba, yita, yingira buli lunaku."},
-ln:{moreTitle:"⚙️ Ebele",profile:"Profil",earn:"Lisolo",settings:"Bobongisi",help:"Lisalisi",about:"Na Biso",backHome:"Zonga Ndako",profileTitle:"Profil",totalPointsLabel:"Points Nyonso",joinedLabel:"Akotaki",refLabel:"Bengisami",historyTitle:"📜 Lisolo",totalEarnedText:"Nyonso:",settingsTitle:"⚙️ Bobongisi",notif:"🔔 Nsango",dark:"🌙 Molili",alwaysOn:"Ntango Nyonso",language:"🌐 Lokota",changePass:"Bongola Mot de passe",updatePass:"Bongisa",loggedAs:"Okoti lokola:",moreBtn:"Ebele",helpTitle:"❓ Lisalisi",q1:"Ndenge nini nazwa points?",a1:"Tala video (10), Kota mokolo na mokolo (20), Kado, Kobenga (50).",q2:"Bonus emonani te?",a2:"Bato ya sika bamonanaka mbala moko.",q3:"Ndenge ya kobimisa?",a3:"Bobongola na USDT/BNB na ndako.",q4:"Support?",aboutTitle:"ℹ️ Na Biso",motto:"Uta na Eloko te kino na Eloko",aboutDesc:"Esalemi na Rwanda pona bato nyonso. Tala, benga, kota mokolo na mokolo."},
-am:{moreTitle:"⚙️ ተጨማሪ",profile:"መገለጫ",earn:"የገቢ ታሪክ",settings:"ቅንብሮች",help:"እገዛ",about:"ስለ እኛ",backHome:"ወደ ቤት ተመለስ",profileTitle:"መገለጫ",totalPointsLabel:"ጠቅላላ ነጥቦች",joinedLabel:"ተቀላቀለ",refLabel:"ሪፈራሎች",historyTitle:"📜 የገቢ ታሪክ",totalEarnedText:"ጠቅላላ ገቢ:",settingsTitle:"⚙️ ቅንብሮች",notif:"🔔 ማሳወቂያ",dark:"🌙 ጨለማ",alwaysOn:"ሁልጊዜ",language:"🌐 ቋንቋ",changePass:"የይለፍ ቃል ቀይር",updatePass:"አዘምን",loggedAs:"ገብተሃል እንደ:",moreBtn:"ተጨማሪ",helpTitle:"❓ እገዛ",q1:"ነጥቦችን እንዴት አገኛለሁ?",a1:"ቪዲዮ ተመልከት (10), ዕለታዊ ቼክኢን (20), ስጦታ, ሪፈራል (50).",q2:"ሪፈራል ቦነስ አይታይም?",a2:"አዲስ ሪፈራሎች ወዲያውኑ ይታያሉ።",q3:"እንዴት ማውጣት?",a3:"ወደ USDT/BNB ቀይርና አውጣ።",q4:"ድጋፍ?",aboutTitle:"ℹ️ ስለ እኛ",motto:"ከምንም ወደ አንድ ነገር",aboutDesc:"በሩዋንዳ ለሁሉም የተሰራ። ተመልከት፣ ጋብዝ፣ በየቀኑ ቼክኢን አድርግ።"},
-ar:{moreTitle:"⚙️ المزيد",profile:"الملف الشخصي",earn:"سجل الأرباح",settings:"الإعدادات",help:"المساعدة",about:"معلومات عنا",backHome:"العودة للرئيسية",profileTitle:"الملف الشخصي",totalPointsLabel:"إجمالي النقاط",joinedLabel:"انضم",refLabel:"الإحالات",historyTitle:"📜 سجل الأرباح",totalEarnedText:"إجمالي المكتسب:",settingsTitle:"⚙️ الإعدادات",notif:"🔔 الإشعارات",dark:"🌙 الوضع الداكن",alwaysOn:"دائما",language:"🌐 اللغة",changePass:"تغيير كلمة المرور",updatePass:"تحديث",loggedAs:"مسجل كـ:",moreBtn:"المزيد",helpTitle:"❓ المساعدة",q1:"كيف أكسب النقاط؟",a1:"شاهد فيديو (10)، تسجيل يومي (20)، صندوق هدايا، إحالة (50).",q2:"مكافأة الإحالة لا تظهر؟",a2:"الإحالات الجديدة تظهر فورا.",q3:"كيف أسحب؟",a3:"حول إلى USDT/BNB في الرئيسية ثم اسحب.",q4:"الدعم؟",aboutTitle:"ℹ️ معلومات عنا",motto:"من لا شيء إلى شيء",aboutDesc:"بنيت في رواندا للجميع. شاهد، ادع، سجل دخول يومي."},
-es:{moreTitle:"⚙️ Más",profile:"Perfil",earn:"Historial",settings:"Ajustes",help:"Ayuda",about:"Sobre Nosotros",backHome:"Volver Inicio",profileTitle:"Perfil",totalPointsLabel:"Puntos Totales",joinedLabel:"Unido",refLabel:"Referidos",historyTitle:"📜 Historial",totalEarnedText:"Total Ganado:",settingsTitle:"⚙️ Ajustes",notif:"🔔 Notificaciones",dark:"🌙 Oscuro",alwaysOn:"Siempre ON",language:"🌐 Idioma",changePass:"Cambiar contraseña",updatePass:"Actualizar",loggedAs:"Conectado como:",moreBtn:"Más",helpTitle:"❓ Ayuda",q1:"¿Cómo ganar puntos?",a1:"Ver videos (10), Checkin diario (20), Regalo, Referido (50).",q2:"¿Bono no aparece?",a2:"Nuevos referidos aparecen al instante.",q3:"¿Cómo retirar?",a3:"Convierte a USDT/BNB en Inicio y retira.",q4:"¿Soporte?",aboutTitle:"ℹ️ Sobre Nosotros",motto:"De Nada a Algo",aboutDesc:"Construido en Ruanda para todos. Mira, invita, checkin diario."},
-pt:{moreTitle:"⚙️ Mais",profile:"Perfil",earn:"Histórico",settings:"Configurações",help:"Ajuda",about:"Sobre Nós",backHome:"Voltar Inicio",profileTitle:"Perfil",totalPointsLabel:"Total Pontos",joinedLabel:"Entrou",refLabel:"Indicações",historyTitle:"📜 Histórico",totalEarnedText:"Total Ganho:",settingsTitle:"⚙️ Configurações",notif:"🔔 Notificações",dark:"🌙 Escuro",alwaysOn:"Sempre ON",language:"🌐 Idioma",changePass:"Mudar senha",updatePass:"Atualizar",loggedAs:"Logado como:",moreBtn:"Mais",helpTitle:"❓ Ajuda",q1:"Como ganhar pontos?",a1:"Assistir vídeos (10), Checkin diário (20), Presente, Indicação (50).",q2:"Bônus não aparece?",a2:"Novas indicações aparecem instantaneamente.",q3:"Como sacar?",a3:"Converta para USDT/BNB no Início e saque.",q4:"Suporte?",aboutTitle:"ℹ️ Sobre Nós",motto:"Do Nada para Algo",aboutDesc:"Construído em Ruanda para todos. Assista, convide, checkin diário."}
+en:{moreTitle:"⚙️ More",profile:"Profile",earn:"Earn History",settings:"Settings",help:"Help & FAQ",about:"About Us",backHome:"Back Home",profileTitle:"Profile",totalPointsLabel:"Total Points",joinedLabel:"Joined",refLabel:"Referrals",historyTitle:"📜 Earn History",totalEarnedText:"Total Earned:",settingsTitle:"⚙️ Settings",notif:"🔔 Notifications",dark:"🌙 Mode",alwaysOn:"Dark",language:"🌐 Language",changePass:"Change Password",updatePass:"Update Password",loggedAs:"Logged as:",moreBtn:"More",helpTitle:"❓ Help & FAQ",q1:"How do I earn points?",a1:"Watch videos (10 pts), Daily Checkin (20 pts), Gift Box, Referral (50 pts each).",q2:"Referral bonus not showing?",a2:"After fix, new referrals show instantly in Earn History as Referral Bonus.",q3:"How to withdraw?",a3:"Convert points to USDT/BNB in Home, then withdraw when minimum reached.",q4:"Contact support?",aboutTitle:"ℹ️ About Us",motto:"From Nothing to Something",aboutDesc:"Reward Platform RW is built in Rwanda for everyone. Watch, invite, checkin daily and grow your balance."},
+rw:{moreTitle:"⚙️ Byinshi",profile:"Umwirondoro",earn:"Amateka",settings:"Igenamiterere",help:"Ubufasha",about:"Abo Turibo",backHome:"Subira Ahabanza",profileTitle:"Umwirondoro",totalPointsLabel:"Amanota Yose",joinedLabel:"Yinjiye",refLabel:"Abatumiwe",historyTitle:"📜 Amateka",totalEarnedText:"Yose:",settingsTitle:"⚙️ Igenamiterere",notif:"🔔 Amamenyesha",dark:"🌙 Mode",alwaysOn:"Dark",language:"🌐 Ururimi",changePass:"Hindura Ijambo",updatePass:"Vugurura",loggedAs:"Winjiye nka:",moreBtn:"Byinshi",helpTitle:"❓ Ubufasha",q1:"Nigute nabona amanota?",a1:"Reba video (10), Kwinjira (20), Agasanduku, Gutumira (50).",q2:"Bonus ntiboneka?",a2:"Abatumiwe bashya baboneka ako kanya.",q3:"Nigute nabikuza?",a3:"Hindura muri USDT/BNB mu Ahabanza.",q4:"Twandikire?",aboutTitle:"ℹ️ Abo Turibo",motto:"Kuva ku Busa kugera kuri byinshi",aboutDesc:"Reward Platform RW yakorewe u Rwanda. Reba, tumira, injira buri munsi."},
+fr:{moreTitle:"⚙️ Plus",profile:"Profil",earn:"Historique",settings:"Paramètres",help:"Aide & FAQ",about:"À Propos",backHome:"Accueil",profileTitle:"Profil",totalPointsLabel:"Total Points",joinedLabel:"Inscrit",refLabel:"Parrainages",historyTitle:"📜 Historique",totalEarnedText:"Total Gagné:",settingsTitle:"⚙️ Paramètres",notif:"🔔 Notifications",dark:"🌙 Mode",alwaysOn:"Dark",language:"🌐 Langue",changePass:"Changer mot de passe",updatePass:"Mettre à jour",loggedAs:"Connecté:",moreBtn:"Plus",helpTitle:"❓ Aide",q1:"Comment gagner des points?",a1:"Vidéos (10), Checkin (20), Cadeau, Parrainage (50).",q2:"Bonus invisible?",a2:"Les nouveaux parrainages s'affichent instantanément.",q3:"Comment retirer?",a3:"Convertissez en USDT/BNB puis retirez.",q4:"Support?",aboutTitle:"ℹ️ À Propos",motto:"De Rien à Quelque Chose",aboutDesc:"Construit au Rwanda pour tous. Regardez, invitez, checkin quotidien."},
+sw:{moreTitle:"⚙️ Zaidi",profile:"Wasifu",earn:"Historia",settings:"Mipangilio",help:"Msaada",about:"Kuhusu Sisi",backHome:"Rudi Nyumbani",profileTitle:"Wasifu",totalPointsLabel:"Jumla ya Pointi",joinedLabel:"Alijiunga",refLabel:"Walioalikwa",historyTitle:"📜 Historia",totalEarnedText:"Jumla:",settingsTitle:"⚙️ Mipangilio",notif:"🔔 Arifa",dark:"🌙 Mode",alwaysOn:"Dark",language:"🌐 Lugha",changePass:"Badilisha Nenosiri",updatePass:"Sasisha",loggedAs:"Umeingia kama:",moreBtn:"Zaidi",helpTitle:"❓ Msaada",q1:"Napataje pointi?",a1:"Tazama video (10), Ingia kila siku (20), Zawadi, Mwaliko (50).",q2:"Bonus haionekani?",a2:"Mialiko mipya inaonekana mara moja.",q3:"Jinsi ya kutoa?",a3:"Badilisha kuwa USDT/BNB nyumbani kisha toa.",q4:"Msaada?",aboutTitle:"ℹ️ Kuhusu Sisi",motto:"Kutoka Hakuna hadi Kitu",aboutDesc:"Imejengwa Rwanda kwa kila mtu. Tazama, alika, ingia kila siku."},
+lg:{moreTitle:"⚙️ Ebisingawo",profile:"Profile",earn:"Ebyafuniddwa",settings:"Enteekateeka",help:"Obuyambi",about:"Ebikwata ku Ffe",backHome:"Ddayo Ewaka",profileTitle:"Profile",totalPointsLabel:"Obubonero",joinedLabel:"Yayingira",refLabel:"Boyite",historyTitle:"📜 Ebyafuniddwa",totalEarnedText:"Byonna:",settingsTitle:"⚙️ Enteekateeka",notif:"🔔 Okutegeeza",dark:"🌙 Mode",alwaysOn:"Dark",language:"🌐 Olulimi",changePass:"Kyusa Password",updatePass:"Tereeza",loggedAs:"Oyingidde nga:",moreBtn:"Ebisingawo",helpTitle:"❓ Obuyambi",q1:"Nfuna ntya obubonero?",a1:"Laba video (10), Yingira buli lunaku (20), Kirabo, Kuyita (50).",q2:"Bonus telabika?",a2:"Abayitiddwa abapya balabika amangu.",q3:"Nzijja ntya?",a3:"Kyusa mu USDT/BNB eka.",q4:"Tukwasaganye?",aboutTitle:"ℹ️ Ebikwata ku Ffe",motto:"Okuva ku Tali ku kintu",aboutDesc:"Kikolebwa mu Rwanda ku buli muntu."},
+ln:{moreTitle:"⚙️ Ebele",profile:"Profil",earn:"Lisolo",settings:"Bobongisi",help:"Lisalisi",about:"Na Biso",backHome:"Zonga Ndako",profileTitle:"Profil",totalPointsLabel:"Points Nyonso",joinedLabel:"Akotaki",refLabel:"Bengisami",historyTitle:"📜 Lisolo",totalEarnedText:"Nyonso:",settingsTitle:"⚙️ Bobongisi",notif:"🔔 Nsango",dark:"🌙 Mode",alwaysOn:"Dark",language:"🌐 Lokota",changePass:"Bongola Mot de passe",updatePass:"Bongisa",loggedAs:"Okoti lokola:",moreBtn:"Ebele",helpTitle:"❓ Lisalisi",q1:"Ndenge nini nazwa points?",a1:"Tala video (10), Kota mokolo na mokolo (20), Kado, Kobenga (50).",q2:"Bonus emonani te?",a2:"Bato ya sika bamonanaka mbala moko.",q3:"Ndenge ya kobimisa?",a3:"Bobongola na USDT/BNB na ndako.",q4:"Support?",aboutTitle:"ℹ️ Na Biso",motto:"Uta na Eloko te kino na Eloko",aboutDesc:"Esalemi na Rwanda pona bato nyonso."},
+am:{moreTitle:"⚙️ ተጨማሪ",profile:"መገለጫ",earn:"የገቢ ታሪክ",settings:"ቅንብሮች",help:"እገዛ",about:"ስለ እኛ",backHome:"ወደ ቤት ተመለስ",profileTitle:"መገለጫ",totalPointsLabel:"ጠቅላላ ነጥቦች",joinedLabel:"ተቀላቀለ",refLabel:"ሪፈራሎች",historyTitle:"📜 የገቢ ታሪክ",totalEarnedText:"ጠቅላላ ገቢ:",settingsTitle:"⚙️ ቅንብሮች",notif:"🔔 ማሳወቂያ",dark:"🌙 Mode",alwaysOn:"Dark",language:"🌐 ቋንቋ",changePass:"የይለፍ ቃል ቀይር",updatePass:"አዘምን",loggedAs:"ገብተሃል እንደ:",moreBtn:"ተጨማሪ",helpTitle:"❓ እገዛ",q1:"ነጥቦችን እንዴት አገኛለሁ?",a1:"ቪዲዮ ተመልከት (10), ዕለታዊ ቼክኢን (20), ስጦታ, ሪፈራል (50).",q2:"ሪፈራል ቦነስ አይታይም?",a2:"አዲስ ሪፈራሎች ወዲያውኑ ይታያሉ።",q3:"እንዴት ማውጣት?",a3:"ወደ USDT/BNB ቀይርና አውጣ።",q4:"ድጋፍ?",aboutTitle:"ℹ️ ስለ እኛ",motto:"ከምንም ወደ አንድ ነገር",aboutDesc:"በሩዋንዳ ለሁሉም የተሰራ።"},
+ar:{moreTitle:"⚙️ المزيد",profile:"الملف الشخصي",earn:"سجل الأرباح",settings:"الإعدادات",help:"المساعدة",about:"معلومات عنا",backHome:"العودة للرئيسية",profileTitle:"الملف الشخصي",totalPointsLabel:"إجمالي النقاط",joinedLabel:"انضم",refLabel:"الإحالات",historyTitle:"📜 سجل الأرباح",totalEarnedText:"إجمالي المكتسب:",settingsTitle:"⚙️ الإعدادات",notif:"🔔 الإشعارات",dark:"🌙 Mode",alwaysOn:"Dark",language:"🌐 اللغة",changePass:"تغيير كلمة المرور",updatePass:"تحديث",loggedAs:"مسجل كـ:",moreBtn:"المزيد",helpTitle:"❓ المساعدة",q1:"كيف أكسب النقاط؟",a1:"شاهد فيديو (10)، تسجيل يومي (20)، صندوق هدايا، إحالة (50).",q2:"مكافأة الإحالة لا تظهر؟",a2:"الإحالات الجديدة تظهر فورا.",q3:"كيف أسحب؟",a3:"حول إلى USDT/BNB في الرئيسية ثم اسحب.",q4:"الدعم؟",aboutTitle:"ℹ️ معلومات عنا",motto:"من لا شيء إلى شيء",aboutDesc:"بنيت في رواندا للجميع."},
+es:{moreTitle:"⚙️ Más",profile:"Perfil",earn:"Historial",settings:"Ajustes",help:"Ayuda",about:"Sobre Nosotros",backHome:"Volver Inicio",profileTitle:"Perfil",totalPointsLabel:"Puntos Totales",joinedLabel:"Unido",refLabel:"Referidos",historyTitle:"📜 Historial",totalEarnedText:"Total Ganado:",settingsTitle:"⚙️ Ajustes",notif:"🔔 Notificaciones",dark:"🌙 Mode",alwaysOn:"Dark",language:"🌐 Idioma",changePass:"Cambiar contraseña",updatePass:"Actualizar",loggedAs:"Conectado como:",moreBtn:"Más",helpTitle:"❓ Ayuda",q1:"¿Cómo ganar puntos?",a1:"Ver videos (10), Checkin diario (20), Regalo, Referido (50).",q2:"¿Bono no aparece?",a2:"Nuevos referidos aparecen al instante.",q3:"¿Cómo retirar?",a3:"Convierte a USDT/BNB en Inicio y retira.",q4:"¿Soporte?",aboutTitle:"ℹ️ Sobre Nosotros",motto:"De Nada a Algo",aboutDesc:"Construido en Ruanda para todos."},
+pt:{moreTitle:"⚙️ Mais",profile:"Perfil",earn:"Histórico",settings:"Configurações",help:"Ajuda",about:"Sobre Nós",backHome:"Voltar Inicio",profileTitle:"Perfil",totalPointsLabel:"Total Pontos",joinedLabel:"Entrou",refLabel:"Indicações",historyTitle:"📜 Histórico",totalEarnedText:"Total Ganho:",settingsTitle:"⚙️ Configurações",notif:"🔔 Notificações",dark:"🌙 Mode",alwaysOn:"Dark",language:"🌐 Idioma",changePass:"Mudar senha",updatePass:"Atualizar",loggedAs:"Logado como:",moreBtn:"Mais",helpTitle:"❓ Ajuda",q1:"Como ganhar pontos?",a1:"Assistir vídeos (10), Checkin diário (20), Presente, Indicação (50).",q2:"Bônus não aparece?",a2:"Novas indicações aparecem instantaneamente.",q3:"Como sacar?",a3:"Converta para USDT/BNB no Início e saque.",q4:"Suporte?",aboutTitle:"ℹ️ Sobre Nós",motto:"Do Nada para Algo",aboutDesc:"Construído em Ruanda para todos."}
 };
 
 function getLang(){return localStorage.getItem('appLang')||'en';}
 function changeLanguage(lang){localStorage.setItem('appLang',lang);applyLang(lang);}
 function applyLang(lang){
   const t=i18n[lang]||i18n.en;
-  const ids=["moreTitle","profile","earn","settings","help","about","backHome","profileTitle","totalPointsLabel","joinedLabel","refLabel","historyTitle","totalEarnedText","settingsTitle","notif","dark","alwaysOn","language","changePass","updatePass","loggedAs","moreBtn","helpTitle","q1","a1","q2","a2","q3","a3","q4","aboutTitle","motto","aboutDesc"];
+  const ids=["moreTitle","profile","earn","settings","help","about","backHome","profileTitle","totalPointsLabel","joinedLabel","refLabel","historyTitle","totalEarnedText","settingsTitle","notif","dark","language","changePass","updatePass","loggedAs","moreBtn","helpTitle","q1","a1","q2","a2","q3","a3","q4","aboutTitle","motto","aboutDesc"];
   ids.forEach(k=>{const el=document.getElementById('t_'+k); if(el) el.innerText=t[k];});
   document.getElementById('langSelect').value=lang;
+  document.getElementById('modeValue').innerText=getMode();
+}
+
+// MODE LOGIC - NEW
+function getMode(){ return localStorage.getItem('appMode') || 'Dark'; }
+function openModePicker(){ document.getElementById('modePicker').style.display='flex'; }
+function chooseMode(m){
+  localStorage.setItem('appMode', m);
+  document.getElementById('modeValue').innerText = m;
+  document.getElementById('modePicker').style.display='none';
+  if(m==='Light'){ document.body.style.background='#f5f5f5'; document.body.style.color='#000'; }
+  else { document.body.style.background='#0f1508'; document.body.style.color='white'; }
 }
 
 function formatDateDDMMYYYY(d){ if(!d) return "00/00/0000"; const dd=d.toDate?d.toDate():new Date(d); return `${String(dd.getDate()).padStart(2,'0')}/${String(dd.getMonth()+1).padStart(2,'0')}/${dd.getFullYear()}`;}
@@ -164,6 +191,7 @@ auth.onAuthStateChanged(async user=>{
   document.getElementById('setEmail').innerText=userData.email||user.email;
   const av=localStorage.getItem('userAvatar_'+user.uid); if(av) document.getElementById('avatarDisplay').innerHTML=`<img src="${av}">`;
   applyLang(getLang());
+  chooseMode(getMode());
 });
 
 async function loadHistory(){
