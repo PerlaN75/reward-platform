@@ -30,7 +30,7 @@
     <div id="loginForm">
       <input type="email" id="email" placeholder="Email">
       <input type="password" id="password" placeholder="Password">
-      <button class="btn-login" onclick="login()">Login</button>
+      <button class="btn-login" id="loginBtn" onclick="login()">Login</button>
       <div class="link-reset" onclick="showReset()">Forgot Password?</div>
       <div class="link-register" onclick="window.location.href='./reg.html'">Don't have an account? Register</div>
     </div>
@@ -78,7 +78,7 @@
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     const errorEl = document.getElementById('error');
-    const btn = document.querySelector('#loginForm.btn-login');
+    const btn = document.getElementById('loginBtn');
     errorEl.innerText = "";
     document.getElementById('success').innerText = "";
     if(!email ||!password){ errorEl.innerText = "Fill all fields"; return; }
