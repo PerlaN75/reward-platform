@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-    body{background:#0f1508;min-height:100vh;padding:20px;color:white}
+    body{background:#0f1508;min-height:100vh;padding:20px;color:white;transition:0.3s}
  .container{max-width:500px;margin:0 auto}
  .header{text-align:center;margin:20px 0;color:#fbbf24;font-size:28px;font-weight:bold}
  .card{background:#fff;border-radius:16px;padding:8px;box-shadow:0 4px 12px rgba(0,0,0,0.25)}
@@ -15,7 +15,7 @@
  .icon{font-size:22px;margin-right:14px}
  .back-btn{width:40%;margin:20px auto 0;display:block;padding:14px;background:#f59e0b;color:#000;border:none;border-radius:12px;font-weight:bold;cursor:pointer}
  .modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;padding:20px}
- .modal-content{background:#fff;border-radius:16px;padding:24px;width:100%;max-width:400px;color:#000;max-height:80vh;overflow-y:auto}
+ .modal-content{background:#fff;border-radius:16px;padding:24px;width:100%;max-width:400px;color:#000;max-height:85vh;overflow-y:auto}
  .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
  .close-btn{font-size:28px;color:#888;border:none;background:none;cursor:pointer}
  .profile-avatar-wrap{text-align:center;margin-bottom:12px;position:relative;display:inline-block}
@@ -36,8 +36,8 @@
  .setting-item{display:flex;justify-content:space-between;align-items:center;padding:14px;background:#f5f5f5;border-radius:10px;margin-bottom:10px;font-weight:bold;cursor:pointer}
  .setting-input,.setting-select{width:100%;padding:12px;background:#f5f5f5;border:1px solid #ddd;border-radius:10px;margin-top:8px}
  .support-label{font-size:13px;font-weight:bold;margin-top:12px;display:block}
- .support-input,.support-select,.support-textarea{width:100%;padding:12px;background:#f5f5f5;border:1px solid #ddd;border-radius:10px;margin-top:6px;font-size:14px}
- .support-textarea{height:100px;resize:none}
+ .support-input,.support-textarea{width:100%;padding:12px;background:#f5f5f5;border:1px solid #ddd;border-radius:10px;margin-top:6px;font-size:14px}
+ .support-textarea{height:90px;resize:none}
  .btn{width:100%;padding:12px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin-top:10px}
  .btn-red{background:#ef4444;color:#fff}
  .btn-black{background:#000;color:#fff}
@@ -50,20 +50,19 @@
 </head>
 <body>
 <div class="container">
-  <div class="header" id="t_moreTitle">⚙️ More</div>
+  <div class="header">⚙️ More</div>
   <div class="card">
     <div class="menu-list">
-      <a onclick="openProfile()"><div class="left"><span class="icon">👤</span> <span id="t_profile">Profile</span></div>›</a>
-      <a onclick="openHistory()"><div class="left"><span class="icon">📜</span> <span id="t_earn">Earn History</span></div>›</a>
-      <a onclick="openSettings()"><div class="left"><span class="icon">⚙️</span> <span id="t_settings">Settings</span></div>›</a>
-      <a onclick="openHelp()"><div class="left"><span class="icon">❓</span> <span id="t_help">Help/Support</span></div>›</a>
-      <a onclick="openAbout()"><div class="left"><span class="icon">ℹ️</span> <span id="t_about">About Us</span></div>›</a>
+      <a onclick="openProfile()"><div class="left"><span class="icon">👤</span> Profile</div>›</a>
+      <a onclick="openHistory()"><div class="left"><span class="icon">📜</span> Earn History</div>›</a>
+      <a onclick="openSettings()"><div class="left"><span class="icon">⚙️</span> Settings</div>›</a>
+      <a onclick="openHelp()"><div class="left"><span class="icon">❓</span> Help/Support</div>›</a>
+      <a onclick="openAbout()"><div class="left"><span class="icon">ℹ️</span> About Us</div>›</a>
     </div>
   </div>
   <button class="back-btn" onclick="location.href='./home.html'">Back Home</button>
 </div>
 
-<!-- PROFILE -->
 <div id="profileModal" class="modal" onclick="this.style.display='none'"><div class="modal-content" onclick="event.stopPropagation()">
   <div class="modal-header"><h2>Profile</h2><button class="close-btn" onclick="document.getElementById('profileModal').style.display='none'">&times;</button></div>
   <div style="text-align:center"><div class="profile-avatar-wrap"><div class="profile-avatar" id="avatarDisplay">👤</div><button class="edit-pen-btn" onclick="document.getElementById('avatarInput').click()">✏️</button><input type="file" id="avatarInput" accept="image/*"></div></div>
@@ -75,20 +74,18 @@
   </div>
 </div></div>
 
-<!-- HISTORY -->
 <div id="historyModal" class="modal" onclick="this.style.display='none'"><div class="modal-content" onclick="event.stopPropagation()">
   <div class="modal-header"><h2>📜 Earn History</h2><button class="close-btn" onclick="document.getElementById('historyModal').style.display='none'">&times;</button></div>
   <div class="total-box">Total Earned: <span id="totalPoints">0</span> pts</div>
   <div id="historyList"><div class="empty-text">Loading...</div></div>
 </div></div>
 
-<!-- SETTINGS -->
 <div id="settingsModal" class="modal" onclick="this.style.display='none'"><div class="modal-content" onclick="event.stopPropagation()">
   <div class="modal-header"><h2>⚙️ Settings</h2><button class="close-btn" onclick="document.getElementById('settingsModal').style.display='none'">&times;</button></div>
   <div class="setting-item"><span>🔔 Notifications</span><input type="checkbox" checked onclick="event.stopPropagation()"></div>
   <div class="setting-item" onclick="openModePicker()"><span>🌙 Mode</span><span id="modeValue" style="font-size:12px;color:#f59e0b;font-weight:bold">Dark</span></div>
   <div style="margin-top:14px"><b>🌐 Language</b>
-    <select id="langSelect" class="setting-select" onchange="changeLanguage(this.value)">
+    <select id="langSelect" class="setting-select" onchange="localStorage.setItem('appLang',this.value)">
       <option value="en">🇺🇸 English</option>
       <option value="rw">🇷🇼 Kinyarwanda</option>
       <option value="fr">🇫🇷 Français</option>
@@ -103,7 +100,7 @@
   </div>
   <div style="margin-top:12px"><b>Change Password</b><input class="setting-input" type="password" id="newPass" placeholder="New password"><button class="btn btn-black" onclick="changePass()">Update Password</button><div id="passMsg" style="font-size:12px;color:#16a34a;text-align:center;margin-top:6px"></div></div>
   <div style="margin-top:16px"><span>Logged as:</span> <b id="setEmail"></b></div>
-  <button class="btn btn-red" style="margin-top:16px;width:40%;margin-left:auto;margin-right:auto;display:block" onclick="document.getElementById('settingsModal').style.display='none'">More</button>
+  <button class="btn btn-red" style="margin-top:16px;width:40%;margin:0 auto;display:block" onclick="document.getElementById('settingsModal').style.display='none'">More</button>
 </div></div>
 
 <div id="modePicker" class="modal" style="z-index:1200" onclick="this.style.display='none'"><div class="modal-content" style="max-width:280px;text-align:center" onclick="event.stopPropagation()">
@@ -112,7 +109,6 @@
   <button class="btn btn-yellow" onclick="chooseMode('Dark')">🌙 Dark</button>
 </div></div>
 
-<!-- HELP/SUPPORT - ONLY FORM NOW -->
 <div id="helpModal" class="modal" onclick="this.style.display='none'"><div class="modal-content" onclick="event.stopPropagation()">
   <div class="modal-header"><h2>❓ Help/Support</h2><button class="close-btn" onclick="document.getElementById('helpModal').style.display='none'">&times;</button></div>
   <form onsubmit="submitSupport(event)">
@@ -124,17 +120,75 @@
     <textarea id="supportIssue" class="support-textarea" placeholder="Describe your issue..." required></textarea>
     <button type="submit" class="btn btn-black" id="supportBtn">Submit</button>
     <div id="supportMsg" style="text-align:center;margin-top:10px;font-size:13px;font-weight:bold"></div>
-    <p style="font-size:11px;color:#888;text-align:center;margin-top:10px">Admin will handle your issue and reply via your email.</p>
+    <p style="font-size:11px;color:#888;text-align:center;margin-top:10px">Admin will handle and reply via your email.</p>
   </form>
 </div></div>
 
-<!-- ABOUT US - KEPT -->
+<!-- NEW ABOUT US WITH OLD HELP CONTENT -->
 <div id="aboutModal" class="modal" onclick="this.style.display='none'"><div class="modal-content" onclick="event.stopPropagation()">
   <div class="modal-header"><h2>ℹ️ About Us</h2><button class="close-btn" onclick="document.getElementById('aboutModal').style.display='none'">&times;</button></div>
-  <div style="text-align:center"><div style="font-size:48px">🐒🍇</div><div style="font-weight:bold;font-size:18px">From Nothing to Something</div></div>
-  <p style="font-size:13px;color:#555;text-align:center;margin:12px 0">Reward Platform RW is built in Rwanda for everyone. Watch, invite, checkin daily and grow your balance.</p>
-  <div style="text-align:center"><span class="badge">V 1.0</span><span class="badge">Made in RW</span><span class="badge">2026</span></div>
-  <p style="font-size:12px;color:#888;text-align:center;margin-top:16px">© 2026 Rewards RW<br>perlan75.github.io/rev</p>
+  
+  <div style="text-align:center">
+    <div style="font-size:48px">🐒🍇</div>
+    <div style="font-weight:bold;font-size:18px">From Nothing to Something</div>
+    <div style="font-size:12px;color:#888;margin-top:4px">Reward Platform RW</div>
+  </div>
+
+  <p style="font-size:13px;color:#444;text-align:center;margin:14px 0;line-height:1.5">
+    <b>Reward Platform RW</b> is built in Rwanda for everyone. We turn your time into points and points into real value. Watch, invite friends, check-in daily and grow your balance.
+  </p>
+
+  <div style="background:#f5f5f5;border-radius:12px;padding:14px;margin:12px 0">
+    <b style="font-size:13px">💰 How to Earn Points</b>
+    <div style="margin-top:8px;font-size:13px;line-height:1.8;color:#333">
+      - 📹 <b>Watch Videos</b> - 10 pts per video<br>
+      - 📅 <b>Daily Check-in</b> - 20 pts daily<br>
+      - 🎁 <b>Gift Box</b> - Random bonus<br>
+      - 👥 <b>Referral</b> - 50 pts per friend invited
+    </div>
+  </div>
+
+  <div style="background:#f5f5f5;border-radius:12px;padding:14px;margin:12px 0">
+    <b style="font-size:13px">🚀 How it Works</b>
+    <div style="margin-top:8px;font-size:12px;line-height:1.7;color:#444">
+      1. Create account & get welcome bonus<br>
+      2. Complete tasks in Home page<br>
+      3. Points auto-added to Earn History<br>
+      4. Convert points to USDT/BNB & Withdraw
+    </div>
+  </div>
+
+  <div style="background:#f5f5f5;border-radius:12px;padding:14px;margin:12px 0">
+    <b style="font-size:13px">❓ Common Questions</b>
+    <div style="margin-top:8px;font-size:12px;line-height:1.6;color:#333">
+      <b>Q: Referral not showing?</b><br>
+      <span style="color:#555">New referrals now show instantly in Earn History as Referral Bonus.</span><br><br>
+      <b>Q: How to withdraw?</b><br>
+      <span style="color:#555">Go to Home → Convert → When minimum reached, withdraw to your wallet.</span><br><br>
+      <b>Q: Video not working?</b><br>
+      <span style="color:#555">Check internet, reload app, or contact support via Help/Support.</span>
+    </div>
+  </div>
+
+  <div style="background:#fef3c7;border:1px solid #fbbf24;border-radius:12px;padding:12px;margin:12px 0">
+    <b style="font-size:12px">💳 Withdrawal Info</b>
+    <div style="font-size:11px;color:#555;margin-top:4px;line-height:1.5">
+      Minimum withdrawal applies. All transactions are secure. If you face any issue, submit ticket in Help/Support and we reply via email within 24h.
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:14px">
+    <span class="badge">V 1.0</span>
+    <span class="badge">Made in RW</span>
+    <span class="badge">2026</span>
+    <span class="badge">Secure</span>
+  </div>
+
+  <div style="text-align:center;margin-top:14px;border-top:1px solid #eee;padding-top:12px">
+    <div style="font-size:11px;color:#888">Contact & Support</div>
+    <div style="font-size:12px;font-weight:bold;color:#000;margin-top:2px">support@rewards.rw</div>
+    <div style="font-size:11px;color:#888;margin-top:10px">© 2026 Rewards RW<br>perlan75.github.io/rev</div>
+  </div>
 </div></div>
 
 <script>
@@ -211,10 +265,8 @@ async function submitSupport(e){
   try{
     await db.collection('supportTickets').add({
       uid: currentUser?currentUser.uid:null,
-      username: username,
-      email: email,
-      issue: issue,
-      status: 'pending',
+      username, email, issue,
+      status:'pending',
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     msg.style.color='#16a34a';msg.innerText='Submitted! We will reply via email.';
@@ -228,7 +280,6 @@ async function changePass(){
   const p=document.getElementById('newPass').value;if(p.length<5)return alert("Min 5 chars");
   try{await auth.currentUser.updatePassword(p);document.getElementById('passMsg').innerText="Updated!";}catch(e){alert(e.message)}
 }
-function changeLanguage(lang){localStorage.setItem('appLang',lang);}
 document.getElementById('avatarInput').addEventListener('change',e=>{
   const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{const src=ev.target.result;document.getElementById('avatarDisplay').innerHTML=`<img src="${src}">`;localStorage.setItem('userAvatar_'+currentUser.uid,src);};r.readAsDataURL(f);
 });
