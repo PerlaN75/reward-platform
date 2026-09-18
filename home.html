@@ -121,6 +121,9 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   let countdownInterval = null;
   let giftCountdownInterval = null;
   let userData = {};
+  // BUG FIX LOCKS - prevents double claim
+  let isClaimingDaily = false;
+  let isPickingGift = false;
 
   function getCurrentDateTime() {
     const d = new Date();
@@ -215,7 +218,28 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   function getNextClaimTime() { const now = new Date(); const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(0, 0, 0, 0); return tomorrow; }
   function updateCountdown() { const diff = getNextClaimTime() - new Date(); if(diff <= 0) { clearInterval(countdownInterval); checkClaimStatus(); return; } const h = Math.floor(diff / 1000 / 60 / 60); const m = Math.floor(diff / 1000 / 60) % 60; const s = Math.floor(diff / 1000) % 60; document.getElementById('countdown').innerText = `Next claim in: ${h}h ${m}m ${s}s`; }
   function checkClaimStatus() { const today = getToday(); const lastClaim = userData.lastCheckin; clearInterval(countdownInterval); if(lastClaim === today) { document.getElementById('claimBtn').disabled = true; document.getElementById('claimBtn').innerText = "Already Claimed Today"; document.getElementById('checkinNote').innerHTML = "✓ Claimed! Come back tomorrow"; document.getElementById('countdown').style.display = 'block'; updateCountdown(); countdownInterval = setInterval(updateCountdown, 1000); } else { document.getElementById('claimBtn').disabled = false; document.getElementById('claimBtn').innerText = `Claim ${DAILY_REWARD} Points`; document.getElementById('checkinNote').innerText = "Tap to claim your daily reward"; document.getElementById('countdown').style.display = 'none'; } }
-  window.claimDaily = async function() { const today = getToday(); if(userData.lastCheckin === today) return; await addHistory("Daily Login", DAILY_REWARD, "Daily Check-in"); userData.lastCheckin = today; localStorage.setItem('userData', JSON.stringify(userData)); document.getElementById('successMsg').style.display = 'block'; checkClaimStatus(); if(currentUser) { try{ await db.collection("users").doc(currentUser.uid).update({balance: userData.balance, lastCheckin: today}); }catch(e){} } }
+  // FIXED - DAILY CHECKIN DOUBLE BUG
+  window.claimDaily = async function() {
+    if(isClaimingDaily) return;
+    const today = getToday();
+    if(userData.lastCheckin === today) return;
+    isClaimingDaily = true;
+    const btn = document.getElementById('claimBtn');
+    btn.disabled = true;
+    btn.innerText = "Claiming...";
+    try {
+      await addHistory("Daily Login", DAILY_REWARD, "Daily Check-in");
+      userData.lastCheckin = today;
+      localStorage.setItem('userData', JSON.stringify(userData));
+      document.getElementById('successMsg').style.display = 'block';
+      checkClaimStatus();
+      if(currentUser) {
+        try{ await db.collection("users").doc(currentUser.uid).update({balance: userData.balance, lastCheckin: today}); }catch(e){}
+      }
+    } finally {
+      isClaimingDaily = false;
+    }
+  }
 
   function getRotatedPool() { const startDate = new Date('2026-01-01'); const today = new Date(); const diffDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)); const shift = diffDays % 12; return [...GIFT_POOL.slice(shift),...GIFT_POOL.slice(0, shift)]; }
   window.openGift = function() { document.getElementById('giftResultPopup').style.display = 'none'; buildGiftGrid(); checkGiftStatus(); document.getElementById('giftModal').style.display = 'flex'; }
@@ -223,7 +247,32 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   function buildGiftGrid() { const pool = getRotatedPool(); const grid = document.getElementById('giftGrid'); grid.innerHTML = ''; pool.forEach((pts, i) => { const box = document.createElement('div'); box.className = 'gift-box'; box.innerHTML = '📦'; box.onclick = () => pickGift(i, pts, box); grid.appendChild(box); }); }
   function checkGiftStatus() { const today = getToday(); const lastClaim = userData.lastGiftClaim; clearInterval(giftCountdownInterval); if(lastClaim === today) { document.querySelectorAll('.gift-box').forEach(b => b.classList.add('disabled')); document.getElementById('giftNote').innerText = "Already picked today. Come back tomorrow"; document.getElementById('giftHistory').innerText = `Last gift: ${userData.lastGiftPoints} points`; document.getElementById('giftCountdown').style.display = 'block'; updateGiftCountdown(); giftCountdownInterval = setInterval(updateGiftCountdown, 1000); } else { document.querySelectorAll('.gift-box').forEach(b => b.classList.remove('disabled')); document.getElementById('giftNote').innerText = "Pick 1 mystery box. Resets at midnight"; document.getElementById('giftHistory').innerText = userData.lastGiftPoints? `Last gift: ${userData.lastGiftPoints} points` : 'No gifts claimed yet'; document.getElementById('giftCountdown').style.display = 'none'; } }
   function updateGiftCountdown() { const diff = getNextClaimTime() - new Date(); if(diff <= 0) { clearInterval(giftCountdownInterval); checkGiftStatus(); return; } const h = Math.floor(diff / 1000 / 60 / 60); const m = Math.floor(diff / 1000 / 60) % 60; const s = Math.floor(diff / 1000) % 60; document.getElementById('giftCountdown').innerText = `Next gift in: ${h}h ${m}m ${s}s`; }
-  window.pickGift = async function(index, points, el) { if(userData.lastGiftClaim === getToday()) return; el.classList.add('burst'); await addHistory("Gift Box", points, `Mystery Box Reward`); userData.lastGiftClaim = getToday(); userData.lastGiftPoints = points; localStorage.setItem('userData', JSON.stringify(userData)); const popup = document.getElementById('giftResultPopup'); document.getElementById('resultEmoji').innerText = points === 0? '💀' : '🎉'; document.getElementById('resultPoints').innerText = `${points} points`; popup.style.display = 'block'; setTimeout(() => { popup.style.display = 'none'; }, 1800); el.innerHTML = '📦'; document.querySelectorAll('.gift-box').forEach(b => b.classList.add('disabled')); if(currentUser) { try{ await db.collection("users").doc(currentUser.uid).update({ balance: userData.balance, lastGiftClaim: userData.lastGiftClaim, lastGiftPoints: points }); }catch(e){} } setTimeout(checkGiftStatus, 1000); }
+  // FIXED - GIFT DOUBLE BUG
+  window.pickGift = async function(index, points, el) {
+    if(isPickingGift) return;
+    if(userData.lastGiftClaim === getToday()) return;
+    isPickingGift = true;
+    // Instant visual lock - blocks all boxes
+    document.querySelectorAll('.gift-box').forEach(b => b.classList.add('disabled'));
+    el.classList.add('burst');
+    try {
+      await addHistory("Gift Box", points, `Mystery Box Reward`);
+      userData.lastGiftClaim = getToday();
+      userData.lastGiftPoints = points;
+      localStorage.setItem('userData', JSON.stringify(userData));
+      const popup = document.getElementById('giftResultPopup');
+      document.getElementById('resultEmoji').innerText = points === 0? '💀' : '🎉';
+      document.getElementById('resultPoints').innerText = `${points} points`;
+      popup.style.display = 'block';
+      setTimeout(() => { popup.style.display = 'none'; }, 1800);
+      if(currentUser) {
+        try{ await db.collection("users").doc(currentUser.uid).update({ balance: userData.balance, lastGiftClaim: userData.lastGiftClaim, lastGiftPoints: points }); }catch(e){}
+      }
+      setTimeout(checkGiftStatus, 1000);
+    } finally {
+      isPickingGift = false;
+    }
+  }
 
   document.getElementById('walletModal').addEventListener('click', function(e){ if(e.target.id === 'walletModal') closeWallet(); })
   document.getElementById('checkinModal').addEventListener('click', function(e){ if(e.target.id === 'checkinModal') closeCheckin(); })
