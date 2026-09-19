@@ -6,12 +6,13 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
 body{background:#111;display:flex;min-height:100vh;color:white}
-.sidebar{width:240px;background:#1a2410;padding:20px;border-right:3px solid #fbbf24}
-.sidebar h2{color:#fbbf24;margin-bottom:25px}
+.sidebar{width:240px;background:#1a2410;padding:20px;border-right:3px solid #fbbf24;transition:all 0.3s ease;flex-shrink:0;position:relative}
+.sidebar.collapsed{width:0;padding:0;overflow:hidden;border:none;transform:translateX(-100%)}
+.sidebar h2{color:#fbbf24;margin-bottom:25px;white-space:nowrap}
 .menu{list-style:none}
-.menu li{padding:12px 10px;margin:6px 0;background:#2f3e1a;border-radius:8px;cursor:pointer}
+.menu li{padding:12px 10px;margin:6px 0;background:#2f3e1a;border-radius:8px;cursor:pointer;white-space:nowrap}
 .menu li.active{background:#fbbf24;color:black;font-weight:bold}
-.main{flex:1;padding:20px;overflow:auto}
+.main{flex:1;padding:20px;overflow:auto;transition:all 0.3s}
 .card{background:#1e2f15;padding:20px;border-radius:12px;border:1px solid #333;margin-bottom:15px}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
 .stat{background:#4a6128;padding:15px;border-radius:10px;text-align:center}
@@ -29,11 +30,15 @@ input,select{padding:10px;background:#111;border:1px solid #444;border-radius:8p
 .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:99}
 .modal.hidden{display:none !important}
 .modal-box{background:#1e2f15;padding:25px;border-radius:15px;width:90%;max-width:450px;border:2px solid #fbbf24}
+#toggleBtn{position:fixed;left:250px;top:15px;z-index:100;background:#fbbf24;color:black;border:none;width:38px;height:38px;border-radius:50%;font-weight:bold;font-size:20px;cursor:pointer;transition:all 0.3s;box-shadow:0 2px 8px rgba(0,0,0,0.5)}
+#toggleBtn.collapsed{left:10px}
 </style>
 </head>
 <body>
 
-<div id="loginBox" style="width:100%;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#2f3e1a">
+<button id="toggleBtn" onclick="toggleSidebar()">☰</button>
+
+<div id="loginBox" style="width:100%;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#2f3e1a;position:fixed;z-index:200;top:0;left:0">
   <div class="card" style="max-width:350px;width:90%;text-align:center">
     <h1 style="color:#fbbf24">Admin Login</h1>
     <p style="font-size:12px;margin:10px 0">Only admin@reward.rw allowed</p>
@@ -44,14 +49,14 @@ input,select{padding:10px;background:#111;border:1px solid #444;border-radius:8p
   </div>
 </div>
 
-<div id="panel" class="hidden" style="width:100%">
-  <div class="sidebar">
+<div id="panel" class="hidden" style="width:100%;display:flex">
+  <div class="sidebar" id="sidebar">
     <h2>👑 ADMIN</h2>
     <ul class="menu">
-      <li class="active" onclick="showPage('dashboard', this)">Dashboard</li>
-      <li onclick="showPage('users', this)">Users (100k)</li>
-      <li onclick="showPage('withdrawals', this)">Withdrawals</li>
-      <li onclick="showPage('fraud', this)">Fraud Flag</li>
+      <li class="active" onclick="showPage('dashboard', this); if(window.innerWidth<768) toggleSidebar()">Dashboard</li>
+      <li onclick="showPage('users', this); if(window.innerWidth<768) toggleSidebar()">Users (100k)</li>
+      <li onclick="showPage('withdrawals', this); if(window.innerWidth<768) toggleSidebar()">Withdrawals</li>
+      <li onclick="showPage('fraud', this); if(window.innerWidth<768) toggleSidebar()">Fraud Flag</li>
       <li onclick="logout()" style="background:#ef4444;color:white;margin-top:30px">Logout</li>
     </ul>
   </div>
@@ -131,6 +136,13 @@ const db = getFirestore(app);
 
 let lastVisible = null;
 let currentEditId = null;
+
+window.toggleSidebar = ()=>{
+  const sb = document.getElementById('sidebar');
+  const btn = document.getElementById('toggleBtn');
+  sb.classList.toggle('collapsed');
+  btn.innerText = sb.classList.contains('collapsed') ? '>' : '☰';
+}
 
 window.adminLogin = async () => {
   const email = document.getElementById('aEmail').value.trim();
