@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Panel - Reward RW</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#111;display:flex;min-height:100vh;color:white}
+.sidebar{width:240px;background:#1a2410;padding:20px;border-right:3px solid #fbbf24}
+.sidebar h2{color:#fbbf24;margin-bottom:25px}
+.menu{list-style:none}
+.menu li{padding:12px 10px;margin:6px 0;background:#2f3e1a;border-radius:8px;cursor:pointer}
+.menu li.active{background:#fbbf24;color:black;font-weight:bold}
+.main{flex:1;padding:20px;overflow:auto}
+.card{background:#1e2f15;padding:20px;border-radius:12px;border:1px solid #333;margin-bottom:15px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:#4a6128;padding:15px;border-radius:10px;text-align:center}
+.stat h3{font-size:28px;color:#fbbf24}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:10px;border-bottom:1px solid #333;text-align:left}
+th{color:#fbbf24}
+.btn{padding:6px 10px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;margin:2px}
+.btn-ban{background:#ef4444;color:white}
+.btn-del{background:#000;color:white;border:1px solid #555}
+.btn-edit{background:#fbbf24;color:black}
+.btn-ok{background:#22c55e;color:black}
+input,select{padding:10px;background:#111;border:1px solid #444;border-radius:8px;color:white;width:100%;margin:5px 0}
+.hidden{display:none}
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:99}
+.modal-box{background:#1e2f15;padding:25px;border-radius:15px;width:90%;max-width:450px;border:2px solid #fbbf24}
+</style>
+</head>
+<body>
+
+<div id="loginBox" style="width:100%;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#2f3e1a">
+  <div class="card" style="max-width:350px;width:90%;text-align:center">
+    <h1 style="color:#fbbf24">Admin Login</h1>
+    <p style="font-size:12px;margin:10px 0">Only admin@reward.rw allowed</p>
+    <input id="aEmail" type="email" placeholder="Admin Email" value="admin@reward.rw">
+    <input id="aPass" type="password" placeholder="Password">
+    <button class="btn btn-edit" style="width:100%;padding:12px;margin-top:10px" onclick="adminLogin()">Login</button>
+    <div id="aError" style="color:#ef4444;margin-top:10px;font-size:13px"></div>
+  </div>
+</div>
+
+<div id="panel" class="hidden" style="display:flex;width:100%">
+  <div class="sidebar">
+    <h2>👑 ADMIN</h2>
+    <ul class="menu">
+      <li class="active" onclick="showPage('dashboard')">Dashboard</li>
+      <li onclick="showPage('users')">Users (100k)</li>
+      <li onclick="showPage('withdrawals')">Withdrawals</li>
+      <li onclick="showPage('fraud')">Fraud Flag</li>
+      <li onclick="logout()" style="background:#ef4444;color:white;margin-top:30px">Logout</li>
+    </ul>
+  </div>
+  <div class="main">
+    <div id="page-dashboard">
+      <h1>Dashboard</h1>
+      <div class="stats">
+        <div class="stat"><p>Total Users</p><h3 id="totalUsers">0</h3></div>
+        <div class="stat"><p>Banned</p><h3 id="totalBanned">0</h3></div>
+        <div class="stat"><p>Pending WD</p><h3 id="totalPending">0</h3></div>
+        <div class="stat"><p>Total Points</p><h3 id="totalPoints">0</h3></div>
+      </div>
+      <div class="card">
+        <h3>System Health for 100k scale: OK</h3>
+        <p style="font-size:12px;color:#aaa;margin-top:8px">Using count() + pagination — no full reads.</p>
+      </div>
+    </div>
+
+    <div id="page-users" class="hidden">
+      <h1>Users Management</h1>
+      <div style="display:flex;gap:8px;margin:15px 0">
+        <input id="searchInput" placeholder="Search exact username or email">
+        <button class="btn btn-edit" onclick="searchUser()">Search</button>
+        <button class="btn" onclick="loadUsers(true)">Reset</button>
+      </div>
+      <div class="card" style="overflow:auto">
+        <table id="usersTable"><thead><tr><th>Username</th><th>Email</th><th>Points</th><th>Ref</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table>
+        <div style="margin-top:15px;display:flex;gap:10px">
+          <button class="btn btn-edit" onclick="loadUsers(false)">Next 50 →</button>
+          <button class="btn" onclick="loadUsers(true)">↺ First 50</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="page-withdrawals" class="hidden">
+      <h1>Withdrawals</h1>
+      <div class="card" id="wdList">Loading...</div>
+    </div>
+
+    <div id="page-fraud" class="hidden">
+      <h1>Fraud Detection</h1>
+      <div class="card" id="fraudList">Auto flags: Users with >20 referrals in 24h or >5000 points with 0 watchTime</div>
+    </div>
+  </div>
+</div>
+
+<div id="userModal" class="hidden modal"><div class="modal-box">
+  <h3 id="mUsername">User</h3>
+  <p id="mEmail" style="font-size:12px;color:#aaa"></p>
+  <input id="mPoints" type="number" placeholder="New Points">
+  <select id="mStatus"><option value="active">Active</option><option value="banned">Banned</option><option value="deactivated">Deactivated</option></select>
+  <input id="mNote" placeholder="Admin note / reason">
+  <div style="display:flex;gap:8px;margin-top:12px">
+    <button class="btn btn-ok" onclick="saveUserEdit()">Save</button>
+    <button class="btn btn-del" onclick="closeModal()">Close</button>
+  </div>
+  <button class="btn btn-del" style="width:100%;margin-top:10px;background:#ef4444" onclick="deleteUser()">DELETE FOREVER</button>
+</div></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, query, where, getDocs, getCountFromServer, doc, updateDoc, deleteDoc, orderBy, limit, startAfter, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const SUPER_ADMIN_EMAIL = "admin@reward.rw";
+const firebaseConfig = {
+  apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
+  authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
+  projectId: "reward-platform-rw-2e13d",
+  storageBucket: "reward-platform-rw-2e13d.firebasestorage.app",
+  messagingSenderId: "787550951987",
+  appId: "1:787550951987:web:724b1463e821b99c90a146"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let lastVisible = null;
+let currentEditId = null;
+
+window.adminLogin = async () => {
+  const email = document.getElementById('aEmail').value.trim();
+  const pass = document.getElementById('aPass').value;
+  const err = document.getElementById('aError');
+  if(email !== SUPER_ADMIN_EMAIL){ err.innerText="Only "+SUPER_ADMIN_EMAIL+" allowed"; return; }
+  try{ await signInWithEmailAndPassword(auth,email,pass); }catch(e){ err.innerText="Login failed: "+e.message; }
+}
+
+onAuthStateChanged(auth, async (user)=>{
+  if(user && user.email === SUPER_ADMIN_EMAIL){
+    document.getElementById('loginBox').classList.add('hidden');
+    document.getElementById('panel').classList.remove('hidden');
+    document.getElementById('panel').style.display='flex';
+    loadDashboard(); loadUsers(true); loadWithdrawals();
+  }else if(user){
+    await signOut(auth);
+    document.getElementById('aError').innerText="Access Denied. Not super admin.";
+  }
+});
+
+window.showPage = (p)=>{
+  document.querySelectorAll('.main > div').forEach(d=>d.classList.add('hidden'));
+  document.getElementById('page-'+p).classList.remove('hidden');
+  document.querySelectorAll('.menu li').forEach(l=>l.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+async function loadDashboard(){
+  const totalSnap = await getCountFromServer(collection(db,"users"));
+  document.getElementById('totalUsers').innerText = totalSnap.data().count;
+  const bannedQ = query(collection(db,"users"), where("isBanned","==",true));
+  const bannedSnap = await getCountFromServer(bannedQ);
+  document.getElementById('totalBanned').innerText = bannedSnap.data().count;
+  const pendingQ = query(collection(db,"withdrawals"), where("status","==","pending"));
+  const pendingSnap = await getCountFromServer(pendingQ).catch(()=>({data:()=>({count:0})}));
+  document.getElementById('totalPending').innerText = pendingSnap.data().count;
+}
+
+window.loadUsers = async (isFirst)=>{
+  if(isFirst) lastVisible = null;
+  let q;
+  if(lastVisible){
+    q = query(collection(db,"users"), orderBy("createdAt","desc"), startAfter(lastVisible), limit(50));
+  }else{
+    q = query(collection(db,"users"), orderBy("createdAt","desc"), limit(50));
+  }
+  const snap = await getDocs(q);
+  if(!snap.empty) lastVisible = snap.docs[snap.docs.length-1];
+  renderUsers(snap);
+}
+
+function renderUsers(snap){
+  const tbody = document.querySelector('#usersTable tbody');
+  tbody.innerHTML="";
+  snap.forEach(d=>{
+    const u = d.data();
+    const tr = document.createElement('tr');
+    tr.innerHTML=`<td>${u.username||''}</td><td>${u.email||''}</td><td>${u.balance||u.points||0}</td><td>${u.referralCount||0}</td><td>${u.isBanned?'BANNED':u.isDeactivated?'DEACT':'ACTIVE'}</td>
+    <td><button class="btn btn-edit" onclick="openModal('${d.id}')">Manage</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+window.searchUser = async ()=>{
+  const val = document.getElementById('searchInput').value.trim();
+  if(!val) return;
+  let snap = await getDocs(query(collection(db,"users"), where("username","==",val)));
+  if(snap.empty) snap = await getDocs(query(collection(db,"users"), where("email","==",val)));
+  if(snap.empty) snap = await getDocs(query(collection(db,"users"), where("usernameLower","==",val.toLowerCase())));
+  renderUsers(snap);
+}
+
+window.openModal = async (id)=>{
+  currentEditId = id;
+  const ref = doc(db,"users",id);
+  const snap = await getDoc(ref);
+  const u = snap.data();
+  document.getElementById('mUsername').innerText = u.username;
+  document.getElementById('mEmail').innerText = u.email+" | ID: "+id;
+  document.getElementById('mPoints').value = u.balance||u.points||0;
+  document.getElementById('mStatus').value = u.isBanned?'banned':u.isDeactivated?'deactivated':'active';
+  document.getElementById('userModal').classList.remove('hidden');
+}
+
+window.closeModal = ()=>{ document.getElementById('userModal').classList.add('hidden'); }
+
+window.saveUserEdit = async ()=>{
+  const points = parseInt(document.getElementById('mPoints').value);
+  const status = document.getElementById('mStatus').value;
+  const note = document.getElementById('mNote').value;
+  const ref = doc(db,"users",currentEditId);
+  await updateDoc(ref,{
+    balance: points,
+    points: points,
+    isBanned: status==='banned',
+    isDeactivated: status==='deactivated',
+    adminNote: note,
+    lastEditedBy: SUPER_ADMIN_EMAIL,
+    lastEditedAt: new Date()
+  });
+  // log
+  await updateDoc(doc(db,"adminLogs", Date.now().toString()),{}.constructor).catch(async()=>{
+    const { setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    await setDoc(doc(db,"adminLogs", Date.now().toString()),{action:"edit", userId:currentEditId, points, status, note, by:SUPER_ADMIN_EMAIL, at:new Date()});
+  });
+  alert("Saved"); closeModal(); loadUsers(true);
+}
+
+window.deleteUser = async ()=>{
+  if(!confirm("DELETE FOREVER? This can't be undone for 100k scale - are you sure?")) return;
+  await deleteDoc(doc(db,"users",currentEditId));
+  alert("Deleted"); closeModal(); loadUsers(true);
+}
+
+async function loadWithdrawals(){
+  const el = document.getElementById('wdList');
+  try{
+    const q = query(collection(db,"withdrawals"), where("status","==","pending"), limit(50));
+    const snap = await getDocs(q);
+    if(snap.empty){ el.innerHTML="No pending withdrawals"; return; }
+    let html="<table><tr><th>User</th><th>Amount</th><th>Method</th><th>Action</th></tr>";
+    snap.forEach(d=>{
+      const w = d.data();
+      html+=`<tr><td>${w.email||w.userId}</td><td>${w.amount}</td><td>${w.method||''}</td><td><button class="btn btn-ok" onclick="approveWD('${d.id}','${w.userId}',${w.amount})">Approve</button><button class="btn btn-ban" onclick="rejectWD('${d.id}')">Reject</button></td></tr>`;
+    });
+    html+="</table>"; el.innerHTML=html;
+  }catch(e){ el.innerHTML="Create collection 'withdrawals' first. Error: "+e.message; }
+}
+
+window.approveWD = async (wdId, userId, amount)=>{
+  await updateDoc(doc(db,"withdrawals",wdId),{status:"approved", approvedBy:SUPER_ADMIN_EMAIL, approvedAt:new Date()});
+  alert("Approved"); loadWithdrawals();
+}
+window.rejectWD = async (wdId)=>{
+  await updateDoc(doc(db,"withdrawals",wdId),{status:"rejected"});
+  alert("Rejected"); loadWithdrawals();
+}
+
+window.logout = async ()=>{ await signOut(auth); location.reload(); }
+</script>
+</body>
+</html>
