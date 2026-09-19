@@ -25,8 +25,9 @@ th{color:#fbbf24}
 .btn-edit{background:#fbbf24;color:black}
 .btn-ok{background:#22c55e;color:black}
 input,select{padding:10px;background:#111;border:1px solid #444;border-radius:8px;color:white;width:100%;margin:5px 0}
-.hidden{display:none}
+.hidden{display:none !important}
 .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:99}
+.modal.hidden{display:none !important}
 .modal-box{background:#1e2f15;padding:25px;border-radius:15px;width:90%;max-width:450px;border:2px solid #fbbf24}
 </style>
 </head>
@@ -43,14 +44,14 @@ input,select{padding:10px;background:#111;border:1px solid #444;border-radius:8p
   </div>
 </div>
 
-<div id="panel" class="hidden" style="display:flex;width:100%">
+<div id="panel" class="hidden" style="width:100%">
   <div class="sidebar">
     <h2>👑 ADMIN</h2>
     <ul class="menu">
-      <li class="active" onclick="showPage('dashboard')">Dashboard</li>
-      <li onclick="showPage('users')">Users (100k)</li>
-      <li onclick="showPage('withdrawals')">Withdrawals</li>
-      <li onclick="showPage('fraud')">Fraud Flag</li>
+      <li class="active" onclick="showPage('dashboard', this)">Dashboard</li>
+      <li onclick="showPage('users', this)">Users (100k)</li>
+      <li onclick="showPage('withdrawals', this)">Withdrawals</li>
+      <li onclick="showPage('fraud', this)">Fraud Flag</li>
       <li onclick="logout()" style="background:#ef4444;color:white;margin-top:30px">Logout</li>
     </ul>
   </div>
@@ -97,7 +98,7 @@ input,select{padding:10px;background:#111;border:1px solid #444;border-radius:8p
   </div>
 </div>
 
-<div id="userModal" class="hidden modal"><div class="modal-box">
+<div id="userModal" class="modal hidden"><div class="modal-box">
   <h3 id="mUsername">User</h3>
   <p id="mEmail" style="font-size:12px;color:#aaa"></p>
   <input id="mPoints" type="number" placeholder="New Points">
@@ -113,7 +114,7 @@ input,select{padding:10px;background:#111;border:1px solid #444;border-radius:8p
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, query, where, getDocs, getCountFromServer, doc, updateDoc, deleteDoc, orderBy, limit, startAfter, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, query, where, getDocs, getCountFromServer, doc, updateDoc, deleteDoc, orderBy, limit, startAfter, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const SUPER_ADMIN_EMAIL = "admin@reward.rw";
 const firebaseConfig = {
@@ -151,11 +152,11 @@ onAuthStateChanged(auth, async (user)=>{
   }
 });
 
-window.showPage = (p)=>{
+window.showPage = (p, el)=>{
   document.querySelectorAll('.main > div').forEach(d=>d.classList.add('hidden'));
   document.getElementById('page-'+p).classList.remove('hidden');
   document.querySelectorAll('.menu li').forEach(l=>l.classList.remove('active'));
-  event.target.classList.add('active');
+  if(el) el.classList.add('active');
 }
 
 async function loadDashboard(){
@@ -231,16 +232,12 @@ window.saveUserEdit = async ()=>{
     lastEditedBy: SUPER_ADMIN_EMAIL,
     lastEditedAt: new Date()
   });
-  // log
-  await updateDoc(doc(db,"adminLogs", Date.now().toString()),{}.constructor).catch(async()=>{
-    const { setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
-    await setDoc(doc(db,"adminLogs", Date.now().toString()),{action:"edit", userId:currentEditId, points, status, note, by:SUPER_ADMIN_EMAIL, at:new Date()});
-  });
+  await setDoc(doc(db,"adminLogs", Date.now().toString()),{action:"edit", userId:currentEditId, points, status, note, by:SUPER_ADMIN_EMAIL, at:new Date()});
   alert("Saved"); closeModal(); loadUsers(true);
 }
 
 window.deleteUser = async ()=>{
-  if(!confirm("DELETE FOREVER? This can't be undone for 100k scale - are you sure?")) return;
+  if(!confirm("DELETE FOREVER? This can't be undone - are you sure?")) return;
   await deleteDoc(doc(db,"users",currentEditId));
   alert("Deleted"); closeModal(); loadUsers(true);
 }
