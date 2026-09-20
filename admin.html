@@ -39,6 +39,7 @@ input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-
 .badge{padding:3px 8px;border-radius:12px;font-size:11px;font-weight:bold}
 .badge-open{background:#fbbf24;color:black}
 .badge-closed{background:#22c55e;color:black}
+.badge-danger{background:#ef4444;color:white}
 </style>
 </head>
 <body>
@@ -86,7 +87,14 @@ input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-
         <div id="supportList">Loading tickets...</div>
       </div>
     </div>
-    <div id="page-fraud" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Fraud Detection</h1></div><div class="card" id="fraudList"></div></div>
+    <div id="page-fraud" class="hidden">
+      <div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Fraud Detection</h1></div>
+      <div class="card">
+        <p style="font-size:12px;color:#aaa;margin-bottom:10px">Rule: Only 10 referrals / 24h rewarded. 11th+ blocked.</p>
+        <div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-edit" onclick="loadFraud()">🔍 Scan Now</button><button class="btn btn-ban" onclick="loadFraudAbusers()">Show Abusers Only</button></div>
+        <div id="fraudList">Click Scan Now</div>
+      </div>
+    </div>
     <div id="page-settings" class="hidden">
       <div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Settings - Password</h1></div>
       <div class="card"><h3 style="color:#fbbf24">Change Password</h3><input id="oldPass" type="password" placeholder="Current password"><input id="newPass" type="password" placeholder="New password"><input id="newPass2" type="password" placeholder="Confirm"><button class="btn btn-ok" style="width:100%;padding:12px;margin-top:10px" onclick="changePassword()">Update Password Now</button><div id="settingsMsg" style="margin-top:10px;font-size:13px"></div></div>
@@ -117,7 +125,7 @@ const firebaseConfig = { apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co", auth
 const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
 let lastVisible = null; let currentEditId = null; let currentTicketId = null;
 window.toggleSidebar = ()=>{ document.getElementById('sidebar').classList.toggle('collapsed'); }
-window.openPage = (p, el)=>{ document.querySelectorAll('.main > div').forEach(d=>d.classList.add('hidden')); document.getElementById('page-'+p).classList.remove('hidden'); document.querySelectorAll('.menu li').forEach(l=>l.classList.remove('active')); if(el) el.classList.add('active'); document.getElementById('sidebar').classList.add('collapsed'); if(p==='support') loadSupport('open'); }
+window.openPage = (p, el)=>{ document.querySelectorAll('.main > div').forEach(d=>d.classList.add('hidden')); document.getElementById('page-'+p).classList.remove('hidden'); document.querySelectorAll('.menu li').forEach(l=>l.classList.remove('active')); if(el) el.classList.add('active'); document.getElementById('sidebar').classList.add('collapsed'); if(p==='support') loadSupport('open'); if(p==='fraud') loadFraud(); }
 window.adminLogin = async () => { const email = document.getElementById('aEmail').value.trim(); const pass = document.getElementById('aPass').value; const err = document.getElementById('aError'); if(email !== SUPER_ADMIN_EMAIL){ err.innerText="Only "+SUPER_ADMIN_EMAIL+" allowed"; return; } try{ await signInWithEmailAndPassword(auth,email,pass); }catch(e){ err.innerText="Login failed: "+e.message; } }
 window.changePassword = async ()=>{ const oldPass = document.getElementById('oldPass').value; const newPass = document.getElementById('newPass').value; const newPass2 = document.getElementById('newPass2').value; const msg = document.getElementById('settingsMsg'); msg.innerText=""; if(newPass.length < 6){ msg.style.color="#ef4444"; msg.innerText="Min 6 chars"; return; } if(newPass !== newPass2){ msg.style.color="#ef4444"; msg.innerText="Don't match"; return; } const user = auth.currentUser; try{ const cred = EmailAuthProvider.credential(user.email, oldPass); await reauthenticateWithCredential(user, cred); await updatePassword(user, newPass); msg.style.color="#22c55e"; msg.innerText="✅ Updated!"; document.getElementById('oldPass').value=""; document.getElementById('newPass').value=""; document.getElementById('newPass2').value=""; }catch(e){ msg.style.color="#ef4444"; msg.innerText="Failed: "+e.message; } }
 onAuthStateChanged(auth, async (user)=>{ if(user && user.email === SUPER_ADMIN_EMAIL){ document.getElementById('loginBox').classList.add('hidden'); document.getElementById('panel').classList.remove('hidden'); document.getElementById('panel').style.display='flex'; openPage('dashboard', document.querySelector('.menu li')); loadDashboard(); loadUsers(true); loadWithdrawals(); loadSupportCount(); }else if(user){ await signOut(auth); document.getElementById('aError').innerText="Access Denied."; } });
@@ -186,6 +194,74 @@ window.sendReplyKeepOpen = async ()=>{
   alert("Replied, kept Open"); closeSupportModal(); loadSupport('open');
 }
 window.deleteTicket = async ()=>{ if(!confirm("Delete ticket?")) return; await deleteDoc(doc(db,"supportTickets",currentTicketId)); alert("Deleted"); closeSupportModal(); loadSupport('all'); loadSupportCount(); }
+
+// === FRAUD DETECTION - 10 PER 24H RULE ===
+window.loadFraud = async ()=>{
+  const el = document.getElementById('fraudList');
+  el.innerHTML="Scanning users...";
+  try{
+    const usersSnap = await getDocs(query(collection(db,"users"), orderBy("referralCount","desc"), limit(100)));
+    if(usersSnap.empty){ el.innerHTML="No users"; return; }
+    let html="<div class='table-wrap'><table><tr><th>User</th><th>Email</th><th>Total Ref</th><th>Last 24h</th><th>Blocked Tries</th><th>Status</th><th>Action</th></tr>";
+    let found=0;
+    for(const userDoc of usersSnap.docs){
+      const u = userDoc.data();
+      const uid = userDoc.id;
+      let count24h = 0;
+      let blocked24h = 0;
+      try{
+        const twentyFourHoursAgo = new Date(Date.now() - 24*60*60*1000);
+        const logsSnap = await getDocs(query(collection(db,"users",uid,"referralDailyLogs"), where("createdAt", ">=", twentyFourHoursAgo)));
+        logsSnap.forEach(l=>{
+          const ld = l.data();
+          if(ld.bonusGiven) count24h++;
+          else blocked24h++;
+        });
+      }catch(e){ count24h = 0; }
+
+      if((u.referralCount||0) >= 5 || count24h >= 5 || blocked24h > 0){
+        found++;
+        let badge = "";
+        if(blocked24h>0 || count24h>=10) badge = `<span class="badge badge-danger">ABUSE ${blocked24h>0?'BLOCKED':''}</span>`;
+        else if(count24h>=8) badge = `<span class="badge badge-open">WARNING</span>`;
+        else badge = `<span class="badge badge-closed">OK</span>`;
+
+        html+=`<tr><td>${u.username||''}</td><td>${u.email||''}</td><td>${u.referralCount||0}</td><td>${count24h}</td><td>${blocked24h}</td><td>${badge}</td><td><button class="btn btn-edit" onclick="openModal('${uid}')">Manage</button> ${blocked24h>0?`<button class="btn btn-ban" onclick="banUser('${uid}')">BAN</button>`:''}</td></tr>`;
+      }
+    }
+    html+="</table></div>";
+    if(found===0) el.innerHTML="✅ No fraud detected. All users under 10/24h limit.";
+    else el.innerHTML=html + `<p style="margin-top:10px;font-size:12px;color:#aaa">Found ${found} users with high referrals. Red = tried to exceed 10/24h</p>`;
+  }catch(e){
+    el.innerHTML="Error scanning: "+e.message;
+  }
+}
+window.loadFraudAbusers = async ()=>{
+  const el = document.getElementById('fraudList');
+  el.innerHTML="Scanning abusers...";
+  try{
+    const usersSnap = await getDocs(query(collection(db,"users"), orderBy("referralCount","desc"), limit(200)));
+    let html="<div class='table-wrap'><table><tr><th>User</th><th>Email</th><th>Ref</th><th>Last 24h Blocked</th><th>Action</th></tr>";
+    let found=0;
+    for(const userDoc of usersSnap.docs){
+      const u = userDoc.data();
+      const uid = userDoc.id;
+      try{
+        const twentyFourHoursAgo = new Date(Date.now() - 24*60*60*1000);
+        const logsSnap = await getDocs(query(collection(db,"users",uid,"referralDailyLogs"), where("bonusGiven","==",false), where("createdAt", ">=", twentyFourHoursAgo)));
+        if(!logsSnap.empty){
+          found++;
+          html+=`<tr><td>${u.username}</td><td>${u.email}</td><td>${u.referralCount}</td><td><span class="badge badge-danger">${logsSnap.size} BLOCKED</span></td><td><button class="btn btn-ban" onclick="banUser('${uid}')">BAN NOW</button> <button class="btn btn-edit" onclick="openModal('${uid}')">View</button></td></tr>`;
+        }
+      }catch(e){}
+    }
+    html+="</table></div>";
+    if(found===0) el.innerHTML="✅ No abusers - nobody exceeded 10/24h";
+    else el.innerHTML=html;
+  }catch(e){ el.innerHTML="Error: "+e.message; }
+}
+window.banUser = async (uid)=>{ if(!confirm("BAN this user?")) return; await updateDoc(doc(db,"users",uid),{isBanned:true, bannedReason:"Fraud: exceeded 10 referrals/24h", bannedAt:new Date(), bannedBy:SUPER_ADMIN_EMAIL}); alert("Banned"); loadFraud(); }
+
 window.logout = async ()=>{ await signOut(auth); location.reload(); }
 </script>
 </body>
