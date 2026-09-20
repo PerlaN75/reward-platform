@@ -42,7 +42,7 @@
       <button class="verify-btn" onclick="sendCode()">Verify</button>
     </div>
     <input type="text" class="input-box code-box" id="generatedCode" placeholder="Your code will appear here" readonly style="display:none;">
-    <input type="text" class="input-box" id="code" placeholder="Enter 6 digit code">
+    <input type="text" class="input-box" id="code" placeholder="Enter 6 digit code" style="display:none;">
     <div class="success" id="verifiedMsg" style="display:none;">✓ Email Verified</div>
     <label>Password</label>
     <input type="password" class="input-box" id="password" placeholder="Min 5 chars, 1A, 1#, 1number">
@@ -67,7 +67,17 @@
   if(referredByCode){ document.getElementById('refBanner').style.display='block'; document.getElementById('refName').innerText=referredByCode; }
 
   window.formatUsername=function(){let v=document.getElementById('username').value; v=v.replace(/[^a-zA-Z]/g,''); v=v.charAt(0).toUpperCase()+v.slice(1).toLowerCase(); document.getElementById('username').value=v;}
-  window.sendCode=function(){const e=document.getElementById('email').value.trim(); if(!e){alert("Enter email first");return;} currentCode=Math.floor(100000+Math.random()*900000).toString(); document.getElementById('generatedCode').value=currentCode; document.getElementById('generatedCode').style.display='block'; showToast("Code: "+currentCode+" - Copy it");}
+
+  window.sendCode=function(){
+    const e=document.getElementById('email').value.trim();
+    if(!e){alert("Enter email first");return;}
+    currentCode=Math.floor(100000+Math.random()*900000).toString();
+    document.getElementById('generatedCode').value=currentCode;
+    document.getElementById('generatedCode').style.display='block';
+    document.getElementById('code').style.display='block';
+    showToast("Code: "+currentCode+" - TAP TO COPY & PASTE");
+  }
+
   document.getElementById('code').addEventListener('input',function(){ if(this.value===currentCode&&currentCode!==""){isVerified=true;document.getElementById('verifiedMsg').style.display='block';}else{isVerified=false;document.getElementById('verifiedMsg').style.display='none';}})
 
   function validatePassword(p){if(p.length<5||p.length>10)return"Password must be 5-10 characters"; if(!/[A-Z]/.test(p))return"Password needs at least 1 capital letter"; if(!/[0-9]/.test(p))return"Password needs at least 1 number"; if(!/[!@#$%^&*(),.?":{}|<>]/.test(p))return"Password needs at least 1 special character"; return null;}
@@ -96,26 +106,15 @@
         if(!refQuery.empty){
           referrerDoc=refQuery.docs[0];
           referrerUsername=referrerDoc.data().username;
-
-          // CHECK 10 PER 24H LIMIT
           try{
             const recentSnap = await db.collection("users").doc(referrerDoc.id).collection("referralDailyLogs").where("createdAt", ">=", twentyFourHoursAgo).get();
-            if(recentSnap.size < 10){
-              canReward = true;
-            } else {
-              canReward = false;
-              console.log("Referrer limit 10/24h reached - no bonus");
-            }
-          }catch(e){
-            // If no logs yet, allow reward
-            canReward = true;
-          }
+            if(recentSnap.size < 10){ canReward = true; } else { canReward = false; }
+          }catch(e){ canReward = true; }
         }
       }
 
       const startingPoints = (referrerDoc && canReward)? 50 : 0;
 
-      // 1. CREATE NEW USER
       await db.collection("users").doc(user.uid).set({
         username: username,
         usernameLower: username.toLowerCase(),
@@ -133,7 +132,6 @@
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
 
-      // 2. ADD HISTORY FOR NEW USER
       if(startingPoints>0){
         await db.collection("users").doc(user.uid).collection("earnHistory").add({
           action: 'Referral Bonus',
@@ -143,7 +141,6 @@
         });
       }
 
-      // 3. REWARD REFERRER ONLY IF UNDER 10/24H LIMIT
       if(referrerDoc && canReward){
         const already=await db.collection("users").doc(referrerDoc.id).collection("earnHistory").where("desc","==","Invited "+username).get();
         if(already.empty){
@@ -158,7 +155,6 @@
             desc: 'Invited '+username,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
           });
-          // LOG FOR 24H COUNTING
           await db.collection("users").doc(referrerDoc.id).collection("referralDailyLogs").add({
             newUserId: user.uid,
             newUsername: username,
@@ -167,7 +163,6 @@
           });
         }
       } else if(referrerDoc &&!canReward){
-        // Log attempt that was blocked (for fraud detection)
         await db.collection("users").doc(referrerDoc.id).collection("referralDailyLogs").add({
           newUserId: user.uid,
           newUsername: username,
@@ -190,7 +185,23 @@
 
     }catch(error){ errorEl.innerText=error.message; btn.disabled=false; btn.innerText="Create Account"; console.log(error); }
   }
-  function showToast(msg){const t=document.createElement('div'); t.style='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#22c55e;color:white;padding:14px 20px;border-radius:12px;font-weight:bold;z-index:9999;'; t.innerText=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),3000);}
+
+  function showToast(msg){
+    const t=document.createElement('div');
+    t.style='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#22c55e;color:white;padding:14px 20px;border-radius:12px;font-weight:bold;z-index:9999;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.4);text-align:center;';
+    t.innerText=msg;
+    t.onclick=function(){
+      navigator.clipboard.writeText(currentCode).catch(()=>{});
+      const codeInput=document.getElementById('code');
+      codeInput.value=currentCode;
+      codeInput.dispatchEvent(new Event('input'));
+      t.innerText="✓ Copied & Pasted!";
+      t.style.background="#16a34a";
+      setTimeout(()=>t.remove(),1200);
+    };
+    document.body.appendChild(t);
+    setTimeout(()=>{ if(document.body.contains(t)) t.remove(); },5000);
+  }
 </script>
 </body>
 </html>
