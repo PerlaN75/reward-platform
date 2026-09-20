@@ -6,13 +6,14 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
 body{background:#111;display:flex;min-height:100vh;color:white}
-.sidebar{width:240px;background:#1a2410;padding:20px;border-right:3px solid #fbbf24;transition:all 0.3s ease;flex-shrink:0;position:relative}
-.sidebar.collapsed{width:0;padding:0;overflow:hidden;border:none;transform:translateX(-100%)}
-.sidebar h2{color:#fbbf24;margin-bottom:25px;white-space:nowrap}
-.menu{list-style:none}
+.sidebar{width:260px;background:#1a2410;padding:20px;border-right:3px solid #fbbf24;transition:all 0.3s ease;flex-shrink:0}
+.sidebar.collapsed{width:0;padding:0;overflow:hidden;border:none;transform:translateX(-100%);position:absolute;z-index:50;height:100vh}
+.sidebar h2{color:#fbbf24;margin-bottom:10px;white-space:nowrap}
+.menu{list-style:none;margin-top:10px}
 .menu li{padding:12px 10px;margin:6px 0;background:#2f3e1a;border-radius:8px;cursor:pointer;white-space:nowrap}
 .menu li.active{background:#fbbf24;color:black;font-weight:bold}
-.main{flex:1;padding:20px;overflow:auto;transition:all 0.3s}
+.main{flex:1;padding:20px;overflow:auto;transition:all 0.3s;width:100%}
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:15px}
 .card{background:#1e2f15;padding:20px;border-radius:12px;border:1px solid #333;margin-bottom:15px}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
 .stat{background:#4a6128;padding:15px;border-radius:10px;text-align:center}
@@ -30,13 +31,10 @@ input,select{padding:10px;background:#111;border:1px solid #444;border-radius:8p
 .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:99}
 .modal.hidden{display:none !important}
 .modal-box{background:#1e2f15;padding:25px;border-radius:15px;width:90%;max-width:450px;border:2px solid #fbbf24}
-#toggleBtn{position:fixed;left:250px;top:15px;z-index:100;background:#fbbf24;color:black;border:none;width:38px;height:38px;border-radius:50%;font-weight:bold;font-size:20px;cursor:pointer;transition:all 0.3s;box-shadow:0 2px 8px rgba(0,0,0,0.5)}
-#toggleBtn.collapsed{left:10px}
+.toggle-yellow{background:#fbbf24;color:black;border:none;width:44px;height:44px;border-radius:50%;font-size:24px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.4)}
 </style>
 </head>
 <body>
-
-<button id="toggleBtn" onclick="toggleSidebar()">☰</button>
 
 <div id="loginBox" style="width:100%;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#2f3e1a;position:fixed;z-index:200;top:0;left:0">
   <div class="card" style="max-width:350px;width:90%;text-align:center">
@@ -52,17 +50,22 @@ input,select{padding:10px;background:#111;border:1px solid #444;border-radius:8p
 <div id="panel" class="hidden" style="width:100%;display:flex">
   <div class="sidebar" id="sidebar">
     <h2>👑 ADMIN</h2>
-    <ul class="menu">
-      <li class="active" onclick="showPage('dashboard', this); if(window.innerWidth<768) toggleSidebar()">Dashboard</li>
-      <li onclick="showPage('users', this); if(window.innerWidth<768) toggleSidebar()">Users (100k)</li>
-      <li onclick="showPage('withdrawals', this); if(window.innerWidth<768) toggleSidebar()">Withdrawals</li>
-      <li onclick="showPage('fraud', this); if(window.innerWidth<768) toggleSidebar()">Fraud Flag</li>
+    <!-- YELLOW BUTTON BELOW ADMIN -->
+    <button class="toggle-yellow" onclick="toggleSidebar()">☰</button>
+    <ul class="menu" id="menuList">
+      <li class="active" onclick="openPage('dashboard', this)">Dashboard</li>
+      <li onclick="openPage('users', this)">Users (100k)</li>
+      <li onclick="openPage('withdrawals', this)">Withdrawals</li>
+      <li onclick="openPage('fraud', this)">Fraud Flag</li>
       <li onclick="logout()" style="background:#ef4444;color:white;margin-top:30px">Logout</li>
     </ul>
   </div>
   <div class="main">
     <div id="page-dashboard">
-      <h1>Dashboard</h1>
+      <div class="topbar">
+        <button class="toggle-yellow" id="mainBtn" onclick="toggleSidebar()" style="display:none">☰</button>
+        <h1>Dashboard</h1>
+      </div>
       <div class="stats">
         <div class="stat"><p>Total Users</p><h3 id="totalUsers">0</h3></div>
         <div class="stat"><p>Banned</p><h3 id="totalBanned">0</h3></div>
@@ -76,7 +79,10 @@ input,select{padding:10px;background:#111;border:1px solid #444;border-radius:8p
     </div>
 
     <div id="page-users" class="hidden">
-      <h1>Users Management</h1>
+      <div class="topbar">
+        <button class="toggle-yellow" onclick="toggleSidebar()">☰</button>
+        <h1>Users Management</h1>
+      </div>
       <div style="display:flex;gap:8px;margin:15px 0">
         <input id="searchInput" placeholder="Search exact username or email">
         <button class="btn btn-edit" onclick="searchUser()">Search</button>
@@ -92,12 +98,18 @@ input,select{padding:10px;background:#111;border:1px solid #444;border-radius:8p
     </div>
 
     <div id="page-withdrawals" class="hidden">
-      <h1>Withdrawals</h1>
+      <div class="topbar">
+        <button class="toggle-yellow" onclick="toggleSidebar()">☰</button>
+        <h1>Withdrawals</h1>
+      </div>
       <div class="card" id="wdList">Loading...</div>
     </div>
 
     <div id="page-fraud" class="hidden">
-      <h1>Fraud Detection</h1>
+      <div class="topbar">
+        <button class="toggle-yellow" onclick="toggleSidebar()">☰</button>
+        <h1>Fraud Detection</h1>
+      </div>
       <div class="card" id="fraudList">Auto flags: Users with >20 referrals in 24h or >5000 points with 0 watchTime</div>
     </div>
   </div>
@@ -139,9 +151,25 @@ let currentEditId = null;
 
 window.toggleSidebar = ()=>{
   const sb = document.getElementById('sidebar');
-  const btn = document.getElementById('toggleBtn');
+  const mainBtn = document.getElementById('mainBtn');
   sb.classList.toggle('collapsed');
-  btn.innerText = sb.classList.contains('collapsed') ? '>' : '☰';
+  if(sb.classList.contains('collapsed')){
+    mainBtn.style.display='flex';
+  }else{
+    mainBtn.style.display='none';
+  }
+}
+
+window.openPage = (p, el)=>{
+  document.querySelectorAll('.main > div').forEach(d=>d.classList.add('hidden'));
+  document.getElementById('page-'+p).classList.remove('hidden');
+  document.querySelectorAll('.menu li').forEach(l=>l.classList.remove('active'));
+  if(el) el.classList.add('active');
+  // On mobile, after clicking subtitle, hide sidebar to show full page
+  if(window.innerWidth < 768){
+    const sb = document.getElementById('sidebar');
+    if(!sb.classList.contains('collapsed')) toggleSidebar();
+  }
 }
 
 window.adminLogin = async () => {
@@ -164,13 +192,6 @@ onAuthStateChanged(auth, async (user)=>{
   }
 });
 
-window.showPage = (p, el)=>{
-  document.querySelectorAll('.main > div').forEach(d=>d.classList.add('hidden'));
-  document.getElementById('page-'+p).classList.remove('hidden');
-  document.querySelectorAll('.menu li').forEach(l=>l.classList.remove('active'));
-  if(el) el.classList.add('active');
-}
-
 async function loadDashboard(){
   const totalSnap = await getCountFromServer(collection(db,"users"));
   document.getElementById('totalUsers').innerText = totalSnap.data().count;
@@ -184,12 +205,7 @@ async function loadDashboard(){
 
 window.loadUsers = async (isFirst)=>{
   if(isFirst) lastVisible = null;
-  let q;
-  if(lastVisible){
-    q = query(collection(db,"users"), orderBy("createdAt","desc"), startAfter(lastVisible), limit(50));
-  }else{
-    q = query(collection(db,"users"), orderBy("createdAt","desc"), limit(50));
-  }
+  let q = lastVisible ? query(collection(db,"users"), orderBy("createdAt","desc"), startAfter(lastVisible), limit(50)) : query(collection(db,"users"), orderBy("createdAt","desc"), limit(50));
   const snap = await getDocs(q);
   if(!snap.empty) lastVisible = snap.docs[snap.docs.length-1];
   renderUsers(snap);
@@ -201,8 +217,7 @@ function renderUsers(snap){
   snap.forEach(d=>{
     const u = d.data();
     const tr = document.createElement('tr');
-    tr.innerHTML=`<td>${u.username||''}</td><td>${u.email||''}</td><td>${u.balance||u.points||0}</td><td>${u.referralCount||0}</td><td>${u.isBanned?'BANNED':u.isDeactivated?'DEACT':'ACTIVE'}</td>
-    <td><button class="btn btn-edit" onclick="openModal('${d.id}')">Manage</button></td>`;
+    tr.innerHTML=`<td>${u.username||''}</td><td>${u.email||''}</td><td>${u.balance||u.points||0}</td><td>${u.referralCount||0}</td><td>${u.isBanned?'BANNED':u.isDeactivated?'DEACT':'ACTIVE'}</td><td><button class="btn btn-edit" onclick="openModal('${d.id}')">Manage</button></td>`;
     tbody.appendChild(tr);
   });
 }
@@ -218,8 +233,7 @@ window.searchUser = async ()=>{
 
 window.openModal = async (id)=>{
   currentEditId = id;
-  const ref = doc(db,"users",id);
-  const snap = await getDoc(ref);
+  const snap = await getDoc(doc(db,"users",id));
   const u = snap.data();
   document.getElementById('mUsername').innerText = u.username;
   document.getElementById('mEmail').innerText = u.email+" | ID: "+id;
@@ -227,57 +241,32 @@ window.openModal = async (id)=>{
   document.getElementById('mStatus').value = u.isBanned?'banned':u.isDeactivated?'deactivated':'active';
   document.getElementById('userModal').classList.remove('hidden');
 }
-
 window.closeModal = ()=>{ document.getElementById('userModal').classList.add('hidden'); }
-
 window.saveUserEdit = async ()=>{
   const points = parseInt(document.getElementById('mPoints').value);
   const status = document.getElementById('mStatus').value;
   const note = document.getElementById('mNote').value;
-  const ref = doc(db,"users",currentEditId);
-  await updateDoc(ref,{
-    balance: points,
-    points: points,
-    isBanned: status==='banned',
-    isDeactivated: status==='deactivated',
-    adminNote: note,
-    lastEditedBy: SUPER_ADMIN_EMAIL,
-    lastEditedAt: new Date()
-  });
+  await updateDoc(doc(db,"users",currentEditId),{balance:points,points:points,isBanned:status==='banned',isDeactivated:status==='deactivated',adminNote:note,lastEditedBy:SUPER_ADMIN_EMAIL,lastEditedAt:new Date()});
   await setDoc(doc(db,"adminLogs", Date.now().toString()),{action:"edit", userId:currentEditId, points, status, note, by:SUPER_ADMIN_EMAIL, at:new Date()});
   alert("Saved"); closeModal(); loadUsers(true);
 }
-
 window.deleteUser = async ()=>{
-  if(!confirm("DELETE FOREVER? This can't be undone - are you sure?")) return;
+  if(!confirm("DELETE FOREVER?")) return;
   await deleteDoc(doc(db,"users",currentEditId));
   alert("Deleted"); closeModal(); loadUsers(true);
 }
-
 async function loadWithdrawals(){
   const el = document.getElementById('wdList');
   try{
-    const q = query(collection(db,"withdrawals"), where("status","==","pending"), limit(50));
-    const snap = await getDocs(q);
+    const snap = await getDocs(query(collection(db,"withdrawals"), where("status","==","pending"), limit(50)));
     if(snap.empty){ el.innerHTML="No pending withdrawals"; return; }
     let html="<table><tr><th>User</th><th>Amount</th><th>Method</th><th>Action</th></tr>";
-    snap.forEach(d=>{
-      const w = d.data();
-      html+=`<tr><td>${w.email||w.userId}</td><td>${w.amount}</td><td>${w.method||''}</td><td><button class="btn btn-ok" onclick="approveWD('${d.id}','${w.userId}',${w.amount})">Approve</button><button class="btn btn-ban" onclick="rejectWD('${d.id}')">Reject</button></td></tr>`;
-    });
+    snap.forEach(d=>{const w=d.data(); html+=`<tr><td>${w.email||w.userId}</td><td>${w.amount}</td><td>${w.method||''}</td><td><button class="btn btn-ok" onclick="approveWD('${d.id}')">Approve</button><button class="btn btn-ban" onclick="rejectWD('${d.id}')">Reject</button></td></tr>`});
     html+="</table>"; el.innerHTML=html;
-  }catch(e){ el.innerHTML="Create collection 'withdrawals' first. Error: "+e.message; }
+  }catch(e){ el.innerHTML="Error: "+e.message; }
 }
-
-window.approveWD = async (wdId, userId, amount)=>{
-  await updateDoc(doc(db,"withdrawals",wdId),{status:"approved", approvedBy:SUPER_ADMIN_EMAIL, approvedAt:new Date()});
-  alert("Approved"); loadWithdrawals();
-}
-window.rejectWD = async (wdId)=>{
-  await updateDoc(doc(db,"withdrawals",wdId),{status:"rejected"});
-  alert("Rejected"); loadWithdrawals();
-}
-
+window.approveWD = async (wdId)=>{ await updateDoc(doc(db,"withdrawals",wdId),{status:"approved", approvedBy:SUPER_ADMIN_EMAIL, approvedAt:new Date()}); alert("Approved"); loadWithdrawals(); }
+window.rejectWD = async (wdId)=>{ await updateDoc(doc(db,"withdrawals",wdId),{status:"rejected"}); alert("Rejected"); loadWithdrawals(); }
 window.logout = async ()=>{ await signOut(auth); location.reload(); }
 </script>
 </body>
