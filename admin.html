@@ -42,16 +42,15 @@ input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-
 </style>
 </head>
 <body>
-<div id="loginBox" style="width:100%;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#2f3e1a;position:fixed;z-index:200;top:0;left:0">
-  <div class="card" style="max-width:350px;width:90%;text-align:center">
-    <h1 style="color:#fbbf24">Admin Login</h1>
-    <p style="font-size:12px;margin:10px 0">Only admin@reward.rw allowed</p>
-    <input id="aEmail" type="email" placeholder="Admin Email" value="admin@reward.rw">
-    <input id="aPass" type="password" placeholder="Password">
-    <button class="btn btn-edit" style="width:100%;padding:12px;margin-top:10px" onclick="adminLogin()">Login</button>
-    <div style="margin-top:12px"><span class="link" onclick="forgotPassword()">Forgot password? Reset via email</span></div>
-    <div id="aError" style="color:#ef4444;margin-top:10px;font-size:13px"></div>
-    <div id="aSuccess" style="color:#22c55e;margin-top:10px;font-size:13px"></div>
+<div id="loginBox" style="width:100%;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#2f3e1a;position:fixed;z-index:200;top:0;left:0;padding:20px">
+  <div class="card" style="max-width:460px;width:100%;text-align:center;padding:38px 30px;border-radius:20px;border:2px solid #fbbf24;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
+    <h1 style="color:#fbbf24;font-size:36px;margin-bottom:8px;letter-spacing:0.5px">Admin Login</h1>
+    <p style="font-size:14px;margin:10px 0 24px 0;color:#ccc">Only admin@reward.rw allowed</p>
+    <input id="aEmail" type="email" placeholder="Admin Email" value="admin@reward.rw" style="padding:16px;font-size:17px;margin:10px 0;border-radius:10px">
+    <input id="aPass" type="password" placeholder="Password" style="padding:16px;font-size:17px;margin:10px 0;border-radius:10px">
+    <button class="btn btn-edit" style="width:100%;padding:16px;margin-top:20px;font-size:18px;border-radius:12px" onclick="adminLogin()">Login</button>
+    <div id="aError" style="color:#ef4444;margin-top:16px;font-size:14px;min-height:18px"></div>
+    <div id="aSuccess" style="color:#22c55e;margin-top:8px;font-size:14px;min-height:18px"></div>
   </div>
 </div>
 <div id="panel" class="hidden" style="width:100%;display:flex">
@@ -126,9 +125,8 @@ let lastVisible = null; let currentEditId = null; let currentTicketId = null;
 window.toggleSidebar = ()=>{ document.getElementById('sidebar').classList.toggle('collapsed'); }
 window.openPage = (p, el)=>{ document.querySelectorAll('.main > div').forEach(d=>d.classList.add('hidden')); document.getElementById('page-'+p).classList.remove('hidden'); document.querySelectorAll('.menu li').forEach(l=>l.classList.remove('active')); if(el) el.classList.add('active'); document.getElementById('sidebar').classList.add('collapsed'); if(p==='support') loadSupport('open'); }
 window.adminLogin = async () => { const email = document.getElementById('aEmail').value.trim(); const pass = document.getElementById('aPass').value; const err = document.getElementById('aError'); if(email !== SUPER_ADMIN_EMAIL){ err.innerText="Only "+SUPER_ADMIN_EMAIL+" allowed"; return; } try{ await signInWithEmailAndPassword(auth,email,pass); }catch(e){ err.innerText="Login failed: "+e.message; } }
-window.forgotPassword = async ()=>{ const email = document.getElementById('aEmail').value.trim() || SUPER_ADMIN_EMAIL; const err = document.getElementById('aError'); const suc = document.getElementById('aSuccess'); err.innerText=""; suc.innerText=""; if(email !== SUPER_ADMIN_EMAIL){ err.innerText="Only "+SUPER_ADMIN_EMAIL+" can reset"; return; } try{ await sendPasswordResetEmail(auth, email); suc.innerText="✅ Reset email sent to "+email; }catch(e){ err.innerText=e.message; } }
 window.forgotPasswordLogged = async ()=>{ const msg = document.getElementById('settingsMsg'); try{ await sendPasswordResetEmail(auth, SUPER_ADMIN_EMAIL); msg.style.color="#22c55e"; msg.innerText="✅ Reset email sent"; }catch(e){ msg.style.color="#ef4444"; msg.innerText=e.message; } }
-window.changePassword = async ()=>{ const oldPass = document.getElementById('oldPass').value; const newPass = document.getElementById('newPass').value; const newPass2 = document.getElementById('newPass2').value; const msg = document.getElementById('settingsMsg'); msg.innerText=""; if(newPass.length < 6){ msg.style.color="#ef4444"; msg.innerText="Min 6 chars"; return; } if(newPass !== newPass2){ msg.style.color="#ef4444"; msg.innerText="Don't match"; return; } const user = auth.currentUser; try{ const cred = EmailAuthProvider.credential(user.email, oldPass); await reauthenticateWithCredential(user, cred); await updatePassword(user, newPass); msg.style.color="#22c55e"; msg.innerText="✅ Updated!"; oldPass.value=""; newPass.value=""; newPass2.value=""; }catch(e){ msg.style.color="#ef4444"; msg.innerText="Failed: "+e.message; } }
+window.changePassword = async ()=>{ const oldPass = document.getElementById('oldPass').value; const newPass = document.getElementById('newPass').value; const newPass2 = document.getElementById('newPass2').value; const msg = document.getElementById('settingsMsg'); msg.innerText=""; if(newPass.length < 6){ msg.style.color="#ef4444"; msg.innerText="Min 6 chars"; return; } if(newPass !== newPass2){ msg.style.color="#ef4444"; msg.innerText="Don't match"; return; } const user = auth.currentUser; try{ const cred = EmailAuthProvider.credential(user.email, oldPass); await reauthenticateWithCredential(user, cred); await updatePassword(user, newPass); msg.style.color="#22c55e"; msg.innerText="✅ Updated!"; document.getElementById('oldPass').value=""; document.getElementById('newPass').value=""; document.getElementById('newPass2').value=""; }catch(e){ msg.style.color="#ef4444"; msg.innerText="Failed: "+e.message; } }
 onAuthStateChanged(auth, async (user)=>{ if(user && user.email === SUPER_ADMIN_EMAIL){ document.getElementById('loginBox').classList.add('hidden'); document.getElementById('panel').classList.remove('hidden'); document.getElementById('panel').style.display='flex'; openPage('dashboard', document.querySelector('.menu li')); loadDashboard(); loadUsers(true); loadWithdrawals(); loadSupportCount(); }else if(user){ await signOut(auth); document.getElementById('aError').innerText="Access Denied."; } });
 async function loadDashboard(){ const totalSnap = await getCountFromServer(collection(db,"users")); document.getElementById('totalUsers').innerText = totalSnap.data().count; const bannedQ = query(collection(db,"users"), where("isBanned","==",true)); const bannedSnap = await getCountFromServer(bannedQ); document.getElementById('totalBanned').innerText = bannedSnap.data().count; const pendingQ = query(collection(db,"withdrawals"), where("status","==","pending")); const pendingSnap = await getCountFromServer(pendingQ).catch(()=>({data:()=>({count:0})})); document.getElementById('totalPending').innerText = pendingSnap.data().count; loadSupportCount(); }
 async function loadSupportCount(){ try{ const q = query(collection(db,"supportTickets"), where("status","==","open")); const snap = await getCountFromServer(q); document.getElementById('supportCount').innerText = snap.data().count; document.getElementById('totalTickets').innerText = snap.data().count; }catch(e){} }
@@ -142,8 +140,6 @@ window.deleteUser = async ()=>{ if(!confirm("DELETE FOREVER?")) return; await de
 async function loadWithdrawals(){ const el = document.getElementById('wdList'); try{ const snap = await getDocs(query(collection(db,"withdrawals"), where("status","==","pending"), limit(50))); if(snap.empty){ el.innerHTML="No pending withdrawals"; return; } let html="<div class='table-wrap'><table><tr><th>User</th><th>Amount</th><th>Method</th><th>Action</th></tr>"; snap.forEach(d=>{const w=d.data(); html+=`<tr><td>${w.email||w.userId}</td><td>${w.amount}</td><td>${w.method||''}</td><td><button class="btn btn-ok" onclick="approveWD('${d.id}')">Approve</button><button class="btn btn-ban" onclick="rejectWD('${d.id}')">Reject</button></td></tr>`}); html+="</table></div>"; el.innerHTML=html; }catch(e){ el.innerHTML="Error: "+e.message; } }
 window.approveWD = async (wdId)=>{ await updateDoc(doc(db,"withdrawals",wdId),{status:"approved", approvedBy:SUPER_ADMIN_EMAIL, approvedAt:new Date()}); alert("Approved"); loadWithdrawals(); }
 window.rejectWD = async (wdId)=>{ await updateDoc(doc(db,"withdrawals",wdId),{status:"rejected"}); alert("Rejected"); loadWithdrawals(); }
-
-// SUPPORT SYSTEM - NO EMAIL NEEDED
 window.loadSupport = async (filter)=>{
   const el = document.getElementById('supportList');
   el.innerHTML="Loading...";
@@ -162,7 +158,6 @@ window.loadSupport = async (filter)=>{
     });
     html+="</table></div>"; el.innerHTML=html;
   }catch(e){
-    // fallback without orderBy if index missing
     try{
       let q2 = filter==='all' ? query(collection(db,"supportTickets"), limit(50)) : query(collection(db,"supportTickets"), where("status","==",filter), limit(50));
       const snap2 = await getDocs(q2);
