@@ -79,7 +79,6 @@ input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-
     </div>
     <div id="page-users" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Users Management</h1></div><div style="display:flex;gap:8px;margin:15px 0"><input id="searchInput" placeholder="Search exact username or email"><button class="btn btn-edit" onclick="searchUser()">Search</button><button class="btn" onclick="loadUsers(true)">Reset</button></div><div class="card"><div class="table-wrap"><table id="usersTable"><thead><tr><th>Username</th><th>Email</th><th>Points</th><th>Ref</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table></div><div style="margin-top:15px;display:flex;gap:10px"><button class="btn btn-edit" onclick="loadUsers(false)">Next 50 →</button><button class="btn" onclick="loadUsers(true)">↺ First 50</button></div></div></div>
     <div id="page-withdrawals" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Withdrawals</h1></div><div class="card" id="wdList">Loading...</div></div>
-
     <div id="page-support" class="hidden">
       <div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Support Tickets - No Email Needed</h1></div>
       <div class="card">
@@ -87,18 +86,14 @@ input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-
         <div id="supportList">Loading tickets...</div>
       </div>
     </div>
-
     <div id="page-fraud" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Fraud Detection</h1></div><div class="card" id="fraudList">Auto flags: >20 referrals</div></div>
     <div id="page-settings" class="hidden">
       <div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Settings - Password</h1></div>
-      <div class="card"><h3 style="color:#fbbf24">1. Reset via Email</h3><button class="btn btn-edit" onclick="forgotPasswordLogged()">Send Reset Email</button><div id="settingsMsg" style="margin-top:10px;font-size:13px"></div></div>
-      <div class="card"><h3 style="color:#fbbf24">2. Change Password Willingly</h3><input id="oldPass" type="password" placeholder="Current password"><input id="newPass" type="password" placeholder="New password"><input id="newPass2" type="password" placeholder="Confirm"><button class="btn btn-ok" style="width:100%;padding:12px;margin-top:10px" onclick="changePassword()">Update Password Now</button></div>
+      <div class="card"><h3 style="color:#fbbf24">Change Password</h3><input id="oldPass" type="password" placeholder="Current password"><input id="newPass" type="password" placeholder="New password"><input id="newPass2" type="password" placeholder="Confirm"><button class="btn btn-ok" style="width:100%;padding:12px;margin-top:10px" onclick="changePassword()">Update Password Now</button><div id="settingsMsg" style="margin-top:10px;font-size:13px"></div></div>
     </div>
   </div>
 </div>
-
 <div id="userModal" class="modal hidden"><div class="modal-box"><h3 id="mUsername">User</h3><p id="mEmail" style="font-size:12px;color:#aaa"></p><input id="mPoints" type="number" placeholder="New Points"><select id="mStatus"><option value="active">Active</option><option value="banned">Banned</option><option value="deactivated">Deactivated</option></select><input id="mNote" placeholder="Admin note"><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-ok" onclick="saveUserEdit()">Save</button><button class="btn btn-del" onclick="closeModal()">Close</button></div><button class="btn btn-del" style="width:100%;margin-top:10px;background:#ef4444" onclick="deleteUser()">DELETE FOREVER</button></div></div>
-
 <div id="supportModal" class="modal hidden"><div class="modal-box">
   <h3 style="color:#fbbf24" id="sUser">Support Ticket</h3>
   <p id="sEmail" style="font-size:12px;color:#aaa"></p>
@@ -113,10 +108,9 @@ input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-
   </div>
   <button class="btn btn-ban" style="width:100%;margin-top:10px" onclick="deleteTicket()">Delete Ticket</button>
 </div></div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, query, where, getDocs, getCountFromServer, doc, updateDoc, deleteDoc, orderBy, limit, startAfter, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 const SUPER_ADMIN_EMAIL = "admin@reward.rw";
 const firebaseConfig = { apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d", storageBucket: "reward-platform-rw-2e13d.firebasestorage.app", messagingSenderId: "787550951987", appId: "1:787550951987:web:724b1463e821b99c90a146" };
@@ -125,7 +119,6 @@ let lastVisible = null; let currentEditId = null; let currentTicketId = null;
 window.toggleSidebar = ()=>{ document.getElementById('sidebar').classList.toggle('collapsed'); }
 window.openPage = (p, el)=>{ document.querySelectorAll('.main > div').forEach(d=>d.classList.add('hidden')); document.getElementById('page-'+p).classList.remove('hidden'); document.querySelectorAll('.menu li').forEach(l=>l.classList.remove('active')); if(el) el.classList.add('active'); document.getElementById('sidebar').classList.add('collapsed'); if(p==='support') loadSupport('open'); }
 window.adminLogin = async () => { const email = document.getElementById('aEmail').value.trim(); const pass = document.getElementById('aPass').value; const err = document.getElementById('aError'); if(email !== SUPER_ADMIN_EMAIL){ err.innerText="Only "+SUPER_ADMIN_EMAIL+" allowed"; return; } try{ await signInWithEmailAndPassword(auth,email,pass); }catch(e){ err.innerText="Login failed: "+e.message; } }
-window.forgotPasswordLogged = async ()=>{ const msg = document.getElementById('settingsMsg'); try{ await sendPasswordResetEmail(auth, SUPER_ADMIN_EMAIL); msg.style.color="#22c55e"; msg.innerText="✅ Reset email sent"; }catch(e){ msg.style.color="#ef4444"; msg.innerText=e.message; } }
 window.changePassword = async ()=>{ const oldPass = document.getElementById('oldPass').value; const newPass = document.getElementById('newPass').value; const newPass2 = document.getElementById('newPass2').value; const msg = document.getElementById('settingsMsg'); msg.innerText=""; if(newPass.length < 6){ msg.style.color="#ef4444"; msg.innerText="Min 6 chars"; return; } if(newPass !== newPass2){ msg.style.color="#ef4444"; msg.innerText="Don't match"; return; } const user = auth.currentUser; try{ const cred = EmailAuthProvider.credential(user.email, oldPass); await reauthenticateWithCredential(user, cred); await updatePassword(user, newPass); msg.style.color="#22c55e"; msg.innerText="✅ Updated!"; document.getElementById('oldPass').value=""; document.getElementById('newPass').value=""; document.getElementById('newPass2').value=""; }catch(e){ msg.style.color="#ef4444"; msg.innerText="Failed: "+e.message; } }
 onAuthStateChanged(auth, async (user)=>{ if(user && user.email === SUPER_ADMIN_EMAIL){ document.getElementById('loginBox').classList.add('hidden'); document.getElementById('panel').classList.remove('hidden'); document.getElementById('panel').style.display='flex'; openPage('dashboard', document.querySelector('.menu li')); loadDashboard(); loadUsers(true); loadWithdrawals(); loadSupportCount(); }else if(user){ await signOut(auth); document.getElementById('aError').innerText="Access Denied."; } });
 async function loadDashboard(){ const totalSnap = await getCountFromServer(collection(db,"users")); document.getElementById('totalUsers').innerText = totalSnap.data().count; const bannedQ = query(collection(db,"users"), where("isBanned","==",true)); const bannedSnap = await getCountFromServer(bannedQ); document.getElementById('totalBanned').innerText = bannedSnap.data().count; const pendingQ = query(collection(db,"withdrawals"), where("status","==","pending")); const pendingSnap = await getCountFromServer(pendingQ).catch(()=>({data:()=>({count:0})})); document.getElementById('totalPending').innerText = pendingSnap.data().count; loadSupportCount(); }
