@@ -53,7 +53,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   const firebaseConfig = {
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
     authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
@@ -67,12 +67,14 @@
   const db = getFirestore(app);
   let resetUserData = null;
   let isLogging = false;
+
   window.formatResetUsername = function(){
     let val = document.getElementById('resetUsername').value;
     val = val.replace(/[^a-zA-Z]/g, '');
     val = val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
     document.getElementById('resetUsername').value = val;
   }
+
   window.login = async function() {
     if(isLogging) return;
     const email = document.getElementById('email').value.trim();
@@ -87,16 +89,48 @@
     btn.innerText = "Logging in...";
     btn.style.opacity = "0.7";
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      window.location.replace("./home.html");
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      const uid = cred.user.uid;
+
+      // FIX: fetch user doc before redirect - this was causing loop back
+      const userDoc = await getDoc(doc(db,"users",uid));
+      if(!userDoc.exists()){
+        errorEl.innerText = "Account data not found. Please register again.";
+        isLogging = false; btn.disabled=false; btn.innerText="Login"; btn.style.opacity="1";
+        return;
+      }
+      const data = userDoc.data();
+      if(data.isBanned){
+        errorEl.innerText = "⛔ Account Banned: "+(data.bannedReason||"Contact support");
+        isLogging = false; btn.disabled=false; btn.innerText="Login"; btn.style.opacity="1";
+        return;
+      }
+
+      // Save for home.html
+      localStorage.setItem('username', data.username || "");
+      localStorage.setItem('email', data.email || email);
+      localStorage.setItem('points', (data.balance || data.points || 0).toString());
+      localStorage.setItem('referrals', (data.referralCount || 0).toString());
+
+      document.getElementById('success').innerText = "✅ Success! Redirecting...";
+      setTimeout(()=>{ window.location.replace("./home.html"); }, 600);
+
     } catch(e) {
-      errorEl.innerText = "Invalid email or password";
+      console.log(e);
+      if(e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password'){
+        errorEl.innerText = "Invalid email or password";
+      } else if(e.code === 'auth/user-not-found'){
+        errorEl.innerText = "User not found";
+      } else {
+        errorEl.innerText = e.message;
+      }
       isLogging = false;
       btn.disabled = false;
       btn.innerText = "Login";
       btn.style.opacity = "1";
     }
   }
+
   window.showReset = function(){
     document.getElementById('loginForm').classList.add('hidden');
     document.getElementById('resetStep1').classList.remove('hidden');
@@ -138,7 +172,7 @@
       document.getElementById('resetStep1').classList.add('hidden');
       document.getElementById('resetStep2').classList.remove('hidden');
     } catch(e){
-      errorEl.innerText = "Firestore Error: Check rules. Allow public read on users collection";
+      errorEl.innerText = "Error: "+e.message;
     }
   }
   window.resetPassword = async function(){
@@ -151,7 +185,8 @@
     const passError = validatePassword(newPass);
     if(passError){ errorEl.innerText = passError; return; }
     if(newPass!== confirmPass){ errorEl.innerText = "Passwords do not match"; return; }
-    successEl.innerText = "Done";
+    // NOTE: real password reset needs Cloud Function or Admin SDK, this is UI placeholder
+    successEl.innerText = "Password rule passed - Contact admin to reset";
     setTimeout(() => { showLogin(); }, 1500);
   }
 </script>
