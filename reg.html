@@ -7,23 +7,22 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #0f1508; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
- .container { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 30px 25px; width: 100%; max-width: 420px; color: white; }
+.container { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 30px 25px; width: 100%; max-width: 420px; color: white; }
     h1 { text-align: center; font-size: 32px; margin-bottom: 5px; color: #fff; }
- .subtitle { text-align: center; color: #fbbf24; margin-bottom: 20px; font-size: 14px; }
- .ref-banner { background: #0f6b4f; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; }
+.subtitle { text-align: center; color: #fbbf24; margin-bottom: 20px; font-size: 14px; }
+.ref-banner { background: #0f6b4f; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; }
     label { font-size: 14px; color: #ccc; margin-top: 12px; display: block; margin-bottom: 5px; }
- .input-box { width: 100%; padding: 14px; margin-bottom: 10px; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
- .input-box:focus { border-color: #fbbf24; }
- .input-group { display: flex; gap: 8px; }
- .verify-btn { background: #2563eb; color: white; padding: 14px 16px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
- .code-box { background: #001a00; border: 2px dashed #22c55e; color: #22c55e; text-align: center; font-weight: bold; letter-spacing: 3px; }
- .btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
- .btn:disabled { background: #444; color: #888; cursor: not-allowed; }
- .note { text-align: center; margin-top: 15px; font-size: 14px; color: #aaa; }
- .note a { color: #60a5fa; text-decoration: none; font-weight: bold; }
- .error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; }
- .success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
- .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
+.input-box { width: 100%; padding: 14px; margin-bottom: 10px; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
+.input-box:focus { border-color: #fbbf24; }
+.input-group { display: flex; gap: 8px; }
+.verify-btn { background: #2563eb; color: white; padding: 14px 16px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+.btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+.btn:disabled { background: #444; color: #888; cursor: not-allowed; }
+.note { text-align: center; margin-top: 15px; font-size: 14px; color: #aaa; }
+.note a { color: #60a5fa; text-decoration: none; font-weight: bold; }
+.error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; }
+.success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
+.back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -41,7 +40,6 @@
       <input type="email" class="input-box" id="email" placeholder="your@email.com" style="margin-bottom:0;">
       <button class="verify-btn" onclick="sendCode()">Verify</button>
     </div>
-    <input type="text" class="input-box code-box" id="generatedCode" placeholder="Your code will appear here" readonly style="display:none;">
     <input type="text" class="input-box" id="code" placeholder="Enter 6 digit code" style="display:none;">
     <div class="success" id="verifiedMsg" style="display:none;">✓ Email Verified</div>
     <label>Password</label>
@@ -72,8 +70,7 @@
     const e=document.getElementById('email').value.trim();
     if(!e){alert("Enter email first");return;}
     currentCode=Math.floor(100000+Math.random()*900000).toString();
-    document.getElementById('generatedCode').value=currentCode;
-    document.getElementById('generatedCode').style.display='block';
+    // ONLY green popup, no dashed bar
     document.getElementById('code').style.display='block';
     showToast("Code: "+currentCode+" - TAP TO COPY & PASTE");
   }
