@@ -64,6 +64,7 @@ input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-
       <li onclick="openPage('withdrawals', this)">Withdrawals</li>
       <li onclick="openPage('support', this)">Support <span id="supportCount" style="background:#ef4444;color:white;padding:2px 6px;border-radius:10px;font-size:11px;margin-left:5px">0</span></li>
       <li onclick="openPage('fraud', this)">Fraud Flag</li>
+      <li onclick="openPage('logs', this)">Logs</li>
       <li onclick="openPage('settings', this)">Settings</li>
       <li class="logout-small" onclick="logout()">Logout</li>
     </ul>
@@ -93,6 +94,13 @@ input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-
         <p style="font-size:12px;color:#aaa;margin-bottom:10px">Rule: Only 10 referrals / 24h rewarded. 11th+ blocked.</p>
         <div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-edit" onclick="loadFraud()">🔍 Scan Now</button><button class="btn btn-ban" onclick="loadFraudAbusers()">Show Abusers Only</button></div>
         <div id="fraudList">Click Scan Now</div>
+      </div>
+    </div>
+    <div id="page-logs" class="hidden">
+      <div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Admin Logs</h1></div>
+      <div class="card">
+        <div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-edit" onclick="loadLogs()">↺ Refresh</button></div>
+        <div id="logsList">Loading...</div>
       </div>
     </div>
     <div id="page-settings" class="hidden">
@@ -125,7 +133,7 @@ const firebaseConfig = { apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co", auth
 const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
 let lastVisible = null; let currentEditId = null; let currentTicketId = null;
 window.toggleSidebar = ()=>{ document.getElementById('sidebar').classList.toggle('collapsed'); }
-window.openPage = (p, el)=>{ document.querySelectorAll('.main > div').forEach(d=>d.classList.add('hidden')); document.getElementById('page-'+p).classList.remove('hidden'); document.querySelectorAll('.menu li').forEach(l=>l.classList.remove('active')); if(el) el.classList.add('active'); document.getElementById('sidebar').classList.add('collapsed'); if(p==='support') loadSupport('open'); if(p==='fraud') loadFraud(); }
+window.openPage = (p, el)=>{ document.querySelectorAll('.main > div').forEach(d=>d.classList.add('hidden')); document.getElementById('page-'+p).classList.remove('hidden'); document.querySelectorAll('.menu li').forEach(l=>l.classList.remove('active')); if(el) el.classList.add('active'); document.getElementById('sidebar').classList.add('collapsed'); if(p==='support') loadSupport('open'); if(p==='fraud') loadFraud(); if(p==='logs') loadLogs(); }
 window.adminLogin = async () => { const email = document.getElementById('aEmail').value.trim(); const pass = document.getElementById('aPass').value; const err = document.getElementById('aError'); if(email !== SUPER_ADMIN_EMAIL){ err.innerText="Only "+SUPER_ADMIN_EMAIL+" allowed"; return; } try{ await signInWithEmailAndPassword(auth,email,pass); }catch(e){ err.innerText="Login failed: "+e.message; } }
 window.changePassword = async ()=>{ const oldPass = document.getElementById('oldPass').value; const newPass = document.getElementById('newPass').value; const newPass2 = document.getElementById('newPass2').value; const msg = document.getElementById('settingsMsg'); msg.innerText=""; if(newPass.length < 6){ msg.style.color="#ef4444"; msg.innerText="Min 6 chars"; return; } if(newPass !== newPass2){ msg.style.color="#ef4444"; msg.innerText="Don't match"; return; } const user = auth.currentUser; try{ const cred = EmailAuthProvider.credential(user.email, oldPass); await reauthenticateWithCredential(user, cred); await updatePassword(user, newPass); msg.style.color="#22c55e"; msg.innerText="✅ Updated!"; document.getElementById('oldPass').value=""; document.getElementById('newPass').value=""; document.getElementById('newPass2').value=""; }catch(e){ msg.style.color="#ef4444"; msg.innerText="Failed: "+e.message; } }
 onAuthStateChanged(auth, async (user)=>{ if(user && user.email === SUPER_ADMIN_EMAIL){ document.getElementById('loginBox').classList.add('hidden'); document.getElementById('panel').classList.remove('hidden'); document.getElementById('panel').style.display='flex'; openPage('dashboard', document.querySelector('.menu li')); loadDashboard(); loadUsers(true); loadWithdrawals(); loadSupportCount(); }else if(user){ await signOut(auth); document.getElementById('aError').innerText="Access Denied."; } });
@@ -194,8 +202,6 @@ window.sendReplyKeepOpen = async ()=>{
   alert("Replied, kept Open"); closeSupportModal(); loadSupport('open');
 }
 window.deleteTicket = async ()=>{ if(!confirm("Delete ticket?")) return; await deleteDoc(doc(db,"supportTickets",currentTicketId)); alert("Deleted"); closeSupportModal(); loadSupport('all'); loadSupportCount(); }
-
-// === FRAUD DETECTION - 10 PER 24H RULE ===
 window.loadFraud = async ()=>{
   const el = document.getElementById('fraudList');
   el.innerHTML="Scanning users...";
@@ -218,14 +224,12 @@ window.loadFraud = async ()=>{
           else blocked24h++;
         });
       }catch(e){ count24h = 0; }
-
       if((u.referralCount||0) >= 5 || count24h >= 5 || blocked24h > 0){
         found++;
         let badge = "";
         if(blocked24h>0 || count24h>=10) badge = `<span class="badge badge-danger">ABUSE ${blocked24h>0?'BLOCKED':''}</span>`;
         else if(count24h>=8) badge = `<span class="badge badge-open">WARNING</span>`;
         else badge = `<span class="badge badge-closed">OK</span>`;
-
         html+=`<tr><td>${u.username||''}</td><td>${u.email||''}</td><td>${u.referralCount||0}</td><td>${count24h}</td><td>${blocked24h}</td><td>${badge}</td><td><button class="btn btn-edit" onclick="openModal('${uid}')">Manage</button> ${blocked24h>0?`<button class="btn btn-ban" onclick="banUser('${uid}')">BAN</button>`:''}</td></tr>`;
       }
     }
@@ -261,7 +265,21 @@ window.loadFraudAbusers = async ()=>{
   }catch(e){ el.innerHTML="Error: "+e.message; }
 }
 window.banUser = async (uid)=>{ if(!confirm("BAN this user?")) return; await updateDoc(doc(db,"users",uid),{isBanned:true, bannedReason:"Fraud: exceeded 10 referrals/24h", bannedAt:new Date(), bannedBy:SUPER_ADMIN_EMAIL}); alert("Banned"); loadFraud(); }
-
+window.loadLogs = async ()=>{
+  const el=document.getElementById('logsList');
+  el.innerHTML="Loading...";
+  try{
+    const snap=await getDocs(query(collection(db,"adminLogs"), orderBy("at","desc"), limit(100)));
+    if(snap.empty){el.innerHTML="No logs yet - edit a user to create first log";return;}
+    let html="<div class='table-wrap'><table><tr><th>Time</th><th>Action</th><th>UserID</th><th>By</th><th>Details</th></tr>";
+    snap.forEach(d=>{
+      const l=d.data();
+      let time=""; try{ time=l.at?new Date(l.at.seconds*1000).toLocaleString(): (l.at?new Date(l.at).toLocaleString():""); }catch(e){time="recent";}
+      html+=`<tr><td>${time}</td><td>${l.action||''}</td><td style="max-width:100px;overflow:hidden;text-overflow:ellipsis">${l.userId||''}</td><td>${l.by||''}</td><td>${l.note||''} ${l.status||''} Points:${l.points||''}</td></tr>`;
+    });
+    html+="</table></div>"; el.innerHTML=html;
+  }catch(e){ el.innerHTML="Error: "+e.message+"<br>If index error, create index or check if adminLogs exists."; }
+}
 window.logout = async ()=>{ await signOut(auth); location.reload(); }
 </script>
 </body>
