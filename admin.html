@@ -17,7 +17,7 @@ body{background:#111;display:flex;min-height:100vh;color:white}
 .topbar{display:flex;align-items:center;gap:12px;margin-bottom:20px;margin-top:10px}
 .card{background:#1e2f15;padding:15px;border-radius:12px;border:1px solid #333;margin-bottom:15px}
 .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px}
-.table-wrap table{min-width:700px;width:100%}
+.table-wrap table{min-width:900px;width:100%}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
 .stat{background:#4a6128;padding:15px;border-radius:10px;text-align:center}
 .stat h3{font-size:28px;color:#fbbf24}
@@ -29,6 +29,7 @@ th{color:#fbbf24;position:sticky;top:0;background:#1e2f15}
 .btn-del{background:#000;color:white;border:1px solid #555}
 .btn-edit{background:#fbbf24;color:black}
 .btn-ok{background:#22c55e;color:black}
+.btn-copy{background:#3b82f6;color:white;font-size:11px;padding:4px 8px}
 input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-radius:8px;color:white;width:100%;margin:5px 0}
 .hidden{display:none !important}
 .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:99}
@@ -40,7 +41,9 @@ input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-
 .badge-open{background:#fbbf24;color:black}
 .badge-closed{background:#22c55e;color:black}
 .badge-danger{background:#ef4444;color:white}
+.badge-crypto{background:#111;color:#fbbf24;border:1px solid #fbbf24}
 .label{font-size:12px;color:#aaa;margin-top:12px;display:block}
+.wd-address{max-width:120px;overflow:hidden;text-overflow:ellipsis;display:inline-block;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -62,7 +65,7 @@ input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-
     <ul class="menu">
       <li class="active" onclick="openPage('dashboard', this)">Dashboard</li>
       <li onclick="openPage('users', this)">Users</li>
-      <li onclick="openPage('withdrawals', this)">Withdrawals</li>
+      <li onclick="openPage('withdrawals', this)">Withdrawals <span id="wdCount" style="background:#fbbf24;color:black;padding:2px 6px;border-radius:10px;font-size:11px;margin-left:5px">0</span></li>
       <li onclick="openPage('support', this)">Support <span id="supportCount" style="background:#ef4444;color:white;padding:2px 6px;border-radius:10px;font-size:11px;margin-left:5px">0</span></li>
       <li onclick="openPage('fraud', this)">Fraud Flag</li>
       <li onclick="openPage('logs', this)">Logs</li>
@@ -80,9 +83,24 @@ input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-
         <div class="stat"><p>Pending WD</p><h3 id="totalPending">0</h3></div>
         <div class="stat"><p>Open Tickets</p><h3 id="totalTickets">0</h3></div>
       </div>
+      <div class="card" id="dashConfigPreview" style="border:1px solid #fbbf24">Loading config...</div>
     </div>
     <div id="page-users" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Users Management</h1></div><div style="display:flex;gap:8px;margin:15px 0"><input id="searchInput" placeholder="Search exact username or email"><button class="btn btn-edit" onclick="searchUser()">Search</button><button class="btn" onclick="loadUsers(true)">Reset</button></div><div class="card"><div class="table-wrap"><table id="usersTable"><thead><tr><th>Username</th><th>Email</th><th>Points</th><th>Ref</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table></div><div style="margin-top:15px;display:flex;gap:10px"><button class="btn btn-edit" onclick="loadUsers(false)">Next 50 →</button><button class="btn" onclick="loadUsers(true)">↺ First 50</button></div></div></div>
-    <div id="page-withdrawals" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Withdrawals</h1></div><div class="card" id="wdList">Loading...</div></div>
+    <div id="page-withdrawals" class="hidden">
+      <div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Withdrawals - Crypto</h1></div>
+      <div class="card">
+        <p style="font-size:11px;color:#aaa;margin-bottom:10px">Wired to: <b>appConfig/main</b> + <b>withdrawals</b> collection. Wallet Convert + Withdraw from user panel.</p>
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <button class="btn btn-edit" onclick="loadWithdrawals('pending')">Pending</button>
+          <button class="btn btn-ok" onclick="loadWithdrawals('approved')">Approved</button>
+          <button class="btn btn-ban" onclick="loadWithdrawals('rejected')">Rejected</button>
+          <button class="btn" onclick="loadWithdrawals('all')">All</button>
+          <button class="btn" style="background:#111;border:1px solid #444" onclick="loadWithdrawals(currentWDFilter)">↺ Refresh</button>
+        </div>
+        <div id="wdConfigInfo" style="font-size:12px;color:#22c55e;margin-bottom:10px"></div>
+        <div id="wdList">Loading...</div>
+      </div>
+    </div>
     <div id="page-support" class="hidden">
       <div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Support Ticket</h1></div>
       <div class="card">
@@ -109,18 +127,12 @@ input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-
       <div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>App Config - Crypto</h1></div>
       <div class="card">
         <p style="font-size:12px;color:#aaa;margin-bottom:15px">Flow: Points → Convert FREE → USDT/BNB/XRP/XLM → Withdraw min $5 (15% fee)</p>
-        
         <label class="label">Points = $0.5 (Your current rate)</label><input id="cPointsPerHalf" type="number" value="1000" oninput="updatePreview()">
         <p style="font-size:11px;color:#fbbf24">=> 2000 pts = $1, 10000 pts = $5 min</p>
-
         <label class="label">Minimum Withdraw USD ($)</label><input id="cMinWithdraw" type="number" value="5" oninput="updatePreview()">
-
         <label class="label">Withdraw Fee / Gas Fee (%)</label><input id="cWithdrawFee" type="number" value="15" oninput="updatePreview()">
-
         <label class="label">Referral Bonus Points</label><input id="cRefBonus" type="number" value="50">
-
         <label class="label">Max Referrals per 24h</label><input id="cMaxRef" type="number" value="10">
-
         <label class="label" style="margin-top:20px;color:#fbbf24;font-weight:bold">Enable Cryptos for Withdraw</label>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
           <label style="display:flex;align-items:center;gap:8px;background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cUSDT" checked style="width:20px"> USDT</label>
@@ -128,16 +140,13 @@ input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-
           <label style="display:flex;align-items:center;gap:8px;background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cXRP" checked style="width:20px"> XRP</label>
           <label style="display:flex;align-items:center;gap:8px;background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cXLM" checked style="width:20px"> XLM</label>
         </div>
-
         <label class="label" style="margin-top:20px">App Maintenance Mode</label><select id="cMaintenance"><option value="off">OFF - App Works</option><option value="on">ON - App Closed</option></select>
         <label class="label">Maintenance Message</label><input id="cMaintMsg" type="text" placeholder="We are updating... come back later">
-
         <button class="btn btn-ok" style="width:100%;padding:14px;margin-top:20px;font-size:16px" onclick="saveConfig()">💾 Save Config</button>
         <div id="configMsg" style="margin-top:12px;font-size:13px"></div>
-
         <div style="margin-top:20px;padding:12px;background:#000;border-radius:8px;border:1px solid #333">
           <p style="font-size:11px;color:#aaa">Live Preview:</p>
-          <p id="cPreview" style="font-size:13px;color:#22c55e;margin-top:5px">1000 pts = $0.5 → Min withdraw = 10000 pts = $5 → User receives $4.25 after 15% fee</p>
+          <p id="cPreview" style="font-size:13px;color:#22c55e;margin-top:5px"></p>
         </div>
       </div>
     </div>
@@ -147,220 +156,54 @@ input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-
     </div>
   </div>
 </div>
-<div id="userModal" class="modal hidden"><div class="modal-box"><h3 id="mUsername">User</h3><p id="mEmail" style="font-size:12px;color:#aaa"></p><input id="mPoints" type="number" placeholder="New Points"><select id="mStatus"><option value="active">Active</option><option value="banned">Banned</option><option value="deactivated">Deactivated</option></select><input id="mNote" placeholder="Admin note"><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-ok" onclick="saveUserEdit()">Save</button><button class="btn btn-del" onclick="closeModal()">Close</button></div><button class="btn btn-del" style="width:100%;margin-top:10px;background:#ef4444" onclick="deleteUser()">DELETE FOREVER</button></div></div>
-<div id="supportModal" class="modal hidden"><div class="modal-box">
-  <h3 style="color:#fbbf24" id="sUser">Support Ticket</h3>
-  <p id="sEmail" style="font-size:12px;color:#aaa"></p>
-  <p id="sDate" style="font-size:11px;color:#aaa;margin:5px 0"></p>
-  <div style="background:#111;padding:10px;border-radius:8px;margin:10px 0"><p id="sMessage" style="font-size:13px"></p></div>
-  <div id="sReplyView" style="background:#2f3e1a;padding:10px;border-radius:8px;margin:10px 0;display:none"><p style="font-size:11px;color:#fbbf24">YOUR REPLY:</p><p id="sReplyText" style="font-size:13px"></p></div>
-  <textarea id="sReplyInput" rows="4" placeholder="Write your reply to user..."></textarea>
-  <div style="display:flex;gap:8px;margin-top:12px">
-    <button class="btn btn-ok" onclick="sendReply()">Reply & Close</button>
-    <button class="btn btn-edit" onclick="sendReplyKeepOpen()">Reply Keep Open</button>
-    <button class="btn btn-del" onclick="closeSupportModal()">Close</button>
-  </div>
-  <button class="btn btn-ban" style="width:100%;margin-top:10px" onclick="deleteTicket()">Delete Ticket</button>
-</div></div>
+<div id="userModal" class="modal hidden"><div class="modal-box"><h3 id="mUsername">User</h3><p id="mEmail" style="font-size:12px;color:#aaa"></p><input id="mPoints" type="number"><select id="mStatus"><option value="active">Active</option><option value="banned">Banned</option><option value="deactivated">Deactivated</option></select><input id="mNote" placeholder="Note"><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-ok" onclick="saveUserEdit()">Save</button><button class="btn btn-del" onclick="closeModal()">Close</button></div><button class="btn btn-del" style="width:100%;margin-top:10px;background:#ef4444" onclick="deleteUser()">DELETE</button></div></div>
+<div id="supportModal" class="modal hidden"><div class="modal-box"><h3 id="sUser">Support</h3><p id="sEmail"></p><p id="sDate"></p><div style="background:#111;padding:10px;border-radius:8px;margin:10px 0"><p id="sMessage"></p></div><div id="sReplyView" style="display:none"><p id="sReplyText"></p></div><textarea id="sReplyInput" rows="4"></textarea><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-ok" onclick="sendReply()">Reply Close</button><button class="btn btn-edit" onclick="sendReplyKeepOpen()">Keep Open</button><button class="btn btn-del" onclick="closeSupportModal()">Close</button></div><button class="btn btn-ban" style="width:100%;margin-top:10px" onclick="deleteTicket()">Delete</button></div></div>
+<div id="wdModal" class="modal hidden"><div class="modal-box" style="max-width:600px"><h3 id="wdModalTitle">Withdrawal</h3><div id="wdModalBody"></div><div style="display:flex;gap:8px;margin-top:15px"><button class="btn btn-ok" onclick="approveWDFromModal()">Approve</button><button class="btn btn-ban" onclick="rejectWDFromModal()">Reject</button><button class="btn btn-del" onclick="closeWDModal()">Close</button></div></div></div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, query, where, getDocs, getCountFromServer, doc, updateDoc, deleteDoc, orderBy, limit, startAfter, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, query, where, getDocs, getCountFromServer, doc, updateDoc, deleteDoc, orderBy, limit, startAfter, getDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 const SUPER_ADMIN_EMAIL = "admin@reward.rw";
 const firebaseConfig = { apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d", storageBucket: "reward-platform-rw-2e13d.firebasestorage.app", messagingSenderId: "787550951987", appId: "1:787550951987:web:724b1463e821b99c90a146" };
 const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
-let lastVisible = null; let currentEditId = null; let currentTicketId = null;
-window.toggleSidebar = ()=>{ document.getElementById('sidebar').classList.toggle('collapsed'); }
-window.openPage = (p, el)=>{ document.querySelectorAll('.main > div').forEach(d=>d.classList.add('hidden')); document.getElementById('page-'+p).classList.remove('hidden'); document.querySelectorAll('.menu li').forEach(l=>l.classList.remove('active')); if(el) el.classList.add('active'); document.getElementById('sidebar').classList.add('collapsed'); if(p==='support') loadSupport('open'); if(p==='fraud') loadFraud(); if(p==='logs') loadLogs(); if(p==='config') loadConfig(); }
-window.adminLogin = async () => { const email = document.getElementById('aEmail').value.trim(); const pass = document.getElementById('aPass').value; const err = document.getElementById('aError'); if(email !== SUPER_ADMIN_EMAIL){ err.innerText="Only "+SUPER_ADMIN_EMAIL+" allowed"; return; } try{ await signInWithEmailAndPassword(auth,email,pass); }catch(e){ err.innerText="Login failed: "+e.message; } }
-window.changePassword = async ()=>{ const oldPass = document.getElementById('oldPass').value; const newPass = document.getElementById('newPass').value; const newPass2 = document.getElementById('newPass2').value; const msg = document.getElementById('settingsMsg'); msg.innerText=""; if(newPass.length < 6){ msg.style.color="#ef4444"; msg.innerText="Min 6 chars"; return; } if(newPass !== newPass2){ msg.style.color="#ef4444"; msg.innerText="Don't match"; return; } const user = auth.currentUser; try{ const cred = EmailAuthProvider.credential(user.email, oldPass); await reauthenticateWithCredential(user, cred); await updatePassword(user, newPass); msg.style.color="#22c55e"; msg.innerText="✅ Updated!"; document.getElementById('oldPass').value=""; document.getElementById('newPass').value=""; document.getElementById('newPass2').value=""; }catch(e){ msg.style.color="#ef4444"; msg.innerText="Failed: "+e.message; } }
-onAuthStateChanged(auth, async (user)=>{ if(user && user.email === SUPER_ADMIN_EMAIL){ document.getElementById('loginBox').classList.add('hidden'); document.getElementById('panel').classList.remove('hidden'); document.getElementById('panel').style.display='flex'; openPage('dashboard', document.querySelector('.menu li')); loadDashboard(); loadUsers(true); loadWithdrawals(); loadSupportCount(); }else if(user){ await signOut(auth); document.getElementById('aError').innerText="Access Denied."; } });
-async function loadDashboard(){ const totalSnap = await getCountFromServer(collection(db,"users")); document.getElementById('totalUsers').innerText = totalSnap.data().count; const bannedQ = query(collection(db,"users"), where("isBanned","==",true)); const bannedSnap = await getCountFromServer(bannedQ); document.getElementById('totalBanned').innerText = bannedSnap.data().count; const pendingQ = query(collection(db,"withdrawals"), where("status","==","pending")); const pendingSnap = await getCountFromServer(pendingQ).catch(()=>({data:()=>({count:0})})); document.getElementById('totalPending').innerText = pendingSnap.data().count; loadSupportCount(); }
-async function loadSupportCount(){ try{ const q = query(collection(db,"supportTickets"), where("status","==","open")); const snap = await getCountFromServer(q); document.getElementById('supportCount').innerText = snap.data().count; document.getElementById('totalTickets').innerText = snap.data().count; }catch(e){} }
-window.loadUsers = async (isFirst)=>{ if(isFirst) lastVisible = null; let q = lastVisible ? query(collection(db,"users"), orderBy("createdAt","desc"), startAfter(lastVisible), limit(50)) : query(collection(db,"users"), orderBy("createdAt","desc"), limit(50)); const snap = await getDocs(q); if(!snap.empty) lastVisible = snap.docs[snap.docs.length-1]; renderUsers(snap); }
-function renderUsers(snap){ const tbody = document.querySelector('#usersTable tbody'); tbody.innerHTML=""; snap.forEach(d=>{ const u = d.data(); const tr = document.createElement('tr'); tr.innerHTML=`<td>${u.username||''}</td><td>${u.email||''}</td><td>${u.balance||u.points||0}</td><td>${u.referralCount||0}</td><td>${u.isBanned?'BANNED':u.isDeactivated?'DEACT':'ACTIVE'}</td><td><button class="btn btn-edit" onclick="openModal('${d.id}')">Manage</button></td>`; tbody.appendChild(tr); }); }
-window.searchUser = async ()=>{ const val = document.getElementById('searchInput').value.trim(); if(!val) return; let snap = await getDocs(query(collection(db,"users"), where("username","==",val))); if(snap.empty) snap = await getDocs(query(collection(db,"users"), where("email","==",val))); if(snap.empty) snap = await getDocs(query(collection(db,"users"), where("usernameLower","==",val.toLowerCase()))); renderUsers(snap); }
-window.openModal = async (id)=>{ currentEditId = id; const snap = await getDoc(doc(db,"users",id)); const u = snap.data(); document.getElementById('mUsername').innerText = u.username; document.getElementById('mEmail').innerText = u.email+" | ID: "+id; document.getElementById('mPoints').value = u.balance||u.points||0; document.getElementById('mStatus').value = u.isBanned?'banned':u.isDeactivated?'deactivated':'active'; document.getElementById('userModal').classList.remove('hidden'); }
-window.closeModal = ()=>{ document.getElementById('userModal').classList.add('hidden'); }
-window.saveUserEdit = async ()=>{ const points = parseInt(document.getElementById('mPoints').value); const status = document.getElementById('mStatus').value; const note = document.getElementById('mNote').value; await updateDoc(doc(db,"users",currentEditId),{balance:points,points:points,isBanned:status==='banned',isDeactivated:status==='deactivated',adminNote:note,lastEditedBy:SUPER_ADMIN_EMAIL,lastEditedAt:new Date()}); await setDoc(doc(db,"adminLogs", Date.now().toString()),{action:"edit", userId:currentEditId, points, status, note, by:SUPER_ADMIN_EMAIL, at:new Date()}); alert("Saved"); closeModal(); loadUsers(true); }
-window.deleteUser = async ()=>{ if(!confirm("DELETE FOREVER?")) return; await deleteDoc(doc(db,"users",currentEditId)); alert("Deleted"); closeModal(); loadUsers(true); }
-async function loadWithdrawals(){ const el = document.getElementById('wdList'); try{ const snap = await getDocs(query(collection(db,"withdrawals"), where("status","==","pending"), limit(50))); if(snap.empty){ el.innerHTML="No pending withdrawals"; return; } let html="<div class='table-wrap'><table><tr><th>User</th><th>Amount</th><th>Method</th><th>Action</th></tr>"; snap.forEach(d=>{const w=d.data(); html+=`<tr><td>${w.email||w.userId}</td><td>${w.amount}</td><td>${w.method||''}</td><td><button class="btn btn-ok" onclick="approveWD('${d.id}')">Approve</button><button class="btn btn-ban" onclick="rejectWD('${d.id}')">Reject</button></td></tr>`}); html+="</table></div>"; el.innerHTML=html; }catch(e){ el.innerHTML="Error: "+e.message; } }
-window.approveWD = async (wdId)=>{ await updateDoc(doc(db,"withdrawals",wdId),{status:"approved", approvedBy:SUPER_ADMIN_EMAIL, approvedAt:new Date()}); alert("Approved"); loadWithdrawals(); }
-window.rejectWD = async (wdId)=>{ await updateDoc(doc(db,"withdrawals",wdId),{status:"rejected"}); alert("Rejected"); loadWithdrawals(); }
-window.loadSupport = async (filter)=>{
-  const el = document.getElementById('supportList');
-  el.innerHTML="Loading...";
-  try{
-    let q;
-    if(filter==='open') q = query(collection(db,"supportTickets"), where("status","==","open"), orderBy("createdAt","desc"), limit(50));
-    else if(filter==='closed') q = query(collection(db,"supportTickets"), where("status","==","closed"), orderBy("createdAt","desc"), limit(50));
-    else q = query(collection(db,"supportTickets"), orderBy("createdAt","desc"), limit(50));
-    const snap = await getDocs(q);
-    if(snap.empty){ el.innerHTML="No tickets found"; return; }
-    let html="<div class='table-wrap'><table><tr><th>User</th><th>Email</th><th>Message</th><th>Status</th><th>Date</th><th>Action</th></tr>";
-    snap.forEach(d=>{
-      const t=d.data(); const date = t.createdAt ? new Date(t.createdAt.seconds*1000).toLocaleString() : "";
-      const shortMsg = (t.message||"").substring(0,50)+"...";
-      html+=`<tr><td>${t.username||''}</td><td>${t.email||''}</td><td title="${t.message}">${shortMsg}</td><td><span class="badge ${t.status==='open'?'badge-open':'badge-closed'}">${t.status}</span></td><td>${date}</td><td><button class="btn btn-edit" onclick="openSupport('${d.id}')">View/Reply</button></td></tr>`;
-    });
-    html+="</table></div>"; el.innerHTML=html;
-  }catch(e){
-    try{
-      let q2 = filter==='all' ? query(collection(db,"supportTickets"), limit(50)) : query(collection(db,"supportTickets"), where("status","==",filter), limit(50));
-      const snap2 = await getDocs(q2);
-      if(snap2.empty){ el.innerHTML="No tickets"; return; }
-      let html="<div class='table-wrap'><table><tr><th>User</th><th>Email</th><th>Message</th><th>Status</th><th>Action</th></tr>";
-      snap2.forEach(d=>{ const t=d.data(); const shortMsg=(t.message||"").substring(0,50); html+=`<tr><td>${t.username}</td><td>${t.email}</td><td>${shortMsg}</td><td>${t.status}</td><td><button class="btn btn-edit" onclick="openSupport('${d.id}')">View</button></td></tr>`; });
-      html+="</table></div>"; el.innerHTML=html;
-    }catch(err){ el.innerHTML="Error: "+err.message; }
-  }
-}
-window.openSupport = async (id)=>{
-  currentTicketId = id;
-  const snap = await getDoc(doc(db,"supportTickets",id));
-  const t = snap.data();
-  document.getElementById('sUser').innerText = t.username || "User";
-  document.getElementById('sEmail').innerText = t.email + " | ID: " + id;
-  document.getElementById('sDate').innerText = t.createdAt ? new Date(t.createdAt.seconds*1000).toLocaleString() : "";
-  document.getElementById('sMessage').innerText = t.message;
-  if(t.adminReply){ document.getElementById('sReplyView').style.display='block'; document.getElementById('sReplyText').innerText = t.adminReply; document.getElementById('sReplyInput').value = t.adminReply; }else{ document.getElementById('sReplyView').style.display='none'; document.getElementById('sReplyInput').value=""; }
-  document.getElementById('supportModal').classList.remove('hidden');
-}
-window.closeSupportModal = ()=>{ document.getElementById('supportModal').classList.add('hidden'); }
-window.sendReply = async ()=>{
-  const reply = document.getElementById('sReplyInput').value.trim();
-  if(!reply){ alert("Write reply"); return; }
-  await updateDoc(doc(db,"supportTickets",currentTicketId),{ adminReply:reply, status:"closed", repliedBy:SUPER_ADMIN_EMAIL, repliedAt:new Date() });
-  alert("Replied & Closed"); closeSupportModal(); loadSupport('open'); loadSupportCount();
-}
-window.sendReplyKeepOpen = async ()=>{
-  const reply = document.getElementById('sReplyInput').value.trim();
-  if(!reply){ alert("Write reply"); return; }
-  await updateDoc(doc(db,"supportTickets",currentTicketId),{ adminReply:reply, status:"open", repliedBy:SUPER_ADMIN_EMAIL, repliedAt:new Date() });
-  alert("Replied, kept Open"); closeSupportModal(); loadSupport('open');
-}
-window.deleteTicket = async ()=>{ if(!confirm("Delete ticket?")) return; await deleteDoc(doc(db,"supportTickets",currentTicketId)); alert("Deleted"); closeSupportModal(); loadSupport('all'); loadSupportCount(); }
-window.loadFraud = async ()=>{
-  const el = document.getElementById('fraudList');
-  el.innerHTML="Scanning users...";
-  try{
-    const usersSnap = await getDocs(query(collection(db,"users"), orderBy("referralCount","desc"), limit(100)));
-    if(usersSnap.empty){ el.innerHTML="No users"; return; }
-    let html="<div class='table-wrap'><table><tr><th>User</th><th>Email</th><th>Total Ref</th><th>Last 24h</th><th>Blocked Tries</th><th>Status</th><th>Action</th></tr>";
-    let found=0;
-    for(const userDoc of usersSnap.docs){
-      const u = userDoc.data();
-      const uid = userDoc.id;
-      let count24h = 0; let blocked24h = 0;
-      try{
-        const twentyFourHoursAgo = new Date(Date.now() - 24*60*60*1000);
-        const logsSnap = await getDocs(query(collection(db,"users",uid,"referralDailyLogs"), where("createdAt", ">=", twentyFourHoursAgo)));
-        logsSnap.forEach(l=>{ const ld = l.data(); if(ld.bonusGiven) count24h++; else blocked24h++; });
-      }catch(e){ count24h = 0; }
-      if((u.referralCount||0) >= 5 || count24h >= 5 || blocked24h > 0){
-        found++;
-        let badge = "";
-        if(blocked24h>0 || count24h>=10) badge = `<span class="badge badge-danger">ABUSE ${blocked24h>0?'BLOCKED':''}</span>`;
-        else if(count24h>=8) badge = `<span class="badge badge-open">WARNING</span>`;
-        else badge = `<span class="badge badge-closed">OK</span>`;
-        html+=`<tr><td>${u.username||''}</td><td>${u.email||''}</td><td>${u.referralCount||0}</td><td>${count24h}</td><td>${blocked24h}</td><td>${badge}</td><td><button class="btn btn-edit" onclick="openModal('${uid}')">Manage</button> ${blocked24h>0?`<button class="btn btn-ban" onclick="banUser('${uid}')">BAN</button>`:''}</td></tr>`;
-      }
-    }
-    html+="</table></div>";
-    if(found===0) el.innerHTML="✅ No fraud detected.";
-    else el.innerHTML=html + `<p style="margin-top:10px;font-size:12px;color:#aaa">Found ${found} users</p>`;
-  }catch(e){ el.innerHTML="Error: "+e.message; }
-}
-window.loadFraudAbusers = async ()=>{
-  const el = document.getElementById('fraudList');
-  el.innerHTML="Scanning abusers...";
-  try{
-    const usersSnap = await getDocs(query(collection(db,"users"), orderBy("referralCount","desc"), limit(200)));
-    let html="<div class='table-wrap'><table><tr><th>User</th><th>Email</th><th>Ref</th><th>Blocked</th><th>Action</th></tr>";
-    let found=0;
-    for(const userDoc of usersSnap.docs){
-      const u = userDoc.data(); const uid = userDoc.id;
-      try{
-        const twentyFourHoursAgo = new Date(Date.now() - 24*60*60*1000);
-        const logsSnap = await getDocs(query(collection(db,"users",uid,"referralDailyLogs"), where("bonusGiven","==",false), where("createdAt", ">=", twentyFourHoursAgo)));
-        if(!logsSnap.empty){ found++; html+=`<tr><td>${u.username}</td><td>${u.email}</td><td>${u.referralCount}</td><td><span class="badge badge-danger">${logsSnap.size} BLOCKED</span></td><td><button class="btn btn-ban" onclick="banUser('${uid}')">BAN</button></td></tr>`; }
-      }catch(e){}
-    }
-    html+="</table></div>"; if(found===0) el.innerHTML="✅ No abusers"; else el.innerHTML=html;
-  }catch(e){ el.innerHTML="Error: "+e.message; }
-}
-window.banUser = async (uid)=>{ if(!confirm("BAN this user?")) return; await updateDoc(doc(db,"users",uid),{isBanned:true, bannedReason:"Fraud", bannedAt:new Date(), bannedBy:SUPER_ADMIN_EMAIL}); alert("Banned"); loadFraud(); }
-window.loadLogs = async ()=>{
-  const el=document.getElementById('logsList'); el.innerHTML="Loading...";
-  try{
-    const snap=await getDocs(query(collection(db,"adminLogs"), orderBy("at","desc"), limit(100)));
-    if(snap.empty){el.innerHTML="No logs yet";return;}
-    let html="<div class='table-wrap'><table><tr><th>Time</th><th>Action</th><th>UserID</th><th>By</th><th>Details</th></tr>";
-    snap.forEach(d=>{ const l=d.data(); let time=""; try{ time=l.at?new Date(l.at.seconds*1000).toLocaleString():""; }catch(e){time="recent";} html+=`<tr><td>${time}</td><td>${l.action||''}</td><td style="max-width:100px;overflow:hidden;text-overflow:ellipsis">${l.userId||''}</td><td>${l.by||''}</td><td>${l.note||''} ${l.status||''} Points:${l.points||''}</td></tr>`; });
-    html+="</table></div>"; el.innerHTML=html;
-  }catch(e){ el.innerHTML="Error: "+e.message; }
-}
-window.updatePreview = ()=>{
-  const pph = parseFloat(document.getElementById('cPointsPerHalf').value)||1000;
-  const min = parseFloat(document.getElementById('cMinWithdraw').value)||5;
-  const fee = parseFloat(document.getElementById('cWithdrawFee').value)||15;
-  const pointsForMin = (pph * 2) * min;
-  const afterFee = min - (min*fee/100);
-  document.getElementById('cPreview').innerText = `${pph} pts = $0.5 → ${pph*2} pts = $1 → Min ${min}$ = ${pointsForMin} pts → User receives $${afterFee.toFixed(2)} after ${fee}% fee`;
-}
-window.loadConfig = async ()=>{
-  const msg=document.getElementById('configMsg'); msg.innerText="Loading...";
-  try{
-    const snap=await getDoc(doc(db,"appConfig","main"));
-    if(snap.exists()){
-      const c=snap.data();
-      document.getElementById('cPointsPerHalf').value=c.pointsPerHalfDollar||1000;
-      document.getElementById('cMinWithdraw').value=c.minWithdrawUSD||5;
-      document.getElementById('cWithdrawFee').value=c.withdrawFeePercent||15;
-      document.getElementById('cRefBonus').value=c.referralBonus||50;
-      document.getElementById('cMaxRef').value=c.maxRefPer24h||10;
-      document.getElementById('cUSDT').checked=c.enabledUSDT!==false;
-      document.getElementById('cBNB').checked=c.enabledBNB!==false;
-      document.getElementById('cXRP').checked=c.enabledXRP!==false;
-      document.getElementById('cXLM').checked=c.enabledXLM!==false;
-      document.getElementById('cMaintenance').value=c.maintenanceMode||'off';
-      document.getElementById('cMaintMsg').value=c.maintenanceMessage||'';
-      msg.style.color="#22c55e"; msg.innerText="✅ Config loaded from Firebase";
-      updatePreview();
-    }else{
-      msg.style.color="#fbbf24"; msg.innerText="No config yet - defaults shown. Click Save to create.";
-      updatePreview();
-    }
-  }catch(e){ msg.style.color="#ef4444"; msg.innerText="Error: "+e.message; }
-}
-window.saveConfig = async ()=>{
-  const msg=document.getElementById('configMsg'); msg.innerText="Saving...";
-  try{
-    const pph = parseInt(document.getElementById('cPointsPerHalf').value);
-    const data={
-      pointsPerHalfDollar: pph,
-      pointsPerDollar: pph*2,
-      minWithdrawUSD: parseFloat(document.getElementById('cMinWithdraw').value),
-      withdrawFeePercent: parseFloat(document.getElementById('cWithdrawFee').value),
-      conversionFeePercent: 0,
-      referralBonus: parseInt(document.getElementById('cRefBonus').value),
-      maxRefPer24h: parseInt(document.getElementById('cMaxRef').value),
-      enabledUSDT: document.getElementById('cUSDT').checked,
-      enabledBNB: document.getElementById('cBNB').checked,
-      enabledXRP: document.getElementById('cXRP').checked,
-      enabledXLM: document.getElementById('cXLM').checked,
-      maintenanceMode: document.getElementById('cMaintenance').value,
-      maintenanceMessage: document.getElementById('cMaintMsg').value,
-      updatedBy: SUPER_ADMIN_EMAIL,
-      updatedAt: new Date()
-    };
-    await setDoc(doc(db,"appConfig","main"), data, {merge:true});
-    await setDoc(doc(db,"adminLogs", Date.now().toString()),{action:"config_update", by:SUPER_ADMIN_EMAIL, at:new Date(), note: `Rate:${pph}pts=$0.5 Min:$${data.minWithdrawUSD} Fee:${data.withdrawFeePercent}%`});
-    msg.style.color="#22c55e"; msg.innerText="✅ Saved! Min = "+(pph*2*data.minWithdrawUSD)+" points, Fee "+data.withdrawFeePercent+"%";
-    alert("Config saved!");
-  }catch(e){ msg.style.color="#ef4444"; msg.innerText="Failed: "+e.message; }
-}
-window.logout = async ()=>{ await signOut(auth); location.reload(); }
+let lastVisible=null,currentEditId=null,currentTicketId=null,currentWDFilter='pending',currentWDId=null,globalConfig={pointsPerDollar:2000,pointsPerHalfDollar:1000,minWithdrawUSD:5,withdrawFeePercent:15,enabledUSDT:true,enabledBNB:true,enabledXRP:true,enabledXLM:true};
+window.toggleSidebar=()=>{document.getElementById('sidebar').classList.toggle('collapsed');}
+window.openPage=(p,el)=>{document.querySelectorAll('.main > div').forEach(d=>d.classList.add('hidden'));document.getElementById('page-'+p).classList.remove('hidden');document.querySelectorAll('.menu li').forEach(l=>l.classList.remove('active'));if(el)el.classList.add('active');document.getElementById('sidebar').classList.add('collapsed');if(p==='withdrawals')loadWithdrawals(currentWDFilter);if(p==='support')loadSupport('open');if(p==='fraud')loadFraud();if(p==='logs')loadLogs();if(p==='config')loadConfig();}
+window.adminLogin=async()=>{const e=document.getElementById('aEmail').value.trim();const p=document.getElementById('aPass').value;if(e!==SUPER_ADMIN_EMAIL){document.getElementById('aError').innerText="Only admin@reward.rw";return;}try{await signInWithEmailAndPassword(auth,e,p);}catch(err){document.getElementById('aError').innerText=err.message;}}
+onAuthStateChanged(auth,async(user)=>{if(user&&user.email===SUPER_ADMIN_EMAIL){document.getElementById('loginBox').classList.add('hidden');document.getElementById('panel').classList.remove('hidden');document.getElementById('panel').style.display='flex';openPage('dashboard',document.querySelector('.menu li'));loadDashboard();loadUsers(true);loadWithdrawals('pending');loadSupportCount();loadAppConfigGlobal();}else if(user){await signOut(auth);}});
+async function loadAppConfigGlobal(){try{const s=await getDoc(doc(db,"appConfig","main"));if(s.exists()){globalConfig=s.data();document.getElementById('wdConfigInfo').innerText=`Rate ${globalConfig.pointsPerHalfDollar}pts=$0.5 | Min $${globalConfig.minWithdrawUSD} | Fee ${globalConfig.withdrawFeePercent}%`;document.getElementById('dashConfigPreview').innerHTML=`Crypto Live ${globalConfig.pointsPerHalfDollar}pts=$0.5 -> Min ${globalConfig.pointsPerDollar*globalConfig.minWithdrawUSD}pts = $${globalConfig.minWithdrawUSD} -> Receive $${(globalConfig.minWithdrawUSD-globalConfig.minWithdrawUSD*globalConfig.withdrawFeePercent/100).toFixed(2)}`;}}catch(e){}}
+async function loadDashboard(){const t=await getCountFromServer(collection(db,"users"));document.getElementById('totalUsers').innerText=t.data().count;const b=await getCountFromServer(query(collection(db,"users"),where("isBanned","==",true)));document.getElementById('totalBanned').innerText=b.data().count;const p=await getCountFromServer(query(collection(db,"withdrawals"),where("status","==","pending"))).catch(()=>({data:()=>({count:0})}));document.getElementById('totalPending').innerText=p.data().count;document.getElementById('wdCount').innerText=p.data().count;loadSupportCount();}
+async function loadSupportCount(){try{const q=query(collection(db,"supportTickets"),where("status","==","open"));const s=await getCountFromServer(q);document.getElementById('supportCount').innerText=s.data().count;document.getElementById('totalTickets').innerText=s.data().count;}catch(e){}}
+window.loadUsers=async(isFirst)=>{if(isFirst)lastVisible=null;let q=lastVisible?query(collection(db,"users"),orderBy("createdAt","desc"),startAfter(lastVisible),limit(50)):query(collection(db,"users"),orderBy("createdAt","desc"),limit(50));const snap=await getDocs(q);if(!snap.empty)lastVisible=snap.docs[snap.docs.length-1];renderUsers(snap);}
+function renderUsers(snap){const tb=document.querySelector('#usersTable tbody');tb.innerHTML="";snap.forEach(d=>{const u=d.data();const tr=document.createElement('tr');tr.innerHTML=`<td>${u.username||''}</td><td>${u.email||''}</td><td>${u.balance||u.points||0}</td><td>${u.referralCount||0}</td><td>${u.isBanned?'BANNED':'ACTIVE'}</td><td><button class="btn btn-edit" onclick="openModal('${d.id}')">Manage</button></td>`;tb.appendChild(tr);});}
+window.searchUser=async()=>{const v=document.getElementById('searchInput').value.trim();if(!v)return;let s=await getDocs(query(collection(db,"users"),where("username","==",v)));if(s.empty)s=await getDocs(query(collection(db,"users"),where("email","==",v)));if(s.empty)s=await getDocs(query(collection(db,"users"),where("usernameLower","==",v.toLowerCase())));renderUsers(s);}
+window.openModal=async(id)=>{currentEditId=id;const snap=await getDoc(doc(db,"users",id));const u=snap.data();document.getElementById('mUsername').innerText=u.username;document.getElementById('mEmail').innerText=u.email+" | "+id;document.getElementById('mPoints').value=u.balance||u.points||0;document.getElementById('mStatus').value=u.isBanned?'banned':u.isDeactivated?'deactivated':'active';document.getElementById('userModal').classList.remove('hidden');}
+window.closeModal=()=>{document.getElementById('userModal').classList.add('hidden');}
+window.saveUserEdit=async()=>{const pts=parseInt(document.getElementById('mPoints').value);const st=document.getElementById('mStatus').value;const note=document.getElementById('mNote').value;await updateDoc(doc(db,"users",currentEditId),{balance:pts,points:pts,isBanned:st==='banned',isDeactivated:st==='deactivated',adminNote:note,lastEditedBy:SUPER_ADMIN_EMAIL,lastEditedAt:new Date()});await setDoc(doc(db,"adminLogs",Date.now().toString()),{action:"edit",userId:currentEditId,points:pts,status:st,note,by:SUPER_ADMIN_EMAIL,at:new Date()});alert("Saved");closeModal();loadUsers(true);}
+window.deleteUser=async()=>{if(!confirm("DELETE?"))return;await deleteDoc(doc(db,"users",currentEditId));alert("Deleted");closeModal();loadUsers(true);}
+window.loadWithdrawals=async(filter)=>{currentWDFilter=filter||'pending';const el=document.getElementById('wdList');el.innerHTML="Loading...";await loadAppConfigGlobal();try{let q;if(filter==='all')q=query(collection(db,"withdrawals"),orderBy("createdAt","desc"),limit(100));else q=query(collection(db,"withdrawals"),where("status","==",filter),orderBy("createdAt","desc"),limit(100));const snap=await getDocs(q);if(snap.empty){el.innerHTML=`No ${filter} withdrawals`;return;}let html="<div class='table-wrap'><table><tr><th>User</th><th>Points</th><th>USD</th><th>Crypto</th><th>Wallet</th><th>Fee</th><th>Final</th><th>Status</th><th>Action</th></tr>";snap.forEach(d=>{const w=d.data();const pts=w.points||w.amount||0;let usd=w.usdAmount||0;if(!usd&&pts)usd=pts/(globalConfig.pointsPerDollar||2000);const crypto=(w.crypto||w.method||'USDT').toUpperCase();const addr=w.walletAddress||w.address||'';const feePct=w.feePercent||globalConfig.withdrawFeePercent||15;const fee=usd*feePct/100;const fin=w.finalAmount||(usd-fee);const short=addr?addr.substring(0,8)+"..."+addr.slice(-4):"N/A";const badge=w.status==='pending'?'<span class="badge badge-open">PENDING</span>':w.status==='approved'?'<span class="badge badge-closed">APPROVED</span>':'<span class="badge badge-danger">REJECTED</span>';html+=`<tr><td>${w.username||''}<br><span style="font-size:10px">${w.email||w.userId||''}</span></td><td><b>${pts}</b></td><td>$${usd.toFixed(2)}</td><td><span class="badge badge-crypto">${crypto}</span></td><td title="${addr}">${short} ${addr?`<button class="btn btn-copy" onclick="copyAddr('${addr}')">Copy</button>`:''}</td><td>${feePct}%<br><span style="color:#ef4444">-$${fee.toFixed(2)}</span></td><td style="color:#22c55e"><b>$${fin.toFixed(2)}</b></td><td>${badge}</td><td><button class="btn btn-edit" onclick="openWDModal('${d.id}')">View</button>${w.status==='pending'?`<br><button class="btn btn-ok" onclick="approveWD('${d.id}')">✓</button><button class="btn btn-ban" onclick="rejectWD('${d.id}')">✕</button>`:''}</td></tr>`;});html+="</table></div>";el.innerHTML=html;}catch(e){el.innerHTML="Error: "+e.message;}}
+window.copyAddr=(a)=>{navigator.clipboard.writeText(a).then(()=>alert("Copied "+a));}
+window.openWDModal=async(id)=>{currentWDId=id;const s=await getDoc(doc(db,"withdrawals",id));const w=s.data();const pts=w.points||w.amount||0;let usd=w.usdAmount||0;if(!usd&&pts)usd=pts/(globalConfig.pointsPerDollar||2000);const crypto=(w.crypto||w.method||'USDT').toUpperCase();const addr=w.walletAddress||w.address||'N/A';const feePct=w.feePercent||globalConfig.withdrawFeePercent||15;const fee=usd*feePct/100;const fin=w.finalAmount||(usd-fee);document.getElementById('wdModalTitle').innerText=w.username||w.email;document.getElementById('wdModalBody').innerHTML=`<p>User: ${w.username} (${w.email})</p><p>ID: ${w.userId}</p><p>Points: ${pts}</p><p>USD: $${usd}</p><p>Crypto: ${crypto}</p><p style="word-break:break-all;background:#111;padding:8px;border:1px solid #fbbf24;border-radius:6px">${addr}</p><p>Fee ${feePct}% = $${fee.toFixed(2)} | Final $${fin.toFixed(2)} in ${crypto}</p>`;document.getElementById('wdModal').classList.remove('hidden');}
+window.closeWDModal=()=>{document.getElementById('wdModal').classList.add('hidden');}
+window.approveWD=async(id)=>{if(!confirm("Approve? Sent crypto?"))return;await updateDoc(doc(db,"withdrawals",id),{status:"approved",approvedBy:SUPER_ADMIN_EMAIL,approvedAt:new Date()});await setDoc(doc(db,"adminLogs",Date.now().toString()),{action:"withdraw_approve",withdrawId:id,by:SUPER_ADMIN_EMAIL,at:new Date()});alert("Approved");loadWithdrawals(currentWDFilter);loadDashboard();}
+window.rejectWD=async(id)=>{const r=prompt("Reject reason? Points returned");if(r===null)return;const s=await getDoc(doc(db,"withdrawals",id));const w=s.data();const pts=w.points||w.amount||0;if(w.userId&&pts)await updateDoc(doc(db,"users",w.userId),{balance:increment(pts),points:increment(pts)}).catch(()=>{});await updateDoc(doc(db,"withdrawals",id),{status:"rejected",rejectedBy:SUPER_ADMIN_EMAIL,rejectedAt:new Date(),rejectReason:r});await setDoc(doc(db,"adminLogs",Date.now().toString()),{action:"withdraw_reject",withdrawId:id,by:SUPER_ADMIN_EMAIL,at:new Date(),note:r});alert("Rejected returned "+pts);loadWithdrawals(currentWDFilter);}
+window.approveWDFromModal=async()=>{await approveWD(currentWDId);closeWDModal();}
+window.rejectWDFromModal=async()=>{await rejectWD(currentWDId);closeWDModal();}
+window.loadSupport=async(filter)=>{const el=document.getElementById('supportList');el.innerHTML="Loading...";try{let q;if(filter==='open')q=query(collection(db,"supportTickets"),where("status","==","open"),orderBy("createdAt","desc"),limit(50));else if(filter==='closed')q=query(collection(db,"supportTickets"),where("status","==","closed"),orderBy("createdAt","desc"),limit(50));else q=query(collection(db,"supportTickets"),orderBy("createdAt","desc"),limit(50));const snap=await getDocs(q);if(snap.empty){el.innerHTML="No tickets";return;}let html="<div class='table-wrap'><table><tr><th>User</th><th>Email</th><th>Msg</th><th>Status</th><th>Action</th></tr>";snap.forEach(d=>{const t=d.data();html+=`<tr><td>${t.username||''}</td><td>${t.email||''}</td><td>${(t.message||'').substring(0,40)}</td><td>${t.status}</td><td><button class="btn btn-edit" onclick="openSupport('${d.id}')">View</button></td></tr>`;});html+="</table></div>";el.innerHTML=html;}catch(e){el.innerHTML="Error "+e.message;}}
+window.openSupport=async(id)=>{currentTicketId=id;const s=await getDoc(doc(db,"supportTickets",id));const t=s.data();document.getElementById('sUser').innerText=t.username||"User";document.getElementById('sEmail').innerText=t.email;document.getElementById('sDate').innerText=t.createdAt?new Date(t.createdAt.seconds*1000).toLocaleString():"";document.getElementById('sMessage').innerText=t.message;document.getElementById('sReplyView').style.display=t.adminReply?'block':'none';if(t.adminReply)document.getElementById('sReplyText').innerText=t.adminReply;document.getElementById('sReplyInput').value=t.adminReply||"";document.getElementById('supportModal').classList.remove('hidden');}
+window.closeSupportModal=()=>{document.getElementById('supportModal').classList.add('hidden');}
+window.sendReply=async()=>{const r=document.getElementById('sReplyInput').value.trim();if(!r)return alert("Write reply");await updateDoc(doc(db,"supportTickets",currentTicketId),{adminReply:r,status:"closed",repliedBy:SUPER_ADMIN_EMAIL,repliedAt:new Date()});alert("Closed");closeSupportModal();loadSupport('open');loadSupportCount();}
+window.sendReplyKeepOpen=async()=>{const r=document.getElementById('sReplyInput').value.trim();if(!r)return alert("Write reply");await updateDoc(doc(db,"supportTickets",currentTicketId),{adminReply:r,status:"open",repliedBy:SUPER_ADMIN_EMAIL,repliedAt:new Date()});alert("Kept open");closeSupportModal();loadSupport('open');}
+window.deleteTicket=async()=>{if(!confirm("Delete?"))return;await deleteDoc(doc(db,"supportTickets",currentTicketId));alert("Deleted");closeSupportModal();loadSupport('all');loadSupportCount();}
+window.loadFraud=async()=>{const el=document.getElementById('fraudList');el.innerHTML="Scanning...";try{const snap=await getDocs(query(collection(db,"users"),orderBy("referralCount","desc"),limit(100)));let html="<div class='table-wrap'><table><tr><th>User</th><th>Email</th><th>Ref</th><th>Action</th></tr>";snap.forEach(d=>{const u=d.data();if((u.referralCount||0)>=5)html+=`<tr><td>${u.username}</td><td>${u.email}</td><td>${u.referralCount}</td><td><button class="btn btn-edit" onclick="openModal('${d.id}')">Manage</button></td></tr>`;});html+="</table></div>";el.innerHTML=html;}catch(e){el.innerHTML=e.message;}}
+window.loadFraudAbusers=async()=>{window.loadFraud();}
+window.banUser=async(uid)=>{if(!confirm("BAN?"))return;await updateDoc(doc(db,"users",uid),{isBanned:true,bannedReason:"Fraud",bannedAt:new Date(),bannedBy:SUPER_ADMIN_EMAIL});alert("Banned");}
+window.loadLogs=async()=>{const el=document.getElementById('logsList');el.innerHTML="Loading...";try{const s=await getDocs(query(collection(db,"adminLogs"),orderBy("at","desc"),limit(100)));let html="<div class='table-wrap'><table><tr><th>Time</th><th>Action</th><th>ID</th><th>By</th></tr>";s.forEach(d=>{const l=d.data();html+=`<tr><td>${l.at?new Date(l.at.seconds*1000).toLocaleString():''}</td><td>${l.action}</td><td>${l.userId||l.withdrawId||''}</td><td>${l.by}</td></tr>`;});html+="</table></div>";el.innerHTML=html;}catch(e){el.innerHTML=e.message;}}
+window.updatePreview=()=>{const pph=parseFloat(document.getElementById('cPointsPerHalf').value)||1000;const min=parseFloat(document.getElementById('cMinWithdraw').value)||5;const fee=parseFloat(document.getElementById('cWithdrawFee').value)||15;const pts=(pph*2)*min;const after=min-min*fee/100;document.getElementById('cPreview').innerText=`${pph} pts = $0.5 -> ${pph*2} pts = $1 -> Min $${min} = ${pts} pts -> User receives $${after.toFixed(2)} after ${fee}%`;}
+window.loadConfig=async()=>{try{const s=await getDoc(doc(db,"appConfig","main"));if(s.exists()){const c=s.data();document.getElementById('cPointsPerHalf').value=c.pointsPerHalfDollar||1000;document.getElementById('cMinWithdraw').value=c.minWithdrawUSD||5;document.getElementById('cWithdrawFee').value=c.withdrawFeePercent||15;document.getElementById('cRefBonus').value=c.referralBonus||50;document.getElementById('cMaxRef').value=c.maxRefPer24h||10;document.getElementById('cUSDT').checked=c.enabledUSDT!==false;document.getElementById('cBNB').checked=c.enabledBNB!==false;document.getElementById('cXRP').checked=c.enabledXRP!==false;document.getElementById('cXLM').checked=c.enabledXLM!==false;document.getElementById('cMaintenance').value=c.maintenanceMode||'off';document.getElementById('cMaintMsg').value=c.maintenanceMessage||'';updatePreview();}}catch(e){}}
+window.saveConfig=async()=>{const pph=parseInt(document.getElementById('cPointsPerHalf').value);const data={pointsPerHalfDollar:pph,pointsPerDollar:pph*2,minWithdrawUSD:parseFloat(document.getElementById('cMinWithdraw').value),withdrawFeePercent:parseFloat(document.getElementById('cWithdrawFee').value),referralBonus:parseInt(document.getElementById('cRefBonus').value),maxRefPer24h:parseInt(document.getElementById('cMaxRef').value),enabledUSDT:document.getElementById('cUSDT').checked,enabledBNB:document.getElementById('cBNB').checked,enabledXRP:document.getElementById('cXRP').checked,enabledXLM:document.getElementById('cXLM').checked,maintenanceMode:document.getElementById('cMaintenance').value,maintenanceMessage:document.getElementById('cMaintMsg').value,updatedBy:SUPER_ADMIN_EMAIL,updatedAt:new Date()};await setDoc(doc(db,"appConfig","main"),data,{merge:true});await setDoc(doc(db,"adminLogs",Date.now().toString()),{action:"config_update",by:SUPER_ADMIN_EMAIL,at:new Date(),note:`Rate ${pph}`});alert("Saved");loadAppConfigGlobal();}
+window.changePassword=async()=>{const oldP=document.getElementById('oldPass').value;const newP=document.getElementById('newPass').value;const newP2=document.getElementById('newPass2').value;if(newP!==newP2)return alert("No match");const user=auth.currentUser;try{const cred=EmailAuthProvider.credential(user.email,oldP);await reauthenticateWithCredential(user,cred);await updatePassword(user,newP);alert("Updated");}catch(e){alert(e.message);}}
+window.logout=async()=>{await signOut(auth);location.reload();}
 </script>
 </body>
 </html>
