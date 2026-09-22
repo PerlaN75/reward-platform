@@ -40,6 +40,7 @@ input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-
 .badge-open{background:#fbbf24;color:black}
 .badge-closed{background:#22c55e;color:black}
 .badge-danger{background:#ef4444;color:white}
+.label{font-size:12px;color:#aaa;margin-top:12px;display:block}
 </style>
 </head>
 <body>
@@ -65,6 +66,7 @@ input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-
       <li onclick="openPage('support', this)">Support <span id="supportCount" style="background:#ef4444;color:white;padding:2px 6px;border-radius:10px;font-size:11px;margin-left:5px">0</span></li>
       <li onclick="openPage('fraud', this)">Fraud Flag</li>
       <li onclick="openPage('logs', this)">Logs</li>
+      <li onclick="openPage('config', this)">Config</li>
       <li onclick="openPage('settings', this)">Settings</li>
       <li class="logout-small" onclick="logout()">Logout</li>
     </ul>
@@ -103,6 +105,42 @@ input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-
         <div id="logsList">Loading...</div>
       </div>
     </div>
+    <div id="page-config" class="hidden">
+      <div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>App Config - Crypto</h1></div>
+      <div class="card">
+        <p style="font-size:12px;color:#aaa;margin-bottom:15px">Flow: Points → Convert FREE → USDT/BNB/XRP/XLM → Withdraw min $5 (15% fee)</p>
+        
+        <label class="label">Points = $0.5 (Your current rate)</label><input id="cPointsPerHalf" type="number" value="1000" oninput="updatePreview()">
+        <p style="font-size:11px;color:#fbbf24">=> 2000 pts = $1, 10000 pts = $5 min</p>
+
+        <label class="label">Minimum Withdraw USD ($)</label><input id="cMinWithdraw" type="number" value="5" oninput="updatePreview()">
+
+        <label class="label">Withdraw Fee / Gas Fee (%)</label><input id="cWithdrawFee" type="number" value="15" oninput="updatePreview()">
+
+        <label class="label">Referral Bonus Points</label><input id="cRefBonus" type="number" value="50">
+
+        <label class="label">Max Referrals per 24h</label><input id="cMaxRef" type="number" value="10">
+
+        <label class="label" style="margin-top:20px;color:#fbbf24;font-weight:bold">Enable Cryptos for Withdraw</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+          <label style="display:flex;align-items:center;gap:8px;background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cUSDT" checked style="width:20px"> USDT</label>
+          <label style="display:flex;align-items:center;gap:8px;background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cBNB" checked style="width:20px"> BNB</label>
+          <label style="display:flex;align-items:center;gap:8px;background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cXRP" checked style="width:20px"> XRP</label>
+          <label style="display:flex;align-items:center;gap:8px;background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cXLM" checked style="width:20px"> XLM</label>
+        </div>
+
+        <label class="label" style="margin-top:20px">App Maintenance Mode</label><select id="cMaintenance"><option value="off">OFF - App Works</option><option value="on">ON - App Closed</option></select>
+        <label class="label">Maintenance Message</label><input id="cMaintMsg" type="text" placeholder="We are updating... come back later">
+
+        <button class="btn btn-ok" style="width:100%;padding:14px;margin-top:20px;font-size:16px" onclick="saveConfig()">💾 Save Config</button>
+        <div id="configMsg" style="margin-top:12px;font-size:13px"></div>
+
+        <div style="margin-top:20px;padding:12px;background:#000;border-radius:8px;border:1px solid #333">
+          <p style="font-size:11px;color:#aaa">Live Preview:</p>
+          <p id="cPreview" style="font-size:13px;color:#22c55e;margin-top:5px">1000 pts = $0.5 → Min withdraw = 10000 pts = $5 → User receives $4.25 after 15% fee</p>
+        </div>
+      </div>
+    </div>
     <div id="page-settings" class="hidden">
       <div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Settings - Password</h1></div>
       <div class="card"><h3 style="color:#fbbf24">Change Password</h3><input id="oldPass" type="password" placeholder="Current password"><input id="newPass" type="password" placeholder="New password"><input id="newPass2" type="password" placeholder="Confirm"><button class="btn btn-ok" style="width:100%;padding:12px;margin-top:10px" onclick="changePassword()">Update Password Now</button><div id="settingsMsg" style="margin-top:10px;font-size:13px"></div></div>
@@ -133,7 +171,7 @@ const firebaseConfig = { apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co", auth
 const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
 let lastVisible = null; let currentEditId = null; let currentTicketId = null;
 window.toggleSidebar = ()=>{ document.getElementById('sidebar').classList.toggle('collapsed'); }
-window.openPage = (p, el)=>{ document.querySelectorAll('.main > div').forEach(d=>d.classList.add('hidden')); document.getElementById('page-'+p).classList.remove('hidden'); document.querySelectorAll('.menu li').forEach(l=>l.classList.remove('active')); if(el) el.classList.add('active'); document.getElementById('sidebar').classList.add('collapsed'); if(p==='support') loadSupport('open'); if(p==='fraud') loadFraud(); if(p==='logs') loadLogs(); }
+window.openPage = (p, el)=>{ document.querySelectorAll('.main > div').forEach(d=>d.classList.add('hidden')); document.getElementById('page-'+p).classList.remove('hidden'); document.querySelectorAll('.menu li').forEach(l=>l.classList.remove('active')); if(el) el.classList.add('active'); document.getElementById('sidebar').classList.add('collapsed'); if(p==='support') loadSupport('open'); if(p==='fraud') loadFraud(); if(p==='logs') loadLogs(); if(p==='config') loadConfig(); }
 window.adminLogin = async () => { const email = document.getElementById('aEmail').value.trim(); const pass = document.getElementById('aPass').value; const err = document.getElementById('aError'); if(email !== SUPER_ADMIN_EMAIL){ err.innerText="Only "+SUPER_ADMIN_EMAIL+" allowed"; return; } try{ await signInWithEmailAndPassword(auth,email,pass); }catch(e){ err.innerText="Login failed: "+e.message; } }
 window.changePassword = async ()=>{ const oldPass = document.getElementById('oldPass').value; const newPass = document.getElementById('newPass').value; const newPass2 = document.getElementById('newPass2').value; const msg = document.getElementById('settingsMsg'); msg.innerText=""; if(newPass.length < 6){ msg.style.color="#ef4444"; msg.innerText="Min 6 chars"; return; } if(newPass !== newPass2){ msg.style.color="#ef4444"; msg.innerText="Don't match"; return; } const user = auth.currentUser; try{ const cred = EmailAuthProvider.credential(user.email, oldPass); await reauthenticateWithCredential(user, cred); await updatePassword(user, newPass); msg.style.color="#22c55e"; msg.innerText="✅ Updated!"; document.getElementById('oldPass').value=""; document.getElementById('newPass').value=""; document.getElementById('newPass2').value=""; }catch(e){ msg.style.color="#ef4444"; msg.innerText="Failed: "+e.message; } }
 onAuthStateChanged(auth, async (user)=>{ if(user && user.email === SUPER_ADMIN_EMAIL){ document.getElementById('loginBox').classList.add('hidden'); document.getElementById('panel').classList.remove('hidden'); document.getElementById('panel').style.display='flex'; openPage('dashboard', document.querySelector('.menu li')); loadDashboard(); loadUsers(true); loadWithdrawals(); loadSupportCount(); }else if(user){ await signOut(auth); document.getElementById('aError').innerText="Access Denied."; } });
@@ -174,7 +212,7 @@ window.loadSupport = async (filter)=>{
       let html="<div class='table-wrap'><table><tr><th>User</th><th>Email</th><th>Message</th><th>Status</th><th>Action</th></tr>";
       snap2.forEach(d=>{ const t=d.data(); const shortMsg=(t.message||"").substring(0,50); html+=`<tr><td>${t.username}</td><td>${t.email}</td><td>${shortMsg}</td><td>${t.status}</td><td><button class="btn btn-edit" onclick="openSupport('${d.id}')">View</button></td></tr>`; });
       html+="</table></div>"; el.innerHTML=html;
-    }catch(err){ el.innerHTML="Error: "+err.message+"<br>Need to create collection supportTickets first. It will auto-create when first user sends ticket."; }
+    }catch(err){ el.innerHTML="Error: "+err.message; }
   }
 }
 window.openSupport = async (id)=>{
@@ -213,16 +251,11 @@ window.loadFraud = async ()=>{
     for(const userDoc of usersSnap.docs){
       const u = userDoc.data();
       const uid = userDoc.id;
-      let count24h = 0;
-      let blocked24h = 0;
+      let count24h = 0; let blocked24h = 0;
       try{
         const twentyFourHoursAgo = new Date(Date.now() - 24*60*60*1000);
         const logsSnap = await getDocs(query(collection(db,"users",uid,"referralDailyLogs"), where("createdAt", ">=", twentyFourHoursAgo)));
-        logsSnap.forEach(l=>{
-          const ld = l.data();
-          if(ld.bonusGiven) count24h++;
-          else blocked24h++;
-        });
+        logsSnap.forEach(l=>{ const ld = l.data(); if(ld.bonusGiven) count24h++; else blocked24h++; });
       }catch(e){ count24h = 0; }
       if((u.referralCount||0) >= 5 || count24h >= 5 || blocked24h > 0){
         found++;
@@ -234,51 +267,98 @@ window.loadFraud = async ()=>{
       }
     }
     html+="</table></div>";
-    if(found===0) el.innerHTML="✅ No fraud detected. All users under 10/24h limit.";
-    else el.innerHTML=html + `<p style="margin-top:10px;font-size:12px;color:#aaa">Found ${found} users with high referrals. Red = tried to exceed 10/24h</p>`;
-  }catch(e){
-    el.innerHTML="Error scanning: "+e.message;
-  }
+    if(found===0) el.innerHTML="✅ No fraud detected.";
+    else el.innerHTML=html + `<p style="margin-top:10px;font-size:12px;color:#aaa">Found ${found} users</p>`;
+  }catch(e){ el.innerHTML="Error: "+e.message; }
 }
 window.loadFraudAbusers = async ()=>{
   const el = document.getElementById('fraudList');
   el.innerHTML="Scanning abusers...";
   try{
     const usersSnap = await getDocs(query(collection(db,"users"), orderBy("referralCount","desc"), limit(200)));
-    let html="<div class='table-wrap'><table><tr><th>User</th><th>Email</th><th>Ref</th><th>Last 24h Blocked</th><th>Action</th></tr>";
+    let html="<div class='table-wrap'><table><tr><th>User</th><th>Email</th><th>Ref</th><th>Blocked</th><th>Action</th></tr>";
     let found=0;
     for(const userDoc of usersSnap.docs){
-      const u = userDoc.data();
-      const uid = userDoc.id;
+      const u = userDoc.data(); const uid = userDoc.id;
       try{
         const twentyFourHoursAgo = new Date(Date.now() - 24*60*60*1000);
         const logsSnap = await getDocs(query(collection(db,"users",uid,"referralDailyLogs"), where("bonusGiven","==",false), where("createdAt", ">=", twentyFourHoursAgo)));
-        if(!logsSnap.empty){
-          found++;
-          html+=`<tr><td>${u.username}</td><td>${u.email}</td><td>${u.referralCount}</td><td><span class="badge badge-danger">${logsSnap.size} BLOCKED</span></td><td><button class="btn btn-ban" onclick="banUser('${uid}')">BAN NOW</button> <button class="btn btn-edit" onclick="openModal('${uid}')">View</button></td></tr>`;
-        }
+        if(!logsSnap.empty){ found++; html+=`<tr><td>${u.username}</td><td>${u.email}</td><td>${u.referralCount}</td><td><span class="badge badge-danger">${logsSnap.size} BLOCKED</span></td><td><button class="btn btn-ban" onclick="banUser('${uid}')">BAN</button></td></tr>`; }
       }catch(e){}
     }
-    html+="</table></div>";
-    if(found===0) el.innerHTML="✅ No abusers - nobody exceeded 10/24h";
-    else el.innerHTML=html;
+    html+="</table></div>"; if(found===0) el.innerHTML="✅ No abusers"; else el.innerHTML=html;
   }catch(e){ el.innerHTML="Error: "+e.message; }
 }
-window.banUser = async (uid)=>{ if(!confirm("BAN this user?")) return; await updateDoc(doc(db,"users",uid),{isBanned:true, bannedReason:"Fraud: exceeded 10 referrals/24h", bannedAt:new Date(), bannedBy:SUPER_ADMIN_EMAIL}); alert("Banned"); loadFraud(); }
+window.banUser = async (uid)=>{ if(!confirm("BAN this user?")) return; await updateDoc(doc(db,"users",uid),{isBanned:true, bannedReason:"Fraud", bannedAt:new Date(), bannedBy:SUPER_ADMIN_EMAIL}); alert("Banned"); loadFraud(); }
 window.loadLogs = async ()=>{
-  const el=document.getElementById('logsList');
-  el.innerHTML="Loading...";
+  const el=document.getElementById('logsList'); el.innerHTML="Loading...";
   try{
     const snap=await getDocs(query(collection(db,"adminLogs"), orderBy("at","desc"), limit(100)));
-    if(snap.empty){el.innerHTML="No logs yet - edit a user to create first log";return;}
+    if(snap.empty){el.innerHTML="No logs yet";return;}
     let html="<div class='table-wrap'><table><tr><th>Time</th><th>Action</th><th>UserID</th><th>By</th><th>Details</th></tr>";
-    snap.forEach(d=>{
-      const l=d.data();
-      let time=""; try{ time=l.at?new Date(l.at.seconds*1000).toLocaleString(): (l.at?new Date(l.at).toLocaleString():""); }catch(e){time="recent";}
-      html+=`<tr><td>${time}</td><td>${l.action||''}</td><td style="max-width:100px;overflow:hidden;text-overflow:ellipsis">${l.userId||''}</td><td>${l.by||''}</td><td>${l.note||''} ${l.status||''} Points:${l.points||''}</td></tr>`;
-    });
+    snap.forEach(d=>{ const l=d.data(); let time=""; try{ time=l.at?new Date(l.at.seconds*1000).toLocaleString():""; }catch(e){time="recent";} html+=`<tr><td>${time}</td><td>${l.action||''}</td><td style="max-width:100px;overflow:hidden;text-overflow:ellipsis">${l.userId||''}</td><td>${l.by||''}</td><td>${l.note||''} ${l.status||''} Points:${l.points||''}</td></tr>`; });
     html+="</table></div>"; el.innerHTML=html;
-  }catch(e){ el.innerHTML="Error: "+e.message+"<br>If index error, create index or check if adminLogs exists."; }
+  }catch(e){ el.innerHTML="Error: "+e.message; }
+}
+window.updatePreview = ()=>{
+  const pph = parseFloat(document.getElementById('cPointsPerHalf').value)||1000;
+  const min = parseFloat(document.getElementById('cMinWithdraw').value)||5;
+  const fee = parseFloat(document.getElementById('cWithdrawFee').value)||15;
+  const pointsForMin = (pph * 2) * min;
+  const afterFee = min - (min*fee/100);
+  document.getElementById('cPreview').innerText = `${pph} pts = $0.5 → ${pph*2} pts = $1 → Min ${min}$ = ${pointsForMin} pts → User receives $${afterFee.toFixed(2)} after ${fee}% fee`;
+}
+window.loadConfig = async ()=>{
+  const msg=document.getElementById('configMsg'); msg.innerText="Loading...";
+  try{
+    const snap=await getDoc(doc(db,"appConfig","main"));
+    if(snap.exists()){
+      const c=snap.data();
+      document.getElementById('cPointsPerHalf').value=c.pointsPerHalfDollar||1000;
+      document.getElementById('cMinWithdraw').value=c.minWithdrawUSD||5;
+      document.getElementById('cWithdrawFee').value=c.withdrawFeePercent||15;
+      document.getElementById('cRefBonus').value=c.referralBonus||50;
+      document.getElementById('cMaxRef').value=c.maxRefPer24h||10;
+      document.getElementById('cUSDT').checked=c.enabledUSDT!==false;
+      document.getElementById('cBNB').checked=c.enabledBNB!==false;
+      document.getElementById('cXRP').checked=c.enabledXRP!==false;
+      document.getElementById('cXLM').checked=c.enabledXLM!==false;
+      document.getElementById('cMaintenance').value=c.maintenanceMode||'off';
+      document.getElementById('cMaintMsg').value=c.maintenanceMessage||'';
+      msg.style.color="#22c55e"; msg.innerText="✅ Config loaded from Firebase";
+      updatePreview();
+    }else{
+      msg.style.color="#fbbf24"; msg.innerText="No config yet - defaults shown. Click Save to create.";
+      updatePreview();
+    }
+  }catch(e){ msg.style.color="#ef4444"; msg.innerText="Error: "+e.message; }
+}
+window.saveConfig = async ()=>{
+  const msg=document.getElementById('configMsg'); msg.innerText="Saving...";
+  try{
+    const pph = parseInt(document.getElementById('cPointsPerHalf').value);
+    const data={
+      pointsPerHalfDollar: pph,
+      pointsPerDollar: pph*2,
+      minWithdrawUSD: parseFloat(document.getElementById('cMinWithdraw').value),
+      withdrawFeePercent: parseFloat(document.getElementById('cWithdrawFee').value),
+      conversionFeePercent: 0,
+      referralBonus: parseInt(document.getElementById('cRefBonus').value),
+      maxRefPer24h: parseInt(document.getElementById('cMaxRef').value),
+      enabledUSDT: document.getElementById('cUSDT').checked,
+      enabledBNB: document.getElementById('cBNB').checked,
+      enabledXRP: document.getElementById('cXRP').checked,
+      enabledXLM: document.getElementById('cXLM').checked,
+      maintenanceMode: document.getElementById('cMaintenance').value,
+      maintenanceMessage: document.getElementById('cMaintMsg').value,
+      updatedBy: SUPER_ADMIN_EMAIL,
+      updatedAt: new Date()
+    };
+    await setDoc(doc(db,"appConfig","main"), data, {merge:true});
+    await setDoc(doc(db,"adminLogs", Date.now().toString()),{action:"config_update", by:SUPER_ADMIN_EMAIL, at:new Date(), note: `Rate:${pph}pts=$0.5 Min:$${data.minWithdrawUSD} Fee:${data.withdrawFeePercent}%`});
+    msg.style.color="#22c55e"; msg.innerText="✅ Saved! Min = "+(pph*2*data.minWithdrawUSD)+" points, Fee "+data.withdrawFeePercent+"%";
+    alert("Config saved!");
+  }catch(e){ msg.style.color="#ef4444"; msg.innerText="Failed: "+e.message; }
 }
 window.logout = async ()=>{ await signOut(auth); location.reload(); }
 </script>
