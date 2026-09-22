@@ -34,7 +34,7 @@ input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-
 .hidden{display:none!important}
 .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:99}
 .modal.hidden{display:none!important}
-.modal-box{background:#1e2f15;padding:25px;border-radius:15px;width:90%;max-width:500px;border:2px solid #fbbf24;max-height:90vh;overflow-y:auto}
+.modal-box{background:#1e2f15;padding:25px;border-radius:15px;width:90%;max-width:600px;border:2px solid #fbbf24;max-height:90vh;overflow-y:auto}
 .toggle-yellow{background:#fbbf24;color:black;border:none;width:42px;height:42px;border-radius:50%;font-size:22px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .badge{padding:3px 8px;border-radius:12px;font-size:11px;font-weight:bold}
 .badge-open{background:#fbbf24;color:black}
@@ -54,7 +54,32 @@ input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-
 <div id="page-logs" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Logs</h1></div><div class="card"><button class="btn btn-edit" onclick="loadLogs()">Refresh</button><div id="logsList">Loading...</div></div></div>
 <div id="page-config" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>App Config - Crypto</h1></div><div class="card"><label class="label">Points = $0.5</label><input id="cPointsPerHalf" type="number" value="1000" oninput="updatePreview()"><label class="label">Min Withdraw USD</label><input id="cMinWithdraw" type="number" value="5" oninput="updatePreview()"><label class="label">Withdraw Fee %</label><input id="cWithdrawFee" type="number" value="15" oninput="updatePreview()"><label class="label">Referral Bonus</label><input id="cRefBonus" type="number" value="50"><label class="label">Max Ref per 24h</label><input id="cMaxRef" type="number" value="10"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px"><label style="background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cUSDT" checked> USDT</label><label style="background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cBNB" checked> BNB</label><label style="background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cXRP" checked> XRP</label><label style="background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cXLM" checked> XLM</label></div><label class="label">Maintenance</label><select id="cMaintenance"><option value="off">OFF</option><option value="on">ON</option></select><input id="cMaintMsg" type="text" placeholder="Message"><button class="btn btn-ok" style="width:100%;padding:14px;margin-top:20px" onclick="saveConfig()">Save Config</button><div id="configMsg" style="margin-top:12px"></div><p id="cPreview" style="color:#22c55e"></p></div></div>
 <div id="page-settings" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Settings</h1></div><div class="card"><input id="oldPass" type="password" placeholder="Current"><input id="newPass" type="password" placeholder="New"><input id="newPass2" type="password" placeholder="Confirm"><button class="btn btn-ok" onclick="changePassword()">Update</button><div id="settingsMsg"></div></div></div></div></div>
-<div id="userModal" class="modal hidden"><div class="modal-box"><h3 id="mUsername">User</h3><p id="mEmail" style="font-size:12px;color:#aaa"></p><input id="mPoints" type="number"><select id="mStatus"><option value="active">Active</option><option value="banned">Banned</option><option value="deactivated">Deactivated</option></select><input id="mNote" placeholder="Note"><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-ok" onclick="saveUserEdit()">Save</button><button class="btn btn-del" onclick="closeModal()">Close</button></div><button class="btn btn-del" style="width:100%;margin-top:10px;background:#ef4444" onclick="deleteUser()">DELETE</button></div></div>
+<div id="userModal" class="modal hidden"><div class="modal-box" style="max-width:600px">
+<h3 id="mUsername">User</h3>
+<p id="mEmail" style="font-size:11px;color:#aaa;word-break:break-all"></p>
+<p id="mInvitedBy" style="font-size:12px;color:#fbbf24;margin-top:6px"></p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0;background:#111;padding:10px;border-radius:8px;font-size:12px">
+<div>Points: <b id="mPointsView">0</b></div>
+<div>Ref Count: <b id="mRefCount">0</b></div>
+<div>Total Earn: <b id="mTotalEarn">0</b></div>
+<div>Blocked: <b id="mBlocked">false</b></div>
+</div>
+<label class="label">Edit Points</label>
+<input id="mPoints" type="number">
+<label class="label">Status</label>
+<select id="mStatus"><option value="active">Active</option><option value="banned">Banned</option><option value="deactivated">Deactivated</option></select>
+<input id="mNote" placeholder="Admin note">
+<div style="margin-top:12px">
+<b style="color:#fbbf24">Referral Logs</b>
+<div id="mRefLogs" style="max-height:150px;overflow:auto;background:#111;padding:8px;border-radius:8px;font-size:12px;margin-top:5px">Loading...</div>
+</div>
+<div style="margin-top:12px">
+<b style="color:#fbbf24">Earn History</b>
+<div id="mEarnHist" style="max-height:150px;overflow:auto;background:#111;padding:8px;border-radius:8px;font-size:12px;margin-top:5px">Loading...</div>
+</div>
+<div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-ok" onclick="saveUserEdit()">Save</button><button class="btn btn-del" onclick="closeModal()">Close</button></div>
+<button class="btn btn-del" style="width:100%;margin-top:10px;background:#ef4444" onclick="deleteUser()">DELETE USER</button>
+</div></div>
 <div id="supportModal" class="modal hidden"><div class="modal-box"><h3 id="sUser">Support</h3><p id="sEmail"></p><p id="sDate"></p><div style="background:#111;padding:10px;border-radius:8px;margin:10px 0"><p id="sMessage"></p></div><div id="sReplyView" style="display:none"><p id="sReplyText"></p></div><textarea id="sReplyInput" rows="4"></textarea><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-ok" onclick="sendReply()">Reply Close</button><button class="btn btn-edit" onclick="sendReplyKeepOpen()">Keep Open</button><button class="btn btn-del" onclick="closeSupportModal()">Close</button></div><button class="btn btn-ban" style="width:100%;margin-top:10px" onclick="deleteTicket()">Delete</button></div></div>
 <div id="wdModal" class="modal hidden"><div class="modal-box" style="max-width:600px"><h3 id="wdModalTitle">Withdrawal</h3><div id="wdModalBody"></div><div style="display:flex;gap:8px;margin-top:15px"><button class="btn btn-ok" onclick="approveWDFromModal()">Approve</button><button class="btn btn-ban" onclick="rejectWDFromModal()">Reject</button><button class="btn btn-del" onclick="closeWDModal()">Close</button></div></div></div>
 <div id="toast" style="position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:#22c55e;color:black;padding:14px 26px;border-radius:12px;font-weight:bold;display:none;z-index:99999;box-shadow:0 6px 20px rgba(0,0,0,0.6);border:2px solid #fbbf24;max-width:90%"></div>
@@ -79,7 +104,34 @@ async function loadSupportCount(){try{const q=query(collection(db,"supportTicket
 window.loadUsers=async(isFirst)=>{if(isFirst)lastVisible=null;let q=lastVisible?query(collection(db,"users"),orderBy("createdAt","desc"),startAfter(lastVisible),limit(50)):query(collection(db,"users"),orderBy("createdAt","desc"),limit(50));const snap=await getDocs(q);if(!snap.empty)lastVisible=snap.docs[snap.docs.length-1];renderUsers(snap);}
 function renderUsers(snap){const tb=document.querySelector('#usersTable tbody');tb.innerHTML="";snap.forEach(d=>{const u=d.data();const tr=document.createElement('tr');tr.innerHTML=`<td>${u.username||''}</td><td>${u.email||''}</td><td>${u.balance||u.points||0}</td><td>${u.referralCount||0}</td><td>${u.isBanned?'BANNED':'ACTIVE'}</td><td><button class="btn btn-edit" onclick="openModal('${d.id}')">Manage</button></td>`;tb.appendChild(tr);});}
 window.searchUser=async()=>{const v=document.getElementById('searchInput').value.trim();if(!v)return;let s=await getDocs(query(collection(db,"users"),where("username","==",v)));if(s.empty)s=await getDocs(query(collection(db,"users"),where("email","==",v)));if(s.empty)s=await getDocs(query(collection(db,"users"),where("usernameLower","==",v.toLowerCase())));renderUsers(s);}
-window.openModal=async(id)=>{currentEditId=id;const snap=await getDoc(doc(db,"users",id));const u=snap.data();document.getElementById('mUsername').innerText=u.username;document.getElementById('mEmail').innerText=u.email+" | "+id;document.getElementById('mPoints').value=u.balance||u.points||0;document.getElementById('mStatus').value=u.isBanned?'banned':u.isDeactivated?'deactivated':'active';document.getElementById('userModal').classList.remove('hidden');}
+window.openModal=async(id)=>{
+  currentEditId=id;
+  const snap=await getDoc(doc(db,"users",id));
+  if(!snap.exists()){showToast("User not found","#ef4444");return;}
+  const u=snap.data();
+  document.getElementById('mUsername').innerText=u.username||"User";
+  document.getElementById('mEmail').innerText=(u.email||"")+" | "+id;
+  document.getElementById('mInvitedBy').innerText="Invited by: "+(u.invitedBy||"None")+" | Lower: "+(u.usernameLower||"");
+  document.getElementById('mPoints').value=u.balance||u.points||0;
+  document.getElementById('mPointsView').innerText=u.balance||u.points||0;
+  document.getElementById('mRefCount').innerText=u.referralCount||0;
+  document.getElementById('mTotalEarn').innerText=u.totalReferralEarnings||0;
+  document.getElementById('mBlocked').innerText=u.referralBonusBlocked||false;
+  document.getElementById('mStatus').value=u.isBanned?'banned':u.isDeactivated?'deactivated':'active';
+  document.getElementById('userModal').classList.remove('hidden');
+  document.getElementById('mRefLogs').innerHTML="Loading...";
+  document.getElementById('mEarnHist').innerHTML="Loading...";
+  try{
+    const refSnap=await getDocs(query(collection(db,"users",id,"referralDailyLogs"),orderBy("createdAt","desc"),limit(20)));
+    let refHtml=""; refSnap.forEach(d=>{const r=d.data(); const date=r.createdAt?new Date(r.createdAt.seconds*1000).toLocaleString():""; refHtml+=`${date} - ${r.referredUser||r.referredUsername||"unknown"} - bonus:${r.bonusGiven}<br>`;});
+    document.getElementById('mRefLogs').innerHTML=refHtml||"No referrals yet";
+  }catch(e){document.getElementById('mRefLogs').innerHTML="Error: "+e.message;}
+  try{
+    const earnSnap=await getDocs(query(collection(db,"users",id,"earnHistory"),orderBy("createdAt","desc"),limit(20)));
+    let earnHtml=""; earnSnap.forEach(d=>{const e=d.data(); earnHtml+=`${e.type||''} - ${e.points||0}pts - ${e.description||''}<br>`;});
+    document.getElementById('mEarnHist').innerHTML=earnHtml||"No history";
+  }catch(e){document.getElementById('mEarnHist').innerHTML="Error: "+e.message;}
+}
 window.closeModal=()=>{document.getElementById('userModal').classList.add('hidden');}
 window.saveUserEdit=async()=>{const pts=parseInt(document.getElementById('mPoints').value);const st=document.getElementById('mStatus').value;const note=document.getElementById('mNote').value;await updateDoc(doc(db,"users",currentEditId),{balance:pts,points:pts,isBanned:st==='banned',isDeactivated:st==='deactivated',adminNote:note,lastEditedBy:SUPER_ADMIN_EMAIL,lastEditedAt:new Date()});await setDoc(doc(db,"adminLogs",Date.now().toString()),{action:"edit",userId:currentEditId,points:pts,status:st,note,by:SUPER_ADMIN_EMAIL,at:new Date()});showToast("✅ User Saved");closeModal();loadUsers(true);}
 window.deleteUser=async()=>{if(!confirm("DELETE?"))return;await deleteDoc(doc(db,"users",currentEditId));showToast("🗑️ User Deleted","#ef4444");closeModal();loadUsers(true);}
