@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin Panel - Reward RW</title>
+<title>Admin Panel - Reward RW - FIXED NO INDEX</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
 body{background:#111;display:flex;min-height:100vh;color:white}
 .sidebar{width:240px;background:#1a2410;padding:45px 20px 20px 20px;border-right:3px solid #fbbf24;transition:all 0.3s ease;flex-shrink:0;position:fixed;left:0;top:0;height:100vh;z-index:60;overflow-y:auto}
-.sidebar.collapsed{transform:translateX(-100%);border:none}
-.sidebar h2{color:#fbbf24;margin-top:10px;margin-bottom:15px;white-space:nowrap}
+.sidebar.collapsed{transform:translateX(-100%)}
+.sidebar h2{color:#fbbf24;margin-bottom:15px}
 .menu{list-style:none;margin-top:15px}
-.menu li{padding:12px 10px;margin:6px 0;background:#2f3e1a;border-radius:8px;cursor:pointer;white-space:nowrap}
+.menu li{padding:12px 10px;margin:6px 0;background:#2f3e1a;border-radius:8px;cursor:pointer}
 .menu li.active{background:#fbbf24;color:black;font-weight:bold}
-.menu li.logout-small{width:40% !important;background:#ef4444;color:white;margin-top:30px;padding:10px 12px}
-.main{flex:1;padding:45px 20px 20px 20px;overflow:auto;width:100%;margin-left:0;transition:all 0.3s}
-.topbar{display:flex;align-items:center;gap:12px;margin-bottom:20px;margin-top:10px}
+.menu li.logout-small{width:40%!important;background:#ef4444;color:white;margin-top:30px}
+.main{flex:1;padding:45px 20px 20px 20px;overflow:auto}
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:20px}
 .card{background:#1e2f15;padding:15px;border-radius:12px;border:1px solid #333;margin-bottom:15px}
-.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px}
+.table-wrap{overflow-x:auto;border-radius:10px}
 .table-wrap table{min-width:900px;width:100%}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
 .stat{background:#4a6128;padding:15px;border-radius:10px;text-align:center}
@@ -31,131 +31,29 @@ th{color:#fbbf24;position:sticky;top:0;background:#1e2f15}
 .btn-ok{background:#22c55e;color:black}
 .btn-copy{background:#3b82f6;color:white;font-size:11px;padding:4px 8px}
 input,select,textarea{padding:10px;background:#111;border:1px solid #444;border-radius:8px;color:white;width:100%;margin:5px 0}
-.hidden{display:none !important}
+.hidden{display:none!important}
 .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:99}
-.modal.hidden{display:none !important}
+.modal.hidden{display:none!important}
 .modal-box{background:#1e2f15;padding:25px;border-radius:15px;width:90%;max-width:500px;border:2px solid #fbbf24;max-height:90vh;overflow-y:auto}
-.toggle-yellow{background:#fbbf24;color:black;border:none;width:42px;height:42px;border-radius:50%;font-size:22px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.5);flex-shrink:0}
-.link{color:#fbbf24;font-size:13px;cursor:pointer;text-decoration:underline;margin-top:10px;display:inline-block}
+.toggle-yellow{background:#fbbf24;color:black;border:none;width:42px;height:42px;border-radius:50%;font-size:22px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .badge{padding:3px 8px;border-radius:12px;font-size:11px;font-weight:bold}
 .badge-open{background:#fbbf24;color:black}
 .badge-closed{background:#22c55e;color:black}
 .badge-danger{background:#ef4444;color:white}
 .badge-crypto{background:#111;color:#fbbf24;border:1px solid #fbbf24}
 .label{font-size:12px;color:#aaa;margin-top:12px;display:block}
-.wd-address{max-width:120px;overflow:hidden;text-overflow:ellipsis;display:inline-block;vertical-align:middle}
 </style>
 </head>
 <body>
-<div id="loginBox" style="width:100%;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#2f3e1a;position:fixed;z-index:200;top:0;left:0;padding:20px">
-  <div class="card" style="max-width:460px;width:100%;text-align:center;padding:38px 30px;border-radius:20px;border:2px solid #fbbf24;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
-    <h1 style="color:#fbbf24;font-size:36px;margin-bottom:8px;letter-spacing:0.5px">Admin Login</h1>
-    <p style="font-size:14px;margin:10px 0 24px 0;color:#ccc">Only admin@reward.rw allowed</p>
-    <input id="aEmail" type="email" placeholder="Admin Email" value="admin@reward.rw" style="padding:16px;font-size:17px;margin:10px 0;border-radius:10px">
-    <input id="aPass" type="password" placeholder="Password" style="padding:16px;font-size:17px;margin:10px 0;border-radius:10px">
-    <button class="btn btn-edit" style="width:100%;padding:16px;margin-top:20px;font-size:18px;border-radius:12px" onclick="adminLogin()">Login</button>
-    <div id="aError" style="color:#ef4444;margin-top:16px;font-size:14px;min-height:18px"></div>
-    <div id="aSuccess" style="color:#22c55e;margin-top:8px;font-size:14px;min-height:18px"></div>
-  </div>
-</div>
-<div id="panel" class="hidden" style="width:100%;display:flex">
-  <div class="sidebar collapsed" id="sidebar">
-    <h2>👑 ADMIN</h2>
-    <button class="toggle-yellow" onclick="toggleSidebar()">☰</button>
-    <ul class="menu">
-      <li class="active" onclick="openPage('dashboard', this)">Dashboard</li>
-      <li onclick="openPage('users', this)">Users</li>
-      <li onclick="openPage('withdrawals', this)">Withdrawals <span id="wdCount" style="background:#fbbf24;color:black;padding:2px 6px;border-radius:10px;font-size:11px;margin-left:5px">0</span></li>
-      <li onclick="openPage('support', this)">Support <span id="supportCount" style="background:#ef4444;color:white;padding:2px 6px;border-radius:10px;font-size:11px;margin-left:5px">0</span></li>
-      <li onclick="openPage('fraud', this)">Fraud Flag</li>
-      <li onclick="openPage('logs', this)">Logs</li>
-      <li onclick="openPage('config', this)">Config</li>
-      <li onclick="openPage('settings', this)">Settings</li>
-      <li class="logout-small" onclick="logout()">Logout</li>
-    </ul>
-  </div>
-  <div class="main" id="mainContent">
-    <div id="page-dashboard">
-      <div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Dashboard</h1></div>
-      <div class="stats">
-        <div class="stat"><p>Total Users</p><h3 id="totalUsers">0</h3></div>
-        <div class="stat"><p>Banned</p><h3 id="totalBanned">0</h3></div>
-        <div class="stat"><p>Pending WD</p><h3 id="totalPending">0</h3></div>
-        <div class="stat"><p>Open Tickets</p><h3 id="totalTickets">0</h3></div>
-      </div>
-      <div class="card" id="dashConfigPreview" style="border:1px solid #fbbf24">Loading config...</div>
-    </div>
-    <div id="page-users" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Users Management</h1></div><div style="display:flex;gap:8px;margin:15px 0"><input id="searchInput" placeholder="Search exact username or email"><button class="btn btn-edit" onclick="searchUser()">Search</button><button class="btn" onclick="loadUsers(true)">Reset</button></div><div class="card"><div class="table-wrap"><table id="usersTable"><thead><tr><th>Username</th><th>Email</th><th>Points</th><th>Ref</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table></div><div style="margin-top:15px;display:flex;gap:10px"><button class="btn btn-edit" onclick="loadUsers(false)">Next 50 →</button><button class="btn" onclick="loadUsers(true)">↺ First 50</button></div></div></div>
-    <div id="page-withdrawals" class="hidden">
-      <div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Withdrawals - Crypto</h1></div>
-      <div class="card">
-        <p style="font-size:11px;color:#aaa;margin-bottom:10px">Wired to: <b>appConfig/main</b> + <b>withdrawals</b> collection. Wallet Convert + Withdraw from user panel.</p>
-        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-          <button class="btn btn-edit" onclick="loadWithdrawals('pending')">Pending</button>
-          <button class="btn btn-ok" onclick="loadWithdrawals('approved')">Approved</button>
-          <button class="btn btn-ban" onclick="loadWithdrawals('rejected')">Rejected</button>
-          <button class="btn" onclick="loadWithdrawals('all')">All</button>
-          <button class="btn" style="background:#111;border:1px solid #444" onclick="loadWithdrawals(currentWDFilter)">↺ Refresh</button>
-        </div>
-        <div id="wdConfigInfo" style="font-size:12px;color:#22c55e;margin-bottom:10px"></div>
-        <div id="wdList">Loading...</div>
-      </div>
-    </div>
-    <div id="page-support" class="hidden">
-      <div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Support Ticket</h1></div>
-      <div class="card">
-        <div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-edit" onclick="loadSupport('open')">Open</button><button class="btn btn-ok" onclick="loadSupport('closed')">Closed</button><button class="btn" onclick="loadSupport('all')">All</button></div>
-        <div id="supportList">Loading tickets...</div>
-      </div>
-    </div>
-    <div id="page-fraud" class="hidden">
-      <div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Fraud Detection</h1></div>
-      <div class="card">
-        <p style="font-size:12px;color:#aaa;margin-bottom:10px">Rule: Only 10 referrals / 24h rewarded. 11th+ blocked.</p>
-        <div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-edit" onclick="loadFraud()">🔍 Scan Now</button><button class="btn btn-ban" onclick="loadFraudAbusers()">Show Abusers Only</button></div>
-        <div id="fraudList">Click Scan Now</div>
-      </div>
-    </div>
-    <div id="page-logs" class="hidden">
-      <div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Admin Logs</h1></div>
-      <div class="card">
-        <div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-edit" onclick="loadLogs()">↺ Refresh</button></div>
-        <div id="logsList">Loading...</div>
-      </div>
-    </div>
-    <div id="page-config" class="hidden">
-      <div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>App Config - Crypto</h1></div>
-      <div class="card">
-        <p style="font-size:12px;color:#aaa;margin-bottom:15px">Flow: Points → Convert FREE → USDT/BNB/XRP/XLM → Withdraw min $5 (15% fee)</p>
-        <label class="label">Points = $0.5 (Your current rate)</label><input id="cPointsPerHalf" type="number" value="1000" oninput="updatePreview()">
-        <p style="font-size:11px;color:#fbbf24">=> 2000 pts = $1, 10000 pts = $5 min</p>
-        <label class="label">Minimum Withdraw USD ($)</label><input id="cMinWithdraw" type="number" value="5" oninput="updatePreview()">
-        <label class="label">Withdraw Fee / Gas Fee (%)</label><input id="cWithdrawFee" type="number" value="15" oninput="updatePreview()">
-        <label class="label">Referral Bonus Points</label><input id="cRefBonus" type="number" value="50">
-        <label class="label">Max Referrals per 24h</label><input id="cMaxRef" type="number" value="10">
-        <label class="label" style="margin-top:20px;color:#fbbf24;font-weight:bold">Enable Cryptos for Withdraw</label>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
-          <label style="display:flex;align-items:center;gap:8px;background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cUSDT" checked style="width:20px"> USDT</label>
-          <label style="display:flex;align-items:center;gap:8px;background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cBNB" checked style="width:20px"> BNB</label>
-          <label style="display:flex;align-items:center;gap:8px;background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cXRP" checked style="width:20px"> XRP</label>
-          <label style="display:flex;align-items:center;gap:8px;background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cXLM" checked style="width:20px"> XLM</label>
-        </div>
-        <label class="label" style="margin-top:20px">App Maintenance Mode</label><select id="cMaintenance"><option value="off">OFF - App Works</option><option value="on">ON - App Closed</option></select>
-        <label class="label">Maintenance Message</label><input id="cMaintMsg" type="text" placeholder="We are updating... come back later">
-        <button class="btn btn-ok" style="width:100%;padding:14px;margin-top:20px;font-size:16px" onclick="saveConfig()">💾 Save Config</button>
-        <div id="configMsg" style="margin-top:12px;font-size:13px"></div>
-        <div style="margin-top:20px;padding:12px;background:#000;border-radius:8px;border:1px solid #333">
-          <p style="font-size:11px;color:#aaa">Live Preview:</p>
-          <p id="cPreview" style="font-size:13px;color:#22c55e;margin-top:5px"></p>
-        </div>
-      </div>
-    </div>
-    <div id="page-settings" class="hidden">
-      <div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Settings - Password</h1></div>
-      <div class="card"><h3 style="color:#fbbf24">Change Password</h3><input id="oldPass" type="password" placeholder="Current password"><input id="newPass" type="password" placeholder="New password"><input id="newPass2" type="password" placeholder="Confirm"><button class="btn btn-ok" style="width:100%;padding:12px;margin-top:10px" onclick="changePassword()">Update Password Now</button><div id="settingsMsg" style="margin-top:10px;font-size:13px"></div></div>
-    </div>
-  </div>
-</div>
+<div id="loginBox" style="width:100%;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#2f3e1a;position:fixed;z-index:200;top:0;left:0;padding:20px"><div class="card" style="max-width:460px;width:100%;text-align:center;padding:38px 30px;border-radius:20px;border:2px solid #fbbf24"><h1 style="color:#fbbf24;font-size:36px">Admin Login</h1><input id="aEmail" type="email" value="admin@reward.rw"><input id="aPass" type="password" placeholder="Password"><button class="btn btn-edit" style="width:100%;padding:16px;margin-top:20px" onclick="adminLogin()">Login</button><div id="aError" style="color:#ef4444;margin-top:16px"></div></div></div>
+<div id="panel" class="hidden" style="width:100%;display:flex"><div class="sidebar collapsed" id="sidebar"><h2>ADMIN</h2><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><ul class="menu"><li class="active" onclick="openPage('dashboard', this)">Dashboard</li><li onclick="openPage('users', this)">Users</li><li onclick="openPage('withdrawals', this)">Withdrawals <span id="wdCount" style="background:#fbbf24;color:black;padding:2px 6px;border-radius:10px;font-size:11px">0</span></li><li onclick="openPage('support', this)">Support <span id="supportCount" style="background:#ef4444;color:white;padding:2px 6px;border-radius:10px;font-size:11px">0</span></li><li onclick="openPage('fraud', this)">Fraud</li><li onclick="openPage('logs', this)">Logs</li><li onclick="openPage('config', this)">Config</li><li onclick="openPage('settings', this)">Settings</li><li class="logout-small" onclick="logout()">Logout</li></ul></div><div class="main"><div id="page-dashboard"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Dashboard</h1></div><div class="stats"><div class="stat"><p>Total Users</p><h3 id="totalUsers">0</h3></div><div class="stat"><p>Banned</p><h3 id="totalBanned">0</h3></div><div class="stat"><p>Pending WD</p><h3 id="totalPending">0</h3></div><div class="stat"><p>Open Tickets</p><h3 id="totalTickets">0</h3></div></div><div class="card" id="dashConfigPreview">Loading config...</div></div>
+<div id="page-users" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Users</h1></div><div style="display:flex;gap:8px;margin:15px 0"><input id="searchInput" placeholder="Search username or email"><button class="btn btn-edit" onclick="searchUser()">Search</button><button class="btn" onclick="loadUsers(true)">Reset</button></div><div class="card"><div class="table-wrap"><table id="usersTable"><thead><tr><th>Username</th><th>Email</th><th>Points</th><th>Ref</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table></div><div style="margin-top:15px;display:flex;gap:10px"><button class="btn btn-edit" onclick="loadUsers(false)">Next 50</button><button class="btn" onclick="loadUsers(true)">First 50</button></div></div></div>
+<div id="page-withdrawals" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Withdrawals - Crypto FIXED NO INDEX</h1></div><div class="card"><div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap"><button class="btn btn-edit" onclick="loadWithdrawals('pending')">Pending</button><button class="btn btn-ok" onclick="loadWithdrawals('approved')">Approved</button><button class="btn btn-ban" onclick="loadWithdrawals('rejected')">Rejected</button><button class="btn" onclick="loadWithdrawals('all')">All</button><button class="btn" style="background:#111;border:1px solid #444" onclick="loadWithdrawals(currentWDFilter)">Refresh</button></div><div id="wdConfigInfo" style="font-size:12px;color:#22c55e;margin-bottom:10px"></div><div id="wdList">Loading...</div></div></div>
+<div id="page-support" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Support FIXED</h1></div><div class="card"><div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-edit" onclick="loadSupport('open')">Open</button><button class="btn btn-ok" onclick="loadSupport('closed')">Closed</button><button class="btn" onclick="loadSupport('all')">All</button></div><div id="supportList">Loading...</div></div></div>
+<div id="page-fraud" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Fraud</h1></div><div class="card"><div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-edit" onclick="loadFraud()">Scan</button><button class="btn btn-ban" onclick="loadFraudAbusers()">Abusers</button></div><div id="fraudList">Click Scan</div></div></div>
+<div id="page-logs" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Logs</h1></div><div class="card"><button class="btn btn-edit" onclick="loadLogs()">Refresh</button><div id="logsList">Loading...</div></div></div>
+<div id="page-config" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>App Config - Crypto</h1></div><div class="card"><label class="label">Points = $0.5</label><input id="cPointsPerHalf" type="number" value="1000" oninput="updatePreview()"><label class="label">Min Withdraw USD</label><input id="cMinWithdraw" type="number" value="5" oninput="updatePreview()"><label class="label">Withdraw Fee %</label><input id="cWithdrawFee" type="number" value="15" oninput="updatePreview()"><label class="label">Referral Bonus</label><input id="cRefBonus" type="number" value="50"><label class="label">Max Ref per 24h</label><input id="cMaxRef" type="number" value="10"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px"><label style="background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cUSDT" checked> USDT</label><label style="background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cBNB" checked> BNB</label><label style="background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cXRP" checked> XRP</label><label style="background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cXLM" checked> XLM</label></div><label class="label">Maintenance</label><select id="cMaintenance"><option value="off">OFF</option><option value="on">ON</option></select><input id="cMaintMsg" type="text" placeholder="Message"><button class="btn btn-ok" style="width:100%;padding:14px;margin-top:20px" onclick="saveConfig()">Save Config</button><div id="configMsg" style="margin-top:12px"></div><p id="cPreview" style="color:#22c55e"></p></div></div>
+<div id="page-settings" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Settings</h1></div><div class="card"><input id="oldPass" type="password" placeholder="Current"><input id="newPass" type="password" placeholder="New"><input id="newPass2" type="password" placeholder="Confirm"><button class="btn btn-ok" onclick="changePassword()">Update</button><div id="settingsMsg"></div></div></div></div></div>
 <div id="userModal" class="modal hidden"><div class="modal-box"><h3 id="mUsername">User</h3><p id="mEmail" style="font-size:12px;color:#aaa"></p><input id="mPoints" type="number"><select id="mStatus"><option value="active">Active</option><option value="banned">Banned</option><option value="deactivated">Deactivated</option></select><input id="mNote" placeholder="Note"><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-ok" onclick="saveUserEdit()">Save</button><button class="btn btn-del" onclick="closeModal()">Close</button></div><button class="btn btn-del" style="width:100%;margin-top:10px;background:#ef4444" onclick="deleteUser()">DELETE</button></div></div>
 <div id="supportModal" class="modal hidden"><div class="modal-box"><h3 id="sUser">Support</h3><p id="sEmail"></p><p id="sDate"></p><div style="background:#111;padding:10px;border-radius:8px;margin:10px 0"><p id="sMessage"></p></div><div id="sReplyView" style="display:none"><p id="sReplyText"></p></div><textarea id="sReplyInput" rows="4"></textarea><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-ok" onclick="sendReply()">Reply Close</button><button class="btn btn-edit" onclick="sendReplyKeepOpen()">Keep Open</button><button class="btn btn-del" onclick="closeSupportModal()">Close</button></div><button class="btn btn-ban" style="width:100%;margin-top:10px" onclick="deleteTicket()">Delete</button></div></div>
 <div id="wdModal" class="modal hidden"><div class="modal-box" style="max-width:600px"><h3 id="wdModalTitle">Withdrawal</h3><div id="wdModalBody"></div><div style="display:flex;gap:8px;margin-top:15px"><button class="btn btn-ok" onclick="approveWDFromModal()">Approve</button><button class="btn btn-ban" onclick="rejectWDFromModal()">Reject</button><button class="btn btn-del" onclick="closeWDModal()">Close</button></div></div></div>
@@ -181,7 +79,8 @@ window.openModal=async(id)=>{currentEditId=id;const snap=await getDoc(doc(db,"us
 window.closeModal=()=>{document.getElementById('userModal').classList.add('hidden');}
 window.saveUserEdit=async()=>{const pts=parseInt(document.getElementById('mPoints').value);const st=document.getElementById('mStatus').value;const note=document.getElementById('mNote').value;await updateDoc(doc(db,"users",currentEditId),{balance:pts,points:pts,isBanned:st==='banned',isDeactivated:st==='deactivated',adminNote:note,lastEditedBy:SUPER_ADMIN_EMAIL,lastEditedAt:new Date()});await setDoc(doc(db,"adminLogs",Date.now().toString()),{action:"edit",userId:currentEditId,points:pts,status:st,note,by:SUPER_ADMIN_EMAIL,at:new Date()});alert("Saved");closeModal();loadUsers(true);}
 window.deleteUser=async()=>{if(!confirm("DELETE?"))return;await deleteDoc(doc(db,"users",currentEditId));alert("Deleted");closeModal();loadUsers(true);}
-window.loadWithdrawals=async(filter)=>{currentWDFilter=filter||'pending';const el=document.getElementById('wdList');el.innerHTML="Loading...";await loadAppConfigGlobal();try{let q;if(filter==='all')q=query(collection(db,"withdrawals"),orderBy("createdAt","desc"),limit(100));else q=query(collection(db,"withdrawals"),where("status","==",filter),orderBy("createdAt","desc"),limit(100));const snap=await getDocs(q);if(snap.empty){el.innerHTML=`No ${filter} withdrawals`;return;}let html="<div class='table-wrap'><table><tr><th>User</th><th>Points</th><th>USD</th><th>Crypto</th><th>Wallet</th><th>Fee</th><th>Final</th><th>Status</th><th>Action</th></tr>";snap.forEach(d=>{const w=d.data();const pts=w.points||w.amount||0;let usd=w.usdAmount||0;if(!usd&&pts)usd=pts/(globalConfig.pointsPerDollar||2000);const crypto=(w.crypto||w.method||'USDT').toUpperCase();const addr=w.walletAddress||w.address||'';const feePct=w.feePercent||globalConfig.withdrawFeePercent||15;const fee=usd*feePct/100;const fin=w.finalAmount||(usd-fee);const short=addr?addr.substring(0,8)+"..."+addr.slice(-4):"N/A";const badge=w.status==='pending'?'<span class="badge badge-open">PENDING</span>':w.status==='approved'?'<span class="badge badge-closed">APPROVED</span>':'<span class="badge badge-danger">REJECTED</span>';html+=`<tr><td>${w.username||''}<br><span style="font-size:10px">${w.email||w.userId||''}</span></td><td><b>${pts}</b></td><td>$${usd.toFixed(2)}</td><td><span class="badge badge-crypto">${crypto}</span></td><td title="${addr}">${short} ${addr?`<button class="btn btn-copy" onclick="copyAddr('${addr}')">Copy</button>`:''}</td><td>${feePct}%<br><span style="color:#ef4444">-$${fee.toFixed(2)}</span></td><td style="color:#22c55e"><b>$${fin.toFixed(2)}</b></td><td>${badge}</td><td><button class="btn btn-edit" onclick="openWDModal('${d.id}')">View</button>${w.status==='pending'?`<br><button class="btn btn-ok" onclick="approveWD('${d.id}')">✓</button><button class="btn btn-ban" onclick="rejectWD('${d.id}')">✕</button>`:''}</td></tr>`;});html+="</table></div>";el.innerHTML=html;}catch(e){el.innerHTML="Error: "+e.message;}}
+  // FIXED NO INDEX VERSION
+window.loadWithdrawals=async(filter)=>{currentWDFilter=filter||'pending';const el=document.getElementById('wdList');el.innerHTML="Loading...";await loadAppConfigGlobal();try{let q;if(filter==='all')q=query(collection(db,"withdrawals"),limit(100));else q=query(collection(db,"withdrawals"),where("status","==",filter),limit(100));const snap=await getDocs(q);if(snap.empty){el.innerHTML=`No ${filter} withdrawals`;return;}let docs=[];snap.forEach(d=>docs.push({id:d.id,...d.data()}));docs.sort((a,b)=>{let at=a.createdAt?.seconds||0;let bt=b.createdAt?.seconds||0;return bt-at;});let html="<div class='table-wrap'><table><tr><th>User</th><th>Points</th><th>USD</th><th>Crypto</th><th>Wallet</th><th>Fee</th><th>Final</th><th>Status</th><th>Action</th></tr>";docs.forEach(w=>{const pts=w.points||w.amount||0;let usd=w.usdAmount||0;if(!usd&&pts)usd=pts/(globalConfig.pointsPerDollar||2000);const crypto=(w.crypto||w.method||'USDT').toUpperCase();const addr=w.walletAddress||w.address||'';const feePct=w.feePercent||globalConfig.withdrawFeePercent||15;const fee=usd*feePct/100;const fin=w.finalAmount||(usd-fee);const short=addr?addr.substring(0,8)+"..."+addr.slice(-4):"N/A";const badge=w.status==='pending'?'<span class="badge badge-open">PENDING</span>':w.status==='approved'?'<span class="badge badge-closed">APPROVED</span>':'<span class="badge badge-danger">REJECTED</span>';html+=`<tr><td>${w.username||''}<br><span style="font-size:10px">${w.email||w.userId||''}</span></td><td><b>${pts}</b></td><td>$${usd.toFixed(2)}</td><td><span class="badge badge-crypto">${crypto}</span></td><td title="${addr}">${short} ${addr?`<button class="btn btn-copy" onclick="copyAddr('${addr}')">Copy</button>`:''}</td><td>${feePct}%<br><span style="color:#ef4444">-$${fee.toFixed(2)}</span></td><td style="color:#22c55e"><b>$${fin.toFixed(2)}</b></td><td>${badge}</td><td><button class="btn btn-edit" onclick="openWDModal('${w.id}')">View</button>${w.status==='pending'?`<br><button class="btn btn-ok" onclick="approveWD('${w.id}')">✓</button><button class="btn btn-ban" onclick="rejectWD('${w.id}')">✕</button>`:''}</td></tr>`;});html+="</table></div>";el.innerHTML=html;}catch(e){el.innerHTML="Error: "+e.message;}}
 window.copyAddr=(a)=>{navigator.clipboard.writeText(a).then(()=>alert("Copied "+a));}
 window.openWDModal=async(id)=>{currentWDId=id;const s=await getDoc(doc(db,"withdrawals",id));const w=s.data();const pts=w.points||w.amount||0;let usd=w.usdAmount||0;if(!usd&&pts)usd=pts/(globalConfig.pointsPerDollar||2000);const crypto=(w.crypto||w.method||'USDT').toUpperCase();const addr=w.walletAddress||w.address||'N/A';const feePct=w.feePercent||globalConfig.withdrawFeePercent||15;const fee=usd*feePct/100;const fin=w.finalAmount||(usd-fee);document.getElementById('wdModalTitle').innerText=w.username||w.email;document.getElementById('wdModalBody').innerHTML=`<p>User: ${w.username} (${w.email})</p><p>ID: ${w.userId}</p><p>Points: ${pts}</p><p>USD: $${usd}</p><p>Crypto: ${crypto}</p><p style="word-break:break-all;background:#111;padding:8px;border:1px solid #fbbf24;border-radius:6px">${addr}</p><p>Fee ${feePct}% = $${fee.toFixed(2)} | Final $${fin.toFixed(2)} in ${crypto}</p>`;document.getElementById('wdModal').classList.remove('hidden');}
 window.closeWDModal=()=>{document.getElementById('wdModal').classList.add('hidden');}
@@ -189,7 +88,7 @@ window.approveWD=async(id)=>{if(!confirm("Approve? Sent crypto?"))return;await u
 window.rejectWD=async(id)=>{const r=prompt("Reject reason? Points returned");if(r===null)return;const s=await getDoc(doc(db,"withdrawals",id));const w=s.data();const pts=w.points||w.amount||0;if(w.userId&&pts)await updateDoc(doc(db,"users",w.userId),{balance:increment(pts),points:increment(pts)}).catch(()=>{});await updateDoc(doc(db,"withdrawals",id),{status:"rejected",rejectedBy:SUPER_ADMIN_EMAIL,rejectedAt:new Date(),rejectReason:r});await setDoc(doc(db,"adminLogs",Date.now().toString()),{action:"withdraw_reject",withdrawId:id,by:SUPER_ADMIN_EMAIL,at:new Date(),note:r});alert("Rejected returned "+pts);loadWithdrawals(currentWDFilter);}
 window.approveWDFromModal=async()=>{await approveWD(currentWDId);closeWDModal();}
 window.rejectWDFromModal=async()=>{await rejectWD(currentWDId);closeWDModal();}
-window.loadSupport=async(filter)=>{const el=document.getElementById('supportList');el.innerHTML="Loading...";try{let q;if(filter==='open')q=query(collection(db,"supportTickets"),where("status","==","open"),orderBy("createdAt","desc"),limit(50));else if(filter==='closed')q=query(collection(db,"supportTickets"),where("status","==","closed"),orderBy("createdAt","desc"),limit(50));else q=query(collection(db,"supportTickets"),orderBy("createdAt","desc"),limit(50));const snap=await getDocs(q);if(snap.empty){el.innerHTML="No tickets";return;}let html="<div class='table-wrap'><table><tr><th>User</th><th>Email</th><th>Msg</th><th>Status</th><th>Action</th></tr>";snap.forEach(d=>{const t=d.data();html+=`<tr><td>${t.username||''}</td><td>${t.email||''}</td><td>${(t.message||'').substring(0,40)}</td><td>${t.status}</td><td><button class="btn btn-edit" onclick="openSupport('${d.id}')">View</button></td></tr>`;});html+="</table></div>";el.innerHTML=html;}catch(e){el.innerHTML="Error "+e.message;}}
+window.loadSupport=async(filter)=>{const el=document.getElementById('supportList');el.innerHTML="Loading...";try{let q;if(filter==='open')q=query(collection(db,"supportTickets"),where("status","==","open"),limit(50));else if(filter==='closed')q=query(collection(db,"supportTickets"),where("status","==","closed"),limit(50));else q=query(collection(db,"supportTickets"),limit(50));const snap=await getDocs(q);if(snap.empty){el.innerHTML="No tickets";return;}let docs=[];snap.forEach(d=>docs.push({id:d.id,...d.data()}));docs.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));let html="<div class='table-wrap'><table><tr><th>User</th><th>Email</th><th>Msg</th><th>Status</th><th>Action</th></tr>";docs.forEach(t=>{html+=`<tr><td>${t.username||''}</td><td>${t.email||''}</td><td>${(t.message||'').substring(0,40)}</td><td>${t.status}</td><td><button class="btn btn-edit" onclick="openSupport('${t.id}')">View</button></td></tr>`;});html+="</table></div>";el.innerHTML=html;}catch(e){el.innerHTML="Error "+e.message;}}
 window.openSupport=async(id)=>{currentTicketId=id;const s=await getDoc(doc(db,"supportTickets",id));const t=s.data();document.getElementById('sUser').innerText=t.username||"User";document.getElementById('sEmail').innerText=t.email;document.getElementById('sDate').innerText=t.createdAt?new Date(t.createdAt.seconds*1000).toLocaleString():"";document.getElementById('sMessage').innerText=t.message;document.getElementById('sReplyView').style.display=t.adminReply?'block':'none';if(t.adminReply)document.getElementById('sReplyText').innerText=t.adminReply;document.getElementById('sReplyInput').value=t.adminReply||"";document.getElementById('supportModal').classList.remove('hidden');}
 window.closeSupportModal=()=>{document.getElementById('supportModal').classList.add('hidden');}
 window.sendReply=async()=>{const r=document.getElementById('sReplyInput').value.trim();if(!r)return alert("Write reply");await updateDoc(doc(db,"supportTickets",currentTicketId),{adminReply:r,status:"closed",repliedBy:SUPER_ADMIN_EMAIL,repliedAt:new Date()});alert("Closed");closeSupportModal();loadSupport('open');loadSupportCount();}
