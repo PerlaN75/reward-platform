@@ -70,7 +70,6 @@
     const e=document.getElementById('email').value.trim();
     if(!e){alert("Enter email first");return;}
     currentCode=Math.floor(100000+Math.random()*900000).toString();
-    // ONLY green popup, no dashed bar
     document.getElementById('code').style.display='block';
     showToast("Code: "+currentCode+" - TAP TO COPY & PASTE");
   }
@@ -103,10 +102,26 @@
         if(!refQuery.empty){
           referrerDoc=refQuery.docs[0];
           referrerUsername=referrerDoc.data().username;
-          try{
-            const recentSnap = await db.collection("users").doc(referrerDoc.id).collection("referralDailyLogs").where("createdAt", ">=", twentyFourHoursAgo).get();
-            if(recentSnap.size < 10){ canReward = true; } else { canReward = false; }
-          }catch(e){ canReward = true; }
+          if(referrerDoc.data().referralBonusBlocked){
+            canReward = false;
+          } else {
+            try{
+              const recentSnap = await db.collection("users").doc(referrerDoc.id).collection("referralDailyLogs").where("createdAt", ">=", twentyFourHoursAgo).get();
+              if(recentSnap.size < 10){ canReward = true; } else { canReward = false; }
+            }catch(e){
+              try{
+                const allSnap = await db.collection("users").doc(referrerDoc.id).collection("referralDailyLogs").get();
+                let c24=0;
+                const now=Date.now();
+                allSnap.forEach(d=>{
+                  const cd=d.data();
+                  const ts=cd.createdAt?.seconds?cd.createdAt.seconds*1000:(cd.createdAt?new Date(cd.createdAt).getTime():0);
+                  if(now-ts < 24*60*60*1000) c24++;
+                });
+                canReward = c24 < 10;
+              }catch(e2){ canReward = true; }
+            }
+          }
         }
       }
 
@@ -125,16 +140,19 @@
         referralCount:0, totalReferralEarnings:0,
         isBanned: false,
         isDeactivated: false,
-        referralBonusBlocked: (referrerDoc &&!canReward)? true : false,
+        referralBonusBlocked: false,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
 
       if(startingPoints>0){
         await db.collection("users").doc(user.uid).collection("earnHistory").add({
           action: 'Referral Bonus',
+          type: 'referral',
           points: 50,
           desc: 'Referred by '+referrerUsername,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          description: 'Referred by '+referrerUsername,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          createdAt: new Date()
         });
       }
 
@@ -143,29 +161,57 @@
         if(already.empty){
           await referrerDoc.ref.update({
             balance: firebase.firestore.FieldValue.increment(50),
+            points: firebase.firestore.FieldValue.increment(50),
             referralCount: firebase.firestore.FieldValue.increment(1),
             totalReferralEarnings: firebase.firestore.FieldValue.increment(50)
           });
           await db.collection("users").doc(referrerDoc.id).collection("earnHistory").add({
             action: 'Referral Bonus',
+            type: 'referral',
             points: 50,
             desc: 'Invited '+username,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            description: 'Invited '+username,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            createdAt: new Date()
           });
           await db.collection("users").doc(referrerDoc.id).collection("referralDailyLogs").add({
             newUserId: user.uid,
             newUsername: username,
+            referredUser: username,
+            referredUsername: username,
+            referredUserId: user.uid,
             createdAt: new Date(),
-            bonusGiven: true
+            bonusGiven: 50,
+            bonusGivenBool: true
           });
         }
       } else if(referrerDoc &&!canReward){
+        try{
+          await referrerDoc.ref.update({
+            referralBonusBlocked: true,
+            blockedReason: "Auto-block: 10+ referrals in 24h",
+            blockedAt: new Date(),
+            blockedBy: "system_auto"
+          });
+        }catch(e){}
         await db.collection("users").doc(referrerDoc.id).collection("referralDailyLogs").add({
           newUserId: user.uid,
           newUsername: username,
+          referredUser: username,
+          referredUsername: username,
+          referredUserId: user.uid,
           createdAt: new Date(),
-          bonusGiven: false,
-          blockedReason: "10_per_24h_limit"
+          bonusGiven: 0,
+          bonusGivenBool: false,
+          blockedReason: "10_per_24h_limit",
+          blocked: true
+        });
+        await db.collection("adminLogs").add({
+          action: "auto_block_referral",
+          userId: referrerDoc.id,
+          referredUsername: username,
+          at: new Date(),
+          reason: "10_per_24h_limit"
         });
       }
 
@@ -174,7 +220,7 @@
       localStorage.setItem('points',startingPoints.toString()); localStorage.setItem('referrals','0');
       localStorage.setItem('dateJoined',joinedDate); localStorage.setItem('invitedBy',referredByCode||'');
       if(referrerDoc &&!canReward){
-        successEl.innerText="Account created! (Referral bonus limit 10/day reached)";
+        successEl.innerText="Account created! (Referrer limit 10/day reached - 0 bonus, referrer auto-blocked)";
       } else {
         successEl.innerText="Account created! Redirecting...";
       }
