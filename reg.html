@@ -7,22 +7,20 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #0f1508; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-.container { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 30px 25px; width: 100%; max-width: 420px; color: white; }
+   .container { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 30px 25px; width: 100%; max-width: 420px; color: white; }
     h1 { text-align: center; font-size: 32px; margin-bottom: 5px; color: #fff; }
-.subtitle { text-align: center; color: #fbbf24; margin-bottom: 20px; font-size: 14px; }
-.ref-banner { background: #0f6b4f; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; }
+   .subtitle { text-align: center; color: #fbbf24; margin-bottom: 20px; font-size: 14px; }
+   .ref-banner { background: #0f6b4f; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; }
     label { font-size: 14px; color: #ccc; margin-top: 12px; display: block; margin-bottom: 5px; }
-.input-box { width: 100%; padding: 14px; margin-bottom: 10px; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
-.input-box:focus { border-color: #fbbf24; }
-.input-group { display: flex; gap: 8px; }
-.verify-btn { background: #2563eb; color: white; padding: 14px 16px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
-.btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
-.btn:disabled { background: #444; color: #888; cursor: not-allowed; }
-.note { text-align: center; margin-top: 15px; font-size: 14px; color: #aaa; }
-.note a { color: #60a5fa; text-decoration: none; font-weight: bold; }
-.error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; }
-.success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
-.back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
+   .input-box { width: 100%; padding: 14px; margin-bottom: 10px; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
+   .input-box:focus { border-color: #fbbf24; }
+   .btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+   .btn:disabled { background: #444; color: #888; cursor: not-allowed; }
+   .note { text-align: center; margin-top: 15px; font-size: 14px; color: #aaa; }
+   .note a { color: #60a5fa; text-decoration: none; font-weight: bold; }
+   .error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; }
+   .success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
+   .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -35,16 +33,11 @@
     <div class="ref-banner" id="refBanner" style="display:none;">Invited by: <span id="refName"></span></div>
     <label>Username</label>
     <input type="text" class="input-box" id="username" placeholder="Choose username" oninput="formatUsername()">
-    <label>Email</label>
-    <div class="input-group">
-      <input type="email" class="input-box" id="email" placeholder="your@email.com" style="margin-bottom:0;">
-      <button class="verify-btn" onclick="sendCode()">Verify</button>
-    </div>
-    <input type="text" class="input-box" id="code" placeholder="Enter 6 digit code" style="display:none;">
-    <div class="success" id="verifiedMsg" style="display:none;">✓ Email Verified</div>
+    <label>Email (real email)</label>
+    <input type="email" class="input-box" id="email" placeholder="your real email">
     <label>Password</label>
     <input type="password" class="input-box" id="password" placeholder="Min 5 chars, 1A, 1#, 1number">
-    <button class="btn" id="createBtn" onclick="createAccount()">Create Account</button>
+    <button class="btn" id="createBtn" onclick="createAccount()">Create Account & Send Verification Email</button>
     <div class="error" id="errorMsg"></div>
     <div class="success" id="successMsg"></div>
     <div class="note">Already have account? <a href="./index.html">Login Here</a></div>
@@ -57,44 +50,18 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // === WHITELIST - YOUR 2 TEST EMAILS + ADMIN ===
-  const WHITELIST = [
-    'admin@reward.rw',
-    'priyamwiza25@gmail.com',
-    'inezarose25@gmail.com'
-  ].map(e=>e.toLowerCase());
+  const WHITELIST = ['admin@reward.rw','priyamwiza25@gmail.com','inezarose25@gmail.com'].map(e=>e.toLowerCase());
+  function getDeviceId(){ let id=localStorage.getItem('deviceId'); if(!id){ id=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('deviceId',id);} return id; }
 
-  function getDeviceId(){
-    let id = localStorage.getItem('deviceId');
-    if(!id){
-      id = Math.random().toString(36).slice(2) + Date.now().toString(36);
-      localStorage.setItem('deviceId', id);
-    }
-    return id;
-  }
-
-  let referredByCode = null;
-  let isVerified = false;
-  let currentCode = "";
-  const urlParams = new URLSearchParams(window.location.search);
-  referredByCode = urlParams.get('ref');
+  let referredByCode=null;
+  const urlParams=new URLSearchParams(window.location.search);
+  referredByCode=urlParams.get('ref');
   if(referredByCode){ document.getElementById('refBanner').style.display='block'; document.getElementById('refName').innerText=referredByCode; }
 
   window.formatUsername=function(){let v=document.getElementById('username').value; v=v.replace(/[^a-zA-Z]/g,''); v=v.charAt(0).toUpperCase()+v.slice(1).toLowerCase(); document.getElementById('username').value=v;}
-
-  window.sendCode=function(){
-    const e=document.getElementById('email').value.trim();
-    if(!e){alert("Enter email first");return;}
-    currentCode=Math.floor(100000+Math.random()*900000).toString();
-    document.getElementById('code').style.display='block';
-    showToast("Code: "+currentCode+" - TAP TO COPY & PASTE");
-  }
-
-  document.getElementById('code').addEventListener('input',function(){ if(this.value===currentCode&&currentCode!==""){isVerified=true;document.getElementById('verifiedMsg').style.display='block';}else{isVerified=false;document.getElementById('verifiedMsg').style.display='none';}})
-
   function validatePassword(p){if(p.length<5||p.length>10)return"Password must be 5-10 characters"; if(!/[A-Z]/.test(p))return"Password needs at least 1 capital letter"; if(!/[0-9]/.test(p))return"Password needs at least 1 number"; if(!/[!@#$%^&*(),.?":{}|<>]/.test(p))return"Password needs at least 1 special character"; return null;}
 
-  window.createAccount = async function(){
+  window.createAccount=async function(){
     const username=document.getElementById('username').value.trim();
     const email=document.getElementById('email').value.trim();
     const emailLow=email.toLowerCase();
@@ -103,184 +70,74 @@
     const successEl=document.getElementById('successMsg');
     const btn=document.getElementById('createBtn');
     errorEl.innerText=''; successEl.innerText=''; btn.disabled=true; btn.innerText="Creating...";
-    if(!username||!email||!password){errorEl.innerText="Please fill all fields"; btn.disabled=false; btn.innerText="Create Account"; return;}
-    if(!isVerified){errorEl.innerText="Please verify your email first"; btn.disabled=false; btn.innerText="Create Account"; return;}
-    const passError=validatePassword(password); if(passError){errorEl.innerText=passError; btn.disabled=false; btn.innerText="Create Account"; return;}
+    if(!username||!email||!password){errorEl.innerText="Fill all fields"; btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return;}
+    const passError=validatePassword(password); if(passError){errorEl.innerText=passError; btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return;}
 
     try{
-      // === 1 DEVICE = 1 ACCOUNT CHECK ===
-      const deviceId = getDeviceId();
-      const isWhitelisted = WHITELIST.includes(emailLow);
-
+      const deviceId=getDeviceId();
+      const isWhitelisted=WHITELIST.includes(emailLow);
       if(!isWhitelisted){
-        const existing = await db.collection("users").where("deviceId","==",deviceId).limit(1).get();
+        const existing=await db.collection("users").where("deviceId","==",deviceId).limit(1).get();
         if(!existing.empty){
-          // same phone already has an account, but allow if same email trying again
-          let sameEmail = false;
-          existing.forEach(d=>{ if((d.data().emailLower||d.data().email||"").toLowerCase()===emailLow) sameEmail=true; });
-          if(!sameEmail){
-            errorEl.innerText="❌ 1 device = 1 account. This phone already has an account. Please login with your first account.";
-            btn.disabled=false; btn.innerText="Create Account";
-            return;
-          }
+          let same=false; existing.forEach(d=>{ if((d.data().emailLower||"").toLowerCase()===emailLow) same=true; });
+          if(!same){ errorEl.innerText="❌ 1 device = 1 account. This phone already has an account."; btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return; }
         }
       }
 
-      const userCredential=await auth.createUserWithEmailAndPassword(email,password);
-      const user=userCredential.user;
-      let referrerDoc=null; let referrerUsername="";
-      let canReward = false;
-      let twentyFourHoursAgo = new Date(Date.now() - 24*60*60*1000);
+      const cred=await auth.createUserWithEmailAndPassword(email,password);
+      const user=cred.user;
 
+      // === REAL EMAIL VERIFICATION ===
+      await user.sendEmailVerification();
+
+      let referrerDoc=null; let referrerUsername=""; let canReward=false;
+      let twentyFourHoursAgo=new Date(Date.now()-24*60*60*1000);
       if(referredByCode){
         const refQuery=await db.collection("users").where("username","==",referredByCode).limit(1).get();
         if(!refQuery.empty){
-          referrerDoc=refQuery.docs[0];
-          referrerUsername=referrerDoc.data().username;
-          if(referrerDoc.data().referralBonusBlocked){
-            canReward = false;
-          } else {
-            try{
-              const recentSnap = await db.collection("users").doc(referrerDoc.id).collection("referralDailyLogs").where("createdAt", ">=", twentyFourHoursAgo).get();
-              if(recentSnap.size < 10){ canReward = true; } else { canReward = false; }
-            }catch(e){
-              try{
-                const allSnap = await db.collection("users").doc(referrerDoc.id).collection("referralDailyLogs").get();
-                let c24=0;
-                const now=Date.now();
-                allSnap.forEach(d=>{
-                  const cd=d.data();
-                  const ts=cd.createdAt?.seconds?cd.createdAt.seconds*1000:(cd.createdAt?new Date(cd.createdAt).getTime():0);
-                  if(now-ts < 24*60*60*1000) c24++;
-                });
-                canReward = c24 < 10;
-              }catch(e2){ canReward = true; }
-            }
+          referrerDoc=refQuery.docs[0]; referrerUsername=referrerDoc.data().username;
+          if(!referrerDoc.data().referralBonusBlocked){
+            try{ const recent=await db.collection("users").doc(referrerDoc.id).collection("referralDailyLogs").where("createdAt",">=",twentyFourHoursAgo).get(); canReward=recent.size<10; }catch(e){ canReward=true; }
           }
         }
       }
-
-      const startingPoints = (referrerDoc && canReward)? 50 : 0;
+      const startingPoints=(referrerDoc&&canReward)?50:0;
 
       await db.collection("users").doc(user.uid).set({
-        username: username,
-        usernameLower: username.toLowerCase(),
-        email: email,
-        emailLower: emailLow,
-        deviceId: deviceId,
-        isWhitelisted: isWhitelisted,
-        balance: startingPoints,
-        points: startingPoints,
+        username: username, usernameLower: username.toLowerCase(),
+        email: email, emailLower: emailLow,
+        deviceId: deviceId, isWhitelisted: isWhitelisted,
+        emailVerified: false,
+        balance: startingPoints, points: startingPoints,
         usdt:0,bnb:0,xrp:0,xlm:0,
-        invitedBy: referredByCode || "",
-        referredBy: referredByCode || "",
+        invitedBy: referredByCode||"", referredBy: referredByCode||"",
         referralCount:0, totalReferralEarnings:0,
-        isBanned: false,
-        isDeactivated: false,
-        referralBonusBlocked: false,
+        isBanned:false, isDeactivated:false, referralBonusBlocked:false,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
 
       if(startingPoints>0){
         await db.collection("users").doc(user.uid).collection("earnHistory").add({
-          action: 'Referral Bonus',
-          type: 'referral',
-          points: 50,
-          desc: 'Referred by '+referrerUsername,
-          description: 'Referred by '+referrerUsername,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          createdAt: new Date()
+          action:'Referral Bonus', type:'referral', points:50,
+          desc:'Referred by '+referrerUsername, description:'Referred by '+referrerUsername,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(), createdAt: new Date()
         });
       }
-
-      if(referrerDoc && canReward){
+      if(referrerDoc&&canReward){
         const already=await db.collection("users").doc(referrerDoc.id).collection("earnHistory").where("desc","==","Invited "+username).get();
         if(already.empty){
-          await referrerDoc.ref.update({
-            balance: firebase.firestore.FieldValue.increment(50),
-            points: firebase.firestore.FieldValue.increment(50),
-            referralCount: firebase.firestore.FieldValue.increment(1),
-            totalReferralEarnings: firebase.firestore.FieldValue.increment(50)
-          });
-          await db.collection("users").doc(referrerDoc.id).collection("earnHistory").add({
-            action: 'Referral Bonus',
-            type: 'referral',
-            points: 50,
-            desc: 'Invited '+username,
-            description: 'Invited '+username,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            createdAt: new Date()
-          });
-          await db.collection("users").doc(referrerDoc.id).collection("referralDailyLogs").add({
-            newUserId: user.uid,
-            newUsername: username,
-            referredUser: username,
-            referredUsername: username,
-            referredUserId: user.uid,
-            createdAt: new Date(),
-            bonusGiven: 50,
-            bonusGivenBool: true
-          });
+          await referrerDoc.ref.update({ balance: firebase.firestore.FieldValue.increment(50), points: firebase.firestore.FieldValue.increment(50), referralCount: firebase.firestore.FieldValue.increment(1), totalReferralEarnings: firebase.firestore.FieldValue.increment(50) });
+          await db.collection("users").doc(referrerDoc.id).collection("earnHistory").add({ action:'Referral Bonus', type:'referral', points:50, desc:'Invited '+username, description:'Invited '+username, timestamp: firebase.firestore.FieldValue.serverTimestamp(), createdAt: new Date() });
+          await db.collection("users").doc(referrerDoc.id).collection("referralDailyLogs").add({ newUserId:user.uid, newUsername:username, createdAt:new Date(), bonusGiven:50, bonusGivenBool:true });
         }
-      } else if(referrerDoc &&!canReward){
-        try{
-          await referrerDoc.ref.update({
-            referralBonusBlocked: true,
-            blockedReason: "Auto-block: 10+ referrals in 24h",
-            blockedAt: new Date(),
-            blockedBy: "system_auto"
-          });
-        }catch(e){}
-        await db.collection("users").doc(referrerDoc.id).collection("referralDailyLogs").add({
-          newUserId: user.uid,
-          newUsername: username,
-          referredUser: username,
-          referredUsername: username,
-          referredUserId: user.uid,
-          createdAt: new Date(),
-          bonusGiven: 0,
-          bonusGivenBool: false,
-          blockedReason: "10_per_24h_limit",
-          blocked: true
-        });
-        await db.collection("adminLogs").add({
-          action: "auto_block_referral",
-          userId: referrerDoc.id,
-          referredUsername: username,
-          at: new Date(),
-          reason: "10_per_24h_limit"
-        });
       }
 
-      const joinedDate=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
-      localStorage.setItem('username',username); localStorage.setItem('email',email);
-      localStorage.setItem('points',startingPoints.toString()); localStorage.setItem('referrals','0');
-      localStorage.setItem('dateJoined',joinedDate); localStorage.setItem('invitedBy',referredByCode||'');
-      if(referrerDoc &&!canReward){
-        successEl.innerText="Account created! (Referrer limit 10/day reached - 0 bonus, referrer auto-blocked)";
-      } else {
-        successEl.innerText="Account created! Redirecting...";
-      }
-      setTimeout(()=>{window.location.href='./home.html';},1500);
+      successEl.innerText="✅ Verification email sent to "+email+"! Check inbox (and spam) and click the link, then Login.";
+      btn.innerText="Email Sent - Check Inbox";
+      await auth.signOut();
+      setTimeout(()=>window.location.href='./index.html',4000);
 
-    }catch(error){ errorEl.innerText=error.message; btn.disabled=false; btn.innerText="Create Account"; console.log(error); }
-  }
-
-  function showToast(msg){
-    const t=document.createElement('div');
-    t.style='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#22c55e;color:white;padding:14px 20px;border-radius:12px;font-weight:bold;z-index:9999;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.4);text-align:center;';
-    t.innerText=msg;
-    t.onclick=function(){
-      navigator.clipboard.writeText(currentCode).catch(()=>{});
-      const codeInput=document.getElementById('code');
-      codeInput.value=currentCode;
-      codeInput.dispatchEvent(new Event('input'));
-      t.innerText="✓ Copied & Pasted!";
-      t.style.background="#16a34a";
-      setTimeout(()=>t.remove(),1200);
-    };
-    document.body.appendChild(t);
-    setTimeout(()=>{ if(document.body.contains(t)) t.remove(); },5000);
+    }catch(error){ errorEl.innerText=error.message; btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; console.log(error); }
   }
 </script>
 </body>
