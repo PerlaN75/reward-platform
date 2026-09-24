@@ -4,7 +4,7 @@
   <title>Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #2f3e1a; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 60px 20px 20px 20px; }
 .login-card { background: #4a6128; padding: 30px 25px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; border: 3px solid #fbbf24; }
 .logo { font-size: 60px; margin-bottom: 10px; filter: drop-shadow(0 0 8px #fbbf24); }
@@ -52,7 +52,7 @@
   <button class="btn-back-outside" onclick="window.location.href='./index.html'">Back</button>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   const firebaseConfig = {
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
@@ -68,6 +68,14 @@
   let resetUserData = null;
   let isLogging = false;
 
+  // === WHITELIST + DEVICE ID ===
+  const WHITELIST = ['admin@reward.rw','priyamwiza25@gmail.com','inezarose25@gmail.com'].map(e=>e.toLowerCase());
+  function getDeviceId(){
+    let id = localStorage.getItem('deviceId');
+    if(!id){ id = Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('deviceId', id); }
+    return id;
+  }
+
   window.formatResetUsername = function(){
     let val = document.getElementById('resetUsername').value;
     val = val.replace(/[^a-zA-Z]/g, '');
@@ -78,6 +86,7 @@
   window.login = async function() {
     if(isLogging) return;
     const email = document.getElementById('email').value.trim();
+    const emailLow = email.toLowerCase();
     const password = document.getElementById('password').value;
     const errorEl = document.getElementById('error');
     const btn = document.getElementById('loginBtn');
@@ -89,8 +98,38 @@
     btn.innerText = "Logging in...";
     btn.style.opacity = "0.7";
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // 0 SEC INSTANT - home.html will verify and load data
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      const isWhite = WHITELIST.includes(emailLow);
+      const myDeviceId = getDeviceId();
+
+      if(!isWhite){
+        // Check 1: Does this account belong to another device?
+        const qUser = query(collection(db, "users"), where("emailLower", "==", emailLow));
+        let userDoc = null;
+        const snapUser = await getDocs(qUser);
+        if(!snapUser.empty){ userDoc = snapUser.docs[0].data(); }
+
+        if(userDoc && userDoc.deviceId && userDoc.deviceId!== myDeviceId){
+          await signOut(auth);
+          throw new Error("❌ 1 account = 1 device. This account was created on another phone. You cannot login on this phone.");
+        }
+
+        // Check 2: Does this phone already have a different account?
+        const qDevice = query(collection(db, "users"), where("deviceId", "==", myDeviceId));
+        const snapDevice = await getDocs(qDevice);
+        let differentAccountOnThisPhone = false;
+        snapDevice.forEach(d=>{
+          const data = d.data();
+          const e = (data.emailLower || data.email || "").toLowerCase();
+          if(e!== emailLow){ differentAccountOnThisPhone = true; }
+        });
+        if(differentAccountOnThisPhone){
+          await signOut(auth);
+          throw new Error("❌ 1 device = 1 account. This phone already has a different account. Use the first account.");
+        }
+      }
+
+      // Passed - save deviceId if missing
       window.location.replace("./home.html");
     } catch(e) {
       if(e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-login-credentials'){
