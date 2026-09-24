@@ -113,3 +113,184 @@
           <option value="okx">⚫ OKX Pay - 0 Fee Instant</option>
         </select>
       </div>
+            <div class="withdraw-field">
+        <div class="label">2. Crypto</div>
+        <select id="withdrawCrypto" class="input-box">
+          <option value="USDT">USDT - Tether (Recommended)</option>
+          <option value="BNB">BNB</option>
+        </select>
+      </div>
+
+      <div class="withdraw-field">
+        <div class="label">3. Your Pay ID / Email</div>
+        <input type="text" id="walletAddress" class="input-box" placeholder="Binance Pay ID or Email">
+      </div>
+
+      <div class="withdraw-field">
+        <div class="label">4. Amount (USDT)</div>
+        <input type="number" id="withdrawAmount" class="input-box" placeholder="Min $5" oninput="updateWithdrawEstimate()">
+      </div>
+
+      <div class="withdraw-estimate" id="usdValueText">Enter $5 or more to withdraw</div>
+      <button class="action-btn" onclick="requestWithdraw()">🚀 Request Withdraw</button>
+      <div class="note">Min withdraw: $5. Processing: 24-48h via Binance/OKX Pay - 0 Fee</div>
+      <div class="note" id="withdrawHistory" style="text-align:left; max-height:120px; overflow:auto; margin-top:10px;"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ===== CONFIG - REPLACE WITH YOUR FIREBASE CONFIG FROM OLD FILE =====
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+// =======================================================
+
+const POINT_RATE = 0.0005; // 1000 pts = $0.50
+let userData = JSON.parse(localStorage.getItem('userData')) || { username: 'Aganze', balance: 125, usdtBalance: 0 };
+let currentUser = null;
+let selectedCrypto = 'USDT';
+
+auth.onAuthStateChanged(async (user)=>{
+  if(user){
+    currentUser = user;
+    const doc = await db.collection('users').doc(user.uid).get();
+    if(doc.exists){
+      const data = doc.data();
+      userData = { ...userData, ...data, usdtBalance: data.usdtBalance || 0 };
+      localStorage.setItem('userData', JSON.stringify(userData));
+      loadData(userData);
+    }
+  }
+});
+
+function loadData(data){
+  document.getElementById('usernameDisplay').innerText = data.username || 'Aganze';
+  document.getElementById('balancePoints').innerText = `${data.balance} points`;
+  const usd = (data.balance * POINT_RATE).toFixed(2);
+  const usdt = (data.usdtBalance || 0).toFixed(2);
+  document.getElementById('balanceUSD').innerHTML = `≈ $${usd} USD | $${usdt} USDT`;
+  document.getElementById('popupPoints').innerText = `${data.balance} points`;
+  document.getElementById('popupUSDT').innerText = `$${usdt} USDT`;
+  document.getElementById('withdrawableUSDT').innerText = `$${usdt} USDT`;
+}
+
+function openWallet(){ 
+  document.getElementById('walletModal').style.display='flex'; 
+  loadData(userData);
+  calcConvert();
+  loadWithdrawHistory();
+}
+function closeWallet(){ document.getElementById('walletModal').style.display='none'; }
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+  if(t==='convert'){ 
+    document.getElementById('convertTabBtn').classList.add('active'); 
+    document.getElementById('convertTab').classList.add('active'); 
+  } else { 
+    document.getElementById('withdrawTabBtn').classList.add('active'); 
+    document.getElementById('withdrawTab').classList.add('active'); 
+  }
+}
+function calcConvert(){
+  const pts = parseFloat(document.getElementById('convertAmount').value) || 0;
+  const usdt = pts * POINT_RATE;
+  document.getElementById('convertPreview').innerText = `You will receive: ${usdt.toFixed(6)} USDT`;
+}
+function updateWithdrawEstimate(){
+  const amt = parseFloat(document.getElementById('withdrawAmount').value) || 0;
+  const method = document.getElementById('payMethod').value;
+  document.getElementById('usdValueText').innerText = amt>=5 ? `You will receive $${amt.toFixed(2)} via ${method.toUpperCase()} Pay` : 'Enter $5 or more to withdraw';
+}
+document.querySelectorAll('.crypto-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.crypto-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedCrypto = btn.dataset.crypto;
+  });
+});
+document.getElementById('payMethod').addEventListener('change', function(){
+  const m = this.value;
+  document.getElementById('walletAddress').placeholder = m==='binance' ? 'Binance Pay ID or Email' : 'OKX UID or Email';
+  updateWithdrawEstimate();
+});
+
+async function logToFirestoreHistory(type, amount, note){
+  if(!currentUser) return;
+  await db.collection('history').add({ uid: currentUser.uid, type, amount, note, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+}
+
+window.convertPoints = async function(){ 
+  const pts = parseFloat(document.getElementById('convertAmount').value); 
+  if(!pts || pts < 1000) return alert('Minimum 1000 points to convert'); 
+  if(pts > userData.balance) return alert('Not enough points');
+  const usd = pts * POINT_RATE;
+  userData.balance -= pts;
+  userData.usdtBalance = (userData.usdtBalance || 0) + usd;
+  localStorage.setItem('userData', JSON.stringify(userData));
+  loadData(userData);
+  if(currentUser){
+    await db.collection("users").doc(currentUser.uid).update({balance: userData.balance, usdtBalance: userData.usdtBalance});
+    await logToFirestoreHistory("Convert", -pts, `Converted ${pts} pts to $${usd.toFixed(2)} USDT (${selectedCrypto})`);
+  }
+  alert(`Success! $${usd.toFixed(2)} USDT added to your balance`);
+  document.getElementById('convertAmount').value='';
+  calcConvert();
+}
+
+window.requestWithdraw = async function(){
+  const amt = parseFloat(document.getElementById('withdrawAmount').value);
+  const payID = document.getElementById('walletAddress').value.trim();
+  const method = document.getElementById('payMethod').value;
+  const crypto = document.getElementById('withdrawCrypto').value;
+  if(!payID) return alert('Enter your '+method.toUpperCase()+' Pay ID / Email');
+  if(!amt || amt < 5) return alert('Minimum withdrawal is $5');
+  if(amt > (userData.usdtBalance || 0)) return alert('Not enough USDT balance. Convert points first.');
+  
+  userData.usdtBalance -= amt;
+  localStorage.setItem('userData', JSON.stringify(userData));
+  loadData(userData);
+
+  if(currentUser){
+    await db.collection("users").doc(currentUser.uid).update({usdtBalance: userData.usdtBalance});
+    await db.collection('withdrawals').add({
+      uid: currentUser.uid,
+      username: userData.username,
+      method: method,
+      payId: payID,
+      crypto: crypto,
+      amount: amt,
+      usdValue: amt,
+      status: 'pending',
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    await logToFirestoreHistory("Withdraw Request", 0, `${method.toUpperCase()} Pay ${amt} ${crypto} to ${payID}`);
+  }
+  alert(`Request sent!\n${amt} ${crypto} via ${method.toUpperCase()} Pay to ${payID}\nWe pay in 24-48h - 0 Fee`);
+  closeWallet();
+  document.getElementById('withdrawAmount').value='';
+  document.getElementById('walletAddress').value='';
+}
+
+async function loadWithdrawHistory(){
+  if(!currentUser) return;
+  try {
+    const snap = await db.collection('withdrawals').where('uid','==',currentUser.uid).orderBy('timestamp','desc').limit(5).get();
+    let html = '';
+    snap.forEach(d=>{ const w=d.data(); html+= `<div style="border-bottom:1px solid #444; padding:5px 0;">${w.method.toUpperCase()} $${w.amount} - ${w.status}</div>`; });
+    document.getElementById('withdrawHistory').innerHTML = html || 'No withdrawals yet';
+  } catch(e){ document.getElementById('withdrawHistory').innerHTML = 'No withdrawals yet'; }
+}
+
+function logout(){ localStorage.clear(); location.href='index.html'; }
+loadData(userData);
+</script>
+</body>
+</html>
