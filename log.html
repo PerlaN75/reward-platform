@@ -52,8 +52,8 @@
   <button class="btn-back-outside" onclick="window.location.href='./index.html'">Back</button>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, query, where, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   const firebaseConfig = {
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
     authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
@@ -68,7 +68,6 @@
   let resetUserData = null;
   let isLogging = false;
 
-  // === WHITELIST + DEVICE ID ===
   const WHITELIST = ['admin@reward.rw','priyamwiza25@gmail.com','inezarose25@gmail.com'].map(e=>e.toLowerCase());
   function getDeviceId(){
     let id = localStorage.getItem('deviceId');
@@ -89,9 +88,9 @@
     const emailLow = email.toLowerCase();
     const password = document.getElementById('password').value;
     const errorEl = document.getElementById('error');
+    const successEl = document.getElementById('success');
     const btn = document.getElementById('loginBtn');
-    errorEl.innerText = "";
-    document.getElementById('success').innerText = "";
+    errorEl.innerText = ""; successEl.innerText = "";
     if(!email ||!password){ errorEl.innerText = "Fill all fields"; return; }
     isLogging = true;
     btn.disabled = true;
@@ -99,37 +98,53 @@
     btn.style.opacity = "0.7";
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
+
+      // === OPTION C: CHECK EMAIL VERIFIED ===
+      if(!cred.user.emailVerified){
+        try{ await sendEmailVerification(cred.user); }catch(e){}
+        await signOut(auth);
+        throw new Error("📧 Email not verified. We resent verification link to "+email+". Check inbox/spam and click link, then login again.");
+      }
+
       const isWhite = WHITELIST.includes(emailLow);
       const myDeviceId = getDeviceId();
 
-      if(!isWhite){
-        // Check 1: Does this account belong to another device?
-        const qUser = query(collection(db, "users"), where("emailLower", "==", emailLow));
-        let userDoc = null;
-        const snapUser = await getDocs(qUser);
-        if(!snapUser.empty){ userDoc = snapUser.docs[0].data(); }
+      // Update emailVerified flag in Firestore
+      try{
+        const qV = query(collection(db, "users"), where("emailLower", "==", emailLow));
+        const snapV = await getDocs(qV);
+        if(!snapV.empty){
+          await updateDoc(snapV.docs[0].ref, { emailVerified: true });
+        }
+      }catch(e){}
 
-        if(userDoc && userDoc.deviceId && userDoc.deviceId!== myDeviceId){
+      if(!isWhite){
+        const qUser = query(collection(db, "users"), where("emailLower", "==", emailLow));
+        const snapUser = await getDocs(qUser);
+        let userData = null;
+        let userRef = null;
+        if(!snapUser.empty){ userData = snapUser.docs[0].data(); userRef = snapUser.docs[0].ref; }
+
+        if(userData &&!userData.deviceId && userRef){
+          await updateDoc(userRef, { deviceId: myDeviceId });
+        } else if(userData && userData.deviceId && userData.deviceId!== myDeviceId){
           await signOut(auth);
-          throw new Error("❌ 1 account = 1 device. This account was created on another phone. You cannot login on this phone.");
+          throw new Error("❌ 1 account = 1 device. This account was created on another phone.");
         }
 
-        // Check 2: Does this phone already have a different account?
         const qDevice = query(collection(db, "users"), where("deviceId", "==", myDeviceId));
         const snapDevice = await getDocs(qDevice);
-        let differentAccountOnThisPhone = false;
+        let different = false;
         snapDevice.forEach(d=>{
-          const data = d.data();
-          const e = (data.emailLower || data.email || "").toLowerCase();
-          if(e!== emailLow){ differentAccountOnThisPhone = true; }
+          const e = (d.data().emailLower || d.data().email || "").toLowerCase();
+          if(e!== emailLow) different = true;
         });
-        if(differentAccountOnThisPhone){
+        if(different){
           await signOut(auth);
-          throw new Error("❌ 1 device = 1 account. This phone already has a different account. Use the first account.");
+          throw new Error("❌ 1 device = 1 account. This phone already has a different account.");
         }
       }
 
-      // Passed - save deviceId if missing
       window.location.replace("./home.html");
     } catch(e) {
       if(e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-login-credentials'){
