@@ -7,20 +7,20 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #0f1508; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-   .container { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 30px 25px; width: 100%; max-width: 420px; color: white; }
+  .container { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 30px 25px; width: 100%; max-width: 420px; color: white; }
     h1 { text-align: center; font-size: 32px; margin-bottom: 5px; color: #fff; }
-   .subtitle { text-align: center; color: #fbbf24; margin-bottom: 20px; font-size: 14px; }
-   .ref-banner { background: #0f6b4f; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; }
+  .subtitle { text-align: center; color: #fbbf24; margin-bottom: 20px; font-size: 14px; }
+  .ref-banner { background: #0f6b4f; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; }
     label { font-size: 14px; color: #ccc; margin-top: 12px; display: block; margin-bottom: 5px; }
-   .input-box { width: 100%; padding: 14px; margin-bottom: 10px; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
-   .input-box:focus { border-color: #fbbf24; }
-   .btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
-   .btn:disabled { background: #444; color: #888; cursor: not-allowed; }
-   .note { text-align: center; margin-top: 15px; font-size: 14px; color: #aaa; }
-   .note a { color: #60a5fa; text-decoration: none; font-weight: bold; }
-   .error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; }
-   .success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
-   .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
+  .input-box { width: 100%; padding: 14px; margin-bottom: 10px; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
+  .input-box:focus { border-color: #fbbf24; }
+  .btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+  .btn:disabled { background: #444; color: #888; cursor: not-allowed; }
+  .note { text-align: center; margin-top: 15px; font-size: 14px; color: #aaa; }
+  .note a { color: #60a5fa; text-decoration: none; font-weight: bold; }
+  .error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; }
+  .success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
+  .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -51,7 +51,22 @@
   const db = firebase.firestore();
 
   const WHITELIST = ['admin@reward.rw','priyamwiza25@gmail.com','inezarose25@gmail.com'].map(e=>e.toLowerCase());
-  function getDeviceId(){ let id=localStorage.getItem('deviceId'); if(!id){ id=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('deviceId',id);} return id; }
+
+  // === HARD DEVICE ID - 3 storages ===
+  function getDeviceId(){
+    let id = localStorage.getItem('deviceId');
+    if(!id){
+      // try cookie
+      let m = document.cookie.match(/deviceId=([^;]+)/);
+      if(m) id = m[1];
+    }
+    if(!id){
+      id = 'dev_' + Math.random().toString(36).slice(2,11) + Date.now().toString(36);
+    }
+    localStorage.setItem('deviceId', id);
+    document.cookie = "deviceId="+id+"; path=/; max-age=31536000";
+    return id;
+  }
 
   let referredByCode=null;
   const urlParams=new URLSearchParams(window.location.search);
@@ -76,20 +91,30 @@
     try{
       const deviceId=getDeviceId();
       const isWhitelisted=WHITELIST.includes(emailLow);
+
+      // === DEVICE CHECK (BEFORE CREATE) ===
       if(!isWhitelisted){
         const existing=await db.collection("users").where("deviceId","==",deviceId).limit(1).get();
         if(!existing.empty){
-          let same=false; existing.forEach(d=>{ if((d.data().emailLower||"").toLowerCase()===emailLow) same=true; });
-          if(!same){ errorEl.innerText="❌ 1 device = 1 account. This phone already has an account."; btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return; }
+          let same=false;
+          existing.forEach(d=>{ if((d.data().emailLower||"").toLowerCase()===emailLow) same=true; });
+          if(!same){
+            errorEl.innerText="❌ 1 device = 1 account. This phone already has an account: "+existing.docs[0].data().username;
+            btn.disabled=false; btn.innerText="Create Account & Send Verification Email";
+            return;
+          }
         }
       }
 
+      // Check username exists before create
+      const userNameCheck = await db.collection("users").where("usernameLower","==",username.toLowerCase()).limit(1).get();
+      if(!userNameCheck.empty){ errorEl.innerText="Username taken"; btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return; }
+
       const cred=await auth.createUserWithEmailAndPassword(email,password);
       const user=cred.user;
-
-      // === REAL EMAIL VERIFICATION ===
       await user.sendEmailVerification();
 
+      // === REFERRAL CHECK AFTER AUTH (so Rules allow read) ===
       let referrerDoc=null; let referrerUsername=""; let canReward=false;
       let twentyFourHoursAgo=new Date(Date.now()-24*60*60*1000);
       if(referredByCode){
@@ -132,10 +157,10 @@
         }
       }
 
-      successEl.innerText="✅ Verification email sent to "+email+"! Check inbox (and spam) and click the link, then Login.";
-      btn.innerText="Email Sent - Check Inbox";
+      successEl.innerText="✅ Verification email sent to "+email+"! Check inbox then Login.";
+      btn.innerText="Email Sent";
       await auth.signOut();
-      setTimeout(()=>window.location.href='./index.html',4000);
+      setTimeout(()=>window.location.href='./index.html',3000);
 
     }catch(error){ errorEl.innerText=error.message; btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; console.log(error); }
   }
