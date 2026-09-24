@@ -7,20 +7,20 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #0f1508; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-  .container { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 30px 25px; width: 100%; max-width: 420px; color: white; }
+   .container { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 30px 25px; width: 100%; max-width: 420px; color: white; }
     h1 { text-align: center; font-size: 32px; margin-bottom: 5px; color: #fff; }
-  .subtitle { text-align: center; color: #fbbf24; margin-bottom: 20px; font-size: 14px; }
-  .ref-banner { background: #0f6b4f; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; }
+   .subtitle { text-align: center; color: #fbbf24; margin-bottom: 20px; font-size: 14px; }
+   .ref-banner { background: #0f6b4f; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; }
     label { font-size: 14px; color: #ccc; margin-top: 12px; display: block; margin-bottom: 5px; }
-  .input-box { width: 100%; padding: 14px; margin-bottom: 10px; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
-  .input-box:focus { border-color: #fbbf24; }
-  .btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
-  .btn:disabled { background: #444; color: #888; cursor: not-allowed; }
-  .note { text-align: center; margin-top: 15px; font-size: 14px; color: #aaa; }
-  .note a { color: #60a5fa; text-decoration: none; font-weight: bold; }
-  .error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; }
-  .success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
-  .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
+   .input-box { width: 100%; padding: 14px; margin-bottom: 10px; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
+   .input-box:focus { border-color: #fbbf24; }
+   .btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+   .btn:disabled { background: #444; color: #888; cursor: not-allowed; }
+   .note { text-align: center; margin-top: 15px; font-size: 14px; color: #aaa; }
+   .note a { color: #60a5fa; text-decoration: none; font-weight: bold; }
+   .error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; }
+   .success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
+   .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -34,7 +34,7 @@
     <label>Username</label>
     <input type="text" class="input-box" id="username" placeholder="Choose username" oninput="formatUsername()">
     <label>Email (real email)</label>
-    <input type="email" class="input-box" id="email" placeholder="your real gmail">
+    <input type="email" class="input-box" id="email" placeholder="your real email">
     <label>Password</label>
     <input type="password" class="input-box" id="password" placeholder="Min 5 chars, 1A, 1#, 1number">
     <button class="btn" id="createBtn" onclick="createAccount()">Create Account & Send Verification Email</button>
@@ -69,54 +69,25 @@
     const errorEl=document.getElementById('errorMsg');
     const successEl=document.getElementById('successMsg');
     const btn=document.getElementById('createBtn');
-    errorEl.innerText=''; successEl.innerText=''; btn.disabled=true; btn.innerText="Checking email...";
-
+    errorEl.innerText=''; successEl.innerText=''; btn.disabled=true; btn.innerText="Creating...";
     if(!username||!email||!password){errorEl.innerText="Fill all fields"; btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return;}
     const passError=validatePassword(password); if(passError){errorEl.innerText=passError; btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return;}
-
-    // === EXTRA PROTECTION: BLOCK FAKE EMAILS ===
-    const typoDomains=['gmai.com','gmail.con','gmal.com','gmial.com','yaho.com','yahoo.con','hotmai.com','hotmial.com','outlok.com','gmail.cm','gmail.co','gmail.cm','gmaiil.com'];
-    if(typoDomains.some(d=>emailLow.endsWith(d))){
-      errorEl.innerText="❌ Typo in email, check gmail.com spelling";
-      btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return;
-    }
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailLow)){
-      errorEl.innerText="❌ Invalid email format";
-      btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return;
-    }
-    try{
-      const checkRes=await fetch('https://www.disify.com/api/email/'+encodeURIComponent(emailLow));
-      const checkData=await checkRes.json();
-      if(!checkData.format){ errorEl.innerText="❌ Invalid email format"; btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return; }
-      if(checkData.disposable){ errorEl.innerText="❌ Temporary/fake emails not allowed. Use real Gmail"; btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return; }
-      if(checkData.dns===false){ errorEl.innerText="❌ Email domain does not exist"; btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return; }
-    }catch(e){ console.log("disify api failed, continue"); }
 
     try{
       const deviceId=getDeviceId();
       const isWhitelisted=WHITELIST.includes(emailLow);
-
       if(!isWhitelisted){
-        const existing=await db.collection("users").where("deviceId","==",deviceId).get();
-        let blocked=false;
-        existing.forEach(doc=>{
-          const d=doc.data();
-          const otherEmail=(d.emailLower||"").toLowerCase();
-          // ONLY block if existing account is VERIFIED or is whitelisted - ignore unverified fakes
-          const shouldCount = d.emailVerified===true || d.isWhitelisted===true;
-          if(otherEmail!==emailLow && shouldCount){ blocked=true; }
-        });
-        if(blocked){
-          errorEl.innerText="❌ 1 device = 1 account. This phone already has an account.";
-          btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return;
+        const existing=await db.collection("users").where("deviceId","==",deviceId).limit(1).get();
+        if(!existing.empty){
+          let same=false; existing.forEach(d=>{ if((d.data().emailLower||"").toLowerCase()===emailLow) same=true; });
+          if(!same){ errorEl.innerText="❌ 1 device = 1 account. This phone already has an account."; btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return; }
         }
       }
 
-      btn.innerText="Creating...";
       const cred=await auth.createUserWithEmailAndPassword(email,password);
       const user=cred.user;
 
-      // === REAL VERIFICATION ===
+      // === REAL EMAIL VERIFICATION ===
       await user.sendEmailVerification();
 
       let referrerDoc=null; let referrerUsername=""; let canReward=false;
