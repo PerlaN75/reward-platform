@@ -13,11 +13,11 @@
  .balance-box{background:#0a120a;border:2px solid #fbbf24;border-radius:16px;padding:12px;text-align:center;color:#fff;margin-bottom:14px;line-height:1.4}
  .hint{text-align:center;color:#fbbf24;font-size:13px;margin-bottom:12px}
  .video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #2a4a2a}
- .video-header{color:#fff;font-weight:700;padding:12px 14px 8px;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .video-header{color:#fff;font-weight:700;padding:12px 14px 8px;font-size:15px}
  .player{aspect-ratio:16/10;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:14px;text-align:center;padding:20px}
- .progress{height:4px;background:#2a4a2a}.progress-bar{height:100%;background:#fbbf24;width:0%;transition:width.3s linear}
+ .progress{height:4px;background:#2a4a2a}.progress-bar{height:100%;background:#fbbf24;width:0%}
  .btn{width:100%;background:#fbbf24;color:#000;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:16px;cursor:pointer;margin:14px 0 0}
- .btn:disabled{opacity:.5}.info{text-align:center;color:#8fbc8f;font-size:11px;margin-top:14px;line-height:1.5}
+ .info{text-align:center;color:#8fbc8f;font-size:11px;margin-top:14px;line-height:1.5}
  .back{display:block;margin:18px auto 0;background:#f59e0b;color:#000;border:none;padding:10px 26px;border-radius:999px;font-weight:700;cursor:pointer}
   #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 16px;border-radius:999px;font-size:13px;display:none;z-index:99;border:1px solid #fbbf24}
 </style>
@@ -25,7 +25,7 @@
 <body>
 <div class="card">
   <h1>Watch & Earn</h1>
-  <div class="balance-box">Balance: <b id="bal">0 pts</b><br><span style="font-size:13px">Today: <span id="today">0/10</span> videos • You earn, we earn from ads</span></div>
+  <div class="balance-box">Balance: <b id="bal">0 pts</b><br><span style="font-size:13px">Today: <span id="today">0/10</span> videos. Watch & Earn</span></div>
   <div class="hint">← Swipe left / right to browse →</div>
   <div class="video-box">
     <div class="video-header" id="vTitle">Earning Tips (30s) - 10 pts</div>
@@ -33,22 +33,20 @@
     <div class="progress"><div class="progress-bar" id="pbar"></div></div>
     <div style="padding:0 12px 12px"><button class="btn" id="actionBtn">Start & Earn</button></div>
   </div>
-  <div class="info">Ad plays 5s (we get paid) → then video 30s → you claim pts<br>Leave page = timer resets</div>
-  <button class="back" onclick="location.href='./index.html'">Back</button>
+  <div class="info">Watch and get paid→ then video 30s → you claim pts<br>Leave page = timer resets</div>
+  <button class="back" onclick="location.href='./home.html'">Back</button>
 </div>
 <div id="toast"></div>
 <script>
-const monetizationEnabled=true;
 const videos=[{title:"Earning Tips (30s) - 10 pts",dur:30,pts:10},{title:"How Rewards Work (30s) - 10 pts",dur:30,pts:10},{title:"Maximize Earnings (30s) - 10 pts",dur:30,pts:10}];
-let idx=0; let bal=parseInt(localStorage.getItem('rwf_bal')||'30'); let todayCount=parseInt(localStorage.getItem('rwf_today')||'1'); let timer=null; let secs=0;
+let idx=0; let bal=parseInt(localStorage.getItem('rwf_bal')||'50'); let todayCount=parseInt(localStorage.getItem('rwf_today')||'3'); let timer=null;
 const balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),titleEl=document.getElementById('vTitle'),playerEl=document.getElementById('player'),btnEl=document.getElementById('actionBtn'),pbarEl=document.getElementById('pbar');
-function updateUI(){balEl.textContent=bal+' pts'; todayEl.textContent=todayCount+'/10 videos'; titleEl.textContent=videos[idx].title;}
+function updateUI(){balEl.textContent=bal+' pts'; todayEl.textContent=todayCount+'/10';}
 function toast(m){const t=document.getElementById('toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2500);}
-function showAdThenVideo(){if(todayCount>=10){toast('Daily limit reached');return;} btnEl.disabled=true; playerEl.innerHTML='Ad playing 5s...<br><small>Please wait, we earn from this</small>'; pbarEl.style.width='0%'; let adSec=5; let adInt=setInterval(()=>{adSec--; playerEl.innerHTML=`Ad playing ${adSec}s...`; if(adSec<=0){clearInterval(adInt); startVideo();}},1000);}
-function startVideo(){secs=0; const total=videos[idx].dur; playerEl.innerHTML=`Watching: ${secs}/${total}s`; timer=setInterval(()=>{secs++; playerEl.innerHTML=`Watching: ${secs}/${total}s<br><small>Keep watching</small>`; pbarEl.style.width=(secs/total*100)+'%'; if(secs>=total){clearInterval(timer); playerEl.innerHTML='✅ Done! Click Claim'; btnEl.textContent=`Claim ${videos[idx].pts} pts`; btnEl.disabled=false; btnEl.onclick=claim;}},1000);}
-function claim(){bal+=videos[idx].pts; todayCount++; localStorage.setItem('rwf_bal',bal); localStorage.setItem('rwf_today',todayCount); updateUI(); toast(`+${videos[idx].pts} pts added!`); btnEl.textContent='Start & Earn'; btnEl.onclick=showAdThenVideo; playerEl.textContent='Click Start to watch'; pbarEl.style.width='0%';}
+function showAdThenVideo(){if(todayCount>=10){toast('Daily limit reached');return;} btnEl.disabled=true; playerEl.innerHTML='Ad playing 5s...'; let adSec=5; let adInt=setInterval(()=>{adSec--; playerEl.innerHTML=`Ad playing ${adSec}s...`; if(adSec<=0){clearInterval(adInt); startVideo();}},1000);}
+function startVideo(){let secs=0; const total=videos[idx].dur; timer=setInterval(()=>{secs++; playerEl.innerHTML=`Watching: ${secs}/${total}s`; pbarEl.style.width=(secs/total*100)+'%'; if(secs>=total){clearInterval(timer); playerEl.innerHTML='✅ Done! Click Claim'; btnEl.textContent=`Claim ${videos[idx].pts} pts`; btnEl.disabled=false; btnEl.onclick=claim;}},1000);}
+function claim(){bal+=videos[idx].pts; todayCount++; localStorage.setItem('rwf_bal',bal); localStorage.setItem('rwf_today',todayCount); updateUI(); toast(`+${videos[idx].pts} pts!`); btnEl.textContent='Start & Earn'; btnEl.onclick=showAdThenVideo; playerEl.textContent='Click Start to watch'; pbarEl.style.width='0%';}
 btnEl.onclick=showAdThenVideo; updateUI();
-let sx=0; document.addEventListener('touchstart',e=>sx=e.touches[0].clientX); document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx; if(Math.abs(dx)>60){if(dx<0) idx=(idx+1)%videos.length; else idx=(idx-1+videos.length)%videos.length; titleEl.textContent=videos[idx].title; if(timer){clearInterval(timer); timer=null; pbarEl.style.width='0%'; playerEl.textContent='Click Start to watch'; btnEl.textContent='Start & Earn'; btnEl.disabled=false; btnEl.onclick=showAdThenVideo;}}});
 </script>
 </body>
 </html>
