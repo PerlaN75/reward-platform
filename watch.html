@@ -1,107 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Watch & Earn - Monetized</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="monetag" content="4cde2a8b7d1a4f33b4ffdf2a9b28a8b6">
-  <script src="https://quge5.com/88/tag.min.js" data-zone="286677" async data-cfasync="false"></script>
-  <script>
-    const AD_CONFIG = {
-      monetagZoneId: "286677",
-      monetizationEnabled: true,
-      adWaitSeconds: 5
-    };
-  </script>
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-    body{background:#0f1508;min-height:100vh;padding:20px;color:white;display:flex;justify-content:center}
-   .container{background:#2f3e1a;border:3px solid #fbbf24;border-radius:20px;padding:20px 20px 2px 20px;width:95%;max-width:370px;overflow:hidden}
-    h1{text-align:center;color:#fbbf24;font-size:26px}
-   .balance{background:#0f1508;border:2px solid #fbbf24;border-radius:14px;padding:14px;text-align:center;margin:15px 0}
-    #tasks{display:flex;gap:14px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:10px 5px 15px 5px;scrollbar-width:none}
-    #tasks::-webkit-scrollbar{display:none}
-   .task{background:#000;border:2px solid #444;border-radius:14px;padding:14px;min-width:280px;max-width:280px;flex:0 0 82%;scroll-snap-align:center;scroll-snap-stop:always;flex-shrink:0}
-   .task.active{border-color:#22c55e;transform:scale(1.02)}
-   .task.done{opacity:0.6;border-color:#22c55e}
-   .video-box{background:#111;border-radius:10px;height:190px;display:flex;justify-content:center;align-items:center;margin:10px 0;overflow:hidden;position:relative}
-   .video-box iframe{width:100%;height:100%;border:none}
-   .btn{width:100%;padding:14px;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer;margin-top:10px}
-   .btn:disabled{background:#444;color:#888}
-   .timer{color:#fbbf24;font-weight:bold;text-align:center;margin-top:8px;font-size:13px}
-   .back{background:#f59e0b;color:#000;border:none;padding:12px 20px;border-radius:12px;font-weight:bold;width:40%;margin:20px auto 0;display:block;cursor:pointer}
-   .note{font-size:12px;color:#aaa;text-align:center;margin-top:10px}
-   .swipe-hint{text-align:center;color:#fbbf24;font-size:12px;margin:5px 0 5px 0;letter-spacing:1px}
-   .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;justify-content:center;align-items:center;z-index:9999;padding:20px}
-   .modal-box{background:#2f3e1a;border:3px solid #fbbf24;border-radius:18px;padding:22px;width:100%;max-width:340px;text-align:center}
-   .modal-box h3{color:#fbbf24;margin-bottom:10px;font-size:18px}
-   .modal-box p{color:#fff;font-size:14px;margin-bottom:18px;line-height:1.4}
-   .modal-ok{background:linear-gradient(90deg,#fbbf24,#f59e0b);border:none;padding:10px 22px;border-radius:10px;font-weight:bold;cursor:pointer}
-   .ad-label{font-size:10px;color:#fbbf24;background:#111;padding:3px 6px;border-radius:4px;position:absolute;top:6px;left:6px;z-index:2}
-  </style>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Watch & Earn</title>
+<script>(function(s){s.dataset.zone='286677',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui}
+  body{background:#0e1a0e;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+ .card{width:100%;max-width:380px;background:#1d331d;border:3px solid #fbbf24;border-radius:24px;padding:20px 18px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+  h1{color:#facc15;text-align:center;font-size:28px;margin-bottom:12px}
+ .balance-box{background:#0a120a;border:2px solid #fbbf24;border-radius:16px;padding:12px;text-align:center;color:#fff;margin-bottom:14px;line-height:1.4}
+ .hint{text-align:center;color:#fbbf24;font-size:13px;margin-bottom:12px}
+ .video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #2a4a2a}
+ .video-header{color:#fff;font-weight:700;padding:12px 14px 8px;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .player{aspect-ratio:16/10;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:14px;text-align:center;padding:20px}
+ .progress{height:4px;background:#2a4a2a}.progress-bar{height:100%;background:#fbbf24;width:0%;transition:width.3s linear}
+ .btn{width:100%;background:#fbbf24;color:#000;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:16px;cursor:pointer;margin:14px 0 0}
+ .btn:disabled{opacity:.5}.info{text-align:center;color:#8fbc8f;font-size:11px;margin-top:14px;line-height:1.5}
+ .back{display:block;margin:18px auto 0;background:#f59e0b;color:#000;border:none;padding:10px 26px;border-radius:999px;font-weight:700;cursor:pointer}
+  #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 16px;border-radius:999px;font-size:13px;display:none;z-index:99;border:1px solid #fbbf24}
+</style>
 </head>
 <body>
-<div class="container">
+<div class="card">
   <h1>Watch & Earn</h1>
-  <div class="balance">Balance: <span id="bal">0</span> pts<br><small>Today: <span id="todayCount">0</span>/10 videos • You earn, we earn from ads</small></div>
-  <div class="swipe-hint">← Swipe left / right to browse →</div>
-  <div id="tasks"></div>
-  <div class="note">Ad plays 5s (we get paid) → then video 30s → you claim pts<br>Leave page = timer resets</div>
-  <button class="back" onclick="location.href='./home.html'">Back</button>
+  <div class="balance-box">Balance: <b id="bal">0 pts</b><br><span style="font-size:13px">Today: <span id="today">0/10</span> videos • You earn, we earn from ads</span></div>
+  <div class="hint">← Swipe left / right to browse →</div>
+  <div class="video-box">
+    <div class="video-header" id="vTitle">Earning Tips (30s) - 10 pts</div>
+    <div class="player" id="player">Click Start to watch</div>
+    <div class="progress"><div class="progress-bar" id="pbar"></div></div>
+    <div style="padding:0 12px 12px"><button class="btn" id="actionBtn">Start & Earn</button></div>
+  </div>
+  <div class="info">Ad plays 5s (we get paid) → then video 30s → you claim pts<br>Leave page = timer resets</div>
+  <button class="back" onclick="location.href='./index.html'">Back</button>
 </div>
-<div class="modal-bg" id="customAlert"><div class="modal-box"><h3 id="alertTitle">Notice</h3><p id="alertMsg"></p><button class="modal-ok" onclick="closeAlert()">OK</button></div></div>
+<div id="toast"></div>
 <script>
-  const firebaseConfig = {apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
-  firebase.initializeApp(firebaseConfig);
-  const auth=firebase.auth(),db=firebase.firestore();
-  const VIDEOS = [{id:'v1', title:'Earning Tips (30s)', reward:10, duration:30, youtubeId:'dQw4w9WgXcQ', adLink:''},{id:'v2', title:'Partner Promo 1 (30s)', reward:10, duration:30, youtubeId:'jNQXAC9IVRw', adLink:''},{id:'v3', title:'Partner Promo 2 (30s)', reward:10, duration:30, youtubeId:'dQw4w9WgXcQ', adLink:''},{id:'v4', title:'Daily Motivation (30s)', reward:10, duration:30, youtubeId:'jNQXAC9IVRw', adLink:''},{id:'v5', title:'Success Story (30s)', reward:10, duration:30, youtubeId:'dQw4w9WgXcQ', adLink:''},{id:'v6', title:'How to Earn More (30s)', reward:10, duration:30, youtubeId:'jNQXAC9IVRw', adLink:''},{id:'v7', title:'New Feature Preview (30s)', reward:10, duration:30, youtubeId:'dQw4w9WgXcQ', adLink:''},{id:'v8', title:'Community Winner (30s)', reward:10, duration:30, youtubeId:'jNQXAC9IVRw', adLink:''},{id:'v9', title:'Quick Tutorial (30s)', reward:10, duration:30, youtubeId:'jNQXAC9IVRw', adLink:''},{id:'v10', title:'Daily Bonus Video (30s)', reward:15, duration:30, youtubeId:'jNQXAC9IVRw', adLink:''},];
-  let currentUser=null,userDoc=null,watchData={};
-  function showAlert(msg,title='Notice'){document.getElementById('alertTitle').innerText=title;document.getElementById('alertMsg').innerText=msg;document.getElementById('customAlert').style.display='flex';}
-  function closeAlert(){document.getElementById('customAlert').style.display='none';}
-  function triggerPaidAd(){
-    if(!AD_CONFIG.monetizationEnabled) return Promise.resolve();
-    return new Promise(res=>{
-      console.log("Paid ad triggered - zone 286677 you earn money here");
-      setTimeout(res, AD_CONFIG.adWaitSeconds*1000);
-    });
-  }
-  auth.onAuthStateChanged(async(user)=>{if(!user){location.href='./index.html';return;}currentUser=user;const doc=await db.collection('users').doc(user.uid).get();userDoc=doc.data();document.getElementById('bal').innerText=userDoc.balance||0;const today=new Date().toISOString().slice(0,10);const snap=await db.collection('users').doc(user.uid).collection('watchHistory').where('date','==',today).get();snap.forEach(d=>watchData[d.id]=true);document.getElementById('todayCount').innerText=snap.size;renderTasks();});
-  function renderTasks(){const wrap=document.getElementById('tasks');wrap.innerHTML='';VIDEOS.forEach(v=>{const isDone=!!watchData[v.id];const div=document.createElement('div');div.className='task'+(isDone?' done':'');div.innerHTML=`<b>${v.title}</b> - ${v.reward} pts ${isDone?'✅':''}<div class="video-box" id="box-${v.id}"><small>Click Start to watch</small></div><div class="timer" id="timer-${v.id}"></div><button class="btn" id="btn-${v.id}" ${isDone?'disabled':''} onclick="startWatch('${v.id}')">${isDone?'Claimed':'Start & Earn'}</button>`;wrap.appendChild(div);});}
-  let intervals={};
-  window.startWatch=async function(videoId){
-    const v=VIDEOS.find(x=>x.id===videoId);
-    const box=document.getElementById('box-'+videoId),btn=document.getElementById('btn-'+videoId),timerEl=document.getElementById('timer-'+videoId);
-    btn.disabled=true; btn.innerText='Loading Ad (we get paid)...';
-    box.innerHTML=`<div style="padding:20px;text-align:center;color:#fbbf24">💰 Ad loading...<br><small>You help fund payouts</small><br><br><span id="adTimer-${videoId}">${AD_CONFIG.adWaitSeconds}s</span></div>`;
-    let adLeft=AD_CONFIG.adWaitSeconds;
-    const adInterval=setInterval(()=>{adLeft--; const el=document.getElementById('adTimer-'+videoId); if(el) el.innerText=adLeft+'s'; if(adLeft<=0) clearInterval(adInterval);},1000);
-    await triggerPaidAd();
-    clearInterval(adInterval);
-    if(v.adLink){window.open(v.adLink,'_blank');box.innerHTML=`<div class="ad-label">AD • You earn from this</div><div style="padding:20px;text-align:center;color:#22c55e">Ad opened in new tab!<br>Reward after ${v.duration}s</div>`;}
-    else{box.innerHTML=`<div class="ad-label">AD • Sponsored</div><iframe src="https://www.youtube.com/embed/${v.youtubeId}?autoplay=1&mute=1&controls=0&rel=0" allow="autoplay"></iframe>`;}
-    let left=v.duration;btn.innerText='Watching...';document.querySelectorAll('.task').forEach(t=>t.classList.remove('active'));document.getElementById('box-'+videoId).parentElement.classList.add('active');
-    intervals[videoId]=setInterval(async()=>{
-      if(document.hidden){timerEl.innerText=`Paused - return to tab!`;return;}
-      left--;timerEl.innerText=`Claim in ${left}s - Don't leave`;
-      if(left<=0){clearInterval(intervals[videoId]);btn.disabled=false;btn.innerText=`Claim ${v.reward} pts`;btn.onclick=()=>claimReward(videoId);timerEl.innerText=`✅ Ready to claim!`;timerEl.style.color='#22c55e';}
-    },1000);
-  }
-  async function claimReward(videoId){
-    const v=VIDEOS.find(x=>x.id===videoId),today=new Date().toISOString().slice(0,10),btn=document.getElementById('btn-'+videoId);
-    btn.disabled=true;btn.innerText='Claiming...';
-    try{
-      const check=await db.collection('users').doc(currentUser.uid).collection('watchHistory').doc(videoId+'_'+today).get();
-      if(check.exists){showAlert('Already claimed today — come back tomorrow!','Oops!');btn.innerText='Claimed ✅';return;}
-      await db.collection('users').doc(currentUser.uid).collection('watchHistory').doc(videoId+'_'+today).set({videoId,reward:v.reward,date:today,monetized:true,ownerEarned:true,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-      await db.collection('users').doc(currentUser.uid).update({balance:firebase.firestore.FieldValue.increment(v.reward)});
-      await db.collection('adRevenue').add({userId:currentUser.uid,videoId,rewardGiven:v.reward,date:today,ownerRevenueEst:0.005,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-      const newBal=parseInt(document.getElementById('bal').innerText)+v.reward;document.getElementById('bal').innerText=newBal;localStorage.setItem('points',newBal);document.getElementById('todayCount').innerText=parseInt(document.getElementById('todayCount').innerText)+1;watchData[videoId]=true;btn.innerText='Claimed ✅';document.getElementById('box-'+videoId).innerHTML='<b style="color:#22c55e">+'+v.reward+' pts Added!</b>';
-    }catch(e){showAlert(e.message,'Error');btn.disabled=false;}
-  }
+const monetizationEnabled=true;
+const videos=[{title:"Earning Tips (30s) - 10 pts",dur:30,pts:10},{title:"How Rewards Work (30s) - 10 pts",dur:30,pts:10},{title:"Maximize Earnings (30s) - 10 pts",dur:30,pts:10}];
+let idx=0; let bal=parseInt(localStorage.getItem('rwf_bal')||'30'); let todayCount=parseInt(localStorage.getItem('rwf_today')||'1'); let timer=null; let secs=0;
+const balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),titleEl=document.getElementById('vTitle'),playerEl=document.getElementById('player'),btnEl=document.getElementById('actionBtn'),pbarEl=document.getElementById('pbar');
+function updateUI(){balEl.textContent=bal+' pts'; todayEl.textContent=todayCount+'/10 videos'; titleEl.textContent=videos[idx].title;}
+function toast(m){const t=document.getElementById('toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2500);}
+function showAdThenVideo(){if(todayCount>=10){toast('Daily limit reached');return;} btnEl.disabled=true; playerEl.innerHTML='Ad playing 5s...<br><small>Please wait, we earn from this</small>'; pbarEl.style.width='0%'; let adSec=5; let adInt=setInterval(()=>{adSec--; playerEl.innerHTML=`Ad playing ${adSec}s...`; if(adSec<=0){clearInterval(adInt); startVideo();}},1000);}
+function startVideo(){secs=0; const total=videos[idx].dur; playerEl.innerHTML=`Watching: ${secs}/${total}s`; timer=setInterval(()=>{secs++; playerEl.innerHTML=`Watching: ${secs}/${total}s<br><small>Keep watching</small>`; pbarEl.style.width=(secs/total*100)+'%'; if(secs>=total){clearInterval(timer); playerEl.innerHTML='✅ Done! Click Claim'; btnEl.textContent=`Claim ${videos[idx].pts} pts`; btnEl.disabled=false; btnEl.onclick=claim;}},1000);}
+function claim(){bal+=videos[idx].pts; todayCount++; localStorage.setItem('rwf_bal',bal); localStorage.setItem('rwf_today',todayCount); updateUI(); toast(`+${videos[idx].pts} pts added!`); btnEl.textContent='Start & Earn'; btnEl.onclick=showAdThenVideo; playerEl.textContent='Click Start to watch'; pbarEl.style.width='0%';}
+btnEl.onclick=showAdThenVideo; updateUI();
+let sx=0; document.addEventListener('touchstart',e=>sx=e.touches[0].clientX); document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx; if(Math.abs(dx)>60){if(dx<0) idx=(idx+1)%videos.length; else idx=(idx-1+videos.length)%videos.length; titleEl.textContent=videos[idx].title; if(timer){clearInterval(timer); timer=null; pbarEl.style.width='0%'; playerEl.textContent='Click Start to watch'; btnEl.textContent='Start & Earn'; btnEl.disabled=false; btnEl.onclick=showAdThenVideo;}}});
 </script>
 </body>
 </html>
-
-then deploy and publish
