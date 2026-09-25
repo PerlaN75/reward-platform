@@ -17,7 +17,7 @@ video{width:100%;height:100%;display:none}
 .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.85);color:#fff;text-align:center}
 .progress{height:4px;background:#2a4a2a}.progress-bar{height:100%;background:#fbbf24;width:0%}
 .btn{width:100%;background:#fbbf24;color:#000;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:16px;cursor:pointer;margin:14px 0 0}
-.btn:disabled{background:#8a6d1a;opacity:.6}
+.btn:disabled{background:#8a6d1a}
 .info{text-align:center;color:#8fbc8f;font-size:11px;margin-top:14px}
 .back{display:block;margin:18px auto 0;background:#f59e0b;color:#000;border:none;padding:10px 26px;border-radius:999px;font-weight:700;cursor:pointer}
 </style>
@@ -25,7 +25,7 @@ video{width:100%;height:100%;display:none}
 <body>
 <div class="card">
 <h1>Watch & Earn</h1>
-<div class="balance-box">Balance: <b id="bal">60 pts</b><br><span style="font-size:13px">Today: <span id="today">4/10</span> videos. Watch & Earn</span></div>
+<div class="balance-box">Balance: <b id="bal">0 pts</b><br><span style="font-size:13px">Today: <span id="today">0/10</span> videos. Watch & Earn</span></div>
 <div class="video-box">
 <div class="player"><video id="v" playsinline><source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"></video><div class="overlay" id="ov">Click Start to watch</div></div>
 <div class="progress"><div class="progress-bar" id="pbar"></div></div>
@@ -35,31 +35,49 @@ video{width:100%;height:100%;display:none}
 <button class="back" onclick="location.href='./home.html'">Back</button>
 </div>
 <script>
-let bal=60,today=4; let timer=null;
+let bal = parseInt(localStorage.getItem('rwf_bal') || '60');
+let today = parseInt(localStorage.getItem('rwf_today') || '4');
+let timer=null;
 const ov=document.getElementById('ov'),vid=document.getElementById('v'),btn=document.getElementById('btn'),pbar=document.getElementById('pbar');
-document.getElementById('bal').textContent=bal+' pts'; document.getElementById('today').textContent=today+'/10';
+function save(){localStorage.setItem('rwf_bal',bal); localStorage.setItem('rwf_today',today); document.getElementById('bal').textContent=bal+' pts'; document.getElementById('today').textContent=today+'/10';}
+save();
 
-btn.onclick=()=>{
-btn.disabled=true;
-ov.style.display='flex'; ov.innerHTML='Ad playing 10s...<br><small>We earn from this ad</small>';
-vid.style.display='none';
-let ad=10;
-let adInt=setInterval(()=>{
-ov.innerHTML=`Ad playing ${ad}s...<br><small>Please wait</small>`;
-ad--;
-if(ad<0){clearInterval(adInt); startVideo();}
-},1000);
-};
+function doAd(){
+  if(today>=10){ov.innerHTML='Daily limit 10/10 reached!<br>Come back tomorrow'; return;}
+  btn.disabled=true;
+  ov.style.display='flex'; ov.innerHTML='Ad playing 10s...<br><small>We earn from this</small>'; vid.style.display='none'; pbar.style.width='0%';
+  let ad=10;
+  let adInt=setInterval(()=>{
+    ov.innerHTML=`Ad playing ${ad}s...`;
+    ad--;
+    if(ad<0){clearInterval(adInt); startVideo();}
+  },1000);
+}
 
 function startVideo(){
-ov.style.display='none'; vid.style.display='block'; vid.currentTime=0; vid.play();
-let sec=0;
-timer=setInterval(()=>{
-sec++; pbar.style.width=(sec/30*100)+'%'; btn.textContent=`Watching: ${sec}/30s`;
-if(sec>=30){clearInterval(timer); vid.pause(); btn.textContent='Claim 10 pts'; btn.disabled=false; btn.onclick=claim; ov.style.display='flex'; ov.innerHTML='✅ Done! Claim now';}
-},1000);
+  ov.style.display='none'; vid.style.display='block'; vid.currentTime=0; vid.play();
+  let sec=0;
+  timer=setInterval(()=>{
+    sec++; pbar.style.width=(sec/30*100)+'%'; btn.textContent=`Watching: ${sec}/30s`;
+    if(sec>=30){
+      clearInterval(timer); vid.pause();
+      btn.textContent='Claim 10 pts'; btn.disabled=false;
+      btn.onclick=claim;
+      ov.style.display='flex'; ov.innerHTML='✅ Done! Click Claim';
+    }
+  },1000);
 }
-function claim(){bal+=10;today++; document.getElementById('bal').textContent=bal+' pts'; document.getElementById('today').textContent=today+'/10'; btn.textContent='Start & Earn'; btn.disabled=false; ov.style.display='flex'; ov.innerHTML='Click Start to watch'; vid.style.display='none'; pbar.style.width='0%'; btn.onclick=()=>location.reload(); setTimeout(()=>location.reload(),800);}
+
+function claim(){
+  bal+=10; today++; save();
+  btn.textContent='Start & Earn'; btn.disabled=false; 
+  ov.style.display='flex'; ov.innerHTML='Click Start for next video';
+  vid.style.display='none'; pbar.style.width='0%';
+  btn.onclick=doAd;
+  if(today>=10){ov.innerHTML='🎉 10/10 Done for today!'; btn.textContent='Limit Reached'; btn.disabled=true;}
+}
+
+btn.onclick=doAd;
 </script>
 </body>
 </html>
