@@ -8,17 +8,18 @@
 <style>
   *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui}
   body{background:#0e1a0e;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
- .card{width:100%;max-width:380px;background:#1d331d;border:3px solid #fbbf24;border-radius:24px;padding:20px 18px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+  .card{width:100%;max-width:380px;background:#1d331d;border:3px solid #fbbf24;border-radius:24px;padding:20px 18px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
   h1{color:#facc15;text-align:center;font-size:28px;margin-bottom:12px}
- .balance-box{background:#0a120a;border:2px solid #fbbf24;border-radius:16px;padding:12px;text-align:center;color:#fff;margin-bottom:14px;line-height:1.4}
- .hint{text-align:center;color:#fbbf24;font-size:13px;margin-bottom:12px}
- .video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #2a4a2a}
- .video-header{color:#fff;font-weight:700;padding:12px 14px 8px;font-size:15px}
- .player{aspect-ratio:16/10;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:14px;text-align:center;padding:20px}
- .progress{height:4px;background:#2a4a2a}.progress-bar{height:100%;background:#fbbf24;width:0%}
- .btn{width:100%;background:#fbbf24;color:#000;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:16px;cursor:pointer;margin:14px 0 0}
- .info{text-align:center;color:#8fbc8f;font-size:11px;margin-top:14px;line-height:1.5}
- .back{display:block;margin:18px auto 0;background:#f59e0b;color:#000;border:none;padding:10px 26px;border-radius:999px;font-weight:700;cursor:pointer}
+  .balance-box{background:#0a120a;border:2px solid #fbbf24;border-radius:16px;padding:12px;text-align:center;color:#fff;margin-bottom:14px}
+  .video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #2a4a2a}
+  .player{aspect-ratio:16/10;background:#000;position:relative;display:flex;align-items:center;justify-content:center;color:#aaa}
+  video{width:100%;height:100%;object-fit:cover;display:none}
+  .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.7);color:#fff;font-size:14px;text-align:center;padding:20px}
+  .progress{height:4px;background:#2a4a2a}.progress-bar{height:100%;background:#fbbf24;width:0%;transition:width .2s linear}
+  .btn{width:100%;background:#fbbf24;color:#000;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:16px;cursor:pointer;margin:14px 0 0}
+  .btn:disabled{opacity:.5}
+  .info{text-align:center;color:#8fbc8f;font-size:11px;margin-top:14px;line-height:1.5}
+  .back{display:block;margin:18px auto 0;background:#f59e0b;color:#000;border:none;padding:10px 26px;border-radius:999px;font-weight:700;cursor:pointer}
   #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 16px;border-radius:999px;font-size:13px;display:none;z-index:99;border:1px solid #fbbf24}
 </style>
 </head>
@@ -26,27 +27,100 @@
 <div class="card">
   <h1>Watch & Earn</h1>
   <div class="balance-box">Balance: <b id="bal">0 pts</b><br><span style="font-size:13px">Today: <span id="today">0/10</span> videos. Watch & Earn</span></div>
-  <div class="hint">← Swipe left / right to browse →</div>
+  
   <div class="video-box">
-    <div class="video-header" id="vTitle">Earning Tips (30s) - 10 pts</div>
-    <div class="player" id="player">Click Start to watch</div>
+    <div class="player" id="playerWrap">
+      <video id="realVideo" playsinline muted controlsList="nodownload">
+        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+      </video>
+      <div class="overlay" id="overlay">Click Start to watch</div>
+    </div>
     <div class="progress"><div class="progress-bar" id="pbar"></div></div>
     <div style="padding:0 12px 12px"><button class="btn" id="actionBtn">Start & Earn</button></div>
   </div>
+
   <div class="info">Watch and get paid→ then video 30s → you claim pts<br>Leave page = timer resets</div>
   <button class="back" onclick="location.href='./home.html'">Back</button>
 </div>
 <div id="toast"></div>
+
 <script>
-const videos=[{title:"Earning Tips (30s) - 10 pts",dur:30,pts:10},{title:"How Rewards Work (30s) - 10 pts",dur:30,pts:10},{title:"Maximize Earnings (30s) - 10 pts",dur:30,pts:10}];
-let idx=0; let bal=parseInt(localStorage.getItem('rwf_bal')||'50'); let todayCount=parseInt(localStorage.getItem('rwf_today')||'3'); let timer=null;
-const balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),titleEl=document.getElementById('vTitle'),playerEl=document.getElementById('player'),btnEl=document.getElementById('actionBtn'),pbarEl=document.getElementById('pbar');
+let bal=parseInt(localStorage.getItem('rwf_bal')||'50');
+let todayCount=parseInt(localStorage.getItem('rwf_today')||'3');
+let timer=null, adTimer=null;
+const balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),playerWrap=document.getElementById('playerWrap'),overlay=document.getElementById('overlay'),video=document.getElementById('realVideo'),btn=document.getElementById('actionBtn'),pbar=document.getElementById('pbar');
+
 function updateUI(){balEl.textContent=bal+' pts'; todayEl.textContent=todayCount+'/10';}
 function toast(m){const t=document.getElementById('toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2500);}
-function showAdThenVideo(){if(todayCount>=10){toast('Daily limit reached');return;} btnEl.disabled=true; playerEl.innerHTML='Ad playing 5s...'; let adSec=5; let adInt=setInterval(()=>{adSec--; playerEl.innerHTML=`Ad playing ${adSec}s...`; if(adSec<=0){clearInterval(adInt); startVideo();}},1000);}
-function startVideo(){let secs=0; const total=videos[idx].dur; timer=setInterval(()=>{secs++; playerEl.innerHTML=`Watching: ${secs}/${total}s`; pbarEl.style.width=(secs/total*100)+'%'; if(secs>=total){clearInterval(timer); playerEl.innerHTML='✅ Done! Click Claim'; btnEl.textContent=`Claim ${videos[idx].pts} pts`; btnEl.disabled=false; btnEl.onclick=claim;}},1000);}
-function claim(){bal+=videos[idx].pts; todayCount++; localStorage.setItem('rwf_bal',bal); localStorage.setItem('rwf_today',todayCount); updateUI(); toast(`+${videos[idx].pts} pts!`); btnEl.textContent='Start & Earn'; btnEl.onclick=showAdThenVideo; playerEl.textContent='Click Start to watch'; pbarEl.style.width='0%';}
-btnEl.onclick=showAdThenVideo; updateUI();
+
+btn.onclick = () => {
+  if(todayCount>=10){toast('Daily limit reached');return;}
+  btn.disabled=true;
+  
+  // 1. TRIGGER MONETAG AD (real money)
+  overlay.style.display='flex';
+  overlay.innerHTML='Ad playing 10s...<br>Please wait, we earn from this';
+  pbar.style.width='0%';
+  video.style.display='none';
+  
+  // Force Monetag vignette to show on click
+  try{
+    const s=document.createElement('script');
+    s.dataset.zone='286677'; s.src='https://al5sm.com/tag.min.js';
+    document.body.appendChild(s);
+  }catch(e){}
+
+  let adSec=10;
+  adTimer=setInterval(()=>{
+    overlay.innerHTML=`Ad playing ${adSec}s...`;
+    adSec--;
+    if(adSec<0){
+      clearInterval(adTimer);
+      startRealVideo();
+    }
+  },1000);
+};
+
+function startRealVideo(){
+  overlay.style.display='none';
+  video.style.display='block';
+  video.currentTime=0;
+  video.play();
+  btn.textContent='Watching...';
+  let secs=0;
+  const total=30;
+  timer=setInterval(()=>{
+    secs++;
+    pbar.style.width=(secs/total*100)+'%';
+    btn.textContent=`Watching: ${secs}/${total}s`;
+    if(secs>=total){
+      clearInterval(timer);
+      video.pause();
+      btn.textContent=`Claim 10 pts`;
+      btn.disabled=false;
+      btn.onclick=claim;
+      overlay.style.display='flex';
+      overlay.innerHTML='✅ Done! Click Claim';
+    }
+  },1000);
+}
+
+function claim(){
+  bal+=10; todayCount++;
+  localStorage.setItem('rwf_bal',bal);
+  localStorage.setItem('rwf_today',todayCount);
+  updateUI();
+  toast('+10 pts added!');
+  btn.textContent='Start & Earn';
+  btn.disabled=false;
+  btn.onclick=arguments.callee.caller; // reset
+  overlay.style.display='flex';
+  overlay.innerHTML='Click Start to watch';
+  video.style.display='none';
+  pbar.style.width='0%';
+  location.reload(); // reset click handler cleanly
+}
+updateUI();
 </script>
 </body>
 </html>
