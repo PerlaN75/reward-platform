@@ -1,117 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="https://quge5.com/88/tag.min.js" data-zone="286869" async data-cfasync="false"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="monetag" content="b671b8351bfc48ed0161f6bd0b6a5340">
 <title>Reward Platform</title>
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-  
   body {
     background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #1a0033 100%);
     color: #fff;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* CHANGED: was center */
+    justify-content: flex-start;
     align-items: center;
-    padding: 60px 20px 20px 20px; /* CHANGED: added top padding 60px */
+    padding: 60px 20px 20px 20px;
     text-align: center;
   }
-
-  /* BIG MONEY BAG EMOJI */
   .hero-emoji {
-    font-size: 100px; /* BIG */
+    font-size: 100px;
     margin-bottom: 15px;
     animation: bounce 1.8s ease-in-out infinite;
-    filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.5)); /* gold glow */
+    filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.5));
   }
-
   @keyframes bounce {
     0%, 100% { transform: translateY(0px) scale(1); }
     50% { transform: translateY(-15px) scale(1.05); }
   }
-
-  h1 { 
-    font-size: 32px; 
-    margin-bottom: 10px;
-    line-height: 1.3;
-  }
-  
+  h1 { font-size: 32px; margin-bottom: 10px; line-height: 1.3; }
   .gradient-text {
     background: linear-gradient(90deg, #FFD700, #FF69B4, #3B82F6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: bold;
   }
-
-  .subtitle { 
-    color: #cbd5e1; 
-    font-size: 15px; 
-    margin-bottom: 30px;
-    max-width: 300px;
-  }
-
+  .subtitle { color: #cbd5e1; font-size: 15px; margin-bottom: 30px; max-width: 300px; }
   .btn-group { display: flex; gap: 15px; margin-bottom: 25px; }
-  
   .btn {
-    padding: 16px 30px;
-    border-radius: 15px;
-    border: none;
-    font-weight: bold;
-    font-size: 16px;
-    cursor: pointer;
-    text-decoration: none;
-    color: #000;
-    background: #fff;
-    box-shadow: 0 4px 0 #d1d5db;
-    transition: all 0.2s;
+    padding: 16px 30px; border-radius: 15px; border: none; font-weight: bold;
+    font-size: 16px; cursor: pointer; text-decoration: none; color: #000;
+    background: #fff; box-shadow: 0 4px 0 #d1d5db; transition: all 0.2s;
   }
   .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #d1d5db; }
-
-  .icons { 
-    display: flex; 
-    gap: 20px; /* increased gap for 3 icons */
-    justify-content: center; /* keep them centered */
-  }
+  .icons { display: flex; gap: 20px; justify-content: center; }
   .icon-box {
-    width: 55px; height: 55px; /* slightly bigger */
-    background: rgba(255,255,255,0.1);
-    border-radius: 15px;
-    display: flex; justify-content: center; align-items: center;
-    font-size: 26px;
+    width: 55px; height: 55px; background: rgba(255,255,255,0.1);
+    border-radius: 15px; display: flex; justify-content: center; align-items: center; font-size: 26px;
   }
 </style>
-
-<!-- ADDED: Firebase so we can auto-load if user is already logged in -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<!-- END ADDED -->
-
 </head>
 <body>
-  
-  <div class="hero-emoji">💰</div> <!-- BIG MONEY BAG ON TOP -->
-
+  <div class="hero-emoji">💰</div>
   <h1>Welcome to<br><span class="gradient-text">Reward Platform</span></h1>
-  
   <p class="subtitle">Complete activities, earn points, and discover exciting rewards.</p>
-
   <div class="btn-group">
     <a href="log.html" class="btn">🚀 Login</a>
     <a href="reg.html" class="btn">📝 Register</a>
   </div>
-
   <div class="icons">
-    <div class="icon-box">⭐</div> <!-- REMOVED 💰 -->
+    <div class="icon-box">⭐</div>
     <div class="icon-box">🏆</div>
     <div class="icon-box">🎁</div>
   </div>
-
 <script>
-// ADDED: This makes sure if Hirwa is already logged in, his data loads to localStorage
 const firebaseConfig = {
   apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
   authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
@@ -120,7 +76,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
-
 async function loadUserToLocal(uid) {
   const userDoc = await db.collection("users").doc(uid).get();
   if(userDoc.exists){
@@ -129,21 +84,16 @@ async function loadUserToLocal(uid) {
     localStorage.setItem('email', data.email || '');
     localStorage.setItem('points', (data.balance || 0).toString());
     localStorage.setItem('referrals', (data.referralCount || 0).toString());
-    
     let joined = data.createdAt ? data.createdAt.toDate() : new Date();
     let joinedDate = joined.toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric'});
     localStorage.setItem('dateJoined', joinedDate);
   }
 }
-
-// If user is already logged in, load his data immediately
 auth.onAuthStateChanged((user) => {
   if (user) {
     loadUserToLocal(user.uid);
   }
 });
-// END ADDED
 </script>
-
 </body>
 </html>
