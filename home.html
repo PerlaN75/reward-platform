@@ -121,6 +121,8 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   const auth = firebase.auth();
   const db = firebase.firestore();
 
+  const WHITELIST = ['admin@reward.rw','priyamwiza25@gmail.com','inezarose25@gmail.com'].map(e=>e.toLowerCase());
+
   let selectedCrypto = 'USDT';
   const RATES = { USDT: 1, BNB: 600, XRP: 0.6, XLM: 0.12 };
   const POINT_RATE = 0.0005;
@@ -246,7 +248,6 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   function updateCountdown() { const diff = getNextClaimTime() - new Date(); if(diff <= 0) { clearInterval(countdownInterval); checkClaimStatus(); return; } const h = Math.floor(diff / 1000 / 60 / 60); const m = Math.floor(diff / 1000 / 60) % 60; const s = Math.floor(diff / 1000) % 60; document.getElementById('countdown').innerText = `Next claim in: ${h}h ${m}m ${s}s`; }
   function checkClaimStatus() { const today = getToday(); const lastClaim = userData.lastCheckin; clearInterval(countdownInterval); if(lastClaim === today) { document.getElementById('claimBtn').disabled = true; document.getElementById('claimBtn').innerText = "Already Claimed Today"; document.getElementById('checkinNote').innerHTML = "✓ Claimed! Come back tomorrow"; document.getElementById('countdown').style.display = 'block'; updateCountdown(); countdownInterval = setInterval(updateCountdown, 1000); } else { document.getElementById('claimBtn').disabled = false; document.getElementById('claimBtn').innerText = `Claim ${DAILY_REWARD} Points`; document.getElementById('checkinNote').innerText = "Tap to claim your daily reward"; document.getElementById('countdown').style.display = 'none'; } }
 
-  // MODIFIED: Daily Checkin now triggers ad first for revenue
   window.claimDaily = async function() {
     if(isClaimingDaily) return;
     const today = getToday();
@@ -255,7 +256,6 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
     const btn = document.getElementById('claimBtn');
     btn.disabled = true;
     btn.innerText = "Loading Ad...";
-    // Trigger Monetag ad - user will see ad, then get points
     setTimeout(async () => {
       try {
         await addHistory("Daily Login", DAILY_REWARD, "Daily Check-in");
@@ -275,14 +275,12 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   function checkGiftStatus() { const today = getToday(); const lastClaim = userData.lastGiftClaim; clearInterval(giftCountdownInterval); if(lastClaim === today) { document.querySelectorAll('.gift-box').forEach(b => b.classList.add('disabled')); document.getElementById('giftNote').innerText = "Already picked today. Come back tomorrow"; document.getElementById('giftHistory').innerText = `Last gift: ${userData.lastGiftPoints} points`; document.getElementById('giftCountdown').style.display = 'block'; updateGiftCountdown(); giftCountdownInterval = setInterval(updateGiftCountdown, 1000); } else { document.querySelectorAll('.gift-box').forEach(b => b.classList.remove('disabled')); document.getElementById('giftNote').innerText = "Pick 1 mystery box. Resets at midnight"; document.getElementById('giftHistory').innerText = userData.lastGiftPoints? `Last gift: ${userData.lastGiftPoints} points` : 'No gifts claimed yet'; document.getElementById('giftCountdown').style.display = 'none'; } }
   function updateGiftCountdown() { const diff = getNextClaimTime() - new Date(); if(diff <= 0) { clearInterval(giftCountdownInterval); checkGiftStatus(); return; } const h = Math.floor(diff / 1000 / 60 / 60); const m = Math.floor(diff / 1000 / 60) % 60; const s = Math.floor(diff / 1000) % 60; document.getElementById('giftCountdown').innerText = `Next gift in: ${h}h ${m}m ${s}s`; }
 
-  // MODIFIED: Gift now triggers ad for revenue
   window.pickGift = async function(index, points, el) {
     if(isPickingGift) return;
     if(userData.lastGiftClaim === getToday()) return;
     isPickingGift = true;
     document.querySelectorAll('.gift-box').forEach(b => b.classList.add('disabled'));
     el.classList.add('burst');
-    // Small delay to allow Monetag OnClick ad to fire
     setTimeout(async () => {
       try {
         await addHistory("Gift Box", points, `Mystery Box Reward`);
@@ -310,6 +308,21 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
       const doc = await db.collection("users").doc(user.uid).get();
       if (doc.exists) {
         const data = doc.data();
+
+        // === 1 ACCOUNT = 1 DEVICE CHECK WITH WHITELIST ===
+        const emailLower = (data.emailLower || data.email || user.email || "").toLowerCase();
+        const myDeviceId = localStorage.getItem('deviceId');
+        const isWhitelisted = WHITELIST.includes(emailLower);
+
+        if(!isWhitelisted && data.deviceId && myDeviceId && data.deviceId!== myDeviceId){
+          alert("❌ 1 account = 1 device. This account is used on another phone.");
+          await auth.signOut();
+          localStorage.clear();
+          window.location.replace('./index.html');
+          return;
+        }
+        // ===============================================
+
         localStorage.setItem('userData', JSON.stringify(data));
         localStorage.setItem('points', data.balance || 0);
         loadData(data);
