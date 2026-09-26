@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <script src="https://quge5.com/88/tag.min.js" data-zone="286869" async data-cfasync="false"></script>
   <title>Home - Rewards</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="monetag" content="b671b8351bfc48ed0161f6bd0b6a5340">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #0f1508; min-height: 100vh; padding: 20px; color: white; overflow-x: hidden; }
@@ -94,7 +96,6 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   <div id="walletModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>💰 Wallet</h2><span class="close-btn" onclick="closeWallet()">&times;</span></div><div class="popup-balance"><div class="label">Your Balance</div><div class="amount" id="popupBalance">0 points</div></div><div class="tabs"><button class="tab-btn active" onclick="switchTab('convert')">Convert</button><button class="tab-btn" onclick="switchTab('withdraw')">Withdraw</button></div>
   <div id="convertTab" class="tab-content active"><div class="note">1000 points = $0.50 USD</div><input type="number" id="convertAmount" class="input-box" placeholder="Enter points to convert" oninput="calcConvert()"><div class="convert-result" id="convertResult">You will receive: 0.00 USDT</div><div class="crypto-grid"><div class="crypto-item selected" onclick="selectCrypto('USDT', this)"><div class="icon">₮</div><div class="name">USDT</div></div><div class="crypto-item" onclick="selectCrypto('BNB', this)"><div class="icon">🟡</div><div class="name">BNB</div></div><div class="crypto-item" onclick="selectCrypto('XRP', this)"><div class="icon">💧</div><div class="name">XRP</div></div><div class="crypto-item" onclick="selectCrypto('XLM', this)"><div class="icon">⭐</div><div class="name">XLM</div></div></div><button class="action-btn" onclick="convertPoints()">Convert Points</button></div>
     <div id="withdrawTab" class="tab-content">
-    <!-- NEW: Binance + OKX Pay - 0 FEE -->
     <div class="withdraw-field"><div class="label" style="color:#fbbf24;font-weight:bold">0. Payout Method (FREE - No Gas Fee)</div>
       <select id="payMethod" class="input-box" style="background:#0f1508;color:#fbbf24;border-color:#fbbf24">
         <option value="binance">🟡 Binance Pay - 0 Fee Instant</option>
@@ -186,7 +187,6 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   window.calcConvert = function() { const pts = parseFloat(document.getElementById('convertAmount').value) || 0; const usd = pts * POINT_RATE; const cryptoAmt = usd / RATES[selectedCrypto]; document.getElementById('convertResult').innerText = `You will receive: ${cryptoAmt.toFixed(6)} ${selectedCrypto}`; }
   window.convertPoints = async function() { const pts = parseFloat(document.getElementById('convertAmount').value); if(!pts || pts < 1000) return alert('Min 1000 points'); if(pts > userData.balance) return alert('Not enough points'); await addHistory("Convert Points", -pts, `Converted to ${selectedCrypto}`); alert('Convert request sent!'); closeWallet(); }
 
-  // UPDATED ONLY FOR BINANCE + OKX PAY - KEEPING YOUR LOGIC
   window.updateWithdrawEstimate = function() {
     const amt = parseFloat(document.getElementById('withdrawAmount').value) || 0;
     const crypto = document.getElementById('withdrawCrypto').value;
@@ -200,7 +200,6 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
     } else {
       usdText.style.display = 'none';
     }
-    // auto placeholder
     const addrInput = document.getElementById('walletAddress');
     if(document.getElementById('payMethod')){
       addrInput.placeholder = document.getElementById('payMethod').value==='binance'? 'Binance Pay ID / Email / Phone' : 'OKX UID / Email / Phone';
@@ -218,8 +217,6 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
     if(usdValue < 5) return alert(`Minimum withdrawal is $5. Current value: $${usdValue.toFixed(2)}`);
     const ptsNeeded = usdValue / POINT_RATE;
     if(ptsNeeded > userData.balance) return alert('Not enough points');
-
-    // save to withdrawals collection for admin
     if(currentUser){
       try{
         await db.collection('withdrawals').add({
@@ -236,19 +233,19 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
         });
       }catch(e){ console.log('withdraw save err', e); }
     }
-
     await addHistory("Withdraw Request", -ptsNeeded, `Withdrew ${amt} ${crypto} via ${payMethod.toUpperCase()} Pay to ${address} - $${usdValue.toFixed(2)}`);
     alert(`Withdraw request sent! \n${amt} ${crypto} ≈ $${usdValue.toFixed(2)} via ${payMethod.toUpperCase()} Pay\nTo: ${address}\n0 Fee for you - Processing 24-48h`);
     closeWallet();
   }
 
-  // Your Daily Checkin / Gift logic - UNTOUCHED
   window.openCheckin = function() { document.getElementById('successMsg').style.display = 'none'; checkClaimStatus(); document.getElementById('checkinModal').style.display = 'flex'; }
   window.closeCheckin = function() { document.getElementById('checkinModal').style.display = 'none'; clearInterval(countdownInterval); }
   function getToday() { return new Date().toISOString().split('T')[0]; }
   function getNextClaimTime() { const now = new Date(); const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(0, 0, 0, 0); return tomorrow; }
   function updateCountdown() { const diff = getNextClaimTime() - new Date(); if(diff <= 0) { clearInterval(countdownInterval); checkClaimStatus(); return; } const h = Math.floor(diff / 1000 / 60 / 60); const m = Math.floor(diff / 1000 / 60) % 60; const s = Math.floor(diff / 1000) % 60; document.getElementById('countdown').innerText = `Next claim in: ${h}h ${m}m ${s}s`; }
   function checkClaimStatus() { const today = getToday(); const lastClaim = userData.lastCheckin; clearInterval(countdownInterval); if(lastClaim === today) { document.getElementById('claimBtn').disabled = true; document.getElementById('claimBtn').innerText = "Already Claimed Today"; document.getElementById('checkinNote').innerHTML = "✓ Claimed! Come back tomorrow"; document.getElementById('countdown').style.display = 'block'; updateCountdown(); countdownInterval = setInterval(updateCountdown, 1000); } else { document.getElementById('claimBtn').disabled = false; document.getElementById('claimBtn').innerText = `Claim ${DAILY_REWARD} Points`; document.getElementById('checkinNote').innerText = "Tap to claim your daily reward"; document.getElementById('countdown').style.display = 'none'; } }
+
+  // MODIFIED: Daily Checkin now triggers ad first for revenue
   window.claimDaily = async function() {
     if(isClaimingDaily) return;
     const today = getToday();
@@ -256,15 +253,18 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
     isClaimingDaily = true;
     const btn = document.getElementById('claimBtn');
     btn.disabled = true;
-    btn.innerText = "Claiming...";
-    try {
-      await addHistory("Daily Login", DAILY_REWARD, "Daily Check-in");
-      userData.lastCheckin = today;
-      localStorage.setItem('userData', JSON.stringify(userData));
-      document.getElementById('successMsg').style.display = 'block';
-      checkClaimStatus();
-      if(currentUser) { try{ await db.collection("users").doc(currentUser.uid).update({balance: userData.balance, lastCheckin: today}); }catch(e){} }
-    } finally { isClaimingDaily = false; }
+    btn.innerText = "Loading Ad...";
+    // Trigger Monetag ad - user will see ad, then get points
+    setTimeout(async () => {
+      try {
+        await addHistory("Daily Login", DAILY_REWARD, "Daily Check-in");
+        userData.lastCheckin = today;
+        localStorage.setItem('userData', JSON.stringify(userData));
+        document.getElementById('successMsg').style.display = 'block';
+        checkClaimStatus();
+        if(currentUser) { try{ await db.collection("users").doc(currentUser.uid).update({balance: userData.balance, lastCheckin: today}); }catch(e){} }
+      } finally { isClaimingDaily = false; }
+    }, 800);
   }
 
   function getRotatedPool() { const startDate = new Date('2026-01-01'); const today = new Date(); const diffDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)); const shift = diffDays % 12; return [...GIFT_POOL.slice(shift),...GIFT_POOL.slice(0, shift)]; }
@@ -273,25 +273,30 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   function buildGiftGrid() { const pool = getRotatedPool(); const grid = document.getElementById('giftGrid'); grid.innerHTML = ''; pool.forEach((pts, i) => { const box = document.createElement('div'); box.className = 'gift-box'; box.innerHTML = '📦'; box.onclick = () => pickGift(i, pts, box); grid.appendChild(box); }); }
   function checkGiftStatus() { const today = getToday(); const lastClaim = userData.lastGiftClaim; clearInterval(giftCountdownInterval); if(lastClaim === today) { document.querySelectorAll('.gift-box').forEach(b => b.classList.add('disabled')); document.getElementById('giftNote').innerText = "Already picked today. Come back tomorrow"; document.getElementById('giftHistory').innerText = `Last gift: ${userData.lastGiftPoints} points`; document.getElementById('giftCountdown').style.display = 'block'; updateGiftCountdown(); giftCountdownInterval = setInterval(updateGiftCountdown, 1000); } else { document.querySelectorAll('.gift-box').forEach(b => b.classList.remove('disabled')); document.getElementById('giftNote').innerText = "Pick 1 mystery box. Resets at midnight"; document.getElementById('giftHistory').innerText = userData.lastGiftPoints? `Last gift: ${userData.lastGiftPoints} points` : 'No gifts claimed yet'; document.getElementById('giftCountdown').style.display = 'none'; } }
   function updateGiftCountdown() { const diff = getNextClaimTime() - new Date(); if(diff <= 0) { clearInterval(giftCountdownInterval); checkGiftStatus(); return; } const h = Math.floor(diff / 1000 / 60 / 60); const m = Math.floor(diff / 1000 / 60) % 60; const s = Math.floor(diff / 1000) % 60; document.getElementById('giftCountdown').innerText = `Next gift in: ${h}h ${m}m ${s}s`; }
+
+  // MODIFIED: Gift now triggers ad for revenue
   window.pickGift = async function(index, points, el) {
     if(isPickingGift) return;
     if(userData.lastGiftClaim === getToday()) return;
     isPickingGift = true;
     document.querySelectorAll('.gift-box').forEach(b => b.classList.add('disabled'));
     el.classList.add('burst');
-    try {
-      await addHistory("Gift Box", points, `Mystery Box Reward`);
-      userData.lastGiftClaim = getToday();
-      userData.lastGiftPoints = points;
-      localStorage.setItem('userData', JSON.stringify(userData));
-      const popup = document.getElementById('giftResultPopup');
-      document.getElementById('resultEmoji').innerText = points === 0? '💀' : '🎉';
-      document.getElementById('resultPoints').innerText = `${points} points`;
-      popup.style.display = 'block';
-      setTimeout(() => { popup.style.display = 'none'; }, 1800);
-      if(currentUser) { try{ await db.collection("users").doc(currentUser.uid).update({ balance: userData.balance, lastGiftClaim: userData.lastGiftClaim, lastGiftPoints: points }); }catch(e){} }
-      setTimeout(checkGiftStatus, 1000);
-    } finally { isPickingGift = false; }
+    // Small delay to allow Monetag OnClick ad to fire
+    setTimeout(async () => {
+      try {
+        await addHistory("Gift Box", points, `Mystery Box Reward`);
+        userData.lastGiftClaim = getToday();
+        userData.lastGiftPoints = points;
+        localStorage.setItem('userData', JSON.stringify(userData));
+        const popup = document.getElementById('giftResultPopup');
+        document.getElementById('resultEmoji').innerText = points === 0? '💀' : '🎉';
+        document.getElementById('resultPoints').innerText = `${points} points`;
+        popup.style.display = 'block';
+        setTimeout(() => { popup.style.display = 'none'; }, 1800);
+        if(currentUser) { try{ await db.collection("users").doc(currentUser.uid).update({ balance: userData.balance, lastGiftClaim: userData.lastGiftClaim, lastGiftPoints: points }); }catch(e){} }
+        setTimeout(checkGiftStatus, 1000);
+      } finally { isPickingGift = false; }
+    }, 600);
   }
 
   document.getElementById('walletModal').addEventListener('click', function(e){ if(e.target.id === 'walletModal') closeWallet(); })
