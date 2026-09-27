@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <script src="https://quge5.com/88/tag.min.js" data-zone="286869" async data-cfasync="false"></script>
+  <script src="https://al5sm.com/tag.min.js" data-zone="286677" async data-cfasync="false"></script>
   <title>Home - Rewards</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="monetag" content="b671b8351bfc48ed0161f6bd0b6a5340">
@@ -133,30 +135,6 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   let isClaimingDaily = false;
   let isPickingGift = false;
 
-  // === MONETAG - ONLY FOR Daily Checkin, Gifts, Watch & Earn ===
-  function triggerMonetagAd() {
-    // Load Monetag MultiTag only when user claims reward - this is where you earn
-    if(!document.querySelector('script[data-zone="286869"]')) {
-      var s = document.createElement('script');
-      s.src = "https://quge5.com/88/tag.min.js";
-      s.setAttribute('data-zone', '286869');
-      s.async = true;
-      s.setAttribute('data-cfasync', 'false');
-      document.head.appendChild(s);
-    }
-    // Also trigger second zone for Watch & Earn if needed
-    if(!document.querySelector('script[data-zone="286677"]')) {
-      var s2 = document.createElement('script');
-      s2.src = "https://al5sm.com/tag.min.js";
-      s2.setAttribute('data-zone', '286677');
-      s2.async = true;
-      s2.setAttribute('data-cfasync', 'false');
-      document.head.appendChild(s2);
-    }
-    // Force popunder on claim
-    try { if(window._ monetag) {} } catch(e){}
-  }
-
   function getCurrentDateTime() {
     const d = new Date();
     let day = String(d.getDate()).padStart(2, '0');
@@ -192,10 +170,7 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
     }
   }
 
-  window.rewardWatchAd = function() {
-    triggerMonetagAd(); // AD ONLY HERE - Watch & Earn
-    addHistory("Watch Ad", 5, "Watched video");
-  }
+  window.rewardWatchAd = function() { addHistory("Watch Ad", 5, "Watched video"); }
   window.rewardReferral = function(name) { addHistory("Referral Bonus", 50, `Referred: ${name}`); }
 
   function loadData(data) {
@@ -281,7 +256,6 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
     const btn = document.getElementById('claimBtn');
     btn.disabled = true;
     btn.innerText = "Loading Ad...";
-    triggerMonetagAd(); // <-- AD TRIGGER ONLY FOR DAILY CHECKIN
     setTimeout(async () => {
       try {
         await addHistory("Daily Login", DAILY_REWARD, "Daily Check-in");
@@ -291,7 +265,7 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
         checkClaimStatus();
         if(currentUser) { try{ await db.collection("users").doc(currentUser.uid).update({balance: userData.balance, lastCheckin: today}); }catch(e){} }
       } finally { isClaimingDaily = false; }
-    }, 1500);
+    }, 800);
   }
 
   function getRotatedPool() { const startDate = new Date('2026-01-01'); const today = new Date(); const diffDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)); const shift = diffDays % 12; return [...GIFT_POOL.slice(shift),...GIFT_POOL.slice(0, shift)]; }
@@ -307,7 +281,6 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
     isPickingGift = true;
     document.querySelectorAll('.gift-box').forEach(b => b.classList.add('disabled'));
     el.classList.add('burst');
-    triggerMonetagAd(); // <-- AD TRIGGER ONLY FOR GIFTS
     setTimeout(async () => {
       try {
         await addHistory("Gift Box", points, `Mystery Box Reward`);
@@ -322,7 +295,7 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
         if(currentUser) { try{ await db.collection("users").doc(currentUser.uid).update({ balance: userData.balance, lastGiftClaim: userData.lastGiftClaim, lastGiftPoints: points }); }catch(e){} }
         setTimeout(checkGiftStatus, 1000);
       } finally { isPickingGift = false; }
-    }, 1200);
+    }, 600);
   }
 
   document.getElementById('walletModal').addEventListener('click', function(e){ if(e.target.id === 'walletModal') closeWallet(); })
@@ -335,9 +308,12 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
       const doc = await db.collection("users").doc(user.uid).get();
       if (doc.exists) {
         const data = doc.data();
+
+        // === 1 ACCOUNT = 1 DEVICE CHECK WITH WHITELIST ===
         const emailLower = (data.emailLower || data.email || user.email || "").toLowerCase();
         const myDeviceId = localStorage.getItem('deviceId');
         const isWhitelisted = WHITELIST.includes(emailLower);
+
         if(!isWhitelisted && data.deviceId && myDeviceId && data.deviceId!== myDeviceId){
           alert("❌ 1 account = 1 device. This account is used on another phone.");
           await auth.signOut();
@@ -345,6 +321,8 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
           window.location.replace('./index.html');
           return;
         }
+        // ===============================================
+
         localStorage.setItem('userData', JSON.stringify(data));
         localStorage.setItem('points', data.balance || 0);
         loadData(data);
