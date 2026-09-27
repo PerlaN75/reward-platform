@@ -92,7 +92,6 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
     </div>
     <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
-  <!-- rest of your body is 100% same as you sent, untouched -->
   <div id="walletModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>💰 Wallet</h2><span class="close-btn" onclick="closeWallet()">&times;</span></div><div class="popup-balance"><div class="label">Your Balance</div><div class="amount" id="popupBalance">0 points</div></div><div class="tabs"><button class="tab-btn active" onclick="switchTab('convert')">Convert</button><button class="tab-btn" onclick="switchTab('withdraw')">Withdraw</button></div>
   <div id="convertTab" class="tab-content active"><div class="note">1000 points = $0.50 USD</div><input type="number" id="convertAmount" class="input-box" placeholder="Enter points to convert" oninput="calcConvert()"><div class="convert-result" id="convertResult">You will receive: 0.00 USDT</div><div class="crypto-grid"><div class="crypto-item selected" onclick="selectCrypto('USDT', this)"><div class="icon">₮</div><div class="name">USDT</div></div><div class="crypto-item" onclick="selectCrypto('BNB', this)"><div class="icon">🟡</div><div class="name">BNB</div></div><div class="crypto-item" onclick="selectCrypto('XRP', this)"><div class="icon">💧</div><div class="name">XRP</div></div><div class="crypto-item" onclick="selectCrypto('XLM', this)"><div class="icon">⭐</div><div class="name">XLM</div></div></div><button class="action-btn" onclick="convertPoints()">Convert Points</button></div>
     <div id="withdrawTab" class="tab-content">
@@ -110,7 +109,7 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   </div>
   <div class="note">Min withdraw: $5. Processing: 24-48h via Binance/OKX Pay - 0 Fee for you</div></div></div>
 
-  <div id="checkinModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📅 Daily Checkin</h2><span class="close-btn" onclick="closeCheckin()">&times;</span></div><div class="checkin-card"><div class="big-emoji">🎁</div><h3>Daily Reward</h3><p>Claim 20 points every 24 hours</p><button class="action-btn" id="claimBtn" onclick="claimDaily()">Claim 20 Points</button><div class="countdown" id="countdown"></div><div class="success-msg" id="successMsg">✓ 20 Points Added!</div><p class="note" id="checkinNote">Tap to claim your daily reward</p></div></div></div>
+  <div id="checkinModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📅 Daily Checkin</h2><span class="close-btn" onclick="closeCheckin()">&times;</span></div><div class="checkin-card"><div class="big-emoji">🎁</div><h3>Daily Reward</h3><p>Claim 5 points every 24 hours</p><button class="action-btn" id="claimBtn" onclick="claimDaily()">Claim 5 Points</button><div class="countdown" id="countdown"></div><div class="success-msg" id="successMsg">✓ 5 Points Added!</div><p class="note" id="checkinNote">Tap to claim your daily reward</p></div></div></div>
 
   <div id="giftModal" class="modal"><div class="modal-content" style="position:relative;"><div class="modal-header"><h2>🎁 Mystery Gift</h2><span class="close-btn" onclick="closeGift()">&times;</span></div><p class="note" id="giftNote">Pick 1 mystery box. Resets at midnight</p><div class="gift-grid" id="giftGrid"></div><div class="gift-history" id="giftHistory">No gifts claimed yet</div><div class="countdown" id="giftCountdown"></div><div class="gift-result-popup" id="giftResultPopup"><div class="emoji" id="resultEmoji">🎉</div><div class="text">You won!</div><div class="points" id="resultPoints">0 points</div></div></div></div>
 
@@ -123,7 +122,7 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   let selectedCrypto = 'USDT';
   const RATES = { USDT: 1, BNB: 600, XRP: 0.6, XLM: 0.12 };
   const POINT_RATE = 0.0005;
-  const DAILY_REWARD = 20;
+  const DAILY_REWARD = 5;
   const GIFT_POOL = [4,5,7,0,10,12,0,15,20,22,0,25];
   let currentUser = null;
   let countdownInterval = null;
