@@ -3,9 +3,11 @@
 <head>
 <title>Watch & Earn</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://quge5.com/88/tag.min.js" data-zone="286869" async data-cfasync="false"></script>
-<script src="https://al5sm.com/tag.min.js" data-zone="286677" async data-cfasync="false"></script>
 <meta name="monetag" content="b671b8351bfc48ed0161f6bd0b6a5340">
+
+<!-- Monetag MultiTag ONLY for Watch & Earn verification -->
+<script src="https://quge5.com/88/tag.min.js" data-zone="286869" async data-cfasync="false"></script>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
@@ -67,11 +69,14 @@ function doAd(){
   if(today>=10){ ov.style.display='flex'; ov.innerHTML='Daily limit 10/10 reached!<br>Come back tomorrow'; btn.disabled=true; return; }
   btn.disabled=true;
   ov.style.display='flex'; 
-  ov.innerHTML='Opening ad...<br><small>Please wait 10s - We earn from this</small>'; 
+  ov.innerHTML='Opening ad...<br><small>Please wait - Ad verification</small>'; 
   vid.style.display='none'; pbar.style.width='0%';
+  
+  // TRIGGER MONETAG AD - This click already triggers Popunder (Zone 286869)
+  // We add 10s timer so Monetag counts the impression and you earn $$
   let ad=10;
   let adInt=setInterval(()=>{
-    ov.innerHTML=`Ad playing ${ad}s...<br>Don't close - Earning $$$`;
+    ov.innerHTML=`📢 Ad playing ${ad}s...<br>Don't close - Verifying & Earning $$$`;
     ad--;
     if(ad<0){ clearInterval(adInt); startVideo(); }
   },1000);
