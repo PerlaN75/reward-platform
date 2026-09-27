@@ -7,20 +7,20 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #0f1508; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-  .container { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 30px 25px; width: 100%; max-width: 420px; color: white; }
+.container { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 30px 25px; width: 100%; max-width: 420px; color: white; }
     h1 { text-align: center; font-size: 32px; margin-bottom: 5px; color: #fff; }
-  .subtitle { text-align: center; color: #fbbf24; margin-bottom: 20px; font-size: 14px; }
-  .ref-banner { background: #0f6b4f; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; }
+.subtitle { text-align: center; color: #fbbf24; margin-bottom: 20px; font-size: 14px; }
+.ref-banner { background: #0f6b4f; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; }
     label { font-size: 14px; color: #ccc; margin-top: 12px; display: block; margin-bottom: 5px; }
-  .input-box { width: 100%; padding: 14px; margin-bottom: 10px; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
-  .input-box:focus { border-color: #fbbf24; }
-  .btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
-  .btn:disabled { background: #444; color: #888; cursor: not-allowed; }
-  .note { text-align: center; margin-top: 15px; font-size: 14px; color: #aaa; }
-  .note a { color: #60a5fa; text-decoration: none; font-weight: bold; }
-  .error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; }
-  .success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
-  .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
+.input-box { width: 100%; padding: 14px; margin-bottom: 10px; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
+.input-box:focus { border-color: #fbbf24; }
+.btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+.btn:disabled { background: #444; color: #888; cursor: not-allowed; }
+.note { text-align: center; margin-top: 15px; font-size: 14px; color: #aaa; }
+.note a { color: #60a5fa; text-decoration: none; font-weight: bold; }
+.error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; }
+.success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
+.back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -49,7 +49,8 @@
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db = firebase.firestore();
-  const WHITELIST = ['admin@reward.rw','priyamwiza25@gmail.com','inezarose25@gmail.com'].map(e=>e.toLowerCase());
+  const WHITELIST = ['admin@reward.rw','inezarose25@gmail.com'].map(e=>e.toLowerCase());
+
   function getDeviceId(){
     let id = localStorage.getItem('deviceId');
     if(!id){ let m = document.cookie.match(/deviceId=([^;]+)/); if(m) id = m[1]; }
@@ -58,12 +59,15 @@
     document.cookie = "deviceId="+id+"; path=/; max-age=31536000";
     return id;
   }
+
   let referredByCode=null;
   const urlParams=new URLSearchParams(window.location.search);
   referredByCode=urlParams.get('ref');
   if(referredByCode){ document.getElementById('refBanner').style.display='block'; document.getElementById('refName').innerText=referredByCode; }
+
   window.formatUsername=function(){let v=document.getElementById('username').value; v=v.replace(/[^a-zA-Z]/g,''); v=v.charAt(0).toUpperCase()+v.slice(1).toLowerCase(); document.getElementById('username').value=v;}
-  function validatePassword(p){if(p.length<5||p.length>10)return"Password must be 5-10 characters"; if(!/[A-Z]/.test(p))return"Password needs at least 1 capital letter"; if(!/[0-9]/.test(p))return"Password needs at least 1 number"; if(!/[!@#$%^&*(),.?":{}|<>]/.test(p))return"Password needs at least 1 special character"; return null;}
+  function validatePassword(p){if(p.length<5||p.length>10)return"Password must be 5-10 characters"; if(!/[A-Z]/.test(p))return"Password needs at least 1 capital letter"; if(!/[0-9]/.test(p))return"Password needs at least 1 number"; if(!/[!@#$%^&*(),.?\":{}|<>]/.test(p))return"Password needs at least 1 special character"; return null;}
+
   window.createAccount=async function(){
     const username=document.getElementById('username').value.trim();
     const email=document.getElementById('email').value.trim();
@@ -86,15 +90,22 @@
           if(!same){ errorEl.innerText="❌ 1 device = 1 account. This phone already has an account: "+existing.docs[0].data().username; btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return; }
         }
       }
-      const userNameCheck = await db.collection("users").where("usernameLower","==",username.toLowerCase()).limit(1).get();
-      if(!userNameCheck.empty){ errorEl.innerText="Username taken"; btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return; }
+      const userNameCheck = await db.collection("usernames").doc(username.toLowerCase()).get();
+      if(userNameCheck.exists){ errorEl.innerText="Username taken"; btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return; }
+
       const cred=await auth.createUserWithEmailAndPassword(email,password);
       const user=cred.user;
-      await user.sendEmailVerification();
+
+      const actionCodeSettings = {
+        url: window.location.origin + window.location.pathname.replace('reg.html','') + 'index.html?verified=true',
+        handleCodeInApp: false
+      };
+      await user.sendEmailVerification(actionCodeSettings);
+
       let referrerDoc=null; let referrerUsername=""; let canReward=false;
       let twentyFourHoursAgo=new Date(Date.now()-24*60*60*1000);
       if(referredByCode){
-        const refQuery=await db.collection("users").where("username","==",referredByCode).limit(1).get();
+        const refQuery=await db.collection("users").where("usernameLower","==",referredByCode.toLowerCase()).limit(1).get();
         if(!refQuery.empty){
           referrerDoc=refQuery.docs[0]; referrerUsername=referrerDoc.data().username;
           if(!referrerDoc.data().referralBonusBlocked){
@@ -103,6 +114,7 @@
         }
       }
       const startingPoints=(referrerDoc&&canReward)?5:0;
+
       await db.collection("users").doc(user.uid).set({
         username: username, usernameLower: username.toLowerCase(),
         email: email, emailLower: emailLow,
@@ -115,6 +127,21 @@
         isBanned:false, isDeactivated:false, referralBonusBlocked:false,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
+
+      await db.collection("usernames").doc(username.toLowerCase()).set({
+        uid: user.uid,
+        username: username,
+        emailLower: emailLow,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      await db.collection("deviceIds").doc(deviceId).set({
+        uid: user.uid,
+        username: username,
+        emailLower: emailLow,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
       if(startingPoints>0){
         await db.collection("users").doc(user.uid).collection("earnHistory").add({
           action:'Referral Bonus', type:'referral', points:5,
@@ -133,13 +160,10 @@
       successEl.innerText="✅ Verification email sent to "+email+"! Check inbox then Login.";
       btn.innerText="Email Sent";
       await auth.signOut();
-      setTimeout(()=>window.location.href='./index.html',3000);
+      setTimeout(()=>window.location.href='./index.html?new='+encodeURIComponent(username),3000);
     }catch(error){ errorEl.innerText=error.message; btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; console.log(error); }
   }
 </script>
-
-<!-- MONETAG SINGLE TAG - CONTAINS ALL 4 ZONES - SAFE -->
 <script src="https://3nbf4.com/pfe/current/tag.min.js?z=11894084" data-cfasync="false" async></script>
-
 </body>
 </html>
