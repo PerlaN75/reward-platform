@@ -7,20 +7,20 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #0f1508; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-   .container { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 30px 25px; width: 100%; max-width: 420px; color: white; }
+  .container { background: #2f3e1a; border: 3px solid #fbbf24; border-radius: 20px; padding: 30px 25px; width: 100%; max-width: 420px; color: white; }
     h1 { text-align: center; font-size: 32px; margin-bottom: 5px; color: #fff; }
-   .subtitle { text-align: center; color: #fbbf24; margin-bottom: 20px; font-size: 14px; }
-   .ref-banner { background: #0f6b4f; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; }
+  .subtitle { text-align: center; color: #fbbf24; margin-bottom: 20px; font-size: 14px; }
+  .ref-banner { background: #0f6b4f; color: white; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; }
     label { font-size: 14px; color: #ccc; margin-top: 12px; display: block; margin-bottom: 5px; }
-   .input-box { width: 100%; padding: 14px; margin-bottom: 10px; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
-   .input-box:focus { border-color: #fbbf24; }
-   .btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
-   .btn:disabled { background: #444; color: #888; cursor: not-allowed; }
-   .note { text-align: center; margin-top: 15px; font-size: 14px; color: #aaa; }
-   .note a { color: #60a5fa; text-decoration: none; font-weight: bold; }
-   .error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; }
-   .success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
-   .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
+  .input-box { width: 100%; padding: 14px; margin-bottom: 10px; background: #000; border: 2px solid #444; border-radius: 10px; color: white; font-size: 15px; outline: none; }
+  .input-box:focus { border-color: #fbbf24; }
+  .btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+  .btn:disabled { background: #444; color: #888; cursor: not-allowed; }
+  .note { text-align: center; margin-top: 15px; font-size: 14px; color: #aaa; }
+  .note a { color: #60a5fa; text-decoration: none; font-weight: bold; }
+  .error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; }
+  .success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
+  .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -102,7 +102,7 @@
           }
         }
       }
-      const startingPoints=(referrerDoc&&canReward)?50:0;
+      const startingPoints=(referrerDoc&&canReward)?5:0;
       await db.collection("users").doc(user.uid).set({
         username: username, usernameLower: username.toLowerCase(),
         email: email, emailLower: emailLow,
@@ -117,7 +117,7 @@
       });
       if(startingPoints>0){
         await db.collection("users").doc(user.uid).collection("earnHistory").add({
-          action:'Referral Bonus', type:'referral', points:50,
+          action:'Referral Bonus', type:'referral', points:5,
           desc:'Referred by '+referrerUsername, description:'Referred by '+referrerUsername,
           timestamp: firebase.firestore.FieldValue.serverTimestamp(), createdAt: new Date()
         });
@@ -125,9 +125,9 @@
       if(referrerDoc&&canReward){
         const already=await db.collection("users").doc(referrerDoc.id).collection("earnHistory").where("desc","==","Invited "+username).get();
         if(already.empty){
-          await referrerDoc.ref.update({ balance: firebase.firestore.FieldValue.increment(50), points: firebase.firestore.FieldValue.increment(50), referralCount: firebase.firestore.FieldValue.increment(1), totalReferralEarnings: firebase.firestore.FieldValue.increment(50) });
-          await db.collection("users").doc(referrerDoc.id).collection("earnHistory").add({ action:'Referral Bonus', type:'referral', points:50, desc:'Invited '+username, description:'Invited '+username, timestamp: firebase.firestore.FieldValue.serverTimestamp(), createdAt: new Date() });
-          await db.collection("users").doc(referrerDoc.id).collection("referralDailyLogs").add({ newUserId:user.uid, newUsername:username, createdAt:new Date(), bonusGiven:50, bonusGivenBool:true });
+          await referrerDoc.ref.update({ balance: firebase.firestore.FieldValue.increment(5), points: firebase.firestore.FieldValue.increment(5), referralCount: firebase.firestore.FieldValue.increment(1), totalReferralEarnings: firebase.firestore.FieldValue.increment(5) });
+          await db.collection("users").doc(referrerDoc.id).collection("earnHistory").add({ action:'Referral Bonus', type:'referral', points:5, desc:'Invited '+username, description:'Invited '+username, timestamp: firebase.firestore.FieldValue.serverTimestamp(), createdAt: new Date() });
+          await db.collection("users").doc(referrerDoc.id).collection("referralDailyLogs").add({ newUserId:user.uid, newUsername:username, createdAt:new Date(), bonusGiven:5, bonusGivenBool:true });
         }
       }
       successEl.innerText="✅ Verification email sent to "+email+"! Check inbox then Login.";
