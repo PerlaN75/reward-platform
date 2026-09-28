@@ -98,10 +98,42 @@
   }
 
   .icons { display: flex; gap: 20px; justify-content: center; }
+
   .icon-box {
     width: 55px; height: 55px; background: rgba(255,255,255,0.1);
     border-radius: 15px; display: flex; justify-content: center; align-items: center; font-size: 26px;
   }
+
+  /* --- ONLY NEW PART: Notifications --- */
+  .notif-rect{
+    width:90%; max-width:320px;
+    background:#ffffff;
+    border-radius:18px;
+    padding:18px 15px;
+    text-align:center;
+    margin-top:25px;
+    box-shadow:0 6px 0 #d1d5db, 0 10px 25px rgba(0,0,0,0.3);
+    cursor:pointer;
+  }
+  .notif-ring-wrap{ position:relative; display:inline-block; }
+  .notif-ring{ font-size:48px; line-height:1; }
+  .notif-count{
+    position:absolute; top:-5px; right:-10px;
+    background:#ff0000; color:#fff;
+    min-width:24px; height:24px; padding:0 6px;
+    border-radius:12px; font-size:13px; font-weight:bold;
+    display:flex; align-items:center; justify-content:center;
+    border:2px solid #fff;
+  }
+  .notif-rect .notif-title{ color:#000; font-weight:bold; font-size:16px; margin-top:6px; }
+  .notif-modal{ display:none; position:fixed; z-index:10000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; padding:15px; }
+  .notif-modal-box{ background:#fff; width:100%; max-width:380px; border-radius:18px; padding:18px; max-height:80vh; overflow-y:auto; color:#000; text-align:left; }
+  .notif-modal-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+  .notif-modal-header h3{ font-size:18px; }
+  .notif-close{ font-size:26px; cursor:pointer; font-weight:bold; }
+  .notif-item{ background:#f3f4f6; border-radius:12px; padding:12px 40px 12px 12px; margin-bottom:10px; position:relative; font-size:14px; color:#111; line-height:1.4; }
+  .notif-del{ position:absolute; right:8px; top:8px; width:28px; height:28px; background:#ff0000; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; font-size:14px; }
+  .notif-empty{ text-align:center; color:#777; padding:20px 0; font-size:14px; }
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -125,6 +157,15 @@
     <div class="icon-box">🎁</div>
   </div>
 
+  <!-- NEW: White rectangle Notifications -->
+  <div class="notif-rect" onclick="openNotifModal()">
+    <div class="notif-ring-wrap">
+      <div class="notif-ring">🔔</div>
+      <div id="notifCount" class="notif-count" style="display:none;">0</div>
+    </div>
+    <div class="notif-title">Notifications</div>
+  </div>
+
 <!-- LEFT DRAWER POPUP -->
 <div id="startPopup" class="start-popup" onclick="this.style.display='none'">
   <div class="start-popup-box" onclick="event.stopPropagation()">
@@ -135,8 +176,21 @@
   </div>
 </div>
 
+<!-- NEW: Notifications Popup -->
+<div id="notifModal" class="notif-modal" onclick="closeNotifModal()">
+  <div class="notif-modal-box" onclick="event.stopPropagation()">
+    <div class="notif-modal-header">
+      <h3>🔔 Notifications</h3>
+      <span class="notif-close" onclick="closeNotifModal()">×</span>
+    </div>
+    <div id="notifList"></div>
+  </div>
+</div>
+
 <script>
 function openStartPopup(){ document.getElementById('startPopup').style.display='flex'; }
+function openNotifModal(){ document.getElementById('notifModal').style.display='flex'; }
+function closeNotifModal(){ document.getElementById('notifModal').style.display='none'; }
 
 const firebaseConfig = {
   apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
@@ -163,6 +217,47 @@ auth.onAuthStateChanged((user) => {
   if (user) {
     loadUserToLocal(user.uid);
   }
+});
+
+// --- Notifications Logic ---
+function getDeletedIds(){ try{ return JSON.parse(localStorage.getItem('deletedNotifs')||'[]'); }catch(e){ return []; } }
+function saveDeletedId(id){
+  let arr = getDeletedIds();
+  if(!arr.includes(id)){ arr.push(id); localStorage.setItem('deletedNotifs', JSON.stringify(arr)); }
+}
+let allNotifs = [];
+function renderNotifs(){
+  const deleted = getDeletedIds();
+  const filtered = allNotifs.filter(n=> !deleted.includes(n.id));
+  const countEl = document.getElementById('notifCount');
+  const listEl = document.getElementById('notifList');
+  if(filtered.length>0){ countEl.style.display='flex'; countEl.textContent=filtered.length; }
+  else{ countEl.style.display='none'; }
+
+  if(filtered.length===0){
+    listEl.innerHTML = '<div class="notif-empty">No notifications</div>';
+    return;
+  }
+  listEl.innerHTML = filtered.map(n=> `
+    <div class="notif-item">
+      ${n.message}
+      <div style="font-size:11px;color:#888;margin-top:6px;">${n.dateStr||''}</div>
+      <div class="notif-del" onclick="deleteNotif('${n.id}')">X</div>
+    </div>
+  `).join('');
+}
+function deleteNotif(id){ saveDeletedId(id); renderNotifs(); }
+
+db.collection("notifications").orderBy("createdAt","desc").limit(50).onSnapshot((snap)=>{
+  allNotifs = snap.docs.map(doc=>{
+    const d = doc.data();
+    let dateStr = '';
+    if(d.createdAt && d.createdAt.toDate){
+      dateStr = d.createdAt.toDate().toLocaleString();
+    }
+    return { id: doc.id, message: d.message||'', dateStr: dateStr };
+  });
+  renderNotifs();
 });
 </script>
 </body>
