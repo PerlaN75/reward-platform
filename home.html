@@ -69,12 +69,16 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
 .gift-result-popup.emoji { font-size: 60px; margin-bottom: 10px; }
 .gift-result-popup.text { font-size: 18px; color: #fbbf24; font-weight: bold; }
 .gift-result-popup.points { font-size: 32px; color: #22c55e; font-weight: bold; margin-top: 5px; }
+/* FIXED: NICE TOAST REPLACING UGLY ALERT */
+#customToast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #2f3e1a; border: 2px solid #fbbf24; color: white; padding: 14px 22px; border-radius: 12px; font-weight: bold; font-size: 14px; z-index: 99999; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.6); animation: slideDown 0.3s ease; max-width: 90%; text-align: center; }
+@keyframes slideDown { from { top:-50px; opacity:0 } to { top:20px; opacity:1 } }
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
+<div id="customToast"></div>
   <div class="container">
         <div class="header"><h2><span style="color:white">Welcome, </span><span id="headerText" style="color:#fbbf24"></span> 👋</h2></div>
     <div class="balance-card">
@@ -118,7 +122,18 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db = firebase.firestore();
-  const WHITELIST = ['admin@reward.rw','priyamwiza25@gmail.com','inezarose25@gmail.com'].map(e=>e.toLowerCase());
+  const WHITELIST = ['admin@reward.rw','inezarose25@gmail.com'].map(e=>e.toLowerCase());
+
+  // FIXED: REPLACE UGLY ALERT WITH NICE TOAST
+  function showToast(msg){
+    const t = document.getElementById('customToast');
+    t.innerText = msg;
+    t.style.display = 'block';
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(()=> t.style.display='none', 3000);
+  }
+  window.alert = showToast;
+
   let selectedCrypto = 'USDT';
   const RATES = { USDT: 1, BNB: 600, XRP: 0.6, XLM: 0.12 };
   const POINT_RATE = 0.0005;
@@ -142,9 +157,9 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   window.switchTab = function(tab) { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active')); if(tab==='convert'){document.querySelectorAll('.tab-btn')[0].classList.add('active');document.getElementById('convertTab').classList.add('active');}else{document.querySelectorAll('.tab-btn')[1].classList.add('active');document.getElementById('withdrawTab').classList.add('active'); updateWithdrawEstimate();} }
   window.selectCrypto = function(crypto, el) { selectedCrypto = crypto; document.querySelectorAll('.crypto-item').forEach(i => i.classList.remove('selected')); el.classList.add('selected'); calcConvert(); }
   window.calcConvert = function() { const pts = parseFloat(document.getElementById('convertAmount').value) || 0; const usd = pts * POINT_RATE; const cryptoAmt = usd / RATES[selectedCrypto]; document.getElementById('convertResult').innerText = `You will receive: ${cryptoAmt.toFixed(6)} ${selectedCrypto}`; }
-  window.convertPoints = async function() { const pts = parseFloat(document.getElementById('convertAmount').value); if(!pts || pts < 1000) return alert('Min 1000 points'); if(pts > userData.balance) return alert('Not enough points'); await addHistory("Convert Points", -pts, `Converted to ${selectedCrypto}`); alert('Convert request sent!'); closeWallet(); }
+  window.convertPoints = async function() { const pts = parseFloat(document.getElementById('convertAmount').value); if(!pts || pts < 1000) return showToast('⚠️ Min 1000 points to convert'); if(pts > userData.balance) return showToast('❌ Not enough points - You have '+userData.balance); await addHistory("Convert Points", -pts, `Converted to ${selectedCrypto}`); showToast('✅ Convert request sent!'); closeWallet(); }
   window.updateWithdrawEstimate = function() { const amt = parseFloat(document.getElementById('withdrawAmount').value) || 0; const crypto = document.getElementById('withdrawCrypto').value; const payMethod = document.getElementById('payMethod')? document.getElementById('payMethod').value.toUpperCase() : 'BINANCE'; const usdValue = amt * RATES[crypto]; const usdText = document.getElementById('usdValueText'); if(amt > 0){ usdText.style.display = 'block'; usdText.innerText = `Value: $${usdValue.toFixed(2)} USD ≈ ${Math.floor(usdValue/POINT_RATE)} pts via ${payMethod} PAY - 0 Fee`; usdText.style.color = usdValue < 1.5? '#ff4444' : '#fbbf24'; } else { usdText.style.display = 'none'; } const addrInput = document.getElementById('walletAddress'); if(document.getElementById('payMethod')){ addrInput.placeholder = document.getElementById('payMethod').value==='binance'? 'Binance Pay ID / Email / Phone' : 'OKX UID / Email / Phone'; } }
-  window.requestWithdraw = async function() { const amt = parseFloat(document.getElementById('withdrawAmount').value); const address = document.getElementById('walletAddress').value.trim(); const crypto = document.getElementById('withdrawCrypto').value; const payMethod = document.getElementById('payMethod')? document.getElementById('payMethod').value : 'binance'; if(!address) return alert('Enter your '+payMethod.toUpperCase()+' Pay ID / Email'); if(!amt || amt <= 0) return alert('Enter amount'); const usdValue = amt * RATES[crypto]; if(usdValue < 1.5) return alert(`Minimum withdrawal is 3000 pts = $1.5. Current value: $${usdValue.toFixed(2)}`); const ptsNeeded = usdValue / POINT_RATE; if(ptsNeeded < 3000) return alert(`Minimum withdrawal is 3000 pts = $1.5. Current: ${Math.floor(ptsNeeded)} pts`); if(ptsNeeded > userData.balance) return alert('Not enough points'); if(currentUser){ try{ await db.collection('withdrawals').add({ uid: currentUser.uid, username: userData.username || 'User', method: payMethod, payId: address, crypto: crypto, amount: amt, usdValue: usdValue, pointsUsed: ptsNeeded, status: 'pending', timestamp: firebase.firestore.FieldValue.serverTimestamp() }); }catch(e){ console.log('withdraw save err', e); } } await addHistory("Withdraw Request", -ptsNeeded, `Withdrew ${amt} ${crypto} via ${payMethod.toUpperCase()} Pay to ${address} - $${usdValue.toFixed(2)}`); alert(`Withdraw request sent! \n${amt} ${crypto} ≈ $${usdValue.toFixed(2)} via ${payMethod.toUpperCase()} Pay\nTo: ${address}\n0 Fee for you - Processing 24-48h`); closeWallet(); }
+  window.requestWithdraw = async function() { const amt = parseFloat(document.getElementById('withdrawAmount').value); const address = document.getElementById('walletAddress').value.trim(); const crypto = document.getElementById('withdrawCrypto').value; const payMethod = document.getElementById('payMethod')? document.getElementById('payMethod').value : 'binance'; if(!address) return showToast('⚠️ Enter your '+payMethod.toUpperCase()+' Pay ID / Email'); if(!amt || amt <= 0) return showToast('⚠️ Enter amount'); const usdValue = amt * RATES[crypto]; if(usdValue < 1.5) return showToast(`⚠️ Minimum $1.5 - Current: $${usdValue.toFixed(2)}`); const ptsNeeded = usdValue / POINT_RATE; if(ptsNeeded < 3000) return showToast(`⚠️ Minimum 3000 pts - Current: ${Math.floor(ptsNeeded)} pts`); if(ptsNeeded > userData.balance) return showToast('❌ Not enough points - You have '+userData.balance); if(currentUser){ try{ await db.collection('withdrawals').add({ uid: currentUser.uid, username: userData.username || 'User', method: payMethod, payId: address, crypto: crypto, amount: amt, usdValue: usdValue, pointsUsed: ptsNeeded, status: 'pending', timestamp: firebase.firestore.FieldValue.serverTimestamp() }); }catch(e){ console.log('withdraw save err', e); } } await addHistory("Withdraw Request", -ptsNeeded, `Withdrew ${amt} ${crypto} via ${payMethod.toUpperCase()} Pay to ${address} - $${usdValue.toFixed(2)}`); showToast(`✅ Withdraw sent! ${amt} ${crypto} ≈ $${usdValue.toFixed(2)} via ${payMethod.toUpperCase()}`); closeWallet(); }
   window.openCheckin = function() { document.getElementById('successMsg').style.display = 'none'; checkClaimStatus(); document.getElementById('checkinModal').style.display = 'flex'; }
   window.closeCheckin = function() { document.getElementById('checkinModal').style.display = 'none'; clearInterval(countdownInterval); }
   function getToday() { return new Date().toISOString().split('T')[0]; }
@@ -172,7 +187,7 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
         const myDeviceId = localStorage.getItem('deviceId');
         const isWhitelisted = WHITELIST.includes(emailLower);
         if(!isWhitelisted && data.deviceId && myDeviceId && data.deviceId!== myDeviceId){
-          alert("❌ 1 account = 1 device. This account is used on another phone.");
+          showToast("❌ 1 account = 1 device. This account is used on another phone.");
           await auth.signOut();
           localStorage.clear();
           window.location.replace('./index.html');
