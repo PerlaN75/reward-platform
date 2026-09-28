@@ -69,9 +69,15 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
 .gift-result-popup.emoji { font-size: 60px; margin-bottom: 10px; }
 .gift-result-popup.text { font-size: 18px; color: #fbbf24; font-weight: bold; }
 .gift-result-popup.points { font-size: 32px; color: #22c55e; font-weight: bold; margin-top: 5px; }
-/* FIXED: NICE TOAST REPLACING UGLY ALERT */
 #customToast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #2f3e1a; border: 2px solid #fbbf24; color: white; padding: 14px 22px; border-radius: 12px; font-weight: bold; font-size: 14px; z-index: 99999; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.6); animation: slideDown 0.3s ease; max-width: 90%; text-align: center; }
 @keyframes slideDown { from { top:-50px; opacity:0 } to { top:20px; opacity:1 } }
+/* === MAINTENANCE OVERLAY - ADDED SAFE === */
+#maintenanceOverlay{position:fixed;top:0;left:0;right:0;bottom:0;background:#0f1508;z-index:100000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:25px;text-align:center}
+#maintenanceOverlay.m-icon{font-size:70px;margin-bottom:15px;animation: pulse 1.5s infinite}
+#maintenanceOverlay h1{font-size:28px;color:#fbbf24;margin-bottom:12px}
+#maintenanceOverlay p{font-size:16px;color:#fff;line-height:1.6;background:#1a2410;border:2px solid #fbbf24;border-radius:15px;padding:18px;max-width:420px;width:100%;word-break:break-word}
+#maintenanceOverlay.m-footer{margin-top:18px;font-size:12px;color:#aaa}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -79,6 +85,15 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
 </head>
 <body>
 <div id="customToast"></div>
+
+<!-- MAINTENANCE BLOCKER - SAFE ADD -->
+<div id="maintenanceOverlay">
+  <div class="m-icon">🛠️</div>
+  <h1>Under Maintenance</h1>
+  <p id="maintenanceText">We are currently under maintenance. Please check back later.</p>
+  <div class="m-footer">Reward RW • App Config - Crypto</div>
+</div>
+
   <div class="container">
         <div class="header"><h2><span style="color:white">Welcome, </span><span id="headerText" style="color:#fbbf24"></span> 👋</h2></div>
     <div class="balance-card">
@@ -124,7 +139,22 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   const db = firebase.firestore();
   const WHITELIST = ['admin@reward.rw','inezarose25@gmail.com'].map(e=>e.toLowerCase());
 
-  // FIXED: REPLACE UGLY ALERT WITH NICE TOAST
+  // === MAINTENANCE LISTENER - SAFE, DOES NOT BREAK OTHERS ===
+  db.collection("appConfig").doc("main").onSnapshot((snap)=>{
+    if(!snap.exists) return;
+    const cfg = snap.data();
+    const overlay = document.getElementById("maintenanceOverlay");
+    const txt = document.getElementById("maintenanceText");
+    if(cfg.maintenanceMode === "on"){
+      txt.innerText = cfg.maintenanceMessage || "We are under maintenance. Please check back later.";
+      overlay.style.display = "flex";
+      document.body.style.overflow = "hidden";
+    } else {
+      overlay.style.display = "none";
+      document.body.style.overflow = "";
+    }
+  });
+
   function showToast(msg){
     const t = document.getElementById('customToast');
     t.innerText = msg;
