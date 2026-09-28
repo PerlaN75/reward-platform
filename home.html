@@ -72,12 +72,28 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
 /* FIXED: NICE TOAST REPLACING UGLY ALERT */
 #customToast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #2f3e1a; border: 2px solid #fbbf24; color: white; padding: 14px 22px; border-radius: 12px; font-weight: bold; font-size: 14px; z-index: 99999; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.6); animation: slideDown 0.3s ease; max-width: 90%; text-align: center; }
 @keyframes slideDown { from { top:-50px; opacity:0 } to { top:20px; opacity:1 } }
+    /* ADDED ONLY FOR MAINTENANCE */
+    #maintenanceOverlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
+
+<!-- ADDED ONLY: SYSTEM MAINTENANCE OVERLAY -->
+<div id="maintenanceOverlay">
+  <div style="max-width:400px;width:100%">
+    <div style="font-size:40px;margin-bottom:10px">🛠️</div>
+    <h1 style="color:#fbbf24;font-size:34px;margin-bottom:20px;font-weight:bold">Under Maintenance</h1>
+    <div style="background:#1e2f15;border:2px solid #fbbf24;border-radius:15px;padding:20px;margin-bottom:15px">
+      <p id="maintenanceMsg" style="color:white;font-size:18px;line-height:1.4">Maintainance for 20 min.</p>
+    </div>
+    <p style="color:#ccc;font-size:14px;margin-bottom:25px">Reward RW • App Config - Crypto</p>
+    <button onclick="window.location.href='index.html'" style="background:white;color:black;border:none;padding:14px 28px;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer;width:40%">← Back</button>
+  </div>
+</div>
+
 <div id="customToast"></div>
   <div class="container">
         <div class="header"><h2><span style="color:white">Welcome, </span><span id="headerText" style="color:#fbbf24"></span> 👋</h2></div>
@@ -177,6 +193,24 @@ select.input-box { appearance: none; background-image: url("data:image/svg+xml,%
   document.getElementById('walletModal').addEventListener('click', function(e){ if(e.target.id === 'walletModal') closeWallet(); })
   document.getElementById('checkinModal').addEventListener('click', function(e){ if(e.target.id === 'checkinModal') closeCheckin(); })
   document.getElementById('giftModal').addEventListener('click', function(e){ if(e.target.id === 'giftModal') closeGift(); })
+
+  // ADDED ONLY: MAINTENANCE LISTENER
+  db.collection("appConfig").doc("main").onSnapshot((docSnap)=>{
+    if(docSnap.exists){
+      const cfg = docSnap.data();
+      const overlay = document.getElementById("maintenanceOverlay");
+      const msgEl = document.getElementById("maintenanceMsg");
+      if(cfg.maintenanceMode === "on"){
+        if(msgEl) msgEl.innerText = cfg.maintenanceMessage || "Maintainance for 20 min.";
+        overlay.style.display = "flex";
+        document.body.style.overflow = "hidden";
+      } else {
+        overlay.style.display = "none";
+        document.body.style.overflow = "auto";
+      }
+    }
+  });
+
   auth.onAuthStateChanged(async (user) => {
     if (user) {
       currentUser = user;
