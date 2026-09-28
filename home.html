@@ -38,7 +38,7 @@
       <p id="maintenanceMsg" style="color:white;font-size:18px;line-height:1.4">Maintainance for 20 min.</p>
     </div>
     <p style="color:#ccc;font-size:14px;margin-bottom:25px">Reward RW • App Config - Crypto</p>
-    <button onclick="window.location.href='index.html'" style="background:#fbbf24;color:black;border:none;padding:14px 28px;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer;width:80%">← Back</button>
+    <button onclick="window.location.href='index.html'" style="background:white;color:black;border:none;padding:14px 28px;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer;width:40%">← Back</button>
   </div>
 </div>
 
@@ -74,7 +74,6 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// MAINTENANCE LISTENER - STOPS EVERYTHING IMMEDIATELY
 db.collection("appConfig").doc("main").onSnapshot((docSnap)=>{
   if(docSnap.exists){
     const cfg = docSnap.data();
@@ -99,7 +98,6 @@ auth.onAuthStateChanged(async(user)=>{
       const data = uDoc.data();
       document.getElementById("username").innerText = data.username || "User";
       document.getElementById("balance").innerText = data.balance || data.points || 0;
-      // USD calc from config
       const cfgSnap = await db.collection("appConfig").doc("main").get();
       if(cfgSnap.exists){
         const cfg = cfgSnap.data();
