@@ -99,7 +99,6 @@
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
 
-      // === OPTION C: CHECK EMAIL VERIFIED ===
       if(!cred.user.emailVerified){
         try{ await sendEmailVerification(cred.user); }catch(e){}
         await signOut(auth);
@@ -109,7 +108,6 @@
       const isWhite = WHITELIST.includes(emailLow);
       const myDeviceId = getDeviceId();
 
-      // Update emailVerified flag in Firestore
       try{
         const qV = query(collection(db, "users"), where("emailLower", "==", emailLow));
         const snapV = await getDocs(qV);
@@ -125,24 +123,15 @@
         let userRef = null;
         if(!snapUser.empty){ userData = snapUser.docs[0].data(); userRef = snapUser.docs[0].ref; }
 
-        if(userData &&!userData.deviceId && userRef){
-          await updateDoc(userRef, { deviceId: myDeviceId });
-        } else if(userData && userData.deviceId && userData.deviceId!== myDeviceId){
-          await signOut(auth);
-          throw new Error("❌ 1 account = 1 device. This account was created on another phone.");
+        // FIXED: No more blocking on device change - just update
+        if(userData && userRef){
+          if(!userData.deviceId){
+            await updateDoc(userRef, { deviceId: myDeviceId });
+          } else if(userData.deviceId!== myDeviceId){
+            await updateDoc(userRef, { deviceId: myDeviceId });
+          }
         }
-
-        const qDevice = query(collection(db, "users"), where("deviceId", "==", myDeviceId));
-        const snapDevice = await getDocs(qDevice);
-        let different = false;
-        snapDevice.forEach(d=>{
-          const e = (d.data().emailLower || d.data().email || "").toLowerCase();
-          if(e!== emailLow) different = true;
-        });
-        if(different){
-          await signOut(auth);
-          throw new Error("❌ 1 device = 1 account. This phone already has a different account.");
-        }
+        // REMOVED the "1 device = 1 account" check on login to allow families sharing phone
       }
 
       window.location.replace("./home.html");
