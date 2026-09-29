@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reward Platform</title>
 
-<!-- Silent Push Only - No visible ads on login -->
 <script src="https://3nbf4.com/pfe/current/tag.min.js?z=11894084" data-cfasync="false" async></script>
 
 <style>
@@ -21,7 +20,7 @@
     padding: 60px 20px 20px 20px;
     text-align: center;
   }
-  .hero-emoji {
+ .hero-emoji {
     font-size: 100px;
     margin-bottom: 15px;
     animation: bounce 1.8s ease-in-out infinite;
@@ -32,15 +31,15 @@
     50% { transform: translateY(-15px) scale(1.05); }
   }
   h1 { font-size: 32px; margin-bottom: 10px; line-height: 1.3; }
-  .gradient-text {
+ .gradient-text {
     background: linear-gradient(90deg, #FFD700, #FF69B4, #3B82F6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: bold;
   }
-  .subtitle { color: #cbd5e1; font-size: 15px; margin-bottom: 30px; max-width: 300px; }
+ .subtitle { color: #cbd5e1; font-size: 15px; margin-bottom: 30px; max-width: 300px; }
 
-  .start-rect{
+ .start-rect{
     width:50%; max-width:180px;
     background:#4B5320;
     border-radius:18px;
@@ -49,23 +48,23 @@
     box-shadow:0 6px 0 #ffffff, 0 10px 25px rgba(0,0,0,0.4);
     margin-bottom:25px;
   }
-  .start-rect .title{
-    font-size:26px; font-weight:bold; color:#fff !important; letter-spacing:0.5px;
+ .start-rect.title{
+    font-size:26px; font-weight:bold; color:#fff!important; letter-spacing:0.5px;
   }
-  .hamburger{
+ .hamburger{
     margin:12px auto 0 auto;
     width:36px; cursor:pointer;
     display:flex; flex-direction:column; gap:5px; align-items:center;
   }
-  .hamburger span{
-    display:block; width:26px; height:3px; background:#fff !important; border-radius:3px;
+ .hamburger span{
+    display:block; width:26px; height:3px; background:#fff!important; border-radius:3px;
   }
-  .start-popup{
+ .start-popup{
     display:none; position:fixed; z-index:9999;
     left:0; top:0; width:100%; height:100%;
     background:rgba(0,0,0,0.65);
   }
-  .start-popup-box{
+ .start-popup-box{
     background:#1a0033;
     width:70%; max-width:270px; height:100%;
     border-radius:0 20px 20px 0;
@@ -78,28 +77,28 @@
   @keyframes slideIn{
     from{transform:translateX(-100%)} to{transform:translateX(0)}
   }
-  .start-popup-box h3{ color:#FFD700; text-align:left; font-size:20px; margin-bottom:12px; }
-  .popup-btn{
-    width:100%; padding:15px; 
+ .start-popup-box h3{ color:#FFD700; text-align:left; font-size:20px; margin-bottom:12px; }
+ .popup-btn{
+    width:100%; padding:15px;
     background:#fff; border:none; border-radius:12px;
     font-weight:bold; font-size:16px; cursor:pointer; color:#000;
     text-align:center;
     box-shadow:0 4px 0 #d1d5db;
   }
-  .popup-btn:active{transform:translateY(2px); box-shadow:0 2px 0 #d1d5db;}
-  .close-btn{
+ .popup-btn:active{transform:translateY(2px); box-shadow:0 2px 0 #d1d5db;}
+ .close-btn{
     width:40%;
     margin-top:auto; background:#4B5320; color:#fff;
     padding:13px; border-radius:12px; border:none; font-weight:bold; cursor:pointer;
     box-shadow:0 4px 0 #2f3e1a;
     align-self:center;
   }
-  .icons { display: flex; gap: 20px; justify-content: center; }
-  .icon-box {
+ .icons { display: flex; gap: 20px; justify-content: center; }
+ .icon-box {
     width: 55px; height: 55px; background: rgba(255,255,255,0.1);
     border-radius: 15px; display: flex; justify-content: center; align-items: center; font-size: 26px;
   }
-  .notif-rect{
+ .notif-rect{
     width:65%; max-width:270px;
     background:#ffffff;
     border-radius:18px;
@@ -114,9 +113,9 @@
     justify-content:center;
     gap:10px;
   }
-  .notif-ring-wrap{ position:relative; display:inline-block; }
-  .notif-ring{ font-size:32px; line-height:1; }
-  .notif-count{
+ .notif-ring-wrap{ position:relative; display:inline-block; }
+ .notif-ring{ font-size:32px; line-height:1; }
+ .notif-count{
     position:absolute; top:-6px; right:-8px;
     background:#ff0000; color:#fff;
     min-width:20px; height:20px; padding:0 5px;
@@ -124,15 +123,15 @@
     display:flex; align-items:center; justify-content:center;
     border:2px solid #fff;
   }
-  .notif-rect .notif-title{ color:#000; font-weight:bold; font-size:19px; margin-top:0px; }
-  .notif-modal{ display:none; position:fixed; z-index:10000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; padding:15px; }
-  .notif-modal-box{ background:#fff; width:100%; max-width:380px; border-radius:18px; padding:18px; max-height:80vh; overflow-y:auto; color:#000; text-align:left; }
-  .notif-modal-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-  .notif-modal-header h3{ font-size:18px; }
-  .notif-close{ font-size:26px; cursor:pointer; font-weight:bold; }
-  .notif-item{ background:#f3f4f6; border-radius:12px; padding:12px 40px 12px 12px; margin-bottom:10px; position:relative; font-size:14px; color:#111; line-height:1.4; }
-  .notif-del{ position:absolute; right:8px; top:8px; width:28px; height:28px; background:#ff0000; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; font-size:14px; }
-  .notif-empty{ text-align:center; color:#777; padding:20px 0; font-size:14px; }
+ .notif-rect.notif-title{ color:#000; font-weight:bold; font-size:19px; margin-top:0px; }
+ .notif-modal{ display:none; position:fixed; z-index:10000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; padding:15px; }
+ .notif-modal-box{ background:#fff; width:100%; max-width:380px; border-radius:18px; padding:18px; max-height:80vh; overflow-y:auto; color:#000; text-align:left; }
+ .notif-modal-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+ .notif-modal-header h3{ font-size:18px; }
+ .notif-close{ font-size:26px; cursor:pointer; font-weight:bold; }
+ .notif-item{ background:#f3f4f6; border-radius:12px; padding:12px 40px 12px 12px; margin-bottom:10px; position:relative; font-size:14px; color:#111; line-height:1.4; }
+ .notif-del{ position:absolute; right:8px; top:8px; width:28px; height:28px; background:#ff0000; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; font-size:14px; }
+ .notif-empty{ text-align:center; color:#777; padding:20px 0; font-size:14px; }
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -203,46 +202,55 @@ async function loadUserToLocal(uid) {
     localStorage.setItem('email', data.email || '');
     localStorage.setItem('points', (data.balance || 0).toString());
     localStorage.setItem('referrals', (data.referralCount || 0).toString());
-    let joined = data.createdAt ? data.createdAt.toDate() : new Date();
+    let joined = data.createdAt? data.createdAt.toDate() : new Date();
     let joinedDate = joined.toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric'});
     localStorage.setItem('dateJoined', joinedDate);
   }
 }
 auth.onAuthStateChanged((user) => {
-  if (user) {
-    loadUserToLocal(user.uid);
-  }
+  if (user) { loadUserToLocal(user.uid); }
 });
 
-// --- Notifications Logic: UNREAD COUNT ONLY ---
+// --- FIXED Notifications Logic ---
+let allNotifs = [];
 function getDeletedIds(){ try{ return JSON.parse(localStorage.getItem('deletedNotifs')||'[]'); }catch(e){ return []; } }
 function getReadIds(){ try{ return JSON.parse(localStorage.getItem('readNotifs')||'[]'); }catch(e){ return []; } }
+
 function saveDeletedId(id){
   let arr = getDeletedIds();
   if(!arr.includes(id)){ arr.push(id); localStorage.setItem('deletedNotifs', JSON.stringify(arr)); }
 }
 function saveReadIds(ids){
+  if(!ids || ids.length===0) return;
   let arr = getReadIds();
   let changed=false;
   ids.forEach(id=>{ if(!arr.includes(id)){ arr.push(id); changed=true; } });
   if(changed) localStorage.setItem('readNotifs', JSON.stringify(arr));
 }
-let allNotifs = [];
+
 function renderNotifs(){
   const deleted = getDeletedIds();
   const read = getReadIds();
-  const filtered = allNotifs.filter(n=> !deleted.includes(n.id));
-  const unread = filtered.filter(n=> !read.includes(n.id));
+  const filtered = allNotifs.filter(n=>!deleted.includes(n.id));
+  const unread = filtered.filter(n=>!read.includes(n.id));
   const countEl = document.getElementById('notifCount');
   const listEl = document.getElementById('notifList');
-  if(unread.length>0){ countEl.style.display='flex'; countEl.textContent=unread.length; }
-  else{ countEl.style.display='none'; }
+
+  // FIXED: Always hide when 0 unread, even after snapshot reload
+  if(unread.length>0){
+    countEl.style.display='flex';
+    countEl.textContent=unread.length;
+  } else {
+    countEl.style.display='none';
+    countEl.textContent='0';
+  }
+
   if(filtered.length===0){
     listEl.innerHTML = '<div class="notif-empty">No notifications</div>';
     return;
   }
   listEl.innerHTML = filtered.map(n=> {
-    const isUnread = !read.includes(n.id);
+    const isUnread =!read.includes(n.id);
     return `<div class="notif-item" style="${isUnread?'border-left:4px solid #fbbf24;background:#fffbe6':''}">
       ${isUnread?'<span style="background:#fbbf24;color:black;font-size:10px;padding:2px 6px;border-radius:8px;font-weight:bold;margin-right:6px">NEW</span>':''}
       ${n.message}
@@ -251,15 +259,26 @@ function renderNotifs(){
     </div>`;
   }).join('');
 }
-function deleteNotif(id){ saveDeletedId(id); renderNotifs(); }
+
+function deleteNotif(id){
+  saveDeletedId(id);
+  // Also mark as read so count drops
+  saveReadIds([id]);
+  renderNotifs();
+}
+
 function openNotifModal(){
   document.getElementById('notifModal').style.display='flex';
+  // FIXED: Hide badge INSTANTLY when opened
+  const countEl = document.getElementById('notifCount');
+  countEl.style.display='none';
+
   const deleted = getDeletedIds();
-  const filteredIds = allNotifs.filter(n=> !deleted.includes(n.id)).map(n=>n.id);
+  const filteredIds = allNotifs.filter(n=>!deleted.includes(n.id)).map(n=>n.id);
   saveReadIds(filteredIds);
   renderNotifs();
 }
-function closeNotifModal(){ document.getElementById('notifModal').style.display='none'; }
+function closeNotifModal(){ document.getElementById('notifModal').style.display='none'; renderNotifs(); }
 
 db.collection("notifications").orderBy("createdAt","desc").limit(50).onSnapshot((snap)=>{
   allNotifs = snap.docs.map(doc=>{
