@@ -60,8 +60,6 @@
   .hamburger span{
     display:block; width:26px; height:3px; background:#fff !important; border-radius:3px;
   }
-
-  /* LEFT SIDE DRAWER */
   .start-popup{
     display:none; position:fixed; z-index:9999;
     left:0; top:0; width:100%; height:100%;
@@ -96,15 +94,11 @@
     box-shadow:0 4px 0 #2f3e1a;
     align-self:center;
   }
-
   .icons { display: flex; gap: 20px; justify-content: center; }
-
   .icon-box {
     width: 55px; height: 55px; background: rgba(255,255,255,0.1);
     border-radius: 15px; display: flex; justify-content: center; align-items: center; font-size: 26px;
   }
-
-  /* --- ONLY NEW PART: Notifications --- */
   .notif-rect{
     width:90%; max-width:320px;
     background:#ffffff;
@@ -157,7 +151,6 @@
     <div class="icon-box">🎁</div>
   </div>
 
-  <!-- NEW: White rectangle Notifications -->
   <div class="notif-rect" onclick="openNotifModal()">
     <div class="notif-ring-wrap">
       <div class="notif-ring">🔔</div>
@@ -166,7 +159,6 @@
     <div class="notif-title">Notifications</div>
   </div>
 
-<!-- LEFT DRAWER POPUP -->
 <div id="startPopup" class="start-popup" onclick="this.style.display='none'">
   <div class="start-popup-box" onclick="event.stopPropagation()">
     <h3>Menu</h3>
@@ -176,7 +168,6 @@
   </div>
 </div>
 
-<!-- NEW: Notifications Popup -->
 <div id="notifModal" class="notif-modal" onclick="closeNotifModal()">
   <div class="notif-modal-box" onclick="event.stopPropagation()">
     <div class="notif-modal-header">
@@ -189,8 +180,6 @@
 
 <script>
 function openStartPopup(){ document.getElementById('startPopup').style.display='flex'; }
-function openNotifModal(){ document.getElementById('notifModal').style.display='flex'; }
-function closeNotifModal(){ document.getElementById('notifModal').style.display='none'; }
 
 const firebaseConfig = {
   apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
@@ -200,6 +189,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
+
 async function loadUserToLocal(uid) {
   const userDoc = await db.collection("users").doc(uid).get();
   if(userDoc.exists){
@@ -219,34 +209,52 @@ auth.onAuthStateChanged((user) => {
   }
 });
 
-// --- Notifications Logic ---
+// --- Notifications Logic: UNREAD COUNT ONLY ---
 function getDeletedIds(){ try{ return JSON.parse(localStorage.getItem('deletedNotifs')||'[]'); }catch(e){ return []; } }
+function getReadIds(){ try{ return JSON.parse(localStorage.getItem('readNotifs')||'[]'); }catch(e){ return []; } }
 function saveDeletedId(id){
   let arr = getDeletedIds();
   if(!arr.includes(id)){ arr.push(id); localStorage.setItem('deletedNotifs', JSON.stringify(arr)); }
 }
+function saveReadIds(ids){
+  let arr = getReadIds();
+  let changed=false;
+  ids.forEach(id=>{ if(!arr.includes(id)){ arr.push(id); changed=true; } });
+  if(changed) localStorage.setItem('readNotifs', JSON.stringify(arr));
+}
 let allNotifs = [];
 function renderNotifs(){
   const deleted = getDeletedIds();
+  const read = getReadIds();
   const filtered = allNotifs.filter(n=> !deleted.includes(n.id));
+  const unread = filtered.filter(n=> !read.includes(n.id));
   const countEl = document.getElementById('notifCount');
   const listEl = document.getElementById('notifList');
-  if(filtered.length>0){ countEl.style.display='flex'; countEl.textContent=filtered.length; }
+  if(unread.length>0){ countEl.style.display='flex'; countEl.textContent=unread.length; }
   else{ countEl.style.display='none'; }
-
   if(filtered.length===0){
     listEl.innerHTML = '<div class="notif-empty">No notifications</div>';
     return;
   }
-  listEl.innerHTML = filtered.map(n=> `
-    <div class="notif-item">
+  listEl.innerHTML = filtered.map(n=> {
+    const isUnread = !read.includes(n.id);
+    return `<div class="notif-item" style="${isUnread?'border-left:4px solid #fbbf24;background:#fffbe6':''}">
+      ${isUnread?'<span style="background:#fbbf24;color:black;font-size:10px;padding:2px 6px;border-radius:8px;font-weight:bold;margin-right:6px">NEW</span>':''}
       ${n.message}
       <div style="font-size:11px;color:#888;margin-top:6px;">${n.dateStr||''}</div>
       <div class="notif-del" onclick="deleteNotif('${n.id}')">X</div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 function deleteNotif(id){ saveDeletedId(id); renderNotifs(); }
+function openNotifModal(){
+  document.getElementById('notifModal').style.display='flex';
+  const deleted = getDeletedIds();
+  const filteredIds = allNotifs.filter(n=> !deleted.includes(n.id)).map(n=>n.id);
+  saveReadIds(filteredIds);
+  renderNotifs();
+}
+function closeNotifModal(){ document.getElementById('notifModal').style.display='none'; }
 
 db.collection("notifications").orderBy("createdAt","desc").limit(50).onSnapshot((snap)=>{
   allNotifs = snap.docs.map(doc=>{
