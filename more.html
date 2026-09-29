@@ -144,6 +144,7 @@ function chooseMode(m){localStorage.setItem('appMode',m);document.getElementById
 function formatDateDDMMYYYY(d){if(!d)return"00/00/0000";const dd=d.toDate?d.toDate():new Date(d);return `${String(dd.getDate()).padStart(2,'0')}/${String(dd.getMonth()+1).padStart(2,'0')}/${dd.getFullYear()}`;}
 function formatDateTime(d){if(!d)return"";const dd=d.toDate?d.toDate():new Date(d);return `${String(dd.getDate()).padStart(2,'0')}/${String(dd.getMonth()+1).padStart(2,'0')}/${dd.getFullYear()} ${String(dd.getHours()).padStart(2,'0')}:${String(dd.getMinutes()).padStart(2,'0')}`;}
 function getDeviceId(){let id=localStorage.getItem('deviceId');if(!id){id=btoa(navigator.userAgent+screen.width+Math.random()).slice(0,24);localStorage.setItem('deviceId',id);}return id;}
+
 auth.onAuthStateChanged(async user=>{
   if(!user){location.href='./index.html';return;}
   currentUser=user;
@@ -160,27 +161,28 @@ auth.onAuthStateChanged(async user=>{
   checkHelpBadge();
 });
 
+// FIXED: NO INDEX NEEDED - checks unread
 async function checkHelpBadge(){
   try{
-    let unreadCount=0;
-    const snap = await db.collection('supportTickets').where('uid','==',currentUser.uid).get();
+    let snap = await db.collection('supportTickets').where('uid','==',currentUser.uid).get();
+    if(snap.empty) snap = await db.collection('supportTickets').where('userId','==',currentUser.uid).get();
+    let unread=0;
     snap.forEach(d=>{
       const t=d.data();
       const hasReply = t.adminReply && t.adminReply.trim()!=="";
-      const isRead = t.adminReplySeen === true;
-      // Also check localStorage fallback
-      const localRead = localStorage.getItem('ticketRead_'+d.id) === '1';
-      if(hasReply && !isRead && !localRead) unreadCount++;
+      const seen = t.adminReplySeen===true || localStorage.getItem('ticketRead_'+d.id)==='1';
+      if(hasReply && !seen) unread++;
     });
     const badge=document.getElementById('helpBadge');
     const dot=document.getElementById('helpDot');
     const icon=document.getElementById('helpIcon');
-    if(unreadCount>0){
+    if(unread>0){
       icon.innerText='✉️';
-      badge.innerText=`✉️ ${unreadCount} new`;
+      badge.innerText=`✉️ ${unread} new`;
       badge.classList.remove('hidden');
       dot.classList.remove('hidden');
-    } else {
+      document.getElementById('helpModalTitle').innerHTML='✉️ Help/Support <span style="font-size:12px;color:#ef4444">New reply!</span>';
+    }else{
       icon.innerText='❓';
       badge.classList.add('hidden');
       dot.classList.add('hidden');
@@ -189,35 +191,25 @@ async function checkHelpBadge(){
   }catch(e){}
 }
 
+// Marks as read when user opens
 async function markTicketsAsRead(){
   try{
-    const snap = await db.collection('supportTickets').where('uid','==',currentUser.uid).get();
-    let marked = 0;
+    let snap = await db.collection('supportTickets').where('uid','==',currentUser.uid).get();
+    if(snap.empty) snap = await db.collection('supportTickets').where('userId','==',currentUser.uid).get();
     for(const docSnap of snap.docs){
       const t=docSnap.data();
-      const hasReply = t.adminReply && t.adminReply.trim()!=="";
-      const isRead = t.adminReplySeen === true;
-      if(hasReply && !isRead){
-        marked++;
-        // Try Firestore update
+      if(t.adminReply && t.adminReply.trim()!=="" && !t.adminReplySeen){
         try{
-          await db.collection('supportTickets').doc(docSnap.id).update({
-            adminReplySeen: true,
-            seenAt: firebase.firestore.FieldValue.serverTimestamp()
-          });
-        }catch(err){
-          // Fallback: localStorage if rules block
+          await db.collection('supportTickets').doc(docSnap.id).update({adminReplySeen:true,seenAt:firebase.firestore.FieldValue.serverTimestamp()});
+        }catch(e){
           localStorage.setItem('ticketRead_'+docSnap.id,'1');
         }
       }
     }
-    if(marked>0){
-      // hide badge immediately
-      document.getElementById('helpBadge').classList.add('hidden');
-      document.getElementById('helpDot').classList.add('hidden');
-      document.getElementById('helpIcon').innerText='❓';
-      setTimeout(checkHelpBadge, 800);
-    }
+    document.getElementById('helpBadge').classList.add('hidden');
+    document.getElementById('helpDot').classList.add('hidden');
+    document.getElementById('helpIcon').innerText='❓';
+    document.getElementById('helpModalTitle').innerText='❓ Help/Support';
   }catch(e){}
 }
 
@@ -249,7 +241,6 @@ function openHelp(){
   }
   document.getElementById('helpModal').style.display='flex';
   loadMyTickets().then(()=>{
-    // After loading tickets, mark as read after 2 sec (user saw it)
     setTimeout(markTicketsAsRead, 2000);
   });
 }
@@ -275,12 +266,6 @@ async function submitSupport(e){
       deviceId: getDeviceId(),
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
-    await db.collection('adminLogs').add({
-      type: 'NEW_SUPPORT_TICKET', fromUser: email, username,
-      issuePreview: issue.substring(0,120),
-      privateNotifyEmail: 'priyamwiza25@gmail.com',
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    });
     msg.style.color='#16a34a';msg.innerText='✅ Submitted!';
     document.getElementById('supportIssue').value='';
     loadMyTickets(); checkHelpBadge();
@@ -289,29 +274,37 @@ async function submitSupport(e){
   btn.innerText='Submit';btn.disabled=false;
 }
 
+// FIXED: NO orderBy = NO index error
 async function loadMyTickets(){
   const list=document.getElementById('myTicketsList');
-  if(!currentUser){list.innerHTML='<div style="font-size:12px;color:#999">Login required</div>';return;}
   list.innerHTML='<div style="font-size:12px;color:#999">Loading...</div>';
   try{
-    let snap = await db.collection('supportTickets').where('uid','==',currentUser.uid).orderBy('createdAt','desc').limit(20).get();
-    if(snap.empty) snap = await db.collection('supportTickets').where('userId','==',currentUser.uid).orderBy('createdAt','desc').limit(20).get();
+    let snap = await db.collection('supportTickets').where('uid','==',currentUser.uid).get();
+    if(snap.empty) snap = await db.collection('supportTickets').where('userId','==',currentUser.uid).get();
     if(snap.empty){list.innerHTML='<div style="font-size:12px;color:#999;text-align:center;padding:10px">No tickets yet</div>';return;}
+    
+    let arr=[];
+    snap.forEach(d=>arr.push({id:d.id,...d.data()}));
+    arr.sort((a,b)=>{
+      const ta = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : (a.createdAt?.seconds? a.createdAt.seconds*1000 : 0);
+      const tb = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : (b.createdAt?.seconds? b.createdAt.seconds*1000 : 0);
+      return tb-ta;
+    });
+    arr = arr.slice(0,20);
+
     let html="";
-    snap.forEach(d=>{
-      const t=d.data();
-      const date = t.createdAt && t.createdAt.toDate? t.createdAt.toDate().toLocaleString() : "";
-      const isOpen = t.status=='open' || t.status=='pending';
+    arr.forEach(t=>{
+      const date = t.createdAt?.toDate ? t.createdAt.toDate().toLocaleString() : "";
       const hasReply = t.adminReply && t.adminReply.trim()!=="";
-      html+=`<div style="background:#f5f5f5;padding:12px;border-radius:10px;margin-bottom:10px;border-left:4px solid ${hasReply?'#ef4444':(isOpen?'#f59e0b':'#16a34a')}">
-        <div style="display:flex;justify-content:space-between"><span style="font-size:10px;background:${hasReply?'#ef4444':(isOpen?'#fef3c7':'#dcfce7')};color:${hasReply?'white':'#000'};padding:3px 8px;border-radius:10px;font-weight:bold">${hasReply?'✉️ REPLIED':(t.status||'open').toUpperCase()}</span><span style="font-size:10px;color:#888">${date}</span></div>
+      html+=`<div style="background:#f5f5f5;padding:12px;border-radius:10px;margin-bottom:10px;border-left:4px solid ${hasReply?'#ef4444':'#f59e0b'}">
+        <div style="display:flex;justify-content:space-between"><span style="font-size:10px;background:${hasReply?'#ef4444':'#fef3c7'};color:${hasReply?'white':'#000'};padding:3px 8px;border-radius:10px;font-weight:bold">${hasReply?'✉️ REPLIED':'OPEN'}</span><span style="font-size:10px;color:#888">${date}</span></div>
         <div style="font-size:13px;margin-top:6px;color:#000">${t.message||t.issue}</div>
-        ${hasReply?`<div style="background:#fff;border:2px solid #ef4444;padding:8px;border-radius:8px;margin-top:8px"><b style="font-size:11px;color:#ef4444">✉️ REPLY from ${t.publicReplyFrom||'admin@reward.rw'}:</b><div style="font-size:13px;margin-top:4px;color:#000;font-weight:bold">${t.adminReply}</div></div>`:`<div style="font-size:11px;color:#888;margin-top:6px">⏳ Waiting for reply...</div>`}
+        ${hasReply?`<div style="background:#fff;border:2px solid #ef4444;padding:8px;border-radius:8px;margin-top:8px"><b style="font-size:11px;color:#ef4444">✉️ REPLY from ${t.publicReplyFrom||'admin@reward.rw'}:</b><div style="font-size:13px;margin-top:4px;color:#000;font-weight:bold">${t.adminReply}</div></div>`:`<div style="font-size:11px;color:#888;margin-top:6px">⏳ Waiting for reply from admin@reward.rw...</div>`}
       </div>`;
     });
     list.innerHTML=html;
   }catch(err){
-    list.innerHTML='<div style="font-size:12px;color:red">Error: '+err.message+'</div>';
+    list.innerHTML='<div style="font-size:12px;color:red;padding:10px">Error: '+err.message+'</div>';
   }
 }
 
