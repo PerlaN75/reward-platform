@@ -44,7 +44,6 @@
 .btn-black{background:#000;color:#fff}
 .btn-yellow{background:#f59e0b;color:#000}
 .badge{background:#f59e0b;color:#000;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:bold;display:inline-block;margin:3px}
-/* NEW - Envelope badge for admin reply */
 .envelope-badge{background:#ef4444;color:white;padding:2px 8px;border-radius:12px;font-size:12px;font-weight:bold;margin-left:8px;animation:pop 0.5s ease}
 .envelope-dot{width:10px;height:10px;background:#ef4444;border-radius:50%;position:absolute;right:28px;top:14px;border:2px solid white;animation:blink 1s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
@@ -63,7 +62,7 @@
       <a onclick="openProfile()"><div class="left"><span class="icon">👤</span> Profile</div>›</a>
       <a onclick="openHistory()"><div class="left"><span class="icon">📜</span> Earn History</div>›</a>
       <a onclick="openSettings()"><div class="left"><span class="icon">⚙️</span> Settings</div>›</a>
-      <a id="helpMenuItem" onclick="openHelp()"><div class="left"><span class="icon" id="helpIcon">❓</span> Help/Support <span id="helpBadge" class="envelope-badge hidden">✉️ 1 new reply</span></div><div style="display:flex;align-items:center;gap:6px"><span id="helpDot" class="envelope-dot hidden"></span>›</div></a>
+      <a id="helpMenuItem" onclick="openHelp()"><div class="left"><span class="icon" id="helpIcon">❓</span> Help/Support <span id="helpBadge" class="envelope-badge hidden">✉️</span></div><div style="display:flex;align-items:center;gap:6px"><span id="helpDot" class="envelope-dot hidden"></span>›</div></a>
       <a onclick="openAbout()"><div class="left"><span class="icon">ℹ️</span> About Us</div>›</a>
     </div>
   </div>
@@ -93,16 +92,7 @@
   <div class="setting-item" onclick="openModePicker()"><span>🌙 Mode</span><span id="modeValue" style="font-size:12px;color:#f59e0b;font-weight:bold">Dark</span></div>
   <div style="margin-top:14px"><b>🌐 Language</b>
     <select id="langSelect" class="setting-select" onchange="localStorage.setItem('appLang',this.value)">
-      <option value="en">🇺🇸 English</option>
-      <option value="rw">🇷🇼 Kinyarwanda</option>
-      <option value="fr">🇫🇷 Français</option>
-      <option value="sw">🇹🇿 Swahili</option>
-      <option value="lg">🇺🇬 Luganda</option>
-      <option value="ln">🇨🇩 Lingala</option>
-      <option value="am">🇪🇹 Amharic</option>
-      <option value="ar">🇸🇦 العربية</option>
-      <option value="es">🇪🇸 Español</option>
-      <option value="pt">🇹🇿 Português</option>
+      <option value="en">🇺🇸 English</option><option value="rw">🇷🇼 Kinyarwanda</option><option value="fr">🇫🇷 Français</option><option value="sw">🇹🇿 Swahili</option><option value="lg">🇺🇬 Luganda</option><option value="ln">🇨🇩 Lingala</option><option value="am">🇪🇹 Amharic</option><option value="ar">🇸🇦 العربية</option><option value="es">🇪🇸 Español</option><option value="pt">🇹🇿 Português</option>
     </select>
   </div>
   <div style="margin-top:12px"><b>Change Password</b><input class="setting-input" type="password" id="newPass" placeholder="New password"><button class="btn btn-black" onclick="changePass()">Update Password</button><div id="passMsg" style="font-size:12px;color:#16a34a;text-align:center;margin-top:6px"></div></div>
@@ -120,11 +110,11 @@
   <div class="modal-header"><h2 id="helpModalTitle">❓ Help/Support</h2><button class="close-btn" onclick="document.getElementById('helpModal').style.display='none'">&times;</button></div>
   <form onsubmit="submitSupport(event)">
     <label class="support-label">Username</label>
-    <input type="text" id="supportUsername" class="support-input" placeholder="Username used to create account" required>
+    <input type="text" id="supportUsername" class="support-input" required>
     <label class="support-label">Email</label>
-    <input type="email" id="supportEmail" class="support-input" placeholder="Email used to create account" required>
+    <input type="email" id="supportEmail" class="support-input" required>
     <label class="support-label">Issue</label>
-    <textarea id="supportIssue" class="support-textarea" placeholder="Describe your issue..." required></textarea>
+    <textarea id="supportIssue" class="support-textarea" required></textarea>
     <button type="submit" class="btn btn-black" id="supportBtn">Submit</button>
     <div id="supportMsg" style="text-align:center;margin-top:10px;font-size:13px;font-weight:bold"></div>
     <p style="font-size:11px;color:#888;text-align:center;margin-top:10px">Reply from: admin@reward.rw • Secure</p>
@@ -137,41 +127,10 @@
 
 <div id="aboutModal" class="modal" onclick="this.style.display='none'"><div class="modal-content" onclick="event.stopPropagation()">
   <div class="modal-header"><h2>ℹ️ About Us</h2><button class="close-btn" onclick="document.getElementById('aboutModal').style.display='none'">&times;</button></div>
-  <div style="text-align:center">
-    <div style="font-size:48px">🐒🍇</div>
-    <div style="font-weight:bold;font-size:18px">From Nothing to Something</div>
-    <div style="font-size:12px;color:#888;margin-top:4px">Reward Platform RW</div>
-  </div>
-  <p style="font-size:13px;color:#444;text-align:center;margin:14px 0;line-height:1.5">
-    <b>Reward Platform RW</b> is built in Rwanda for everyone. We turn your time into points and points into real value. Watch, invite friends, check-in daily and grow your balance.
-  </p>
-  <div style="background:#f5f5f5;border-radius:12px;padding:14px;margin:12px 0">
-    <b style="font-size:13px">💰 How to Earn Points</b>
-    <div style="margin-top:8px;font-size:13px;line-height:1.8;color:#333">
-      - 📹 <b>Watch Videos</b> - 10 pts per video<br>
-      - 📅 <b>Daily Check-in</b> - 20 pts daily<br>
-      - 🎁 <b>Gift Box</b> - Random bonus<br>
-      - 👥 <b>Referral</b> - 50 pts per friend invited (max 10/day)
-    </div>
-  </div>
-  <div style="background:#f5f5f5;border-radius:12px;padding:14px;margin:12px 0">
-    <b style="font-size:13px">🚀 How it Works</b>
-    <div style="margin-top:8px;font-size:12px;line-height:1.7;color:#444">
-      1. Create account & get welcome bonus<br>
-      2. Complete tasks in Home page<br>
-      3. Points auto-added to Earn History<br>
-      4. Convert points to USDT/BNB & Withdraw
-    </div>
-  </div>
-  <div style="text-align:center;margin-top:14px">
-    <span class="badge">V 1.0</span>
-    <span class="badge">Made in RW</span>
-    <span class="badge">2026</span>
-    <span class="badge">Secure</span>
-  </div>
-  <div style="text-align:center;margin-top:14px;border-top:1px solid #eee;padding-top:12px">
-    <div style="font-size:14px;font-weight:bold;color:#000;font-style:italic">Don't wait for tomorrow, Start now.</div>
-  </div>
+  <div style="text-align:center"><div style="font-size:48px">🐒🍇</div><div style="font-weight:bold;font-size:18px">From Nothing to Something</div><div style="font-size:12px;color:#888;margin-top:4px">Reward Platform RW</div></div>
+  <p style="font-size:13px;color:#444;text-align:center;margin:14px 0;line-height:1.5"><b>Reward Platform RW</b> is built in Rwanda for everyone.</p>
+  <div style="background:#f5f5f5;border-radius:12px;padding:14px;margin:12px 0"><b style="font-size:13px">💰 How to Earn Points</b><div style="margin-top:8px;font-size:13px;line-height:1.8;color:#333">- 📹 <b>Watch Videos</b> - 10 pts<br>- 📅 <b>Daily Check-in</b> - 20 pts<br>- 🎁 <b>Gift Box</b> - Random<br>- 👥 <b>Referral</b> - 50 pts</div></div>
+  <div style="text-align:center;margin-top:14px"><span class="badge">V 1.0</span><span class="badge">Made in RW</span></div>
 </div></div>
 
 <script>
@@ -181,20 +140,10 @@ const auth=firebase.auth(), db=firebase.firestore();
 let currentUser=null,userData=null;
 function getMode(){return localStorage.getItem('appMode')||'Dark';}
 function openModePicker(){document.getElementById('modePicker').style.display='flex';}
-function chooseMode(m){
-  localStorage.setItem('appMode',m);
-  document.getElementById('modeValue').innerText=m;
-  document.getElementById('modePicker').style.display='none';
-  if(m==='Light'){document.body.style.background='#f5f5f5';document.body.style.color='#000';}
-  else{document.body.style.background='#0f1508';document.body.style.color='white';}
-}
+function chooseMode(m){localStorage.setItem('appMode',m);document.getElementById('modeValue').innerText=m;document.getElementById('modePicker').style.display='none';if(m==='Light'){document.body.style.background='#f5f5f5';document.body.style.color='#000';}else{document.body.style.background='#0f1508';document.body.style.color='white';}}
 function formatDateDDMMYYYY(d){if(!d)return"00/00/0000";const dd=d.toDate?d.toDate():new Date(d);return `${String(dd.getDate()).padStart(2,'0')}/${String(dd.getMonth()+1).padStart(2,'0')}/${dd.getFullYear()}`;}
 function formatDateTime(d){if(!d)return"";const dd=d.toDate?d.toDate():new Date(d);return `${String(dd.getDate()).padStart(2,'0')}/${String(dd.getMonth()+1).padStart(2,'0')}/${dd.getFullYear()} ${String(dd.getHours()).padStart(2,'0')}:${String(dd.getMinutes()).padStart(2,'0')}`;}
-function getDeviceId(){
-  let id = localStorage.getItem('deviceId');
-  if(!id){ id = btoa(navigator.userAgent + screen.width + Math.random()).slice(0,24); localStorage.setItem('deviceId', id); }
-  return id;
-}
+function getDeviceId(){let id=localStorage.getItem('deviceId');if(!id){id=btoa(navigator.userAgent+screen.width+Math.random()).slice(0,24);localStorage.setItem('deviceId',id);}return id;}
 auth.onAuthStateChanged(async user=>{
   if(!user){location.href='./index.html';return;}
   currentUser=user;
@@ -208,33 +157,66 @@ auth.onAuthStateChanged(async user=>{
   document.getElementById('setEmail').innerText=userData.email||user.email;
   const av=localStorage.getItem('userAvatar_'+user.uid);if(av)document.getElementById('avatarDisplay').innerHTML=`<img src="${av}">`;
   chooseMode(getMode());
-  checkHelpBadge(); // NEW - check for admin reply on load
+  checkHelpBadge();
 });
 
 async function checkHelpBadge(){
   try{
-    let countReply=0;
+    let unreadCount=0;
     const snap = await db.collection('supportTickets').where('uid','==',currentUser.uid).get();
     snap.forEach(d=>{
       const t=d.data();
-      if(t.adminReply && t.adminReply.trim()!==""){
-        countReply++;
-      }
+      const hasReply = t.adminReply && t.adminReply.trim()!=="";
+      const isRead = t.adminReplySeen === true;
+      // Also check localStorage fallback
+      const localRead = localStorage.getItem('ticketRead_'+d.id) === '1';
+      if(hasReply && !isRead && !localRead) unreadCount++;
     });
     const badge=document.getElementById('helpBadge');
     const dot=document.getElementById('helpDot');
     const icon=document.getElementById('helpIcon');
-    if(countReply>0){
+    if(unreadCount>0){
       icon.innerText='✉️';
-      badge.innerText=`✉️ ${countReply} reply${countReply>1?'s':''}`;
+      badge.innerText=`✉️ ${unreadCount} new`;
       badge.classList.remove('hidden');
       dot.classList.remove('hidden');
-      document.getElementById('myTicketsHeader').innerHTML=`✉️ My Tickets & Replies <span style="background:#ef4444;color:white;padding:2px 6px;border-radius:10px;font-size:10px">${countReply} NEW</span>`;
-      document.getElementById('helpModalTitle').innerHTML='✉️ Help/Support <span style="font-size:12px;color:#ef4444">New reply!</span>';
     } else {
       icon.innerText='❓';
       badge.classList.add('hidden');
       dot.classList.add('hidden');
+      document.getElementById('helpModalTitle').innerText='❓ Help/Support';
+    }
+  }catch(e){}
+}
+
+async function markTicketsAsRead(){
+  try{
+    const snap = await db.collection('supportTickets').where('uid','==',currentUser.uid).get();
+    let marked = 0;
+    for(const docSnap of snap.docs){
+      const t=docSnap.data();
+      const hasReply = t.adminReply && t.adminReply.trim()!=="";
+      const isRead = t.adminReplySeen === true;
+      if(hasReply && !isRead){
+        marked++;
+        // Try Firestore update
+        try{
+          await db.collection('supportTickets').doc(docSnap.id).update({
+            adminReplySeen: true,
+            seenAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }catch(err){
+          // Fallback: localStorage if rules block
+          localStorage.setItem('ticketRead_'+docSnap.id,'1');
+        }
+      }
+    }
+    if(marked>0){
+      // hide badge immediately
+      document.getElementById('helpBadge').classList.add('hidden');
+      document.getElementById('helpDot').classList.add('hidden');
+      document.getElementById('helpIcon').innerText='❓';
+      setTimeout(checkHelpBadge, 800);
     }
   }catch(e){}
 }
@@ -266,8 +248,10 @@ function openHelp(){
     document.getElementById('supportEmail').value=userData.email||(currentUser?currentUser.email:'');
   }
   document.getElementById('helpModal').style.display='flex';
-  loadMyTickets();
-  checkHelpBadge();
+  loadMyTickets().then(()=>{
+    // After loading tickets, mark as read after 2 sec (user saw it)
+    setTimeout(markTicketsAsRead, 2000);
+  });
 }
 
 async function submitSupport(e){
@@ -281,33 +265,25 @@ async function submitSupport(e){
   btn.innerText='Sending...';btn.disabled=true;
   try{
     await db.collection('supportTickets').add({
-      uid: currentUser?currentUser.uid:null,
-      userId: currentUser?currentUser.uid:null,
-      username,
-      email,
-      issue: issue,
-      message: issue,
+      uid: currentUser.uid,
+      userId: currentUser.uid,
+      username, email, issue, message: issue,
       status:'open',
       publicReplyFrom: 'admin@reward.rw',
       adminReply: "",
+      adminReplySeen: false,
       deviceId: getDeviceId(),
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     await db.collection('adminLogs').add({
-      type: 'NEW_SUPPORT_TICKET',
-      fromUser: email,
-      username: username,
+      type: 'NEW_SUPPORT_TICKET', fromUser: email, username,
       issuePreview: issue.substring(0,120),
       privateNotifyEmail: 'priyamwiza25@gmail.com',
-      publicReplyFrom: 'admin@reward.rw',
-      deviceId: getDeviceId(),
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      severity: 'info'
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
-    msg.style.color='#16a34a';msg.innerText='✅ Submitted! Admin will reply via admin@reward.rw';
+    msg.style.color='#16a34a';msg.innerText='✅ Submitted!';
     document.getElementById('supportIssue').value='';
-    loadMyTickets();
-    checkHelpBadge();
+    loadMyTickets(); checkHelpBadge();
     setTimeout(()=>{msg.innerText='';},3000);
   }catch(err){msg.style.color='red';msg.innerText='Error: '+err.message;}
   btn.innerText='Submit';btn.disabled=false;
@@ -319,9 +295,7 @@ async function loadMyTickets(){
   list.innerHTML='<div style="font-size:12px;color:#999">Loading...</div>';
   try{
     let snap = await db.collection('supportTickets').where('uid','==',currentUser.uid).orderBy('createdAt','desc').limit(20).get();
-    if(snap.empty){
-      snap = await db.collection('supportTickets').where('userId','==',currentUser.uid).orderBy('createdAt','desc').limit(20).get();
-    }
+    if(snap.empty) snap = await db.collection('supportTickets').where('userId','==',currentUser.uid).orderBy('createdAt','desc').limit(20).get();
     if(snap.empty){list.innerHTML='<div style="font-size:12px;color:#999;text-align:center;padding:10px">No tickets yet</div>';return;}
     let html="";
     snap.forEach(d=>{
@@ -332,27 +306,12 @@ async function loadMyTickets(){
       html+=`<div style="background:#f5f5f5;padding:12px;border-radius:10px;margin-bottom:10px;border-left:4px solid ${hasReply?'#ef4444':(isOpen?'#f59e0b':'#16a34a')}">
         <div style="display:flex;justify-content:space-between"><span style="font-size:10px;background:${hasReply?'#ef4444':(isOpen?'#fef3c7':'#dcfce7')};color:${hasReply?'white':'#000'};padding:3px 8px;border-radius:10px;font-weight:bold">${hasReply?'✉️ REPLIED':(t.status||'open').toUpperCase()}</span><span style="font-size:10px;color:#888">${date}</span></div>
         <div style="font-size:13px;margin-top:6px;color:#000">${t.message||t.issue}</div>
-        ${hasReply?`<div style="background:#fff;border:2px solid #ef4444;padding:8px;border-radius:8px;margin-top:8px"><b style="font-size:11px;color:#ef4444">✉️ REPLY from ${t.publicReplyFrom||'admin@reward.rw'}:</b><div style="font-size:13px;margin-top:4px;color:#000;font-weight:bold">${t.adminReply}</div></div>`:`<div style="font-size:11px;color:#888;margin-top:6px">⏳ Waiting for reply from admin@reward.rw...</div>`}
+        ${hasReply?`<div style="background:#fff;border:2px solid #ef4444;padding:8px;border-radius:8px;margin-top:8px"><b style="font-size:11px;color:#ef4444">✉️ REPLY from ${t.publicReplyFrom||'admin@reward.rw'}:</b><div style="font-size:13px;margin-top:4px;color:#000;font-weight:bold">${t.adminReply}</div></div>`:`<div style="font-size:11px;color:#888;margin-top:6px">⏳ Waiting for reply...</div>`}
       </div>`;
     });
     list.innerHTML=html;
   }catch(err){
-    try{
-      const snap2 = await db.collection('supportTickets').where('uid','==',currentUser.uid).get();
-      if(snap2.empty){list.innerHTML='<div style="font-size:12px;color:#999">No tickets yet</div>';return;}
-      let html="";
-      snap2.forEach(d=>{
-        const t=d.data();
-        const hasReply = t.adminReply && t.adminReply.trim()!=="";
-        html+=`<div style="background:#f5f5f5;padding:12px;border-radius:10px;margin-bottom:10px;border-left:4px solid ${hasReply?'#ef4444':'#f59e0b'}">
-          <div style="font-size:13px;color:#000">${t.message||t.issue}</div>
-          ${hasReply?`<div style="background:#fff;border:2px solid #ef4444;padding:8px;border-radius:8px;margin-top:8px"><b style="font-size:11px;color:#ef4444">✉️ ADMIN REPLY:</b><div style="font-size:13px;color:#000;font-weight:bold">${t.adminReply}</div></div>`:''}
-        </div>`;
-      });
-      list.innerHTML=html;
-    }catch(e2){
-      list.innerHTML='<div style="font-size:12px;color:red">Error: '+err.message+'</div>';
-    }
+    list.innerHTML='<div style="font-size:12px;color:red">Error: '+err.message+'</div>';
   }
 }
 
