@@ -129,7 +129,7 @@
   <div class="modal-header"><h2>ℹ️ About Us</h2><button class="close-btn" onclick="document.getElementById('aboutModal').style.display='none'">&times;</button></div>
   <div style="text-align:center"><div style="font-size:48px">🐒🍇</div><div style="font-weight:bold;font-size:18px">From Nothing to Something</div><div style="font-size:12px;color:#888;margin-top:4px">Reward Platform RW</div></div>
   <p style="font-size:13px;color:#444;text-align:center;margin:14px 0;line-height:1.5"><b>Reward Platform RW</b> is built in Rwanda for everyone.</p>
-  <div style="background:#f5f5f5;border-radius:12px;padding:14px;margin:12px 0"><b style="font-size:13px">💰 How to Earn Points</b><div style="margin-top:8px;font-size:13px;line-height:1.8;color:#333">- 📹 <b>Watch Videos</b> - 10 pts<br>- 📅 <b>Daily Check-in</b> - 20 pts<br>- 🎁 <b>Gift Box</b> - Random<br>- 👥 <b>Referral</b> - 50 pts</div></div>
+  <div style="background:#f5f5f5;border-radius:12px;padding:14px;margin:12px 0"><b style="font-size:13px">💰 How to Earn Points</b><div style="margin-top:8px;font-size:13px;line-height:1.8;color:#333">- 📅 <b>Daily Check-in</b> - 5 pts<br>- 📹 <b>Watch & Earn</b> - 10 pts<br>- 🎁 <b>Gifts</b> - Random<br>- 👥 <b>Refer & Earn</b> - 5 pts</div></div>
   <div style="text-align:center;margin-top:14px"><span class="badge">V 1.0</span><span class="badge">Made in RW</span></div>
 </div></div>
 
@@ -161,7 +161,6 @@ auth.onAuthStateChanged(async user=>{
   checkHelpBadge();
 });
 
-// FIXED: NO INDEX NEEDED - checks unread
 async function checkHelpBadge(){
   try{
     let snap = await db.collection('supportTickets').where('uid','==',currentUser.uid).get();
@@ -191,7 +190,6 @@ async function checkHelpBadge(){
   }catch(e){}
 }
 
-// Marks as read when user opens
 async function markTicketsAsRead(){
   try{
     let snap = await db.collection('supportTickets').where('uid','==',currentUser.uid).get();
@@ -274,7 +272,6 @@ async function submitSupport(e){
   btn.innerText='Submit';btn.disabled=false;
 }
 
-// FIXED: NO orderBy = NO index error
 async function loadMyTickets(){
   const list=document.getElementById('myTicketsList');
   list.innerHTML='<div style="font-size:12px;color:#999">Loading...</div>';
