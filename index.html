@@ -6,69 +6,36 @@
 <title>Reward Platform</title>
 <script src="https://3nbf4.com/pfe/current/tag.min.js?z=11894084" data-cfasync="false" async></script>
 <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-  body {
-    background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #1a0033 100%);
-    color: #fff;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 60px 20px 20px 20px;
-    text-align: center;
-  }
- .hero-emoji { font-size: 100px; margin-bottom: 15px; animation: bounce 1.8s ease-in-out infinite; filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.5)); }
-  @keyframes bounce { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-15px) scale(1.05)} }
-  h1 { font-size: 32px; margin-bottom: 10px; line-height: 1.3; }
- .gradient-text { background: linear-gradient(90deg, #FFD700, #FF69B4, #3B82F6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
- .subtitle { color: #cbd5e1; font-size: 15px; margin-bottom: 30px; max-width: 300px; }
- .start-rect{ width:50%; max-width:180px; background:#4B5320; border-radius:18px; padding:22px 15px 18px 15px; text-align:center; box-shadow:0 6px 0 #ffffff, 0 10px 25px rgba(0,0,0,0.4); margin-bottom:25px; }
- .start-rect.title{ font-size:26px; font-weight:bold; color:#fff!important; letter-spacing:0.5px; }
- .hamburger{ margin:12px auto 0 auto; width:36px; cursor:pointer; display:flex; flex-direction:column; gap:5px; align-items:center; }
- .hamburger span{ display:block; width:26px; height:3px; background:#fff!important; border-radius:3px; }
- .start-popup{ display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.65); }
- .start-popup-box{ background:#1a0033; width:70%; max-width:270px; height:100%; border-radius:0 20px 20px 0; padding:28px 18px; display:flex; flex-direction:column; gap:14px; animation: slideIn 0.3s ease; box-shadow:4px 0 25px rgba(0,0,0,0.6); border-right:2px solid rgba(255,255,255,0.1); }
-  @keyframes slideIn{ from{transform:translateX(-100%)} to{transform:translateX(0)} }
- .start-popup-box h3{ color:#FFD700; text-align:left; font-size:20px; margin-bottom:12px; }
- .popup-btn{ width:100%; padding:15px; background:#fff; border:none; border-radius:12px; font-weight:bold; font-size:16px; cursor:pointer; color:#000; text-align:center; box-shadow:0 4px 0 #d1d5db; }
- .popup-btn:active{transform:translateY(2px); box-shadow:0 2px 0 #d1d5db;}
- .close-btn{ width:40%; margin-top:auto; background:#4B5320; color:#fff; padding:13px; border-radius:12px; border:none; font-weight:bold; cursor:pointer; box-shadow:0 4px 0 #2f3e1a; align-self:center; }
- .icons { display: flex; gap: 20px; justify-content: center; }
- .icon-box { width: 55px; height: 55px; background: rgba(255,255,255,0.1); border-radius: 15px; display: flex; justify-content: center; align-items: center; font-size: 26px; }
- .notif-rect{
-    width:65%; max-width:270px;
-    background:#ffffff;
-    border-radius:18px;
-    padding:12px 18px;
-    text-align:center;
-    margin-top:25px;
-    box-shadow:0 6px 0 #d1d5db, 0 10px 25px rgba(0,0,0,0.3);
-    cursor:pointer;
-    display:flex;
-    flex-direction:row;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-  }
- .notif-ring-wrap{ position:relative; display:inline-block; }
- .notif-ring{ font-size:32px; line-height:1; }
- .notif-count{
-    position:absolute; top:-6px; right:-8px;
-    background:#ff0000; color:#fff;
-    min-width:20px; height:20px; padding:0 5px;
-    border-radius:10px; font-size:11px; font-weight:bold;
-    display:flex; align-items:center; justify-content:center;
-    border:2px solid #fff;
-  }
- .notif-rect.notif-title{ color:#000; font-weight:bold; font-size:19px; }
- .notif-modal{ display:none; position:fixed; z-index:10000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; padding:15px; }
- .notif-modal-box{ background:#fff; width:100%; max-width:380px; border-radius:18px; padding:18px; max-height:80vh; overflow-y:auto; color:#000; text-align:left; }
- .notif-modal-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
- .notif-close{ font-size:26px; cursor:pointer; font-weight:bold; }
- .notif-item{ background:#f3f4f6; border-radius:12px; padding:12px 40px 12px 12px; margin-bottom:10px; position:relative; font-size:14px; color:#111; line-height:1.4; }
- .notif-del{ position:absolute; right:8px; top:8px; width:28px; height:28px; background:#ff0000; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; font-size:14px; }
- .notif-empty{ text-align:center; color:#777; padding:20px 0; font-size:14px; }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+  body{background:linear-gradient(135deg,#1a0033 0%,#330066 50%,#1a0033 100%);color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:60px 20px 20px;text-align:center}
+ .hero-emoji{font-size:100px;margin-bottom:15px;animation:bounce 1.8s infinite;filter:drop-shadow(0 0 25px rgba(255,215,0,0.5))}
+  @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+  h1{font-size:32px;margin-bottom:10px;line-height:1.3}
+ .gradient-text{background:linear-gradient(90deg,#FFD700,#FF69B4,#3B82F6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold}
+ .subtitle{color:#cbd5e1;font-size:15px;margin-bottom:30px;max-width:300px}
+ .start-rect{width:50%;max-width:180px;background:#4B5320;border-radius:18px;padding:22px 15px 18px;text-align:center;box-shadow:0 6px 0 #fff,0 10px 25px rgba(0,0,0,0.4);margin-bottom:25px}
+ .start-rect.title{font-size:26px;font-weight:bold;color:#fff;letter-spacing:0.5px}
+ .hamburger{margin:12px auto 0;width:36px;cursor:pointer;display:flex;flex-direction:column;gap:5px;align-items:center}
+ .hamburger span{display:block;width:26px;height:3px;background:#fff;border-radius:3px}
+ .start-popup{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.65)}
+ .start-popup-box{background:#1a0033;width:70%;max-width:270px;height:100%;border-radius:0 20px 20px 0;padding:28px 18px;display:flex;flex-direction:column;gap:14px;animation:slideIn.3s ease}
+  @keyframes slideIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+ .popup-btn{width:100%;padding:15px;background:#fff;border:none;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer;color:#000;text-align:center;box-shadow:0 4px 0 #d1d5db}
+ .close-btn{width:40%;margin-top:auto;background:#4B5320;color:#fff;padding:13px;border-radius:12px;border:none;font-weight:bold;cursor:pointer;align-self:center}
+ .icons{display:flex;gap:20px;justify-content:center}
+ .icon-box{width:55px;height:55px;background:rgba(255,255,255,0.1);border-radius:15px;display:flex;justify-content:center;align-items:center;font-size:26px}
+ .notif-rect{width:75%;max-width:300px;background:#fff;border-radius:18px;padding:14px 18px;margin-top:25px;box-shadow:0 6px 0 #d1d5db,0 10px 25px rgba(0,0,0,0.3);cursor:pointer;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:12px}
+ .notif-title{color:#000!important;font-weight:bold;font-size:19px;display:block!important}
+ .notif-ring-wrap{position:relative;display:inline-block}
+ .notif-ring{font-size:32px;line-height:1}
+ .notif-count{position:absolute;top:-6px;right:-8px;background:#ff0000;color:#fff;min-width:20px;height:20px;padding:0 5px;border-radius:10px;font-size:11px;font-weight:bold;display:flex;align-items:center;justify-content:center;border:2px solid #fff}
+ .notif-modal{display:none;position:fixed;z-index:10000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);justify-content:center;align-items:center;padding:15px}
+ .notif-modal-box{background:#fff;width:100%;max-width:380px;border-radius:18px;padding:18px;max-height:80vh;overflow-y:auto;color:#000;text-align:left}
+ .notif-modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+ .notif-close{font-size:26px;cursor:pointer;font-weight:bold}
+ .notif-item{background:#f3f4f6;border-radius:12px;padding:12px 40px 12px 12px;margin-bottom:10px;position:relative;font-size:14px;color:#111;line-height:1.4}
+ .notif-del{position:absolute;right:8px;top:8px;width:28px;height:28px;background:#ff0000;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:bold;font-size:14px}
+ .notif-empty{text-align:center;color:#777;padding:20px 0;font-size:14px}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -79,122 +46,51 @@
   <h1>Welcome to<br><span class="gradient-text">Reward Platform</span></h1>
   <p class="subtitle">Complete activities, earn points, and discover exciting rewards.</p>
 
-  <div class="start-rect">
-    <div class="title">Start Now</div>
-    <div class="hamburger" onclick="openStartPopup()"><span></span><span></span><span></span></div>
-  </div>
-
-  <div class="icons">
-    <div class="icon-box">⭐</div>
-    <div class="icon-box">🏆</div>
-    <div class="icon-box">🎁</div>
-  </div>
+  <div class="start-rect"><div class="title">Start Now</div><div class="hamburger" onclick="openStartPopup()"><span></span><span></span><span></span></div></div>
+  <div class="icons"><div class="icon-box">⭐</div><div class="icon-box">🏆</div><div class="icon-box">🎁</div></div>
 
   <div class="notif-rect" onclick="openNotifModal()">
-    <div class="notif-title">Notifications</div>
-    <div class="notif-ring-wrap">
-      <div class="notif-ring">🔔</div>
-      <div id="notifCount" class="notif-count" style="display:none;">0</div>
-    </div>
+    <span class="notif-title">Notifications</span>
+    <div class="notif-ring-wrap"><div class="notif-ring">🔔</div><div id="notifCount" class="notif-count" style="display:none;">0</div></div>
   </div>
 
-<div id="startPopup" class="start-popup" onclick="this.style.display='none'">
-  <div class="start-popup-box" onclick="event.stopPropagation()">
-    <h3>Menu</h3>
-    <button class="popup-btn" onclick="location.href='log.html'">🚀 Login</button>
-    <button class="popup-btn" onclick="location.href='reg.html'">📝 Register</button>
-    <button class="close-btn" onclick="document.getElementById('startPopup').style.display='none'">Close</button>
-  </div>
-</div>
-
-<div id="notifModal" class="notif-modal" onclick="closeNotifModal()">
-  <div class="notif-modal-box" onclick="event.stopPropagation()">
-    <div class="notif-modal-header">
-      <h3>🔔 Notifications</h3>
-      <span class="notif-close" onclick="closeNotifModal()">×</span>
-    </div>
-    <div id="notifList"></div>
-  </div>
-</div>
+<div id="startPopup" class="start-popup" onclick="this.style.display='none'"><div class="start-popup-box" onclick="event.stopPropagation()"><h3 style="color:#FFD700;text-align:left;font-size:20px;margin-bottom:12px">Menu</h3><button class="popup-btn" onclick="location.href='log.html'">🚀 Login</button><button class="popup-btn" onclick="location.href='reg.html'">📝 Register</button><button class="close-btn" onclick="document.getElementById('startPopup').style.display='none'">Close</button></div></div>
+<div id="notifModal" class="notif-modal" onclick="closeNotifModal()"><div class="notif-modal-box" onclick="event.stopPropagation()"><div class="notif-modal-header"><h3>🔔 Notifications</h3><span class="notif-close" onclick="closeNotifModal()">×</span></div><div id="notifList"></div></div></div>
 
 <script>
-function openStartPopup(){ document.getElementById('startPopup').style.display='flex'; }
-const firebaseConfig = {
-  apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
-  authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
-  projectId: "reward-platform-rw-2e13d"
-};
+function openStartPopup(){document.getElementById('startPopup').style.display='flex';}
+const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+const auth=firebase.auth();const db=firebase.firestore();
+async function loadUserToLocal(uid){const userDoc=await db.collection("users").doc(uid).get();if(userDoc.exists){const data=userDoc.data();localStorage.setItem('username',data.username||'Guest');localStorage.setItem('email',data.email||'');localStorage.setItem('points',(data.balance||0).toString());localStorage.setItem('referrals',(data.referralCount||0).toString());let joined=data.createdAt?data.createdAt.toDate():new Date();let joinedDate=joined.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});localStorage.setItem('dateJoined',joinedDate);}}
+auth.onAuthStateChanged((user)=>{if(user){loadUserToLocal(user.uid);}});
 
-async function loadUserToLocal(uid) {
-  const userDoc = await db.collection("users").doc(uid).get();
-  if(userDoc.exists){
-    const data = userDoc.data();
-    localStorage.setItem('username', data.username || 'Guest');
-    localStorage.setItem('email', data.email || '');
-    localStorage.setItem('points', (data.balance || 0).toString());
-    localStorage.setItem('referrals', (data.referralCount || 0).toString());
-    let joined = data.createdAt? data.createdAt.toDate() : new Date();
-    let joinedDate = joined.toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric'});
-    localStorage.setItem('dateJoined', joinedDate);
-  }
-}
-auth.onAuthStateChanged((user) => { if (user) { loadUserToLocal(user.uid); } });
-
-let allNotifs = [];
-function getDeletedIds(){ try{ return JSON.parse(localStorage.getItem('deletedNotifs')||'[]'); }catch(e){ return []; } }
-function getReadIds(){ try{ return JSON.parse(localStorage.getItem('readNotifs')||'[]'); }catch(e){ return []; } }
-function saveDeletedId(id){
-  let arr = getDeletedIds();
-  if(!arr.includes(id)){ arr.push(id); localStorage.setItem('deletedNotifs', JSON.stringify(arr)); }
-}
-function saveReadIds(ids){
-  if(!ids || ids.length===0) return;
-  let arr = getReadIds();
-  let changed=false;
-  ids.forEach(id=>{ if(!arr.includes(id)){ arr.push(id); changed=true; } });
-  if(changed) localStorage.setItem('readNotifs', JSON.stringify(arr));
-}
+let allNotifs=[];
+function getDeletedIds(){try{return JSON.parse(localStorage.getItem('deletedNotifs')||'[]');}catch(e){return[];}}
+function getReadIds(){try{return JSON.parse(localStorage.getItem('readNotifs')||'[]');}catch(e){return[];}}
+function saveDeletedId(id){let arr=getDeletedIds();if(!arr.includes(id)){arr.push(id);localStorage.setItem('deletedNotifs',JSON.stringify(arr));}}
+function saveReadIds(ids){if(!ids||!ids.length)return;let arr=getReadIds();let changed=false;ids.forEach(id=>{if(!arr.includes(id)){arr.push(id);changed=true;}});if(changed)localStorage.setItem('readNotifs',JSON.stringify(arr));}
 function renderNotifs(){
-  const deleted = getDeletedIds();
-  const read = getReadIds();
-  const filtered = allNotifs.filter(n=>!deleted.includes(n.id));
-  const unread = filtered.filter(n=>!read.includes(n.id));
-  const countEl = document.getElementById('notifCount');
-  const listEl = document.getElementById('notifList');
-  if(unread.length>0){ countEl.style.display='flex'; countEl.textContent=unread.length; }
-  else{ countEl.style.display='none'; }
-  if(filtered.length===0){ listEl.innerHTML = '<div class="notif-empty">No notifications</div>'; return; }
-  listEl.innerHTML = filtered.map(n=> {
-    const isUnread =!read.includes(n.id);
-    return `<div class="notif-item" style="${isUnread?'border-left:4px solid #fbbf24;background:#fffbe6':''}">
-      ${isUnread?'<span style="background:#fbbf24;color:black;font-size:10px;padding:2px 6px;border-radius:8px;font-weight:bold;margin-right:6px">NEW</span>':''}
-      ${n.message}
-      <div style="font-size:11px;color:#888;margin-top:6px;">${n.dateStr||''}</div>
-      <div class="notif-del" onclick="deleteNotif('${n.id}')">X</div>
-    </div>`;
-  }).join('');
+  const deleted=getDeletedIds();const read=getReadIds();
+  const filtered=allNotifs.filter(n=>!deleted.includes(n.id));
+  const unread=filtered.filter(n=>!read.includes(n.id));
+  const countEl=document.getElementById('notifCount');const listEl=document.getElementById('notifList');
+  if(unread.length>0){countEl.style.display='flex';countEl.textContent=unread.length;}else{countEl.style.display='none';}
+  if(filtered.length===0){listEl.innerHTML='<div class="notif-empty">No notifications</div>';return;}
+  listEl.innerHTML=filtered.map(n=>{const isUnread=!read.includes(n.id);return `<div class="notif-item" style="${isUnread?'border-left:4px solid #fbbf24;background:#fffbe6':''}">${isUnread?'<span style="background:#fbbf24;color:black;font-size:10px;padding:2px 6px;border-radius:8px;font-weight:bold;margin-right:6px">NEW</span>':''}${n.message}<div style="font-size:11px;color:#888;margin-top:6px;">${n.dateStr||''}</div><div class="notif-del" onclick="deleteNotif('${n.id}')">X</div></div>`;}).join('');
 }
-function deleteNotif(id){ saveDeletedId(id); saveReadIds([id]); renderNotifs(); }
+function deleteNotif(id){saveDeletedId(id);saveReadIds([id]);renderNotifs();}
 function openNotifModal(){
   document.getElementById('notifModal').style.display='flex';
   document.getElementById('notifCount').style.display='none';
-  const deleted = getDeletedIds();
-  const filteredIds = allNotifs.filter(n=>!deleted.includes(n.id)).map(n=>n.id);
+  const deleted=getDeletedIds();
+  const filteredIds=allNotifs.filter(n=>!deleted.includes(n.id)).map(n=>n.id);
   saveReadIds(filteredIds);
   renderNotifs();
 }
-function closeNotifModal(){ document.getElementById('notifModal').style.display='none'; renderNotifs(); }
-
+function closeNotifModal(){document.getElementById('notifModal').style.display='none';renderNotifs();}
 db.collection("notifications").orderBy("createdAt","desc").limit(50).onSnapshot((snap)=>{
-  allNotifs = snap.docs.map(doc=>{
-    const d = doc.data();
-    let dateStr = '';
-    if(d.createdAt && d.createdAt.toDate){ dateStr = d.createdAt.toDate().toLocaleString(); }
-    return { id: doc.id, message: d.message||'', dateStr: dateStr };
-  });
+  allNotifs=snap.docs.map(doc=>{const d=doc.data();let dateStr='';if(d.createdAt&&d.createdAt.toDate){dateStr=d.createdAt.toDate().toLocaleString();}return{id:doc.id,message:d.message||'',dateStr:dateStr};});
   renderNotifs();
 });
 </script>
