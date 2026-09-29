@@ -66,7 +66,7 @@ input,select,textarea{padding:11px;background:#111;border:1px solid #444;border-
 <div id="page-config" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>App Config - Crypto</h1></div><div class="card"><label class="label">Points = $0.5</label><input id="cPointsPerHalf" type="number" value="1000" oninput="updatePreview()"><label class="label">Min Withdraw USD</label><input id="cMinWithdraw" type="number" value="5" oninput="updatePreview()"><label class="label">Withdraw Fee % (Crypto only, Binance & OKX = 0%)</label><input id="cWithdrawFee" type="number" value="15" oninput="updatePreview()"><label class="label">Referral Bonus</label><input id="cRefBonus" type="number" value="50"><label class="label">Max Ref per 24h (fraud limit) - DYNAMIC</label><input id="cMaxRef" type="number" value="10" oninput="updatePreview()"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px"><label style="background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cUSDT" checked> USDT</label><label style="background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cBNB" checked> BNB</label><label style="background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cXRP" checked> XRP</label><label style="background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cXLM" checked> XLM</label></div><label class="label">Maintenance</label><select id="cMaintenance"><option value="off">OFF</option><option value="on">ON</option></select><input id="cMaintMsg" type="text" placeholder="Message"><button class="btn btn-ok" style="width:100%;padding:14px;margin-top:20px" onclick="saveConfig()">Save Config</button><div id="configMsg" style="margin-top:12px"></div><p id="cPreview" style="color:#22c55e"></p></div></div>
 <div id="page-settings" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Settings</h1></div><div class="card"><input id="oldPass" type="password" placeholder="Current"><input id="newPass" type="password" placeholder="New"><input id="newPass2" type="password" placeholder="Confirm"><button class="btn btn-ok" onclick="changePassword()">Update</button><div id="settingsMsg"></div></div></div>
 
-<!-- NEW NOTIFICATIONS PAGE -->
+<!-- NOTIFICATIONS PAGE WITH RED X -->
 <div id="page-notifications" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>🔔 Notifications</h1></div><div class="card"><label class="label">Write notification for all users (index.html)</label><textarea id="notifMessage" rows="4" placeholder="Example: New bonus available! Earn 2x today..."></textarea><button class="btn btn-ok" style="width:100%;padding:14px;margin-top:10px" onclick="sendNotification()">📢 Send to All Users</button><div id="notifSendMsg" style="margin-top:10px"></div></div><div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><h3 style="color:#fbbf24">Recent Notifications (50)</h3><button class="btn" onclick="loadNotificationsAdmin()">Refresh</button></div><div id="notifAdminList">Loading...</div></div></div>
 
 </div></div>
@@ -114,8 +114,6 @@ window.adminLogin=async()=>{const e=document.getElementById('aEmail').value.trim
 onAuthStateChanged(auth,async(user)=>{if(user&&user.email===SUPER_ADMIN_EMAIL){document.getElementById('loginBox').classList.add('hidden');document.getElementById('panel').classList.remove('hidden');document.getElementById('panel').style.display='flex';openPage('dashboard',document.querySelector('.menu li'));loadDashboard();loadUsers(true);loadWithdrawals('pending');loadSupportCount();loadAppConfigGlobal();}else if(user){await signOut(auth);}});
 async function loadAppConfigGlobal(){try{const s=await getDoc(doc(db,"appConfig","main"));if(s.exists()){globalConfig=s.data();const maxR=globalConfig.maxRefPer24h||10;document.getElementById('wdConfigInfo').innerText=`Rate ${globalConfig.pointsPerHalfDollar}pts=$0.5 | Min $${globalConfig.minWithdrawUSD} | Fee ${globalConfig.withdrawFeePercent}% (Binance & OKX = 0 FEE) | Fraud Limit ${maxR}/24h DYNAMIC`;document.getElementById('dashConfigPreview').innerHTML=`Crypto Live ${globalConfig.pointsPerHalfDollar}pts=$0.5 -> Min ${globalConfig.pointsPerDollar*globalConfig.minWithdrawUSD}pts = $${globalConfig.minWithdrawUSD} -> Receive $${(globalConfig.minWithdrawUSD-globalConfig.minWithdrawUSD*globalConfig.withdrawFeePercent/100).toFixed(2)} | MaxRef ${maxR}/24h DYNAMIC | Binance Pay & OKX Pay 0 FEE`;document.getElementById('fraudTitle').innerText=`Fraud - ${maxR+1} in 24h Detector (DYNAMIC, Config=${maxR})`;document.getElementById('wdTitle').innerText=`Withdrawals - Binance Pay & OKX Pay 0 FEE - Fraud Limit ${maxR}/24h`;document.getElementById('mRefLimit').innerText=maxR;}}catch(e){}}
 async function loadDashboard(){const t=await getCountFromServer(collection(db,"users"));document.getElementById('totalUsers').innerText=t.data().count;const b=await getCountFromServer(query(collection(db,"users"),where("isBanned","==",true)));document.getElementById('totalBanned').innerText=b.data().count;const p=await getCountFromServer(query(collection(db,"withdrawals"),where("status","==","pending"))).catch(()=>({data:()=>({count:0})}));document.getElementById('totalPending').innerText=p.data().count;document.getElementById('wdCount').innerText=p.data().count;loadSupportCount();}
-
-// --- NEW NOTIFICATIONS ADMIN ---
 window.sendNotification=async()=>{
   const msg=document.getElementById('notifMessage').value.trim();
   if(!msg){ showToast("Write message first","#ef4444"); return; }
@@ -138,13 +136,16 @@ window.loadNotificationsAdmin=async()=>{
   try{
     const snap=await getDocs(query(collection(db,"notifications"),orderBy("createdAt","desc"),limit(50)));
     if(snap.empty){ el.innerHTML="No notifications yet"; return; }
-    let html="<div class='table-wrap'><table><tr><th>Message</th><th>Date</th><th>Action</th></tr>";
+    let html="";
     snap.forEach(d=>{
       const n=d.data();
       const date=n.createdAt?new Date(n.createdAt.seconds*1000).toLocaleString():"Just now";
-      html+=`<tr><td style="white-space:normal;max-width:300px;word-break:break-word">${n.message}</td><td>${date}</td><td><button class="btn btn-ban" onclick="deleteNotificationAdmin('${d.id}')">Delete</button></td></tr>`;
+      html+=`<div style="background:#111;padding:12px 40px 12px 12px;border-radius:10px;margin-bottom:10px;position:relative;word-break:break-word">
+        ${n.message}
+        <div style="font-size:11px;color:#888;margin-top:6px">${date}</div>
+        <div onclick="deleteNotificationAdmin('${d.id}')" style="position:absolute;right:8px;top:8px;width:28px;height:28px;background:#ff0000;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:bold">X</div>
+      </div>`;
     });
-    html+="</table></div>";
     el.innerHTML=html;
   }catch(e){ el.innerHTML="Error: "+e.message; }
 }
@@ -154,7 +155,6 @@ window.deleteNotificationAdmin=async(id)=>{
   showToast("🗑️ Deleted","#ef4444");
   loadNotificationsAdmin();
 }
-
 async function loadSupportCount(){try{const q=query(collection(db,"supportTickets"),where("status","==","open"));const s=await getCountFromServer(q);document.getElementById('supportCount').innerText=s.data().count;document.getElementById('totalTickets').innerText=s.data().count;}catch(e){}}
 window.loadUsers=async(isFirst)=>{if(isFirst)lastVisible=null;let q=lastVisible?query(collection(db,"users"),orderBy("createdAt","desc"),startAfter(lastVisible),limit(50)):query(collection(db,"users"),orderBy("createdAt","desc"),limit(50));const snap=await getDocs(q);if(!snap.empty)lastVisible=snap.docs[snap.docs.length-1];renderUsers(snap);}
 function renderUsers(snap){const tb=document.querySelector('#usersTable tbody');tb.innerHTML="";snap.forEach(d=>{const u=d.data();const tr=document.createElement('tr');tr.innerHTML=`<td>${u.username||''}</td><td>${u.email||''}</td><td>${u.balance||u.points||0}</td><td>${u.referralCount||0}</td><td>${u.isBanned?'BANNED':'ACTIVE'}</td><td><button class="btn btn-edit" onclick="openModal('${d.id}')">Manage</button></td>`;tb.appendChild(tr);});}
