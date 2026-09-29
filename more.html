@@ -9,7 +9,7 @@
 .container{max-width:500px;margin:0 auto}
 .header{text-align:center;margin:20px 0;color:#fbbf24;font-size:28px;font-weight:bold}
 .card{background:#fff;border-radius:16px;padding:8px;box-shadow:0 4px 12px rgba(0,0,0,0.25)}
-.menu-list a{display:flex;align-items:center;justify-content:space-between;width:100%;padding:18px 16px;color:#000;text-decoration:none;font-size:16px;font-weight:bold;border-radius:10px;cursor:pointer}
+.menu-list a{display:flex;align-items:center;justify-content:space-between;width:100%;padding:18px 16px;color:#000;text-decoration:none;font-size:16px;font-weight:bold;border-radius:10px;cursor:pointer;position:relative}
 .menu-list a:not(:last-child){border-bottom:1px solid #e5e5e5}
 .left{display:flex;align-items:center}
 .icon{font-size:22px;margin-right:14px}
@@ -44,6 +44,12 @@
 .btn-black{background:#000;color:#fff}
 .btn-yellow{background:#f59e0b;color:#000}
 .badge{background:#f59e0b;color:#000;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:bold;display:inline-block;margin:3px}
+/* NEW - Envelope badge for admin reply */
+.envelope-badge{background:#ef4444;color:white;padding:2px 8px;border-radius:12px;font-size:12px;font-weight:bold;margin-left:8px;animation:pop 0.5s ease}
+.envelope-dot{width:10px;height:10px;background:#ef4444;border-radius:50%;position:absolute;right:28px;top:14px;border:2px solid white;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+@keyframes pop{0%{transform:scale(0)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+.hidden{display:none!important}
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -57,7 +63,7 @@
       <a onclick="openProfile()"><div class="left"><span class="icon">👤</span> Profile</div>›</a>
       <a onclick="openHistory()"><div class="left"><span class="icon">📜</span> Earn History</div>›</a>
       <a onclick="openSettings()"><div class="left"><span class="icon">⚙️</span> Settings</div>›</a>
-      <a onclick="openHelp()"><div class="left"><span class="icon">❓</span> Help/Support</div>›</a>
+      <a id="helpMenuItem" onclick="openHelp()"><div class="left"><span class="icon" id="helpIcon">❓</span> Help/Support <span id="helpBadge" class="envelope-badge hidden">✉️ 1 new reply</span></div><div style="display:flex;align-items:center;gap:6px"><span id="helpDot" class="envelope-dot hidden"></span>›</div></a>
       <a onclick="openAbout()"><div class="left"><span class="icon">ℹ️</span> About Us</div>›</a>
     </div>
   </div>
@@ -111,7 +117,7 @@
 </div></div>
 
 <div id="helpModal" class="modal" onclick="this.style.display='none'"><div class="modal-content" onclick="event.stopPropagation()">
-  <div class="modal-header"><h2>❓ Help/Support</h2><button class="close-btn" onclick="document.getElementById('helpModal').style.display='none'">&times;</button></div>
+  <div class="modal-header"><h2 id="helpModalTitle">❓ Help/Support</h2><button class="close-btn" onclick="document.getElementById('helpModal').style.display='none'">&times;</button></div>
   <form onsubmit="submitSupport(event)">
     <label class="support-label">Username</label>
     <input type="text" id="supportUsername" class="support-input" placeholder="Username used to create account" required>
@@ -124,7 +130,7 @@
     <p style="font-size:11px;color:#888;text-align:center;margin-top:10px">Reply from: admin@reward.rw • Secure</p>
   </form>
   <div id="myTicketsWrap" style="margin-top:20px;border-top:1px solid #eee;padding-top:12px">
-    <b style="font-size:13px">📩 My Tickets & Replies</b>
+    <b style="font-size:13px" id="myTicketsHeader">📩 My Tickets & Replies</b>
     <div id="myTicketsList" style="margin-top:10px"><div style="font-size:12px;color:#999;text-align:center">Loading...</div></div>
   </div>
 </div></div>
@@ -184,7 +190,6 @@ function chooseMode(m){
 }
 function formatDateDDMMYYYY(d){if(!d)return"00/00/0000";const dd=d.toDate?d.toDate():new Date(d);return `${String(dd.getDate()).padStart(2,'0')}/${String(dd.getMonth()+1).padStart(2,'0')}/${dd.getFullYear()}`;}
 function formatDateTime(d){if(!d)return"";const dd=d.toDate?d.toDate():new Date(d);return `${String(dd.getDate()).padStart(2,'0')}/${String(dd.getMonth()+1).padStart(2,'0')}/${dd.getFullYear()} ${String(dd.getHours()).padStart(2,'0')}:${String(dd.getMinutes()).padStart(2,'0')}`;}
-// Device ID for fraud detection
 function getDeviceId(){
   let id = localStorage.getItem('deviceId');
   if(!id){ id = btoa(navigator.userAgent + screen.width + Math.random()).slice(0,24); localStorage.setItem('deviceId', id); }
@@ -203,7 +208,37 @@ auth.onAuthStateChanged(async user=>{
   document.getElementById('setEmail').innerText=userData.email||user.email;
   const av=localStorage.getItem('userAvatar_'+user.uid);if(av)document.getElementById('avatarDisplay').innerHTML=`<img src="${av}">`;
   chooseMode(getMode());
+  checkHelpBadge(); // NEW - check for admin reply on load
 });
+
+async function checkHelpBadge(){
+  try{
+    let countReply=0;
+    const snap = await db.collection('supportTickets').where('uid','==',currentUser.uid).get();
+    snap.forEach(d=>{
+      const t=d.data();
+      if(t.adminReply && t.adminReply.trim()!==""){
+        countReply++;
+      }
+    });
+    const badge=document.getElementById('helpBadge');
+    const dot=document.getElementById('helpDot');
+    const icon=document.getElementById('helpIcon');
+    if(countReply>0){
+      icon.innerText='✉️';
+      badge.innerText=`✉️ ${countReply} reply${countReply>1?'s':''}`;
+      badge.classList.remove('hidden');
+      dot.classList.remove('hidden');
+      document.getElementById('myTicketsHeader').innerHTML=`✉️ My Tickets & Replies <span style="background:#ef4444;color:white;padding:2px 6px;border-radius:10px;font-size:10px">${countReply} NEW</span>`;
+      document.getElementById('helpModalTitle').innerHTML='✉️ Help/Support <span style="font-size:12px;color:#ef4444">New reply!</span>';
+    } else {
+      icon.innerText='❓';
+      badge.classList.add('hidden');
+      dot.classList.add('hidden');
+    }
+  }catch(e){}
+}
+
 async function loadHistory(){
   const listEl=document.getElementById('historyList');
   listEl.innerHTML='<div class="empty-text">Loading...</div>';
@@ -232,6 +267,7 @@ function openHelp(){
   }
   document.getElementById('helpModal').style.display='flex';
   loadMyTickets();
+  checkHelpBadge();
 }
 
 async function submitSupport(e){
@@ -244,7 +280,6 @@ async function submitSupport(e){
   if(!username||!email||!issue){msg.style.color='red';msg.innerText='Fill all fields';return;}
   btn.innerText='Sending...';btn.disabled=true;
   try{
-    // PUBLIC ticket - user sees admin@reward.rw as reply address
     await db.collection('supportTickets').add({
       uid: currentUser?currentUser.uid:null,
       userId: currentUser?currentUser.uid:null,
@@ -253,19 +288,16 @@ async function submitSupport(e){
       issue: issue,
       message: issue,
       status:'open',
-      publicReplyFrom: 'admin@reward.rw', // USER SEES THIS
+      publicReplyFrom: 'admin@reward.rw',
       adminReply: "",
       deviceId: getDeviceId(),
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
-    // PRIVATE admin log - only admin@reward.rw can read - hidden notification to your Gmail
-    // This collection is protected by Firestore rules, users cannot read it
     await db.collection('adminLogs').add({
       type: 'NEW_SUPPORT_TICKET',
       fromUser: email,
       username: username,
       issuePreview: issue.substring(0,120),
-      // Private field - only admin panel reads it
       privateNotifyEmail: 'priyamwiza25@gmail.com',
       publicReplyFrom: 'admin@reward.rw',
       deviceId: getDeviceId(),
@@ -275,6 +307,7 @@ async function submitSupport(e){
     msg.style.color='#16a34a';msg.innerText='✅ Submitted! Admin will reply via admin@reward.rw';
     document.getElementById('supportIssue').value='';
     loadMyTickets();
+    checkHelpBadge();
     setTimeout(()=>{msg.innerText='';},3000);
   }catch(err){msg.style.color='red';msg.innerText='Error: '+err.message;}
   btn.innerText='Submit';btn.disabled=false;
@@ -295,10 +328,11 @@ async function loadMyTickets(){
       const t=d.data();
       const date = t.createdAt && t.createdAt.toDate? t.createdAt.toDate().toLocaleString() : "";
       const isOpen = t.status=='open' || t.status=='pending';
-      html+=`<div style="background:#f5f5f5;padding:12px;border-radius:10px;margin-bottom:10px;border-left:4px solid ${isOpen?'#f59e0b':'#16a34a'}">
-        <div style="display:flex;justify-content:space-between"><span style="font-size:10px;background:${isOpen?'#fef3c7':'#dcfce7'};padding:3px 8px;border-radius:10px;font-weight:bold">${(t.status||'open').toUpperCase()}</span><span style="font-size:10px;color:#888">${date}</span></div>
+      const hasReply = t.adminReply && t.adminReply.trim()!=="";
+      html+=`<div style="background:#f5f5f5;padding:12px;border-radius:10px;margin-bottom:10px;border-left:4px solid ${hasReply?'#ef4444':(isOpen?'#f59e0b':'#16a34a')}">
+        <div style="display:flex;justify-content:space-between"><span style="font-size:10px;background:${hasReply?'#ef4444':(isOpen?'#fef3c7':'#dcfce7')};color:${hasReply?'white':'#000'};padding:3px 8px;border-radius:10px;font-weight:bold">${hasReply?'✉️ REPLIED':(t.status||'open').toUpperCase()}</span><span style="font-size:10px;color:#888">${date}</span></div>
         <div style="font-size:13px;margin-top:6px;color:#000">${t.message||t.issue}</div>
-        ${t.adminReply?`<div style="background:#fff;border:1px solid #fbbf24;padding:8px;border-radius:8px;margin-top:8px"><b style="font-size:11px;color:#f59e0b">REPLY from ${t.publicReplyFrom||'admin@reward.rw'}:</b><div style="font-size:13px;margin-top:2px;color:#000">${t.adminReply}</div></div>`:`<div style="font-size:11px;color:#888;margin-top:6px">Waiting for reply from admin@reward.rw...</div>`}
+        ${hasReply?`<div style="background:#fff;border:2px solid #ef4444;padding:8px;border-radius:8px;margin-top:8px"><b style="font-size:11px;color:#ef4444">✉️ REPLY from ${t.publicReplyFrom||'admin@reward.rw'}:</b><div style="font-size:13px;margin-top:4px;color:#000;font-weight:bold">${t.adminReply}</div></div>`:`<div style="font-size:11px;color:#888;margin-top:6px">⏳ Waiting for reply from admin@reward.rw...</div>`}
       </div>`;
     });
     list.innerHTML=html;
@@ -309,9 +343,10 @@ async function loadMyTickets(){
       let html="";
       snap2.forEach(d=>{
         const t=d.data();
-        html+=`<div style="background:#f5f5f5;padding:12px;border-radius:10px;margin-bottom:10px">
+        const hasReply = t.adminReply && t.adminReply.trim()!=="";
+        html+=`<div style="background:#f5f5f5;padding:12px;border-radius:10px;margin-bottom:10px;border-left:4px solid ${hasReply?'#ef4444':'#f59e0b'}">
           <div style="font-size:13px;color:#000">${t.message||t.issue}</div>
-          ${t.adminReply?`<div style="background:#fff;border:1px solid #fbbf24;padding:8px;border-radius:8px;margin-top:8px"><b style="font-size:11px;color:#f59e0b">ADMIN REPLY:</b><div style="font-size:13px;color:#000">${t.adminReply}</div></div>`:''}
+          ${hasReply?`<div style="background:#fff;border:2px solid #ef4444;padding:8px;border-radius:8px;margin-top:8px"><b style="font-size:11px;color:#ef4444">✉️ ADMIN REPLY:</b><div style="font-size:13px;color:#000;font-weight:bold">${t.adminReply}</div></div>`:''}
         </div>`;
       });
       list.innerHTML=html;
