@@ -14,6 +14,7 @@
     input::placeholder { color: #888; }
 .btn-login { width: 100%; padding: 16px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 0 #d97706; }
 .btn-login:active { transform: translateY(2px); box-shadow: 0 2px 0 #d97706; }
+.btn-login:disabled{opacity:0.6;cursor:not-allowed}
 .link-register { color: #fbbf24; margin-top: 15px; font-size: 14px; cursor: pointer; }
 .link-reset { color: #60a5fa; margin-top: 8px; font-size: 13px; cursor: pointer; text-decoration: underline; }
 .error { color: #ef4444; font-size: 13px; margin-top: 10px; }
@@ -74,7 +75,6 @@
     if(!id){ id = Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('deviceId', id); }
     return id;
   }
-
   window.formatResetUsername = function(){
     let val = document.getElementById('resetUsername').value;
     val = val.replace(/[^a-zA-Z]/g, '');
@@ -84,69 +84,96 @@
 
   window.login = async function() {
     if(isLogging) return;
-    const email = document.getElementById('email').value.trim();
+    const emailEl = document.getElementById('email');
+    const passEl = document.getElementById('password');
+    const email = emailEl.value.trim();
     const emailLow = email.toLowerCase();
-    const password = document.getElementById('password').value;
+    const password = passEl.value;
     const errorEl = document.getElementById('error');
     const successEl = document.getElementById('success');
     const btn = document.getElementById('loginBtn');
     errorEl.innerText = ""; successEl.innerText = "";
     if(!email ||!password){ errorEl.innerText = "Fill all fields"; return; }
+
     isLogging = true;
     btn.disabled = true;
     btn.innerText = "Logging in...";
-    btn.style.opacity = "0.7";
+
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
+      let curUser = cred.user;
 
-      if(!cred.user.emailVerified){
-        try{ await sendEmailVerification(cred.user); }catch(e){}
-        await signOut(auth);
-        throw new Error("📧 Email not verified. We resent verification link to "+email+". Check inbox/spam and click link, then login again.");
+      // WISE FIX: reload once - fixes "instantly rejected" loop
+      if(!curUser.emailVerified){
+        try{
+          await curUser.reload();
+          curUser = auth.currentUser;
+        }catch(e){}
       }
 
+      if(!curUser.emailVerified){
+        // avoid spamming verification email every click
+        const lastSent = parseInt(localStorage.getItem('lastVerifSent')||'0');
+        if(Date.now() - lastSent > 60000){
+          try{ await sendEmailVerification(curUser); localStorage.setItem('lastVerifSent', Date.now().toString()); }catch(e){}
+        }
+        await signOut(auth);
+        throw new Error("📧 Email not verified. We resent link to "+email+". Verify then login again.");
+      }
+
+      // FAST PATH: whitelist skip extra work
       const isWhite = WHITELIST.includes(emailLow);
       const myDeviceId = getDeviceId();
 
-      try{
-        const qV = query(collection(db, "users"), where("emailLower", "==", emailLow));
-        const snapV = await getDocs(qV);
-        if(!snapV.empty){
-          await updateDoc(snapV.docs[0].ref, { emailVerified: true });
-        }
-      }catch(e){}
-
+      // ONE query only, and don't block redirect
       if(!isWhite){
-        const qUser = query(collection(db, "users"), where("emailLower", "==", emailLow));
-        const snapUser = await getDocs(qUser);
-        let userData = null;
-        let userRef = null;
-        if(!snapUser.empty){ userData = snapUser.docs[0].data(); userRef = snapUser.docs[0].ref; }
-
-        // FIXED: No more blocking on device change - just update
-        if(userData && userRef){
-          if(!userData.deviceId){
-            await updateDoc(userRef, { deviceId: myDeviceId });
-          } else if(userData.deviceId!== myDeviceId){
-            await updateDoc(userRef, { deviceId: myDeviceId });
-          }
-        }
-        // REMOVED the "1 device = 1 account" check on login to allow families sharing phone
+        // fire in background, don't await long
+        (async()=>{
+          try{
+            const q = query(collection(db, "users"), where("emailLower", "==", emailLow));
+            const snap = await getDocs(q);
+            if(!snap.empty){
+              const ref = snap.docs[0].ref;
+              const data = snap.docs[0].data();
+              const updates = { emailVerified: true };
+              if(!data.deviceId || data.deviceId!== myDeviceId){
+                updates.deviceId = myDeviceId;
+              }
+              // don't await - fire and forget
+              updateDoc(ref, updates).catch(()=>{});
+            }
+          }catch(e){}
+        })();
+      } else {
+        // whitelist also mark verified in bg
+        (async()=>{
+          try{
+            const q = query(collection(db, "users"), where("emailLower", "==", emailLow));
+            const snap = await getDocs(q);
+            if(!snap.empty) updateDoc(snap.docs[0].ref, { emailVerified: true }).catch(()=>{});
+          }catch(e){}
+        })();
       }
 
+      // GO IMMEDIATELY - no more 11 sec wait
       window.location.replace("./home.html");
+      return;
+
     } catch(e) {
       if(e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-login-credentials'){
         errorEl.innerText = "Invalid email or password";
       } else if(e.code === 'auth/user-not-found'){
         errorEl.innerText = "User not found";
+      } else if(e.code === 'auth/too-many-requests'){
+        errorEl.innerText = "Too many attempts. Wait a minute and try again.";
       } else {
         errorEl.innerText = e.message;
       }
+    } finally {
+      // reset only if we didn't redirect
       isLogging = false;
       btn.disabled = false;
       btn.innerText = "Login";
-      btn.style.opacity = "1";
     }
   }
 
