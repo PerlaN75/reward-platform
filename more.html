@@ -27,11 +27,13 @@
 .stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .label{font-size:12px;color:#666}
 .value{font-size:18px;font-weight:bold;margin-top:4px}
-.total-box{background:#f59e0b;color:#000;text-align:center;padding:14px;border-radius:10px;font-weight:bold;margin-bottom:16px}
+.total-box{background:#f59e0b;color:#000;text-align:center;padding:14px;border-radius:10px;font-weight:bold;margin-bottom:12px}
 .history-item{background:#f5f5f5;padding:12px;border-radius:10px;margin-bottom:10px}
 .history-top{display:flex;justify-content:space-between;font-weight:bold;font-size:14px}
 .history-desc{font-size:12px;color:#666;margin-top:4px}
 .points{color:#16a34a}
+.points-neg{color:#ef4444}
+.points-conv{color:#f59e0b}
 .empty-text{text-align:center;color:#999;padding:20px}
  #avatarInput{display:none}
 .setting-item{display:flex;justify-content:space-between;align-items:center;padding:14px;background:#f5f5f5;border-radius:10px;margin-bottom:10px;font-weight:bold;cursor:pointer}
@@ -43,6 +45,7 @@
 .btn-red{background:#ef4444;color:#fff}
 .btn-black{background:#000;color:#fff}
 .btn-yellow{background:#f59e0b;color:#000}
+.btn-outline{background:#fff;color:#000;border:2px solid #ddd}
 .badge{background:#f59e0b;color:#000;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:bold;display:inline-block;margin:3px}
 .envelope-badge{background:#ef4444;color:white;padding:2px 8px;border-radius:12px;font-size:12px;font-weight:bold;margin-left:8px;animation:pop 0.5s ease}
 .envelope-dot{width:10px;height:10px;background:#ef4444;border-radius:50%;position:absolute;right:28px;top:14px;border:2px solid white;animation:blink 1s infinite}
@@ -68,7 +71,7 @@
   </div>
   <button class="back-btn" onclick="location.href='./home.html'">Back Home</button>
 </div>
-<!-- modals same as before -->
+
 <div id="profileModal" class="modal" onclick="this.style.display='none'"><div class="modal-content" onclick="event.stopPropagation()">
   <div class="modal-header"><h2>Profile</h2><button class="close-btn" onclick="document.getElementById('profileModal').style.display='none'">&times;</button></div>
   <div style="text-align:center"><div class="profile-avatar-wrap"><div class="profile-avatar" id="avatarDisplay">👤</div><button class="edit-pen-btn" onclick="document.getElementById('avatarInput').click()">✏️</button><input type="file" id="avatarInput" accept="image/*"></div></div>
@@ -79,11 +82,17 @@
     <div class="stat-box"><div class="label">Referrals</div><div class="value" id="profileReferrals">0</div></div>
   </div>
 </div></div>
+
 <div id="historyModal" class="modal" onclick="this.style.display='none'"><div class="modal-content" onclick="event.stopPropagation()">
   <div class="modal-header"><h2>📜 Earn History</h2><button class="close-btn" onclick="document.getElementById('historyModal').style.display='none'">&times;</button></div>
   <div class="total-box">Total Earned: <span id="totalPoints">0</span> pts</div>
+  <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:12px">
+    <button class="btn btn-outline" style="margin-top:0;padding:8px;font-size:12px;flex:1" onclick="loadHistory()">🔄 Refresh</button>
+    <button class="btn btn-red" style="margin-top:0;padding:8px;font-size:12px;flex:1" onclick="clearHistory()">🗑️ Clear</button>
+  </div>
   <div id="historyList"><div class="empty-text">Loading...</div></div>
 </div></div>
+
 <div id="settingsModal" class="modal" onclick="this.style.display='none'"><div class="modal-content" onclick="event.stopPropagation()">
   <div class="modal-header"><h2>⚙️ Settings</h2><button class="close-btn" onclick="document.getElementById('settingsModal').style.display='none'">&times;</button></div>
   <div class="setting-item"><span>🔔 Notifications</span><input type="checkbox" checked onclick="event.stopPropagation()"></div>
@@ -97,11 +106,13 @@
   <div style="margin-top:24px; padding-top:8px; border-top:1px solid #eee;"><span>Logged as:</span> <b id="setEmail" style="word-break:break-all;"></b></div>
   <button class="btn btn-red" style="margin:22px auto 6px auto; display:block; width:45%; padding:12px;" onclick="document.getElementById('settingsModal').style.display='none'">More</button>
 </div></div>
+
 <div id="modePicker" class="modal" style="z-index:1200" onclick="this.style.display='none'"><div class="modal-content" style="max-width:280px;text-align:center" onclick="event.stopPropagation()">
   <h3 style="margin-bottom:14px">Choose Mode</h3>
   <button class="btn btn-black" onclick="chooseMode('Light')">☀️ Light</button>
   <button class="btn btn-yellow" onclick="chooseMode('Dark')">🌙 Dark</button>
 </div></div>
+
 <div id="helpModal" class="modal" onclick="this.style.display='none'"><div class="modal-content" onclick="event.stopPropagation()">
   <div class="modal-header"><h2 id="helpModalTitle">❓ Help/Support</h2><button class="close-btn" onclick="document.getElementById('helpModal').style.display='none'">&times;</button></div>
   <form onsubmit="submitSupport(event)">
@@ -115,7 +126,6 @@
   <div id="myTicketsWrap" style="margin-top:20px;border-top:1px solid #eee;padding-top:12px"><b style="font-size:13px">📩 My Tickets & Replies</b><div id="myTicketsList" style="margin-top:10px"></div></div>
 </div></div>
 
-<!-- UPDATED ABOUT US - GIFT CHANGED TO DAILY BONUS -->
 <div id="aboutModal" class="modal" onclick="this.style.display='none'"><div class="modal-content" onclick="event.stopPropagation()">
   <div class="modal-header"><h2>ℹ️ About Us</h2><button class="close-btn" onclick="document.getElementById('aboutModal').style.display='none'">&times;</button></div>
   <div style="text-align:center"><div style="font-size:48px">🐒🍇</div><div style="font-weight:bold;font-size:18px">From Nothing to Something</div><div style="font-size:12px;color:#888;margin-top:4px">Reward Platform RW</div></div>
@@ -136,6 +146,7 @@
   <div style="text-align:center;margin-top:14px"><span class="badge">V 1.0</span><span class="badge">🔒 Trusted • Secure</span></div>
   <div style="text-align:center;margin-top:12px;font-size:11px;color:#999">Contact: admin@reward.rw<br>© 2026 Reward Platform RW</div>
 </div></div>
+
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
@@ -163,7 +174,101 @@ auth.onAuthStateChanged(async user=>{
 });
 async function checkHelpBadge(){try{let snap=await db.collection('supportTickets').where('uid','==',currentUser.uid).get();if(snap.empty)snap=await db.collection('supportTickets').where('userId','==',currentUser.uid).get();let unread=0;snap.forEach(d=>{const t=d.data();if(t.adminReply&&t.adminReply.trim()!==""&&!t.adminReplySeen&&localStorage.getItem('ticketRead_'+d.id)!=='1')unread++;});const badge=document.getElementById('helpBadge');const dot=document.getElementById('helpDot');const icon=document.getElementById('helpIcon');if(unread>0){icon.innerText='✉️';badge.innerText=`✉️ ${unread} new`;badge.classList.remove('hidden');dot.classList.remove('hidden');}else{badge.classList.add('hidden');dot.classList.add('hidden');}}catch(e){}}
 async function markTicketsAsRead(){try{let snap=await db.collection('supportTickets').where('uid','==',currentUser.uid).get();if(snap.empty)snap=await db.collection('supportTickets').where('userId','==',currentUser.uid).get();for(const docSnap of snap.docs){if(docSnap.data().adminReply)await db.collection('supportTickets').doc(docSnap.id).update({adminReplySeen:true}).catch(()=>localStorage.setItem('ticketRead_'+docSnap.id,'1'));}}catch(e){}}
-async function loadHistory(){const listEl=document.getElementById('historyList');listEl.innerHTML='<div class="empty-text">Loading...</div>';try{const watchSnap=await db.collection('users').doc(currentUser.uid).collection('watchHistory').orderBy('timestamp','desc').get();const earnSnap=await db.collection('users').doc(currentUser.uid).collection('earnHistory').orderBy('timestamp','desc').get().catch(()=>({empty:true,forEach:()=>{}}));let all=[];if(!earnSnap.empty){earnSnap.forEach(d=>{const x=d.data();all.push({action:x.action,points:x.points,date:x.timestamp||x.date,desc:x.desc||''});});}watchSnap.forEach(d=>{const data=d.data();all.push({action:data.videoId?`Watch: ${data.videoId}`:'Video Watched',points:data.reward||10,date:data.timestamp,desc:'Watch & Earn'});});if(all.length===0&&userData.balance>0){all=[{action:'Sign Up Bonus',points:userData.balance,date:userData.createdAt||new Date(),desc:'Welcome!'}];}all.sort((a,b)=>{const ta=a.date?.toDate?a.date.toDate():new Date(a.date);const tb=b.date?.toDate?b.date.toDate():new Date(b.date);return tb-ta;});document.getElementById('totalPoints').innerText=all.reduce((s,i)=>s+(Number(i.points)||0),0);if(all.length===0){listEl.innerHTML='<div class="empty-text">No earnings yet</div>';return;}listEl.innerHTML=all.map(item=>`<div class="history-item"><div class="history-top"><span>${item.action}</span><span class="points">+${item.points}</span></div><div class="history-desc">${formatDateTime(item.date)} ${item.desc?'• '+item.desc:''}</div></div>`).join('');}catch(e){listEl.innerHTML=`<div class="empty-text">Error: ${e.message}</div>`;}}
+
+async function loadHistory(){
+  const listEl=document.getElementById('historyList');
+  listEl.innerHTML='<div class="empty-text">Loading...</div>';
+  try{
+    const watchSnap=await db.collection('users').doc(currentUser.uid).collection('watchHistory').orderBy('timestamp','desc').get().catch(()=>({empty:true,forEach:()=>{}}));
+    const earnSnap=await db.collection('users').doc(currentUser.uid).collection('earnHistory').orderBy('timestamp','desc').get().catch(()=>({empty:true,forEach:()=>{}}));
+    const convertSnap=await db.collection('users').doc(currentUser.uid).collection('convertHistory').orderBy('timestamp','desc').get().catch(()=>({empty:true,forEach:()=>{}}));
+    let withdrawSnap=await db.collection('withdrawals').where('uid','==',currentUser.uid).orderBy('createdAt','desc').get().catch(()=>({empty:true,forEach:()=>{}}));
+
+    let all=[];
+
+    if(!earnSnap.empty){
+      earnSnap.forEach(d=>{
+        const x=d.data();
+        all.push({id:d.id, type:'earn', action:x.action||'Earn', points:x.points||0, date:x.timestamp||x.date, desc:x.desc||'', rawDate:x.timestamp});
+      });
+    }
+    if(!watchSnap.empty){
+      watchSnap.forEach(d=>{
+        const data=d.data();
+        all.push({id:d.id, type:'earn', action:'Watch & Earn', points:data.reward||5, date:data.timestamp, desc:data.title||data.videoId||'Video', rawDate:data.timestamp});
+      });
+    }
+    if(!convertSnap.empty){
+      convertSnap.forEach(d=>{
+        const c=d.data();
+        all.push({id:d.id, type:'convert', action:'Converted to USDT', points:c.points||0, usdt:c.usdt||c.amount||0, date:c.timestamp, desc:`${c.points} pts → ${ (c.usdt||0).toFixed(4)} USDT`, rawDate:c.timestamp});
+      });
+    }
+    if(!withdrawSnap.empty){
+      withdrawSnap.forEach(d=>{
+        const w=d.data();
+        all.push({id:d.id, type:'withdraw', action:'Withdraw USDT', points:0, usdt:w.amount||0, status:w.status||'pending', date:w.createdAt, desc:`${w.method} • ${w.payId} • ${w.status}`, rawDate:w.createdAt});
+      });
+    }
+
+    if(all.length===0 && userData.balance>0){
+      all=[{type:'earn', action:'Sign Up Bonus', points:userData.balance, date:userData.createdAt||new Date(), desc:'Welcome!', rawDate:userData.createdAt}];
+    }
+
+    all.sort((a,b)=>{
+      const ta=a.rawDate?.toDate? a.rawDate.toDate() : new Date(a.rawDate||a.date);
+      const tb=b.rawDate?.toDate? b.rawDate.toDate() : new Date(b.rawDate||b.date);
+      return tb-ta;
+    });
+
+    const totalEarned = all.filter(i=>i.type==='earn').reduce((s,i)=>s+(Number(i.points)||0),0);
+    document.getElementById('totalPoints').innerText=totalEarned;
+
+    if(all.length===0){listEl.innerHTML='<div class="empty-text">No history yet</div>';return;}
+
+    listEl.innerHTML=all.map(item=>{
+      if(item.type==='convert'){
+        return `<div class="history-item" style="border-left:4px solid #f59e0b"><div class="history-top"><span>🔄 ${item.action}</span><span class="points-conv">${item.usdt.toFixed(4)} USDT</span></div><div class="history-desc">${formatDateTime(item.date)} • ${item.desc}</div></div>`;
+      }
+      if(item.type==='withdraw'){
+        const color = item.status==='pending'? '#f59e0b' : item.status==='approved'? '#16a34a' : '#ef4444';
+        return `<div class="history-item" style="border-left:4px solid ${color}"><div class="history-top"><span>💸 ${item.action}</span><span class="points-neg">-${item.usdt} USDT</span></div><div class="history-desc">${formatDateTime(item.date)} • ${item.desc}</div></div>`;
+      }
+      return `<div class="history-item"><div class="history-top"><span>${item.action}</span><span class="points">+${item.points}</span></div><div class="history-desc">${formatDateTime(item.date)} ${item.desc?'• '+item.desc:''}</div></div>`;
+    }).join('');
+
+  }catch(e){
+    listEl.innerHTML=`<div class="empty-text">Error: ${e.message}</div>`;
+  }
+}
+
+async function clearHistory(){
+  if(!confirm("Clear all Earn History? This cannot be undone.")) return;
+  const listEl=document.getElementById('historyList');
+  listEl.innerHTML='<div class="empty-text">Clearing...</div>';
+  try{
+    const collections = ['earnHistory','watchHistory','convertHistory'];
+    for(const col of collections){
+      const snap=await db.collection('users').doc(currentUser.uid).collection(col).get();
+      const batchArray=[];
+      let batch=db.batch();
+      let count=0;
+      snap.forEach(doc=>{
+        batch.delete(doc.ref);
+        count++;
+        if(count>=400){ batchArray.push(batch); batch=db.batch(); count=0; }
+      });
+      batchArray.push(batch);
+      for(const b of batchArray){ await b.commit(); }
+    }
+    alert("History cleared!");
+    loadHistory();
+  }catch(e){
+    alert("Error clearing: "+e.message);
+    loadHistory();
+  }
+}
+
 function openProfile(){document.getElementById('profileModal').style.display='flex';}
 function openHistory(){loadHistory();document.getElementById('historyModal').style.display='flex';}
 function openSettings(){document.getElementById('settingsModal').style.display='flex';}
