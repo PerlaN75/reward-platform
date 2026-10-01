@@ -52,12 +52,18 @@
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
 @keyframes pop{0%{transform:scale(0)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
 .hidden{display:none!important}
+#customToast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:14px 22px;border-radius:12px;font-weight:bold;z-index:99999;display:none;max-width:90%;text-align:center}
+#clearConfirm{ display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.75); justify-content:center; align-items:center; padding:20px }
+.clear-box{background:#fff;border-radius:16px;padding:22px;width:100%;max-width:320px;text-align:center;color:#000;box-shadow:0 10px 30px rgba(0,0,0,0.4)}
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
+<div id="customToast"></div>
+<div id="clearConfirm"><div class="clear-box"><div style="font-size:36px">🗑️</div><h3 style="margin:10px 0">Clear History?</h3><p style="font-size:13px;color:#666;margin-bottom:18px">This will delete all your earn history. This cannot be undone.</p><div style="display:flex;gap:10px"><button class="btn btn-outline" style="flex:1;margin:0" onclick="closeClearConfirm()">Cancel</button><button class="btn btn-red" style="flex:1;margin:0" onclick="doClearHistory()">Yes, Clear</button></div></div></div>
+
 <div class="container">
   <div class="header">⚙️ More</div>
   <div class="card">
@@ -152,12 +158,17 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore();
 let currentUser=null,userData=null;
+
+function showToast(m){const t=document.getElementById('customToast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
+window.alert=showToast;
+
 function getMode(){return localStorage.getItem('appMode')||'Dark';}
 function openModePicker(){document.getElementById('modePicker').style.display='flex';}
 function chooseMode(m){localStorage.setItem('appMode',m);document.getElementById('modeValue').innerText=m;document.getElementById('modePicker').style.display='none';if(m==='Light'){document.body.style.background='#f5f5f5';document.body.style.color='#000';}else{document.body.style.background='#0f1508';document.body.style.color='white';}}
 function formatDateDDMMYYYY(d){if(!d)return"00/00/0000";const dd=d.toDate?d.toDate():new Date(d);return `${String(dd.getDate()).padStart(2,'0')}/${String(dd.getMonth()+1).padStart(2,'0')}/${dd.getFullYear()}`;}
 function formatDateTime(d){if(!d)return"";const dd=d.toDate?d.toDate():new Date(d);return `${String(dd.getDate()).padStart(2,'0')}/${String(dd.getMonth()+1).padStart(2,'0')}/${dd.getFullYear()} ${String(dd.getHours()).padStart(2,'0')}:${String(dd.getMinutes()).padStart(2,'0')}`;}
 function getDeviceId(){let id=localStorage.getItem('deviceId');if(!id){id=btoa(navigator.userAgent+screen.width+Math.random()).slice(0,24);localStorage.setItem('deviceId',id);}return id;}
+
 auth.onAuthStateChanged(async user=>{
   if(!user){location.href='./index.html';return;}
   currentUser=user;
@@ -172,6 +183,7 @@ auth.onAuthStateChanged(async user=>{
   const av=localStorage.getItem('userAvatar_'+user.uid);if(av)document.getElementById('avatarDisplay').innerHTML=`<img src="${av}">`;
   chooseMode(getMode()); checkHelpBadge();
 });
+
 async function checkHelpBadge(){try{let snap=await db.collection('supportTickets').where('uid','==',currentUser.uid).get();if(snap.empty)snap=await db.collection('supportTickets').where('userId','==',currentUser.uid).get();let unread=0;snap.forEach(d=>{const t=d.data();if(t.adminReply&&t.adminReply.trim()!==""&&!t.adminReplySeen&&localStorage.getItem('ticketRead_'+d.id)!=='1')unread++;});const badge=document.getElementById('helpBadge');const dot=document.getElementById('helpDot');const icon=document.getElementById('helpIcon');if(unread>0){icon.innerText='✉️';badge.innerText=`✉️ ${unread} new`;badge.classList.remove('hidden');dot.classList.remove('hidden');}else{badge.classList.add('hidden');dot.classList.add('hidden');}}catch(e){}}
 async function markTicketsAsRead(){try{let snap=await db.collection('supportTickets').where('uid','==',currentUser.uid).get();if(snap.empty)snap=await db.collection('supportTickets').where('userId','==',currentUser.uid).get();for(const docSnap of snap.docs){if(docSnap.data().adminReply)await db.collection('supportTickets').doc(docSnap.id).update({adminReplySeen:true}).catch(()=>localStorage.setItem('ticketRead_'+docSnap.id,'1'));}}catch(e){}}
 
@@ -183,88 +195,47 @@ async function loadHistory(){
     const earnSnap=await db.collection('users').doc(currentUser.uid).collection('earnHistory').orderBy('timestamp','desc').get().catch(()=>({empty:true,forEach:()=>{}}));
     const convertSnap=await db.collection('users').doc(currentUser.uid).collection('convertHistory').orderBy('timestamp','desc').get().catch(()=>({empty:true,forEach:()=>{}}));
     let withdrawSnap=await db.collection('withdrawals').where('uid','==',currentUser.uid).orderBy('createdAt','desc').get().catch(()=>({empty:true,forEach:()=>{}}));
-
     let all=[];
-
-    if(!earnSnap.empty){
-      earnSnap.forEach(d=>{
-        const x=d.data();
-        all.push({id:d.id, type:'earn', action:x.action||'Earn', points:x.points||0, date:x.timestamp||x.date, desc:x.desc||'', rawDate:x.timestamp});
-      });
-    }
-    if(!watchSnap.empty){
-      watchSnap.forEach(d=>{
-        const data=d.data();
-        all.push({id:d.id, type:'earn', action:'Watch & Earn', points:data.reward||5, date:data.timestamp, desc:data.title||data.videoId||'Video', rawDate:data.timestamp});
-      });
-    }
-    if(!convertSnap.empty){
-      convertSnap.forEach(d=>{
-        const c=d.data();
-        all.push({id:d.id, type:'convert', action:'Converted to USDT', points:c.points||0, usdt:c.usdt||c.amount||0, date:c.timestamp, desc:`${c.points} pts → ${ (c.usdt||0).toFixed(4)} USDT`, rawDate:c.timestamp});
-      });
-    }
-    if(!withdrawSnap.empty){
-      withdrawSnap.forEach(d=>{
-        const w=d.data();
-        all.push({id:d.id, type:'withdraw', action:'Withdraw USDT', points:0, usdt:w.amount||0, status:w.status||'pending', date:w.createdAt, desc:`${w.method} • ${w.payId} • ${w.status}`, rawDate:w.createdAt});
-      });
-    }
-
-    if(all.length===0 && userData.balance>0){
-      all=[{type:'earn', action:'Sign Up Bonus', points:userData.balance, date:userData.createdAt||new Date(), desc:'Welcome!', rawDate:userData.createdAt}];
-    }
-
-    all.sort((a,b)=>{
-      const ta=a.rawDate?.toDate? a.rawDate.toDate() : new Date(a.rawDate||a.date);
-      const tb=b.rawDate?.toDate? b.rawDate.toDate() : new Date(b.rawDate||b.date);
-      return tb-ta;
-    });
-
-    const totalEarned = all.filter(i=>i.type==='earn').reduce((s,i)=>s+(Number(i.points)||0),0);
+    if(!earnSnap.empty){earnSnap.forEach(d=>{const x=d.data();all.push({id:d.id, type:'earn', action:x.action||'Earn', points:x.points||0, date:x.timestamp||x.date, desc:x.desc||'', rawDate:x.timestamp});});}
+    if(!watchSnap.empty){watchSnap.forEach(d=>{const data=d.data();all.push({id:d.id, type:'earn', action:'Watch & Earn', points:data.reward||5, date:data.timestamp, desc:data.title||data.videoId||'Video', rawDate:data.timestamp});});}
+    if(!convertSnap.empty){convertSnap.forEach(d=>{const c=d.data();all.push({id:d.id, type:'convert', action:'Converted to USDT', points:c.points||0, usdt:c.usdt||c.amount||0, date:c.timestamp, desc:`${c.points} pts → ${ (c.usdt||0).toFixed(4)} USDT`, rawDate:c.timestamp});});}
+    if(!withdrawSnap.empty){withdrawSnap.forEach(d=>{const w=d.data();all.push({id:d.id, type:'withdraw', action:'Withdraw USDT', points:0, usdt:w.amount||0, status:w.status||'pending', date:w.createdAt, desc:`${w.method} • ${w.payId} • ${w.status}`, rawDate:w.createdAt});});}
+    if(all.length===0 && userData.balance>0){all=[{type:'earn', action:'Sign Up Bonus', points:userData.balance, date:userData.createdAt||new Date(), desc:'Welcome!', rawDate:userData.createdAt}];}
+    all.sort((a,b)=>{const ta=a.rawDate?.toDate? a.rawDate.toDate() : new Date(a.rawDate||a.date);const tb=b.rawDate?.toDate? b.rawDate.toDate() : new Date(b.rawDate||b.date);return tb-ta;});
+    const totalEarned = all.filter(i=>i.type==='earn' && i.points>0).reduce((s,i)=>s+(Number(i.points)||0),0);
     document.getElementById('totalPoints').innerText=totalEarned;
-
     if(all.length===0){listEl.innerHTML='<div class="empty-text">No history yet</div>';return;}
-
     listEl.innerHTML=all.map(item=>{
-      if(item.type==='convert'){
-        return `<div class="history-item" style="border-left:4px solid #f59e0b"><div class="history-top"><span>🔄 ${item.action}</span><span class="points-conv">${item.usdt.toFixed(4)} USDT</span></div><div class="history-desc">${formatDateTime(item.date)} • ${item.desc}</div></div>`;
-      }
-      if(item.type==='withdraw'){
-        const color = item.status==='pending'? '#f59e0b' : item.status==='approved'? '#16a34a' : '#ef4444';
-        return `<div class="history-item" style="border-left:4px solid ${color}"><div class="history-top"><span>💸 ${item.action}</span><span class="points-neg">-${item.usdt} USDT</span></div><div class="history-desc">${formatDateTime(item.date)} • ${item.desc}</div></div>`;
-      }
+      if(item.type==='convert'){return `<div class="history-item" style="border-left:4px solid #f59e0b"><div class="history-top"><span>🔄 ${item.action}</span><span class="points-conv">${item.usdt.toFixed(4)} USDT</span></div><div class="history-desc">${formatDateTime(item.date)} • ${item.desc}</div></div>`;}
+      if(item.type==='withdraw'){const color = item.status==='pending'? '#f59e0b' : item.status==='approved'? '#16a34a' : '#ef4444';return `<div class="history-item" style="border-left:4px solid ${color}"><div class="history-top"><span>💸 ${item.action}</span><span class="points-neg">-${item.usdt} USDT</span></div><div class="history-desc">${formatDateTime(item.date)} • ${item.desc}</div></div>`;}
       return `<div class="history-item"><div class="history-top"><span>${item.action}</span><span class="points">+${item.points}</span></div><div class="history-desc">${formatDateTime(item.date)} ${item.desc?'• '+item.desc:''}</div></div>`;
     }).join('');
-
-  }catch(e){
-    listEl.innerHTML=`<div class="empty-text">Error: ${e.message}</div>`;
-  }
+  }catch(e){listEl.innerHTML=`<div class="empty-text">Error: ${e.message}</div>`;}
 }
 
-async function clearHistory(){
-  if(!confirm("Clear all Earn History? This cannot be undone.")) return;
+// NEW PRETTY CLEAR - NO BROWSER ALERT
+function clearHistory(){document.getElementById('clearConfirm').style.display='flex';}
+function closeClearConfirm(){document.getElementById('clearConfirm').style.display='none';}
+async function doClearHistory(){
+  closeClearConfirm();
   const listEl=document.getElementById('historyList');
   listEl.innerHTML='<div class="empty-text">Clearing...</div>';
   try{
     const collections = ['earnHistory','watchHistory','convertHistory'];
     for(const col of collections){
       const snap=await db.collection('users').doc(currentUser.uid).collection(col).get();
-      const batchArray=[];
-      let batch=db.batch();
-      let count=0;
+      let batch=db.batch(); let count=0; const batches=[];
       snap.forEach(doc=>{
-        batch.delete(doc.ref);
-        count++;
-        if(count>=400){ batchArray.push(batch); batch=db.batch(); count=0; }
+        batch.delete(doc.ref); count++;
+        if(count>=400){ batches.push(batch); batch=db.batch(); count=0; }
       });
-      batchArray.push(batch);
-      for(const b of batchArray){ await b.commit(); }
+      batches.push(batch);
+      for(const b of batches){ await b.commit(); }
     }
-    alert("History cleared!");
+    showToast("✅ History cleared!");
     loadHistory();
   }catch(e){
-    alert("Error clearing: "+e.message);
+    showToast("Error: "+e.message);
     loadHistory();
   }
 }
@@ -276,7 +247,7 @@ function openAbout(){document.getElementById('aboutModal').style.display='flex';
 function openHelp(){if(userData){document.getElementById('supportUsername').value=userData.username||'';document.getElementById('supportEmail').value=userData.email||(currentUser?currentUser.email:'');}document.getElementById('helpModal').style.display='flex';loadMyTickets().then(()=>{setTimeout(markTicketsAsRead,2000);});}
 async function submitSupport(e){e.preventDefault();const username=document.getElementById('supportUsername').value.trim();const email=document.getElementById('supportEmail').value.trim();const issue=document.getElementById('supportIssue').value.trim();const btn=document.getElementById('supportBtn');const msg=document.getElementById('supportMsg');if(!username||!email||!issue){msg.style.color='red';msg.innerText='Fill all fields';return;}btn.innerText='Sending...';btn.disabled=true;try{await db.collection('supportTickets').add({uid:currentUser.uid,userId:currentUser.uid,username,email,issue,message:issue,status:'open',publicReplyFrom:'admin@reward.rw',adminReply:"",adminReplySeen:false,deviceId:getDeviceId(),createdAt:firebase.firestore.FieldValue.serverTimestamp()});msg.style.color='#16a34a';msg.innerText='✅ Submitted!';document.getElementById('supportIssue').value='';loadMyTickets();checkHelpBadge();setTimeout(()=>{msg.innerText='';},3000);}catch(err){msg.style.color='red';msg.innerText='Error: '+err.message;}btn.innerText='Submit';btn.disabled=false;}
 async function loadMyTickets(){const list=document.getElementById('myTicketsList');list.innerHTML='<div style="font-size:12px;color:#999">Loading...</div>';try{let snap=await db.collection('supportTickets').where('uid','==',currentUser.uid).get();if(snap.empty)snap=await db.collection('supportTickets').where('userId','==',currentUser.uid).get();if(snap.empty){list.innerHTML='<div style="font-size:12px;color:#999;text-align:center;padding:10px">No tickets yet</div>';return;}let arr=[];snap.forEach(d=>arr.push({id:d.id,...d.data()}));arr.sort((a,b)=>{const ta=a.createdAt?.toDate?a.createdAt.toDate().getTime():0;const tb=b.createdAt?.toDate?b.createdAt.toDate().getTime():0;return tb-ta;});arr=arr.slice(0,20);let html="";arr.forEach(t=>{const date=t.createdAt?.toDate?t.createdAt.toDate().toLocaleString():"";const hasReply=t.adminReply&&t.adminReply.trim()!=="";html+=`<div style="background:#f5f5f5;padding:12px;border-radius:10px;margin-bottom:10px;border-left:4px solid ${hasReply?'#ef4444':'#f59e0b'}"><div style="display:flex;justify-content:space-between"><span style="font-size:10px;background:${hasReply?'#ef4444':'#fef3c7'};color:${hasReply?'white':'#000'};padding:3px 8px;border-radius:10px;font-weight:bold">${hasReply?'✉️ REPLIED':'OPEN'}</span><span style="font-size:10px;color:#888">${date}</span></div><div style="font-size:13px;margin-top:6px;color:#000">${t.message||t.issue}</div>${hasReply?`<div style="background:#fff;border:2px solid #ef4444;padding:8px;border-radius:8px;margin-top:8px"><b style="font-size:11px;color:#ef4444">✉️ REPLY from ${t.publicReplyFrom||'admin@reward.rw'}:</b><div style="font-size:13px;margin-top:4px;color:#000;font-weight:bold">${t.adminReply}</div></div>`:`<div style="font-size:11px;color:#888;margin-top:6px">⏳ Waiting for reply...</div>`}</div>`;});list.innerHTML=html;}catch(err){list.innerHTML='<div style="font-size:12px;color:red">Error: '+err.message+'</div>';}}
-async function changePass(){const p=document.getElementById('newPass').value;if(p.length<5)return alert("Min 5 chars");try{await auth.currentUser.updatePassword(p);document.getElementById('passMsg').innerText="Updated!";}catch(e){alert(e.message)}}
+async function changePass(){const p=document.getElementById('newPass').value;if(p.length<5)return showToast("Min 5 chars");try{await auth.currentUser.updatePassword(p);document.getElementById('passMsg').innerText="Updated!";showToast("Password updated!");}catch(e){showToast(e.message)}}
 document.getElementById('avatarInput').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{const src=ev.target.result;document.getElementById('avatarDisplay').innerHTML=`<img src="${src}">`;localStorage.setItem('userAvatar_'+currentUser.uid,src);};r.readAsDataURL(f);});
 </script>
 </body>
