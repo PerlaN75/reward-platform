@@ -6,7 +6,10 @@ body{background:#0f1508;min-height:100vh;padding:20px;color:#fff}
 .container{max-width:500px;margin:0 auto}
 .header{text-align:center;margin:40px 0 30px}
 .header h2{font-size:34px}.header h2 span{color:#fbbf24}
-.balance-card{background:#2f3e1a;border:2px solid #fbbf24;border-radius:20px;padding:25px;text-align:center;margin-bottom:30px}
+.balance-card{background:#2f3e1a;border:2px solid #fbbf24;border-radius:20px;padding:18px 16px;text-align:center;margin-bottom:30px}
+.balance-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.balance-side{flex:1;text-align:center;padding:6px 8px}
+.balance-divider{width:1px;height:52px;background:rgba(251,191,36,0.35)}
 .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:30px}
 .menu-btn{background:linear-gradient(180deg,#fff,#e8e8e8);color:#000;border:none;border-radius:15px;padding:20px 10px;font-size:15px;font-weight:bold;cursor:pointer;box-shadow:0 6px 0 #bbb;display:flex;flex-direction:column;align-items:center;gap:8px}
 .menu-btn.emoji{font-size:40px;display:block}
@@ -28,7 +31,24 @@ body{background:#0f1508;min-height:100vh;padding:20px;color:#fff}
 <div id="customToast"></div>
 <div class="container">
 <div class="header"><h2><span style="color:white">Welcome, </span><span id="headerText" style="color:#fbbf24"></span> 👋</h2></div>
-<div class="balance-card"><div>Your Balance</div><div id="balance" style="font-size:32px;color:#fbbf24;font-weight:bold">0 points</div><div id="usdBalance" style="color:#aaa">≈ $0.00 USD</div><div id="usdtBalanceDisplay" style="color:#fbbf24;margin-top:6px;font-weight:bold">0.00 USDT available</div></div>
+
+<div class="balance-card">
+<div style="color:#ccc;font-size:13px;letter-spacing:0.5px">Your Balance</div>
+<div class="balance-row">
+  <div class="balance-side">
+    <div style="font-size:11px;color:#aaa;margin-bottom:4px">⭐ POINTS</div>
+    <div id="balance" style="font-size:24px;color:#fbbf24;font-weight:bold;line-height:1.2">0 points</div>
+    <div id="usdBalance" style="color:#888;font-size:11px;margin-top:2px">≈ $0.00 USD</div>
+  </div>
+  <div class="balance-divider"></div>
+  <div class="balance-side">
+    <div style="font-size:11px;color:#aaa;margin-bottom:4px">💵 USDT</div>
+    <div id="usdtBalanceDisplay" style="font-size:22px;color:#22c55e;font-weight:bold;line-height:1.2">0.0000 USDT</div>
+    <div style="color:#6b8f5a;font-size:11px;margin-top:2px">Available to withdraw</div>
+  </div>
+</div>
+</div>
+
 <div class="menu-grid">
 <button class="menu-btn" onclick="openWallet()"><span class="emoji">💰</span>Wallet</button>
 <button class="menu-btn" onclick="openCheckin()"><span class="emoji">📅</span>Daily Checkin</button>
@@ -42,19 +62,16 @@ body{background:#0f1508;min-height:100vh;padding:20px;color:#fff}
 
 <div id="walletModal" class="modal"><div class="modal-content"><div style="display:flex;justify-content:space-between"><h2>💰 Wallet</h2><span onclick="closeWallet()" style="font-size:24px;cursor:pointer">&times;</span></div>
 <div id="popupBalance" style="background:#000;border:2px solid #fbbf24;border-radius:15px;padding:15px;text-align:center;margin:10px 0;color:#f59e0b">0 points<br><span id="popupUsdt" style="font-size:12px;color:#aaa">0.00 USDT</span></div>
-
 <div style="display:flex;justify-content:center;gap:12px;margin:12px 0">
 <button onclick="switchTab('convert')" id="tab1" style="padding:10px 18px;background:#ffffff;color:#000000;border-radius:10px;border:none;font-weight:bold">Convert</button>
 <button onclick="switchTab('withdraw')" id="tab2" style="padding:10px 18px;background:#ffffff;color:#000000;border-radius:10px;border:none;font-weight:bold">Withdraw</button>
 </div>
-
 <div id="convertTab">
 <input type="number" id="convertAmount" class="input-box" placeholder="Enter any points amount" oninput="calcConvert()">
 <div id="convertResult" style="background:#000;padding:10px;border-radius:10px;border:1px dashed #fbbf24;text-align:center;margin:8px 0">You will receive: 0.00 USDT</div>
 <div style="font-size:11px;color:#aaa;text-align:center">Rate: 1 point = $0.0005 USDT • No minimum</div>
 <button class="action-btn" onclick="convertPoints()">Convert to USDT</button>
 </div>
-
 <div id="withdrawTab" style="display:none">
 <select id="payMethod" class="input-box"><option value="binance">Binance Pay - 0 Fee</option><option value="okx">OKX Pay - 0 Fee</option></select>
 <select id="withdrawCrypto" class="input-box"><option>USDT</option></select>
@@ -73,16 +90,15 @@ firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.fi
 function showToast(m){const t=document.getElementById('customToast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);} window.alert=showToast;
 let currentUser=null,userData={},isClaimingDaily=false,countdownInterval=null;
 const POINT_RATE=0.0005,DAILY_REWARD=5,MIN_WITHDRAW=1.5;
-
 function loadData(d){
   userData=d;
   if(userData.usdtBalance==null) userData.usdtBalance=0;
   if(userData.balance==null) userData.balance=0;
   document.getElementById('headerText').innerText=d.username||'User';
-  document.getElementById('balance').innerText=(d.balance||0)+' points';
-  document.getElementById('usdBalance').innerText=`≈ $${((d.balance||0)*POINT_RATE).toFixed(4)} USD`;
-  document.getElementById('usdtBalanceDisplay').innerText=(userData.usdtBalance||0).toFixed(4)+' USDT available';
-  document.getElementById('popupBalance').innerHTML=(d.balance||0)+' points<br><span style="font-size:12px;color:#fbbf24">'+(userData.usdtBalance||0).toFixed(4)+' USDT available</span>';
+  document.getElementById('balance').innerText=(d.balance||0)+' pts';
+  document.getElementById('usdBalance').innerText=`≈ $${((d.balance||0)*POINT_RATE).toFixed(4)}`;
+  document.getElementById('usdtBalanceDisplay').innerText=(userData.usdtBalance||0).toFixed(4)+' USDT';
+  document.getElementById('popupBalance').innerHTML=(d.balance||0)+' pts<br><span style="font-size:12px;color:#22c55e">'+(userData.usdtBalance||0).toFixed(4)+' USDT available</span>';
   const wn=document.getElementById('withdrawNote');
   if(wn) wn.innerText='Available: '+(userData.usdtBalance||0).toFixed(4)+' USDT • Min $1.5';
 }
@@ -95,7 +111,6 @@ window.calcConvert=function(){
   const usdt=pts*POINT_RATE;
   document.getElementById('convertResult').innerText=`You will receive: ${usdt.toFixed(4)} USDT`;
 }
-
 window.convertPoints=async function(){
   const pts=parseFloat(document.getElementById('convertAmount').value);
   if(!pts||pts<=0) return showToast('Enter points amount');
@@ -110,7 +125,6 @@ window.convertPoints=async function(){
   document.getElementById('convertAmount').value='';
   calcConvert();
 }
-
 window.requestWithdraw=async function(){
   const usdtAmount=parseFloat(document.getElementById('withdrawAmount').value);
   const payId=document.getElementById('walletAddress').value.trim();
@@ -118,10 +132,8 @@ window.requestWithdraw=async function(){
   if(!payId) return showToast('Enter Pay ID / Email');
   if(!usdtAmount||usdtAmount<MIN_WITHDRAW) return showToast('Min withdrawal $1.5 USDT');
   if(usdtAmount>(userData.usdtBalance||0)) return showToast('Not enough USDT. Convert points first');
-
   userData.usdtBalance-=usdtAmount;
   await db.collection('users').doc(currentUser.uid).update({usdtBalance:userData.usdtBalance});
-
   await db.collection('withdrawals').add({
     uid:currentUser.uid,
     username:userData.username,
@@ -133,13 +145,11 @@ window.requestWithdraw=async function(){
     status:'pending',
     createdAt:firebase.firestore.FieldValue.serverTimestamp()
   });
-
   loadData(userData);
   localStorage.setItem('userData',JSON.stringify(userData));
   showToast(`Withdraw ${usdtAmount.toFixed(2)} USDT requested!`);
   closeWallet();
 }
-
 window.openCheckin=function(){document.getElementById('checkinModal').style.display='flex';checkClaimStatus();}
 window.closeCheckin=function(){document.getElementById('checkinModal').style.display='none';clearInterval(countdownInterval);}
 function getToday(){return new Date().toISOString().split('T')[0];}
