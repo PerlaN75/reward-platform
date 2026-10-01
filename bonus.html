@@ -19,21 +19,31 @@ h1{color:#facc15;font-size:28px;margin-bottom:10px}
 .timer{font-size:15px;color:#aaa;margin-top:10px}
 .btn{width:100%;background:#fbbf24;color:#000;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:16px;cursor:pointer;margin-top:14px}
 .btn:disabled{background:#5a4a1a;color:#aaa;cursor:not-allowed}
-.back{width:40%;height:44px;margin:16px auto 0;background:#f59e0b;border:0;border-radius:999px;font-weight:700}
+.back{width:40%;height:44px;margin:16px auto 0;background:#f59e0b;border:0;border-radius:999px;font-weight:700;cursor:pointer}
 .info{font-size:12px;color:#aaa;margin-top:12px}
+.support-box{display:none;background:#fff8e1;border:2px dashed #fbbf24;border-radius:12px;padding:12px;margin-top:14px}
+.support-btn{background:#f59e0b;border:none;padding:10px 18px;border-radius:20px;font-weight:bold;cursor:pointer}
+.skip-btn{background:none;border:none;color:#666;font-size:12px;margin-left:10px;cursor:pointer}
 </style>
 </head>
 <body>
 <div class="card">
 <h1>🎁 Daily Bonus</h1>
-<div class="sub">Claim once every 24h & support us</div>
+<div class="sub">Claim once every 24h - Free!</div>
 <div class="bonus-box">
 <div class="big">💰</div>
 <div class="points">+20 Points</div>
 <div class="timer" id="timer">Checking...</div>
 </div>
 <button class="btn" id="claimBtn" disabled>Loading...</button>
-<div class="info" id="info">Watch a short sponsored ad to claim</div>
+<div class="info" id="info">Daily reward - no ad required</div>
+
+<div id="supportBox" class="support-box">
+<p style="color:#000;font-size:12px;font-weight:bold;margin-bottom:8px;">❤️ Support us? (Optional)</p>
+<button class="support-btn" onclick="openSupport()">Watch Sponsored</button>
+<button class="skip-btn" onclick="goHome()">Skip & Go Home</button>
+</div>
+
 <button class="back" onclick="location.href='./home.html'">Back</button>
 </div>
 <script>
@@ -83,7 +93,7 @@ timerEl.textContent=`Please wait ${sec} seconds`;
 clearInterval(waitTimer);
 canClaim=true;
 claimBtn.disabled=false;
-claimBtn.textContent='🎉 Claim 20 pts + Support Us';
+claimBtn.textContent='🎉 Claim 20 pts Free';
 timerEl.textContent='Ready to claim!';
 }
 },1000);
@@ -94,10 +104,7 @@ if(!canClaim||!currentUser) return;
 claimBtn.disabled=true;
 claimBtn.textContent='Claiming...';
 
-// 1. Open ad - YOU EARN HERE
-window.open(DIRECT_LINK,'_blank');
-
-// 2. Give points - USER EARNS
+// 1. GIVE POINTS FIRST - NO AD REQUIRED = 100% SAFE FOR MONETAG
 bal+=20;
 try{
 await db.collection('users').doc(currentUser.uid).set({
@@ -108,15 +115,21 @@ action:'Daily Bonus',type:'bonus',points:20,
 desc:'Daily Bonus Claimed',timestamp:firebase.firestore.FieldValue.serverTimestamp()
 });
 timerEl.textContent='✅ Claimed! +20 pts added';
-claimBtn.textContent='✅ Claimed Today';
-infoEl.textContent='Thanks for supporting us! Come back tomorrow.';
-setTimeout(()=>location.href='./home.html',1500);
+claimBtn.style.display='none';
+infoEl.textContent='Thanks! You can support us below (optional)';
+document.getElementById('supportBox').style.display='block';
 }catch(e){
 alert('Error, try again');
 claimBtn.disabled=false;
-claimBtn.textContent='🎉 Claim 20 pts';
+claimBtn.textContent='🎉 Claim 20 pts Free';
 }
 };
+
+function openSupport(){
+window.open(DIRECT_LINK,'_blank');
+document.getElementById('supportBox').innerHTML='<p style="color:#000;font-size:13px">Thanks for supporting! ❤️</p><button class="back" style="width:80%;margin-top:10px" onclick="goHome()">Go Home</button>';
+}
+function goHome(){location.href='./home.html';}
 </script>
 </body>
 </html>
