@@ -1,105 +1,68 @@
 <!DOCTYPE html>
-<html>
-<head>
-<title>Home - Rewards</title>
+<html><head><title>Home - Rewards</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="monetag" content="b671b8351bfc48ed0161f6bd0b6a5340">
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
 body{background:#0f1508;min-height:100vh;padding:20px;color:#fff}
 .container{max-width:500px;margin:0 auto}
 .header{text-align:center;margin:40px 0 30px}
 .header h2{font-size:34px}.header h2 span{color:#fbbf24}
 .balance-card{background:#2f3e1a;border:2px solid #fbbf24;border-radius:20px;padding:25px;text-align:center;margin-bottom:30px}
-.balance-card.label{font-size:14px;color:#ccc}
-.balance-card.amount{font-size:32px;font-weight:bold;color:#fbbf24;margin-top:5px}
-.balance-card.usd{font-size:16px;color:#aaa;margin-top:8px}
 .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:30px}
-.menu-btn{background:linear-gradient(180deg,#fff,#e8e8e8);color:#000;border:none;border-radius:15px;padding:20px 10px;font-size:15px;font-weight:bold;cursor:pointer;text-align:center;box-shadow:0 6px 0 #bbb,0 8px 15px rgba(0,0,0,.3);display:flex;flex-direction:column;align-items:center;gap:8px}
-.menu-btn:active{transform:translateY(6px);box-shadow:0 0 0 #bbb}
-.menu-btn.emoji{font-size:40px;line-height:1;display:block;margin-bottom:4px}
-.logout-btn{width:40%;height:48px;margin:30px auto 0;display:block;background:#f59e0b;color:#000;border:none;border-radius:999px;font-weight:bold;font-size:16px;cursor:pointer}
+.menu-btn{background:linear-gradient(180deg,#fff,#e8e8e8);color:#000;border:none;border-radius:15px;padding:20px 10px;font-size:15px;font-weight:bold;cursor:pointer;box-shadow:0 6px 0 #bbb;display:flex;flex-direction:column;align-items:center;gap:8px}
+.menu-btn.emoji{font-size:40px;display:block}
+.logout-btn{width:40%;height:48px;margin:30px auto 0;display:block;background:#f59e0b;color:#000;border:none;border-radius:999px;font-weight:bold}
 .modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.85);justify-content:center;align-items:center;padding:15px}
 .modal-content{background:#2f3e1a;border:3px solid #fbbf24;border-radius:20px;padding:18px;width:100%;max-width:420px;color:#fff;max-height:95vh;overflow-y:auto}
-.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.modal-header h2{font-size:20px;color:#fbbf24}
-.close-btn{font-size:24px;color:#fff;cursor:pointer;font-weight:bold}
-.input-box{width:100%;padding:14px;margin:8px 0;background:#000;border:2px solid #444;border-radius:12px;color:#fff;font-size:15px;outline:none}
+#customToast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:14px 22px;border-radius:12px;font-weight:bold;z-index:99999;display:none;max-width:90%;text-align:center}
+#maintenanceOverlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
+.action-btn{width:100%;padding:16px;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer;margin-top:8px}
+.input-box{width:100%;padding:14px;margin:8px 0;background:#000;border:2px solid #444;border-radius:12px;color:#fff}
+.countdown{font-size:18px;color:#fbbf24;font-weight:bold;margin-top:8px;text-align:center}
+.success-msg{background:#1a2e1a;border:1px solid #22c55e;color:#22c55e;padding:10px;border-radius:8px;margin-top:10px;display:none;text-align:center}
 </style>
-</head>
-<body>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+</head><body>
+<div id="maintenanceOverlay"><div style="max-width:400px;width:100%"><div style="font-size:40px">🛠️</div><h1 style="color:#fbbf24;font-size:34px;margin-bottom:20px">Under Maintenance</h1><div style="background:#1e2f15;border:2px solid #fbbf24;border-radius:15px;padding:20px"><p id="maintenanceMsg" style="color:white;font-size:18px">Maintainance for 20 min.</p></div><button onclick="location.href='index.html'" style="background:white;color:black;border:none;padding:14px 28px;border-radius:12px;font-weight:bold;margin-top:20px">Back</button></div></div>
+<div id="customToast"></div>
 <div class="container">
-<div class="header"><h2>Hello <span id="userName">User</span></h2></div>
-<div class="balance-card">
-<div class="label">Your Balance</div>
-<div class="amount" id="bal">0 pts</div>
-<div class="usd" id="usdBal">$0.00</div>
-</div>
+<div class="header"><h2><span style="color:white">Welcome, </span><span id="headerText" style="color:#fbbf24"></span> 👋</h2></div>
+<div class="balance-card"><div>Your Balance</div><div id="balance" style="font-size:32px;color:#fbbf24;font-weight:bold">0 points</div><div id="usdBalance" style="color:#aaa">≈ $0.00 USD</div></div>
 <div class="menu-grid">
-<button class="menu-btn" onclick="location.href='./watch.html'"><span class="emoji">▶️</span>Watch & Earn</button>
+<button class="menu-btn" onclick="openWallet()"><span class="emoji">💰</span>Wallet</button>
+<button class="menu-btn" onclick="openCheckin()"><span class="emoji">📅</span>Daily Checkin</button>
+<button class="menu-btn" onclick="location.href='./watch.html'"><span class="emoji">📺</span>Watch & Earn</button>
+<button class="menu-btn" onclick="location.href='./referrals.html'"><span class="emoji">🤝</span>Refer & Earn</button>
 <button class="menu-btn" onclick="location.href='./bonus.html'"><span class="emoji">🎁</span>Bonus</button>
-<button class="menu-btn" onclick="openWithdraw()"><span class="emoji">💸</span>Withdraw</button>
-<button class="menu-btn" onclick="openHistory()"><span class="emoji">📜</span>History</button>
+<button class="menu-btn" onclick="location.href='./more.html'"><span class="emoji">⚙️</span>More</button>
 </div>
-<button class="logout-btn" onclick="logOut()">Logout</button>
+<button class="logout-btn" onclick="logout()">Logout</button>
 </div>
-<!-- Withdraw Modal -->
-<div id="withdrawModal" class="modal">
-<div class="modal-content">
-<div class="modal-header"><h2>💸 Withdraw</h2><span class="close-btn" onclick="closeWithdraw()">&times;</span></div>
-<input id="withdrawAmount" class="input-box" type="number" placeholder="Amount pts (min 5000)">
-<select id="withdrawMethod" class="input-box"><option>MTN Mobile Money</option><option>Airtel Money</option></select>
-<input id="withdrawPhone" class="input-box" placeholder="Phone 078...">
-<button class="logout-btn" style="width:100%" onclick="requestWithdraw()">Submit</button>
-</div>
-</div>
-
-<!-- History Modal -->
-<div id="historyModal" class="modal">
-<div class="modal-content">
-<div class="modal-header"><h2>📜 History</h2><span class="close-btn" onclick="closeHistory()">&times;</span></div>
-<div id="historyList">Loading...</div>
-</div>
-</div>
-
+<div id="walletModal" class="modal"><div class="modal-content"><div style="display:flex;justify-content:space-between"><h2>💰 Wallet</h2><span onclick="closeWallet()" style="font-size:24px;cursor:pointer">&times;</span></div><div id="popupBalance" style="background:#000;border:2px solid #fbbf24;border-radius:15px;padding:15px;text-align:center;margin:10px 0;color:#f59e0b">0 points</div><button onclick="switchTab('convert')" id="tab1" style="flex:1;padding:10px;background:#fbbf24;border-radius:10px">Convert</button><button onclick="switchTab('withdraw')" id="tab2" style="flex:1;padding:10px;background:#1a2410;color:#ccc;border:2px solid #555;border-radius:10px">Withdraw</button><div id="convertTab"><input type="number" id="convertAmount" class="input-box" placeholder="Enter points" oninput="calcConvert()"><div id="convertResult" style="background:#000;padding:10px;border-radius:10px;border:1px dashed #fbbf24;text-align:center;margin:8px 0">You will receive: 0.00 USDT</div><button class="action-btn" onclick="convertPoints()">Convert Points</button></div><div id="withdrawTab" style="display:none"><select id="payMethod" class="input-box"><option value="binance">Binance Pay - 0 Fee</option><option value="okx">OKX Pay - 0 Fee</option></select><select id="withdrawCrypto" class="input-box"><option>USDT</option><option>BNB</option><option>XRP</option><option>XLM</option></select><input id="walletAddress" class="input-box" placeholder="Pay ID / Email"><input id="withdrawAmount" class="input-box" type="number" placeholder="Min 3000 pts"><button class="action-btn" onclick="requestWithdraw()">Request Withdraw</button></div></div></div>
+<div id="checkinModal" class="modal"><div class="modal-content"><div style="display:flex;justify-content:space-between"><h2>📅 Daily Checkin</h2><span onclick="closeCheckin()" style="font-size:24px;cursor:pointer">&times;</span></div><div style="background:#000;border:2px dashed #fbbf24;border-radius:15px;padding:20px;text-align:center;margin:10px 0"><div style="font-size:50px">🎁</div><h3 style="color:#fbbf24">Daily Reward</h3><p>Claim 5 points every 24h</p><button class="action-btn" id="claimBtn" onclick="claimDaily()">Claim 5 Points</button><div class="countdown" id="countdown"></div><div class="success-msg" id="successMsg">✓ 5 Points Added!</div><p id="checkinNote" style="font-size:12px;color:#aaa">Tap to claim</p></div></div></div>
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
-firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth(),db=firebase.firestore();
-let currentUser=null,bal=0;
-
-auth.onAuthStateChanged(async(u)=>{
-if(!u){location.href='./index.html';return;}
-currentUser=u;
-const s=await db.collection('users').doc(u.uid).get();
-if(s.exists){
-const d=s.data();
-bal=d.balance||d.points||0;
-document.getElementById('bal').textContent=bal+' pts';
-document.getElementById('usdBal').textContent='$'+(bal/5000).toFixed(2);
-if(d.name) document.getElementById('userName').textContent=d.name.split(' ')[0];
-}
-});
-
-function openWithdraw(){document.getElementById('withdrawModal').style.display='flex';}
-function closeWithdraw(){document.getElementById('withdrawModal').style.display='none';}
-function openHistory(){document.getElementById('historyModal').style.display='flex';loadHistory();}
-function closeHistory(){document.getElementById('historyModal').style.display='none';}
-async function loadHistory(){
-const q=await db.collection('users').doc(currentUser.uid).collection('earnHistory').orderBy('timestamp','desc').limit(20).get();
-let h='';q.forEach(doc=>{const d=doc.data();h+=`<div style="background:#000;padding:10px;border-radius:10px;margin-bottom:8px;display:flex;justify-content:space-between"><span>${d.desc||d.action}</span><span style="color:#fbbf24">+${d.points}</span></div>`});
-document.getElementById('historyList').innerHTML=h||'No history yet';
-}
-function logOut(){auth.signOut().then(()=>location.href='./index.html');}
-async function requestWithdraw(){
-const amt=parseInt(document.getElementById('withdrawAmount').value);
-if(amt<5000||amt>bal){alert('Min 5000 pts and max your balance');return;}
-alert('Withdraw request sent for '+amt+' pts');
-closeWithdraw();
-}
-</script>
-</body>
-</html>
+firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.firestore();
+function showToast(m){const t=document.getElementById('customToast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);} window.alert=showToast;
+let currentUser=null,userData={},isClaimingDaily=false,countdownInterval=null;
+const POINT_RATE=0.0005,DAILY_REWARD=5;
+function loadData(d){userData=d;document.getElementById('headerText').innerText=d.username||'User';document.getElementById('balance').innerText=(d.balance||0)+' points';document.getElementById('usdBalance').innerText=`≈ $${((d.balance||0)*POINT_RATE).toFixed(2)} USD`;}
+const cached=JSON.parse(localStorage.getItem('userData')||'{}');if(cached.username)loadData(cached);
+window.openWallet=function(){document.getElementById('popupBalance').innerText=(userData.balance||0)+' points';document.getElementById('walletModal').style.display='flex';}
+window.closeWallet=function(){document.getElementById('walletModal').style.display='none';}
+window.switchTab=function(t){document.getElementById('convertTab').style.display=t==='convert'?'block':'none';document.getElementById('withdrawTab').style.display=t==='withdraw'?'block':'none';}
+window.calcConvert=function(){const pts=parseFloat(document.getElementById('convertAmount').value)||0;document.getElementById('convertResult').innerText=`You will receive: ${(pts*POINT_RATE).toFixed(2)} USD`;}
+window.convertPoints=async function(){const pts=parseFloat(document.getElementById('convertAmount').value);if(!pts||pts<1000)return showToast('Min 1000');if(pts>userData.balance)return showToast('Not enough');userData.balance-=pts;await db.collection('users').doc(currentUser.uid).update({balance:userData.balance});loadData(userData);showToast('Converted!');closeWallet();}
+window.requestWithdraw=async function(){const amt=parseFloat(document.getElementById('withdrawAmount').value);if(!amt||amt<3000)return showToast('Min 3000 pts');if(amt>userData.balance)return showToast('Not enough');userData.balance-=amt;await db.collection('users').doc(currentUser.uid).update({balance:userData.balance});loadData(userData);showToast('Withdraw sent!');closeWallet();}
+window.openCheckin=function(){document.getElementById('checkinModal').style.display='flex';checkClaimStatus();}
+window.closeCheckin=function(){document.getElementById('checkinModal').style.display='none';clearInterval(countdownInterval);}
+function getToday(){return new Date().toISOString().split('T')[0];}
+function getNextClaimTime(){const n=new Date();const t=new Date(n);t.setDate(t.getDate()+1);t.setHours(0,0,0,0);return t;}
+function checkClaimStatus(){const today=getToday();if(userData.lastCheckin===today){document.getElementById('claimBtn').disabled=true;document.getElementById('claimBtn').innerText='Already Claimed';document.getElementById('checkinNote').innerText='Come back tomorrow';}else{document.getElementById('claimBtn').disabled=false;document.getElementById('claimBtn').innerText='Claim 5 Points';}}
+window.claimDaily=async function(){if(isClaimingDaily)return;isClaimingDaily=true;const today=getToday();userData.balance=(userData.balance||0)+5;userData.lastCheckin=today;localStorage.setItem('userData',JSON.stringify(userData));await db.collection('users').doc(currentUser.uid).update({balance:userData.balance,lastCheckin:today});loadData(userData);document.getElementById('successMsg').style.display='block';checkClaimStatus();isClaimingDaily=false;showToast('✓ 5 Points Added!');}
+db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maintenanceOverlay').style.display='flex';}else{document.getElementById('maintenanceOverlay').style.display='none';}});
+auth.onAuthStateChanged(async u=>{if(u){currentUser=u;const doc=await db.collection('users').doc(u.uid).get();if(doc.exists){const data=doc.data();localStorage.setItem('userData',JSON.stringify(data));loadData(data);}}else{location.href='./index.html';}});
+window.logout=async function(){await auth.signOut();localStorage.clear();location.href='./index.html';}
+</script></body></html>
