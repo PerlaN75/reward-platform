@@ -6,30 +6,30 @@
 <title>Sponsored Tasks</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-
-<!-- PASTE YOUR MONETAG MULTITAG / VIGNETTE CODE HERE -->
-<!-- Example: <script src="https://.../multitag.js"></script> -->
-<!-- Keep only Vignette enabled for this page in Monetag dashboard -->
-
-<style>
-body{font-family:Inter,sans-serif;background:#f5f3ff}
-.task-card{background:#fff;border-radius:16px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
-.btn-start{background:#7c3aed;color:#fff;padding:8px 18px;border-radius:20px;font-weight:700;font-size:13px;border:none}
-.btn-verify{background:#10b981;color:#fff;padding:8px 18px;border-radius:20px;font-weight:700;font-size:13px;border:none}
-.btn-claimed{background:#e5e7eb;color:#6b7280;padding:8px 18px;border-radius:20px;font-weight:700;font-size:12px;border:none}
-</style>
+<!-- PASTE YOUR MONETAG VIGNETTE MULTITAG HERE -->
 </head>
-<body>
-<div class="bg-gradient-to-r from-purple-600 to-indigo-600 p-4 text-white flex items-center gap-3">
-  <a href="home.html"><i class="fas fa-arrow-left"></i></a>
-  <b>Sponsored Tasks • Max 20 pts/day</b>
+<body class="bg-gray-50">
+<div class="bg-gradient-to-r from-purple-600 to-indigo-600 p-4 text-white flex gap-3 items-center">
+  <a href="home.html"><i class="fas fa-arrow-left"></i></a><b>Sponsored Tasks • 20 pts/day</b>
 </div>
-
 <div class="p-4" id="list"></div>
-<p class="text-center text-xs text-gray-500 pb-6">Watch ad fully to verify. Resets every 24h.</p>
 
-<script>
-// 1. PASTE YOUR DIRECT LINK HERE
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getFirestore, doc, getDoc, updateDoc, increment, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+// YOUR FIREBASE CONFIG - paste from your home.html
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  //...
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
 const DIRECT_LINK = "PASTE_YOUR_DIRECT_LINK_HERE";
 
 const TASKS = [
@@ -45,58 +45,59 @@ const TASKS = [
   {id:10, name:"Bonus Clip", icon:"fa-check-circle", pts:2},
 ];
 
-let states = JSON.parse(localStorage.getItem('perlan_tasks_v2')||'{}');
+let currentUser=null;
+let states=JSON.parse(localStorage.getItem('perlan_tasks_v2')||'{}');
+
+onAuthStateChanged(auth, (user)=>{
+  if(user) currentUser=user;
+  render();
+});
 
 function render(){
   let html=''; let earned=0;
   TASKS.forEach(t=>{
-    let s = states[t.id]||{status:'idle', at:0};
-    let diffH = (Date.now() - s.at)/3600000;
-    if(s.status==='claimed' && diffH < 24){
+    let s=states[t.id]||{status:'idle', at:0};
+    let diffH=(Date.now()-s.at)/3600000;
+    if(s.status==='claimed' && diffH<24){
       earned+=t.pts;
       let rem=24-diffH; let h=Math.floor(rem); let m=Math.floor((rem-h)*60);
-      html+=`<div class="task-card opacity-60"><div class="flex gap-3 items-center"><div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center"><i class="fas ${t.icon} text-purple-600"></i></div><div><b class="text-sm">${t.name}</b><br><span class="text-xs text-gray-500">${t.pts} pts • done</span></div></div><button class="btn-claimed">${h}h ${m}m</button></div>`;
+      html+=`<div class="bg-white rounded-xl p-3 flex justify-between items-center mb-2 opacity-60"><div class="flex gap-2 items-center"><i class="fas ${t.icon} text-purple-600"></i><div><b class="text-sm">${t.name}</b><br><span class="text-xs">${t.pts} pts done</span></div></div><span class="text-xs bg-gray-200 px-3 py-1 rounded-full">${h}h ${m}m</span></div>`;
     } else {
-      let btn='';
-      if(s.status==='waiting') btn=`<button class="btn-start" style="background:#f59e0b">Wait ${s.count}s</button>`;
-      else if(s.status==='ready') btn=`<button class="btn-verify" onclick="verifyTask(${t.id})">Verify</button>`;
-      else btn=`<button class="btn-start" onclick="startTask(${t.id})">Start • ${t.pts}pts</button>`;
-      html+=`<div class="task-card"><div class="flex gap-3 items-center"><div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center"><i class="fas ${t.icon} text-purple-600"></i></div><div><b class="text-sm">${t.name}</b><br><span class="text-xs text-gray-500">${t.pts} pt${t.pts>1?'s':''}</span></div></div>${btn}</div>`;
+      let btn=s.status==='waiting'?`<span class="text-xs bg-amber-400 text-white px-3 py-2 rounded-full">${s.count}s</span>`:s.status==='ready'?`<button onclick="window.verifyTask(${t.id})" class="bg-green-500 text-white px-4 py-2 rounded-full text-xs font-bold">Verify</button>`:`<button onclick="window.startTask(${t.id})" class="bg-purple-600 text-white px-4 py-2 rounded-full text-xs font-bold">Start • ${t.pts}pts</button>`;
+      html+=`<div class="bg-white rounded-xl p-3 flex justify-between items-center mb-2"><div class="flex gap-2 items-center"><i class="fas ${t.icon} text-purple-600"></i><div><b class="text-sm">${t.name}</b><br><span class="text-xs text-gray-500">${t.pts} pts</span></div></div>${btn}</div>`;
     }
   });
-  document.getElementById('list').innerHTML = html + `<div class="text-center mt-3 text-sm font-bold">Today: ${earned}/20 pts</div>`;
+  document.getElementById('list').innerHTML=html+`<div class="text-center mt-4 font-bold text-sm">Today: ${earned}/20 pts</div>`;
 }
 
 window.startTask=(id)=>{
-  if(DIRECT_LINK.includes("PASTE_YOUR")){ alert("Add your Direct Link in code first"); return; }
-  window.open(DIRECT_LINK, '_blank');
-  states[id]={status:'waiting', count:10, at:0};
-  localStorage.setItem('perlan_tasks_v2', JSON.stringify(states));
-  render();
-  let c=10;
-  let iv=setInterval(()=>{
-    c--;
-    states[id].count=c;
-    localStorage.setItem('perlan_tasks_v2', JSON.stringify(states));
-    if(c<=0){
-      clearInterval(iv);
-      states[id].status='ready';
-      localStorage.setItem('perlan_tasks_v2', JSON.stringify(states));
-      render();
-    } else {
-      render();
-    }
-  },1000);
+  if(!currentUser){ alert("Login first"); return; }
+  window.open(DIRECT_LINK,'_blank');
+  states[id]={status:'waiting', count:10, at:0}; localStorage.setItem('perlan_tasks_v2', JSON.stringify(states)); render();
+  let c=10; let iv=setInterval(()=>{ c--; states[id].count=c; localStorage.setItem('perlan_tasks_v2', JSON.stringify(states)); if(c<=0){clearInterval(iv); states[id].status='ready'; localStorage.setItem('perlan_tasks_v2', JSON.stringify(states)); render();} else render(); },1000);
 }
 
-window.verifyTask=(id)=>{
-  let t = TASKS.find(x=>x.id===id);
-  states[id]={status:'claimed', at:Date.now()};
-  localStorage.setItem('perlan_tasks_v2', JSON.stringify(states));
-  // TODO: add to Firebase: increment user points by t.pts
-  alert("Verified! +"+t.pts+" pts added. Next in 24h");
-  render();
+window.verifyTask=async(id)=>{
+  if(!currentUser) return;
+  let t=TASKS.find(x=>x.id===id);
+  try{
+    // 1. Add points to user
+    const userRef = doc(db, "users", currentUser.uid);
+    await updateDoc(userRef, { points: increment(t.pts), balance: increment(t.pts) });
+    // 2. Add history record
+    await addDoc(collection(db, "users", currentUser.uid, "history"), {
+      type: "task",
+      taskName: t.name,
+      points: t.pts,
+      createdAt: serverTimestamp()
+    });
+    // 3. Lock for 24h
+    states[id]={status:'claimed', at:Date.now()}; localStorage.setItem('perlan_tasks_v2', JSON.stringify(states));
+    alert("+"+t.pts+" pts added!");
+    render();
+  }catch(e){ console.error(e); alert("Error: "+e.message); }
 }
+window.render=render;
 render();
 </script>
 </body>
