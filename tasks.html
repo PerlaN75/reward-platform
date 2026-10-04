@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sponsored Tasks</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+body{font-family:Inter,sans-serif;background:#f5f3ff}
+.task-card{background:white;border-radius:16px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.btn-start{background:#7c3aed;color:white;padding:8px 18px;border-radius:20px;font-weight:600;font-size:13px;border:none;cursor:pointer}
+.btn-verify{background:#10b981;color:white;padding:8px 18px;border-radius:20px;font-weight:600;font-size:13px;border:none;cursor:pointer}
+.btn-claimed{background:#e5e7eb;color:#6b7280;padding:8px 18px;border-radius:20px;font-weight:600;font-size:13px;border:none}
+</style>
+</head>
+<body>
+<div class="bg-gradient-to-r from-purple-600 to-indigo-600 p-4 text-white">
+  <a href="home.html" class="mr-3"><i class="fas fa-arrow-left"></i></a>
+  <span class="font-bold">Sponsored Tasks • 20 pts/day</span>
+</div>
+<div class="p-4">
+<div id="tasksList"></div>
+</div>
+<script>
+const AD_LINK = "YOUR_DIRECT_LINK_HERE";
+const TASKS = [
+  {id:1, name:"Sponsor Video 1", icon:"fa-play", pts:1},
+  {id:2, name:"Premium Brand Offer", icon:"fa-crown", pts:3},
+  {id:3, name:"Quick Ad Check", icon:"fa-eye", pts:2},
+  {id:4, name:"Daily Sponsor Clip", icon:"fa-video", pts:1},
+  {id:5, name:"Special Promo", icon:"fa-gift", pts:2},
+  {id:6, name:"Gold Sponsor", icon:"fa-star", pts:3},
+  {id:7, name:"Mini Ad View", icon:"fa-film", pts:1},
+  {id:8, name:"Partner Spot", icon:"fa-handshake", pts:2},
+  {id:9, name:"High Value Ad", icon:"fa-fire", pts:3},
+  {id:10, name:"Bonus Clip", icon:"fa-check-circle", pts:2},
+];
+let states = JSON.parse(localStorage.getItem('perlan_tasks')||'{}');
+function render(){
+  let html=''; let total=0;
+  TASKS.forEach(t=>{
+    let s = states[t.id]||{status:'idle', at:0};
+    let hrs = (Date.now()-s.at)/3600000;
+    if(s.status==='claimed' && hrs<24){
+      let rem=24-hrs; let h=Math.floor(rem); let m=Math.floor((rem-h)*60);
+      total+=t.pts;
+      html+=`<div class="task-card opacity-60"><div><b class="text-sm">${t.name}</b><br><span class="text-xs text-gray-500">${t.pts} pts • Claimed</span></div><button class="btn-claimed">${h}h ${m}m</button></div>`;
+    } else {
+      let btn='';
+      if(s.status==='waiting') btn=`<button class="btn-start" style="background:#f59e0b" disabled>Verify in ${s.count}s</button>`;
+      else if(s.status==='ready') btn=`<button class="btn-verify" onclick="verify(${t.id})">Verify</button>`;
+      else btn=`<button class="btn-start" onclick="start(${t.id})">Start</button>`;
+      html+=`<div class="task-card"><div class="flex gap-3 items-center"><div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center"><i class="fas ${t.icon} text-purple-600"></i></div><div><b class="text-sm">${t.name}</b><br><span class="text-xs">${t.pts} pt${t.pts>1?'s':''}</span></div></div>${btn}</div>`;
+    }
+  });
+  document.getElementById('tasksList').innerHTML=html+`<p class="text-center text-xs mt-4 text-gray-500">Total earned today: ${total}/20 pts</p>`;
+}
+window.start=(id)=>{
+  window.open(AD_LINK,'_blank');
+  states[id]={status:'waiting', count:10, at:0};
+  localStorage.setItem('perlan_tasks',JSON.stringify(states)); render();
+  let c=10; let iv=setInterval(()=>{
+    c--; states[id].count=c; localStorage.setItem('perlan_tasks',JSON.stringify(states));
+    if(c<=0){clearInterval(iv); states[id].status='ready'; localStorage.setItem('perlan_tasks',JSON.stringify(states)); render();}
+    else{ document.querySelectorAll('.task-card')[id-1]?.querySelector('button')&&(document.querySelectorAll('.task-card')[id-1].querySelector('button').innerText=`Verify in ${c}s`); }
+  },1000);
+}
+window.verify=(id)=>{
+  let t=TASKS.find(x=>x.id===id);
+  states[id]={status:'claimed', at:Date.now()}; localStorage.setItem('perlan_tasks',JSON.stringify(states));
+  // TODO: add Firestore increment: points + t.pts
+  alert('Verified +'+t.pts+' pts! Resets after 24h'); render();
+}
+render();
+</script>
+</body>
+</html>
