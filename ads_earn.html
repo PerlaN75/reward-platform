@@ -5,7 +5,7 @@
 <style>
 *{box-sizing:border-box;font-family:system-ui,Arial}
 body{margin:0;background:#0a1500;color:#fff;padding:0 10px 90px}
-.header{position:sticky;top:10px;z-index:100;background:linear-gradient(135deg,#1a2f08 0%,#2f4d12 100%);border:2px solid #fbbf24;border-radius:24px;padding:16px 14px 18px 14px;margin:8px 2px 12px 2px;text-align:center;box-shadow:0 6px 24px rgba(251,191,36,.35)}
+.header{position:sticky;top:8px;z-index:100;background:linear-gradient(135deg,#1a2f08 0%,#2f4d12 100%);border:2px solid #fbbf24;border-radius:24px;padding:16px 14px 18px 14px;margin:8px 2px 12px 2px;text-align:center;box-shadow:0 6px 24px rgba(251,191,36,.35)}
 .header h2{margin:0;font-size:20px}
 .badge{display:inline-block;background:rgba(251,191,36,.15);border:1px solid #fbbf24;color:#fbbf24;padding:4px 12px;border-radius:20px;font-size:11px;margin-top:8px}
 .progress{height:7px;background:rgba(255,255,255,.15);border-radius:10px;margin:12px 0 0;overflow:hidden}
@@ -82,18 +82,69 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
-const points=[2,1,2,1,2,1,2,1,2,1];
+const points=[2,1,2,1,2,1];
 function getToday(){return new Date().toISOString().split('T')[0];}
-if(localStorage.getItem('adsEarn_date')!==getToday()){localStorage.setItem('adsEarn_date',getToday());localStorage.setItem('adsEarn_done','[]');localStorage.setItem('adsEarn_total','0');}
+if(localStorage.getItem('adsEarn_date')!==getToday()){
+ localStorage.setItem('adsEarn_date',getToday());
+ localStorage.setItem('adsEarn_done','[]');
+ localStorage.setItem('adsEarn_total','0');
+}
 let done=JSON.parse(localStorage.getItem('adsEarn_done')||'[]');
 let total=parseInt(localStorage.getItem('adsEarn_total')||'0');
-if(isNaN(total)){total=0;localStorage.setItem('adsEarn_total','0');}
+let realTotal = done.reduce((s,i)=> s + (points[i]||0), 0);
+if(isNaN(total) || total !== realTotal){ total = realTotal; localStorage.setItem('adsEarn_total', total); }
 if(!Array.isArray(done)){done=[];}
 let cur=0,sec=10,tmr,currentUser=null,userData=JSON.parse(localStorage.getItem('userData')||'{}');
-auth.onAuthStateChanged(async u=>{if(u){currentUser=u;const doc=await db.collection('users').doc(u.uid).get();if(doc.exists){userData=doc.data();localStorage.setItem('userData',JSON.stringify(userData));}render();}else{location.href='./index.html';}});
-function render(){document.getElementById('totalPts').textContent=total;document.getElementById('progressText').textContent=done.length+'/10 done - Resets midnight';document.getElementById('progBar').style.width=(done.length*10)+'%';let html='';for(let i=0;i<10;i++){let isDone=done.includes(i);let label=isDone?'Done ✓':'Start';let cls=isDone?'done':'start';html+=`<div class="task"><div class="icon">📢</div><div class="info"><b>Ad ${i+1}</b><br><span>+${points[i]} pts</span></div><button class="btn ${cls}" onclick="startAd(${i})">${label}</button></div>`;}document.getElementById('list').innerHTML=html;}
-function startAd(i){if(done.includes(i)) return;cur=i;sec=10;document.getElementById('modal').style.display='block';let btn=document.getElementById('mainBtn');btn.disabled=true;btn.style.background='#ccc';btn.textContent=`Wait ${sec}s...`;document.getElementById('timer').textContent=`00:${sec}`;clearInterval(tmr);tmr=setInterval(()=>{sec--;document.getElementById('timer').textContent=`00:0${sec}`;btn.textContent=`Wait ${sec}s...`;if(sec<=0){clearInterval(tmr);btn.disabled=false;btn.style.background='#00c853';btn.textContent=`Claim +${points[cur]} pts`;}},1000);}
-document.getElementById('mainBtn').onclick=async ()=>{if(sec>0||done.includes(cur)) return;done.push(cur);total+=points[cur];localStorage.setItem('adsEarn_done',JSON.stringify(done));localStorage.setItem('adsEarn_total',total);if(currentUser){try{let newBal=(userData.balance||0)+points[cur];userData.balance=newBal;localStorage.setItem('userData',JSON.stringify(userData));await db.collection('users').doc(currentUser.uid).update({balance:newBal});await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Ads Earn',points:points[cur],desc:`Ad ${cur+1} +${points[cur]} pts`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});showToast(`✓ +${points[cur]} pts added!`);}catch(e){showToast(e.message);}}closeModal();render();};
+auth.onAuthStateChanged(async u=>{
+ if(u){
+   currentUser=u;
+   const doc=await db.collection('users').doc(u.uid).get();
+   if(doc.exists){ userData=doc.data(); localStorage.setItem('userData',JSON.stringify(userData)); }
+   render();
+ }else{ location.href='./index.html'; }
+});
+function render(){
+ document.getElementById('totalPts').textContent=total;
+ document.getElementById('progressText').textContent=done.length+'/10 done - Resets midnight';
+ document.getElementById('progBar').style.width=(done.length*10)+'%';
+ let html='';
+ for(let i=0;i<10;i++){
+   let isDone=done.includes(i);
+   let label=isDone?'Done ✓':'Start';
+   let cls=isDone?'done':'start';
+   html+=`<div class="task"><div class="icon">📢</div><div class="info"><b>Ad ${i+1}</b><br><span>+${points[i]} pts</span></div><button class="btn ${cls}" onclick="startAd(${i})">${label}</button></div>`;
+ }
+ document.getElementById('list').innerHTML=html;
+}
+function startAd(i){
+ if(done.includes(i)) return;
+ cur=i;sec=10;
+ document.getElementById('modal').style.display='block';
+ let btn=document.getElementById('mainBtn');btn.disabled=true;btn.style.background='#ccc';
+ btn.textContent=`Wait ${sec}s...`;document.getElementById('timer').textContent=`00:${sec}`;
+ clearInterval(tmr);
+ tmr=setInterval(()=>{sec--;document.getElementById('timer').textContent=`00:0${sec}`;btn.textContent=`Wait ${sec}s...`;
+ if(sec<=0){clearInterval(tmr);btn.disabled=false;btn.style.background='#00c853';btn.textContent=`Claim +${points[cur]} pts`;}
+ },1000);
+}
+document.getElementById('mainBtn').onclick=async ()=>{
+ if(sec>0||done.includes(cur)) return;
+ done.push(cur);total+=points[cur];
+ localStorage.setItem('adsEarn_done',JSON.stringify(done));
+ localStorage.setItem('adsEarn_total',total);
+ if(currentUser){
+  try{
+   let currentBal = userData.balance || 0;
+   let newBal = currentBal + points[cur];
+   userData.balance=newBal;
+   localStorage.setItem('userData',JSON.stringify(userData));
+   await db.collection('users').doc(currentUser.uid).update({balance:newBal});
+   await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Ads Earn',points:points[cur],desc:`Ad ${cur+1} +${points[cur]} pts`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+   showToast(`✓ +${points[cur]} pts added!`);
+  }catch(e){showToast(e.message);}
+ }
+ closeModal();render();
+};
 function closeModal(){document.getElementById('modal').style.display='none';clearInterval(tmr);}
 render();
 </script>
