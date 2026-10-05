@@ -3,26 +3,34 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ads Earn - Earn More</title>
 <style>
-*{box-sizing:border-box;font-family:Arial}
-body{margin:0;background:#0f1508;color:#fff;padding:0 12px;padding-bottom:90px}
-.header{position:sticky;top:0;z-index:100;background:#2f3e1a;border:2px solid #fbbf24;border-radius:0 0 20px 20px;padding:12px;text-align:center;margin-bottom:8px}
-.task{background:#fff;color:#000;margin:6px 0;padding:10px 12px;border-radius:14px;display:flex;align-items:center;gap:10px}
-.icon{width:38px;height:38px;background:linear-gradient(135deg,#2196f3,#00c853);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.info{flex:1}.info b{font-size:13px}.info span{color:#00c853;font-size:12px;font-weight:700}
-.btn{padding:7px 14px;border:none;border-radius:20px;font-weight:800;color:#fff;cursor:pointer;min-width:70px;font-size:12px}
-.btn.start{background:#2196f3}.btn.claim{background:#00c853}.btn.done{background:#eee;color:#888;font-size:11px}
+*{box-sizing:border-box;font-family:system-ui,Arial}
+body{margin:0;background:#0a1500;color:#fff;padding:0 12px 90px}
+.header{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#1a2f08 0%,#2f4d12 100%);border:2px solid #fbbf24;border-radius:0 0 22px 22px;padding:14px;text-align:center;box-shadow:0 4px 20px rgba(251,191,36,.3)}
+.header h2{margin:0;font-size:20px;letter-spacing:.5px}
+.badge{display:inline-block;background:rgba(251,191,36,.15);border:1px solid #fbbf24;color:#fbbf24;padding:3px 10px;border-radius:20px;font-size:11px;margin-top:6px}
+.progress{height:6px;background:rgba(255,255,255,.15);border-radius:10px;margin:10px 0 0;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);border-radius:10px;transition:.5s}
+.task{background:linear-gradient(135deg,#fff 0%,#f8fff0 100%);color:#000;margin:7px 0;padding:11px 12px;border-radius:16px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 12px rgba(0,0,0,.15);border-left:4px solid #00c853;transition:.2s}
+.task:active{transform:scale(.98)}
+.icon{width:40px;height:40px;background:linear-gradient(135deg,#2196f3,#00c853);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;box-shadow:0 2px 8px rgba(33,150,243,.4)}
+.info{flex:1}.info b{font-size:13px}.info span{color:#00c853;font-size:11px;font-weight:800;background:#e8f5e9;padding:2px 6px;border-radius:8px}
+.btn{padding:8px 16px;border:none;border-radius:22px;font-weight:800;color:#fff;cursor:pointer;min-width:74px;font-size:12px;box-shadow:0 3px 10px rgba(0,0,0,.2)}
+.btn.start{background:linear-gradient(135deg,#2196f3,#1976d2);animation:pulse 2s infinite}
+.btn.done{background:#e8e8e8;color:#888;box-shadow:none}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(33,150,243,.6)}70%{box-shadow:0 0 0 8px rgba(33,150,243,0)}100%{box-shadow:0 0 0 0 rgba(33,150,243,0)}}
 #modal{display:none;position:fixed;inset:0;background:#e8f5e9;z-index:9999;text-align:center;padding:12px;color:#000;overflow:auto}
-.timer{background:#4caf50;color:#fff;padding:6px 16px;border-radius:20px;display:inline-block;font-weight:800;margin-top:12px}
-.ad-card{background:#fff;width:100%;max-width:360px;margin:18px auto;border-radius:20px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.timer{background:linear-gradient(135deg,#4caf50,#2e7d32);color:#fff;padding:6px 18px;border-radius:20px;display:inline-block;font-weight:800;margin-top:12px;box-shadow:0 3px 10px rgba(76,175,80,.4)}
+.ad-card{background:#fff;width:100%;max-width:360px;margin:18px auto;border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.3)}
 #adBox{min-height:260px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;flex-direction:column}
 .continue{width:100%;max-width:360px;padding:16px;border:none;border-radius:14px;font-size:18px;font-weight:800;margin-top:18px;color:#fff}
-#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:12px 20px;border-radius:12px;display:none;z-index:10000}
-.ad-label{font-size:10px;color:#888;text-align:center;padding:3px;background:#f9f9f9;width:100%}
-/* NEW: horizontal scroll for sponsored */
-.carousel{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 0 10px;-webkit-overflow-scrolling:touch}
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1a2f08;border:2px solid #fbbf24;color:#fff;padding:12px 20px;border-radius:12px;display:none;z-index:10000;box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.ad-label{font-size:9px;color:#888;text-align:center;padding:3px;letter-spacing:1px;text-transform:uppercase}
+.carousel{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 0 12px;-webkit-overflow-scrolling:touch}
 .carousel::-webkit-scrollbar{display:none}
-.ad-slide{min-width:300px;max-width:300px;scroll-snap-align:start;background:#1a2a0f;border-radius:16px;padding:8px;flex-shrink:0}
-.native-slide{min-width:300px;max-width:300px;scroll-snap-align:start;background:#fff;border-radius:16px;padding:8px;flex-shrink:0}
+.ad-slide,.native-slide{min-width:300px;max-width:300px;scroll-snap-align:start;border-radius:18px;padding:8px;flex-shrink:0;box-shadow:0 4px 16px rgba(0,0,0,.25);position:relative;overflow:hidden}
+.ad-slide{background:linear-gradient(135deg,#1a2a0f,#243a12);border:1px solid rgba(251,191,36,.3)}
+.native-slide{background:#fff;border:1px solid #e0e0e0}
+.hot{position:absolute;top:6px;left:6px;background:linear-gradient(135deg,#ff5722,#ff9800);color:#fff;font-size:8px;font-weight:900;padding:3px 7px;border-radius:10px;z-index:2;letter-spacing:.5px}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -30,35 +38,30 @@ body{margin:0;background:#0f1508;color:#fff;padding:0 12px;padding-bottom:90px}
 </head><body>
 <div id="toast"></div>
 <div class="header">
-<h2 style="margin:0;font-size:18px">📢 Ads Earn</h2>
-<div style="font-size:12px;margin-top:4px;color:#fbbf24">Total Today: <b id="totalPts">0</b>/15 pts | 1000pts = $0.5</div>
-<div style="font-size:10px;color:#aaa" id="progressText">0/10 done</div>
-<button onclick="location.href='./home.html'" style="margin-top:8px;background:#fff;color:#000;border:none;padding:6px 14px;border-radius:20px;font-weight:bold;font-size:12px">← Back Home</button>
+<h2>📢 Ads Earn</h2>
+<div class="badge">Total Today: <b id="totalPts">0</b>/15 pts | 1000pts = $0.5</div>
+<div class="progress"><div class="progress-bar" id="progBar" style="width:0%"></div></div>
+<div style="font-size:10px;color:#a3c585;margin-top:4px" id="progressText">0/10 done - Resets midnight</div>
+<button onclick="location.href='./home.html'" style="margin-top:10px;background:#fff;color:#1a2f08;border:none;padding:7px 18px;border-radius:20px;font-weight:800;font-size:12px;box-shadow:0 2px 8px rgba(0,0,0,.2)">← Back Home</button>
 </div>
 
-<!-- TOP CAROUSEL - SWIPE LEFT/RIGHT -->
-<div style="margin:6px 0 4px;font-size:11px;color:#fbbf24;font-weight:700">🔥 Sponsored - Swipe →</div>
+<div style="margin:10px 0 6px;font-size:11px;color:#fbbf24;font-weight:800;letter-spacing:.5px">🔥 SPONSORED - SWIPE TO EARN MORE →</div>
 <div class="carousel">
-  <div class="ad-slide">
-    <div class="ad-label">Advertisement</div>
-    <script>
-      atOptions = {'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};
-    </script>
+  <div class="ad-slide"><span class="hot">HOT 🔥</span><div class="ad-label" style="color:#fbbf24">Advertisement</div>
+    <script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script>
     <script src="https://www.highperformanceformat.com/bf10cacdbe9f50d0c5d66a94e0785f29/invoke.js"></script>
   </div>
-  <div class="native-slide">
-    <div class="ad-label">Sponsored</div>
+  <div class="native-slide"><span class="hot" style="background:linear-gradient(135deg,#2196f3,#00bcd4)">NEW</span><div class="ad-label">Sponsored</div>
     <script async="async" data-cfasync="false" src="https://www.highperformanceformat.com/23e1e60b5d9d8473949f8c3ca250759b/invoke.js"></script>
     <div id="container-23e1e60b5d9d8473949f8c3ca250759b"></div>
   </div>
-  <div class="ad-slide">
-    <div class="ad-label">Hot Offer</div>
-    <script>
-      atOptions = {'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};
-    </script>
+  <div class="ad-slide"><span class="hot">BONUS</span><div class="ad-label" style="color:#fbbf24">Hot Offer</div>
+    <script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script>
     <script src="https://www.highperformanceformat.com/bf10cacdbe9f50d0c5d66a94e0785f29/invoke.js"></script>
   </div>
 </div>
+
+<div style="text-align:center;margin:4px 0 8px"><span style="width:18px;height:4px;background:#fbbf24;display:inline-block;border-radius:10px"></span><span style="width:6px;height:4px;background:rgba(255,255,255,.3);display:inline-block;border-radius:10px;margin-left:4px"></span><span style="width:6px;height:4px;background:rgba(255,255,255,.3);display:inline-block;border-radius:10px;margin-left:4px"></span></div>
 
 <div id="list"></div>
 
@@ -66,58 +69,46 @@ body{margin:0;background:#0f1508;color:#fff;padding:0 12px;padding-bottom:90px}
 <div class="timer" id="timer">00:10</div>
 <div class="ad-card">
 <div id="adBox">
-<div class="ad-label" style="color:#000">Advertisement - Wait to claim</div>
-<script>
-  atOptions = {'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};
-</script>
+<div class="ad-label">Advertisement - Wait to claim</div>
+<script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script>
 <script src="https://www.highperformanceformat.com/bf10cacdbe9f50d0c5d66a94e0785f29/invoke.js"></script>
 <div style="padding:14px;text-align:left;width:100%"><b>🔥 Your Prize Awaits!</b><br><small>Watch 10s to unlock + points</small></div>
 </div>
 </div>
-<div style="background:#0f2b1d;color:#fff;padding:10px 18px;border-radius:20px;display:inline-block;font-size:13px">↓ Click to get the reward!</div>
+<div style="background:#0f2b1d;color:#fff;padding:10px 18px;border-radius:20px;display:inline-block;font-size:13px;margin-top:8px">↓ Click to get the reward!</div>
 <br><button class="continue" id="mainBtn" style="background:#ccc">Wait 10s...</button>
 <br><br><small onclick="closeModal()" style="text-decoration:underline;cursor:pointer">Close</small>
 </div>
 
-<!-- BOTTOM STICKY -->
-<div style="position:fixed; bottom:0; left:0; width:100%; display:flex; justify-content:center; background:white; z-index:9999; padding:5px; box-shadow:0 -2px 10px rgba(0,0,0,0.3);">
-<script>
-  atOptions = {'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};
-</script>
+<div style="position:fixed;bottom:0;left:0;width:100%;display:flex;justify-content:center;background:white;z-index:9999;padding:5px;box-shadow:0 -2px 15px rgba(0,0,0,.4)">
+<script>atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script>
 <script src="https://www.highperformanceformat.com/fe25c5bd01f4bc5e60243e36cd83277c/invoke.js"></script>
 </div>
 
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth(), db=firebase.firestore();
+const auth=firebase.auth(),db=firebase.firestore();
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
-// FIX: 10 values + NaN protection
 const points=[2,1,2,1,2,1,2,1,2,1];
 function getToday(){return new Date().toISOString().split('T')[0];}
-let savedDate=localStorage.getItem('adsEarn_date');
-let today=getToday();
-if(savedDate!==today){
- localStorage.setItem('adsEarn_date', today);
- localStorage.setItem('adsEarn_done', '[]');
- localStorage.setItem('adsEarn_total', '0');
+if(localStorage.getItem('adsEarn_date')!==getToday()){
+ localStorage.setItem('adsEarn_date',getToday());
+ localStorage.setItem('adsEarn_done','[]');
+ localStorage.setItem('adsEarn_total','0');
 }
 let done=JSON.parse(localStorage.getItem('adsEarn_done')||'[]');
 let total=parseInt(localStorage.getItem('adsEarn_total')||'0');
-if(isNaN(total)){ total=0; localStorage.setItem('adsEarn_total','0'); }
-if(!Array.isArray(done)){ done=[]; }
-let cur=0, sec=10, tmr;
-let currentUser=null, userData=JSON.parse(localStorage.getItem('userData')||'{}');
+if(isNaN(total)){total=0;localStorage.setItem('adsEarn_total','0');}
+if(!Array.isArray(done)){done=[];}
+let cur=0,sec=10,tmr,currentUser=null,userData=JSON.parse(localStorage.getItem('userData')||'{}');
 auth.onAuthStateChanged(async u=>{
- if(u){currentUser=u;
-   const doc=await db.collection('users').doc(u.uid).get();
-   if(doc.exists){userData=doc.data(); localStorage.setItem('userData',JSON.stringify(userData));}
-   render();
- } else { location.href='./index.html'; }
+ if(u){currentUser=u;const doc=await db.collection('users').doc(u.uid).get();if(doc.exists){userData=doc.data();localStorage.setItem('userData',JSON.stringify(userData));}render();}else{location.href='./index.html';}
 });
 function render(){
  document.getElementById('totalPts').textContent=total;
  document.getElementById('progressText').textContent=done.length+'/10 done - Resets midnight';
+ document.getElementById('progBar').style.width=(done.length*10)+'%';
  let html='';
  for(let i=0;i<10;i++){
    let isDone=done.includes(i);
@@ -129,56 +120,32 @@ function render(){
 }
 function startAd(i){
  if(done.includes(i)) return;
- if(localStorage.getItem('adsEarn_date')!==getToday()){
-   localStorage.setItem('adsEarn_date', getToday());
-   localStorage.setItem('adsEarn_done','[]');
-   localStorage.setItem('adsEarn_total','0');
-   done=[]; total=0;
- }
- cur=i; sec=10;
+ cur=i;sec=10;
  document.getElementById('modal').style.display='block';
- let btn=document.getElementById('mainBtn');
- btn.disabled=true; btn.style.background='#ccc';
- btn.textContent=`Wait ${sec}s...`;
- document.getElementById('timer').textContent=`00:${sec}`;
+ let btn=document.getElementById('mainBtn');btn.disabled=true;btn.style.background='#ccc';
+ btn.textContent=`Wait ${sec}s...`;document.getElementById('timer').textContent=`00:${sec}`;
  clearInterval(tmr);
- tmr=setInterval(()=>{
-   sec--;
-   document.getElementById('timer').textContent=`00:0${sec}`;
-   btn.textContent=`Wait ${sec}s...`;
-   if(sec<=0){
-     clearInterval(tmr);
-     btn.disabled=false;
-     btn.style.background='#00c853';
-     btn.textContent=`Claim +${points[cur]} pts`;
-   }
+ tmr=setInterval(()=>{sec--;document.getElementById('timer').textContent=`00:0${sec}`;btn.textContent=`Wait ${sec}s...`;
+ if(sec<=0){clearInterval(tmr);btn.disabled=false;btn.style.background='#00c853';btn.textContent=`Claim +${points[cur]} pts`;}
  },1000);
 }
 document.getElementById('mainBtn').onclick=async ()=>{
- if(sec>0) return;
- if(done.includes(cur)) return;
- done.push(cur);
- total+=points[cur];
- localStorage.setItem('adsEarn_done', JSON.stringify(done));
- localStorage.setItem('adsEarn_total', total);
- localStorage.setItem('adsEarn_date', getToday());
+ if(sec>0||done.includes(cur)) return;
+ done.push(cur);total+=points[cur];
+ localStorage.setItem('adsEarn_done',JSON.stringify(done));
+ localStorage.setItem('adsEarn_total',total);
  if(currentUser){
-   try{
-     let newBal=(userData.balance||0)+points[cur];
-     userData.balance=newBal;
-     localStorage.setItem('userData', JSON.stringify(userData));
-     await db.collection('users').doc(currentUser.uid).update({balance:newBal});
-     await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({
-       action:'Ads Earn', points: points[cur], desc:`Watched Ad ${cur+1} +${points[cur]} pts`,
-       timestamp: firebase.firestore.FieldValue.serverTimestamp()
-     });
-     showToast(`✓ +${points[cur]} pts added!`);
-   }catch(e){ showToast(e.message); }
+  try{
+   let newBal=(userData.balance||0)+points[cur];userData.balance=newBal;
+   localStorage.setItem('userData',JSON.stringify(userData));
+   await db.collection('users').doc(currentUser.uid).update({balance:newBal});
+   await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Ads Earn',points:points[cur],desc:`Ad ${cur+1} +${points[cur]} pts`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+   showToast(`✓ +${points[cur]} pts added!`);
+  }catch(e){showToast(e.message);}
  }
- closeModal(); render();
- if(done.length===10) showToast('All 10 done today! Come back tomorrow midnight.');
+ closeModal();render();
 };
-function closeModal(){document.getElementById('modal').style.display='none'; clearInterval(tmr);}
+function closeModal(){document.getElementById('modal').style.display='none';clearInterval(tmr);}
 render();
 </script>
 </body>
