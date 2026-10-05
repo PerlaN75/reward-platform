@@ -22,7 +22,7 @@ body{margin:0;background:#0a1500;color:#fff;padding:0 10px 90px}
 .ad-card{background:#fff;width:100%;max-width:360px;margin:18px auto;border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.3)}
 #adBox{min-height:260px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;flex-direction:column}
 .continue{width:100%;max-width:360px;padding:16px;border:none;border-radius:14px;font-size:18px;font-weight:800;margin-top:18px;color:#fff}
-#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1a2f08;border:2px solid #fbbf24;color:#fff;padding:12px 20px;border-radius:12px;display:none;z-index:10000}
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1a2f08;border:2px solid #fbbf24;color:#fff;padding:12px 20px;border-radius:12px;display:none;z-index:10000;max-width:90%}
 .ad-label{font-size:9px;color:#888;text-align:center;padding:3px;letter-spacing:1px;text-transform:uppercase}
 .carousel{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 0 12px;-webkit-overflow-scrolling:touch}
 .carousel::-webkit-scrollbar{display:none}
@@ -41,7 +41,10 @@ body{margin:0;background:#0a1500;color:#fff;padding:0 10px 90px}
 <div class="badge">Total Today: <b id="totalPts">0</b>/15 pts | 1000pts = $0.5</div>
 <div class="progress"><div class="progress-bar" id="progBar" style="width:0%"></div></div>
 <div style="font-size:10px;color:#a3c585;margin-top:5px" id="progressText">0/10 done - Resets midnight</div>
-<button onclick="location.href='./home.html'" style="margin-top:12px;background:#fff;color:#1a2f08;border:none;padding:8px 22px;border-radius:20px;font-weight:800;font-size:13px">Back Home</button>
+<div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
+<button onclick="location.href='./home.html'" style="background:#fff;color:#1a2f08;border:none;padding:8px 18px;border-radius:20px;font-weight:800;font-size:13px">Back Home</button>
+<button onclick="restoreAllBalance()" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;border:none;padding:8px 18px;border-radius:20px;font-weight:900;font-size:13px">♻️ Restore Balance</button>
+</div>
 </div>
 
 <div style="margin:12px 0 6px;font-size:11px;color:#fbbf24;font-weight:800">🔥 SPONSORED - SWIPE TO EARN MORE →</div>
@@ -53,10 +56,6 @@ body{margin:0;background:#0a1500;color:#fff;padding:0 10px 90px}
   <div class="native-slide"><span class="hot" style="background:linear-gradient(135deg,#2196f3,#00bcd4)">NEW</span><div class="ad-label">Sponsored</div>
     <script async="async" data-cfasync="false" src="https://www.highperformanceformat.com/23e1e60b5d9d8473949f8c3ca250759b/invoke.js"></script>
     <div id="container-23e1e60b5d9d8473949f8c3ca250759b"></div>
-  </div>
-  <div class="ad-slide"><span class="hot">BONUS</span><div class="ad-label" style="color:#fbbf24">Hot Offer</div>
-    <script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script>
-    <script src="https://www.highperformanceformat.com/bf10cacdbe9f50d0c5d66a94e0785f29/invoke.js"></script>
   </div>
 </div>
 
@@ -82,27 +81,17 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',4000);}
-const points=[2,1,2,1,2,1]; // 10 ads = 15 pts total
+const points=[2,1,2,1,2,1]; // FIXED: 10 items = 15 pts
 function getToday(){return new Date().toISOString().split('T')[0];}
-// DO NOT AUTO CLEAR TODAY - keep done if already exists
 if(!localStorage.getItem('adsEarn_date')){
   localStorage.setItem('adsEarn_date',getToday());
   localStorage.setItem('adsEarn_done','[]');
   localStorage.setItem('adsEarn_total','0');
 }
-// If date changed, only clear if user confirms midnight reset - for now keep old done
-if(localStorage.getItem('adsEarn_date')!==getToday()){
-  // Comment this out to prevent auto reset bug - uncomment later if you want daily reset
-  // localStorage.setItem('adsEarn_date',getToday());
-  // localStorage.setItem('adsEarn_done','[]');
-  // localStorage.setItem('adsEarn_total','0');
-}
-
 let done=JSON.parse(localStorage.getItem('adsEarn_done')||'[]');
 let total=parseInt(localStorage.getItem('adsEarn_total')||'0');
 if(!Array.isArray(done)) done=[];
 if(isNaN(total)) total=0;
-// REPAIR: recalc total from done
 let realTotal = done.reduce((s,i)=> s + (points[i]||0), 0);
 if(total < realTotal){ total = realTotal; localStorage.setItem('adsEarn_total', total); }
 
@@ -112,24 +101,7 @@ auth.onAuthStateChanged(async u=>{
  if(u){
    currentUser=u;
    const doc=await db.collection('users').doc(u.uid).get();
-   if(doc.exists){ 
-     userData=doc.data(); 
-     localStorage.setItem('userData',JSON.stringify(userData));
-     // RESTORE BALANCE if Firebase balance is lower than history
-     try{
-       const histSnap = await db.collection('users').doc(u.uid).collection('earnHistory').get();
-       let historyTotal = 0;
-       histSnap.forEach(d=>{ historyTotal += (d.data().points||0); });
-       // If historyTotal > current balance and difference is big, restore
-       if(historyTotal > (userData.balance||0) && historyTotal > 0){
-         // keep max
-         let newBal = Math.max(userData.balance||0, historyTotal);
-         // If you had referral / other earnings, historyTotal should equal balance
-         // For now just show toast
-         showToast(`History: ${historyTotal} pts | Balance: ${userData.balance} pts`);
-       }
-     }catch(e){ console.log(e); }
-   }
+   if(doc.exists){ userData=doc.data(); localStorage.setItem('userData',JSON.stringify(userData)); }
    render();
  }else{ location.href='./index.html'; }
 });
@@ -172,7 +144,7 @@ document.getElementById('mainBtn').onclick=async ()=>{
    localStorage.setItem('userData',JSON.stringify(userData));
    await db.collection('users').doc(currentUser.uid).update({balance:newBal});
    await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Ads Earn',points:points[cur],desc:`Ad ${cur+1} +${points[cur]} pts`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-   showToast(`✓ +${points[cur]} pts added! Total balance: ${newBal}`);
+   showToast(`✓ +${points[cur]} pts added! Balance: ${newBal}`);
   }catch(e){showToast(e.message);}
  }
  closeModal();render();
@@ -180,16 +152,22 @@ document.getElementById('mainBtn').onclick=async ()=>{
 function closeModal(){document.getElementById('modal').style.display='none';clearInterval(tmr);}
 render();
 
-// MANUAL BALANCE RESTORE FUNCTION - run in console if needed
 async function restoreAllBalance(){
- if(!currentUser) return alert('Not logged in');
- const histSnap = await db.collection('users').doc(currentUser.uid).collection('earnHistory').get();
- let sum=0; histSnap.forEach(d=> sum+= (d.data().points||0));
- if(confirm(`Restore balance to ${sum} pts from history? Current: ${userData.balance}`)){
+ if(!currentUser) return showToast('Login first');
+ showToast('Checking history...');
+ try{
+  const histSnap = await db.collection('users').doc(currentUser.uid).collection('earnHistory').get();
+  let sum=0; 
+  histSnap.forEach(d=> sum+= (d.data().points||0));
+  let current = userData.balance||0;
+  if(sum===0){ showToast('No history found'); return; }
+  if(confirm(`Restore balance?\nHistory total: ${sum} pts\nCurrent balance: ${current} pts\n\nClick OK to restore to ${sum}`)){
    await db.collection('users').doc(currentUser.uid).update({balance:sum});
    userData.balance=sum; localStorage.setItem('userData',JSON.stringify(userData));
-   alert('Balance restored to '+sum); location.reload();
- }
+   showToast('✅ Balance restored to '+sum+' pts!'); 
+   setTimeout(()=>location.reload(),1500);
+  }
+ }catch(e){ showToast('Error: '+e.message); }
 }
 </script>
 </body>
