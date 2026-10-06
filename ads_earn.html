@@ -41,12 +41,13 @@ body{margin:0;background:#0a1500;color:#fff;padding:0 10px 90px}
 <div class="badge">Total Today: <b id="totalPts">0</b>/15 pts | 1000pts = $0.5</div>
 <div class="progress"><div class="progress-bar" id="progBar" style="width:0%"></div></div>
 <div style="font-size:10px;color:#a3c585;margin-top:5px" id="progressText">0/10 done - Resets midnight</div>
+<div style="font-size:9px;color:#fbbf24;margin-top:6px">Reward for watching, not clicking. Click only if interested.</div>
 <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
 <button onclick="location.href='./home.html'" style="background:#fff;color:#1a2f08;border:none;padding:8px 24px;border-radius:20px;font-weight:800;font-size:13px">Back Home</button>
 </div>
 </div>
 
-<div style="margin:12px 0 6px;font-size:11px;color:#fbbf24;font-weight:800">🔥 SPONSORED - SWIPE TO EARN MORE →</div>
+<div style="margin:12px 0 6px;font-size:11px;color:#fbbf24;font-weight:800">🔥 SPONSORED - SWIPE →</div>
 <div class="carousel">
   <div class="ad-slide"><span class="hot">HOT 🔥</span><div class="ad-label" style="color:#fbbf24">Advertisement</div>
     <script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script>
@@ -62,11 +63,11 @@ body{margin:0;background:#0a1500;color:#fff;padding:0 10px 90px}
 
 <div id="modal">
 <div class="timer" id="timer">00:10</div>
-<div class="ad-card"><div id="adBox"><div class="ad-label">Advertisement - Wait to claim</div>
+<div class="ad-card"><div id="adBox"><div class="ad-label">Sponsored Content - Reward unlocks after 10s</div>
 <script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script>
 <script src="https://www.highperformanceformat.com/bf10cacdbe9f50d0c5d66a94e0785f29/invoke.js"></script>
-<div style="padding:14px;text-align:left;width:100%"><b>🔥 Your Prize Awaits!</b><br><small>Watch 10s to unlock + points</small></div></div></div>
-<div style="background:#0f2b1d;color:#fff;padding:10px 18px;border-radius:20px;display:inline-block;font-size:13px;margin-top:8px">↓ Click to get the reward!</div>
+<div style="padding:14px;text-align:left;width:100%"><b>🔥 Keep watching!</b><br><small>Your points unlock after 10s of viewing</small></div></div></div>
+<div style="background:#0f2b1d;color:#fff;padding:10px 18px;border-radius:20px;display:inline-block;font-size:13px;margin-top:8px">Reward unlocks below ↓</div>
 <br><button class="continue" id="mainBtn" style="background:#ccc">Wait 10s...</button><br><br><small onclick="closeModal()" style="text-decoration:underline;cursor:pointer">Close</small>
 </div>
 
@@ -80,7 +81,8 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',4000);}
-const points=[2,2,1,2,1,1]; // sum = 15
+// FIXED: 10 ads = 15 pts
+const points=[2,2,1,2,1,2,1,2,1,1];
 function getToday(){return new Date().toISOString().split('T')[0];}
 if(!localStorage.getItem('adsEarn_date') || localStorage.getItem('adsEarn_date') !== getToday()){
   localStorage.setItem('adsEarn_date',getToday());
