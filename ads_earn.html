@@ -81,9 +81,12 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',4000);}
-const points=[2,1,2,1,2,1]; // FIXED: 10 items = 15 pts
+
+// FIXED: 10 ads = exactly 15 points
+const points=[2,2,1,2,1,2,1,2,1,1]; // sum = 15
+
 function getToday(){return new Date().toISOString().split('T')[0];}
-if(!localStorage.getItem('adsEarn_date')){
+if(!localStorage.getItem('adsEarn_date') || localStorage.getItem('adsEarn_date') !== getToday()){
   localStorage.setItem('adsEarn_date',getToday());
   localStorage.setItem('adsEarn_done','[]');
   localStorage.setItem('adsEarn_total','0');
@@ -93,7 +96,7 @@ let total=parseInt(localStorage.getItem('adsEarn_total')||'0');
 if(!Array.isArray(done)) done=[];
 if(isNaN(total)) total=0;
 let realTotal = done.reduce((s,i)=> s + (points[i]||0), 0);
-if(total < realTotal){ total = realTotal; localStorage.setItem('adsEarn_total', total); }
+if(total !== realTotal){ total = realTotal; localStorage.setItem('adsEarn_total', total); }
 
 let cur=0,sec=10,tmr,currentUser=null,userData=JSON.parse(localStorage.getItem('userData')||'{}');
 
@@ -132,7 +135,6 @@ function startAd(i){
 }
 document.getElementById('mainBtn').onclick=async ()=>{
  if(sec>0||done.includes(cur)) return;
- if(done.includes(cur)) return;
  done.push(cur);total+=points[cur];
  localStorage.setItem('adsEarn_done',JSON.stringify(done));
  localStorage.setItem('adsEarn_total',total);
