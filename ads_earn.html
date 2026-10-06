@@ -42,8 +42,7 @@ body{margin:0;background:#0a1500;color:#fff;padding:0 10px 90px}
 <div class="progress"><div class="progress-bar" id="progBar" style="width:0%"></div></div>
 <div style="font-size:10px;color:#a3c585;margin-top:5px" id="progressText">0/10 done - Resets midnight</div>
 <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
-<button onclick="location.href='./home.html'" style="background:#fff;color:#1a2f08;border:none;padding:8px 18px;border-radius:20px;font-weight:800;font-size:13px">Back Home</button>
-<button onclick="restoreAllBalance()" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;border:none;padding:8px 18px;border-radius:20px;font-weight:900;font-size:13px">♻️ Restore Balance</button>
+<button onclick="location.href='./home.html'" style="background:#fff;color:#1a2f08;border:none;padding:8px 24px;border-radius:20px;font-weight:800;font-size:13px">Back Home</button>
 </div>
 </div>
 
@@ -81,10 +80,7 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',4000);}
-
-// FIXED: 10 ads = exactly 15 points
-const points=[2,2,1,2,1,2,1,2,1,1]; // sum = 15
-
+const points=[2,2,1,2,1,1]; // sum = 15
 function getToday(){return new Date().toISOString().split('T')[0];}
 if(!localStorage.getItem('adsEarn_date') || localStorage.getItem('adsEarn_date') !== getToday()){
   localStorage.setItem('adsEarn_date',getToday());
@@ -97,9 +93,7 @@ if(!Array.isArray(done)) done=[];
 if(isNaN(total)) total=0;
 let realTotal = done.reduce((s,i)=> s + (points[i]||0), 0);
 if(total !== realTotal){ total = realTotal; localStorage.setItem('adsEarn_total', total); }
-
 let cur=0,sec=10,tmr,currentUser=null,userData=JSON.parse(localStorage.getItem('userData')||'{}');
-
 auth.onAuthStateChanged(async u=>{
  if(u){
    currentUser=u;
@@ -108,7 +102,6 @@ auth.onAuthStateChanged(async u=>{
    render();
  }else{ location.href='./index.html'; }
 });
-
 function render(){
  document.getElementById('totalPts').textContent=total;
  document.getElementById('progressText').textContent=done.length+'/10 done - Resets midnight';
@@ -153,24 +146,6 @@ document.getElementById('mainBtn').onclick=async ()=>{
 };
 function closeModal(){document.getElementById('modal').style.display='none';clearInterval(tmr);}
 render();
-
-async function restoreAllBalance(){
- if(!currentUser) return showToast('Login first');
- showToast('Checking history...');
- try{
-  const histSnap = await db.collection('users').doc(currentUser.uid).collection('earnHistory').get();
-  let sum=0; 
-  histSnap.forEach(d=> sum+= (d.data().points||0));
-  let current = userData.balance||0;
-  if(sum===0){ showToast('No history found'); return; }
-  if(confirm(`Restore balance?\nHistory total: ${sum} pts\nCurrent balance: ${current} pts\n\nClick OK to restore to ${sum}`)){
-   await db.collection('users').doc(currentUser.uid).update({balance:sum});
-   userData.balance=sum; localStorage.setItem('userData',JSON.stringify(userData));
-   showToast('✅ Balance restored to '+sum+' pts!'); 
-   setTimeout(()=>location.reload(),1500);
-  }
- }catch(e){ showToast('Error: '+e.message); }
-}
 </script>
 </body>
 </html>
