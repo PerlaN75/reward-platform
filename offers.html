@@ -1,26 +1,28 @@
 <!DOCTYPE html>
 <html><head>
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Bonus Offers - Earn More</title>
 <style>
 *{box-sizing:border-box;font-family:system-ui,Arial}
 body{margin:0;background:#0a1500;color:#fff;padding:0 10px 90px}
-.header{position:sticky;top:10px;z-index:100;background:linear-gradient(135deg,#ff5722 0%,#ff9800 100%);border:2px solid #fbbf24;border-radius:24px;padding:16px 14px 18px;margin:8px 2px 12px;text-align:center;box-shadow:0 6px 24px rgba(255,87,34,.35)}
+.header{position:sticky;top:8px;z-index:100;background:linear-gradient(135deg,#1a2f08 0%,#2f4d12 100%);border:2px solid #fbbf24;border-radius:24px;padding:16px 14px 18px 14px;margin:8px 2px 12px 2px;text-align:center;box-shadow:0 6px 24px rgba(251,191,36,.35)}
 .header h2{margin:0;font-size:20px}
-.badge{display:inline-block;background:rgba(0,0,0,.2);border:1px solid #fff;color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;margin-top:8px}
-.progress{height:7px;background:rgba(255,255,255,.25);border-radius:10px;margin:12px 0 0;overflow:hidden}
-.progress-bar{height:100%;background:#fff;border-radius:10px;transition:.5s}
-.task{background:linear-gradient(135deg,#fff 0%,#fff3e0 100%);color:#000;margin:8px 0;padding:12px 12px;border-radius:16px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 12px rgba(0,0,0,.15);border-left:4px solid #ff5722}
+.badge{display:inline-block;background:rgba(251,191,36,.15);border:1px solid #fbbf24;color:#fbbf24;padding:4px 12px;border-radius:20px;font-size:11px;margin-top:8px}
+.progress{height:7px;background:rgba(255,255,255,.15);border-radius:10px;margin:12px 0 0;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);border-radius:10px;transition:.5s}
+.task{background:linear-gradient(135deg,#fff 0%,#f8fff0 100%);color:#000;margin:7px 0;padding:11px 12px;border-radius:16px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 12px rgba(0,0,0,.15);border-left:4px solid #ff5722}
 .icon{width:40px;height:40px;background:linear-gradient(135deg,#ff5722,#ff9800);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .info{flex:1}.info b{font-size:13px}.info span{color:#ff5722;font-size:11px;font-weight:800;background:#ffe0b2;padding:2px 6px;border-radius:8px}
 .btn{padding:8px 16px;border:none;border-radius:22px;font-weight:800;color:#fff;cursor:pointer;min-width:74px;font-size:12px}
 .btn.start{background:linear-gradient(135deg,#ff5722,#ff9800);animation:pulse 2s infinite}
 .btn.done{background:#e8e8e8;color:#888}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,87,34,.6)}70%{box-shadow:0 0 0 8px rgba(255,87,34,0)}100%{box-shadow:0 0 0 0 rgba(255,87,34,0)}}
-#modal{display:none;position:fixed;inset:0;background:#fff3e0;z-index:9999;text-align:center;padding:16px;color:#000;overflow:auto}
+#modal{display:none;position:fixed;inset:0;background:#e8f5e9;z-index:9999;text-align:center;padding:12px;color:#000;overflow:auto}
 .timer{background:linear-gradient(135deg,#ff5722,#e64a19);color:#fff;padding:6px 18px;border-radius:20px;display:inline-block;font-weight:800;margin-top:12px}
+.ad-card{background:#fff;width:100%;max-width:360px;margin:18px auto;border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.3);padding:18px}
 .continue{width:100%;max-width:360px;padding:16px;border:none;border-radius:14px;font-size:18px;font-weight:800;margin-top:18px;color:#fff}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1a2f08;border:2px solid #fbbf24;color:#fff;padding:12px 20px;border-radius:12px;display:none;z-index:10000;max-width:90%}
+.ad-label{font-size:9px;color:#888;text-align:center;padding:3px;letter-spacing:1px;text-transform:uppercase}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -29,30 +31,31 @@ body{margin:0;background:#0a1500;color:#fff;padding:0 10px 90px}
 <div id="toast"></div>
 <div class="header">
 <h2>🔥 Bonus Offers</h2>
-<div class="badge">Total Today: <b id="totalPts">0</b>/25 pts</div>
+<div class="badge">Total Today: <b id="totalPts">0</b>/10 pts</div>
 <div class="progress"><div class="progress-bar" id="progBar" style="width:0%"></div></div>
-<div style="font-size:10px;color:#fff;margin-top:5px" id="progressText">0/5 done - Resets midnight</div>
-<div style="font-size:9px;color:#fff;margin-top:6px;opacity:.9">Rewards for watching. Open others for own interest.</div>
+<div style="font-size:10px;color:#a3c585;margin-top:5px" id="progressText">0/5 done - Resets midnight</div>
+<div style="font-size:9px;color:#fbbf24;margin-top:6px">Rewards for watching. Open others for own interest.</div>
 <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
-<button onclick="location.href='./home.html'" style="background:#fff;color:#e64a19;border:none;padding:8px 24px;border-radius:20px;font-weight:800;font-size:13px">Back Home</button>
+<button onclick="location.href='./home.html'" style="background:#fff;color:#1a2f08;border:none;padding:8px 24px;border-radius:20px;font-weight:800;font-size:13px">Back Home</button>
 </div>
 </div>
 
-<div style="margin:12px 0 6px;font-size:11px;color:#ff9800;font-weight:800">💰 HIGH PAY - Open for own interest →</div>
 <div id="list"></div>
 
 <div id="modal">
 <div class="timer" id="timer">00:10</div>
-<h3 style="margin-top:20px">Offer Opened in New Tab!</h3>
-<p style="font-size:13px;color:#555">Check the new tab, explore the offer.<br>Your reward unlocks after 10s of viewing.</p>
-<div style="background:#fff;padding:16px;border-radius:16px;max-width:360px;margin:16px auto;border:2px dashed #ff9800">
-<small style="color:#888">ADSTERRA SMARTLINK</small><br>
-<b id="offerName">Bonus Offer</b><br>
-<small id="offerDesc">High profit offer - Rwanda</small>
+<div class="ad-card">
+<div class="ad-label">Sponsored Offer - Opens in New Tab</div>
+<h3 id="offerName">🔥 Hot Offer</h3>
+<p id="offerDesc" style="font-size:12px;color:#555">This offer opened in new tab. Explore it for 10 seconds to unlock reward. Any action there is voluntary for your own interest.</p>
 </div>
-<button class="continue" id="mainBtn" style="background:#ccc">Wait 10s...</button><br><br>
-<small onclick="closeModal()" style="text-decoration:underline;cursor:pointer">Close</small>
-<p style="font-size:10px;color:#888;margin-top:20px">You earn points for time spent. Any action on offer page is voluntary for your own interest.</p>
+<div style="background:#0f2b1d;color:#fff;padding:10px 18px;border-radius:20px;display:inline-block;font-size:13px;margin-top:8px">Reward unlocks below ↓</div>
+<br><button class="continue" id="mainBtn" style="background:#ccc">Wait 10s...</button><br><br><small onclick="closeModal()" style="text-decoration:underline;cursor:pointer">Close</small>
+</div>
+
+<div style="position:fixed;bottom:0;left:0;width:100%;display:flex;justify-content:center;background:white;z-index:9999;padding:5px;box-shadow:0 -2px 15px rgba(0,0,0,.4)">
+<script>atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script>
+<script src="https://www.highperformanceformat.com/fe25c5bd01f4bc5e60243e36cd83277c/invoke.js"></script>
 </div>
 
 <script>
@@ -60,9 +63,7 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',4000);}
-function getToday(){return new Date().toISOString().split('T')[0];}
 
-// === REPLACE THESE WITH YOUR REAL SMARTLINKS FROM ADSTERRA ===
 const smartlinks=[
 "https://www.highperformanceformat.com/YOUR_SMARTLINK_1",
 "https://www.highperformanceformat.com/YOUR_SMARTLINK_2",
@@ -70,9 +71,10 @@ const smartlinks=[
 "https://www.highperformanceformat.com/YOUR_SMARTLINK_4",
 "https://www.highperformanceformat.com/YOUR_SMARTLINK_5"
 ];
-const titles=["🔥 Hot Offer RW","💰 Big Bonus","📱 Install & Earn","🎮 Play & Win","⭐ Special Deal"];
-const points=[5,5,5,5,5];
+const titles=["Hot Offer RW","Big Bonus","App Install","Play & Win","Special Deal"];
+const points=[2,2,2,2,2];
 
+function getToday(){return new Date().toISOString().split('T')[0];}
 let done=[], total=0, cur=0, sec=10, tmr, currentUser=null, userData=JSON.parse(localStorage.getItem('userData')||'{}');
 
 auth.onAuthStateChanged(async u=>{
@@ -81,7 +83,7 @@ auth.onAuthStateChanged(async u=>{
  try{
    const userRef=db.collection('users').doc(u.uid);
    const doc=await userRef.get();
-   if(doc.exists){ userData=doc.data(); localStorage.setItem('userData',JSON.stringify(userData));}
+   if(doc.exists){ userData=doc.data(); localStorage.setItem('userData',JSON.stringify(userData)); }
    const today=getToday();
    const fbDate=userData.offers_date||'';
    let fbDone=userData.offers_done||[];
@@ -100,7 +102,7 @@ function render(){
  let html='';
  for(let i=0;i<5;i++){
    let isDone=done.includes(i);
-   html+=`<div class="task"><div class="icon">💎</div><div class="info"><b>${titles[i]}</b><br><span>+${points[i]} pts</span></div><button class="btn ${isDone?'done':'start'}" onclick="startOffer(${i})">${isDone?'Done ✓':'Open'}</button></div>`;
+   html+=`<div class="task"><div class="icon">💎</div><div class="info"><b>Offer ${i+1}: ${titles[i]}</b><br><span>+${points[i]} pts</span></div><button class="btn ${isDone?'done':'start'}" onclick="startOffer(${i})">${isDone?'Done ✓':'Open'}</button></div>`;
  }
  document.getElementById('list').innerHTML=html;
 }
@@ -111,8 +113,7 @@ function startOffer(i){
  document.getElementById('modal').style.display='block';
  let btn=document.getElementById('mainBtn'); btn.disabled=true; btn.style.background='#ccc'; btn.textContent=`Wait ${sec}s...`;
  document.getElementById('timer').textContent=`00:${sec}`;
- // Open smartlink in new tab - VOLUNTARY
- if(smartlinks[i].includes('YOUR_SMARTLINK')){ showToast('Replace YOUR_SMARTLINK with real link!'); }
+ if(smartlinks[i].includes('YOUR_SMARTLINK')){ showToast('Paste your real Smartlink first!'); }
  else { window.open(smartlinks[i],'_blank'); }
  clearInterval(tmr);
  tmr=setInterval(()=>{sec--; document.getElementById('timer').textContent=`00:0${sec}`; btn.textContent=`Wait ${sec}s...`;
@@ -128,7 +129,7 @@ document.getElementById('mainBtn').onclick=async ()=>{
    userData.balance=newBal; userData.offers_date=getToday(); userData.offers_done=done; userData.offers_total=total;
    localStorage.setItem('userData',JSON.stringify(userData));
    await db.collection('users').doc(currentUser.uid).set({balance:newBal,offers_date:getToday(),offers_done:done,offers_total:total},{merge:true});
-   await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Bonus Offer',points:points[cur],desc:`${titles[cur]} +${points[cur]} pts`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+   await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Bonus Offer',points:points[cur],desc:`Offer ${cur+1} ${titles[cur]} +${points[cur]} pts`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
    showToast(`✓ +${points[cur]} pts added!`);
   }catch(e){showToast(e.message);}
  }
