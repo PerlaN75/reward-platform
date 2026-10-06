@@ -83,26 +83,40 @@ const auth=firebase.auth(),db=firebase.firestore();
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',4000);}
 const points=[2,2,1,2,1,2,1,2,1,1];
 function getToday(){return new Date().toISOString().split('T')[0];}
-if(!localStorage.getItem('adsEarn_date') || localStorage.getItem('adsEarn_date') !== getToday()){
-  localStorage.setItem('adsEarn_date',getToday());
-  localStorage.setItem('adsEarn_done','[]');
-  localStorage.setItem('adsEarn_total','0');
-}
-let done=JSON.parse(localStorage.getItem('adsEarn_done')||'[]');
-let total=parseInt(localStorage.getItem('adsEarn_total')||'0');
-if(!Array.isArray(done)) done=[];
-if(isNaN(total)) total=0;
-let realTotal = done.reduce((s,i)=> s + (points[i]||0), 0);
-if(total !== realTotal){ total = realTotal; localStorage.setItem('adsEarn_total', total); }
-let cur=0,sec=10,tmr,currentUser=null,userData=JSON.parse(localStorage.getItem('userData')||'{}');
+let done=[], total=0, cur=0, sec=10, tmr, currentUser=null, userData=JSON.parse(localStorage.getItem('userData')||'{}');
+
 auth.onAuthStateChanged(async u=>{
- if(u){
-   currentUser=u;
-   const doc=await db.collection('users').doc(u.uid).get();
+ if(!u){ location.href='./index.html'; return; }
+ currentUser=u;
+ try{
+   const userRef = db.collection('users').doc(u.uid);
+   const doc = await userRef.get();
    if(doc.exists){ userData=doc.data(); localStorage.setItem('userData',JSON.stringify(userData)); }
+
+   const today = getToday();
+   const fbDate = userData.adsEarn_date || '';
+   let fbDone = userData.adsEarn_done || [];
+   if(!Array.isArray(fbDone)) fbDone=[];
+
+   if(fbDate === today){
+     done = fbDone;
+   }else{
+     done = [];
+     await userRef.update({ adsEarn_date: today, adsEarn_done: [], adsEarn_total: 0 }).catch(async ()=>{
+       await userRef.set({ adsEarn_date: today, adsEarn_done: [], adsEarn_total: 0 }, {merge:true});
+     });
+     userData.adsEarn_date = today;
+     userData.adsEarn_done = [];
+     userData.adsEarn_total = 0;
+   }
+   total = done.reduce((s,i)=> s + (points[i]||0), 0);
+   localStorage.setItem('adsEarn_date',today);
+   localStorage.setItem('adsEarn_done',JSON.stringify(done));
+   localStorage.setItem('adsEarn_total',total);
    render();
- }else{ location.href='./index.html'; }
+ }catch(e){ console.log(e); render(); }
 });
+
 function render(){
  document.getElementById('totalPts').textContent=total;
  document.getElementById('progressText').textContent=done.length+'/10 done - Resets midnight';
@@ -129,7 +143,7 @@ function startAd(i){
 }
 document.getElementById('mainBtn').onclick=async ()=>{
  if(sec>0||done.includes(cur)) return;
- done.push(cur);total+=points[cur];
+ done.push(cur); total+=points[cur];
  localStorage.setItem('adsEarn_done',JSON.stringify(done));
  localStorage.setItem('adsEarn_total',total);
  if(currentUser){
@@ -137,8 +151,16 @@ document.getElementById('mainBtn').onclick=async ()=>{
    let currentBal = userData.balance || 0;
    let newBal = currentBal + points[cur];
    userData.balance=newBal;
+   userData.adsEarn_date=getToday();
+   userData.adsEarn_done=done;
+   userData.adsEarn_total=total;
    localStorage.setItem('userData',JSON.stringify(userData));
-   await db.collection('users').doc(currentUser.uid).update({balance:newBal});
+   await db.collection('users').doc(currentUser.uid).set({
+     balance:newBal,
+     adsEarn_date:getToday(),
+     adsEarn_done:done,
+     adsEarn_total:total
+   },{merge:true});
    await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Ads Earn',points:points[cur],desc:`Ad ${cur+1} +${points[cur]} pts`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
    showToast(`✓ +${points[cur]} pts added! Balance: ${newBal}`);
   }catch(e){showToast(e.message);}
