@@ -54,6 +54,7 @@ body{background:#0f1508;min-height:100vh;padding:20px;color:#fff}
 <button class="menu-btn" onclick="location.href='./bonus.html'"><span class="emoji">🎁</span>Bonus</button>
 <button class="menu-btn" onclick="location.href='./more.html'"><span class="emoji">⚙️</span>More</button>
 <button class="menu-btn" onclick="location.href='./ads_earn.html'"><span class="emoji">📢</span>Ads Earn</button>
+<button class="menu-btn" onclick="location.href='./offers.html'"><span class="emoji">💎</span>Bonus Offers</button>
 </div>
 <button class="logout-btn" onclick="logout()">Logout</button>
 </div>
@@ -121,7 +122,6 @@ window.convertPoints=async function(){
   userData.balance-=pts;
   userData.usdtBalance=(userData.usdtBalance||0)+usdt;
   await db.collection('users').doc(currentUser.uid).update({balance:userData.balance, usdtBalance:userData.usdtBalance});
-  // SAVE TO HISTORY SO IT SHOWS IN MORE.HTML
   await db.collection('users').doc(currentUser.uid).collection('convertHistory').add({
     points: pts,
     usdt: usdt,
