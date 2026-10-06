@@ -38,7 +38,7 @@ body{margin:0;background:#0a1500;color:#fff;padding:0 10px 90px}
 <div id="toast"></div>
 <div class="header">
 <h2>📢 Ads Earn</h2>
-<div class="badge">Total Today: <b id="totalPts">0</b>/15 pts | 1000pts = $0.5</div>
+<div class="badge">Total Today: <b id="totalPts">0</b>/15 pts</div>
 <div class="progress"><div class="progress-bar" id="progBar" style="width:0%"></div></div>
 <div style="font-size:10px;color:#a3c585;margin-top:5px" id="progressText">0/10 done - Resets midnight</div>
 <div style="font-size:9px;color:#fbbf24;margin-top:6px">Reward for watching, not clicking. Click only if interested.</div>
@@ -81,7 +81,6 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',4000);}
-// FIXED: 10 ads = 15 pts
 const points=[2,2,1,2,1,2,1,2,1,1];
 function getToday(){return new Date().toISOString().split('T')[0];}
 if(!localStorage.getItem('adsEarn_date') || localStorage.getItem('adsEarn_date') !== getToday()){
