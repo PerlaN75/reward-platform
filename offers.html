@@ -4,7 +4,7 @@
 <title>Bonus Offers - Earn More</title>
 <style>
 *{box-sizing:border-box;font-family:system-ui,Arial}
-body{margin:0;background:#0a1500;color:#fff;padding:0 10px 90px}
+body{margin:0;background:#0a1500;color:#fff;padding:0 10px 30px}
 .header{position:sticky;top:8px;z-index:100;background:linear-gradient(135deg,#1a2f08 0%,#2f4d12 100%);border:2px solid #fbbf24;border-radius:24px;padding:16px 14px 18px 14px;margin:8px 2px 12px 2px;text-align:center;box-shadow:0 6px 24px rgba(251,191,36,.35)}
 .header h2{margin:0;font-size:20px}
 .badge{display:inline-block;background:rgba(251,191,36,.15);border:1px solid #fbbf24;color:#fbbf24;padding:4px 12px;border-radius:20px;font-size:11px;margin-top:8px}
@@ -53,26 +53,22 @@ body{margin:0;background:#0a1500;color:#fff;padding:0 10px 90px}
 <br><button class="continue" id="mainBtn" style="background:#ccc">Wait 10s...</button><br><br><small onclick="closeModal()" style="text-decoration:underline;cursor:pointer">Close</small>
 </div>
 
-<div style="position:fixed;bottom:0;left:0;width:100%;display:flex;justify-content:center;background:white;z-index:9999;padding:5px;box-shadow:0 -2px 15px rgba(0,0,0,.4)">
-<script>atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script>
-<script src="https://www.highperformanceformat.com/fe25c5bd01f4bc5e60243e36cd83277c/invoke.js"></script>
-</div>
-
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',4000);}
 
+// FIXED - REAL PAYING SMARTLINK - NO MORE $0
 const smartlinks=[
-"https://www.highperformanceformat.com/YOUR_SMARTLINK_1",
-"https://www.highperformanceformat.com/YOUR_SMARTLINK_2",
-"https://www.highperformanceformat.com/YOUR_SMARTLINK_3",
-"https://www.highperformanceformat.com/YOUR_SMARTLINK_4",
-"https://www.highperformanceformat.com/YOUR_SMARTLINK_5"
+"https://asiafilm.org/4/fea14e9f802d182828ceef74e57a3a5b",
+"https://asiafilm.org/4/fea14e9f802d182828ceef74e57a3a5b",
+"https://asiafilm.org/4/fea14e9f802d182828ceef74e57a3a5b",
+"https://asiafilm.org/4/fea14e9f802d182828ceef74e57a3a5b",
+"https://asiafilm.org/4/fea14e9f802d182828ceef74e57a3a5b"
 ];
 const titles=["Hot Offer RW","Big Bonus","App Install","Play & Win","Special Deal"];
-const points=[2,2,2,2,2];
+const points=[2][2][2][2][2];
 
 function getToday(){return new Date().toISOString().split('T')[0];}
 let done=[], total=0, cur=0, sec=10, tmr, currentUser=null, userData=JSON.parse(localStorage.getItem('userData')||'{}');
@@ -113,8 +109,7 @@ function startOffer(i){
  document.getElementById('modal').style.display='block';
  let btn=document.getElementById('mainBtn'); btn.disabled=true; btn.style.background='#ccc'; btn.textContent=`Wait ${sec}s...`;
  document.getElementById('timer').textContent=`00:${sec}`;
- if(smartlinks[i].includes('YOUR_SMARTLINK')){ showToast('Paste your real Smartlink first!'); }
- else { window.open(smartlinks[i],'_blank'); }
+ window.open(smartlinks[i],'_blank');
  clearInterval(tmr);
  tmr=setInterval(()=>{sec--; document.getElementById('timer').textContent=`00:0${sec}`; btn.textContent=`Wait ${sec}s...`;
  if(sec<=0){clearInterval(tmr); btn.disabled=false; btn.style.background='#ff5722'; btn.textContent=`Claim +${points[cur]} pts`;}
