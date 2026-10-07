@@ -13,15 +13,21 @@ h2{margin:8px 0 6px 0;color:#FFD700;font-size:20px}
 .fill{height:100%;background:#FFD700;width:0%;transition:0.3s}
 .offer-btn{display:block;width:100%;background:linear-gradient(#FFD700,#FFA500);color:#000;font-weight:bold;padding:12px;border-radius:10px;margin:8px 0;text-decoration:none;border:none;font-size:14px;cursor:pointer;box-sizing:border-box}
 .offer-btn.done{background:#333;color:#888}
+.offer-btn.waiting{background:#666;color:#fff}
 #countText{font-size:12px;color:#8f8;margin:4px 0}
 .note{color:#FFD700;font-size:11px;margin-top:12px;line-height:1.3}
 .back{background:#fff;color:#000;padding:10px 24px;border-radius:20px;display:inline-block;margin-top:14px;text-decoration:none;font-weight:bold;font-size:14px}
+.modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.9);justify-content:center;align-items:center;padding:15px}
+.modal-content{background:#1a2e1a;border:2px solid #FFD700;border-radius:18px;padding:18px;width:100%;max-width:320px;text-align:center}
+.timer{font-size:42px;color:#FFD700;font-weight:bold;margin:10px 0}
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1a2e1a;border:2px solid #FFD700;color:#fff;padding:12px 18px;border-radius:10px;font-weight:bold;z-index:9999;display:none}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
+<div id="toast"></div>
 <div class="card">
 <h2>🔥 Bonus Offers</h2>
 <div class="badge" id="ptsBadge">Total Today: 0/10 pts</div>
@@ -29,8 +35,16 @@ h2{margin:8px 0 6px 0;color:#FFD700;font-size:20px}
 <div id="countText">0/5 done - Resets midnight</div>
 <div id="offersList" style="margin-top:10px"></div>
 <a class="back" href="home.html">Back Home</a>
-<div class="note">Rewards for watching. Open offers for own interest.<br>Points added automatically to your balance.</div>
+<div class="note">Rewards for watching. Open offers for own interest.<br>Points added after 12 sec verification.</div>
 </div>
+
+<div id="timerModal" class="modal"><div class="modal-content">
+<div style="font-size:30px">⏳</div>
+<h3 style="color:#FFD700">Verifying...</h3>
+<p style="font-size:12px;color:#aaa">Keep offer tab open for 12 seconds</p>
+<div class="timer" id="timerNum">12</div>
+<div style="font-size:11px;color:#8f8">Do not close this window</div>
+</div></div>
 
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
@@ -38,70 +52,98 @@ firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore();
 
 const DIRECT_LINK = "https://asiafilm.org/4/fea14e9f802d182828ceef74e57a3a5b";
-const LIMIT = 5; 
+const LIMIT = 5;
 const PER_OFFER = 2;
+const WAIT_SEC = 12;
 
-const todayKey = new Date().toDateString();
-let stat = JSON.parse(localStorage.getItem("bonus_offers")||"{}");
-if(stat.date !== todayKey){ stat = {date:todayKey,count:0,pts:0}; localStorage.setItem("bonus_offers", JSON.stringify(stat)); }
+function getToday(){return new Date().toISOString().split('T')[0];}
+function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',2500);}
 
-let currentUser=null, userData={};
-
-function save(){ localStorage.setItem("bonus_offers", JSON.stringify(stat)); }
+let currentUser=null, userData={}, stat={date:getToday(),count:0,pts:0}, curOffer=0, sec=WAIT_SEC, timerInt=null;
 
 function render(){
   document.getElementById("ptsBadge").innerText = `Total Today: ${stat.pts}/10 pts`;
   document.getElementById("countText").innerText = `${stat.count}/${LIMIT} done - Resets midnight`;
   document.getElementById("fill").style.width = (stat.count/LIMIT*100)+"%";
-  let html=""; 
+  let html="";
   for(let i=1;i<=LIMIT;i++){
     let isDone = i <= stat.count;
     html += `<button class="offer-btn ${isDone?'done':''}" onclick="clickOffer(${i})" ${isDone?'disabled':''}>${isDone?'✅ Done':'🔥 Offer '+i+' - +'+PER_OFFER+' pts'}</button>`;
-  } 
+  }
   document.getElementById("offersList").innerHTML = html;
 }
 
-async function clickOffer(n){
-  if(stat.count >= LIMIT){ alert("Daily limit reached. Come tomorrow!"); return; }
-  
-  // Open Adsterra DirectLink - this is your money
+function clickOffer(n){
+  if(stat.count >= LIMIT){ showToast("Daily limit reached!"); return; }
+  if(document.getElementById('timerModal').style.display==='flex') return;
+  curOffer=n;
   window.open(DIRECT_LINK, "_blank");
+  // Start 12 sec timer
+  sec=WAIT_SEC;
+  document.getElementById('timerNum').innerText=sec;
+  document.getElementById('timerModal').style.display='flex';
+  timerInt=setInterval(async ()=>{
+    sec--;
+    document.getElementById('timerNum').innerText=sec;
+    if(sec<=0){
+      clearInterval(timerInt);
+      document.getElementById('timerModal').style.display='none';
+      await rewardOffer();
+    }
+  },1000);
+}
 
-  // Update local counter - this is DAILY and will reset if user clears browser
-  stat.count++; 
-  stat.pts += PER_OFFER; 
-  save(); 
+async function rewardOffer(){
+  if(stat.count >= LIMIT) return;
+  stat.count++; stat.pts += PER_OFFER;
+  // Save locally
+  localStorage.setItem("bonus_offers", JSON.stringify(stat));
   render();
-
-  // Add points to Firebase so balance stays even after clear
+  // Save to Firebase - this blocks redo after clear
   if(currentUser){
     try{
       let newBal = (userData.balance||0) + PER_OFFER;
-      userData.balance = newBal;
+      userData.balance=newBal;
+      userData.bonus_offers_date=getToday();
+      userData.bonus_offers_count=stat.count;
+      userData.bonus_offers_pts=stat.pts;
       localStorage.setItem('userData', JSON.stringify(userData));
-      await db.collection('users').doc(currentUser.uid).update({balance:newBal});
-      await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({
-        action:'Bonus Offer', points:PER_OFFER, desc:`Offer ${n} +${PER_OFFER} pts`, timestamp:firebase.firestore.FieldValue.serverTimestamp()
+      await db.collection('users').doc(currentUser.uid).update({
+        balance:newBal,
+        bonus_offers_date:getToday(),
+        bonus_offers_count:stat.count,
+        bonus_offers_pts:stat.pts
       });
-    }catch(e){ console.log(e); }
-  } else {
-    // fallback for old users without login - keep old local method
-    let mainPts = parseInt(localStorage.getItem("points")||"0");
-    mainPts += PER_OFFER; localStorage.setItem("points", mainPts);
+      await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({
+        action:'Bonus Offer', points:PER_OFFER, desc:`Offer ${curOffer} +${PER_OFFER} pts`, timestamp:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      showToast(`✓ +${PER_OFFER} pts added!`);
+    }catch(e){ showToast(e.message); }
   }
-
-  setTimeout(()=>{ alert("+"+PER_OFFER+" pts added!"); }, 500);
 }
 
 auth.onAuthStateChanged(async u=>{
-  if(u){
-    currentUser=u;
-    const doc=await db.collection('users').doc(u.uid).get();
-    if(doc.exists){ userData=doc.data(); }
+  if(!u){ location.href='./index.html'; return; }
+  currentUser=u;
+  const doc=await db.collection('users').doc(u.uid).get();
+  if(doc.exists){
+    userData=doc.data();
+    localStorage.setItem('userData', JSON.stringify(userData));
+    // FIREBASE IS TRUTH: if same day, use Firebase count
+    const fbDate=userData.bonus_offers_date||'';
+    if(fbDate===getToday()){
+      stat.count=userData.bonus_offers_count||0;
+      stat.pts=userData.bonus_offers_pts||0;
+      stat.date=getToday();
+    } else {
+      // new day - reset in Firebase
+      stat={date:getToday(),count:0,pts:0};
+      await db.collection('users').doc(u.uid).update({bonus_offers_date:getToday(),bonus_offers_count:0,bonus_offers_pts:0});
+    }
+    localStorage.setItem("bonus_offers", JSON.stringify(stat));
   }
   render();
 });
-
 render();
 </script>
 </body>
