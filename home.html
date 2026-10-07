@@ -4,16 +4,16 @@
 <style>*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
 body{background:#0f1508;min-height:100vh;padding:20px 20px 100px 20px;color:#fff;overflow-y:auto}
 .container{max-width:500px;margin:0 auto}
-.header{text-align:center;margin:40px 0 30px}
-.header h2{font-size:34px}.header h2 span{color:#fbbf24}
-.balance-card{background:#2f3e1a;border:2px solid #fbbf24;border-radius:20px;padding:18px 16px;text-align:center;margin-bottom:20px}
-.balance-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
-.balance-side{flex:1;text-align:center;padding:6px 8px}
-.balance-divider{width:1px;height:52px;background:rgba(251,191,36,0.35)}
-.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
-.menu-btn{background:linear-gradient(180deg,#fff,#e8e8e8);color:#000;border:none;border-radius:14px;padding:10px 6px;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 #bbb;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:74px}
+.header{text-align:center;margin:18px 0 14px}
+.header h2{font-size:26px}.header h2 span{color:#fbbf24}
+.balance-card{background:#2f3e1a;border:2px solid #fbbf24;border-radius:18px;padding:10px 12px;text-align:center;margin-bottom:14px}
+.balance-row{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.balance-side{flex:1;text-align:center;padding:4px 6px}
+.balance-divider{width:1px;height:42px;background:rgba(251,191,36,0.35)}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}
+.menu-btn{background:linear-gradient(180deg,#fff,#e8e8e8);color:#000;border:none;border-radius:12px;padding:6px 4px;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 3px 0 #bbb;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:60px}
 .menu-btn.emoji{font-size:22px;display:block;line-height:1}
-.logout-btn{width:45%;height:42px;margin:20px auto 10px;display:block;background:#f59e0b;color:#000;border:none;border-radius:999px;font-weight:bold;cursor:pointer}
+.logout-btn{width:42%;height:38px;margin:16px auto 10px;display:block;background:#f59e0b;color:#000;border:none;border-radius:999px;font-weight:bold;cursor:pointer;font-size:13px}
 .modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.85);justify-content:center;align-items:center;padding:15px}
 .modal-content{background:#2f3e1a;border:3px solid #fbbf24;border-radius:20px;padding:18px;width:100%;max-width:420px;color:#fff;max-height:95vh;overflow-y:auto}
 #customToast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:14px 22px;border-radius:12px;font-weight:bold;z-index:99999;display:none;max-width:90%;text-align:center}
@@ -31,18 +31,18 @@ body{background:#0f1508;min-height:100vh;padding:20px 20px 100px 20px;color:#fff
 <div class="container">
 <div class="header"><h2><span style="color:white">Welcome, </span><span id="headerText" style="color:#fbbf24"></span> 👋</h2></div>
 <div class="balance-card">
-<div style="color:#ccc;font-size:13px;letter-spacing:0.5px">Your Balance</div>
+<div style="color:#ccc;font-size:12px;letter-spacing:0.5px">Your Balance</div>
 <div class="balance-row">
   <div class="balance-side">
-    <div style="font-size:11px;color:#aaa;margin-bottom:4px">⭐ POINTS</div>
+    <div style="font-size:11px;color:#aaa;margin-bottom:2px">⭐ POINTS</div>
     <div id="balance" style="font-size:24px;color:#fbbf24;font-weight:bold;line-height:1.2">0 pts</div>
-    <div id="usdBalance" style="color:#888;font-size:11px;margin-top:2px">≈ $0.00 USD</div>
+    <div id="usdBalance" style="color:#888;font-size:11px;margin-top:1px">≈ $0.00 USD</div>
   </div>
   <div class="balance-divider"></div>
   <div class="balance-side">
-    <div style="font-size:11px;color:#aaa;margin-bottom:4px">💵 USDT</div>
+    <div style="font-size:11px;color:#aaa;margin-bottom:2px">💵 USDT</div>
     <div id="usdtBalanceDisplay" style="font-size:22px;color:#22c55e;font-weight:bold;line-height:1.2">0.0000 USDT</div>
-    <div style="color:#6b8f5a;font-size:11px;margin-top:2px">Available to withdraw</div>
+    <div style="color:#6b8f5a;font-size:10px;margin-top:1px">Available to withdraw</div>
   </div>
 </div>
 </div>
@@ -119,22 +119,9 @@ window.convertPoints=async function(){
   userData.balance-=pts;
   userData.usdtBalance=(userData.usdtBalance||0)+usdt;
   await db.collection('users').doc(currentUser.uid).update({balance:userData.balance, usdtBalance:userData.usdtBalance});
-  await db.collection('users').doc(currentUser.uid).collection('convertHistory').add({
-    points: pts,
-    usdt: usdt,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  });
-  await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({
-    action: 'Converted to USDT',
-    points: -pts,
-    desc: `${pts} pts → ${usdt.toFixed(4)} USDT`,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  });
-  loadData(userData);
-  localStorage.setItem('userData',JSON.stringify(userData));
-  showToast(`✓ ${pts} pts → ${usdt.toFixed(4)} USDT`);
-  document.getElementById('convertAmount').value='';
-  calcConvert();
+  await db.collection('users').doc(currentUser.uid).collection('convertHistory').add({points: pts,usdt: usdt,timestamp: firebase.firestore.FieldValue.serverTimestamp()});
+  await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action: 'Converted to USDT',points: -pts,desc: `${pts} pts → ${usdt.toFixed(4)} USDT`,timestamp: firebase.firestore.FieldValue.serverTimestamp()});
+  loadData(userData);localStorage.setItem('userData',JSON.stringify(userData));showToast(`✓ ${pts} pts → ${usdt.toFixed(4)} USDT`);document.getElementById('convertAmount').value='';calcConvert();
 }
 window.requestWithdraw=async function(){
   const usdtAmount=parseFloat(document.getElementById('withdrawAmount').value);
@@ -145,21 +132,8 @@ window.requestWithdraw=async function(){
   if(usdtAmount>(userData.usdtBalance||0)) return showToast('Not enough USDT. Convert points first');
   userData.usdtBalance-=usdtAmount;
   await db.collection('users').doc(currentUser.uid).update({usdtBalance:userData.usdtBalance});
-  await db.collection('withdrawals').add({
-    uid:currentUser.uid,
-    username:userData.username,
-    email:userData.email,
-    method:method,
-    crypto:'USDT',
-    payId:payId,
-    amount:usdtAmount,
-    status:'pending',
-    createdAt:firebase.firestore.FieldValue.serverTimestamp()
-  });
-  loadData(userData);
-  localStorage.setItem('userData',JSON.stringify(userData));
-  showToast(`Withdraw ${usdtAmount.toFixed(2)} USDT requested!`);
-  closeWallet();
+  await db.collection('withdrawals').add({uid:currentUser.uid,username:userData.username,email:userData.email,method:method,crypto:'USDT',payId:payId,amount:usdtAmount,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+  loadData(userData);localStorage.setItem('userData',JSON.stringify(userData));showToast(`Withdraw ${usdtAmount.toFixed(2)} USDT requested!`);closeWallet();
 }
 window.openCheckin=function(){document.getElementById('checkinModal').style.display='flex';checkClaimStatus();}
 window.closeCheckin=function(){document.getElementById('checkinModal').style.display='none';}
@@ -169,16 +143,10 @@ window.claimDaily=async function(){
   if(isClaimingDaily)return;isClaimingDaily=true;
   const today=getToday();
   if(userData.lastCheckin===today){showToast('Already claimed today'); isClaimingDaily=false; return;}
-  userData.balance=(userData.balance||0)+5;
-  userData.lastCheckin=today;
-  localStorage.setItem('userData',JSON.stringify(userData));
+  userData.balance=(userData.balance||0)+5;userData.lastCheckin=today;localStorage.setItem('userData',JSON.stringify(userData));
   await db.collection('users').doc(currentUser.uid).update({balance:userData.balance,lastCheckin:today});
-  await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({
-    action:'Daily Checkin', points:5, desc:'Daily Bonus', timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  });
-  loadData(userData);
-  document.getElementById('successMsg').style.display='block';
-  checkClaimStatus();isClaimingDaily=false;showToast('✓ 5 Points Added!');
+  await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Daily Checkin', points:5, desc:'Daily Bonus', timestamp: firebase.firestore.FieldValue.serverTimestamp()});
+  loadData(userData);document.getElementById('successMsg').style.display='block';checkClaimStatus();isClaimingDaily=false;showToast('✓ 5 Points Added!');
 }
 db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maintenanceOverlay').style.display='flex';}else{document.getElementById('maintenanceOverlay').style.display='none';}});
 auth.onAuthStateChanged(async u=>{if(u){currentUser=u;const doc=await db.collection('users').doc(u.uid).get();if(doc.exists){const data=doc.data();localStorage.setItem('userData',JSON.stringify(data));loadData(data);}}else{location.href='./index.html';}});
