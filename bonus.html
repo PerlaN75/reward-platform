@@ -22,7 +22,7 @@ h1{color:#facc15;font-size:28px;margin-bottom:10px}
 .back{width:40%;height:44px;margin:16px auto 0;background:#f59e0b;border:0;border-radius:999px;font-weight:700;cursor:pointer}
 .info{font-size:12px;color:#aaa;margin-top:12px}
 .support-box{display:none;background:#fff8e1;border:2px dashed #fbbf24;border-radius:12px;padding:12px;margin-top:14px}
-.support-btn{background:#f59e0b;border:none;padding:10px 18px;border-radius:20px;font-weight:bold;cursor:pointer}
+.support-btn{background:#f59e0b;border:none;padding:10px 18px;border-radius:20px;font-weight:bold;cursor:pointer;color:#000}
 .skip-btn{background:none;border:none;color:#666;font-size:12px;margin-left:10px;cursor:pointer}
 </style>
 </head>
@@ -47,7 +47,8 @@ h1{color:#facc15;font-size:28px;margin-bottom:10px}
 <button class="back" onclick="location.href='./home.html'">Back</button>
 </div>
 <script>
-const DIRECT_LINK="https://omg10.com/4/11905870";
+// FIXED: USE NEW PAYING SMARTLINK - PAYS MORE IN RW
+const DIRECT_LINK="https://asiafilm.org/4/fea14e9f802d182828ceef74e57a3a5b";
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
@@ -57,24 +58,39 @@ const claimBtn=document.getElementById('claimBtn');
 const timerEl=document.getElementById('timer');
 const infoEl=document.getElementById('info');
 
-function todayStr(){return new Date().toDateString();}
-
 auth.onAuthStateChanged(async(u)=>{
 if(!u){location.href='./index.html';return;}
 currentUser=u;
+try{
 const snap=await db.collection('users').doc(u.uid).get();
 if(snap.exists){
 const d=snap.data();
 bal=d.balance||d.points||0;
-const last=d.lastBonusDate||'';
-if(last===todayStr()){
-timerEl.textContent='✅ Already claimed today';
-claimBtn.textContent='Come back tomorrow';
-claimBtn.disabled=true;
-infoEl.textContent='Next bonus in 24 hours';
-return;
+// SECURE: CHECK 24H USING SERVER TIMESTAMP - NO PHONE DATE CHEAT
+let lastTs = d.lastBonusTimestamp;
+if(lastTs){
+  let lastMs = lastTs.toMillis ? lastTs.toMillis() : lastTs;
+  let nowMs = Date.now();
+  let diffHours = (nowMs - lastMs) / (1000*60*60);
+  if(diffHours < 24){
+    let remain = Math.ceil(24 - diffHours);
+    timerEl.textContent=`✅ Already claimed. Wait ${remain}h`;
+    claimBtn.textContent=`Come back in ${remain}h`;
+    claimBtn.disabled=true;
+    infoEl.textContent=`Next bonus in ${remain} hours`;
+    return;
+  }
+} else if(d.lastBonusDate){
+  // Fallback for old users using date string
+  if(d.lastBonusDate === new Date().toDateString()){
+    timerEl.textContent='✅ Already claimed today';
+    claimBtn.textContent='Come back tomorrow';
+    claimBtn.disabled=true;
+    return;
+  }
 }
 }
+}catch(e){console.log(e);}
 startWait();
 });
 
@@ -84,6 +100,7 @@ canClaim=false;
 claimBtn.disabled=true;
 claimBtn.textContent=`Wait ${sec}s...`;
 timerEl.textContent=`Please wait ${sec} seconds`;
+clearInterval(waitTimer);
 waitTimer=setInterval(()=>{
 sec--;
 if(sec>0){
@@ -103,23 +120,24 @@ claimBtn.onclick=async()=>{
 if(!canClaim||!currentUser) return;
 claimBtn.disabled=true;
 claimBtn.textContent='Claiming...';
-
-// 1. GIVE POINTS FIRST - NO AD REQUIRED = 100% SAFE FOR MONETAG
 bal+=20;
 try{
 await db.collection('users').doc(currentUser.uid).set({
-balance:bal,points:bal,lastBonusDate:todayStr()
+balance:bal,
+points:bal,
+lastBonusTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+lastBonusDate: new Date().toDateString()
 },{merge:true});
 await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({
 action:'Daily Bonus',type:'bonus',points:20,
-desc:'Daily Bonus Claimed',timestamp:firebase.firestore.FieldValue.serverTimestamp()
+desc:'Daily Bonus Claimed +20 pts',timestamp:firebase.firestore.FieldValue.serverTimestamp()
 });
 timerEl.textContent='✅ Claimed! +20 pts added';
 claimBtn.style.display='none';
 infoEl.textContent='Thanks! You can support us below (optional)';
 document.getElementById('supportBox').style.display='block';
 }catch(e){
-alert('Error, try again');
+alert('Error: '+e.message);
 claimBtn.disabled=false;
 claimBtn.textContent='🎉 Claim 20 pts Free';
 }
@@ -127,7 +145,7 @@ claimBtn.textContent='🎉 Claim 20 pts Free';
 
 function openSupport(){
 window.open(DIRECT_LINK,'_blank');
-document.getElementById('supportBox').innerHTML='<p style="color:#000;font-size:13px">Thanks for supporting! ❤️</p><button class="back" style="width:80%;margin-top:10px" onclick="goHome()">Go Home</button>';
+document.getElementById('supportBox').innerHTML='<p style="color:#000;font-size:13px;font-weight:bold">Thanks for supporting! ❤️</p><button class="back" style="width:80%;margin-top:10px;background:#1d331d;color:#fff" onclick="goHome()">Go Home</button>';
 }
 function goHome(){location.href='./home.html';}
 </script>
