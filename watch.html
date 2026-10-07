@@ -4,26 +4,26 @@
 <title>Watch & Earn</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="monetag" content="b671b8351bfc48ed0161f6bd0b6a5340">
-<!-- KEEP ONLY THIS ONE MONETAG TAG - Pause all other zones in dashboard -->
 <script src="https://quge5.com/88/tag.min.js" data-zone="286869" async data-cfasync="false"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:#0e1a0e;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;overflow:hidden}
-.card{width:100%;max-width:380px;background:#1d331d;border:3px solid #fbbf24;border-radius:24px;padding:20px 18px;position:relative;z-index:1}
-h1{color:#facc15;text-align:center;font-size:28px;margin-bottom:12px}
-.balance-box{background:#0a120a;border:2px solid #fbbf24;border-radius:16px;padding:12px;text-align:center;color:#fff;margin-bottom:14px}
+body{background:#0e1a0e;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:14px 10px 90px 10px}
+.card{width:100%;max-width:360px;background:#1d331d;border:3px solid #fbbf24;border-radius:24px;padding:16px 14px;position:relative;z-index:1;margin:10px auto}
+h1{color:#facc15;text-align:center;font-size:26px;margin-bottom:10px}
+.balance-box{background:#0a120a;border:2px solid #fbbf24;border-radius:16px;padding:10px;text-align:center;color:#fff;margin-bottom:12px}
 .video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #2a4a2a}
 .player{aspect-ratio:16/10;background:#000;position:relative;display:flex;align-items:center;justify-content:center}
 video,iframe{width:100%;height:100%;display:none;border:0}
 .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.9);color:#fff;text-align:center;padding:12px;flex-direction:column;z-index:2;font-weight:700}
 .progress{height:8px;background:#2a4a2a}.progress-bar{height:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);width:0%;transition:width.3s}
-.btn{width:100%;background:#fbbf24;color:#000;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:15px;cursor:pointer;margin:14px 0 0}
+.btn{width:100%;background:#fbbf24;color:#000;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:15px;cursor:pointer;margin:12px 0 0}
 .btn:disabled{background:#5a4a1a;color:#aaa}
 .vtitle{font-size:11px;color:#facc15;margin-top:6px}
 .support-box{display:none;background:#fff8e1;border:2px dashed #fbbf24;border-radius:12px;padding:10px;margin-top:12px;text-align:center}
+.back{display:block;width:48%;height:44px;margin:14px auto 0;background:#f59e0b;border:0;border-radius:999px;font-weight:700;font-size:15px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -41,10 +41,10 @@ video,iframe{width:100%;height:100%;display:none;border:0}
 <button onclick="openSupportAd()" style="background:#f59e0b;border:none;padding:8px 16px;border-radius:20px;font-weight:bold;cursor:pointer;font-size:13px;">Watch Sponsored</button>
 <button onclick="this.parentElement.style.display='none'" style="background:none;border:none;color:#666;font-size:12px;margin-left:8px;cursor:pointer;">Skip</button>
 </div>
-<button class="back" style="display:block;width:40%;height:48px;margin:16px auto 0;background:#f59e0b;border:0;border-radius:999px;font-weight:700;font-size:16px;" onclick="location.href='./home.html'">Back</button>
+<button class="back" onclick="location.href='home.html'">Back Home</button>
 </div>
 <script>
-const DIRECT_LINK="https://omg10.com/4/11905870";
+const DIRECT_LINK="https://asiafilm.org/4/fea14e9f802d182828ceef74e57a3a5b";
 const ALL_VIDEOS=[
 {src:"https://www.w3schools.com/html/mov_bbb.mp4",title:"Big Buck Bunny"},
 {src:"yt:dQw4w9WgXcQ",title:"Funny Cats Compilation"},
@@ -83,17 +83,16 @@ const ov=document.getElementById('ov'),vid=document.getElementById('v'),yt=docum
 function openSupportAd(){
   const lastSupport = localStorage.getItem('support_day');
   const todayStr = new Date().toDateString();
-  if(lastSupport === todayStr){
-    document.getElementById('supportBox').style.display='none';
-    return;
-  }
+  if(lastSupport === todayStr){ document.getElementById('supportBox').style.display='none'; return; }
   localStorage.setItem('support_day', todayStr);
-  window.open(DIRECT_LINK,'_blank'); // USER CLICKED = SAFE FOR MONETAG
+  window.open(DIRECT_LINK,'_blank');
   document.getElementById('supportBox').style.display='none';
   bal+=2; balEl.textContent=bal+' pts';
-  if(currentUser) db.collection('users').doc(currentUser.uid).set({balance:bal,points:bal},{merge:true});
+  if(currentUser){
+    db.collection('users').doc(currentUser.uid).set({balance:bal,points:bal},{merge:true});
+    db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Support',type:'support',points:2,desc:'Support bonus',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+  }
 }
-
 function updateUI(){balEl.textContent=bal+' pts';todayEl.textContent=today+'/10';if(dailyData&&today<10){vtEl.textContent=`Next: ${dailyData.playlist[today].title}`;ov.innerHTML=`<div>${dailyData.playlist[today].title}</div><small style="opacity:.7;margin-top:6px">Tap Start</small>`;}}
 auth.onAuthStateChanged(async(u)=>{if(!u){location.href='./index.html';return;}currentUser=u;dailyData=getTodayPlaylist();const s=await db.collection('users').doc(u.uid).get();if(s.exists){const d=s.data();bal=d.balance||d.points||0;today=d.todayCount||d.today||0;const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null;if(last&&new Date().toDateString()!==last.toDateString())today=0;}updateUI();if(today>=10){ov.style.display='flex';ov.innerHTML='🎉 10/10 Done!<br>New order tomorrow';btn.disabled=true;btn.textContent='Limit Reached';}});
 function doAd(){
@@ -124,7 +123,6 @@ async function claim(){
     await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Watch & Earn',type:'watch',points:5,desc:dailyData.playlist[today-1].title,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
   }catch(e){}
   yt.src='';vid.style.display='none';yt.style.display='none';pbar.style.width='0%';btn.textContent='Start & Earn';btn.disabled=false;btn.onclick=doAd;updateUI();
-  // Show support ONLY once per day and ONLY after claim
   const lastSupport = localStorage.getItem('support_day');
   if(lastSupport!== new Date().toDateString()){
     document.getElementById('supportBox').style.display='block';
