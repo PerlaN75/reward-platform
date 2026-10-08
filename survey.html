@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surveys - 50 Points</title>
+<style>
+body{margin:0;background:#000;color:#fff;font-family:Arial,sans-serif;display:flex;justify-content:center;padding:12px 10px 80px 10px;box-sizing:border-box;min-height:100vh}
+.card{background:radial-gradient(circle at top,#1a4d1a,#051405);border:2px solid #FFD700;border-radius:22px;padding:16px 14px 18px 14px;width:100%;max-width:360px;text-align:center;box-shadow:0 0 20px rgba(255,215,0,0.3);margin:10px auto 30px;height:auto}
+h2{margin:8px 0 6px 0;color:#FFD700;font-size:20px}
+.badge{border:1.5px solid #FFD700;border-radius:20px;padding:5px 12px;display:inline-block;margin:8px 0;color:#FFD700;font-weight:bold;font-size:13px}
+.bar{height:7px;background:#333;border-radius:10px;margin:10px 0;overflow:hidden}
+.fill{height:100%;background:#FFD700;width:0%;transition:0.3s}
+.back{background:#fff;color:#000;padding:10px 24px;border-radius:20px;display:inline-block;margin-top:14px;text-decoration:none;font-weight:bold;font-size:14px}
+#bitlabs{min-height:400px;background:#0a1a0a;border:1px solid #FFD700;border-radius:14px;margin-top:12px;overflow:hidden;text-align:left}
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1a2e1a;border:2px solid #FFD700;color:#fff;padding:12px 18px;border-radius:10px;font-weight:bold;z-index:9999;display:none}
+.modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.85);justify-content:center;align-items:center}
+.modal-content{background:#112911;border:1.5px solid #FFD700;border-radius:14px;padding:16px;width:88%;max-width:300px;text-align:center}
+.offer-btn{display:block;width:100%;background:linear-gradient(#FFD700,#FFA500);color:#000;font-weight:bold;padding:12px;border-radius:10px;margin:8px 0;border:none;cursor:pointer}
+.note{color:#FFD700;font-size:11px;margin-top:12px;line-height:1.3}
+</style>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+</head>
+<body>
+<div id="toast"></div>
+<div class="card">
+<h2>📝 Surveys - 50 Pts</h2>
+<div class="badge" id="ptsBadge">Loading...</div>
+<div class="bar"><div class="fill" id="fill"></div></div>
+<div id="countText">Loading...</div>
+<div id="bitlabs"></div>
+<a class="back" href="home.html">Back Home</a>
+<div class="note">Rate: 1000 pts = $0.5 USDT | Min 3000 pts | You get 50 pts/survey<br>Owner paid by BitLabs in USDT to dashboard. No daily limit, 5-20 surveys/day.</div>
+</div>
+<div id="successModal" class="modal"><div class="modal-content"><div style="font-size:30px">✅</div><h3 id="sTitle" style="color:#FFD700">+50 Points!</h3><p id="sDesc" style="color:#ccc"></p><button onclick="document.getElementById('successModal').style.display='none'" class="offer-btn">Continue</button></div></div>
+<script>
+const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(), db=firebase.firestore();
+const BITLABS_APP_ID = "8e2f651a-76eb-4c65-9151-ebf8d2394fdf";
+const POINTS_PER_SURVEY = 50;
+const RATE = 0.5/1000;
+const MIN = 3000;
+function getToday(){return new Date().toISOString().split('T')[0];}
+function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
+let currentUser=null, userData={}, todayCount=0;
+function updateUI(){
+  let pts=userData.balance||0;
+  let usdt=(pts*RATE).toFixed(2);
+  document.getElementById("ptsBadge").innerText=`Balance: ${pts} pts = $${usdt} USDT`;
+  document.getElementById("countText").innerText=`Today: ${todayCount} surveys | ${pts>=MIN?'READY TO WITHDRAW ✓':'Need '+(MIN-pts)+' pts to withdraw'}`;
+  document.getElementById("fill").style.width=Math.min((pts%1000)/10,100)+"%";
+}
+function initBitLabs(uid){
+  const s=document.createElement('script');
+  s.src="https://sdk.bitlabs.ai/bitlabs.js";
+  s.onload=()=>{
+    BitLabs.setAppId(BITLABS_APP_ID);
+    BitLabs.setUserId(uid);
+    BitLabs.renderSurveys(document.getElementById("bitlabs"),{
+      onSurveyCompleted: async (survey)=>{
+        try{
+          let newBal=(userData.balance||0)+POINTS_PER_SURVEY;
+          userData.balance=newBal;
+          localStorage.setItem('userData',JSON.stringify(userData));
+          await db.collection('users').doc(uid).update({balance:newBal,surveys_today:firebase.firestore.FieldValue.increment(1),surveys_total:firebase.firestore.FieldValue.increment(1),last_survey_date:getToday()});
+          await db.collection('users').doc(uid).collection('earnHistory').add({action:'Survey',points:POINTS_PER_SURVEY,desc:`BitLabs +${POINTS_PER_SURVEY} pts`,bitlabsRewardOwner:survey?.reward||null,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+          await db.collection('owner_earnings').add({userId:uid,userPointsGiven:POINTS_PER_SURVEY,bitlabsRevenueUSD:survey?.reward||null,date:getToday(),timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+          todayCount++; updateUI();
+          document.getElementById('sDesc').innerText=`New balance: ${newBal} pts = $${(newBal*RATE).toFixed(2)} USDT`;
+          document.getElementById('successModal').style.display='flex';
+          showToast(`+${POINTS_PER_SURVEY} pts added!`);
+        }catch(e){showToast(e.message);}
+      }
+    });
+  };
+  document.head.appendChild(s);
+}
+auth.onAuthStateChanged(async u=>{
+  if(!u){location.href='./index.html';return;}
+  currentUser=u;
+  const doc=await db.collection('users').doc(u.uid).get();
+  if(doc.exists){userData=doc.data(); if(userData.last_survey_date!==getToday()) todayCount=0; else todayCount=userData.surveys_today||0;}
+  else userData={balance:0};
+  updateUI(); initBitLabs(u.uid);
+});
+</script>
+</body>
+</html>
