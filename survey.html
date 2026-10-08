@@ -2,19 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Surveys</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Survey</title>
 <style>
-body{margin:0;background:#000;color:#fff;font-family:Arial,sans-serif;display:flex;justify-content:center;padding:12px 10px 80px 10px;box-sizing:border-box;min-height:100vh}
-.card{background:radial-gradient(circle at top,#1a4d1a,#051405);border:2px solid #FFD700;border-radius:22px;padding:16px 14px 18px 14px;width:100%;max-width:360px;text-align:center;box-shadow:0 0 20px rgba(255,215,0,0.3);margin:10px auto 30px;height:auto}
-h2{margin:8px 0 6px 0;color:#FFD700;font-size:20px}
-.badge{border:1.5px solid #FFD700;border-radius:20px;padding:5px 12px;display:inline-block;margin:8px 0;color:#FFD700;font-weight:bold;font-size:13px}
-.bar{height:7px;background:#333;border-radius:10px;margin:10px 0;overflow:hidden}
+*{box-sizing:border-box}
+body{margin:0;background:#000;color:#fff;font-family:Arial,sans-serif;display:flex;justify-content:center;padding:16px 12px 140px 12px;min-height:100vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.card{background:radial-gradient(circle at top,#1a4d1a,#051405);border:2px solid #FFD700;border-radius:22px;padding:18px 14px 22px 14px;width:100%;max-width:360px;text-align:center;box-shadow:0 0 20px rgba(255,215,0,0.3);margin:8px auto 40px;height:auto;overflow:visible}
+h2{margin:6px 0 8px 0;color:#FFD700;font-size:22px}
+.badge{border:1.5px solid #FFD700;border-radius:20px;padding:6px 14px;display:inline-block;margin:10px 0;color:#FFD700;font-weight:bold;font-size:13px;max-width:100%;white-space:normal}
+.bar{height:8px;background:#333;border-radius:10px;margin:12px 0;overflow:hidden}
 .fill{height:100%;background:#FFD700;width:0%;transition:0.3s}
-.back{background:#fff;color:#000;padding:10px 24px;border-radius:20px;display:inline-block;margin-top:14px;text-decoration:none;font-weight:bold;font-size:14px}
-#bitlabs{min-height:420px;background:#0a1a0a;border:1.5px solid #FFD700;border-radius:14px;margin-top:12px;overflow:hidden}
-.note{color:#FFD700;font-size:11px;margin-top:12px;line-height:1.4}
-#countText{font-size:12px;color:#8f8;margin:4px 0}
+#countText{font-size:13px;color:#8f8;margin:6px 0 12px 0}
+#bitlabs{min-height:480px;background:#0a1a0a;border:1.5px solid #FFD700;border-radius:16px;margin:12px 0 10px 0;overflow:hidden;position:relative}
+#bitlabs iframe{width:100%;height:620px;border:none;display:block;background:#0a1a0a}
+.back{background:#fff;color:#000;padding:12px 28px;border-radius:24px;display:inline-block;margin:18px auto 6px auto;text-decoration:none;font-weight:bold;font-size:14px}
+.note{color:#FFD700;font-size:11px;margin:14px 0 4px 0;line-height:1.4;padding:0 4px}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -23,10 +25,10 @@ h2{margin:8px 0 6px 0;color:#FFD700;font-size:20px}
 <body>
 <div class="card">
 <h2>📝 Survey</h2>
-<div class="badge" id="ptsBadge">Balance: 0 pts</div>
+<div class="badge" id="ptsBadge">Balance: 0 pts = $0.00 USDT</div>
 <div class="bar"><div class="fill" id="fill"></div></div>
 <div id="countText">Today: 0 surveys</div>
-<div id="bitlabs"></div>
+<div id="bitlabs"><div style="padding:40px 15px;color:#FFD700">Loading...<br><small style="color:#888">Publisher verification pending<br>Go to BitLabs dashboard to verify ID</small></div></div>
 <a class="back" href="home.html">Back Home</a>
 <div class="note">You get 50 pts / survey - No daily limit (Do all as available to gain more)<br>Paid by BitLabs</div>
 </div>
@@ -48,12 +50,7 @@ auth.onAuthStateChanged(async u=>{
  const doc=await db.collection('users').doc(u.uid).get();
  if(doc.exists){userData=doc.data(); todayCount=(userData.last_survey_date===getToday())?(userData.surveys_today||0):0;}
  updateUI();
- // DIRECT OFFERWALL IFRAME - most reliable
- document.getElementById("bitlabs").innerHTML=`<iframe src="https://web.bitlabs.ai?uid=${u.uid}&token=${BITLABS_APP_ID}" style="width:100%;height:650px;border:none;background:#0a1a0a" allow="fullscreen"></iframe>`;
- // Also load SDK for points credit
- const s=document.createElement('script'); s.src="https://sdk.bitlabs.ai/bitlabs.js";
- s.onload=()=>{BitLabs.setAppId(BITLABS_APP_ID); BitLabs.setUserId(u.uid); BitLabs.setOnSurveyCompleted(async()=>{let nb=(userData.balance||0)+50; await db.collection('users').doc(u.uid).update({balance:nb,surveys_today:firebase.firestore.FieldValue.increment(1)}); userData.balance=nb; todayCount++; updateUI(); alert("+50 pts added!");});};
- document.head.appendChild(s);
+ document.getElementById("bitlabs").innerHTML=`<iframe src="https://web.bitlabs.ai?uid=${u.uid}&token=${BITLABS_APP_ID}" allow="fullscreen"></iframe>`;
 });
 </script>
 </body>
