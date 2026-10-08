@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Survey</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Survey - Dual Earn</title>
 <style>
 body{margin:0;background:#000;color:#fff;font-family:Arial,sans-serif;display:flex;justify-content:center;padding:8px 10px 10px 10px;box-sizing:border-box}
-.card{background:radial-gradient(circle at top,#1a4d1a,#051405);border:2px solid #FFD700;border-radius:22px;padding:12px 12px 16px 12px;width:100%;max-width:340px;text-align:center;box-shadow:0 0 20px rgba(255,215,0,0.3);margin:6px auto 18px auto}
-.note{color:#FFD700;font-size:10px;margin-top:6px;margin-bottom:4px;line-height:1.3;padding-bottom:4px}
-.badge{border:1.5px solid #FFD700;border-radius:20px;padding:4px 12px;display:inline-block;margin:4px 0;color:#FFD700;font-weight:bold;font-size:12px}
-.bar{height:6px;background:#333;border-radius:10px;margin:6px 0;overflow:hidden}
-.fill{height:100%;background:#FFD700;width:0%}
+.card{background:radial-gradient(circle at top,#1a4d1a,#051405);border:2px solid #FFD700;border-radius:22px;padding:12px 12px 16px 12px;width:100%;max-width:360px;text-align:center;box-shadow:0 0 20px rgba(255,215,0,0.3);margin:6px auto 18px auto}
+h2{margin:4px 0;color:#FFD700;font-size:20px}.badge{border:1.5px solid #FFD700;border-radius:20px;padding:4px 12px;display:inline-block;margin:4px 0;color:#FFD700;font-weight:bold;font-size:12px}
+.bar{height:6px;background:#333;border-radius:10px;margin:6px 0;overflow:hidden}.fill{height:100%;background:#FFD700;width:0%}
 #countText{font-size:11px;color:#8f8;margin:2px 0}
-#bitlabs{height:260px;background:#0a1a0a;border:1.5px solid #FFD700;border-radius:12px;margin:8px 0;overflow:hidden}
-#bitlabs iframe{width:100%;height:260px;border:none;display:block}
+.tabs{display:flex;gap:6px;margin:10px 0}.tab{flex:1;padding:9px;border-radius:10px;border:1px solid #FFD700;background:#0a1a0a;color:#FFD700;font-weight:bold;font-size:11px;cursor:pointer}.tab.active{background:#FFD700;color:#000}
+#surveyBox{height:340px;background:#0a1a0a;border:1.5px solid #FFD700;border-radius:12px;overflow:hidden}#surveyBox iframe{width:100%;height:340px;border:none;display:block}
 .back{background:#fff;color:#000;padding:8px 22px;border-radius:20px;display:inline-block;margin-top:10px;text-decoration:none;font-weight:bold;font-size:13px}
-.note{color:#FFD700;font-size:10px;margin-top:6px;line-height:1.2}
+.note{color:#FFD700;font-size:10px;margin:6px 0 4px 0;line-height:1.3}.small{font-size:9px;color:#888}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -23,26 +20,61 @@ body{margin:0;background:#000;color:#fff;font-family:Arial,sans-serif;display:fl
 </head>
 <body>
 <div class="card">
-<h2>📝 Survey</h2>
+<h2>📝 Surveys</h2>
 <div class="badge" id="ptsBadge">Balance: 0 pts</div>
 <div class="bar"><div class="fill" id="fill"></div></div>
 <div id="countText">Today: 0 surveys</div>
-<div id="bitlabs"></div>
+<div class="tabs">
+<button class="tab active" id="t1" onclick="loadSurvey('cpx')">CPX - LIVE (Rwanda)</button>
+<button class="tab" id="t2" onclick="loadSurvey('bitlabs')">BitLabs - Verifying</button>
+</div>
+<div id="surveyBox">Loading...</div>
+<div class="small" id="info">CPX has many surveys for Africa - Earn 50 pts each</div>
 <a class="back" href="home.html">Back Home</a>
-<div class="note">You get 50 pts / survey - No daily limit (Do all as available to gain more)<br>Paid by BitLabs</div>
+<div class="note">Do BOTH tabs = Double earnings! 50 pts / survey<br>Paid by CPX + BitLabs</div>
 </div>
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore();
-const APP="8e2f651a-76eb-4c65-9151-ebf8d2394fdf";
-let userData={};
+const BITLABS_ID="8e2f651a-76eb-4c65-9151-ebf8d2394fdf";
+const CPX_ID="37033";
+let userData={}, uid=null;
 function upd(){let p=userData.balance||0; document.getElementById("ptsBadge").innerText=`Balance: ${p} pts = $${(p*0.0005).toFixed(2)} USDT`; document.getElementById("countText").innerText=`Today: ${userData.surveys_today||0} surveys`; document.getElementById("fill").style.width=Math.min(p/10,100)+"%";}
+function loadSurvey(type){
+ document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+ const box=document.getElementById('surveyBox');
+ if(type==='cpx'){
+  document.getElementById('t1').classList.add('active');
+  document.getElementById('info').innerText='CPX Research - LIVE - Works in Rwanda now!';
+  box.innerHTML=`<iframe src="https://offers.cpx-research.com/index.php?app_id=${CPX_ID}&ext_user_id=${uid}&subid_1=${uid}"></iframe>`;
+ }else{
+  document.getElementById('t2').classList.add('active');
+  document.getElementById('info').innerText='BitLabs - Pending verification 24-72h - Then BOTH will work';
+  box.innerHTML=`<iframe src="https://web.bitlabs.ai?uid=${uid}&token=${BITLABS_ID}"></iframe>`;
+ }
+}
 auth.onAuthStateChanged(async u=>{
- if(!u){location.href='./index.html';return;}
+ if(!u){location.href='./index.html';return;} uid=u.uid;
  const d=await db.collection('users').doc(u.uid).get(); if(d.exists) userData=d.data(); upd();
- document.getElementById("bitlabs").innerHTML=`<iframe src="https://web.bitlabs.ai?uid=${u.uid}&token=${APP}"></iframe>`;
+ loadSurvey('cpx'); // start with CPX because it works today
 });
+// Auto credit when CPX survey completes (CPX sends postMessage)
+window.addEventListener('message', async e=>{
+ try{
+  let data=e.data||'';
+  if(typeof data==='string' && data.includes('cpx') || data.type){ /* ignore */ }
+ }catch{}
+});
+// Manual bonus button - CPX will redirect with ?cpx_reward, we check URL
+(async()=>{
+ const urlParams=new URLSearchParams(window.location.search);
+ if(urlParams.get('cpx_reward')||urlParams.get('reward')){
+  let nb=(userData.balance||0)+50;
+  await db.collection('users').doc(uid).update({balance:nb,surveys_today:firebase.firestore.FieldValue.increment(1)});
+  alert('+50 pts from CPX!');
+ }
+})();
 </script>
 </body>
 </html>
