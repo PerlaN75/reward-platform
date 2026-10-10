@@ -1,7 +1,27 @@
 <!DOCTYPE html>
 <html>
-<head><title>Surveys</title></head>
+<head>
+  <title>Surveys - Earn Rewards</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { margin:0; font-family: Arial; background:#f5f5f5; }
+    .tabs { display:flex; background:#0A2A5A; padding:10px; gap:10px; }
+    .tabs button { flex:1; padding:12px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; background:#1E3A8A; color:white; }
+    .tabs button.active { background:#4F46E5; }
+    iframe { width:100%; height:calc(100vh - 60px); border:0; display:none; }
+    iframe.active { display:block; }
+  </style>
+</head>
 <body>
+
+<div class="tabs">
+  <button id="btn-cpx" class="active" onclick="showTab('cpx')">CPX Research</button>
+  <button id="btn-bitlabs" onclick="showTab('bitlabs')">BitLabs Surveys</button>
+</div>
+
+<iframe id="frame-cpx"></iframe>
+<iframe id="frame-bitlabs"></iframe>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -16,19 +36,38 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+window.showTab = function(tab) {
+  document.getElementById('frame-cpx').classList.remove('active');
+  document.getElementById('frame-bitlabs').classList.remove('active');
+  document.getElementById('btn-cpx').classList.remove('active');
+  document.getElementById('btn-bitlabs').classList.remove('active');
+  
+  document.getElementById('frame-'+tab).classList.add('active');
+  document.getElementById('btn-'+tab).classList.add('active');
+}
+
 onAuthStateChanged(auth, (user) => {
   if(user){
-    const ext_user_id = user.uid; // THIS IS CRITICAL! Must be Firebase UID
-    const app_id = "37033"; // Your CPX App ID
+    const uid = user.uid; // Firebase UID - same for both!
     
-    // Load CPX iframe
-    document.getElementById('cpx').src = 
-      `https://offers.cpx-research.com/index.php?app_id=${app_id}&ext_user_id=${ext_user_id}`;
+    // CPX
+    const cpx_app_id = "37033";
+    document.getElementById('frame-cpx').src = 
+      `https://offers.cpx-research.com/index.php?app_id=${cpx_app_id}&ext_user_id=${uid}`;
+    
+    // BitLabs - USING YOUR TOKEN
+    const bitlabs_token = "8e2f651a-76eb-4c65-9151-ebf8d2394fdf";
+    document.getElementById('frame-bitlabs').src = 
+      `https://web.bitlabs.ai/?uid=${uid}&token=${bitlabs_token}`;
+    
+    // Show CPX by default
+    document.getElementById('frame-cpx').classList.add('active');
+    
+  } else {
+    window.location.href = "/login.html";
   }
 });
 </script>
-
-<iframe id="cpx" style="width:100%;height:800px;border:0"></iframe>
 
 </body>
 </html>
