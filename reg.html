@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Register - Rewards</title>
+  <title>Register - Rewards Secured</title>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.google.com/recaptcha/enterprise.js?render=6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #0f1508; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
@@ -21,6 +22,7 @@
 .error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; }
 .success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
 .back-btn { width: 40%; margin: 20px auto 0 auto; display: block; padding: 14px; background: #f59e0b; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
+.protect{font-size:10px;color:#666;text-align:center;margin-top:10px}
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -41,8 +43,24 @@
     <div class="error" id="errorMsg"></div>
     <div class="success" id="successMsg"></div>
     <div class="note">Already have account? <a href="./index.html">Login Here</a></div>
+    <div class="protect">Protected by Google reCAPTCHA Enterprise - bot score checked</div>
     <button class="back-btn" onclick="window.location.href='./index.html'">Back</button>
   </div>
+
+<script>
+// BOT PROTECTION - MUST PASS
+async function getRecaptchaToken(action){
+  return new Promise((resolve)=>{
+    if(!window.grecaptcha ||!grecaptcha.enterprise){ resolve(null); return; }
+    grecaptcha.enterprise.ready(async ()=>{
+      try{
+        const token = await grecaptcha.enterprise.execute('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', {action: action});
+        resolve(token);
+      }catch(e){ resolve(null); }
+    });
+  });
+}
+</script>
 
 <script>
   const firebaseConfig = {apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain: "reward-platform-rw-2e13d.firebaseapp.com",projectId: "reward-platform-rw-2e13d"};
@@ -76,9 +94,19 @@
     const errorEl=document.getElementById('errorMsg');
     const successEl=document.getElementById('successMsg');
     const btn=document.getElementById('createBtn');
-    errorEl.innerText=''; successEl.innerText=''; btn.disabled=true; btn.innerText="Creating...";
+    errorEl.innerText=''; successEl.innerText=''; btn.disabled=true; btn.innerText="Checking security...";
+
     if(!username||!email||!password){errorEl.innerText="Fill all fields"; btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return;}
     const passError=validatePassword(password); if(passError){errorEl.innerText=passError; btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return;}
+
+    // --- BLOCK BOTS FIRST ---
+    const token = await getRecaptchaToken('REGISTER');
+    if(!token){
+      errorEl.innerText="Security check failed. Please reload page and try again.";
+      btn.disabled=false; btn.innerText="Create Account & Send Verification Email"; return;
+    }
+    btn.innerText="Creating...";
+
     try{
       const deviceId=getDeviceId();
       const isWhitelisted=WHITELIST.includes(emailLow);
@@ -120,6 +148,8 @@
         email: email, emailLower: emailLow,
         deviceId: deviceId, isWhitelisted: isWhitelisted,
         emailVerified: false,
+        recaptchaToken: token.substring(0,20),
+        createdVia: 'enterprise_recaptcha',
         balance: startingPoints, points: startingPoints,
         usdt:0,bnb:0,xrp:0,xlm:0,
         invitedBy: referredByCode||"", referredBy: referredByCode||"",
