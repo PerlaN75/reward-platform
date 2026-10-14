@@ -37,9 +37,21 @@ input:focus,textarea:focus{border-color:#fbbf24;outline:none}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, query, where, getDocs, doc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app-check.js";
 
 const firebaseConfig = { apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d", storageBucket: "reward-platform-rw-2e13d.firebasestorage.app", messagingSenderId: "787550951987", appId: "1:787550951987:web:724b1463e821b99c90a146" };
 const app = initializeApp(firebaseConfig);
+
+// --- WISE PROTECTION - NEVER BLOCKS USER ---
+try {
+  initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1'),
+    isTokenAutoRefreshEnabled: true
+  });
+} catch(e) {
+  console.log("AppCheck skipped");
+}
+
 const auth = getAuth(app);
 const db = getFirestore(app);
 
@@ -48,7 +60,6 @@ let currentUser=null;
 onAuthStateChanged(auth, async (u)=>{
   currentUser=u;
   if(!u){ window.location.href='login.html'; return; }
-  // Fill from users collection + auth
   try{
     const udoc = await getDoc(doc(db,"users",u.uid));
     const d = udoc.exists()? udoc.data() : {};
@@ -93,11 +104,9 @@ async function loadMyTickets(){
   if(!currentUser){ el.innerHTML="Login to see tickets..."; return; }
   el.innerHTML="Loading...";
   try{
-    // Query by uid (fixes permission error)
     const q=query(collection(db,"supportTickets"), where("uid","==",currentUser.uid));
     const snap=await getDocs(q);
     if(snap.empty){
-      // fallback: try userId field (your old tickets)
       const q2=query(collection(db,"supportTickets"), where("userId","==",currentUser.uid));
       const snap2=await getDocs(q2);
       if(snap2.empty){ el.innerHTML="No tickets yet"; return; }
