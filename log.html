@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Login</title>
+  <title>Login - Protected</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.google.com/recaptcha/enterprise.js?render=6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1"></script>
   <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
     body { background: #2f3e1a; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 60px 20px 20px 20px; }
@@ -21,19 +22,21 @@
 .success { color: #22c55e; font-size: 14px; margin-top: 10px; font-weight: bold; }
 .btn-back-outside { width: 40%; padding: 14px; background: white; color: black; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 40px; box-shadow: 0 3px 0 #ccc; }
 .hidden { display: none; }
+.recaptcha-note{font-size:10px;color:#aaa;margin-top:12px}
   </style>
 </head>
 <body>
   <div class="login-card">
    <div class="logo">🔑</div>
     <h1 id="cardTitle">Login</h1>
-    <div class="tagline">From Nothing to Something</div>
+    <div class="tagline">From Nothing to Something - Secured</div>
     <div id="loginForm">
       <input type="email" id="email" placeholder="Email">
       <input type="password" id="password" placeholder="Password">
       <button class="btn-login" id="loginBtn" onclick="login()">Login</button>
       <div class="link-reset" onclick="showReset()">Forgot Password?</div>
       <div class="link-register" onclick="window.location.href='./reg.html'">Don't have an account? Register</div>
+      <div class="recaptcha-note">Protected by reCAPTCHA Enterprise</div>
     </div>
     <div id="resetStep1" class="hidden">
       <input type="text" id="resetUsername" placeholder="Registered Username" oninput="formatResetUsername()">
@@ -51,6 +54,22 @@
     <div class="success" id="success"></div>
   </div>
   <button class="btn-back-outside" onclick="window.location.href='./index.html'">Back</button>
+
+<script>
+// --- RECAPTCHA SECURITY LAYER ---
+async function getRecaptchaToken(action){
+  return new Promise((resolve,reject)=>{
+    if(!window.grecaptcha ||!grecaptcha.enterprise){ resolve(null); return; }
+    grecaptcha.enterprise.ready(async ()=>{
+      try{
+        const token = await grecaptcha.enterprise.execute('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', {action: action});
+        resolve(token);
+      }catch(e){ resolve(null); }
+    });
+  });
+}
+</script>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, signOut, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -97,13 +116,21 @@
 
     isLogging = true;
     btn.disabled = true;
+    btn.innerText = "Checking security...";
+
+    // --- BOT PROTECTION ---
+    const token = await window.getRecaptchaToken('LOGIN');
+    if(!token){
+      errorEl.innerText = "Security check failed. Reload page.";
+      isLogging = false; btn.disabled = false; btn.innerText = "Login";
+      return;
+    }
     btn.innerText = "Logging in...";
 
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
       let curUser = cred.user;
 
-      // WISE FIX: reload once - fixes "instantly rejected" loop
       if(!curUser.emailVerified){
         try{
           await curUser.reload();
@@ -112,7 +139,6 @@
       }
 
       if(!curUser.emailVerified){
-        // avoid spamming verification email every click
         const lastSent = parseInt(localStorage.getItem('lastVerifSent')||'0');
         if(Date.now() - lastSent > 60000){
           try{ await sendEmailVerification(curUser); localStorage.setItem('lastVerifSent', Date.now().toString()); }catch(e){}
@@ -121,13 +147,10 @@
         throw new Error("📧 Email not verified. We resent link to "+email+". Verify then login again.");
       }
 
-      // FAST PATH: whitelist skip extra work
       const isWhite = WHITELIST.includes(emailLow);
       const myDeviceId = getDeviceId();
 
-      // ONE query only, and don't block redirect
       if(!isWhite){
-        // fire in background, don't await long
         (async()=>{
           try{
             const q = query(collection(db, "users"), where("emailLower", "==", emailLow));
@@ -136,16 +159,12 @@
               const ref = snap.docs[0].ref;
               const data = snap.docs[0].data();
               const updates = { emailVerified: true };
-              if(!data.deviceId || data.deviceId!== myDeviceId){
-                updates.deviceId = myDeviceId;
-              }
-              // don't await - fire and forget
+              if(!data.deviceId || data.deviceId!== myDeviceId){ updates.deviceId = myDeviceId; }
               updateDoc(ref, updates).catch(()=>{});
             }
           }catch(e){}
         })();
       } else {
-        // whitelist also mark verified in bg
         (async()=>{
           try{
             const q = query(collection(db, "users"), where("emailLower", "==", emailLow));
@@ -155,7 +174,6 @@
         })();
       }
 
-      // GO IMMEDIATELY - no more 11 sec wait
       window.location.replace("./home.html");
       return;
 
@@ -170,7 +188,6 @@
         errorEl.innerText = e.message;
       }
     } finally {
-      // reset only if we didn't redirect
       isLogging = false;
       btn.disabled = false;
       btn.innerText = "Login";
@@ -202,6 +219,7 @@
     return null;
   }
   window.verifyUser = async function(){
+    const token = await window.getRecaptchaToken('VERIFY');
     const username = document.getElementById('resetUsername').value.trim();
     const email = document.getElementById('resetEmail').value.trim();
     const errorEl = document.getElementById('error');
