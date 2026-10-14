@@ -36,7 +36,7 @@
       <button class="btn-login" id="loginBtn" onclick="login()">Login</button>
       <div class="link-reset" onclick="showReset()">Forgot Password?</div>
       <div class="link-register" onclick="window.location.href='./reg.html'">Don't have an account? Register</div>
-      <div class="recaptcha-note">Protected by reCAPTCHA Enterprise</div>
+      <div class="recaptcha-note">Protected by reCAPTCHA Enterprise + App Check</div>
     </div>
     <div id="resetStep1" class="hidden">
       <input type="text" id="resetUsername" placeholder="Registered Username" oninput="formatResetUsername()">
@@ -72,8 +72,10 @@ async function getRecaptchaToken(action){
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app-check.js";
   import { getAuth, signInWithEmailAndPassword, signOut, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, collection, query, where, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
   const firebaseConfig = {
     apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
     authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
@@ -83,6 +85,13 @@ async function getRecaptchaToken(action){
     appId: "1:787550951987:web:724b1463e821b99c90a146"
   };
   const app = initializeApp(firebaseConfig);
+
+  // --- APP CHECK ACTIVATION - FREE BACKEND PROTECTION ---
+  const appCheck = initializeAppCheck(app, {
+    provider: new ReCaptchaEnterpriseProvider('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1'),
+    isTokenAutoRefreshEnabled: true
+  });
+
   const auth = getAuth(app);
   const db = getFirestore(app);
   let resetUserData = null;
@@ -118,7 +127,6 @@ async function getRecaptchaToken(action){
     btn.disabled = true;
     btn.innerText = "Checking security...";
 
-    // --- BOT PROTECTION ---
     const token = await window.getRecaptchaToken('LOGIN');
     if(!token){
       errorEl.innerText = "Security check failed. Reload page.";
@@ -130,14 +138,9 @@ async function getRecaptchaToken(action){
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
       let curUser = cred.user;
-
       if(!curUser.emailVerified){
-        try{
-          await curUser.reload();
-          curUser = auth.currentUser;
-        }catch(e){}
+        try{ await curUser.reload(); curUser = auth.currentUser; }catch(e){}
       }
-
       if(!curUser.emailVerified){
         const lastSent = parseInt(localStorage.getItem('lastVerifSent')||'0');
         if(Date.now() - lastSent > 60000){
@@ -149,7 +152,6 @@ async function getRecaptchaToken(action){
 
       const isWhite = WHITELIST.includes(emailLow);
       const myDeviceId = getDeviceId();
-
       if(!isWhite){
         (async()=>{
           try{
@@ -173,10 +175,8 @@ async function getRecaptchaToken(action){
           }catch(e){}
         })();
       }
-
       window.location.replace("./home.html");
       return;
-
     } catch(e) {
       if(e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-login-credentials'){
         errorEl.innerText = "Invalid email or password";
