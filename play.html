@@ -7,6 +7,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-check-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <style>
 .tab-active { background: #7c3aed; color: white; }
@@ -52,6 +53,13 @@ const firebaseConfig = {
   projectId: "reward-platform-rw-2e13d"
 };
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+
+// --- WISE PROTECTION - NEVER BLOCKS PLAY ---
+try {
+  const appCheck = firebase.appCheck();
+  appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);
+} catch(e) { console.log("AppCheck skipped"); }
+
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
     document.getElementById('userEmail').innerText = user.email;
