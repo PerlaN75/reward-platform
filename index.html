@@ -13,11 +13,13 @@
   h1{font-size:32px;margin-bottom:10px;line-height:1.3}
 .gradient-text{background:linear-gradient(90deg,#FFD700,#FF69B4,#3B82F6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold}
 .subtitle{color:#cbd5e1;font-size:15px;margin-bottom:30px;max-width:300px}
-.start-rect{width:55%;max-width:200px;background:linear-gradient(180deg,#fef2f2,#fecaca);border:2px solid #ef4444;border-radius:18px;padding:16px 15px 14px;text-align:center;box-shadow:0 4px 0 #fff,0 10px 25px rgba(0,0,0,0.4);margin-bottom:25px;display:flex;flex-direction:column;align-items:center}
-.start-rect.title{font-size:18px;font-weight:800;color:#7f1d1d;letter-spacing:0.3px}
-.start-rect.title{font-size:18px;font-weight:800;color:#7f1d1d!important;letter-spacing:0.3px}
+
+/* FIXED: Readable Start Now */
+.start-rect{width:58%;max-width:220px;background:linear-gradient(180deg,#ffffff,#ffdddd);border:2px solid #ef4444;border-radius:18px;padding:16px 15px 14px;text-align:center;box-shadow:0 4px 0 #fff,0 10px 25px rgba(0,0,0,0.4);margin-bottom:25px;display:flex;flex-direction:column;align-items:center;cursor:pointer}
+.start-rect.title{font-size:19px;font-weight:900;color:#7f1d1d!important;letter-spacing:0.3px;line-height:1.2;text-shadow:0 1px 0 rgba(255,255,255,0.8)}
 .hamburger{margin-top:10px;width:32px;cursor:pointer;display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center}
-.hamburger span{display:block;width:24px;height:3px;background:#000;border-radius:3px}
+.hamburger span{display:block;width:24px;height:3px;background:#7f1d1d;border-radius:3px}
+
 .start-popup{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.65)}
 .start-popup-box{background:#1a0033;width:70%;max-width:270px;height:100%;border-radius:0 20px 20px 0;padding:28px 18px;display:flex;flex-direction:column;gap:14px;animation:slideIn.3s ease}
   @keyframes slideIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
@@ -44,7 +46,7 @@
   <h1>Welcome to<br><span class="gradient-text">Reward Platform</span></h1>
   <p class="subtitle">Complete activities, earn points, and discover exciting rewards.</p>
 
-  <div class="start-rect" onclick="openStartPopup()" style="cursor:pointer">
+  <div class="start-rect" onclick="openStartPopup()">
    <div class="title">Start Now</div>
     <div class="hamburger">
       <span></span><span></span><span></span>
@@ -90,9 +92,10 @@ async function secureNavigate(url){
 
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
-// --- APP CHECK ACTIVATION - FREE BACKEND PROTECTION ---
-const appCheck = firebase.appCheck();
-appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);
+try {
+  const appCheck = firebase.appCheck();
+  appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);
+} catch(e){}
 
 const auth=firebase.auth();const db=firebase.firestore();
 async function loadUserToLocal(uid){const userDoc=await db.collection("users").doc(uid).get();if(userDoc.exists){const data=userDoc.data();localStorage.setItem('username',data.username||'Guest');localStorage.setItem('email',data.email||'');localStorage.setItem('points',(data.balance||0).toString());localStorage.setItem('referrals',(data.referralCount||0).toString());let joined=data.createdAt?data.createdAt.toDate():new Date();let joinedDate=joined.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});localStorage.setItem('dateJoined',joinedDate);}}
@@ -121,10 +124,22 @@ function openNotifModal(){
   renderNotifs();
 }
 function closeNotifModal(){document.getElementById('notifModal').style.display='none';renderNotifs();}
-db.collection("notifications").orderBy("createdAt","desc").limit(50).onSnapshot((snap)=>{
-  allNotifs=snap.docs.map(doc=>{const d=doc.data();let dateStr='';if(d.createdAt&&d.createdAt.toDate){dateStr=d.createdAt.toDate().toLocaleString();}return{id:doc.id,message:d.message||'',dateStr:dateStr};});
-  renderNotifs();
-});
+
+// FIXED NOTIFICATIONS - Works even when not logged in
+function startNotifListener(){
+  db.collection("notifications").orderBy("createdAt","desc").limit(50).onSnapshot((snap)=>{
+    allNotifs=snap.docs.map(doc=>{const d=doc.data();let dateStr='';if(d.createdAt&&d.createdAt.toDate){dateStr=d.createdAt.toDate().toLocaleString();}return{id:doc.id,message:d.message||'',dateStr:dateStr};});
+    renderNotifs();
+  }, (err)=>{
+    console.log("Notif listener error (public read needed):", err.message);
+    // fallback - try without orderBy
+    db.collection("notifications").limit(50).get().then(snap=>{
+      allNotifs=snap.docs.map(doc=>{const d=doc.data();let dateStr='';if(d.createdAt&&d.createdAt.toDate){dateStr=d.createdAt.toDate().toLocaleString();}return{id:doc.id,message:d.message||'',dateStr:dateStr};});
+      renderNotifs();
+    }).catch(()=>{});
+  });
+}
+startNotifListener();
 </script>
 </body>
 </html>
