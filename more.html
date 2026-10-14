@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>More - Rewards</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+    body{background:#0f1508;min-height:100vh;padding:20px;color:white;transition:0.3s}
+    body.light{background:#f2f4f7;color:#000}
+.container{max-width:500px;margin:0 auto}
+.header{text-align:center;margin:20px 0;color:#fbbf24;font-size:28px;font-weight:bold}
+.card{background:#fff;border-radius:16px;padding:8px;box-shadow:0 4px 12px rgba(0,0,0,0.25)}
+.menu-list a{display:flex;align-items:center;justify-content:space-between;width:100%;padding:18px 16px;color:#000;text-decoration:none;font-size:16px;font-weight:bold;border-radius:10px;cursor:pointer}
+.menu-list a:not(:last-child){border-bottom:1px solid #e5e5e5}
+.left{display:flex;align-items:center;gap:12px}
+.arrow{color:#999;font-size:22px}
+.modal{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);justify-content:center;align-items:center;padding:15px}
+.modal-box{background:#fff;width:100%;max-width:420px;border-radius:18px;padding:20px;max-height:85vh;overflow-y:auto;color:#000;position:relative}
+.close{position:absolute;top:12px;right:15px;font-size:26px;font-weight:bold;cursor:pointer}
+.back-home{display:block;width:40%!important;max-width:200px!important;margin:24px auto 0 auto;background:#fbbf24;color:#000;border:none;border-radius:50px;padding:12px;font-weight:bold;font-size:14px;text-align:center;text-decoration:none;box-shadow:0 3px 0 #e5a500}
+.top-actions{display:flex;gap:10px;margin:12px 0}
+.btn{flex:1;padding:10px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:13px}
+.btn-refresh{background:#fbbf24;color:#000}
+.btn-clear{background:#000;color:#fff}
+.filters{display:flex;gap:6px;overflow-x:auto;padding:8px 0;white-space:nowrap}
+.filters button{padding:6px 10px;border-radius:20px;border:1px solid #fbbf24;background:transparent;color:#f59e0b;font-size:10px;font-weight:bold;cursor:pointer}
+.filters button.active{background:#fbbf24;color:#000}
+.item{background:#f9fafb;border:1px solid #eee;border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.item-title{font-weight:bold;font-size:12px}
+.item-desc{font-size:10px;color:#666}
+.confirm-overlay{display:none;position:fixed;z-index:10000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center}
+.confirm-box{background:#fff;border-radius:16px;padding:20px;width:85%;max-width:320px;text-align:center}
+.confirm-actions{display:flex;gap:10px}
+.confirm-actions button{flex:1;padding:11px;border-radius:10px;border:none;font-weight:bold;cursor:pointer}
+.c-cancel{background:#f3f4f6;color:#000}
+.c-ok{background:#fbbf24;color:#000}
+.set-section{margin:16px 0}
+.set-label{font-size:13px;font-weight:bold;color:#111;margin-bottom:8px;display:block}
+.lang-option{display:flex;justify-content:space-between;align-items:center;padding:12px;border:1px solid #eee;border-radius:10px;margin-bottom:6px;cursor:pointer}
+.lang-option.active{border-color:#fbbf24;background:#fffbeb}
+.mode-box{display:flex;gap:10px;margin:0 auto;width:65%;max-width:200px;justify-content:center}
+.mode-btn{flex:1;padding:10px 6px;border-radius:12px;border:2px solid #eee;background:#f9fafb;cursor:pointer;text-align:center;font-weight:bold;font-size:12px;max-width:90px}
+.mode-btn.active{border-color:#fbbf24;background:#fbbf24;color:#000}
+.save-close-btn{width:50%!important;max-width:170px!important;margin:15px auto 0 auto!important;display:block!important;background:#fbbf24!important;border:none!important;padding:10px!important;border-radius:10px!important;font-weight:bold!important;cursor:pointer!important;font-size:13px!important;color:#000!important}
+.profile-header{text-align:center;padding-top:8px}
+.avatar-letter{width:86px;height:86px;background:linear-gradient(135deg,#fbbf24,#f59e0b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900;color:#000;margin:8px auto 10px auto;border:4px solid #fef3c7;box-shadow:0 4px 10px rgba(0,0,0,0.15)}
+.profile-name{font-size:18px;font-weight:900;color:#111;margin:4px 0}
+.profile-details{text-align:left;background:#f9fafb;border:1px solid #f1f1f1;border-radius:14px;padding:14px;margin:14px 0}
+.profile-row{display:flex;gap:8px;align-items:flex-start;margin:10px 0;font-size:13px;color:#666;line-height:1.4}
+.profile-row b{color:#111;min-width:82px}
+.profile-stats{display:flex;gap:8px}
+.stat-box{flex:1;border-radius:12px;padding:12px 6px;text-align:center}
+.stat-box p:first-child{font-size:16px;font-weight:900;color:#111}
+.stat-box p:last-child{font-size:10px;color:#666;margin-top:2px;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px}
+.stat-points{background:#fffbeb;border:1px solid #fde68a}
+.stat-refs{background:#f0fdf4;border:1px solid #bbf7d0}
+.stat-level{background:#eff6ff;border:1px solid #bfdbfe}
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header" id="txtMore">More</div>
+  <div class="card">
+    <div class="menu-list">
+      <a onclick="openProfile()"><div class="left">👤 <span id="txtProfile">Profile</span></div><span class="arrow">›</span></a>
+      <a onclick="openHistory()"><div class="left">📜 <span id="txtHistory">History</span></div><span class="arrow">›</span></a>
+      <a onclick="openSettings()"><div class="left">⚙️ <span id="txtSettings">Settings</span></div><span class="arrow">›</span></a>
+      <a href="support.html"><div class="left">💬 <span id="txtSupport">Help/Support</span></div><span class="arrow">›</span></a>
+      <a onclick="openAbout()"><div class="left">ℹ️ <span id="txtAbout">About Us</span></div><span class="arrow">›</span></a>
+    </div>
+  </div>
+  <a href="home.html" class="back-home" id="txtBackHome">Back Home</a>
+</div>
+
+<div id="profileModal" class="modal" onclick="closeProfile()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <span class="close" onclick="closeProfile()">×</span>
+    <div class="profile-header">
+      <div id="avatarLetter" class="avatar-letter">U</div>
+      <h3 id="pUsername" class="profile-name">Loading...</h3>
+      <p style="margin:6px 0; color:#22c55e; font-weight:900; font-size:13px;">✓ Verified</p>
+    </div>
+    <div class="profile-details">
+      <div class="profile-row">📧 <b>Email:</b> <span id="pEmail">...</span></div>
+      <div class="profile-row">📅 <b>Registered:</b> <span id="pDate">...</span></div>
+      <div class="profile-row">🆔 <b>User ID:</b> <span id="pId">...</span></div>
+    </div>
+    <div class="profile-stats">
+      <div class="stat-box stat-points"><p id="pPoints">0</p><p>Points</p></div>
+      <div class="stat-box stat-refs"><p id="pRefs">0</p><p>Referrals</p></div>
+      <div class="stat-box stat-level"><p id="pLevel">1</p><p>Level</p></div>
+    </div>
+  </div>
+</div>
+
+<div id="historyModal" class="modal" onclick="closeHistory()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <span class="close" onclick="closeHistory()">×</span>
+    <h3 style="text-align:center">📜 History</h3>
+    <p id="countText" style="text-align:center;color:#888;font-size:11px;margin-bottom:8px"></p>
+    <div class="top-actions">
+      <button class="btn btn-refresh" onclick="loadHistory()">↻ Refresh</button>
+      <button class="btn btn-clear" onclick="clearHistoryView()">✕ Clear</button>
+    </div>
+    <div class="filters">
+      <button class="active" onclick="filterBy('all',this)">All</button>
+      <button onclick="filterBy('Wallet',this)">Wallet</button>
+      <button onclick="filterBy('Daily Checkin',this)">Checkin</button>
+      <button onclick="filterBy('Watch',this)">Watch</button>
+      <button onclick="filterBy('Play',this)">Play</button>
+      <button onclick="filterBy('Survey',this)">Survey</button>
+      <button onclick="filterBy('Refer',this)">Refer</button>
+      <button onclick="filterBy('Bonus',this)">Bonus</button>
+      <button onclick="filterBy('Ads',this)">Ads</button>
+      <button onclick="filterBy('Offer',this)">Offers</button>
+    </div>
+    <div id="historyList" style="margin-top:10px;max-height:50vh;overflow-y:auto"></div>
+  </div>
+</div>
+
+<div id="settingsModal" class="modal" onclick="closeSettings()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <span class="close" onclick="closeSettings()">×</span>
+    <h3 style="text-align:center;margin-bottom:10px">⚙️ Settings</h3>
+    <div class="set-section">
+      <span class="set-label">🌐 Change Language</span>
+      <div class="lang-option active" onclick="setLang('en',this)"><span>🇺🇸 English</span><span>✓</span></div>
+      <div class="lang-option" onclick="setLang('fr',this)"><span>🇫🇷 Français</span><span></span></div>
+      <div class="lang-option" onclick="setLang('rw',this)"><span>🇷🇼 Kinyarwanda</span><span></span></div>
+      <div class="lang-option" onclick="setLang('sw',this)"><span>🇹🇿 Swahili</span><span></span></div>
+      <div class="lang-option" onclick="setLang('zh',this)"><span>🇨🇳 中文 Chinese</span><span></span></div>
+      <div class="lang-option" onclick="setLang('es',this)"><span>🇪🇸 Español</span><span></span></div>
+    </div>
+    <div class="set-section">
+      <span class="set-label">🌓 Appearance Mode</span>
+      <div class="mode-box">
+        <div class="mode-btn active" id="modeLight" onclick="setMode('light')">☀️ Light</div>
+        <div class="mode-btn" id="modeDark" onclick="setMode('dark')">🌙 Dark</div>
+      </div>
+    </div>
+    <button onclick="closeSettings()" class="save-close-btn">Save & Close</button>
+  </div>
+</div>
+
+<div id="confirmModal" class="confirm-overlay" onclick="cancelClear()">
+  <div class="confirm-box" onclick="event.stopPropagation()">
+    <h4>Clear History?</h4>
+    <p>This will only clear the view. Your points are safe.</p>
+    <div class="confirm-actions">
+      <button class="c-cancel" onclick="cancelClear()">Cancel</button>
+      <button class="c-ok" onclick="confirmClear()">Yes, Clear</button>
+    </div>
+  </div>
+</div>
+
+<div id="aboutModal" class="modal" onclick="closeAbout()">
+  <div class="modal-box" onclick="event.stopPropagation()" style="padding:0;overflow:hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid #eee">
+      <h3 style="font-size:18px;font-weight:900;color:#111">ℹ️ About Us</h3>
+      <span class="close" onclick="closeAbout()" style="position:static;font-size:22px;color:#666;background:#f3f4f6;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">×</span>
+    </div>
+    <div style="padding:18px;max-height:70vh;overflow-y:auto;text-align:center">
+      <p style="font-size:48px;margin:6px 0">🐒 🍇</p>
+      <h2 style="font-size:18px;font-weight:900;color:#111;margin:4px 0">From Nothing to Something</h2>
+      <p style="font-size:12px;color:#9ca3af;margin-bottom:12px">Reward Platform RW</p>
+      <p style="font-size:13px;color:#374151;line-height:1.6;margin:14px 0"><b style="color:#111">Reward Platform RW</b> is a community-driven rewards platform built to turn your daily actions into real value.</p>
+      <div style="text-align:left;background:#f9fafb;border:1px solid #f1f1f1;border-radius:12px;padding:14px;margin:14px 0">
+        <p style="font-weight:900;font-size:13px;color:#111;margin-bottom:10px">💰 How to Earn Points</p>
+        <div style="font-size:12px;color:#374151;line-height:2.2">
+          <div>📅 <b>Daily Check-in</b></div>
+          <div>📺 <b>Watch & Earn</b></div>
+          <div>🎁 <b>Daily Bonus</b></div>
+          <div>👥 <b>Refer & Earn</b></div>
+          <div>📝 <b>Survey</b></div>
+          <div>📢 <b>Ads Earn</b></div>
+          <div>🎯 <b>Offers</b></div>
+          <div>🎮 <b>Play & Earn</b></div>
+        </div>
+      </div>
+      <div style="text-align:left;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px;margin:14px 0">
+        <p style="font-weight:900;font-size:13px;color:#111;margin-bottom:10px">🌟 Why Users Trust Us</p>
+        <div style="font-size:12px;color:#374151;line-height:1.9">
+          <div>✓ <b>Fair & Transparent</b> – No hidden tricks</div>
+          <div>✓ <b>Fast Payouts</b> – Earn today, withdraw fast</div>
+          <div>✓ <b>Secure</b> – Your data stays protected</div>
+          <div>✓ <b>Community First</b> – Built for real people</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:16px">
+        <span style="background:#fde68a;color:#92400e;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:900">V 1.0</span>
+        <span style="background:#fde68a;color:#92400e;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:900">🔒 Trusted - Secure</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(), db=firebase.firestore();
+let cachedUser=null, allData=[], currentFilter='all';
+let historyClearedDate = localStorage.getItem('history_cleared_at')? new Date(localStorage.getItem('history_cleared_at')) : null;
+auth.onAuthStateChanged(u=>{cachedUser=u;});
+(function initSettings(){
+  const mode = localStorage.getItem('app_mode') || 'dark';
+  const lang = localStorage.getItem('app_lang') || 'en';
+  setMode(mode, true);
+  setLang(lang, null, true);
+})();
+function openProfile(){
+  document.getElementById('profileModal').style.display='flex';
+  let user=auth.currentUser||cachedUser; if(!user){setTimeout(openProfile,1000); return;}
+  db.collection("users").doc(user.uid).onSnapshot(async snap=>{
+    if(!snap.exists) return; const d=snap.data();
+    const username=d.username||user.email.split('@')[0];
+    document.getElementById('pUsername').innerText=username;
+    document.getElementById('pEmail').innerText=d.email||user.email;
+    let reg="Unknown"; if(d.createdAt&&d.createdAt.toDate) reg=d.createdAt.toDate().toLocaleDateString(); else if(user.metadata.creationTime) reg=new Date(user.metadata.creationTime).toLocaleDateString();
+    document.getElementById('pDate').innerText=reg;
+    document.getElementById('pPoints').innerText=d.balance??0;
+    document.getElementById('pId').innerText=user.uid.substring(0,8).toUpperCase();
+    document.getElementById('avatarLetter').innerText=username.charAt(0).toUpperCase();
+    document.getElementById('pLevel').innerText=d.level||Math.floor((d.balance||0)/100)+1;
+    let ref=d.referralCount??0; try{const rs=await db.collection("users").doc(user.uid).collection("referralDailyLogs").get(); if(!d.referralCount) ref=rs.size;}catch(e){}
+    document.getElementById('pRefs').innerText=ref;
+  });
+}
+function closeProfile(){document.getElementById('profileModal').style.display='none';}
+function openAbout(){document.getElementById('aboutModal').style.display='flex';}
+function closeAbout(){document.getElementById('aboutModal').style.display='none';}
+function openHistory(){document.getElementById('historyModal').style.display='flex'; loadHistory();}
+function closeHistory(){document.getElementById('historyModal').style.display='none';}
+function openSettings(){document.getElementById('settingsModal').style.display='flex';}
+function closeSettings(){document.getElementById('settingsModal').style.display='none';}
+
+async function loadHistory(){
+  const user=auth.currentUser||cachedUser; if(!user) return;
+  document.getElementById('historyList').innerHTML='<p style="text-align:center;color:#888">Loading...</p>';
+  allData=[];
+  try{
+    try{
+      const uDoc = await db.collection('users').doc(user.uid).get();
+      if(uDoc.exists && uDoc.data().historyClearedAt){
+        const t = uDoc.data().historyClearedAt;
+        historyClearedDate = t.toDate? t.toDate() : new Date(t);
+        localStorage.setItem('history_cleared_at', historyClearedDate.toISOString());
+      }
+    }catch(e){}
+
+    const earn=await db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(100).get();
+    earn.forEach(d=>{const v=d.data(); allData.push({title:v.action||'Earn',desc:v.desc||'',points:v.points||0,date:v.timestamp?.toDate?v.timestamp.toDate():new Date(),type:v.action||''});});
+    try{const c=await db.collection('users').doc(user.uid).collection('convertHistory').orderBy('timestamp','desc').limit(50).get(); c.forEach(d=>{const v=d.data(); allData.push({title:'Wallet',desc:`${v.points} pts → ${v.usdt?.toFixed(4)} USDT`,points:-Math.abs(v.points||0),date:v.timestamp?.toDate?v.timestamp.toDate():new Date(),type:'Wallet'});});}catch(e){}
+    try{const r=await db.collection('users').doc(user.uid).collection('referralDailyLogs').orderBy('date','desc').limit(50).get(); r.forEach(d=>{const v=d.data(); allData.push({title:'Refer & Earn',desc:`Referral ${v.email||''}`,points:v.points||10,date:v.date?.toDate?v.date.toDate():new Date(),type:'Refer'});});}catch(e){}
+    try{const w=await db.collection('withdrawals').where('uid','==',user.uid).orderBy('createdAt','desc').limit(30).get(); w.forEach(d=>{const v=d.data(); allData.push({title:'Wallet',desc:`Withdraw ${v.amount} USDT - ${v.status}`,points:0,date:v.createdAt?.toDate?v.createdAt.toDate():new Date(),type:'Wallet'});});}catch(e){}
+
+    if(historyClearedDate){
+      allData = allData.filter(item => item.date > historyClearedDate);
+    }
+
+    allData.sort((a,b)=>b.date-a.date); render(allData);
+  }catch(e){document.getElementById('historyList').innerHTML='<p style="text-align:center;color:#888">No history</p>';}
+}
+
+function render(data){
+  const list=document.getElementById('historyList');
+  const filtered=currentFilter==='all'?data:data.filter(x=>(x.type||x.title||'').toLowerCase().includes(currentFilter.toLowerCase()));
+  document.getElementById('countText').innerText=filtered.length+' records';
+  if(filtered.length===0){list.innerHTML='<p style="text-align:center;color:#888;padding:20px">No records - History cleared</p>';return;}
+  list.innerHTML=''; filtered.forEach(i=>{
+    const d=i.date.toLocaleDateString()+' '+i.date.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    const pts=i.points>0?`+${i.points}`:i.points<0?`${i.points}`:'';
+    list.innerHTML+=`<div class="item"><div><div class="item-title">${i.title}</div><div class="item-desc">${i.desc}<br>${d}</div></div><div class="item-pts" style="color:${i.points>0?'#22c55e':'#ef4444'}">${pts}</div></div>`;
+  });
+}
+function filterBy(k,btn){currentFilter=k; document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); render(allData);}
+function clearHistoryView(){document.getElementById('confirmModal').style.display='flex';}
+function cancelClear(){document.getElementById('confirmModal').style.display='none';}
+
+function confirmClear(){
+  const user=auth.currentUser||cachedUser;
+  const now = new Date();
+  historyClearedDate = now;
+  localStorage.setItem('history_cleared_at', now.toISOString());
+  if(user){
+    db.collection('users').doc(user.uid).set({historyClearedAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge:true});
+  }
+  document.getElementById('confirmModal').style.display='none';
+  allData=[];
+  render(allData);
+  document.getElementById('countText').innerText='0 records - Cleared';
+}
+
+const translations={
+  en:{More:"More",Profile:"Profile",History:"History",Settings:"Settings",Support:"Help/Support",About:"About Us",Back:"Back Home"},
+  fr:{More:"Plus",Profile:"Profil",History:"Historique",Settings:"Paramètres",Support:"Aide/Support",About:"À propos",Back:"Retour Accueil"},
+  rw:{More:"Byinshi",Profile:"Umwirondoro",History:"Amateka",Settings:"Igenamiterere",Support:"Ubufasha",About:"Abo Turi Bo",Back:"Subira Ahabanza"},
+  sw:{More:"Zaidi",Profile:"Wasifu",History:"Historia",Settings:"Mipangilio",Support:"Msaada",About:"Kuhusu Sisi",Back:"Rudi Nyumbani"},
+  zh:{More:"更多",Profile:"个人资料",History:"历史",Settings:"设置",Support:"帮助/支持",About:"关于我们",Back:"返回首页"},
+  es:{More:"Más",Profile:"Perfil",History:"Historial",Settings:"Configuración",Support:"Ayuda",About:"Sobre Nosotros",Back:"Volver Inicio"}
+};
+function setLang(code, el, init=false){
+  if(!init){ localStorage.setItem('app_lang', code); }
+  const t = translations[code] || translations.en;
+  document.getElementById('txtMore').innerText = t.More;
+  document.getElementById('txtProfile').innerText = t.Profile;
+  document.getElementById('txtHistory').innerText = t.History;
+  document.getElementById('txtSettings').innerText = t.Settings;
+  document.getElementById('txtSupport').innerText = t.Support;
+  document.getElementById('txtAbout').innerText = t.About;
+  document.getElementById('txtBackHome').innerText = t.Back;
+  document.querySelectorAll('.lang-option').forEach(o=>{ o.classList.remove('active'); o.querySelector('span:last-child').innerText=''; });
+  if(el){ el.classList.add('active'); el.querySelector('span:last-child').innerText='✓'; }
+  else {
+    const idx = {en:0,fr:1,rw:2,sw:3,zh:4,es:5}[code] || 0;
+    const all = document.querySelectorAll('.lang-option');
+    if(all[idx]){ all[idx].classList.add('active'); all[idx].querySelector('span:last-child').innerText='✓'; }
+  }
+}
+function setMode(mode, init=false){
+  if(!init){ localStorage.setItem('app_mode', mode); }
+  document.body.classList.remove('light','dark');
+  document.body.classList.add(mode);
+  document.getElementById('modeLight').classList.toggle('active', mode==='light');
+  document.getElementById('modeDark').classList.toggle('active', mode==='dark');
+}
+</script>
+</body>
+</html>

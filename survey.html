@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Surveys - Earn Rewards</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+    body { background:#0f1508; color:white; min-height:100vh; }
+    .header{background:#0f1508;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1a2a12}
+    .header h2{color:#fbbf24;font-size:18px}
+    .header a{color:#000;background:#fbbf24;padding:6px 14px;border-radius:20px;text-decoration:none;font-weight:bold;font-size:12px}
+    iframe { width:100%; height:calc(100vh - 55px); border:0; background:#fff; }
+    .loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#888;text-align:center}
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h2>📝 CPX Research</h2>
+  <a href="home.html">Back Home</a>
+</div>
+
+<div id="loader" class="loader">Loading surveys...<br><small style="font-size:11px;color:#666">Please wait</small></div>
+
+<iframe id="frame-cpx"></iframe>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
+  authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
+  projectId: "reward-platform-rw-2e13d",
+  appId: "1:787550951987:web:724b1463e821b99c90a146"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+onAuthStateChanged(auth, (user) => {
+  if(user){
+    const uid = user.uid;
+    const cpx_app_id = "37033";
+    const cpx_url = `https://offers.cpx-research.com/index.php?app_id=${cpx_app_id}&ext_user_id=${uid}&subid_1=${uid}&subid_2=reward_rw_web`;
+    document.getElementById('frame-cpx').src = cpx_url;
+    setTimeout(()=>{ document.getElementById('loader').style.display='none'; }, 1500);
+  } else {
+    window.location.href = "login.html";
+  }
+});
+</script>
+
+</body>
+</html>
