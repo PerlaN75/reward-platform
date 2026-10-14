@@ -27,6 +27,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app-check.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
@@ -36,6 +37,12 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+// --- 3 LINES PROTECTION ---
+const appCheck = initializeAppCheck(app, {
+  provider: new ReCaptchaEnterpriseProvider('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1'),
+  isTokenAutoRefreshEnabled: true
+});
+
 const auth = getAuth(app);
 
 onAuthStateChanged(auth, (user) => {
