@@ -23,26 +23,21 @@
   <div class="text-xs text-gray-400" id="userEmail">Loading...</div>
 </div>
 <div class="flex gap-2 p-3 bg-gray-800 border-t border-gray-700">
-  <button onclick="switchTab('lootably')" id="tab-lootably" class="flex-1 py-3 rounded-xl font-bold tab-active"><i class="fa fa-trophy mr-1"></i> Lootably</button>
-  <button onclick="switchTab('adscend')" id="tab-adscend" class="flex-1 py-3 rounded-xl font-bold bg-gray-700"><i class="fa fa-play mr-1"></i> Adscend</button>
+  <button onclick="switchTab('timewall')" id="tab-timewall" class="flex-1 py-3 rounded-xl font-bold tab-active"><i class="fa fa-clock mr-1"></i> Timewall</button>
+  <button onclick="switchTab('lootably')" id="tab-lootably" class="flex-1 py-3 rounded-xl font-bold bg-gray-700"><i class="fa fa-trophy mr-1"></i> Lootably</button>
 </div>
-<div id="statusBanner" class="mx-3 mt-3 p-3 rounded-xl bg-yellow-500/20 border border-yellow-500/30 text-sm"><i class="fa fa-clock mr-2 text-yellow-400"></i><span id="statusText">Waiting for approval... Once approved, games will load here automatically.</span></div>
+<div id="statusBanner" class="mx-3 mt-3 p-3 rounded-xl bg-yellow-500/20 border border-yellow-500/30 text-sm"><i class="fa fa-clock mr-2 text-yellow-400"></i><span id="statusText">Timewall loading... If pending approval, will auto-activate after approval.</span></div>
 <div class="p-3">
-  <div id="content-lootably" class="iframe-container bg-white rounded-xl overflow-hidden">
+  <div id="content-timewall" class="iframe-container bg-white rounded-xl overflow-hidden">
+    <iframe id="timewall-iframe" src="about:blank" class="w-full h-full border-0" allow="fullscreen"></iframe>
+  </div>
+  <div id="content-lootably" class="iframe-container bg-white rounded-xl overflow-hidden hidden">
     <div class="h-full flex flex-col items-center justify-center text-gray-800 p-8 text-center">
       <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mb-4"><i class="fa fa-hourglass-half text-3xl text-purple-600"></i></div>
       <h3 class="font-bold text-xl mb-2">Lootably Pending Approval</h3>
       <p class="text-gray-500 text-sm mb-4">Your application is under review. Expected: Tonight or Monday.<br>Once approved, you will get Wall ID and we paste here.</p>
       <code class="bg-gray-100 px-3 py-2 rounded text-xs">ID Placeholder: LOOTABLY_WALL_ID</code>
       <p class="text-xs text-gray-400 mt-4">Check email: silntr235@gmail.com (also spam)</p>
-    </div>
-  </div>
-  <div id="content-adscend" class="iframe-container bg-white rounded-xl overflow-hidden hidden">
-    <div class="h-full flex flex-col items-center justify-center text-gray-800 p-8 text-center">
-      <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-4"><i class="fa fa-hourglass-half text-3xl text-blue-600"></i></div>
-      <h3 class="font-bold text-xl mb-2">AdscendMedia Pending Approval</h3>
-      <p class="text-gray-500 text-sm mb-4">Application received. 1-2 business days.</p>
-      <code class="bg-gray-100 px-3 py-2 rounded text-xs">ID Placeholder: ADSCEND_PUB_ID</code>
     </div>
   </div>
 </div>
@@ -60,20 +55,29 @@ try {
   appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);
 } catch(e) { console.log("AppCheck skipped"); }
 
+let currentUserId = null;
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
     document.getElementById('userEmail').innerText = user.email;
+    currentUserId = user.uid;
+    // Load Timewall with real user ID - NO CONFLICT WITH LOOTABLY
+    const oid = "2531feadd61827ba";
+    const uid = encodeURIComponent(user.uid);
+    document.getElementById('timewall-iframe').src = `https://wall.timewall.io/index.html?oid=${oid}&uid=${uid}`;
+    document.getElementById('statusText').innerText = "Timewall ready. Earn points by completing tasks, surveys & games.";
   } else {
     window.location.href = 'index.html';
   }
 });
 function switchTab(tab) {
+  // Hide all contents - Timewall and Lootably only, no Adscend, no fight
+  document.getElementById('content-timewall').classList.add('hidden');
   document.getElementById('content-lootably').classList.add('hidden');
-  document.getElementById('content-adscend').classList.add('hidden');
+  document.getElementById('tab-timewall').classList.remove('tab-active');
+  document.getElementById('tab-timewall').classList.add('bg-gray-700');
   document.getElementById('tab-lootably').classList.remove('tab-active');
   document.getElementById('tab-lootably').classList.add('bg-gray-700');
-  document.getElementById('tab-adscend').classList.remove('tab-active');
-  document.getElementById('tab-adscend').classList.add('bg-gray-700');
+  // Show selected
   document.getElementById('content-' + tab).classList.remove('hidden');
   document.getElementById('tab-' + tab).classList.add('tab-active');
   document.getElementById('tab-' + tab).classList.remove('bg-gray-700');
