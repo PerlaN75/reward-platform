@@ -32,8 +32,6 @@ h1{font-size:32px;font-weight:800;line-height:1.2;color:#fff;text-align:center}
 @media(min-width:700px){.grid-3{grid-template-columns:repeat(3,1fr)}.grid-2{grid-template-columns:repeat(2,1fr)}}
 .card{border-radius:18px;padding:18px;text-align:left;width:100%;border-width:2px;border-style:solid}
 .card h3{font-size:16px;margin-bottom:6px;color:#1e1b4b}.card p{font-size:13px;color:#4b5563;line-height:1.5}
-
-/* HOME.HTML COLORS - Applied to all paddings */
 .card-yellow{background:linear-gradient(180deg,#fef9c3 0%,#fef08a 100%);border-color:#facc15}
 .card-pink{background:linear-gradient(180deg,#ffe4e6 0%,#fecdd3 100%);border-color:#fda4af}
 .card-blue{background:linear-gradient(180deg,#dbeafe 0%,#bfdbfe 100%);border-color:#60a5fa}
@@ -43,12 +41,11 @@ h1{font-size:32px;font-weight:800;line-height:1.2;color:#fff;text-align:center}
 .card-cyan{background:linear-gradient(180deg,#cffafe 0%,#a5f3fc 100%);border-color:#22d3ee}
 .card-lightblue{background:linear-gradient(180deg,#e0e7ff 0%,#c7d2fe 100%);border-color:#818cf8}
 .card-lightpink{background:linear-gradient(180deg,#fce7f3 0%,#fbcfe8 100%);border-color:#f472b6}
-
 .faq-item{border-radius:14px;padding:14px 16px;margin-bottom:10px;width:100%;max-width:600px;text-align:left;border-width:2px;border-style:solid}
 .faq-q{font-weight:700;font-size:14px;margin-bottom:4px;color:#1e1b4b}.faq-a{font-size:13px;color:#4b5563;line-height:1.5}
 .partner-logos{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px}
 .partner-logo{background:#1e1b4b;color:#fff;padding:8px 14px;border-radius:10px;font-weight:800;font-size:13px}
-footer{background:#1e1b4b;padding:26px 16px 90px;text-align:center;width:100%;display:flex;flex-direction:column;align-items:center}
+footer{background:#1e1b4b;padding:26px 16px 40px;text-align:center;width:100%;display:flex;flex-direction:column;align-items:center}
 .footer-links{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
 .footer-links a{color:#a5b4fc;text-decoration:none;font-size:13px}
 .footer-copy{color:#9ca3af;font-size:11px;line-height:1.5;max-width:600px;margin:0 auto;text-align:center}
@@ -63,7 +60,6 @@ footer{background:#1e1b4b;padding:26px 16px 90px;text-align:center;width:100%;di
 .notif-close{font-size:26px;cursor:pointer;font-weight:bold}
 .notif-item{background:#f3f4f6;border-radius:12px;padding:12px 40px 12px 12px;margin-bottom:10px;position:relative;font-size:14px;color:#111;line-height:1.4}
 .notif-del{position:absolute;right:8px;top:8px;width:28px;height:28px;background:#ef4444;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:bold;font-size:14px}
-.ad-wrap{position:fixed;bottom:0;left:0;width:100%;display:flex;justify-content:center;background:rgba(255,255,255,0.96);z-index:9998;padding:6px 0 4px;box-shadow:0 -2px 18px rgba(0,0,0,0.1);border-top:1px solid #e9d5ff}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
@@ -78,20 +74,17 @@ footer{background:#1e1b4b;padding:26px 16px 90px;text-align:center;width:100%;di
 <div class="trust-badges"><span class="trust-badge">✅ Verified Business</span><span class="trust-badge">🔒 Secure & Anti-Fraud</span><span class="trust-badge">🌍 Kigali, Rwanda</span></div>
 <div class="icons-row"><div class="icon-box">⭐</div><div class="icon-box">🏆</div><div class="icon-box">🎁</div><div class="icon-box" onclick="openNotifModal()">🔔<div id="notifCount" class="notif-count" style="display:none;">0</div></div></div>
 </div>
-
 <div class="section section-light"><h2 class="section-title">How It Works</h2><p class="section-sub">Three simple steps to start earning rewards today</p><div class="grid-3">
 <div class="card card-yellow"><div style="font-size:28px">👤</div><h3>1. Create Account</h3><p>Register with email verification. Secure Firebase authentication keeps your account safe.</p></div>
 <div class="card card-pink"><div style="font-size:28px">🎮</div><h3>2. Complete Tasks</h3><p>Choose surveys, games, and offers from trusted partners: Timewall, Lootably, BitLabs and more.</p></div>
 <div class="card card-blue"><div style="font-size:28px">💵</div><h3>3. Earn & Withdraw</h3><p>Earn points for each completed task. Withdraw when you reach minimum threshold.</p></div>
 </div></div>
-
 <div class="section"><h2 class="section-title">Why Choose Reward Platform RW?</h2><p class="section-sub">Built for real users in Rwanda with focus on security and fair rewards</p><div class="grid-2">
 <div class="card card-purple"><div style="font-size:28px">🛡️</div><h3>Anti-Fraud Protected</h3><p>Google reCAPTCHA Enterprise, App Check, email verification and manual review prevent bots and abuse.</p></div>
 <div class="card card-green"><div style="font-size:28px">⚡</div><h3>Real-Time Tracking</h3><p>Firebase Firestore tracks your points, referrals and notifications instantly and securely.</p></div>
 <div class="card card-orange"><div style="font-size:28px">🤝</div><h3>Trusted Partners</h3><p>We only work with verified offerwalls used by millions: Lootably, Timewall, BitLabs, Prime.</p></div>
 <div class="card card-cyan"><div style="font-size:28px">📱</div><h3>Mobile Optimized</h3><p>Works perfectly on all devices. Earn anywhere, anytime in Rwanda and across Africa.</p></div>
 </div><div style="text-align:center;margin-top:22px"><div style="color:#6b7280;font-size:12px;margin-bottom:8px">OUR OFFICIAL PARTNERS</div><div class="partner-logos"><span class="partner-logo">LOOTABLY</span><span class="partner-logo">TIMEWALL</span><span class="partner-logo">BITLABS</span><span class="partner-logo">PRIME</span></div></div></div>
-
 <div class="section section-light"><h2 class="section-title">Frequently Asked Questions</h2><div style="display:flex;flex-direction:column;align-items:center;width:100%">
 <div class="faq-item card-yellow"><div class="faq-q">Is this platform free?</div><div class="faq-a">Yes, 100% free to join and earn. You never pay to complete tasks.</div></div>
 <div class="faq-item card-lightblue"><div class="faq-q">How do I earn points?</div><div class="faq-a">Complete surveys, install apps, play games, and try services from our offerwall partners.</div></div>
@@ -99,11 +92,9 @@ footer{background:#1e1b4b;padding:26px 16px 90px;text-align:center;width:100%;di
 <div class="faq-item card-orange"><div class="faq-q">How to withdraw?</div><div class="faq-a">Go to Home > Withdraw when you reach minimum points. Manual review ensures fair play.</div></div>
 <div class="faq-item card-lightpink"><div class="faq-q">How to contact support?</div><div class="faq-a">Email us at rewardplatformrw@gmail.com - We reply within 24 hours.</div></div>
 </div></div>
-
 <footer><div class="footer-links"><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a><a href="contact.html">Contact Us</a><a href="log.html">Login</a><a href="reg.html">Register</a></div><div class="footer-copy">Reward Platform RW is a reward task platform for users in Rwanda and Africa. We partner with Lootably, Timewall, BitLabs and other verified offerwall providers.<br><br>Contact: rewardplatformrw@gmail.com | Kigali, Rwanda - Digital Advertising Agency<br>© 2025 Reward Platform RW. All rights reserved.</div></footer>
 <div id="startPopup" class="start-popup" onclick="this.style.display='none'"><div class="start-popup-box" onclick="event.stopPropagation()"><h3 style="color:#4c1d95;text-align:left;font-size:22px;margin-bottom:8px;font-weight:900">Menu</h3><p style="color:#6b7280;font-size:13px;text-align:left;margin-bottom:12px">Join thousands earning rewards in Rwanda</p><button class="popup-btn" onclick="secureNavigate('log.html')">🚀 Login</button><button class="popup-btn" onclick="secureNavigate('reg.html')">📝 Register</button><button class="popup-btn" style="background:#f9f5ff;color:#4c1d95;box-shadow:none;border:1px solid #e9d5ff" onclick="document.getElementById('startPopup').style.display='none'; document.querySelector('.section-light').scrollIntoView({behavior:'smooth'})">ℹ️ How it works</button><button class="close-btn" onclick="document.getElementById('startPopup').style.display='none'">Close</button></div></div>
 <div id="notifModal" class="notif-modal" onclick="closeNotifModal()"><div class="notif-modal-box" onclick="event.stopPropagation()"><div class="notif-modal-header"><h3>🔔 Notifications</h3><span class="notif-close" onclick="closeNotifModal()">×</span></div><div id="notifList"></div></div></div>
-<div class="ad-wrap"><div style="max-width:468px;width:100%;display:flex;justify-content:center"><script>atOptions = {'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script><script src="https://bicea.org/22/fe25c5bd01f4bc5e60243e36cd83277c"></script></div></div>
 <script>
 function openStartPopup(){if(window.grecaptcha&&grecaptcha.enterprise){grecaptcha.enterprise.ready(async()=>{try{await grecaptcha.enterprise.execute('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',{action:'START'});}catch(e){}document.getElementById('startPopup').style.display='flex';});}else{document.getElementById('startPopup').style.display='flex';}}
 async function secureNavigate(url){try{if(window.grecaptcha&&grecaptcha.enterprise){await grecaptcha.enterprise.execute('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',{action:'NAVIGATE'});}}catch(e){}location.href=url;}
