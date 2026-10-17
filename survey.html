@@ -5,75 +5,75 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-    body { background:#0f1508; color:white; min-height:100vh; }
-    .header{background:#0f1508;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1a2a12}
+    body{background:#0f1508;color:white;min-height:100vh}
+    .header{background:#0f1508;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1a2a12;position:sticky;top:0;z-index:10}
     .header h2{color:#fbbf24;font-size:18px}
     .header a{color:#000;background:#fbbf24;padding:6px 14px;border-radius:20px;text-decoration:none;font-weight:bold;font-size:12px}
-    .container{padding:20px; max-width:600px; margin:0 auto;}
-    .card{background:#1a2a12; border:1px solid #2a4a1a; border-radius:12px; padding:16px; margin-bottom:14px; display:flex; align-items:center; gap:14px;}
-    .card .icon{font-size:28px; width:50px; height:50px; background:#0f1508; border-radius:10px; display:flex; align-items:center; justify-content:center;}
-    .card h3{font-size:15px; color:#fff;}
-    .card p{font-size:12px; color:#8a9a7a; margin-top:4px;}
-    .badge{margin-left:auto; padding:4px 10px; border-radius:20px; font-size:10px; font-weight:bold;}
-    .pending{background:#332a00; color:#fbbf24; border:1px solid #665500;}
-    .ready{background:#003300; color:#4ade80; border:1px solid #006600;}
-    .note{background:#1a1a00; border:1px dashed #665500; border-radius:10px; padding:14px; margin-top:20px; text-align:center; color:#aaa; font-size:13px; line-height:1.5;}
+    .tabs{display:flex;gap:8px;padding:12px 16px;background:#0f1508}
+    .tab{flex:1;padding:10px;text-align:center;border-radius:8px;font-size:13px;font-weight:bold;cursor:pointer;border:1px solid #2a4a1a;background:#1a2a12;color:#888}
+    .tab.active{background:#fbbf24;color:#000;border-color:#fbbf24}
+    iframe{width:100%;height:calc(100vh - 105px);border:0;background:#fff;display:none}
+    iframe.active{display:block}
+    .placeholder{width:100%;height:calc(100vh - 105px);display:none;align-items:center;justify-content:center;flex-direction:column;color:#8a9a7a;text-align:center;padding:20px}
+    .placeholder.active{display:flex}
+    .placeholder .icon{font-size:40px;margin-bottom:12px}
+    .badge{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:bold;background:#332a00;color:#fbbf24;border:1px solid #665500;margin-top:10px}
   </style>
 </head>
 <body>
 
 <div class="header">
-  <h2>📝 Survey Wall</h2>
+  <h2>📝 Surveys</h2>
   <a href="home.html">Back Home</a>
 </div>
 
-<div class="container">
-  
-  <div class="card">
-    <div class="icon">🔷</div>
-    <div>
-      <h3>Adscend Media</h3>
-      <p>Application received - review 1-2 days</p>
-    </div>
-    <div class="badge pending">PENDING</div>
-  </div>
-
-  <div class="card">
-    <div class="icon">💎</div>
-    <div>
-      <h3>Lootably</h3>
-      <p>Waiting for approval</p>
-    </div>
-    <div class="badge pending">PENDING</div>
-  </div>
-
-  <div class="card">
-    <div class="icon">🧪</div>
-    <div>
-      <h3>BitLabs</h3>
-      <p>Waiting for approval</p>
-    </div>
-    <div class="badge pending">PENDING</div>
-  </div>
-
-  <div class="card">
-    <div class="icon">⭐</div>
-    <div>
-      <h3>AyeT Studios</h3>
-      <p>Waiting for approval</p>
-    </div>
-    <div class="badge pending">PENDING</div>
-  </div>
-
-  <div class="note">
-    ⏳ <b>We are waiting for offerwall approvals.</b><br><br>
-    Your applications are done correctly.<br>
-    Check email <b>rewardplatformrw@gmail.com</b> daily.<br><br>
-    Once approved, I will integrate them here automatically in 5 min each.<br><br>
-    <small>Estimated: 24-48h for Adscend & Lootably</small>
-  </div>
-
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('bitlabs')">BitLabs</div>
+  <div class="tab" onclick="switchTab('adscend')">Adscend</div>
 </div>
+
+<!-- BITLABS -->
+<div id="ph-bitlabs" class="placeholder active">
+  <div class="icon">🧪</div>
+  <h3>BitLabs Surveys</h3>
+  <p style="font-size:13px;margin-top:6px;max-width:300px">High paying surveys for Rwanda users. $0.20 - $2 per survey.</p>
+  <div class="badge">PENDING APPROVAL</div>
+  <p style="font-size:11px;margin-top:12px;color:#666">Application sent. Waiting email.</p>
+</div>
+<iframe id="frame-bitlabs"></iframe>
+
+<!-- ADSCEND -->
+<div id="ph-adscend" class="placeholder">
+  <div class="icon">🔷</div>
+  <h3>Adscend Media</h3>
+  <p style="font-size:13px;margin-top:6px;max-width:300px">Surveys + Offers. Best for East Africa traffic.</p>
+  <div class="badge">APPLICATION RECEIVED</div>
+  <p style="font-size:11px;margin-top:12px;color:#666">Review 1-2 business days.</p>
+</div>
+<iframe id="frame-adscend"></iframe>
+
+<script>
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('iframe').forEach(f=>f.classList.remove('active'));
+  document.querySelectorAll('.placeholder').forEach(p=>p.classList.remove('active'));
+  
+  if(name==='bitlabs'){
+    document.querySelectorAll('.tab')[0].classList.add('active');
+    // WHEN APPROVED: uncomment below 2 lines and add real URL
+    // document.getElementById('frame-bitlabs').src = "BITLABS_URL_HERE";
+    // document.getElementById('frame-bitlabs').classList.add('active');
+    document.getElementById('ph-bitlabs').classList.add('active');
+  } else {
+    document.querySelectorAll('.tab')[1].classList.add('active');
+    // WHEN APPROVED: uncomment below 2 lines and add real URL
+    // document.getElementById('frame-adscend').src = "ADSCEND_URL_HERE";
+    // document.getElementById('frame-adscend').classList.add('active');
+    document.getElementById('ph-adscend').classList.add('active');
+  }
+}
+// TODO when approved, just tell me and I give you the exact src link to paste
+</script>
 
 </body>
 </html>
