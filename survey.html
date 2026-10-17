@@ -9,60 +9,71 @@
     .header{background:#0f1508;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1a2a12}
     .header h2{color:#fbbf24;font-size:18px}
     .header a{color:#000;background:#fbbf24;padding:6px 14px;border-radius:20px;text-decoration:none;font-weight:bold;font-size:12px}
-    iframe { width:100%; height:calc(100vh - 55px); border:0; background:#fff; }
-    .loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#888;text-align:center}
+    .container{padding:20px; max-width:600px; margin:0 auto;}
+    .card{background:#1a2a12; border:1px solid #2a4a1a; border-radius:12px; padding:16px; margin-bottom:14px; display:flex; align-items:center; gap:14px;}
+    .card .icon{font-size:28px; width:50px; height:50px; background:#0f1508; border-radius:10px; display:flex; align-items:center; justify-content:center;}
+    .card h3{font-size:15px; color:#fff;}
+    .card p{font-size:12px; color:#8a9a7a; margin-top:4px;}
+    .badge{margin-left:auto; padding:4px 10px; border-radius:20px; font-size:10px; font-weight:bold;}
+    .pending{background:#332a00; color:#fbbf24; border:1px solid #665500;}
+    .ready{background:#003300; color:#4ade80; border:1px solid #006600;}
+    .note{background:#1a1a00; border:1px dashed #665500; border-radius:10px; padding:14px; margin-top:20px; text-align:center; color:#aaa; font-size:13px; line-height:1.5;}
   </style>
 </head>
 <body>
 
 <div class="header">
-  <h2>📝 CPX Research</h2>
+  <h2>📝 Survey Wall</h2>
   <a href="home.html">Back Home</a>
 </div>
 
-<div id="loader" class="loader">Loading surveys...<br><small style="font-size:11px;color:#666">Please wait</small></div>
+<div class="container">
+  
+  <div class="card">
+    <div class="icon">🔷</div>
+    <div>
+      <h3>Adscend Media</h3>
+      <p>Application received - review 1-2 days</p>
+    </div>
+    <div class="badge pending">PENDING</div>
+  </div>
 
-<iframe id="frame-cpx"></iframe>
+  <div class="card">
+    <div class="icon">💎</div>
+    <div>
+      <h3>Lootably</h3>
+      <p>Waiting for approval</p>
+    </div>
+    <div class="badge pending">PENDING</div>
+  </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app-check.js";
+  <div class="card">
+    <div class="icon">🧪</div>
+    <div>
+      <h3>BitLabs</h3>
+      <p>Waiting for approval</p>
+    </div>
+    <div class="badge pending">PENDING</div>
+  </div>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
-  authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
-  projectId: "reward-platform-rw-2e13d",
-  appId: "1:787550951987:web:724b1463e821b99c90a146"
-};
+  <div class="card">
+    <div class="icon">⭐</div>
+    <div>
+      <h3>AyeT Studios</h3>
+      <p>Waiting for approval</p>
+    </div>
+    <div class="badge pending">PENDING</div>
+  </div>
 
-const app = initializeApp(firebaseConfig);
+  <div class="note">
+    ⏳ <b>We are waiting for offerwall approvals.</b><br><br>
+    Your applications are done correctly.<br>
+    Check email <b>rewardplatformrw@gmail.com</b> daily.<br><br>
+    Once approved, I will integrate them here automatically in 5 min each.<br><br>
+    <small>Estimated: 24-48h for Adscend & Lootably</small>
+  </div>
 
-// --- WISE PROTECTION: NEVER BREAKS SURVEY ---
-let appCheck;
-try {
-  appCheck = initializeAppCheck(app, {
-    provider: new ReCaptchaV3Provider('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1'),
-    isTokenAutoRefreshEnabled: true
-  });
-} catch(e) {
-  console.log("AppCheck skipped, surveys still work");
-}
-
-const auth = getAuth(app);
-
-onAuthStateChanged(auth, (user) => {
-  if(user){
-    const uid = user.uid;
-    const cpx_app_id = "37033";
-    const cpx_url = `https://offers.cpx-research.com/index.php?app_id=${cpx_app_id}&ext_user_id=${uid}&subid_1=${uid}&subid_2=reward_rw_web`;
-    document.getElementById('frame-cpx').src = cpx_url;
-    setTimeout(()=>{ document.getElementById('loader').style.display='none'; }, 1500);
-  } else {
-    window.location.href = "login.html";
-  }
-});
-</script>
+</div>
 
 </body>
 </html>
