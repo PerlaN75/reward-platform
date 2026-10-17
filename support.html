@@ -36,25 +36,21 @@ input:focus,textarea:focus{border-color:#fbbf24;outline:none}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, query, where, getDocs, doc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, query, where, getDocs, doc, getDoc, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app-check.js";
 
 const firebaseConfig = { apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d", storageBucket: "reward-platform-rw-2e13d.firebasestorage.app", messagingSenderId: "787550951987", appId: "1:787550951987:web:724b1463e821b99c90a146" };
 const app = initializeApp(firebaseConfig);
 
-// --- WISE PROTECTION - NEVER BLOCKS USER ---
 try {
   initializeAppCheck(app, {
     provider: new ReCaptchaV3Provider('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1'),
     isTokenAutoRefreshEnabled: true
   });
-} catch(e) {
-  console.log("AppCheck skipped");
-}
+} catch(e) { console.log("AppCheck skipped"); }
 
 const auth = getAuth(app);
 const db = getFirestore(app);
-
 let currentUser=null;
 
 onAuthStateChanged(auth, async (u)=>{
@@ -94,8 +90,11 @@ window.sendTicket = async ()=>{
     });
     status.style.color="#22c55e"; status.innerText="✅ Sent! Admin will reply here.";
     document.getElementById('sMessage').value="";
-    loadMyTickets();
-  }catch(e){ status.style.color="#ef4444"; status.innerText="Failed: "+e.message; }
+    setTimeout(loadMyTickets, 800);
+  }catch(e){ 
+    status.style.color="#ef4444"; 
+    status.innerText="Failed: "+e.message + " — Publish Firestore Rules I gave you!"; 
+  }
   btn.disabled=false; btn.innerText='Send Message';
 }
 
@@ -104,38 +103,40 @@ async function loadMyTickets(){
   if(!currentUser){ el.innerHTML="Login to see tickets..."; return; }
   el.innerHTML="Loading...";
   try{
-    const q=query(collection(db,"supportTickets"), where("uid","==",currentUser.uid));
-    const snap=await getDocs(q);
+    // Try uid first, then userId fallback - both allowed by new rules
+    let snap;
+    try{
+      const q1=query(collection(db,"supportTickets"), where("uid","==",currentUser.uid));
+      snap=await getDocs(q1);
+    }catch(e){ snap={empty:true}; }
+    
     if(snap.empty){
       const q2=query(collection(db,"supportTickets"), where("userId","==",currentUser.uid));
-      const snap2=await getDocs(q2);
-      if(snap2.empty){ el.innerHTML="No tickets yet"; return; }
-      renderTickets(snap2, el);
-      return;
+      snap=await getDocs(q2);
     }
+    if(snap.empty){ el.innerHTML="No tickets yet — send your first message above!"; return; }
     renderTickets(snap, el);
   }catch(e){
-    el.innerHTML="Error: "+e.message+"<br><span style='font-size:10px;color:#aaa'>If permissions error, update Firestore Rules below</span>";
+    el.innerHTML="Error: "+e.message+"<br><br><span style='font-size:11px;color:#fbbf24'>👉 Go to Firebase Console → Firestore → Rules → Publish the rules I gave you (with supportTickets section). Then refresh.</span>";
   }
 }
 
 function renderTickets(snap, el){
+  let docs=[]; snap.forEach(d=> docs.push({id:d.id, ...d.data()}));
+  docs.sort((a,b)=> (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
   let html="";
-  snap.forEach(d=>{
-    const t=d.data();
+  docs.forEach(t=>{
     let dateStr="Just now";
     if(t.createdAt){
       try{
         if(t.createdAt.toDate) dateStr=t.createdAt.toDate().toLocaleString();
         else if(t.createdAt.seconds) dateStr=new Date(t.createdAt.seconds*1000).toLocaleString();
-        else dateStr=new Date(t.createdAt).toLocaleString();
       }catch(e){}
     }
-    html+=`<div class="ticket"><p style="font-size:11px;color:#aaa">${dateStr} - <b>${t.status||'open'}</b></p><p>${escapeHtml(t.message||'')}</p>${t.adminReply? `<div class="reply"><b style="color:#22c55e">Admin Reply:</b><br>${escapeHtml(t.adminReply)}</div>` : "<p style='font-size:11px;color:#fbbf24'>⏳ Waiting for admin reply</p>"}</div>`;
+    html+=`<div class="ticket"><p style="font-size:11px;color:#aaa">${dateStr} - <b style="color:${t.status=='closed'?'#22c55e':'#fbbf24'}">${t.status||'open'}</b></p><p>${escapeHtml(t.message||'')}</p>${t.adminReply? `<div class="reply"><b style="color:#22c55e">Admin Reply:</b><br>${escapeHtml(t.adminReply)}</div>` : "<p style='font-size:11px;color:#fbbf24'>⏳ Waiting for admin reply</p>"}</div>`;
   });
   el.innerHTML=html;
 }
-
 function escapeHtml(t){ return (t||'').toString().replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 </script>
 </body>
