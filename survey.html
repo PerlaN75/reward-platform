@@ -1,79 +1,95 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Surveys - Earn Rewards</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-    body{background:#0f1508;color:white;min-height:100vh}
-    .header{background:#0f1508;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1a2a12;position:sticky;top:0;z-index:10}
-    .header h2{color:#fbbf24;font-size:18px}
-    .header a{color:#000;background:#fbbf24;padding:6px 14px;border-radius:20px;text-decoration:none;font-weight:bold;font-size:12px}
-    .tabs{display:flex;gap:8px;padding:12px 16px;background:#0f1508}
-    .tab{flex:1;padding:10px;text-align:center;border-radius:8px;font-size:13px;font-weight:bold;cursor:pointer;border:1px solid #2a4a1a;background:#1a2a12;color:#888}
-    .tab.active{background:#fbbf24;color:#000;border-color:#fbbf24}
-    iframe{width:100%;height:calc(100vh - 105px);border:0;background:#fff;display:none}
-    iframe.active{display:block}
-    .placeholder{width:100%;height:calc(100vh - 105px);display:none;align-items:center;justify-content:center;flex-direction:column;color:#8a9a7a;text-align:center;padding:20px}
-    .placeholder.active{display:flex}
-    .placeholder .icon{font-size:40px;margin-bottom:12px}
-    .badge{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:bold;background:#332a00;color:#fbbf24;border:1px solid #665500;margin-top:10px}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surveys - Reward Platform RW</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-check-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<style>
+.tab-active { background: #fbbf24; color: black; }
+.iframe-container { height: calc(100vh - 180px); }
+</style>
 </head>
-<body>
+<body class="bg-gray-900 text-white">
 
-<div class="header">
-  <h2>📝 Surveys</h2>
-  <a href="home.html">Back Home</a>
+<!-- SAME HEADER + BACK BUTTON AS PLAY & EARN -->
+<div class="bg-gray-800 p-4 flex items-center justify-between sticky top-0 z-10">
+  <div class="flex items-center gap-3">
+    <a href="home.html" class="w-9 h-9 bg-gray-700 rounded-full flex items-center justify-center"><i class="fa fa-arrow-left"></i></a>
+    <h1 class="font-bold text-lg"><i class="fa fa-file-lines mr-2 text-yellow-400"></i>Surveys</h1>
+  </div>
+  <div class="text-xs text-gray-400" id="userEmail">Loading...</div>
 </div>
 
-<div class="tabs">
-  <div class="tab active" onclick="switchTab('bitlabs')">BitLabs</div>
-  <div class="tab" onclick="switchTab('adscend')">Adscend</div>
+<div class="flex gap-2 p-3 bg-gray-800 border-t border-gray-700">
+  <button onclick="switchTab('bitlabs')" id="tab-bitlabs" class="flex-1 py-3 rounded-xl font-bold tab-active"><i class="fa fa-flask mr-1"></i> BitLabs</button>
+  <button onclick="switchTab('adscend')" id="tab-adscend" class="flex-1 py-3 rounded-xl font-bold bg-gray-700"><i class="fa fa-diamond mr-1"></i> Adscend</button>
 </div>
 
-<!-- BITLABS -->
-<div id="ph-bitlabs" class="placeholder active">
-  <div class="icon">🧪</div>
-  <h3>BitLabs Surveys</h3>
-  <p style="font-size:13px;margin-top:6px;max-width:300px">High paying surveys for Rwanda users. $0.20 - $2 per survey.</p>
-  <div class="badge">PENDING APPROVAL</div>
-  <p style="font-size:11px;margin-top:12px;color:#666">Application sent. Waiting email.</p>
-</div>
-<iframe id="frame-bitlabs"></iframe>
+<div id="statusBanner" class="mx-3 mt-3 p-3 rounded-xl bg-yellow-500/20 border border-yellow-500/30 text-sm"><i class="fa fa-clock mr-2 text-yellow-400"></i><span id="statusText">Waiting for approvals - check email rewardplatformrw@gmail.com</span></div>
 
-<!-- ADSCEND -->
-<div id="ph-adscend" class="placeholder">
-  <div class="icon">🔷</div>
-  <h3>Adscend Media</h3>
-  <p style="font-size:13px;margin-top:6px;max-width:300px">Surveys + Offers. Best for East Africa traffic.</p>
-  <div class="badge">APPLICATION RECEIVED</div>
-  <p style="font-size:11px;margin-top:12px;color:#666">Review 1-2 business days.</p>
+<div class="p-3">
+  <!-- BITLABS - PENDING -->
+  <div id="content-bitlabs" class="iframe-container bg-white rounded-xl overflow-hidden">
+    <div class="h-full flex flex-col items-center justify-center text-gray-800 p-8 text-center">
+      <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-4"><i class="fa fa-flask text-3xl text-blue-600"></i></div>
+      <h3 class="font-bold text-xl mb-2">BitLabs Pending Approval</h3>
+      <p class="text-gray-500 text-sm mb-4">High paying surveys $0.20 - $2 each. For Rwanda traffic.<br>Application under review.</p>
+      <code class="bg-gray-100 px-3 py-2 rounded text-xs">Will be live after approval</code>
+      <p class="text-xs text-gray-400 mt-4">Check email + spam</p>
+    </div>
+  </div>
+
+  <!-- ADSCEND - PENDING -->
+  <div id="content-adscend" class="iframe-container bg-white rounded-xl overflow-hidden hidden">
+    <div class="h-full flex flex-col items-center justify-center text-gray-800 p-8 text-center">
+      <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mb-4"><i class="fa fa-diamond text-3xl text-purple-600"></i></div>
+      <h3 class="font-bold text-xl mb-2">Adscend Media Approved?</h3>
+      <p class="text-gray-500 text-sm mb-4">Application received. Review 1-2 business days.<br>Surveys + Offers, best for East Africa.</p>
+      <code class="bg-gray-100 px-3 py-2 rounded text-xs">ID: Adscend Application Received</code>
+      <p class="text-xs text-gray-400 mt-4">Check rewardplatformrw@gmail.com</p>
+    </div>
+  </div>
 </div>
-<iframe id="frame-adscend"></iframe>
 
 <script>
-function switchTab(name){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('iframe').forEach(f=>f.classList.remove('active'));
-  document.querySelectorAll('.placeholder').forEach(p=>p.classList.remove('active'));
-  
-  if(name==='bitlabs'){
-    document.querySelectorAll('.tab')[0].classList.add('active');
-    // WHEN APPROVED: uncomment below 2 lines and add real URL
-    // document.getElementById('frame-bitlabs').src = "BITLABS_URL_HERE";
-    // document.getElementById('frame-bitlabs').classList.add('active');
-    document.getElementById('ph-bitlabs').classList.add('active');
-  } else {
-    document.querySelectorAll('.tab')[1].classList.add('active');
-    // WHEN APPROVED: uncomment below 2 lines and add real URL
-    // document.getElementById('frame-adscend').src = "ADSCEND_URL_HERE";
-    // document.getElementById('frame-adscend').classList.add('active');
-    document.getElementById('ph-adscend').classList.add('active');
-  }
-}
-// TODO when approved, just tell me and I give you the exact src link to paste
-</script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
+  authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
+  projectId: "reward-platform-rw-2e13d"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
+try {
+  const appCheck = firebase.appCheck();
+  appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);
+} catch(e) { console.log("AppCheck skipped"); }
+
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    document.getElementById('userEmail').innerText = user.email;
+  } else {
+    window.location.href = 'index.html';
+  }
+});
+
+function switchTab(tab) {
+  document.getElementById('content-bitlabs').classList.add('hidden');
+  document.getElementById('content-adscend').classList.add('hidden');
+  
+  document.getElementById('tab-bitlabs').classList.remove('tab-active');
+  document.getElementById('tab-bitlabs').classList.add('bg-gray-700');
+  document.getElementById('tab-adscend').classList.remove('tab-active');
+  document.getElementById('tab-adscend').classList.add('bg-gray-700');
+
+  document.getElementById('content-' + tab).classList.remove('hidden');
+  document.getElementById('tab-' + tab).classList.add('tab-active');
+  document.getElementById('tab-' + tab).classList.remove('bg-gray-700');
+}
+</script>
 </body>
 </html>
