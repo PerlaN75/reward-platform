@@ -6,6 +6,7 @@
 <title>Reward Platform RW</title>
 <script src="https://www.google.com/recaptcha/enterprise.js?render=6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
 body{width:100%;background:#ffffff;color:#1e1b4b;overflow-x:hidden;display:block}
@@ -28,20 +29,15 @@ body{width:100%;background:#ffffff;color:#1e1b4b;overflow-x:hidden;display:block
 #overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:40;display:none}
 #drawer{position:fixed;top:0;left:0;width:88%;max-width:360px;height:100%;background:#fff;z-index:50;transform:translateX(-100%);transition:transform 0.3s ease;overflow-y:auto}
 #drawer.open{transform:translateX(0)}#overlay.show{display:block}
-
-/* HEADER - ALL BUTTONS SAME AS MENU */
 .drawer-header-new{background:#1e1b4b;padding:12px 10px;display:flex;justify-content:space-between;align-items:center}
 .left-auth{display:flex;gap:8px;align-items:center}
 .btn-h-same{padding:7px 14px;border-radius:8px;text-decoration:none;font-weight:800;font-size:13px;text-align:center;background:transparent;color:#fff;border:1.5px solid #fff;cursor:pointer}
-
-/* CONTENT MOVED TO CENTER */
-.drawer-inner{padding:14px 20px 14px 28px}
-.section-bold{font-weight:900;font-size:19px;color:#1e1b4b;margin:22px 0 12px 0}
-.sub-item-clean{width:100%;background:transparent;border:none;padding:11px 0;text-align:left;font-size:15px;font-weight:800;color:#1e1b4b;cursor:pointer;display:block;margin-left:6px}
+.drawer-inner{padding:14px 14px 14px 16px}
+.section-bold{font-weight:900;font-size:19px;color:#1e1b4b;margin:22px 0 12px 2px}
+.sub-item-clean{width:100%;background:transparent;border:none;padding:12px 0;text-align:left;font-size:14.5px;font-weight:700;color:#1e1b4b;cursor:pointer;display:block;margin-left:28px;font-family:'Poppins',sans-serif;letter-spacing:0.15px}
 .sub-item-clean:hover{color:#4c1d95}
-.sub-content{background:#f8f5ff;border-left:3px solid #4c1d95;padding:10px 12px;margin:2px 0 14px 6px;border-radius:0 8px 8px 0;font-size:13px;color:#374151;line-height:1.55;display:none}
+.sub-content{background:#f8f5ff;border-left:3px solid #4c1d95;padding:10px 12px;margin:2px 0 14px 28px;border-radius:0 8px 8px 0;font-size:13px;color:#374151;line-height:1.55;display:none;font-family:'Segoe UI',Arial,sans-serif}
 .sub-content.open{display:block}
-
 footer{background:#1e1b4b;padding:16px 16px 20px;text-align:center;width:100%;margin-top:24px}
 .footer-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:8px}
 .footer-links a{color:#a5b4fc;text-decoration:none;font-size:11px}
@@ -64,79 +60,54 @@ footer{background:#1e1b4b;padding:16px 16px 20px;text-align:center;width:100%;ma
 <div class="trust-badges"><span class="trust-badge-white">✅ Verified Business</span><span class="trust-badge-white">🔒 Secure & Anti-Fraud</span><span class="trust-badge-white">🌍 Kigali, Rwanda</span></div>
 <div class="icons-row"><div class="icon-box">⭐</div><div class="icon-box">🏆</div><div class="icon-box">🎁</div><div class="icon-box" onclick="openNotifModal()">🔔<div id="notifCount" class="notif-count" style="display:none;">0</div></div></div>
 </div>
-
 <div id="overlay" onclick="toggleDrawer()"></div>
 <div id="drawer">
-
 <div class="drawer-header-new">
 <div class="left-auth">
 <a href="log.html" onclick="secureNavigate('log.html');return false;" class="btn-h-same">Login</a>
 <a href="reg.html" onclick="secureNavigate('reg.html');return false;" class="btn-h-same">Register</a>
 </div>
-<a href="index.html" onclick="location.href='index.html';return false;" class="btn-h-same">Menu</a>
+<a href="index.html" class="btn-h-same">Menu</a>
 </div>
-
 <div class="drawer-inner">
-
 <div class="section-bold">How it works</div>
 <button class="sub-item-clean" onclick="toggleSub('s1')">👤 Create account</button>
 <div id="s1" class="sub-content">Create your free account with email verification. We use Firebase secure authentication to protect your data. It takes less than 1 minute to register and you can start earning immediately after verification.</div>
-
 <button class="sub-item-clean" onclick="toggleSub('s2')">✅ Complete tasks</button>
-<div id="s2" class="sub-content">Choose from trusted partners like Lootably, Timewall, BitLabs and Prime. Complete simple tasks: answer surveys, try apps, play games, and test services. Each task shows clear points and estimated time.</div>
-
+<div id="s2" class="sub-content">Choose from trusted partners like Lootably, Timewall, BitLabs and Prime. Complete simple tasks: answer surveys, try apps, play games, and test services.</div>
 <button class="sub-item-clean" onclick="toggleSub('s3')">💰 Earn & Withdraw</button>
-<div id="s3" class="sub-content">Earn points for every completed task. Points are added in real-time. Once you reach the minimum threshold, you can request withdrawal. Our team reviews for fair play to keep the platform safe for everyone.</div>
-
+<div id="s3" class="sub-content">Earn points for every completed task. Points are added in real-time. Once you reach the minimum threshold, you can request withdrawal.</div>
 <div class="section-bold">Why choose Reward Platform RW?</div>
 <button class="sub-item-clean" onclick="toggleSub('s4')">🛡️ Anti-Fraud Protection</button>
-<div id="s4" class="sub-content">We protect users with Google reCAPTCHA Enterprise, Firebase App Check, email verification and manual review. This blocks bots and ensures only real users earn rewards.</div>
-
+<div id="s4" class="sub-content">We protect users with Google reCAPTCHA Enterprise, Firebase App Check, email verification and manual review.</div>
 <button class="sub-item-clean" onclick="toggleSub('s5')">⚡ Real Time Tracking</button>
-<div id="s5" class="sub-content">Your points, referrals and notifications are tracked instantly with Firebase Firestore. When you complete a task, your balance updates immediately.</div>
-
+<div id="s5" class="sub-content">Your points, referrals and notifications are tracked instantly with Firebase Firestore.</div>
 <button class="sub-item-clean" onclick="toggleSub('s6')">🤝 Trusted Partners</button>
-<div id="s6" class="sub-content">We only work with verified global offerwall providers: Lootably, Timewall, BitLabs and Prime. These partners are used by millions worldwide.</div>
-
+<div id="s6" class="sub-content">We only work with verified global offerwall providers: Lootably, Timewall, BitLabs and Prime.</div>
 <button class="sub-item-clean" onclick="toggleSub('s7')">📱 Mobile Optimized</button>
-<div id="s7" class="sub-content">Our platform is 100% optimized for phones and tablets. Works perfectly on low data and slow networks in Rwanda and across Africa.</div>
-
+<div id="s7" class="sub-content">Our platform is 100% optimized for phones and tablets. Works perfectly on low data networks in Rwanda.</div>
 <div class="section-bold">Frequently Asked Questions</div>
 <button class="sub-item-clean" onclick="toggleSub('s8')">🆓 Is this platform free?</button>
-<div id="s8" class="sub-content">Yes, completely free to join and earn. You never pay any fee to complete tasks.</div>
-
+<div id="s8" class="sub-content">Yes, completely free to join and earn. You never pay any fee.</div>
 <button class="sub-item-clean" onclick="toggleSub('s9')">⭐ How do I earn points?</button>
-<div id="s9" class="sub-content">Log in daily, complete surveys, install apps, play games and try new services from our offerwall.</div>
-
+<div id="s9" class="sub-content">Log in daily, complete surveys, install apps, play games and try new services.</div>
 <button class="sub-item-clean" onclick="toggleSub('s10')">🔒 Is my data safe?</button>
-<div id="s10" class="sub-content">Yes. We use Firebase Secure Authentication, Firestore Security Rules, App Check and reCAPTCHA. We never sell your data.</div>
-
+<div id="s10" class="sub-content">Yes. We use Firebase Secure Authentication and never sell your data.</div>
 <button class="sub-item-clean" onclick="toggleSub('s11')">💳 How to withdraw?</button>
-<div id="s11" class="sub-content">Go to Dashboard > Withdraw when you reach the minimum. Our team reviews within 24-48 hours.</div>
-
+<div id="s11" class="sub-content">Go to Dashboard > Withdraw when you reach the minimum.</div>
 <button class="sub-item-clean" onclick="toggleSub('s12')">📧 How to contact support?</button>
-<div id="s12" class="sub-content">Email us at rewardplatformrw@gmail.com. We reply within 24 hours. Based in Kigali, Rwanda.</div>
-
+<div id="s12" class="sub-content">Email us at rewardplatformrw@gmail.com. We reply within 24 hours.</div>
 <hr style="margin:20px 0">
 <a href="privacy.html" style="padding:10px;border-radius:8px;border:1px solid #e9d5ff;background:#fff;text-decoration:none;color:#1e1b4b;font-weight:600;font-size:13px;display:block">Privacy Policy</a>
 <a href="terms.html" style="padding:10px;border-radius:8px;border:1px solid #e9d5ff;background:#fff;text-decoration:none;color:#1e1b4b;font-weight:600;font-size:13px;display:block;margin-top:6px">Terms of Service</a>
 <a href="contact.html" style="padding:10px;border-radius:8px;border:1px solid #e9d5ff;background:#fff;text-decoration:none;color:#1e1b4b;font-weight:600;font-size:13px;display:block;margin-top:6px">Contact Us</a>
-
 </div>
 </div>
-
 <footer><div class="footer-links"><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms</a><a href="contact.html">Contact</a></div><div class="footer-copy">Contact: <b style="color:#fff">rewardplatformrw@gmail.com</b> | Kigali, Rwanda<br>© 2025 Reward Platform RW</div></footer>
-
 <div id="notifModal" class="notif-modal" onclick="closeNotifModal()"><div class="notif-modal-box" onclick="event.stopPropagation()"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3>🔔 Notifications</h3><span style="font-size:26px;cursor:pointer" onclick="closeNotifModal()">×</span></div><div id="notifList"></div></div></div>
-
 <script>
 function toggleDrawer(){document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
-function toggleSub(id){
- const el=document.getElementById(id);
- const isOpen=el.classList.contains('open');
- document.querySelectorAll('.sub-content').forEach(c=>c.classList.remove('open'));
- if(!isOpen){el.classList.add('open');}
-}
+function toggleSub(id){const el=document.getElementById(id);const isOpen=el.classList.contains('open');document.querySelectorAll('.sub-content').forEach(c=>c.classList.remove('open'));if(!isOpen){el.classList.add('open');}}
 async function secureNavigate(url){try{if(window.grecaptcha&&grecaptcha.enterprise){await grecaptcha.enterprise.execute('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',{action:'NAVIGATE'});}}catch(e){}location.href=url;}
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};firebase.initializeApp(firebaseConfig);
 try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
