@@ -20,15 +20,19 @@
 </div>
 
 <div class="p-3 max-w-2xl mx-auto">
-  <!-- 2 CARDS - SAME SIZE AS PLAY.HTML -->
-  <div class="grid grid-cols-2 gap-3">
-    <button onclick="switchTab('bitlabs')" id="card-bitlabs" class="card-active bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
-      <div class="flex items-center gap-1.5 font-black text-[19px]"><span class="bg-blue-600 text-white p-1 rounded"><i class="fa fa-flask text-sm"></i></span> BitLabs</div>
-      <div class="text-[13px] text-gray-700 mt-1">Bitlabs</div>
+  <!-- 3 CARDS - SAME SIZE -->
+  <div class="grid grid-cols-3 gap-3">
+    <button onclick="switchTab('bitlabs')" id="card-bitlabs" class="card-active bg-white rounded-2xl p-3 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
+      <div class="flex items-center gap-1.5 font-black text-[15px]"><span class="bg-blue-600 text-white p-1 rounded"><i class="fa fa-flask text-[11px]"></i></span> BitLabs</div>
+      <div class="text-[11px] text-gray-700 mt-1">Bitlabs</div>
     </button>
-    <button onclick="switchTab('adscend')" id="card-adscend" class="bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
-      <div class="font-black text-[18px] text-gray-800">Adscend<span class="text-purple-600">Media</span></div>
-      <div class="text-[13px] text-gray-700 mt-1">Adscend</div>
+    <button onclick="switchTab('adscend')" id="card-adscend" class="bg-white rounded-2xl p-3 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
+      <div class="font-black text-[14px] text-gray-800">Adscend<span class="text-purple-600">Media</span></div>
+      <div class="text-[11px] text-gray-700 mt-1">Adscend</div>
+    </button>
+    <button onclick="switchTab('inbrain')" id="card-inbrain" class="bg-white rounded-2xl p-3 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
+      <div class="font-black text-[15px] text-[#0E2A47]">inBrain<span class="text-green-500">.ai</span></div>
+      <div class="text-[11px] text-gray-700 mt-1">Inbrain</div>
     </button>
   </div>
 
@@ -61,6 +65,20 @@
         <div id="adscend-iframe-holder" class="hidden w-full mt-4"></div>
       </div>
     </div>
+
+    <!-- INBRAIN -->
+    <div id="content-inbrain" class="p-4 hidden">
+      <div class="border border-gray-100 rounded-xl p-8 text-center min-h-[360px] flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-50">
+        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+          <i class="fa fa-brain text-2xl text-green-600"></i>
+        </div>
+        <h3 class="font-bold text-gray-800 text-[16px]">Inbrain Surveys - Pending</h3>
+        <p class="text-gray-500 text-sm mt-2 leading-5">High quality brand surveys $0.30 - $2<br>We contacted Inbrain for Rwanda access.<br>Your submission is received.</p>
+        <div class="mt-5 bg-yellow-100 text-yellow-800 rounded-full px-5 py-2 text-xs border border-yellow-200"><i class="fa fa-clock mr-2"></i> Waiting for invite email (24h)</div>
+        <div id="inbrain-iframe-holder" class="hidden w-full mt-4"></div>
+      </div>
+    </div>
+
   </div>
 
   <div class="text-center text-xs text-gray-400 mt-3" id="userEmail">loading...</div>
@@ -78,15 +96,17 @@ firebase.auth().onAuthStateChanged(user => {
   if (user) {
     document.getElementById('userEmail').innerText = user.email;
     const uid = encodeURIComponent(user.uid);
-    // When approved, paste real links:
-    // document.getElementById('bitlabs-iframe-holder').innerHTML = `<iframe src="https://web.bitlabs.io?uid=${uid}" class="w-full h-[600px] border-0 rounded-xl"></iframe>`;
+    // When approved, paste real links here:
+    // Example Inbrain when you get Client ID:
+    // document.getElementById('inbrain-iframe-holder').innerHTML = `<iframe src="https://api.inbrain.ai/wall/YOUR_CLIENT_ID?uid=${uid}" class="w-full h-[600px] border-0 rounded-xl"></iframe>`;
+    // document.getElementById('inbrain-iframe-holder').classList.remove('hidden');
   } else {
     window.location.href = 'index.html';
   }
 });
 
 function switchTab(tab) {
-  ['bitlabs','adscend'].forEach(t=>{
+  ['bitlabs','adscend','inbrain'].forEach(t=>{
     document.getElementById('content-'+t).classList.add('hidden');
     document.getElementById('card-'+t).classList.remove('card-active');
   });
