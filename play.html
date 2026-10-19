@@ -20,11 +20,11 @@
 </div>
 
 <div class="p-3 max-w-2xl mx-auto">
-  <!-- 3 CARDS - SAME SIZE LIKE SCREENSHOT -->
+  <!-- 3 CARDS - PRIME, LOOTABLY, AYET -->
   <div class="grid grid-cols-2 gap-3">
-    <button onclick="switchTab('timewall')" id="card-timewall" class="card-active bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
-      <div class="font-black text-[18px]"><span class="text-gray-700">time</span><span class="bg-green-500 text-white px-1.5 rounded">wall</span></div>
-      <div class="text-[13px] text-gray-700 mt-1">TimeWall</div>
+    <button onclick="switchTab('prime')" id="card-prime" class="card-active bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
+      <div class="font-black text-[19px] text-blue-600">PRIME</div>
+      <div class="text-[13px] text-gray-700 mt-1">Prime</div>
     </button>
     <button onclick="switchTab('lootably')" id="card-lootably" class="bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
       <div class="font-black text-[16px] text-purple-600">LOOTABLY</div>
@@ -38,34 +38,49 @@
 
   <!-- CONTENT BELOW -->
   <div class="mt-4 bg-white rounded-xl shadow overflow-hidden">
-    <div class="bg-emerald-500 p-3 flex items-center justify-between text-white font-bold" id="contentHeader">TIMEWALL</div>
+    <div class="bg-emerald-500 p-3 flex items-center justify-between text-white font-bold tracking-wide" id="contentHeader">PRIME</div>
     
-    <div id="content-timewall" class="p-4">
-      <div class="border-2 border-gray-200 rounded-xl p-8 text-center min-h-[350px] flex flex-col items-center justify-center">
-        <div class="text-6xl mb-4">😮</div>
-        <p class="text-gray-600 text-[15px]">Unfortunately we could not find a<br>survey for your profile.</p>
-        <p class="font-semibold mt-4 text-gray-700">No content available today, come back later</p>
-        <p class="text-xs text-gray-400 mt-6">oid: a4671780faec0720 pending</p>
-        <iframe id="timewall-iframe" class="hidden w-full h-[500px] border-0 mt-4"></iframe>
+    <!-- PRIME -->
+    <div id="content-prime" class="p-4">
+      <div class="border border-gray-100 rounded-xl p-8 text-center min-h-[360px] flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-50">
+        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 animate-pulse">
+          <i class="fa fa-bolt text-2xl text-blue-600"></i>
+        </div>
+        <h3 class="font-bold text-gray-800 text-[16px]">Prime Offers Loading</h3>
+        <p class="text-gray-500 text-sm mt-2 leading-5">High-value games and surveys for you.<br>We're activating Rwanda region.</p>
+        <div class="mt-5 bg-gray-900 text-white rounded-full px-5 py-2 text-xs"><i class="fa fa-spinner fa-spin mr-2"></i> Connecting...</div>
+        <div id="prime-iframe-holder" class="hidden w-full mt-4"></div>
       </div>
     </div>
 
+    <!-- LOOTABLY -->
     <div id="content-lootably" class="p-4 hidden">
-      <div class="border-2 border-gray-200 rounded-xl p-8 text-center min-h-[350px] flex flex-col items-center justify-center">
-        <div class="text-6xl mb-4">😮</div>
-        <p class="font-semibold text-gray-700">No content available today, come back later</p>
-        <p class="text-xs text-gray-400 mt-4">Lootably pending approval</p>
+      <div class="border border-gray-100 rounded-xl p-8 text-center min-h-[360px] flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-50">
+        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4 animate-pulse">
+          <i class="fa fa-trophy text-2xl text-purple-600"></i>
+        </div>
+        <h3 class="font-bold text-gray-800 text-[16px]">Lootably Getting Ready</h3>
+        <p class="text-gray-500 text-sm mt-2 leading-5">Exciting game offers and app trials.<br>Almost ready for you.</p>
+        <div class="mt-5 bg-gray-900 text-white rounded-full px-5 py-2 text-xs"><i class="fa fa-spinner fa-spin mr-2"></i> Syncing offers...</div>
+        <div id="lootably-iframe-holder" class="hidden w-full mt-4"></div>
       </div>
     </div>
 
+    <!-- AYET -->
     <div id="content-ayet" class="p-4 hidden">
-      <div class="border-2 border-gray-200 rounded-xl p-8 text-center min-h-[350px] flex flex-col items-center justify-center">
-        <div class="text-6xl mb-4">😮</div>
-        <p class="font-semibold text-gray-700">No content available today, come back later</p>
-        <p class="text-xs text-gray-400 mt-4">AyeT pending approval</p>
+      <div class="border border-gray-100 rounded-xl p-8 text-center min-h-[360px] flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-50">
+        <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-4 animate-pulse">
+          <i class="fa fa-star text-2xl text-yellow-600"></i>
+        </div>
+        <h3 class="font-bold text-gray-800 text-[16px]">AyeT Studios Unlocking</h3>
+        <p class="text-gray-500 text-sm mt-2 leading-5">Premium tasks and games.<br>Your personal offers are on the way.</p>
+        <div class="mt-5 bg-gray-900 text-white rounded-full px-5 py-2 text-xs"><i class="fa fa-spinner fa-spin mr-2"></i> Preparing...</div>
+        <div id="ayet-iframe-holder" class="hidden w-full mt-4"></div>
       </div>
     </div>
   </div>
+
+  <div class="text-center text-xs text-gray-400 mt-3">Earn coins daily • Rwanda</div>
 </div>
 
 <script>
@@ -78,14 +93,18 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
-    const oid = "a4671780faec0720"; // LATEST - your new pending placement
     const uid = encodeURIComponent(user.uid);
-    document.getElementById('timewall-iframe').src = `https://wall.timewall.io/index.html?oid=${oid}&uid=${uid}`;
-  } else { window.location.href = 'index.html'; }
+    // When approved, uncomment and paste your real links:
+    // document.getElementById('prime-iframe-holder').innerHTML = `<iframe src="https://YOUR_PRIME_LINK?subid=${uid}" class="w-full h-[600px] border-0 rounded-xl"></iframe>`;
+    // document.getElementById('lootably-iframe-holder').innerHTML = `<iframe src="https://YOUR_LOOTABLY_LINK?uid=${uid}" class="w-full h-[600px] border-0 rounded-xl"></iframe>`;
+    // document.getElementById('ayet-iframe-holder').innerHTML = `<iframe src="https://YOUR_AYET_LINK?external_identifier=${uid}" class="w-full h-[600px] border-0 rounded-xl"></iframe>`;
+  } else {
+    window.location.href = 'index.html';
+  }
 });
 
 function switchTab(tab) {
-  ['timewall','lootably','ayet'].forEach(t=>{
+  ['prime','lootably','ayet'].forEach(t=>{
     document.getElementById('content-'+t).classList.add('hidden');
     document.getElementById('card-'+t).classList.remove('card-active');
   });
