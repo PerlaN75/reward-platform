@@ -20,13 +20,12 @@
 </div>
 
 <div class="p-3 max-w-2xl mx-auto">
-  <!-- 2 CARDS - SAME SIZE AS PLAY.HTML / SCREENSHOT -->
+  <!-- 2 CARDS - SAME SIZE AS PLAY.HTML -->
   <div class="grid grid-cols-2 gap-3">
     <button onclick="switchTab('bitlabs')" id="card-bitlabs" class="card-active bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
       <div class="flex items-center gap-1.5 font-black text-[19px]"><span class="bg-blue-600 text-white p-1 rounded"><i class="fa fa-flask text-sm"></i></span> BitLabs</div>
       <div class="text-[13px] text-gray-700 mt-1">Bitlabs</div>
     </button>
-
     <button onclick="switchTab('adscend')" id="card-adscend" class="bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
       <div class="font-black text-[18px] text-gray-800">Adscend<span class="text-purple-600">Media</span></div>
       <div class="text-[13px] text-gray-700 mt-1">Adscend</div>
@@ -35,26 +34,30 @@
 
   <!-- CONTENT BELOW -->
   <div class="mt-4 bg-white rounded-xl shadow overflow-hidden">
-    <div class="bg-blue-600 p-3 flex items-center justify-between text-white font-bold" id="contentHeader">BITLABS</div>
+    <div class="bg-blue-600 p-3 flex items-center justify-between text-white font-bold tracking-wide" id="contentHeader">BITLABS</div>
     
+    <!-- BITLABS -->
     <div id="content-bitlabs" class="p-4">
-      <div class="border-2 border-gray-200 rounded-xl p-8 text-center min-h-[350px] flex flex-col items-center justify-center">
-        <div class="text-6xl mb-4">😮</div>
-        <p class="text-gray-600 text-[15px] leading-6">Unfortunately we could not find a<br>survey for your profile.</p>
-        <p class="font-semibold mt-4 text-gray-700">No content available today, come back later</p>
-        <p class="text-xs text-gray-400 mt-6">BitLabs pending approval - high paying surveys $0.20-$2</p>
-        <!-- Ready for when approved - paste your BitLabs wall link here -->
+      <div class="border border-gray-100 rounded-xl p-8 text-center min-h-[360px] flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-50">
+        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 animate-pulse">
+          <i class="fa fa-flask text-2xl text-blue-600"></i>
+        </div>
+        <h3 class="font-bold text-gray-800 text-[16px]">BitLabs Surveys Ready</h3>
+        <p class="text-gray-500 text-sm mt-2 leading-5">High paying surveys $0.20 - $2 for Rwanda.<br>Your personal surveys are being matched.</p>
+        <div class="mt-5 bg-gray-900 text-white rounded-full px-5 py-2 text-xs"><i class="fa fa-spinner fa-spin mr-2"></i> Matching surveys...</div>
         <div id="bitlabs-iframe-holder" class="hidden w-full mt-4"></div>
       </div>
     </div>
 
+    <!-- ADSCEND -->
     <div id="content-adscend" class="p-4 hidden">
-      <div class="border-2 border-gray-200 rounded-xl p-8 text-center min-h-[350px] flex flex-col items-center justify-center">
-        <div class="text-6xl mb-4">😮</div>
-        <p class="text-gray-600 text-[15px] leading-6">Unfortunately we could not find a<br>offer for your profile.</p>
-        <p class="font-semibold mt-4 text-gray-700">No content available today, come back later</p>
-        <p class="text-xs text-gray-400 mt-6">Adscend Media - application under review 1-2 days</p>
-        <!-- Ready for when approved -->
+      <div class="border border-gray-100 rounded-xl p-8 text-center min-h-[360px] flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-50">
+        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4 animate-pulse">
+          <i class="fa fa-diamond text-2xl text-purple-600"></i>
+        </div>
+        <h3 class="font-bold text-gray-800 text-[16px]">Adscend Offers Loading</h3>
+        <p class="text-gray-500 text-sm mt-2 leading-5">Best surveys + offers for East Africa.<br>We are activating your account.</p>
+        <div class="mt-5 bg-gray-900 text-white rounded-full px-5 py-2 text-xs"><i class="fa fa-spinner fa-spin mr-2"></i> Loading offers...</div>
         <div id="adscend-iframe-holder" class="hidden w-full mt-4"></div>
       </div>
     </div>
@@ -74,9 +77,9 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
     document.getElementById('userEmail').innerText = user.email;
-    // When BitLabs approved, paste here:
-    // document.getElementById('bitlabs-iframe-holder').innerHTML = `<iframe src="YOUR_BITLABS_URL?uid=${user.uid}" class="w-full h-[600px] border-0"></iframe>`;
-    // document.getElementById('bitlabs-iframe-holder').classList.remove('hidden');
+    const uid = encodeURIComponent(user.uid);
+    // When approved, paste real links:
+    // document.getElementById('bitlabs-iframe-holder').innerHTML = `<iframe src="https://web.bitlabs.io?uid=${uid}" class="w-full h-[600px] border-0 rounded-xl"></iframe>`;
   } else {
     window.location.href = 'index.html';
   }
