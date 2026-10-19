@@ -7,53 +7,60 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-check-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <style>
-.tab-active { background: #fbbf24; color: black; }
-.iframe-container { height: calc(100vh - 180px); }
+.card-active { border: 2.5px solid #f59e0b !important; box-shadow: 0 4px 15px rgba(245,158,11,0.25); }
 </style>
 </head>
-<body class="bg-gray-900 text-white">
+<body class="bg-gray-100">
+<div class="bg-blue-600 p-3 flex items-center justify-between sticky top-0 z-20">
+  <a href="home.html" class="w-9 h-9 bg-blue-700 rounded-full flex items-center justify-center text-white"><i class="fa fa-arrow-left"></i></a>
+  <div class="bg-white rounded-full px-4 py-1.5 text-sm font-bold">📋 Surveys</div>
+  <i class="fa fa-bell text-white"></i>
+</div>
 
-<!-- SAME HEADER + BACK BUTTON AS PLAY & EARN -->
-<div class="bg-gray-800 p-4 flex items-center justify-between sticky top-0 z-10">
-  <div class="flex items-center gap-3">
-    <a href="home.html" class="w-9 h-9 bg-gray-700 rounded-full flex items-center justify-center"><i class="fa fa-arrow-left"></i></a>
-    <h1 class="font-bold text-lg"><i class="fa fa-file-lines mr-2 text-yellow-400"></i>Surveys</h1>
+<div class="p-3 max-w-2xl mx-auto">
+  <!-- 2 CARDS - SAME SIZE AS PLAY.HTML / SCREENSHOT -->
+  <div class="grid grid-cols-2 gap-3">
+    <button onclick="switchTab('bitlabs')" id="card-bitlabs" class="card-active bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
+      <div class="flex items-center gap-1.5 font-black text-[19px]"><span class="bg-blue-600 text-white p-1 rounded"><i class="fa fa-flask text-sm"></i></span> BitLabs</div>
+      <div class="text-[13px] text-gray-700 mt-1">Bitlabs</div>
+    </button>
+
+    <button onclick="switchTab('adscend')" id="card-adscend" class="bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
+      <div class="font-black text-[18px] text-gray-800">Adscend<span class="text-purple-600">Media</span></div>
+      <div class="text-[13px] text-gray-700 mt-1">Adscend</div>
+    </button>
   </div>
-  <div class="text-xs text-gray-400" id="userEmail">Loading...</div>
-</div>
 
-<div class="flex gap-2 p-3 bg-gray-800 border-t border-gray-700">
-  <button onclick="switchTab('bitlabs')" id="tab-bitlabs" class="flex-1 py-3 rounded-xl font-bold tab-active"><i class="fa fa-flask mr-1"></i> BitLabs</button>
-  <button onclick="switchTab('adscend')" id="tab-adscend" class="flex-1 py-3 rounded-xl font-bold bg-gray-700"><i class="fa fa-diamond mr-1"></i> Adscend</button>
-</div>
+  <!-- CONTENT BELOW -->
+  <div class="mt-4 bg-white rounded-xl shadow overflow-hidden">
+    <div class="bg-blue-600 p-3 flex items-center justify-between text-white font-bold" id="contentHeader">BITLABS</div>
+    
+    <div id="content-bitlabs" class="p-4">
+      <div class="border-2 border-gray-200 rounded-xl p-8 text-center min-h-[350px] flex flex-col items-center justify-center">
+        <div class="text-6xl mb-4">😮</div>
+        <p class="text-gray-600 text-[15px] leading-6">Unfortunately we could not find a<br>survey for your profile.</p>
+        <p class="font-semibold mt-4 text-gray-700">No content available today, come back later</p>
+        <p class="text-xs text-gray-400 mt-6">BitLabs pending approval - high paying surveys $0.20-$2</p>
+        <!-- Ready for when approved - paste your BitLabs wall link here -->
+        <div id="bitlabs-iframe-holder" class="hidden w-full mt-4"></div>
+      </div>
+    </div>
 
-<div id="statusBanner" class="mx-3 mt-3 p-3 rounded-xl bg-yellow-500/20 border border-yellow-500/30 text-sm"><i class="fa fa-clock mr-2 text-yellow-400"></i><span id="statusText">Waiting for approvals - check email rewardplatformrw@gmail.com</span></div>
-
-<div class="p-3">
-  <!-- BITLABS - PENDING -->
-  <div id="content-bitlabs" class="iframe-container bg-white rounded-xl overflow-hidden">
-    <div class="h-full flex flex-col items-center justify-center text-gray-800 p-8 text-center">
-      <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-4"><i class="fa fa-flask text-3xl text-blue-600"></i></div>
-      <h3 class="font-bold text-xl mb-2">BitLabs Pending Approval</h3>
-      <p class="text-gray-500 text-sm mb-4">High paying surveys $0.20 - $2 each. For Rwanda traffic.<br>Application under review.</p>
-      <code class="bg-gray-100 px-3 py-2 rounded text-xs">Will be live after approval</code>
-      <p class="text-xs text-gray-400 mt-4">Check email + spam</p>
+    <div id="content-adscend" class="p-4 hidden">
+      <div class="border-2 border-gray-200 rounded-xl p-8 text-center min-h-[350px] flex flex-col items-center justify-center">
+        <div class="text-6xl mb-4">😮</div>
+        <p class="text-gray-600 text-[15px] leading-6">Unfortunately we could not find a<br>offer for your profile.</p>
+        <p class="font-semibold mt-4 text-gray-700">No content available today, come back later</p>
+        <p class="text-xs text-gray-400 mt-6">Adscend Media - application under review 1-2 days</p>
+        <!-- Ready for when approved -->
+        <div id="adscend-iframe-holder" class="hidden w-full mt-4"></div>
+      </div>
     </div>
   </div>
 
-  <!-- ADSCEND - PENDING -->
-  <div id="content-adscend" class="iframe-container bg-white rounded-xl overflow-hidden hidden">
-    <div class="h-full flex flex-col items-center justify-center text-gray-800 p-8 text-center">
-      <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mb-4"><i class="fa fa-diamond text-3xl text-purple-600"></i></div>
-      <h3 class="font-bold text-xl mb-2">Adscend Media Approved?</h3>
-      <p class="text-gray-500 text-sm mb-4">Application received. Review 1-2 business days.<br>Surveys + Offers, best for East Africa.</p>
-      <code class="bg-gray-100 px-3 py-2 rounded text-xs">ID: Adscend Application Received</code>
-      <p class="text-xs text-gray-400 mt-4">Check rewardplatformrw@gmail.com</p>
-    </div>
-  </div>
+  <div class="text-center text-xs text-gray-400 mt-3" id="userEmail">loading...</div>
 </div>
 
 <script>
@@ -64,31 +71,25 @@ const firebaseConfig = {
 };
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
-try {
-  const appCheck = firebase.appCheck();
-  appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);
-} catch(e) { console.log("AppCheck skipped"); }
-
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
     document.getElementById('userEmail').innerText = user.email;
+    // When BitLabs approved, paste here:
+    // document.getElementById('bitlabs-iframe-holder').innerHTML = `<iframe src="YOUR_BITLABS_URL?uid=${user.uid}" class="w-full h-[600px] border-0"></iframe>`;
+    // document.getElementById('bitlabs-iframe-holder').classList.remove('hidden');
   } else {
     window.location.href = 'index.html';
   }
 });
 
 function switchTab(tab) {
-  document.getElementById('content-bitlabs').classList.add('hidden');
-  document.getElementById('content-adscend').classList.add('hidden');
-  
-  document.getElementById('tab-bitlabs').classList.remove('tab-active');
-  document.getElementById('tab-bitlabs').classList.add('bg-gray-700');
-  document.getElementById('tab-adscend').classList.remove('tab-active');
-  document.getElementById('tab-adscend').classList.add('bg-gray-700');
-
-  document.getElementById('content-' + tab).classList.remove('hidden');
-  document.getElementById('tab-' + tab).classList.add('tab-active');
-  document.getElementById('tab-' + tab).classList.remove('bg-gray-700');
+  ['bitlabs','adscend'].forEach(t=>{
+    document.getElementById('content-'+t).classList.add('hidden');
+    document.getElementById('card-'+t).classList.remove('card-active');
+  });
+  document.getElementById('content-'+tab).classList.remove('hidden');
+  document.getElementById('card-'+tab).classList.add('card-active');
+  document.getElementById('contentHeader').innerText = tab.toUpperCase();
 }
 </script>
 </body>
