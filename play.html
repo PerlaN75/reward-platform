@@ -3,59 +3,67 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Play & Earn - Reward Platform RW</title>
+<title>Play & Earn</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-check-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <style>
-.tab-active { background: #7c3aed; color: white; }
-.iframe-container { height: calc(100vh - 180px); }
+.card-active { border: 2.5px solid #f59e0b !important; box-shadow: 0 4px 15px rgba(245,158,11,0.25); }
 </style>
 </head>
-<body class="bg-gray-900 text-white">
-<div class="bg-gray-800 p-4 flex items-center justify-between sticky top-0 z-10">
-  <div class="flex items-center gap-3">
-    <a href="home.html" class="w-9 h-9 bg-gray-700 rounded-full flex items-center justify-center"><i class="fa fa-arrow-left"></i></a>
-    <h1 class="font-bold text-lg"><i class="fa fa-gamepad mr-2 text-purple-400"></i>Play & Earn</h1>
-  </div>
-  <div class="text-xs text-gray-400" id="userEmail">Loading...</div>
+<body class="bg-gray-100">
+<div class="bg-blue-600 p-3 flex items-center justify-between sticky top-0 z-20">
+  <a href="home.html" class="w-9 h-9 bg-blue-700 rounded-full flex items-center justify-center text-white"><i class="fa fa-arrow-left"></i></a>
+  <div class="bg-white rounded-full px-4 py-1.5 text-sm font-bold">💰 Play & Earn</div>
+  <i class="fa fa-bell text-white"></i>
 </div>
 
-<div class="flex gap-2 p-3 bg-gray-800 border-t border-gray-700">
-  <button onclick="switchTab('timewall')" id="tab-timewall" class="flex-1 py-2.5 rounded-xl font-bold tab-active text-sm"><i class="fa fa-clock mr-1"></i> Timewall</button>
-  <button onclick="switchTab('lootably')" id="tab-lootably" class="flex-1 py-2.5 rounded-xl font-bold bg-gray-700 text-sm"><i class="fa fa-trophy mr-1"></i> Lootably</button>
-  <button onclick="switchTab('ayet')" id="tab-ayet" class="flex-1 py-2.5 rounded-xl font-bold bg-gray-700 text-sm"><i class="fa fa-star mr-1"></i> AyeT</button>
-</div>
-
-<div id="statusBanner" class="mx-3 mt-3 p-3 rounded-xl bg-yellow-500/20 border border-yellow-500/30 text-sm"><i class="fa fa-clock mr-2 text-yellow-400"></i><span id="statusText">Timewall ready. Switch tabs for others.</span></div>
-
-<div class="p-3">
-  <!-- TIMEWALL - LIVE -->
-  <div id="content-timewall" class="iframe-container bg-white rounded-xl overflow-hidden">
-    <iframe id="timewall-iframe" src="about:blank" class="w-full h-full border-0" allow="fullscreen"></iframe>
+<div class="p-3 max-w-2xl mx-auto">
+  <!-- 3 CARDS - SAME SIZE LIKE SCREENSHOT -->
+  <div class="grid grid-cols-2 gap-3">
+    <button onclick="switchTab('timewall')" id="card-timewall" class="card-active bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
+      <div class="font-black text-[18px]"><span class="text-gray-700">time</span><span class="bg-green-500 text-white px-1.5 rounded">wall</span></div>
+      <div class="text-[13px] text-gray-700 mt-1">TimeWall</div>
+    </button>
+    <button onclick="switchTab('lootably')" id="card-lootably" class="bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
+      <div class="font-black text-[16px] text-purple-600">LOOTABLY</div>
+      <div class="text-[13px] text-gray-700 mt-1">Lootably</div>
+    </button>
+    <button onclick="switchTab('ayet')" id="card-ayet" class="bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
+      <div class="font-black text-[17px] flex gap-1"><i class="fa fa-star text-yellow-500"></i> AYE-T</div>
+      <div class="text-[13px] text-gray-700 mt-1">AyeT Studios</div>
+    </button>
   </div>
 
-  <!-- LOOTABLY - PENDING -->
-  <div id="content-lootably" class="iframe-container bg-white rounded-xl overflow-hidden hidden">
-    <div class="h-full flex flex-col items-center justify-center text-gray-800 p-8 text-center">
-      <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mb-4"><i class="fa fa-hourglass-half text-3xl text-purple-600"></i></div>
-      <h3 class="font-bold text-xl mb-2">Lootably Pending Approval</h3>
-      <p class="text-gray-500 text-sm mb-4">Application under review. Tonight or Monday.<br>Once approved we paste Wall ID here.</p>
-      <code class="bg-gray-100 px-3 py-2 rounded text-xs">ID Placeholder: LOOTABLY_WALL_ID</code>
-      <p class="text-xs text-gray-400 mt-4">Check email: rewardplatformrw@gmail.com</p>
+  <!-- CONTENT BELOW -->
+  <div class="mt-4 bg-white rounded-xl shadow overflow-hidden">
+    <div class="bg-emerald-500 p-3 flex items-center justify-between text-white font-bold" id="contentHeader">TIMEWALL</div>
+    
+    <div id="content-timewall" class="p-4">
+      <div class="border-2 border-gray-200 rounded-xl p-8 text-center min-h-[350px] flex flex-col items-center justify-center">
+        <div class="text-6xl mb-4">😮</div>
+        <p class="text-gray-600 text-[15px]">Unfortunately we could not find a<br>survey for your profile.</p>
+        <p class="font-semibold mt-4 text-gray-700">No content available today, come back later</p>
+        <p class="text-xs text-gray-400 mt-6">oid: a4671780faec0720 pending</p>
+        <iframe id="timewall-iframe" class="hidden w-full h-[500px] border-0 mt-4"></iframe>
+      </div>
     </div>
-  </div>
 
-  <!-- AYET - PENDING -->
-  <div id="content-ayet" class="iframe-container bg-white rounded-xl overflow-hidden hidden">
-    <div class="h-full flex flex-col items-center justify-center text-gray-800 p-8 text-center">
-      <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mb-4"><i class="fa fa-star text-3xl text-yellow-600"></i></div>
-      <h3 class="font-bold text-xl mb-2">AyeT Studios Pending</h3>
-      <p class="text-gray-500 text-sm mb-4">Application sent. Waiting for approval email.<br>We will integrate AdWall + Postback.</p>
-      <code class="bg-gray-100 px-3 py-2 rounded text-xs">Will be: AYET_OFFERWALL</code>
-      <p class="text-xs text-gray-400 mt-4">Check email + spam folder</p>
+    <div id="content-lootably" class="p-4 hidden">
+      <div class="border-2 border-gray-200 rounded-xl p-8 text-center min-h-[350px] flex flex-col items-center justify-center">
+        <div class="text-6xl mb-4">😮</div>
+        <p class="font-semibold text-gray-700">No content available today, come back later</p>
+        <p class="text-xs text-gray-400 mt-4">Lootably pending approval</p>
+      </div>
+    </div>
+
+    <div id="content-ayet" class="p-4 hidden">
+      <div class="border-2 border-gray-200 rounded-xl p-8 text-center min-h-[350px] flex flex-col items-center justify-center">
+        <div class="text-6xl mb-4">😮</div>
+        <p class="font-semibold text-gray-700">No content available today, come back later</p>
+        <p class="text-xs text-gray-400 mt-4">AyeT pending approval</p>
+      </div>
     </div>
   </div>
 </div>
@@ -68,40 +76,22 @@ const firebaseConfig = {
 };
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
-try {
-  const appCheck = firebase.appCheck();
-  appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);
-} catch(e) { console.log("AppCheck skipped"); }
-
-let currentUserId = null;
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
-    document.getElementById('userEmail').innerText = user.email;
-    currentUserId = user.uid;
-    const oid = "a4671780faec0720";
+    const oid = "a4671780faec0720"; // LATEST - your new pending placement
     const uid = encodeURIComponent(user.uid);
     document.getElementById('timewall-iframe').src = `https://wall.timewall.io/index.html?oid=${oid}&uid=${uid}`;
-    document.getElementById('statusText').innerText = "Timewall ready. Earn points by completing tasks.";
-  } else {
-    window.location.href = 'index.html';
-  }
+  } else { window.location.href = 'index.html'; }
 });
 
 function switchTab(tab) {
-  document.getElementById('content-timewall').classList.add('hidden');
-  document.getElementById('content-lootably').classList.add('hidden');
-  document.getElementById('content-ayet').classList.add('hidden');
-  
-  document.getElementById('tab-timewall').classList.remove('tab-active');
-  document.getElementById('tab-timewall').classList.add('bg-gray-700');
-  document.getElementById('tab-lootably').classList.remove('tab-active');
-  document.getElementById('tab-lootably').classList.add('bg-gray-700');
-  document.getElementById('tab-ayet').classList.remove('tab-active');
-  document.getElementById('tab-ayet').classList.add('bg-gray-700');
-
-  document.getElementById('content-' + tab).classList.remove('hidden');
-  document.getElementById('tab-' + tab).classList.add('tab-active');
-  document.getElementById('tab-' + tab).classList.remove('bg-gray-700');
+  ['timewall','lootably','ayet'].forEach(t=>{
+    document.getElementById('content-'+t).classList.add('hidden');
+    document.getElementById('card-'+t).classList.remove('card-active');
+  });
+  document.getElementById('content-'+tab).classList.remove('hidden');
+  document.getElementById('card-'+tab).classList.add('card-active');
+  document.getElementById('contentHeader').innerText = tab.toUpperCase();
 }
 </script>
 </body>
