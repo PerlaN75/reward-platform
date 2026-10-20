@@ -4,21 +4,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Support - Reward RW</title>
 <style>
-*{box-sizing:border-box;font-family:Arial} body{background:#0f1508;color:white;padding:20px}
-.card{background:#1a2a12;padding:20px;border-radius:16px;border:1px solid #2a3d1f;max-width:500px;margin:20px auto}
-input,textarea{width:100%;padding:12px;margin:8px 0;background:#0a0f06;border:1px solid #2a3d1f;border-radius:10px;color:white}
-input:focus,textarea:focus{border-color:#fbbf24;outline:none}
-.btn{padding:12px;width:100%;background:#fbbf24;color:black;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin-top:10px}
+*{box-sizing:border-box;font-family:Arial;-webkit-tap-highlight-color:transparent} *:focus{outline:none !important}
+body{background:#f3f4f6;color:#111827;padding:14px 14px 90px 14px;min-height:100vh}
+.card{background:#ffffff;padding:18px;border-radius:20px;border:2px solid #e5e7eb;max-width:500px;margin:14px auto;box-shadow:0 8px 24px rgba(0,0,0,0.06)}
+input,textarea{width:100%;padding:12px 14px;margin:8px 0;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:12px;color:#111827;font-size:14px}
+input:focus,textarea:focus{border-color:#2563eb;outline:none;background:#fff}
+.btn{padding:13px;width:100%;background:#2563eb;color:#fff;border:none;border-radius:12px;font-weight:bold;cursor:pointer;margin-top:10px;box-shadow:0 3px 0 #1d4ed8;font-size:14px}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 #1d4ed8}
 .btn:disabled{opacity:0.6}
-.ticket{background:#0a0f06;padding:12px;border-radius:10px;margin:10px 0;border-left:4px solid #fbbf24}
-.reply{background:#1a2410;padding:10px;border-radius:8px;margin-top:8px;border-left:3px solid #22c55e}
-.back-home{display:block;width:40%;max-width:200px;margin:20px auto 0 auto;background:#fbbf24;color:#000;border-radius:50px;padding:12px;font-weight:bold;font-size:14px;text-align:center;text-decoration:none}
+.ticket{background:#f9fafb;padding:12px;border-radius:12px;margin:10px 0;border-left:4px solid #2563eb;border-top:1.5px solid #e5e7eb;border-right:1.5px solid #e5e7eb;border-bottom:1.5px solid #e5e7eb;color:#111827}
+.reply{background:#f0fdf4;padding:10px;border-radius:10px;margin-top:8px;border-left:3px solid #22c55e;border:1.5px solid #bbf7d0;border-left-width:3px}
+.back-home{display:block;width:44%;max-width:200px;margin:18px auto 0 auto;background:#fff;color:#111827;border:1.5px solid #e5e7eb;border-radius:20px;padding:12px;font-weight:bold;font-size:13px;text-align:center;text-decoration:none;box-shadow:0 2px 0 #e5e7eb}
+.back-home:active{transform:scale(0.98)}
 </style>
 </head>
 <body>
 <div class="card">
-<h2 style="color:#fbbf24">Contact Support</h2>
-<p style="font-size:12px;color:#aaa">No email needed - message goes directly to admin</p>
+<h2 style="color:#111827;font-weight:900">Contact Support</h2>
+<p style="font-size:12px;color:#6b7280;margin:4px 0 8px">No email needed - message goes directly to admin</p>
 <input id="sName" placeholder="Your username" readonly>
 <input id="sEmail" placeholder="Your email" readonly>
 <textarea id="sMessage" rows="5" placeholder="Describe your issue..."></textarea>
@@ -27,8 +30,8 @@ input:focus,textarea:focus{border-color:#fbbf24;outline:none}
 </div>
 
 <div class="card">
-<h3 style="color:#fbbf24">Your Tickets & Replies</h3>
-<div id="myTickets">Login to see tickets...</div>
+<h3 style="color:#111827;font-weight:900">Your Tickets & Replies</h3>
+<div id="myTickets" style="color:#6b7280;font-size:13px">Login to see tickets...</div>
 </div>
 
 <a href="more.html" class="back-home">Back to More</a>
@@ -41,18 +44,15 @@ import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com
 
 const firebaseConfig = { apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d", storageBucket: "reward-platform-rw-2e13d.firebasestorage.app", messagingSenderId: "787550951987", appId: "1:787550951987:web:724b1463e821b99c90a146" };
 const app = initializeApp(firebaseConfig);
-
 try {
   initializeAppCheck(app, {
     provider: new ReCaptchaV3Provider('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1'),
     isTokenAutoRefreshEnabled: true
   });
 } catch(e) { console.log("AppCheck skipped"); }
-
 const auth = getAuth(app);
 const db = getFirestore(app);
 let currentUser=null;
-
 onAuthStateChanged(auth, async (u)=>{
   currentUser=u;
   if(!u){ window.location.href='login.html'; return; }
@@ -68,7 +68,6 @@ onAuthStateChanged(auth, async (u)=>{
     loadMyTickets();
   }
 });
-
 window.sendTicket = async ()=>{
   const name=document.getElementById('sName').value.trim();
   const email=document.getElementById('sEmail').value.trim();
@@ -97,19 +96,16 @@ window.sendTicket = async ()=>{
   }
   btn.disabled=false; btn.innerText='Send Message';
 }
-
 async function loadMyTickets(){
   const el=document.getElementById('myTickets');
   if(!currentUser){ el.innerHTML="Login to see tickets..."; return; }
   el.innerHTML="Loading...";
   try{
-    // Try uid first, then userId fallback - both allowed by new rules
     let snap;
     try{
       const q1=query(collection(db,"supportTickets"), where("uid","==",currentUser.uid));
       snap=await getDocs(q1);
     }catch(e){ snap={empty:true}; }
-    
     if(snap.empty){
       const q2=query(collection(db,"supportTickets"), where("userId","==",currentUser.uid));
       snap=await getDocs(q2);
@@ -117,10 +113,9 @@ async function loadMyTickets(){
     if(snap.empty){ el.innerHTML="No tickets yet — send your first message above!"; return; }
     renderTickets(snap, el);
   }catch(e){
-    el.innerHTML="Error: "+e.message+"<br><br><span style='font-size:11px;color:#fbbf24'>👉 Go to Firebase Console → Firestore → Rules → Publish the rules I gave you (with supportTickets section). Then refresh.</span>";
+    el.innerHTML="Error: "+e.message+"<br><br><span style='font-size:11px;color:#2563eb'>👉 Go to Firebase Console → Firestore → Rules → Publish the rules I gave you (with supportTickets section). Then refresh.</span>";
   }
 }
-
 function renderTickets(snap, el){
   let docs=[]; snap.forEach(d=> docs.push({id:d.id, ...d.data()}));
   docs.sort((a,b)=> (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
@@ -133,7 +128,7 @@ function renderTickets(snap, el){
         else if(t.createdAt.seconds) dateStr=new Date(t.createdAt.seconds*1000).toLocaleString();
       }catch(e){}
     }
-    html+=`<div class="ticket"><p style="font-size:11px;color:#aaa">${dateStr} - <b style="color:${t.status=='closed'?'#22c55e':'#fbbf24'}">${t.status||'open'}</b></p><p>${escapeHtml(t.message||'')}</p>${t.adminReply? `<div class="reply"><b style="color:#22c55e">Admin Reply:</b><br>${escapeHtml(t.adminReply)}</div>` : "<p style='font-size:11px;color:#fbbf24'>⏳ Waiting for admin reply</p>"}</div>`;
+    html+=`<div class="ticket"><p style="font-size:11px;color:#9ca3af">${dateStr} - <b style="color:${t.status=='closed'?'#22c55e':'#2563eb'}">${t.status||'open'}</b></p><p style="margin-top:4px">${escapeHtml(t.message||'')}</p>${t.adminReply? `<div class="reply"><b style="color:#22c55e">Admin Reply:</b><br>${escapeHtml(t.adminReply)}</div>` : "<p style='font-size:11px;color:#2563eb;margin-top:6px'>⏳ Waiting for admin reply</p>"}</div>`;
   });
   el.innerHTML=html;
 }
