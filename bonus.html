@@ -22,6 +22,7 @@ h1{color:#111827;font-size:26px;font-weight:900;margin-bottom:6px}
 .big{font-size:48px;margin-bottom:8px}
 .points{font-size:24px;color:#2563eb;font-weight:900}
 .timer{font-size:13px;color:#6b7280;margin-top:10px;font-weight:600}
+.ad-hint{font-size:10px;color:#9ca3af;margin-top:6px;font-style:italic}
 .btn{width:100%;background:#2563eb;color:#fff;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:15px;cursor:pointer;margin-top:14px;box-shadow:0 4px 0 #1d4ed8}
 .btn:active{transform:translateY(2px);box-shadow:0 2px 0 #1d4ed8}
 .btn:disabled{background:#9ca3af;color:#fff;cursor:not-allowed;box-shadow:none}
@@ -41,6 +42,7 @@ h1{color:#111827;font-size:26px;font-weight:900;margin-bottom:6px}
 <div class="big">💰</div>
 <div class="points">+10 Points</div>
 <div class="timer" id="timer">Checking...</div>
+<div class="ad-hint" id="adHint">⏳ Ad loading, please wait...</div>
 </div>
 <button class="btn" id="claimBtn" disabled>Loading...</button>
 <div class="info" id="info">Daily reward - no ad required</div>
@@ -59,11 +61,12 @@ firebase.initializeApp(firebaseConfig);
 try {
   const appCheck = firebase.appCheck();
   appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);
-} catch(e) { console.log("AppCheck skipped"); }
+} catch(e) {}
 const auth=firebase.auth(),db=firebase.firestore();
 let currentUser=null,bal=0,canClaim=false,waitTimer=null;
 const claimBtn=document.getElementById('claimBtn');
 const timerEl=document.getElementById('timer');
+const adHintEl=document.getElementById('adHint');
 const infoEl=document.getElementById('info');
 auth.onAuthStateChanged(async(u)=>{
 if(!u){location.href='./index.html';return;}
@@ -76,26 +79,19 @@ bal=d.balance||d.points||0;
 let lastTs = d.lastBonusTimestamp;
 if(lastTs){
   let lastMs = lastTs.toMillis ? lastTs.toMillis() : lastTs;
-  let nowMs = Date.now();
-  let diffHours = (nowMs - lastMs) / (1000*60*60);
+  let diffHours = (Date.now() - lastMs) / (1000*60*60);
   if(diffHours < 24){
     let remain = Math.ceil(24 - diffHours);
     timerEl.textContent=`✅ Already claimed. Wait ${remain}h`;
+    adHintEl.style.display='none';
     claimBtn.textContent=`Come back in ${remain}h`;
     claimBtn.disabled=true;
     infoEl.textContent=`Next bonus in ${remain} hours`;
     return;
   }
-} else if(d.lastBonusDate){
-  if(d.lastBonusDate === new Date().toDateString()){
-    timerEl.textContent='✅ Already claimed today';
-    claimBtn.textContent='Come back tomorrow';
-    claimBtn.disabled=true;
-    return;
-  }
 }
 }
-}catch(e){console.log(e);}
+}catch(e){}
 startWait();
 });
 function startWait(){
@@ -104,18 +100,22 @@ canClaim=false;
 claimBtn.disabled=true;
 claimBtn.textContent=`Wait ${sec}s...`;
 timerEl.textContent=`Please wait ${sec} seconds`;
+adHintEl.textContent='⏳ Ad loading, please wait...';
+adHintEl.style.display='block';
 clearInterval(waitTimer);
 waitTimer=setInterval(()=>{
 sec--;
 if(sec>0){
 claimBtn.textContent=`Wait ${sec}s...`;
 timerEl.textContent=`Please wait ${sec} seconds`;
+if(sec<=5) adHintEl.textContent='✅ Ad loaded - almost ready...';
 }else{
 clearInterval(waitTimer);
 canClaim=true;
 claimBtn.disabled=false;
 claimBtn.textContent='🎉 Claim 10 pts Free';
 timerEl.textContent='Ready to claim!';
+adHintEl.style.display='none';
 }
 },1000);
 }
@@ -126,8 +126,7 @@ claimBtn.textContent='Claiming...';
 bal+=10;
 try{
 await db.collection('users').doc(currentUser.uid).set({
-balance:bal,
-points:bal,
+balance:bal,points:bal,
 lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),
 lastBonusTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
 lastBonusDate: new Date().toDateString()
@@ -140,12 +139,8 @@ timerEl.textContent='✅ Claimed! +10 pts added';
 claimBtn.style.display='none';
 infoEl.textContent='Thanks! You can support us below (optional)';
 document.getElementById('supportBox').style.display='block';
+adHintEl.style.display='none';
 }catch(e){
-if(e.code === 'permission-denied' || e.message.includes('permissions')){
-  alert('You already claimed! Wait 24h - anti-hack protection');
-} else {
-  alert('Error: '+e.message);
-}
 claimBtn.disabled=false;
 claimBtn.textContent='🎉 Claim 10 pts Free';
 }
