@@ -11,9 +11,9 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
 body{width:100%;background:#ffffff;color:#1e1b4b;overflow-x:hidden;display:block}
 .top-bar{width:100%;background:#ffffff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ede9fe;position:sticky;top:0;z-index:20}
-.hamburger{width:42px;height:42px;background:#1e1b4b;color:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer}
-.logo-small{font-weight:900;font-size:14px;color:#1e1b4b;display:flex;align-items:center;gap:6px}
-.logo-small span{background:#fde047;padding:5px 10px;border-radius:8px;border:1px solid #facc15}
+/* SMALL RECTANGLE, AWAY FROM BORDER */
+.hamburger{width:48px;height:30px;background:#1e1b4b;color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;margin-left:12px}
+.logo-alone{height:32px;width:auto;display:block;object-fit:contain;margin-right:8px}
 .hero{width:100%;background:#ffffff;padding:20px 16px 24px;text-align:center;display:flex;flex-direction:column;align-items:center}
 .welcome-card{width:92%;max-width:360px;background:#ffffff;border:2px solid #4B5320;border-radius:22px;padding:20px 18px 16px;text-align:center;box-shadow:0 5px 0 #4B5320,0 12px 30px rgba(75,83,32,0.22);margin:6px auto 0}
 .welcome-card h1{font-size:26px;font-weight:900;line-height:1.2;color:#1e1b4b;margin:0}
@@ -38,13 +38,9 @@ body{width:100%;background:#ffffff;color:#1e1b4b;overflow-x:hidden;display:block
 .sub-item-clean:hover{color:#4c1d95}
 .sub-content{background:#f8f5ff;border-left:3px solid #4c1d95;padding:10px 12px;margin:2px 0 14px 28px;border-radius:0 8px 8px 0;font-size:13px;color:#374151;line-height:1.55;display:none}
 .sub-content.open{display:block}
-
-/* LEGAL - OWN FONT STYLE */
 .legal-separator{border:none;border-top:1.5px solid #e5e7eb;margin:26px 0 10px 2px}
 .legal-item{width:100%;background:transparent;border:none;padding:11px 0;text-align:left;font-size:14px;font-weight:600;color:#1e1b4b;cursor:pointer;display:block;margin-left:28px;font-family:'Segoe UI',Arial,sans-serif;letter-spacing:0.1px}
-.legal-item:hover{color:#111827}
 .link-more{display:inline-block;margin-top:8px;padding:6px 12px;background:#1e1b4b;color:#fff;border-radius:6px;text-decoration:none;font-weight:700;font-size:12px}
-
 footer{background:#1e1b4b;padding:16px 16px 20px;text-align:center;width:100%;margin-top:24px}
 .footer-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:8px}
 .footer-links a{color:#a5b4fc;text-decoration:none;font-size:11px}
@@ -58,7 +54,12 @@ footer{background:#1e1b4b;padding:16px 16px 20px;text-align:center;width:100%;ma
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
-<div class="top-bar"><div class="hamburger" onclick="toggleDrawer()"><i class="fa fa-bars"></i></div><div class="logo-small">🎁 <span>RP RW</span></div></div>
+<!-- TOP BAR WITH LOGO ALONE AND SMALL RECTANGLE BUTTON -->
+<div class="top-bar">
+<div class="hamburger" onclick="toggleDrawer()"><i class="fa fa-bars"></i></div>
+<img src="logo.jpg" alt="RP Logo" class="logo-alone">
+</div>
+
 <div class="hero">
 <div class="welcome-card"><h1>Welcome to<br><span class="gradient-text">Reward Platform</span></h1></div>
 <p class="subtitle">Complete activities, earn points, and discover exciting rewards trusted by users in Rwanda, Africa and all over the world.</p>
@@ -67,6 +68,7 @@ footer{background:#1e1b4b;padding:16px 16px 20px;text-align:center;width:100%;ma
 <div class="trust-badges"><span class="trust-badge-white">✅ Verified Business</span><span class="trust-badge-white">🔒 Secure & Anti-Fraud</span><span class="trust-badge-white">🌍 Kigali, Rwanda</span></div>
 <div class="icons-row"><div class="icon-box">⭐</div><div class="icon-box">🏆</div><div class="icon-box">🎁</div><div class="icon-box" onclick="openNotifModal()">🔔<div id="notifCount" class="notif-count" style="display:none;">0</div></div></div>
 </div>
+
 <div id="overlay" onclick="toggleDrawer()"></div>
 <div id="drawer">
 <div class="drawer-header-new">
@@ -79,27 +81,27 @@ footer{background:#1e1b4b;padding:16px 16px 20px;text-align:center;width:100%;ma
 <div class="drawer-inner">
 <div class="section-bold">How it works</div>
 <button class="sub-item-clean" onclick="toggleSub('s1')">👤 Create account</button>
-<div id="s1" class="sub-content">Create your free account with email verification. We use Firebase secure authentication to protect your data.</div>
+<div id="s1" class="sub-content">Create your free account with email verification.</div>
 <button class="sub-item-clean" onclick="toggleSub('s2')">✅ Complete tasks</button>
 <div id="s2" class="sub-content">Choose from trusted partners like Lootably, Timewall, BitLabs and Prime.</div>
 <button class="sub-item-clean" onclick="toggleSub('s3')">💰 Earn & Withdraw</button>
-<div id="s3" class="sub-content">Earn points for every task. Points added in real-time. Request withdrawal at threshold.</div>
+<div id="s3" class="sub-content">Earn points for every task. Points added in real-time.</div>
 
 <div class="section-bold">Why choose Reward Platform RW?</div>
 <button class="sub-item-clean" onclick="toggleSub('s4')">🛡️ Anti-Fraud Protection</button>
 <div id="s4" class="sub-content">Protected with reCAPTCHA Enterprise, App Check and manual review.</div>
 <button class="sub-item-clean" onclick="toggleSub('s5')">⚡ Real Time Tracking</button>
-<div id="s5" class="sub-content">Points, referrals and notifications tracked instantly.</div>
+<div id="s5" class="sub-content">Points tracked instantly with Firebase Firestore.</div>
 <button class="sub-item-clean" onclick="toggleSub('s6')">🤝 Trusted Partners</button>
 <div id="s6" class="sub-content">We work with Lootably, Timewall, BitLabs and Prime.</div>
 <button class="sub-item-clean" onclick="toggleSub('s7')">📱 Mobile Optimized</button>
-<div id="s7" class="sub-content">100% optimized for phones, works on low data networks in Rwanda.</div>
+<div id="s7" class="sub-content">100% optimized for phones, works on low data networks.</div>
 
 <div class="section-bold">Frequently Asked Questions</div>
 <button class="sub-item-clean" onclick="toggleSub('s8')">🆓 Is this platform free?</button>
 <div id="s8" class="sub-content">Yes, completely free to join and earn.</div>
 <button class="sub-item-clean" onclick="toggleSub('s9')">⭐ How do I earn points?</button>
-<div id="s9" class="sub-content">Log in daily, complete surveys, install apps, play games.</div>
+<div id="s9" class="sub-content">Complete surveys, install apps, play games.</div>
 <button class="sub-item-clean" onclick="toggleSub('s10')">🔒 Is my data safe?</button>
 <div id="s10" class="sub-content">Yes. Firebase Secure Auth. We never sell your data.</div>
 <button class="sub-item-clean" onclick="toggleSub('s11')">💳 How to withdraw?</button>
@@ -107,39 +109,21 @@ footer{background:#1e1b4b;padding:16px 16px 20px;text-align:center;width:100%;ma
 <button class="sub-item-clean" onclick="toggleSub('s12')">📧 How to contact support?</button>
 <div id="s12" class="sub-content">Email us at rewardplatformrw@gmail.com.</div>
 
-<!-- LINE SEPARATING LAST 3 -->
 <hr class="legal-separator">
-
 <div class="section-bold">Legal & Support</div>
-
 <button class="legal-item" onclick="toggleSub('p1')">📄 Privacy Policy</button>
-<div id="p1" class="sub-content">
-We respect your privacy and protect your personal data.<br>
-- We only collect email for login and rewards.<br>
-- We never sell or share your data with third parties.<br>
-<a href="privacy.html" class="link-more">View full Privacy Policy →</a>
-</div>
-
+<div id="p1" class="sub-content">We only collect email for login and rewards. We never sell your data.<br><a href="privacy.html" class="link-more">View full Privacy →</a></div>
 <button class="legal-item" onclick="toggleSub('p2')">📜 Terms of Service</button>
-<div id="p2" class="sub-content">
-By using our platform you agree to fair use.<br>
-- One account per person, no bots or fraud.<br>
-- Points earned by completing real tasks.<br>
-<a href="terms.html" class="link-more">View full Terms →</a>
-</div>
-
+<div id="p2" class="sub-content">One account per person, no bots or fraud.<br><a href="terms.html" class="link-more">View full Terms →</a></div>
 <button class="legal-item" onclick="toggleSub('p3')">📞 Contact Us</button>
-<div id="p3" class="sub-content">
-Need help? Our team is based in Kigali, Rwanda.<br>
-- Email: rewardplatformrw@gmail.com<br>
-- We reply within 24 hours.<br>
-<a href="contact.html" class="link-more">Go to Contact page →</a>
+<div id="p3" class="sub-content">Email: rewardplatformrw@gmail.com — We reply within 24 hours.<br><a href="contact.html" class="link-more">Go to Contact →</a></div>
+</div>
 </div>
 
-</div>
-</div>
 <footer><div class="footer-links"><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms</a><a href="contact.html">Contact</a></div><div class="footer-copy">Contact: <b style="color:#fff">rewardplatformrw@gmail.com</b> | Kigali, Rwanda<br>© 2025 Reward Platform RW</div></footer>
+
 <div id="notifModal" class="notif-modal" onclick="closeNotifModal()"><div class="notif-modal-box" onclick="event.stopPropagation()"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3>🔔 Notifications</h3><span style="font-size:26px;cursor:pointer" onclick="closeNotifModal()">×</span></div><div id="notifList"></div></div></div>
+
 <script>
 function toggleDrawer(){document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
 function toggleSub(id){const el=document.getElementById(id);const isOpen=el.classList.contains('open');document.querySelectorAll('.sub-content').forEach(c=>c.classList.remove('open'));if(!isOpen){el.classList.add('open');}}
