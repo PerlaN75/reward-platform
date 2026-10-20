@@ -20,13 +20,9 @@
 </div>
 
 <div class="p-3 max-w-2xl mx-auto">
-  <!-- 3 CARDS - PRIME, LOOTABLY, AYET -->
+  <!-- 2 CARDS ONLY - LOOTABLY, AYET -->
   <div class="grid grid-cols-2 gap-3">
-    <button onclick="switchTab('prime')" id="card-prime" class="card-active bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
-      <div class="font-black text-[19px] text-blue-600">PRIME</div>
-      <div class="text-[13px] text-gray-700 mt-1">Prime</div>
-    </button>
-    <button onclick="switchTab('lootably')" id="card-lootably" class="bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
+    <button onclick="switchTab('lootably')" id="card-lootably" class="card-active bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
       <div class="font-black text-[16px] text-purple-600">LOOTABLY</div>
       <div class="text-[13px] text-gray-700 mt-1">Lootably</div>
     </button>
@@ -38,23 +34,10 @@
 
   <!-- CONTENT BELOW -->
   <div class="mt-4 bg-white rounded-xl shadow overflow-hidden">
-    <div class="bg-emerald-500 p-3 flex items-center justify-between text-white font-bold tracking-wide" id="contentHeader">PRIME</div>
+    <div class="bg-emerald-500 p-3 flex items-center justify-between text-white font-bold tracking-wide" id="contentHeader">LOOTABLY</div>
     
-    <!-- PRIME -->
-    <div id="content-prime" class="p-4">
-      <div class="border border-gray-100 rounded-xl p-8 text-center min-h-[360px] flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-50">
-        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 animate-pulse">
-          <i class="fa fa-bolt text-2xl text-blue-600"></i>
-        </div>
-        <h3 class="font-bold text-gray-800 text-[16px]">Prime Offers Loading</h3>
-        <p class="text-gray-500 text-sm mt-2 leading-5">High-value games and surveys for you.<br>We're activating Rwanda region.</p>
-        <div class="mt-5 bg-gray-900 text-white rounded-full px-5 py-2 text-xs"><i class="fa fa-spinner fa-spin mr-2"></i> Connecting...</div>
-        <div id="prime-iframe-holder" class="hidden w-full mt-4"></div>
-      </div>
-    </div>
-
     <!-- LOOTABLY -->
-    <div id="content-lootably" class="p-4 hidden">
+    <div id="content-lootably" class="p-4">
       <div class="border border-gray-100 rounded-xl p-8 text-center min-h-[360px] flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-50">
         <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4 animate-pulse">
           <i class="fa fa-trophy text-2xl text-purple-600"></i>
@@ -95,7 +78,6 @@ firebase.auth().onAuthStateChanged(user => {
   if (user) {
     const uid = encodeURIComponent(user.uid);
     // When approved, uncomment and paste your real links:
-    // document.getElementById('prime-iframe-holder').innerHTML = `<iframe src="https://YOUR_PRIME_LINK?subid=${uid}" class="w-full h-[600px] border-0 rounded-xl"></iframe>`;
     // document.getElementById('lootably-iframe-holder').innerHTML = `<iframe src="https://YOUR_LOOTABLY_LINK?uid=${uid}" class="w-full h-[600px] border-0 rounded-xl"></iframe>`;
     // document.getElementById('ayet-iframe-holder').innerHTML = `<iframe src="https://YOUR_AYET_LINK?external_identifier=${uid}" class="w-full h-[600px] border-0 rounded-xl"></iframe>`;
   } else {
@@ -104,7 +86,7 @@ firebase.auth().onAuthStateChanged(user => {
 });
 
 function switchTab(tab) {
-  ['prime','lootably','ayet'].forEach(t=>{
+  ['lootably','ayet'].forEach(t=>{
     document.getElementById('content-'+t).classList.add('hidden');
     document.getElementById('card-'+t).classList.remove('card-active');
   });
