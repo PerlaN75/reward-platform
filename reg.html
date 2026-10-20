@@ -5,23 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://www.google.com/recaptcha/enterprise.js?render=6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#2f3e1a;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;padding:60px 20px 20px}
-.register-card{background:#4a6128;padding:30px 25px;border-radius:20px;width:100%;max-width:400px;text-align:center;border:3px solid #fbbf24}
-.logo{font-size:60px;margin-bottom:10px;filter:drop-shadow(0 0 8px #fbbf24)}
-h1{color:#fbbf24;font-size:28px;margin-bottom:8px}
-.tagline{color:#fff;font-size:13px;margin-bottom:25px}
-input{width:100%;padding:15px;margin:10px 0;background:#1a2410;border:1px solid #333;border-radius:10px;color:white;font-size:15px}
-input::placeholder{color:#888}
-.btn-register{width:100%;padding:16px;background:linear-gradient(180deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer;margin-top:15px;box-shadow:0 4px 0 #d97706}
-.btn-register:active{transform:translateY(2px);box-shadow:0 2px 0 #d97706}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+*:focus{ outline:none !important }
+a,button{ -webkit-tap-highlight-color:transparent; outline:none; user-select:none }
+body{background:#f3f4f6;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;padding:40px 20px 20px}
+.register-card{background:#ffffff;padding:28px 22px;border-radius:20px;width:100%;max-width:400px;text-align:center;border:2px solid #e5e7eb;box-shadow:0 8px 24px rgba(0,0,0,0.06)}
+.logo{font-size:52px;margin-bottom:8px;background:#eff6ff;width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px auto}
+h1{color:#111827;font-size:26px;margin-bottom:6px;font-weight:900}
+.tagline{color:#6b7280;font-size:12.5px;margin-bottom:22px}
+input{width:100%;padding:14px 16px;margin:8px 0;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:12px;color:#111827;font-size:14.5px;-webkit-tap-highlight-color:transparent;outline:none}
+input:focus{ border-color:#2563eb; background:#fff }
+input::placeholder{color:#9ca3af}
+.btn-register{width:100%;padding:15px;background:#2563eb;color:#fff;border:none;border-radius:12px;font-weight:bold;font-size:15px;cursor:pointer;margin-top:14px;box-shadow:0 4px 0 #1d4ed8;-webkit-tap-highlight-color:transparent;outline:none;user-select:none}
+.btn-register:active{transform:translateY(2px);box-shadow:0 2px 0 #1d4ed8;filter:brightness(0.95)}
 .btn-register:disabled{opacity:0.6;cursor:not-allowed}
-.link-login{color:#fbbf24;margin-top:15px;font-size:14px;cursor:pointer}
-.error{color:#ef4444;font-size:13px;margin-top:10px}
-.success{color:#22c55e;font-size:14px;margin-top:10px;font-weight:bold}
-.btn-back-outside{width:40%;padding:14px;background:white;color:black;border:none;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer;margin-top:40px;box-shadow:0 3px 0 #ccc}
-.recaptcha-note{font-size:10px;color:#aaa;margin-top:12px}
-.pass-hint{font-size:11px;color:#fbbf24;text-align:left;margin:-5px 0 5px 5px}
+.link-login{color:#111827;margin-top:14px;font-size:13.5px;cursor:pointer;font-weight:600}
+.link-login span{ color:#2563eb }
+.error{color:#ef4444;font-size:13px;margin-top:10px;background:#fef2f2;padding:8px;border-radius:8px;display:none}
+.error:not(:empty){ display:block }
+.success{color:#16a34a;font-size:13px;margin-top:10px;font-weight:bold;background:#f0fdf4;padding:8px;border-radius:8px;display:none}
+.success:not(:empty){ display:block }
+.btn-back-outside{width:40%;padding:13px;background:white;color:#111827;border:1.5px solid #e5e7eb;border-radius:12px;font-weight:bold;font-size:14px;cursor:pointer;margin-top:22px;box-shadow:0 2px 0 #e5e7eb;-webkit-tap-highlight-color:transparent;outline:none;user-select:none}
+.btn-back-outside:active{ filter:brightness(0.95); transform:scale(0.98) }
+.recaptcha-note{font-size:10px;color:#9ca3af;margin-top:14px}
+.pass-hint{font-size:11px;color:#2563eb;text-align:left;margin:-4px 0 6px 6px;font-weight:600}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
@@ -40,7 +47,7 @@ input::placeholder{color:#888}
 <input type="password" id="confirmPassword" placeholder="Confirm Password">
 <input type="text" id="referral" placeholder="Referral Code (optional)">
 <button class="btn-register" id="regBtn" onclick="register()">Create Account</button>
-<div class="link-login" onclick="window.location.href='./log.html'">Already have account? Login</div>
+<div class="link-login" onclick="window.location.href='./log.html'">Already have account? <span>Login</span></div>
 <div class="recaptcha-note">Protected by reCAPTCHA Enterprise + App Check (Score 0.5)</div>
 <div class="error" id="error"></div>
 <div class="success" id="success"></div>
@@ -62,7 +69,6 @@ async function getRecaptchaToken(action){
 
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d",storageBucket:"reward-platform-rw-2e13d.firebasestorage.app",messagingSenderId:"787550951987",appId:"1:787550951987:web:724b1463e821b99c90a146"};
 firebase.initializeApp(firebaseConfig);
-// APP CHECK ACTIVATION - FREE BACKEND
 const appCheck = firebase.appCheck();
 appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);
 
@@ -117,7 +123,6 @@ async function register(){
   }
   btn.innerText="Creating...";
   try{
-    // check username exists
     const userSnap=await db.collection("users").where("username","==",username).get();
     if(!userSnap.empty) throw new Error("Username taken");
 
