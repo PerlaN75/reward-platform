@@ -5,27 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://www.google.com/recaptcha/enterprise.js?render=6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1"></script>
   <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { background: #2f3e1a; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 60px 20px 20px 20px; }
-.login-card { background: #4a6128; padding: 30px 25px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; border: 3px solid #fbbf24; }
-.logo { font-size: 60px; margin-bottom: 10px; filter: drop-shadow(0 0 8px #fbbf24); }
-    h1 { color: #fbbf24; font-size: 28px; margin-bottom: 8px; }
-.tagline { color: #fff; font-size: 13px; margin-bottom: 25px; }
-    input { width: 100%; padding: 15px; margin: 10px 0; background: #1a2410; border: 1px solid #333; border-radius: 10px; color: white; font-size: 15px; }
-    input::placeholder { color: #888; }
-.btn-login { width: 100%; padding: 16px; background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #000; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 0 #d97706; }
-.btn-login:active { transform: translateY(2px); box-shadow: 0 2px 0 #d97706; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; -webkit-tap-highlight-color:transparent }
+        *:focus{ outline:none !important }
+        a,button{ -webkit-tap-highlight-color:transparent; outline:none; user-select:none }
+    body { background: #f3f4f6; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 20px 16px 20px 16px; }
+    /* BLUE TOP BAR LIKE SURVEYS PAGE */
+    .top-survey-bar{ width:100%; max-width:400px; background:#2563eb; color:#fff; padding:12px 16px; border-radius:16px; display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; box-shadow:0 4px 12px rgba(37,99,235,0.25) }
+    .top-survey-bar .back{ width:34px; height:34px; background:rgba(0,0,0,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; cursor:pointer }
+    .top-survey-bar .title{ background:#fff; color:#000; border-radius:999px; padding:6px 16px; font-weight:800; font-size:13px; display:flex; align-items:center; gap:6px }
+.login-card { background: #ffffff; padding: 28px 22px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; border: 2px solid #e5e7eb; box-shadow:0 8px 24px rgba(0,0,0,0.06); }
+.logo { font-size: 52px; margin-bottom: 8px; background:#eff6ff; width:72px; height:72px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px auto }
+    h1 { color: #111827; font-size: 26px; margin-bottom: 6px; font-weight:900 }
+.tagline { color: #6b7280; font-size: 12.5px; margin-bottom: 22px; }
+    input { width: 100%; padding: 14px 16px; margin: 8px 0; background: #f9fafb; border: 1.5px solid #e5e7eb; border-radius: 12px; color: #111827; font-size: 14.5px; -webkit-tap-highlight-color:transparent; outline:none }
+    input:focus{ border-color:#2563eb; background:#fff }
+    input::placeholder { color: #9ca3af; }
+.btn-login { width: 100%; padding: 15px; background: #2563eb; color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 14px; box-shadow: 0 4px 0 #1d4ed8; -webkit-tap-highlight-color:transparent; outline:none; user-select:none }
+.btn-login:active { transform: translateY(2px); box-shadow: 0 2px 0 #1d4ed8; filter:brightness(0.95) }
 .btn-login:disabled{opacity:0.6;cursor:not-allowed}
-.link-register { color: #fbbf24; margin-top: 15px; font-size: 14px; cursor: pointer; }
-.link-reset { color: #60a5fa; margin-top: 8px; font-size: 13px; cursor: pointer; text-decoration: underline; }
-.error { color: #ef4444; font-size: 13px; margin-top: 10px; }
-.success { color: #22c55e; font-size: 14px; margin-top: 10px; font-weight: bold; }
-.btn-back-outside { width: 40%; padding: 14px; background: white; color: black; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 40px; box-shadow: 0 3px 0 #ccc; }
+.link-register { color: #111827; margin-top: 14px; font-size: 13.5px; cursor: pointer; font-weight:600 }
+.link-register span{ color:#2563eb }
+.link-reset { color: #2563eb; margin-top: 12px; font-size: 13px; cursor: pointer; text-decoration: underline; font-weight:600 }
+.error { color: #ef4444; font-size: 13px; margin-top: 10px; background:#fef2f2; padding:8px; border-radius:8px; display:none }
+.error:not(:empty){ display:block }
+.success { color: #16a34a; font-size: 13px; margin-top: 10px; font-weight: bold; background:#f0fdf4; padding:8px; border-radius:8px; display:none }
+.success:not(:empty){ display:block }
+.btn-back-outside { width: 40%; padding: 13px; background: white; color: #111827; border: 1.5px solid #e5e7eb; border-radius: 12px; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: 22px; box-shadow: 0 2px 0 #e5e7eb; -webkit-tap-highlight-color:transparent; outline:none; user-select:none }
+.btn-back-outside:active{ filter:brightness(0.95); transform:scale(0.98) }
 .hidden { display: none; }
-.recaptcha-note{font-size:10px;color:#aaa;margin-top:12px}
+.recaptcha-note{font-size:10px;color:#9ca3af;margin-top:14px}
   </style>
 </head>
 <body>
+  <!-- MATCHES YOUR SURVEY TOP BAR -->
+  <div class="top-survey-bar">
+    <div class="back" onclick="window.location.href='./index.html'">←</div>
+    <div class="title">🔑 Login</div>
+    <div style="width:34px"></div>
+  </div>
+
   <div class="login-card">
    <div class="logo">🔑</div>
     <h1 id="cardTitle">Login</h1>
@@ -35,7 +53,7 @@
       <input type="password" id="password" placeholder="Password">
       <button class="btn-login" id="loginBtn" onclick="login()">Login</button>
       <div class="link-reset" onclick="showReset()">Forgot Password?</div>
-      <div class="link-register" onclick="window.location.href='./reg.html'">Don't have an account? Register</div>
+      <div class="link-register" onclick="window.location.href='./reg.html'">Don't have an account? <span>Register</span></div>
       <div class="recaptcha-note">Protected by reCAPTCHA Enterprise + App Check</div>
     </div>
     <div id="resetStep1" class="hidden">
@@ -56,7 +74,6 @@
   <button class="btn-back-outside" onclick="window.location.href='./index.html'">Back</button>
 
 <script>
-// --- RECAPTCHA SECURITY LAYER ---
 async function getRecaptchaToken(action){
   return new Promise((resolve,reject)=>{
     if(!window.grecaptcha ||!grecaptcha.enterprise){ resolve(null); return; }
@@ -85,18 +102,14 @@ async function getRecaptchaToken(action){
     appId: "1:787550951987:web:724b1463e821b99c90a146"
   };
   const app = initializeApp(firebaseConfig);
-
-  // --- APP CHECK ACTIVATION - FREE BACKEND PROTECTION ---
   const appCheck = initializeAppCheck(app, {
     provider: new ReCaptchaEnterpriseProvider('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1'),
     isTokenAutoRefreshEnabled: true
   });
-
   const auth = getAuth(app);
   const db = getFirestore(app);
   let resetUserData = null;
   let isLogging = false;
-
   const WHITELIST = ['admin@reward.rw','priyamwiza25@gmail.com','inezarose25@gmail.com'].map(e=>e.toLowerCase());
   function getDeviceId(){
     let id = localStorage.getItem('deviceId');
@@ -109,7 +122,6 @@ async function getRecaptchaToken(action){
     val = val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
     document.getElementById('resetUsername').value = val;
   }
-
   window.login = async function() {
     if(isLogging) return;
     const emailEl = document.getElementById('email');
@@ -122,11 +134,9 @@ async function getRecaptchaToken(action){
     const btn = document.getElementById('loginBtn');
     errorEl.innerText = ""; successEl.innerText = "";
     if(!email ||!password){ errorEl.innerText = "Fill all fields"; return; }
-
     isLogging = true;
     btn.disabled = true;
     btn.innerText = "Checking security...";
-
     const token = await window.getRecaptchaToken('LOGIN');
     if(!token){
       errorEl.innerText = "Security check failed. Reload page.";
@@ -134,7 +144,6 @@ async function getRecaptchaToken(action){
       return;
     }
     btn.innerText = "Logging in...";
-
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
       let curUser = cred.user;
@@ -149,7 +158,6 @@ async function getRecaptchaToken(action){
         await signOut(auth);
         throw new Error("📧 Email not verified. We resent link to "+email+". Verify then login again.");
       }
-
       const isWhite = WHITELIST.includes(emailLow);
       const myDeviceId = getDeviceId();
       if(!isWhite){
@@ -193,7 +201,6 @@ async function getRecaptchaToken(action){
       btn.innerText = "Login";
     }
   }
-
   window.showReset = function(){
     document.getElementById('loginForm').classList.add('hidden');
     document.getElementById('resetStep1').classList.remove('hidden');
