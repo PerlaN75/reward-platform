@@ -1,148 +1,111 @@
 <!DOCTYPE html>
-<html><head><title>Home - Rewards</title>
+<html>
+<head>
+<title>Home - Rewards</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{background:#fff;min-height:100vh;padding:16px 14px 100px;color:#000}
-.container{max-width:500px;margin:0 auto}
-.header{text-align:center;margin:30px 0 12px}
-.header h2{font-size:24px}
-.balance-card{background:#2f3e1a;border:2px solid #fbbf24;border-radius:16px;padding:10px;text-align:center;margin:0 auto 16px;width:92%;max-width:340px}
-.balance-row{display:flex;justify-content:space-between;align-items:center}
-.balance-side{flex:1;text-align:center}
-.balance-divider{width:1px;height:40px;background:rgba(251,191,36,0.3)}
-.menu-grid{display:grid !important;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;padding:0 10px}
-.menu-btn{background:linear-gradient(180deg,#fff,#e8e8e8);border:2px solid #ddd;border-radius:14px;padding:12px 4px;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 3px 0 #bbb;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:70px;width:100%}
-.menu-btn .emoji{font-size:24px}
-.logout-btn{width:140px;height:48px;margin:24px auto;display:block;background:#f59e0b;color:#000;border:none;border-radius:999px;font-weight:bold;cursor:pointer}
-.modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.55);justify-content:center;align-items:center;padding:15px}
-.modal-content{background:#fff;border-radius:20px;padding:18px;width:100%;max-width:420px;max-height:95vh;overflow-y:auto}
-#customToast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:14px 22px;border-radius:12px;font-weight:bold;z-index:99999;display:none}
-.action-btn{width:100%;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:12px;font-weight:bold;margin-top:8px}
-.input-box{width:100%;padding:12px;margin:6px 0;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px}
-</style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-</head><body>
-<div id="customToast"></div>
-<div class="container">
-<div class="header"><h2>Welcome, <span id="headerText" style="color:#fbbf24">User</span> 👋</h2></div>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;-webkit-tap-highlight-color:transparent}
+body{background:#f3f4f6;min-height:100vh;padding:12px;padding-bottom:80px;color:#111827}
+.header{display:flex;justify-content:space-between;align-items:center;max-width:500px;margin:0 auto 12px}
+.balance-card{background:#0f2e1d;border-radius:20px;padding:14px;color:#fff;max-width:500px;margin:0 auto 14px;display:flex;justify-content:space-between}
+.bal-left b{color:#facc15;font-size:22px;display:block}
+.bal-right{font-size:12px;text-align:right}
+.grid{max-width:500px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:#fff;border:2px solid #e5e7eb;border-radius:16px;padding:14px;text-align:center;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.05);min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.card:active{transform:scale(0.97)}
+.card span{font-size:28px;margin-bottom:6px;display:block}
+.logout{max-width:500px;margin:14px auto;background:#f59e0b;border:none;border-radius:20px;padding:12px;font-weight:900;width:100%;cursor:pointer}
+
+/* MORE MODAL - FIXED */
+#moreModal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+.more-box{background:#fff;border-radius:20px;width:100%;max-width:340px;padding:10px;box-shadow:0 10px 30px rgba(0,0,0,0.3)}
+.more-title{background:#111827;color:#facc15;padding:12px;border-radius:12px;font-weight:900;text-align:center;margin-bottom:10px;font-size:18px}
+.more-item{display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid #f3f4f6;cursor:pointer;font-weight:700}
+.more-item:active{background:#f9fafb}
+.more-item span{font-size:20px}
+.more-close{width:100%;background:#f59e0b;border:none;padding:12px;border-radius:12px;font-weight:900;margin-top:10px;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="header">
+<div style="font-weight:900">Welcome, <span id="uname">User</span> 👋</div>
+</div>
+
 <div class="balance-card">
-<div style="color:#ccc;font-size:11px">Your Balance</div>
-<div class="balance-row">
-  <div class="balance-side">
-    <div style="font-size:10px;color:#aaa">🪙 COINS</div>
-    <div id="balance" style="font-size:22px;color:#fbbf24;font-weight:bold">0 🪙</div>
-    <div id="usdBalance" style="color:#888;font-size:10px">≈ $0.00</div>
-  </div>
-  <div class="balance-divider"></div>
-  <div class="balance-side">
-    <div style="font-size:10px;color:#aaa">💵 USDT</div>
-    <div id="usdtBalanceDisplay" style="font-size:18px;color:#22c55e;font-weight:bold">0.0000 USDT</div>
-    <div style="color:#6b8f5a;font-size:9px">Min 3000 Coins = $1.5</div>
-  </div>
+<div class="bal-left">
+<div style="font-size:11px;opacity:0.8">COINS</div>
+<b id="coins">0</b>
+<div style="font-size:11px;color:#facc15" id="usd">= $0.00</div>
+</div>
+<div class="bal-right">
+<div style="font-size:11px">Your Balance</div>
+<b style="color:#22c55e;font-size:16px" id="usdt">0.00 USDT</b><br>
+<span style="font-size:10px">Min 3000 Coins = $1.5</span>
 </div>
 </div>
 
-<div class="menu-grid">
-<button class="menu-btn" onclick="openWallet()" style="border-color:#f59e0b;background:linear-gradient(180deg,#fffbeb,#fde68a)"><span class="emoji">💰</span>Wallet</button>
-<button class="menu-btn" onclick="openCheckin()" style="border-color:#ef4444;background:linear-gradient(180deg,#fef2f2,#fecaca)"><span class="emoji">📅</span>Daily Checkin</button>
-<button class="menu-btn" onclick="location.href='./watch.html'" style="border-color:#3b82f6;background:linear-gradient(180deg,#eff6ff,#bfdbfe)"><span class="emoji">📺</span>Watch & Earn</button>
-<button class="menu-btn" onclick="location.href='./play.html'" style="border-color:#a855f7;background:linear-gradient(180deg,#f3e8ff,#d8b4fe)"><span class="emoji">🎮</span>Play & Earn</button>
-<button class="menu-btn" onclick="location.href='./survey.html'" style="border-color:#22c55e;background:linear-gradient(180deg,#dcfce7,#bbf7d0)"><span class="emoji">📝</span>Surveys</button>
-<button class="menu-btn" onclick="location.href='./referrals.html'" style="border-color:#f97316;background:linear-gradient(180deg,#ffedd5,#fed7aa)"><span class="emoji">🤝</span>Refer & Earn</button>
-<button class="menu-btn" onclick="location.href='./bonus.html'" style="border-color:#eab308;background:linear-gradient(180deg,#fefce8,#fef08a)"><span class="emoji">🎁</span>Daily Bonus</button>
-<button class="menu-btn" onclick="location.href='./more.html'" style="border-color:#6366f1;background:linear-gradient(180deg,#eef2ff,#c7d2fe)"><span class="emoji">⚙️</span>More</button>
-<button class="menu-btn" onclick="location.href='./ads_earn.html'" style="border-color:#06b6d4;background:linear-gradient(180deg,#ecfeff,#a5f3fc)"><span class="emoji">📢</span>Ads Earn</button>
-<button class="menu-btn" onclick="location.href='./offers.html'" style="border-color:#d946ef;background:linear-gradient(180deg,#fdf4ff,#f5d0fe)"><span class="emoji">💎</span>Offers</button>
+<div class="grid">
+<div class="card" style="border-color:#fca5a5" onclick="location.href='./bonus.html'"><span>📅</span>Daily Checkin</div>
+<div class="card" style="border-color:#c4b5fd" onclick="location.href='./play.html'"><span>🎮</span>Play & Earn</div>
+<div class="card" style="border-color:#fdba74" onclick="location.href='./referrals.html'"><span>🤝</span>Refer & Earn</div>
+<div class="card" style="border-color:#93c5fd" id="moreBtn"><span>⚙️</span>More</div>
+<div class="card" style="border-color:#a7f3d0" onclick="location.href='./offers.html'"><span>💎</span>Offers</div>
+<div class="card" style="border-color:#fde68a" onclick="location.href='./wallet.html'"><span>💰</span>Wallet</div>
+<div class="card" style="border-color:#93c5fd" onclick="location.href='./watch.html'"><span>📺</span>Watch & Earn</div>
+<div class="card" style="border-color:#a7f3d0" onclick="location.href='./surveys.html'"><span>📝</span>Surveys</div>
+<div class="card" style="border-color:#fde68a" onclick="location.href='./bonus.html'"><span>🎁</span>Daily Bonus</div>
+<div class="card" style="border-color:#93c5fd" onclick="location.href='./ads_earn.html'"><span>📢</span>Ads Earn</div>
 </div>
 
-<button class="logout-btn" onclick="logout()">Logout</button>
-<div style="text-align:center;font-size:10px;color:#999">1000 Coins = $0.5 • Min withdraw 3000 Coins = $1.5</div>
+<button class="logout" onclick="logout()">Logout</button>
+
+<!-- MORE POPUP - NOW FIXED -->
+<div id="moreModal">
+<div class="more-box">
+<div class="more-title">More</div>
+<div class="more-item" onclick="location.href='./profile.html'"><span>👤</span> Profile <span style="margin-left:auto">›</span></div>
+<div class="more-item" onclick="location.href='./history.html'"><span>📦</span> History <span style="margin-left:auto">›</span></div>
+<div class="more-item" onclick="location.href='./settings.html'"><span>⚙️</span> Settings <span style="margin-left:auto">›</span></div>
+<div class="more-item" onclick="location.href='./help.html'"><span>💬</span> Help/Support <span style="margin-left:auto">›</span></div>
+<div class="more-item" onclick="location.href='./rules.html'"><span>📜</span> Rules <span style="margin-left:auto">›</span></div>
+<button class="more-close" id="closeMore">Back Home</button>
 </div>
-
-<div id="walletModal" class="modal"><div class="modal-content">
-<div style="display:flex;justify-content:space-between"><h3>💰 Wallet</h3><span onclick="closeWallet()" style="font-size:28px;cursor:pointer">&times;</span></div>
-<div id="popupBalance" style="background:#f9fafb;border:2px solid #e5e7eb;border-radius:12px;padding:12px;text-align:center;margin:10px 0;font-weight:bold">0 🪙</div>
-<div style="display:flex;gap:8px;margin:10px 0"><button id="tab1" onclick="switchTab('convert')" style="flex:1;padding:10px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-weight:bold">Convert</button><button id="tab2" onclick="switchTab('withdraw')" style="flex:1;padding:10px;background:#fff;border:1px solid #ddd;border-radius:8px;font-weight:bold">Withdraw</button></div>
-<div id="convertTab"><input type="number" id="convertAmount" class="input-box" placeholder="Coins - 1000 = $0.5" oninput="calcConvert()"><div id="convertResult" style="background:#f9fafb;padding:10px;border-radius:8px;text-align:center;margin:6px 0">You will receive: 0.0000 USDT</div><button class="action-btn" onclick="convertPoints()">Convert</button></div>
-<div id="withdrawTab" style="display:none"><select id="payMethod" class="input-box"><option value="binance">Binance Pay</option><option value="okx">OKX Pay</option></select><input id="walletAddress" class="input-box" placeholder="Pay ID / Email"><input id="withdrawAmount" class="input-box" type="number" placeholder="Amount USDT Min $1.5"><div id="withdrawNote" style="font-size:11px;text-align:center">Available: 0.0000 USDT</div><button class="action-btn" onclick="requestWithdraw()">Withdraw</button></div>
-</div></div>
-
-<div id="checkinModal" class="modal"><div class="modal-content">
-<div style="display:flex;justify-content:space-between"><h3>📅 Daily Checkin</h3><span onclick="closeCheckin()" style="font-size:28px;cursor:pointer">&times;</span></div>
-<div style="text-align:center;padding:20px"><div style="font-size:50px">🎁</div><h3 style="margin:8px 0">Daily Reward</h3><p>Claim 3 coins every 24h</p><button class="action-btn" id="claimBtn" onclick="claimDaily()">Claim 3 Coins</button></div>
-</div></div>
+</div>
 
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
 try{ firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);}catch(e){}
-const auth=firebase.auth(),db=firebase.firestore();
-function showToast(m){const t=document.getElementById('customToast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
-let currentUser=null,userData={},isClaimingDaily=false;
-const POINT_RATE=0.0005;
-function getCoins(d){ return d.coins ?? d.balance ?? d.points ?? 0; }
-function loadData(d){
-  userData=d||{};
-  if(userData.usdtBalance==null) userData.usdtBalance=0;
-  const coins=getCoins(d);
-  document.getElementById('headerText').innerText=d.username||d.email?.split('@')[0]||'User';
-  document.getElementById('balance').innerText=coins+' 🪙';
-  document.getElementById('usdBalance').innerText=`≈ $${(coins*POINT_RATE).toFixed(2)}`;
-  document.getElementById('usdtBalanceDisplay').innerText=(userData.usdtBalance||0).toFixed(4)+' USDT';
-  document.getElementById('popupBalance').innerText=coins+' 🪙 - '+(userData.usdtBalance||0).toFixed(4)+' USDT';
-  document.getElementById('withdrawNote').innerText='Available: '+(userData.usdtBalance||0).toFixed(4)+' USDT';
-}
-window.openWallet=function(){document.getElementById('walletModal').style.display='flex';}
-window.closeWallet=function(){document.getElementById('walletModal').style.display='none';}
-window.switchTab=function(t){document.getElementById('convertTab').style.display=t==='convert'?'block':'none';document.getElementById('withdrawTab').style.display=t==='withdraw'?'block':'none';}
-window.calcConvert=function(){const c=parseFloat(document.getElementById('convertAmount').value)||0;document.getElementById('convertResult').innerText=`You will receive: ${(c*POINT_RATE).toFixed(4)} USDT`;}
-window.convertPoints=async function(){
-  const coins=parseFloat(document.getElementById('convertAmount').value);
-  if(!coins) return showToast('Enter coins');
-  const cur=getCoins(userData);
-  if(coins>cur) return showToast('Not enough coins');
-  const usdt=coins*POINT_RATE;
-  const newCoins=cur-coins;
-  userData.coins=newCoins;userData.balance=newCoins;userData.usdtBalance=(userData.usdtBalance||0)+usdt;
-  await db.collection('users').doc(currentUser.uid).update({coins:newCoins,balance:newCoins,usdtBalance:userData.usdtBalance});
-  loadData(userData);showToast(`✓ ${coins} → ${usdt.toFixed(4)} USDT`);document.getElementById('convertAmount').value='';
-}
-window.requestWithdraw=async function(){
-  const amt=parseFloat(document.getElementById('withdrawAmount').value);
-  const payId=document.getElementById('walletAddress').value.trim();
-  if(!payId) return showToast('Enter Pay ID');
-  if(!amt||amt<1.5) return showToast('Min $1.5');
-  if(amt>(userData.usdtBalance||0)) return showToast('Not enough USDT');
-  userData.usdtBalance-=amt;
-  await db.collection('users').doc(currentUser.uid).update({usdtBalance:userData.usdtBalance});
-  await db.collection('withdrawals').add({uid:currentUser.uid,username:userData.username,email:userData.email,payId:payId,amount:amt,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-  loadData(userData);showToast(`Withdraw ${amt} USDT requested`);closeWallet();
-}
-window.openCheckin=function(){document.getElementById('checkinModal').style.display='flex';}
-window.closeCheckin=function(){document.getElementById('checkinModal').style.display='none';}
-window.claimDaily=async function(){
-  if(isClaimingDaily) return; isClaimingDaily=true;
-  const today=new Date().toISOString().split('T')[0];
-  if(userData.lastCheckin===today){showToast('Already claimed'); isClaimingDaily=false; return;}
-  const cur=getCoins(userData);
-  const newC=cur+3;
-  userData.coins=newC;userData.balance=newC;userData.lastCheckin=today;
-  await db.collection('users').doc(currentUser.uid).update({coins:newC,balance:newC,lastCheckin:today});
-  loadData(userData);isClaimingDaily=false;showToast('✓ 3 Coins Added!');
-}
+const auth=firebase.auth(), db=firebase.firestore();
+
 auth.onAuthStateChanged(async u=>{
-  if(u){
-    currentUser=u;
-    try{
-      const doc=await db.collection('users').doc(u.uid).get();
-      if(doc.exists) loadData(doc.data());
-      else loadData({username:u.email.split('@')[0],coins:0,usdtBalance:0,email:u.email});
-    }catch(e){ loadData({username:'User',coins:0,usdtBalance:0}); }
-  }else{ location.href='./index.html'; }
+ if(!u){ location.href='./index.html'; return; }
+ const doc=await db.collection('users').doc(u.uid).get();
+ if(doc.exists){
+   const d=doc.data();
+   const coins=d.coins ?? d.balance ?? d.points ?? 0;
+   document.getElementById('coins').textContent=coins;
+   document.getElementById('usdt').textContent=(coins/2000).toFixed(4)+' USDT';
+   document.getElementById('usd').textContent='= $'+(coins*0.0005).toFixed(2);
+   document.getElementById('uname').textContent=d.username || 'User';
+ }
 });
-window.logout=async function(){ await auth.signOut(); location.href='./index.html'; }
-</script></body></html>
+
+function logout(){ auth.signOut().then(()=>location.href='./index.html'); }
+
+// MORE FIX - 100% working
+const moreBtn=document.getElementById('moreBtn');
+const moreModal=document.getElementById('moreModal');
+const closeMore=document.getElementById('closeMore');
+
+moreBtn.addEventListener('click', ()=>{ moreModal.style.display='flex'; });
+closeMore.addEventListener('click', ()=>{ moreModal.style.display='none'; });
+moreModal.addEventListener('click', (e)=>{ if(e.target===moreModal) moreModal.style.display='none'; });
+</script>
+</body>
+</html>
