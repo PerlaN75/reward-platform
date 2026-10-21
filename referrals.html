@@ -4,9 +4,6 @@
   <title>Refer & Earn</title>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="monetag" content="ac12b34f63f863388a198226e7eeeaa5">
-  <script>(function(s){s.dataset.zone='12083693',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-  <script>(function(s){s.dataset.zone='12083688',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; -webkit-tap-highlight-color:transparent }
     *:focus{outline:none !important}
@@ -18,7 +15,7 @@
     .link-label { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 900; margin-bottom: 12px; color:#111827 }
     .link-box { background: #f9fafb; border: 1.5px dashed #e5e7eb; border-radius: 12px; padding: 12px; font-size: 12.5px; word-break: break-all; margin-bottom: 14px; color:#111827 }
     .btn-row { display: flex; gap: 10px; }
-    .btn { padding: 13px; border: none; border-radius: 12px; font-weight: bold; font-size: 14px; cursor: pointer; -webkit-tap-highlight-color:transparent; outline:none }
+    .btn { padding: 13px; border: none; border-radius: 12px; font-weight: bold; font-size: 14px; cursor: pointer; outline:none }
     .btn-copy { width: 40%; background: #2563eb; color: #fff; box-shadow:0 3px 0 #1d4ed8 }
     .btn-copy:active{transform:translateY(2px);box-shadow:0 1px 0 #1d4ed8}
     .btn-whatsapp { flex: 1; background: #22c55e; color: #fff; box-shadow:0 3px 0 #16a34a }
@@ -27,7 +24,7 @@
     .referral-item { display: flex; justify-content: space-between; align-items: center; background: #f9fafb; border:1.5px solid #e5e7eb; padding: 12px; border-radius: 12px; margin-bottom: 8px; font-size: 14px; color:#111827 }
     .back-btn { width: 42%; margin: 20px auto 0 auto; display: block; padding: 13px; background: #fff; color: #111827; border: 1.5px solid #e5e7eb; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow:0 2px 0 #e5e7eb }
     .back-btn:active{transform:scale(0.98)}
-    .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #ffffff; color: #111827; border:2px solid #e5e7eb; padding: 12px 18px; border-radius: 12px; font-weight: bold; z-index: 9999; box-shadow:0 8px 24px rgba(0,0,0,0.12); }
+    .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #111827; color: #fff; padding: 12px 18px; border-radius: 12px; font-weight: bold; z-index: 9999; box-shadow:0 8px 24px rgba(0,0,0,0.12); }
     .empty { text-align: center; color: #9ca3af; padding: 16px 0; font-size:13px }
     .airtel-card { background: #ffffff; border: 2px solid #e5e7eb; border-radius: 20px; padding: 18px; margin-bottom: 14px; box-shadow:0 8px 24px rgba(0,0,0,0.06); }
     .airtel-title { color: #111827; font-weight: 900; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; margin-bottom: 12px; }
@@ -110,20 +107,18 @@
       })
       listEl.innerHTML = html;
     } catch(e){
-      document.getElementById('referralsList').innerHTML = `<div class="empty">Error loading: ${e.message}<br>Check Firestore Rules</div>`;
-      console.log("Referral load error:", e);
+      document.getElementById('referralsList').innerHTML = `<div class="empty">Error loading: ${e.message}</div>`;
     }
   }
   window.copyLink = function(){ 
     if(!myLink) return;
     navigator.clipboard.writeText(myLink).then(()=>showToast("Link Copied!")).catch(()=>{ 
-      // fallback for old browsers
       const ta=document.createElement('textarea'); ta.value=myLink; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); showToast("Link Copied!"); 
     }); 
   }
   window.shareWhatsApp = function(){ 
     if(!myLink) return;
-    const msg = `🔥 Join me on Rewards Rwanda and earn money! 💰\n\nUse my link to get started:\n${myLink}\n\nEarn points and convert to USDT!`; 
+    const msg = `🔥 Join me on Rewards Rwanda and earn money! 💰\n\nUse my link:\n${myLink}`; 
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank'); 
   }
   function showToast(msg) { const t=document.createElement('div'); t.className='toast'; t.innerText=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),2500); }
