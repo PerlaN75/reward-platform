@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Offers</title>
+<title>Offers - 12s Secured</title>
 <meta name="monetag" content="ac12b34f63f863388a198226e7eeeaa5">
 <script>(function(s){s.dataset.zone='12083693',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 <script>(function(s){s.dataset.zone='12083688',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
@@ -27,6 +27,7 @@ h2{margin:8px 0 6px 0;color:#111827;font-size:22px;font-weight:900}
 .modal-content h3{margin:6px 0 4px 0;font-size:16px;color:#111827;font-weight:900}
 .modal-content p{margin:2px 0;font-size:11px;color:#6b7280}
 .timer{font-size:32px;color:#2563eb;font-weight:bold;margin:6px 0}
+.ad-hint{font-size:11px;color:#9ca3af;margin-top:6px;font-style:italic}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#ffffff;border:2px solid #e5e7eb;color:#111827;padding:12px 18px;border-radius:12px;font-weight:bold;z-index:9999;display:none;box-shadow:0 8px 24px rgba(0,0,0,0.1)}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -47,10 +48,10 @@ h2{margin:8px 0 6px 0;color:#111827;font-size:22px;font-weight:900}
 </div>
 <div id="timerModal" class="modal"><div class="modal-content">
 <div style="font-size:26px">⏳</div>
-<h3>Verifying...</h3>
-<p>Keep offer tab open for 12 seconds</p>
+<h3 id="modalTitle">Verifying Offer...</h3>
+<p id="modalDesc">Keep offer tab open for 12 seconds</p>
 <div class="timer" id="timerNum">12</div>
-<div style="font-size:10px;color:#9ca3af">Do not close this window</div>
+<div class="ad-hint" id="adHint">⏳ Ad loading... Please keep tab open</div>
 </div></div>
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
@@ -58,7 +59,7 @@ firebase.initializeApp(firebaseConfig);
 try {
   const appCheck = firebase.appCheck();
   appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);
-} catch(e) { console.log("AppCheck skipped"); }
+} catch(e) {}
 const auth=firebase.auth(), db=firebase.firestore();
 const DIRECT_LINK = "https://asiafilm.org/4/fea14e9f802d182828ceef74e57a3a5b";
 const LIMIT = 5; const PER_OFFER = 2; const WAIT_SEC = 12;
@@ -78,10 +79,19 @@ function clickOffer(n){
   if(stat.count >= LIMIT){ showToast("Daily limit reached!"); return; }
   if(document.getElementById('timerModal').style.display==='flex') return;
   curOffer=n; window.open(DIRECT_LINK, "_blank");
-  sec=WAIT_SEC; document.getElementById('timerNum').innerText=sec;
+  sec=WAIT_SEC; 
+  document.getElementById('timerNum').innerText=sec;
+  document.getElementById('modalTitle').innerText='Verifying Offer...';
+  document.getElementById('modalDesc').innerText='Keep offer tab open for 12 seconds';
+  document.getElementById('adHint').innerText='⏳ Ad loading... Please keep tab open';
   document.getElementById('timerModal').style.display='flex';
   timerInt=setInterval(async ()=>{
     sec--; document.getElementById('timerNum').innerText=sec;
+    if(sec==8) document.getElementById('adHint').innerText='📡 Offer loaded - verifying view...';
+    if(sec==4){
+      document.getElementById('adHint').innerText='✅ Verified - almost done...';
+      document.getElementById('modalTitle').innerText='Almost Ready...';
+    }
     if(sec<=0){ clearInterval(timerInt); document.getElementById('timerModal').style.display='none'; await rewardOffer(); }
   },1000);
 }
