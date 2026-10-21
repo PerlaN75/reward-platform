@@ -3,9 +3,6 @@
 <head>
 <title>Watch & Earn - Coins</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="monetag" content="ac12b34f63f863388a198226e7eeeaa5">
-<script>(function(s){s.dataset.zone='12083693',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-<script>(function(s){s.dataset.zone='12083688',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -22,12 +19,11 @@ h1{color:#111827;text-align:center;font-size:24px;font-weight:900;margin-bottom:
 video,iframe{width:100%;height:100%;display:none;border:0}
 .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.85);color:#fff;text-align:center;padding:12px;flex-direction:column;z-index:2;font-weight:700}
 .progress{height:8px;background:#e5e7eb}.progress-bar{height:100%;background:linear-gradient(90deg,#f59e0b,#d97706);width:0%;transition:width.3s}
-.btn{width:100%;background:#f59e0b;color:#000;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:15px;cursor:pointer;margin:12px 0 0;box-shadow:0 4px 0 #d97706;-webkit-tap-highlight-color:transparent;outline:none}
+.btn{width:100%;background:#f59e0b;color:#000;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:15px;cursor:pointer;margin:12px 0 0;box-shadow:0 4px 0 #d97706;outline:none}
 .btn:active{transform:translateY(2px);box-shadow:0 2px 0 #d97706}
 .btn:disabled{background:#9ca3af;color:#fff;box-shadow:none}
 .vtitle{font-size:11px;color:#d97706;margin-top:6px;font-weight:600}
-.support-box{display:none;background:#fffbeb;border:2px dashed #f59e0b;border-radius:12px;padding:10px;margin-top:12px;text-align:center}
-.back{display:block;width:48%;height:44px;margin:14px auto 0;background:#fff;color:#111827;border:1.5px solid #e5e7eb;border-radius:999px;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 2px 0 #e5e7eb;-webkit-tap-highlight-color:transparent}
+.back{display:block;width:48%;height:44px;margin:14px auto 0;background:#fff;color:#111827;border:1.5px solid #e5e7eb;border-radius:999px;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 2px 0 #e5e7eb}
 .back:active{filter:brightness(0.96);transform:scale(0.98)}
 </style>
 </head>
@@ -41,16 +37,10 @@ video,iframe{width:100%;height:100%;display:none;border:0}
 <div class="progress"><div class="progress-bar" id="pbar"></div></div>
 <div style="padding:0 12px 12px"><button class="btn" id="btn">Start & Earn 1 🪙</button></div>
 </div>
-<div id="supportBox" class="support-box">
-<p style="color:#111827;font-size:12px;font-weight:bold;margin-bottom:6px;">❤️ Support us? (Optional)</p>
-<button onclick="openSupportAd()" style="background:#f59e0b;color:#000;border:none;padding:8px 16px;border-radius:20px;font-weight:bold;cursor:pointer;font-size:13px;">Watch Sponsored</button>
-<button onclick="this.parentElement.style.display='none'" style="background:none;border:none;color:#6b7280;font-size:12px;margin-left:8px;cursor:pointer;">Skip</button>
-</div>
 <button class="back" onclick="location.href='home.html'">Back Home</button>
 <div style="text-align:center;font-size:10px;color:#999;margin-top:8px;">Min withdraw 3000 Coins = $1.5</div>
 </div>
 <script>
-const DIRECT_LINK="https://asiafilm.org/4/fea14e9f802d182828ceef74e57a3a5b";
 const ALL_VIDEOS=[
 {src:"https://www.w3schools.com/html/mov_bbb.mp4",title:"Big Buck Bunny"},
 {src:"yt:dQw4w9WgXcQ",title:"Funny Cats Compilation"},
@@ -90,19 +80,6 @@ let bal=0,today=0,currentUser=null,timer=null,dailyData=null;
 const ov=document.getElementById('ov'),vid=document.getElementById('v'),yt=document.getElementById('yt'),btn=document.getElementById('btn'),pbar=document.getElementById('pbar'),balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),vtEl=document.getElementById('vt');
 function getCoins(d){ return d.coins ?? d.balance ?? d.points ?? 0; }
 
-function openSupportAd(){
-  const lastSupport = localStorage.getItem('support_day');
-  const todayStr = new Date().toDateString();
-  if(lastSupport === todayStr){ document.getElementById('supportBox').style.display='none'; return; }
-  localStorage.setItem('support_day', todayStr);
-  window.open(DIRECT_LINK,'_blank');
-  document.getElementById('supportBox').style.display='none';
-  bal+=1; balEl.textContent=bal+' 🪙';
-  if(currentUser){
-    db.collection('users').doc(currentUser.uid).set({balance:bal,coins:bal,points:bal},{merge:true});
-    db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Support',type:'support',points:1,coins:1,desc:'Support bonus 1 coin',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-  }
-}
 function updateUI(){balEl.textContent=bal+' 🪙';todayEl.textContent=today+'/10';if(dailyData&&today<10){vtEl.textContent=`Next: ${dailyData.playlist[today].title}`;ov.innerHTML=`<div>${dailyData.playlist[today].title}</div><small style="opacity:.7;margin-top:6px">Tap Start - 1 Coin</small>`;}}
 auth.onAuthStateChanged(async(u)=>{if(!u){location.href='./index.html';return;}currentUser=u;dailyData=getTodayPlaylist();const s=await db.collection('users').doc(u.uid).get();if(s.exists){const d=s.data();bal=getCoins(d);today=d.todayCount||d.today||0;const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null;if(last&&new Date().toDateString()!==last.toDateString())today=0;}updateUI();if(today>=10){ov.style.display='flex';ov.innerHTML='🎉 10/10 Done!<br>New order tomorrow';btn.disabled=true;btn.textContent='Limit Reached';}});
 function doAd(){
@@ -133,10 +110,6 @@ async function claim(){
     await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Watch & Earn',type:'watch',points:1,coins:1,desc:dailyData.playlist[today-1].title + ' - 1 coin',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
   }catch(e){}
   yt.src='';vid.style.display='none';yt.style.display='none';pbar.style.width='0%';btn.textContent='Start & Earn 1 🪙';btn.disabled=false;btn.onclick=doAd;updateUI();
-  const lastSupport = localStorage.getItem('support_day');
-  if(lastSupport!== new Date().toDateString()){
-    document.getElementById('supportBox').style.display='block';
-  }
   if(today>=10){
     ov.style.display='flex';ov.innerHTML='🎉 10/10 Done!<br>💥 BLAST! New order tomorrow';btn.textContent='Limit Reached';btn.disabled=true;BLAST();
   }
