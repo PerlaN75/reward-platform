@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Register - Protected</title>
+<title>Register - Coins</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://www.google.com/recaptcha/enterprise.js?render=6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1"></script>
 <style>
@@ -10,17 +10,17 @@
 a,button{ -webkit-tap-highlight-color:transparent; outline:none; user-select:none }
 body{background:#f3f4f6;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;padding:40px 20px 20px}
 .register-card{background:#ffffff;padding:28px 22px;border-radius:20px;width:100%;max-width:400px;text-align:center;border:2px solid #e5e7eb;box-shadow:0 8px 24px rgba(0,0,0,0.06)}
-.logo{font-size:52px;margin-bottom:8px;background:#eff6ff;width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px auto}
+.logo{font-size:52px;margin-bottom:8px;background:#fffbeb;width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px auto}
 h1{color:#111827;font-size:26px;margin-bottom:6px;font-weight:900}
 .tagline{color:#6b7280;font-size:12.5px;margin-bottom:22px}
 input{width:100%;padding:14px 16px;margin:8px 0;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:12px;color:#111827;font-size:14.5px;-webkit-tap-highlight-color:transparent;outline:none}
-input:focus{ border-color:#2563eb; background:#fff }
+input:focus{ border-color:#f59e0b; background:#fff }
 input::placeholder{color:#9ca3af}
-.btn-register{width:100%;padding:15px;background:#2563eb;color:#fff;border:none;border-radius:12px;font-weight:bold;font-size:15px;cursor:pointer;margin-top:14px;box-shadow:0 4px 0 #1d4ed8;-webkit-tap-highlight-color:transparent;outline:none;user-select:none}
-.btn-register:active{transform:translateY(2px);box-shadow:0 2px 0 #1d4ed8;filter:brightness(0.95)}
+.btn-register{width:100%;padding:15px;background:#f59e0b;color:#000;border:none;border-radius:12px;font-weight:bold;font-size:15px;cursor:pointer;margin-top:14px;box-shadow:0 4px 0 #d97706;-webkit-tap-highlight-color:transparent;outline:none;user-select:none}
+.btn-register:active{transform:translateY(2px);box-shadow:0 2px 0 #d97706;filter:brightness(0.95)}
 .btn-register:disabled{opacity:0.6;cursor:not-allowed}
 .link-login{color:#111827;margin-top:14px;font-size:13.5px;cursor:pointer;font-weight:600}
-.link-login span{ color:#2563eb }
+.link-login span{ color:#d97706 }
 .error{color:#ef4444;font-size:13px;margin-top:10px;background:#fef2f2;padding:8px;border-radius:8px;display:none}
 .error:not(:empty){ display:block }
 .success{color:#16a34a;font-size:13px;margin-top:10px;font-weight:bold;background:#f0fdf4;padding:8px;border-radius:8px;display:none}
@@ -28,7 +28,7 @@ input::placeholder{color:#9ca3af}
 .btn-back-outside{width:40%;padding:13px;background:white;color:#111827;border:1.5px solid #e5e7eb;border-radius:12px;font-weight:bold;font-size:14px;cursor:pointer;margin-top:22px;box-shadow:0 2px 0 #e5e7eb;-webkit-tap-highlight-color:transparent;outline:none;user-select:none}
 .btn-back-outside:active{ filter:brightness(0.95); transform:scale(0.98) }
 .recaptcha-note{font-size:10px;color:#9ca3af;margin-top:14px}
-.pass-hint{font-size:11px;color:#2563eb;text-align:left;margin:-4px 0 6px 6px;font-weight:600}
+.pass-hint{font-size:11px;color:#d97706;text-align:left;margin:-4px 0 6px 6px;font-weight:600}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
@@ -37,18 +37,18 @@ input::placeholder{color:#9ca3af}
 </head>
 <body>
 <div class="register-card">
-<div class="logo">📝</div>
+<div class="logo">🪙</div>
 <h1>Register</h1>
-<div class="tagline">Create Account - Secured & Verified</div>
+<div class="tagline">Create Account - 3000 Coins = $1.5</div>
 <input type="text" id="username" placeholder="Username (letters only)" oninput="formatUsername()">
 <input type="email" id="email" placeholder="Email">
 <input type="password" id="password" placeholder="Password (5-10 chars)">
 <div class="pass-hint">Needs: 1 Capital, 1 Number, 1 Special (!@#)</div>
 <input type="password" id="confirmPassword" placeholder="Confirm Password">
-<input type="text" id="referral" placeholder="Referral Code (optional)">
+<input type="text" id="referral" placeholder="Referral Code (optional) +5 Coins">
 <button class="btn-register" id="regBtn" onclick="register()">Create Account</button>
 <div class="link-login" onclick="window.location.href='./log.html'">Already have account? <span>Login</span></div>
-<div class="recaptcha-note">Protected by reCAPTCHA Enterprise + App Check (Score 0.5)</div>
+<div class="recaptcha-note">Protected by reCAPTCHA Enterprise + App Check<br>Min withdraw 3000 Coins = $1.5</div>
 <div class="error" id="error"></div>
 <div class="success" id="success"></div>
 </div>
@@ -137,6 +137,8 @@ async function register(){
       email:email,
       emailLower:emailLow,
       balance:0,
+      coins:0,
+      points:0,
       referralCount:0,
       referralCode:username.toUpperCase()+Math.floor(100+Math.random()*900),
       referredBy:referral||null,
@@ -148,15 +150,26 @@ async function register(){
 
     if(referral){
       try{
-        const refSnap=await db.collection("users").where("referralCode","==",referral).get();
-        if(!refSnap.empty){
-          const refDoc=refSnap.docs[0];
+        // support both old referralCode and username
+        let refQuery = await db.collection("users").where("username","==",referral).get();
+        if(refQuery.empty){ refQuery = await db.collection("users").where("referralCode","==",referral).get(); }
+        if(!refQuery.empty){
+          const refDoc=refQuery.docs[0];
           await db.collection("users").doc(refDoc.id).update({
             referralCount: firebase.firestore.FieldValue.increment(1),
-            balance: firebase.firestore.FieldValue.increment(50)
+            balance: firebase.firestore.FieldValue.increment(5),
+            coins: firebase.firestore.FieldValue.increment(5),
+            points: firebase.firestore.FieldValue.increment(5)
+          });
+          await db.collection("users").doc(refDoc.id).collection('earnHistory').add({
+            action:'Referral Bonus',
+            coins:5,
+            points:5,
+            desc:`Referral +5 coins from ${username}`,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
           });
         }
-      }catch(e){}
+      }catch(e){ console.log(e); }
     }
 
     sucEl.innerText="✅ Account created! Verify email then login.";
