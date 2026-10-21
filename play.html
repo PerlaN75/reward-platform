@@ -3,97 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Play & Earn</title>
+<title>Play & Earn Coins</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<style>
-.card-active { border: 2.5px solid #f59e0b !important; box-shadow: 0 4px 15px rgba(245,158,11,0.25); }
-</style>
+<script src="https://al5sm.com/tag.min.js" data-zone="12083693" async></script>
+<script src="https://al5sm.com/tag.min.js" data-zone="12083688" async></script>
+<style>.card-active{border:2.5px solid #f59e0b !important}.spin-wheel{transition:transform 3s cubic-bezier(0.17,0.67,0.12,0.99)}</style>
 </head>
 <body class="bg-gray-100">
 <div class="bg-blue-600 p-3 flex items-center justify-between sticky top-0 z-20">
   <a href="home.html" class="w-9 h-9 bg-blue-700 rounded-full flex items-center justify-center text-white"><i class="fa fa-arrow-left"></i></a>
-  <div class="bg-white rounded-full px-4 py-1.5 text-sm font-bold">💰 Play & Earn</div>
-  <i class="fa fa-bell text-white"></i>
+  <div class="bg-white rounded-full px-4 py-1.5 text-sm font-bold">3000 Coins = $1.5</div>
+  <span id="userCoins" class="bg-yellow-400 text-gray-900 px-3 py-1 rounded-full text-xs font-black">0 🪙</span>
 </div>
-
 <div class="p-3 max-w-2xl mx-auto">
-  <!-- 2 CARDS ONLY - LOOTABLY, AYET -->
   <div class="grid grid-cols-2 gap-3">
-    <button onclick="switchTab('lootably')" id="card-lootably" class="card-active bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
-      <div class="font-black text-[16px] text-purple-600">LOOTABLY</div>
-      <div class="text-[13px] text-gray-700 mt-1">Lootably</div>
-    </button>
-    <button onclick="switchTab('ayet')" id="card-ayet" class="bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
-      <div class="font-black text-[17px] flex gap-1"><i class="fa fa-star text-yellow-500"></i> AYE-T</div>
-      <div class="text-[13px] text-gray-700 mt-1">AyeT Studios</div>
-    </button>
+    <button onclick="switchTab('spin')" id="card-spin" class="card-active bg-white rounded-2xl p-4 shadow border-2 flex flex-col items-center h-[90px]"><i class="fa fa-dharmachakra text-2xl text-emerald-500"></i><div class="text-[13px] font-bold mt-1">Spin</div><div class="text-[10px] text-green-600">0-3 Coins</div></button>
+    <button onclick="switchTab('scratch')" id="card-scratch" class="bg-white rounded-2xl p-4 shadow border-2 flex flex-col items-center h-[90px]"><i class="fa fa-clone text-2xl text-amber-500"></i><div class="text-[13px] font-bold mt-1">Scratch</div><div class="text-[10px] text-green-600">1 Coin</div></button>
+    <button onclick="switchTab('dice')" id="card-dice" class="bg-white rounded-2xl p-4 shadow border-2 flex flex-col items-center h-[90px]"><i class="fa fa-dice text-2xl text-blue-500"></i><div class="text-[13px] font-bold mt-1">Dice</div><div class="text-[10px] text-green-600">1-3 Coins</div></button>
+    <button onclick="switchTab('memory')" id="card-memory" class="bg-white rounded-2xl p-4 shadow border-2 flex flex-col items-center h-[90px]"><i class="fa fa-brain text-2xl text-purple-500"></i><div class="text-[13px] font-bold mt-1">Memory</div><div class="text-[10px] text-green-600">2 Coins</div></button>
   </div>
-
-  <!-- CONTENT BELOW -->
-  <div class="mt-4 bg-white rounded-xl shadow overflow-hidden">
-    <div class="bg-emerald-500 p-3 flex items-center justify-between text-white font-bold tracking-wide" id="contentHeader">LOOTABLY</div>
-    
-    <!-- LOOTABLY -->
-    <div id="content-lootably" class="p-4">
-      <div class="border border-gray-100 rounded-xl p-8 text-center min-h-[360px] flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-50">
-        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4 animate-pulse">
-          <i class="fa fa-trophy text-2xl text-purple-600"></i>
-        </div>
-        <h3 class="font-bold text-gray-800 text-[16px]">Lootably Getting Ready</h3>
-        <p class="text-gray-500 text-sm mt-2 leading-5">Exciting game offers and app trials.<br>Almost ready for you.</p>
-        <div class="mt-5 bg-gray-900 text-white rounded-full px-5 py-2 text-xs"><i class="fa fa-spinner fa-spin mr-2"></i> Syncing offers...</div>
-        <div id="lootably-iframe-holder" class="hidden w-full mt-4"></div>
-      </div>
+  <div class="mt-4 bg-white rounded-xl shadow min-h-[420px]">
+    <div class="bg-emerald-500 p-3 text-white font-bold text-sm" id="contentHeader">SPIN - Win 0 to 3 Coins</div>
+    <div id="content-spin" class="p-6 text-center">
+      <div class="relative w-56 h-56 mx-auto"><div id="wheel" class="spin-wheel w-full h-full rounded-full border-8 border-gray-800 flex items-center justify-center" style="background: conic-gradient(#10b981 0 45deg, #f59e0b 45deg 90deg, #ef4444 90deg 135deg, #8b5cf6 135deg 180deg, #06b6d4 180deg 225deg, #ec4899 225deg 270deg, #f97316 270deg 315deg, #333 315deg 360deg)"><div class="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center text-white text-[10px] font-black">COINS</div></div><div class="absolute -top-2 left-1/2 -translate-x-1/2 text-2xl">▼</div></div>
+      <button id="btnSpin" onclick="playSpin()" class="mt-6 w-full bg-gray-900 text-white py-3.5 rounded-xl font-black">WATCH AD & SPIN</button>
+      <p class="text-[10px] text-gray-400 mt-2">Need 3000 Coins = $1.5 to withdraw • Prizes 0-3</p>
+      <div id="spinResult" class="hidden mt-4 p-3 bg-green-50 rounded-xl font-bold text-green-700"></div>
     </div>
-
-    <!-- AYET -->
-    <div id="content-ayet" class="p-4 hidden">
-      <div class="border border-gray-100 rounded-xl p-8 text-center min-h-[360px] flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-50">
-        <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-4 animate-pulse">
-          <i class="fa fa-star text-2xl text-yellow-600"></i>
-        </div>
-        <h3 class="font-bold text-gray-800 text-[16px]">AyeT Studios Unlocking</h3>
-        <p class="text-gray-500 text-sm mt-2 leading-5">Premium tasks and games.<br>Your personal offers are on the way.</p>
-        <div class="mt-5 bg-gray-900 text-white rounded-full px-5 py-2 text-xs"><i class="fa fa-spinner fa-spin mr-2"></i> Preparing...</div>
-        <div id="ayet-iframe-holder" class="hidden w-full mt-4"></div>
-      </div>
-    </div>
+    <div id="content-scratch" class="p-6 text-center hidden"><div class="relative w-full h-32 bg-gray-100 rounded-xl flex items-center justify-center border-2 border-dashed"><div id="scratchPrize" class="text-3xl font-black">? </div><div id="scratchCover" onclick="playScratch()" class="absolute inset-0 bg-amber-400 flex items-center justify-center cursor-pointer rounded-xl"><span class="bg-black text-white px-4 py-2 rounded-full text-sm font-bold">TAP FOR 1 COIN + AD</span></div></div><div id="scratchResult" class="hidden mt-4 p-3 bg-amber-50 rounded-xl font-bold"></div></div>
+    <div id="content-dice" class="p-6 text-center hidden"><div class="text-7xl mb-4" id="diceFace">🎲</div><button id="btnDice" onclick="playDice()" class="w-full bg-blue-600 text-white py-3.5 rounded-xl font-black">ROLL FOR 1-3 COINS</button><div id="diceResult" class="hidden mt-4 p-3 bg-blue-50 rounded-xl font-bold"></div></div>
+    <div id="content-memory" class="p-6 text-center hidden"><div id="memoryGrid" class="grid grid-cols-4 gap-2 max-w-[280px] mx-auto"></div><button id="btnMemory" onclick="startMemory()" class="mt-4 w-full bg-purple-600 text-white py-3.5 rounded-xl font-black">PLAY FOR 2 COINS</button><div id="memoryResult" class="hidden mt-4 p-3 bg-purple-50 rounded-xl font-bold"></div></div>
   </div>
-
-  <div class="text-center text-xs text-gray-400 mt-3">Earn coins daily • Rwanda</div>
+  <div class="text-center text-xs text-gray-400 mt-3">Min withdraw 3000 Coins = $1.5 • 1000 Coins = $0.5 • You earn from ads, we share</div>
 </div>
-
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
-  authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
-  projectId: "reward-platform-rw-2e13d"
-};
+const firebaseConfig = { apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d" };
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-
-firebase.auth().onAuthStateChanged(user => {
-  if (user) {
-    const uid = encodeURIComponent(user.uid);
-    // When approved, uncomment and paste your real links:
-    // document.getElementById('lootably-iframe-holder').innerHTML = `<iframe src="https://YOUR_LOOTABLY_LINK?uid=${uid}" class="w-full h-[600px] border-0 rounded-xl"></iframe>`;
-    // document.getElementById('ayet-iframe-holder').innerHTML = `<iframe src="https://YOUR_AYET_LINK?external_identifier=${uid}" class="w-full h-[600px] border-0 rounded-xl"></iframe>`;
-  } else {
-    window.location.href = 'index.html';
-  }
-});
-
-function switchTab(tab) {
-  ['lootably','ayet'].forEach(t=>{
-    document.getElementById('content-'+t).classList.add('hidden');
-    document.getElementById('card-'+t).classList.remove('card-active');
-  });
-  document.getElementById('content-'+tab).classList.remove('hidden');
-  document.getElementById('card-'+tab).classList.add('card-active');
-  document.getElementById('contentHeader').innerText = tab.toUpperCase();
-}
+const db = firebase.firestore();
+let currentUser=null, lastEarn=0;
+firebase.auth().onAuthStateChanged(async u=>{ if(!u){ location.href='index.html'; return; } currentUser=u; const d=await db.collection('users').doc(u.uid).get(); document.getElementById('userCoins').innerText=(d.data()?.coins||d.data()?.points||0)+' 🪙'; });
+function switchTab(t){ ['spin','scratch','dice','memory'].forEach(x=>{ document.getElementById('content-'+x).classList.add('hidden'); document.getElementById('card-'+x).classList.remove('card-active'); }); document.getElementById('content-'+t).classList.remove('hidden'); document.getElementById('card-'+t).classList.add('card-active'); }
+async function giveCoins(a){ if(Date.now()-lastEarn<4000){ alert('Wait 4 sec'); return; } lastEarn=Date.now(); const ref=db.collection('users').doc(currentUser.uid); await db.runTransaction(async tr=>{ const doc=await tr.get(ref); const d=doc.data()||{}; const cur=d.coins??d.points??0; tr.update(ref,{coins:cur+a, points:cur+a, lastEarnAt: firebase.firestore.FieldValue.serverTimestamp()}); }); const d=await db.collection('users').doc(currentUser.uid).get(); document.getElementById('userCoins').innerText=(d.data().coins||0)+' 🪙'; }
+async function playSpin(){ const b=document.getElementById('btnSpin'); b.disabled=true; b.innerText='Ad...'; await new Promise(r=>setTimeout(r,800)); b.innerText='Spinning...'; document.getElementById('wheel').style.transform=`rotate(${720+Math.random()*720}deg)`; setTimeout(async()=>{ const prizes=[0,0,1,1,1,2,2,3]; const p=prizes[Math.floor(Math.random()*prizes.length)]; if(p>0) await giveCoins(p); const res=document.getElementById('spinResult'); res.classList.remove('hidden'); res.innerText=p>0?`+${p} Coins!`:`0 Coins - Try again`; b.disabled=false; b.innerText='SPIN AGAIN'; },3200); }
+async function playScratch(){ document.getElementById('scratchCover').classList.add('hidden'); await new Promise(r=>setTimeout(r,800)); document.getElementById('scratchPrize').innerText='1 COIN'; await giveCoins(1); const r=document.getElementById('scratchResult'); r.classList.remove('hidden'); r.innerText='+1 Coin!'; }
+async function playDice(){ const b=document.getElementById('btnDice'); b.disabled=true; b.innerText='Ad...'; await new Promise(r=>setTimeout(r,800)); setTimeout(async()=>{ const roll=Math.floor(Math.random()*6); const map=[1,1,2,2,3,3]; const p=map[roll]; document.getElementById('diceFace').innerText=['⚀','⚁','⚂','⚃','⚄','⚅'][roll]; await giveCoins(p); const r=document.getElementById('diceResult'); r.classList.remove('hidden'); r.innerText=`+${p} Coins`; b.disabled=false; b.innerText='ROLL AGAIN 1-3'; },1000); }
+let firstCard=null, lock=false, pairs=0;
+function startMemory(){ pairs=0; firstCard=null; const em=['🍎','🍎','🚀','🚀','⭐','⭐','🎯','🎯','💎','💎','🔥','🔥','🍀','🍀','🎲','🎲'].sort(()=>0.5-Math.random()); const g=document.getElementById('memoryGrid'); g.innerHTML=''; em.forEach(e=>{ const d=document.createElement('div'); d.className='h-14 bg-gray-800 rounded-lg flex items-center justify-center text-xl cursor-pointer text-transparent'; d.dataset.emoji=e; d.innerText=e; d.onclick=()=>clickCard(d); g.appendChild(d); }); }
+function clickCard(c){ if(lock||c.classList.contains('matched')||c.style.color!=='transparent') return; c.style.color='white'; if(!firstCard){ firstCard=c; } else { lock=true; if(firstCard.dataset.emoji===c.dataset.emoji){ firstCard.classList.add('matched'); c.classList.add('matched'); firstCard.style.background='#10b981'; c.style.background='#10b981'; pairs++; firstCard=null; lock=false; if(pairs===8){ giveCoins(2); const r=document.getElementById('memoryResult'); r.classList.remove('hidden'); r.innerText='+2 Coins!'; } } else { setTimeout(()=>{ firstCard.style.color='transparent'; c.style.color='transparent'; firstCard=null; lock=false; },800); } } }
 </script>
 </body>
 </html>
