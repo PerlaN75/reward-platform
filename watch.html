@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Watch & Earn</title>
+<title>Watch & Earn - Coins</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="monetag" content="ac12b34f63f863388a198226e7eeeaa5">
 <script>(function(s){s.dataset.zone='12083693',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
@@ -16,17 +16,17 @@
 body{background:#f3f4f6;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:14px 10px 90px 10px}
 .card{width:100%;max-width:360px;background:#ffffff;border:2px solid #e5e7eb;border-radius:24px;padding:16px 14px;position:relative;z-index:1;margin:10px auto;box-shadow:0 8px 24px rgba(0,0,0,0.06)}
 h1{color:#111827;text-align:center;font-size:24px;font-weight:900;margin-bottom:12px}
-.balance-box{background:#f9fafb;border:2px solid #e5e7eb;border-radius:16px;padding:12px;text-align:center;color:#111827;margin-bottom:12px}
+.balance-box{background:#fffbeb;border:2px solid #fde68a;border-radius:16px;padding:12px;text-align:center;color:#111827;margin-bottom:12px}
 .video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #e5e7eb}
 .player{aspect-ratio:16/10;background:#000;position:relative;display:flex;align-items:center;justify-content:center}
 video,iframe{width:100%;height:100%;display:none;border:0}
 .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.85);color:#fff;text-align:center;padding:12px;flex-direction:column;z-index:2;font-weight:700}
-.progress{height:8px;background:#e5e7eb}.progress-bar{height:100%;background:linear-gradient(90deg,#2563eb,#1d4ed8);width:0%;transition:width.3s}
-.btn{width:100%;background:#2563eb;color:#fff;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:15px;cursor:pointer;margin:12px 0 0;box-shadow:0 4px 0 #1d4ed8;-webkit-tap-highlight-color:transparent;outline:none}
-.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #1d4ed8}
+.progress{height:8px;background:#e5e7eb}.progress-bar{height:100%;background:linear-gradient(90deg,#f59e0b,#d97706);width:0%;transition:width.3s}
+.btn{width:100%;background:#f59e0b;color:#000;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:15px;cursor:pointer;margin:12px 0 0;box-shadow:0 4px 0 #d97706;-webkit-tap-highlight-color:transparent;outline:none}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #d97706}
 .btn:disabled{background:#9ca3af;color:#fff;box-shadow:none}
-.vtitle{font-size:11px;color:#2563eb;margin-top:6px;font-weight:600}
-.support-box{display:none;background:#f9fafb;border:2px dashed #2563eb;border-radius:12px;padding:10px;margin-top:12px;text-align:center}
+.vtitle{font-size:11px;color:#d97706;margin-top:6px;font-weight:600}
+.support-box{display:none;background:#fffbeb;border:2px dashed #f59e0b;border-radius:12px;padding:10px;margin-top:12px;text-align:center}
 .back{display:block;width:48%;height:44px;margin:14px auto 0;background:#fff;color:#111827;border:1.5px solid #e5e7eb;border-radius:999px;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 2px 0 #e5e7eb;-webkit-tap-highlight-color:transparent}
 .back:active{filter:brightness(0.96);transform:scale(0.98)}
 </style>
@@ -34,19 +34,20 @@ video,iframe{width:100%;height:100%;display:none;border:0}
 <body>
 <canvas id="confetti" style="position:fixed;inset:0;pointer-events:none;z-index:9999;display:none"></canvas>
 <div class="card">
-<h1>Watch & Earn</h1>
-<div class="balance-box">Balance: <b id="bal">Loading...</b><br><span style="font-size:13px;color:#6b7280"><span id="today">0/10</span> today</span><div class="vtitle" id="vt">Loading...</div></div>
+<h1>📺 Watch & Earn</h1>
+<div class="balance-box">Balance: <b id="bal">Loading...</b><br><span style="font-size:13px;color:#6b7280"><span id="today">0/10</span> today • 1 Coin per video • 1000 Coins = $0.5</span><div class="vtitle" id="vt">Loading...</div></div>
 <div class="video-box">
 <div class="player"><video id="v" playsinline></video><iframe id="yt" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="overlay" id="ov">Tap Start</div></div>
 <div class="progress"><div class="progress-bar" id="pbar"></div></div>
-<div style="padding:0 12px 12px"><button class="btn" id="btn">Start & Earn</button></div>
+<div style="padding:0 12px 12px"><button class="btn" id="btn">Start & Earn 1 🪙</button></div>
 </div>
 <div id="supportBox" class="support-box">
-<p style="color:#111827;font-size:12px;font-weight:bold;margin-bottom:6px;">❤️ Support us for +2 pts? (Optional)</p>
-<button onclick="openSupportAd()" style="background:#2563eb;color:#fff;border:none;padding:8px 16px;border-radius:20px;font-weight:bold;cursor:pointer;font-size:13px;">Watch Sponsored</button>
+<p style="color:#111827;font-size:12px;font-weight:bold;margin-bottom:6px;">❤️ Support us? (Optional)</p>
+<button onclick="openSupportAd()" style="background:#f59e0b;color:#000;border:none;padding:8px 16px;border-radius:20px;font-weight:bold;cursor:pointer;font-size:13px;">Watch Sponsored</button>
 <button onclick="this.parentElement.style.display='none'" style="background:none;border:none;color:#6b7280;font-size:12px;margin-left:8px;cursor:pointer;">Skip</button>
 </div>
 <button class="back" onclick="location.href='home.html'">Back Home</button>
+<div style="text-align:center;font-size:10px;color:#999;margin-top:8px;">Min withdraw 3000 Coins = $1.5</div>
 </div>
 <script>
 const DIRECT_LINK="https://asiafilm.org/4/fea14e9f802d182828ceef74e57a3a5b";
@@ -54,7 +55,7 @@ const ALL_VIDEOS=[
 {src:"https://www.w3schools.com/html/mov_bbb.mp4",title:"Big Buck Bunny"},
 {src:"yt:dQw4w9WgXcQ",title:"Funny Cats Compilation"},
 {src:"https://test-videos.co.uk/vids/sintel/mp4/h264/720/Sintel_720_10s_1MB.mp4",title:"Motivation"},
-{src:"yt:jNQXAC9IVRw",title:"Nature Relax - First Video"},
+{src:"yt:jNQXAC9IVRw",title:"Nature Relax"},
 {src:"https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4",title:"Cats"},
 {src:"yt:9bZkp7q19f0",title:"Top Music"},
 {src:"https://test-videos.co.uk/vids/flower/mp4/h264/720/Flower_720_10s_1MB.mp4",title:"Flower"},
@@ -76,7 +77,7 @@ function getDayOfYear(){return Math.floor((new Date()-new Date(new Date().getFul
 function getTodayPlaylist(){const off=getDayOfYear()%ALL_VIDEOS.length;let pl=[];for(let i=0;i<10;i++)pl.push(ALL_VIDEOS[(off+i)%ALL_VIDEOS.length]);return{playlist:pl,offset:off}}
 function BLAST(){
   const c=document.getElementById('confetti');c.style.display='block';const ctx=c.getContext('2d');
-  c.width=window.innerWidth;c.height=window.innerHeight;let pieces=[];const colors=['#2563eb','#1d4ed8','#22c55e','#ef4444','#fbbf24','#ec4899','#fff'];
+  c.width=window.innerWidth;c.height=window.innerHeight;let pieces=[];const colors=['#f59e0b','#d97706','#22c55e','#ef4444','#fbbf24','#ec4899','#fff'];
   for(let i=0;i<150;i++){pieces.push({x:c.width/2,y:c.height/2.5,vx:(Math.random()-0.5)*24,vy:(Math.random()-0.5)*24-8,r:Math.random()*9+3,color:colors[Math.floor(Math.random()*colors.length)],rot:Math.random()*360,vr:(Math.random()-0.5)*30});}
   let frame=0;function anim(){ctx.clearRect(0,0,c.width,c.height);pieces.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.35;p.rot+=p.vr;p.vx*=0.99;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.color;if(Math.random()>0.5)ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r);else{ctx.beginPath();ctx.arc(0,0,p.r/2,0,Math.PI*2);ctx.fill();}ctx.restore();});frame++;if(frame<240)requestAnimationFrame(anim);else c.style.display='none';}anim();if(navigator.vibrate)navigator.vibrate([80,40,80,40,150]);
 }
@@ -87,6 +88,7 @@ appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);
 const auth=firebase.auth(),db=firebase.firestore();
 let bal=0,today=0,currentUser=null,timer=null,dailyData=null;
 const ov=document.getElementById('ov'),vid=document.getElementById('v'),yt=document.getElementById('yt'),btn=document.getElementById('btn'),pbar=document.getElementById('pbar'),balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),vtEl=document.getElementById('vt');
+function getCoins(d){ return d.coins ?? d.balance ?? d.points ?? 0; }
 
 function openSupportAd(){
   const lastSupport = localStorage.getItem('support_day');
@@ -95,14 +97,14 @@ function openSupportAd(){
   localStorage.setItem('support_day', todayStr);
   window.open(DIRECT_LINK,'_blank');
   document.getElementById('supportBox').style.display='none';
-  bal+=2; balEl.textContent=bal+' pts';
+  bal+=1; balEl.textContent=bal+' 🪙';
   if(currentUser){
-    db.collection('users').doc(currentUser.uid).set({balance:bal,points:bal},{merge:true});
-    db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Support',type:'support',points:2,desc:'Support bonus',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    db.collection('users').doc(currentUser.uid).set({balance:bal,coins:bal,points:bal},{merge:true});
+    db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Support',type:'support',points:1,coins:1,desc:'Support bonus 1 coin',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
   }
 }
-function updateUI(){balEl.textContent=bal+' pts';todayEl.textContent=today+'/10';if(dailyData&&today<10){vtEl.textContent=`Next: ${dailyData.playlist[today].title}`;ov.innerHTML=`<div>${dailyData.playlist[today].title}</div><small style="opacity:.7;margin-top:6px">Tap Start</small>`;}}
-auth.onAuthStateChanged(async(u)=>{if(!u){location.href='./index.html';return;}currentUser=u;dailyData=getTodayPlaylist();const s=await db.collection('users').doc(u.uid).get();if(s.exists){const d=s.data();bal=d.balance||d.points||0;today=d.todayCount||d.today||0;const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null;if(last&&new Date().toDateString()!==last.toDateString())today=0;}updateUI();if(today>=10){ov.style.display='flex';ov.innerHTML='🎉 10/10 Done!<br>New order tomorrow';btn.disabled=true;btn.textContent='Limit Reached';}});
+function updateUI(){balEl.textContent=bal+' 🪙';todayEl.textContent=today+'/10';if(dailyData&&today<10){vtEl.textContent=`Next: ${dailyData.playlist[today].title}`;ov.innerHTML=`<div>${dailyData.playlist[today].title}</div><small style="opacity:.7;margin-top:6px">Tap Start - 1 Coin</small>`;}}
+auth.onAuthStateChanged(async(u)=>{if(!u){location.href='./index.html';return;}currentUser=u;dailyData=getTodayPlaylist();const s=await db.collection('users').doc(u.uid).get();if(s.exists){const d=s.data();bal=getCoins(d);today=d.todayCount||d.today||0;const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null;if(last&&new Date().toDateString()!==last.toDateString())today=0;}updateUI();if(today>=10){ov.style.display='flex';ov.innerHTML='🎉 10/10 Done!<br>New order tomorrow';btn.disabled=true;btn.textContent='Limit Reached';}});
 function doAd(){
   if(today>=10){ov.style.display='flex';ov.innerHTML='🎉 10/10 Done!<br>New order tomorrow';btn.disabled=true;btn.textContent='Limit Reached';BLAST();return;}
   btn.disabled=true;ov.style.display='flex';ov.innerHTML='Loading video...';vid.style.display='none';yt.style.display='none';pbar.style.width='0%';
@@ -112,25 +114,25 @@ function startVideo(){
   if(!dailyData)dailyData=getTodayPlaylist();const cur=dailyData.playlist[today];vtEl.textContent=`Playing: ${cur.title}`;ov.style.display='none';
   if(cur.src.startsWith('yt:')){yt.src=`https://www.youtube.com/embed/${cur.src.slice(3)}?autoplay=1&controls=1&rel=0`;yt.style.display='block';vid.style.display='none';}
   else{vid.src=cur.src;vid.load();vid.style.display='block';yt.style.display='none';yt.src='';vid.play().catch(()=>{});}
-  const msgs=[`🔥 Enjoying ${cur.title}?`,`💰 Earning 5 pts...`,`👀 Keep watching!`,`⭐ Great video!`,`🎬 Best part coming`];
+  const msgs=[`🔥 Enjoying ${cur.title}?`,`💰 Earning 1 coin...`,`👀 Keep watching!`,`⭐ Great video!`,`🎬 Best part coming`];
   let sec=0,mi=0;btn.textContent=msgs[0];btn.disabled=true;
   timer=setInterval(()=>{
     sec++;pbar.style.width=(sec/30*100)+'%';
     if(sec%5===0){mi=(mi+1)%msgs.length;btn.textContent=msgs[mi];}
     if(sec>=30){
       clearInterval(timer);vid.pause();
-      btn.textContent='🎉 Claim 5 pts!';btn.disabled=false;btn.onclick=claim;
-      ov.style.display='flex';ov.innerHTML=`✅ Done!<br>Tap to claim`;if(navigator.vibrate)navigator.vibrate(100);
+      btn.textContent='🎉 Claim 1 🪙!';btn.disabled=false;btn.onclick=claim;
+      ov.style.display='flex';ov.innerHTML=`✅ Done!<br>Tap to claim 1 coin`;if(navigator.vibrate)navigator.vibrate(100);
     }
   },1000);
 }
 async function claim(){
-  if(!currentUser)return;btn.disabled=true;btn.textContent='Saving...';bal+=5;today++;
+  if(!currentUser)return;btn.disabled=true;btn.textContent='Saving...';bal+=1;today++;
   try{
-    await db.collection('users').doc(currentUser.uid).set({balance:bal,points:bal,todayCount:today,today:today,lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
-    await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Watch & Earn',type:'watch',points:5,desc:dailyData.playlist[today-1].title,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    await db.collection('users').doc(currentUser.uid).set({balance:bal,coins:bal,points:bal,todayCount:today,today:today,lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+    await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Watch & Earn',type:'watch',points:1,coins:1,desc:dailyData.playlist[today-1].title + ' - 1 coin',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
   }catch(e){}
-  yt.src='';vid.style.display='none';yt.style.display='none';pbar.style.width='0%';btn.textContent='Start & Earn';btn.disabled=false;btn.onclick=doAd;updateUI();
+  yt.src='';vid.style.display='none';yt.style.display='none';pbar.style.width='0%';btn.textContent='Start & Earn 1 🪙';btn.disabled=false;btn.onclick=doAd;updateUI();
   const lastSupport = localStorage.getItem('support_day');
   if(lastSupport!== new Date().toDateString()){
     document.getElementById('supportBox').style.display='block';
