@@ -3,180 +3,184 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Play & Earn - Reward Platform RW</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<title>Play & Earn - Coins</title>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <style>
-.tab-active { background: #fbbf24; color: black; }
-.spin-wheel { transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial;-webkit-tap-highlight-color:transparent}
+body{background:#f3f4f6;min-height:100vh;display:flex;justify-content:center;padding:16px;color:#111827}
+.card{width:100%;max-width:380px;background:#fff;border:2px solid #e5e7eb;border-radius:24px;padding:20px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.06);height:fit-content;margin-top:20px}
+h2{font-size:24px;font-weight:900;margin-bottom:6px}
+.sub{color:#6b7280;font-size:12px;margin-bottom:14px}
+.offer-box{background:#f0fdf4;border:2px dashed #22c55e;border-radius:16px;padding:16px;margin:14px 0}
+.app-icon{font-size:48px;margin-bottom:8px}
+.app-name{font-weight:900;font-size:16px;margin-bottom:4px}
+.app-reward{color:#15803d;font-weight:800;font-size:14px}
+.steps{background:#f9fafb;border-radius:12px;padding:12px;text-align:left;margin:12px 0;font-size:12px;line-height:1.6;color:#374151}
+.steps b{color:#111827}
+.btn{width:100%;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:15px;cursor:pointer;margin-top:10px}
+.btn-install{background:#22c55e;color:#fff;box-shadow:0 4px 0 #15803d}
+.btn-install:active{transform:translateY(2px);box-shadow:0 2px 0 #15803d}
+.btn-verify{background:#f59e0b;color:#000;box-shadow:0 4px 0 #d97706;display:none}
+.btn-verify:active{transform:translateY(2px);box-shadow:0 2px 0 #d97706}
+.btn:disabled{background:#9ca3af;color:#fff;box-shadow:none;cursor:not-allowed}
+.timer-box{display:none;background:#fffbeb;border:2px solid #f59e0b;border-radius:12px;padding:12px;margin:12px 0}
+.timer-num{font-size:36px;font-weight:900;color:#d97706}
+.timer-text{font-size:12px;color:#92400e;font-weight:700;margin-top:4px}
+.back{width:42%;height:44px;margin:16px auto 0;background:#fff;color:#111827;border:1.5px solid #e5e7eb;border-radius:999px;font-weight:700;cursor:pointer}
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:12px 18px;border-radius:12px;font-weight:bold;z-index:9999;display:none}
 </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen">
+<body>
+<div id="toast"></div>
+<div class="card">
+<h2>🎮 Play & Earn</h2>
+<div class="sub">Install app, open 35 sec, get coins</div>
 
-<!-- HEADER - SAME AS survey.html -->
-<div class="bg-gray-800 p-4 flex items-center justify-between sticky top-0 z-10">
-  <div class="flex items-center gap-3">
-    <a href="home.html" class="w-9 h-9 bg-gray-700 rounded-full flex items-center justify-center"><i class="fa fa-arrow-left"></i></a>
-    <h1 class="font-bold text-lg"><i class="fa fa-gamepad mr-2 text-yellow-400"></i>Play & Earn</h1>
-  </div>
-  <div class="flex items-center gap-2">
-    <div class="bg-yellow-500 text-black px-3 py-1 rounded-full text-sm font-bold"><span id="coinCount">0</span> <i class="fa fa-coins"></i></div>
-    <div class="text-xs text-gray-400" id="userEmail">Loading...</div>
-  </div>
+<div class="offer-box">
+<div class="app-icon">📱</div>
+<div class="app-name" id="appName">Top Free App</div>
+<div class="app-reward" id="appReward">+1000 Coins = $0.5</div>
 </div>
 
-<!-- TABS -->
-<div class="flex gap-2 p-3 bg-gray-800 border-t border-gray-700">
-  <button onclick="switchTab('spin')" id="tab-spin" class="flex-1 py-3 rounded-xl font-bold tab-active"><i class="fa fa-dharmachakra mr-1"></i> Spin</button>
-  <button onclick="switchTab('dice')" id="tab-dice" class="flex-1 py-3 rounded-xl font-bold bg-gray-700"><i class="fa fa-dice mr-1"></i> Dice</button>
-  <button onclick="switchTab('ogads')" id="tab-ogads" class="flex-1 py-3 rounded-xl font-bold bg-gray-700"><i class="fa fa-lock mr-1"></i> Offers</button>
+<div class="steps">
+<b>How to earn:</b><br>
+1️⃣ Click <b>Install App</b> below<br>
+2️⃣ Install from Play Store<br>
+3️⃣ <b style="color:#d97706">Open the app for 35 seconds</b><br>
+4️⃣ Come back, click Verify<br>
+5️⃣ Get 1000 coins instantly<br>
+<br>
+<span style="font-size:10px;color:#9ca3af">You can uninstall after you get coins. No problem.</span>
 </div>
 
-<div class="p-4 max-w-md mx-auto">
+<div class="timer-box" id="timerBox">
+<div class="timer-num" id="timerNum">35</div>
+<div class="timer-text" id="timerText">⏳ Open the installed app now... Keep it open 35 sec</div>
+</div>
 
-  <!-- SPIN TAB -->
-  <div id="content-spin" class="bg-white rounded-2xl p-6 text-gray-900 text-center">
-    <h2 class="font-bold text-xl mb-1">Lucky Spin</h2>
-    <p class="text-sm text-gray-500 mb-6">Win up to 50 coins - Spin every 10 min</p>
-    
-    <div class="relative w-64 h-64 mx-auto mb-6">
-      <div id="wheel" class="spin-wheel w-full h-full rounded-full border-8 border-yellow-400 bg-gradient-to-br from-yellow-100 to-orange-200 flex items-center justify-center">
-        <div class="text-6xl">🎡</div>
-      </div>
-      <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 w-0 h-0 border-l-[15px] border-r-[15px] border-t-[25px] border-l-transparent border-r-transparent border-t-red-500"></div>
-    </div>
+<button class="btn btn-install" id="installBtn">📲 Install App - Earn 1000 Coins</button>
+<button class="btn btn-verify" id="verifyBtn">✅ Verify & Claim 1000 Coins</button>
 
-    <button onclick="handleSpin()" id="spinBtn" class="w-full bg-yellow-400 text-black font-bold py-4 rounded-xl text-lg hover:bg-yellow-500">
-      <i class="fa fa-play mr-2"></i> SPIN NOW
-    </button>
-    <p class="text-xs text-gray-400 mt-3" id="spinTimer">Ready to spin!</p>
-
-    <!-- OGADS LOCKER PLACEHOLDER FOR SPIN -->
-    <div id="ogads-spin-lock" class="mt-6 hidden">
-      <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
-        <h4 class="font-bold text-blue-800"><i class="fa fa-lock mr-1"></i> Unlock Extra Spin</h4>
-        <p class="text-xs text-gray-600 mt-1">Install 1 app to get +1 free spin (5 coins)</p>
-        <a id="ogads-spin-link" href="#" target="_blank" class="mt-3 block bg-blue-600 text-white font-bold py-3 rounded-xl">Unlock Now</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- DICE TAB -->
-  <div id="content-dice" class="bg-white rounded-2xl p-6 text-gray-900 text-center hidden">
-    <h2 class="font-bold text-xl mb-1">Roll Dice</h2>
-    <p class="text-sm text-gray-500 mb-6">Roll 6 to win 10 coins</p>
-    <div class="text-8xl mb-6" id="diceFace">🎲</div>
-    <button onclick="handleDice()" class="w-full bg-gray-800 text-white font-bold py-4 rounded-xl text-lg">ROLL DICE</button>
-  </div>
-
-  <!-- OGADS TAB - WILL BE LIVE AFTER APPROVAL -->
-  <div id="content-ogads" class="bg-white rounded-2xl p-6 text-gray-900 text-center hidden">
-    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-      <i class="fa fa-clock text-2xl text-blue-600"></i>
-    </div>
-    <h3 class="font-bold text-gray-800">Offers Loading Soon</h3>
-    <p class="text-gray-500 text-sm mt-2">Best app installs for Rwanda.<br>Install & earn coins instantly.</p>
-    <div class="mt-4 bg-gray-100 rounded-full px-4 py-1.5 text-xs text-gray-600 inline-block"><i class="fa fa-spinner fa-spin mr-1"></i> Connecting to OGAds...</div>
-    
-    <!-- THIS WILL SHOW REAL OFFERS AFTER APPROVAL -->
-    <div id="ogads-offerwall" class="mt-6 hidden text-left">
-      <p class="font-bold mb-3">Complete 1 offer to earn 5 coins:</p>
-      <!-- Your OGAds locker iframe or link will go here -->
-      <div id="ogads-container"></div>
-    </div>
-  </div>
-
+<button class="back" onclick="location.href='./home.html'">Back Home</button>
+<div style="font-size:9px;color:#9ca3af;margin-top:12px">Min withdraw 3000 Coins = $1.5<br>Protected by AppCheck</div>
 </div>
 
 <script>
-// --- FIREBASE ---
-const firebaseConfig = {
-  apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
-  authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
-  projectId: "reward-platform-rw-2e13d"
-};
-if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+// ===== CONFIG - CHANGE THIS AFTER OGADS APPROVAL =====
+const OGADS_LINK = "https://YOUR-OGADS-LOCKER-LINK-HERE"; // <-- Put your OGAds Content Locker link here tomorrow
+const COINS_REWARD = 1000;
+const OPEN_TIME = 35; // 35 seconds as you requested
+// =====================================================
 
-firebase.auth().onAuthStateChanged(user => {
-  if (user) {
-    document.getElementById('userEmail').innerText = user.email;
-    loadCoins(user.uid);
-  } else {
-    window.location.href = 'index.html';
-  }
-});
+const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
+firebase.initializeApp(firebaseConfig);
+try{ firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);}catch(e){}
+const auth=firebase.auth(), db=firebase.firestore();
 
-function loadCoins(uid){
-  db.collection('users').doc(uid).onSnapshot(doc=>{
-    if(doc.exists) document.getElementById('coinCount').innerText = doc.data().coins || 0;
-  });
+let currentUser=null, userData={}, timerInt=null, sec=OPEN_TIME, canVerify=false, installStarted=false;
+
+const installBtn=document.getElementById('installBtn');
+const verifyBtn=document.getElementById('verifyBtn');
+const timerBox=document.getElementById('timerBox');
+const timerNum=document.getElementById('timerNum');
+const timerText=document.getElementById('timerText');
+
+function showToast(m){
+  const t=document.getElementById('toast');
+  t.innerText=m; t.style.display='block';
+  setTimeout(()=>t.style.display='none',3000);
 }
+function getCoins(d){ return d.coins ?? d.balance ?? d.points ?? 0; }
 
-// --- TABS ---
-function switchTab(tab) {
-  ['spin','dice','ogads'].forEach(t=>{
-    document.getElementById('content-'+t).classList.add('hidden');
-    document.getElementById('tab-'+t).classList.remove('tab-active');
-    document.getElementById('tab-'+t).classList.add('bg-gray-700');
-  });
-  document.getElementById('content-' + tab).classList.remove('hidden');
-  document.getElementById('tab-' + tab).classList.add('tab-active');
-  document.getElementById('tab-' + tab).classList.remove('bg-gray-700');
-}
-
-// --- SPIN LOGIC WITH OGADS HOOK ---
-let canSpin = true;
-function handleSpin(){
-  if(!canSpin) return;
-  canSpin = false;
-  const wheel = document.getElementById('wheel');
-  const deg = 1800 + Math.floor(Math.random()*720);
-  wheel.style.transform = `rotate(${deg}deg)`;
+installBtn.onclick=()=>{
+  if(installStarted) return;
   
-  setTimeout(()=>{
-    // Give 2 coins normally
-    addCoins(2);
-    document.getElementById('spinTimer').innerText = "You won 2 coins! Next spin in 10 min";
+  // Open OGAds link
+  if(OGADS_LINK.includes("YOUR-OGADS")){
+    showToast("⚠️ Add your OGAds link first! Opening test page...");
+    // For testing before approval - remove this after you add real link
+  } else {
+    window.open(OGADS_LINK, '_blank');
+  }
+  
+  installStarted=true;
+  installBtn.disabled=true;
+  installBtn.textContent="📱 App link opened - Install now";
+  
+  // Start 35 sec timer
+  sec=OPEN_TIME;
+  canVerify=false;
+  timerBox.style.display='block';
+  timerNum.textContent=sec;
+  timerText.textContent="⏳ Open the installed app now... Keep it open 35 sec";
+  
+  timerInt=setInterval(()=>{
+    sec--;
+    timerNum.textContent=sec;
+    if(sec>20){
+      timerText.textContent=`📱 App must be open... ${sec}s left`;
+    } else if(sec>10){
+      timerText.textContent=`✅ Keep app open... ${sec}s left`;
+    } else if(sec>0){
+      timerText.textContent=`🔥 Almost done... ${sec}s left - don't close app`;
+    } else {
+      clearInterval(timerInt);
+      timerNum.textContent="✅";
+      timerText.textContent="✅ 35 sec done! Click Verify below to get coins";
+      verifyBtn.style.display='block';
+      canVerify=true;
+      // Vibrate if mobile
+      if(navigator.vibrate) navigator.vibrate(200);
+    }
+  },1000);
+  
+  showToast("Install the app & open it for 35 sec!");
+};
+
+verifyBtn.onclick=async()=>{
+  if(!canVerify || !currentUser) return;
+  verifyBtn.disabled=true;
+  verifyBtn.textContent="Verifying...";
+  
+  try{
+    let currentCoins=getCoins(userData);
+    let newBal=currentCoins + COINS_REWARD;
     
-    // SHOW OGADS LOCK FOR EXTRA SPIN - THIS IS WHERE YOU EARN $1
-    document.getElementById('ogads-spin-lock').classList.remove('hidden');
+    await db.collection('users').doc(currentUser.uid).set({
+      balance:newBal, coins:newBal, points:newBal,
+      lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),
+      lastPlayEarn: firebase.firestore.FieldValue.serverTimestamp()
+    },{merge:true});
     
-    setTimeout(()=>{ canSpin=true; document.getElementById('spinTimer').innerText="Ready to spin!"; }, 600000);
-  }, 4000);
-}
+    await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({
+      action:'Play & Earn', type:'play', coins:COINS_REWARD, points:COINS_REWARD,
+      desc:`App Install - Opened 35s +${COINS_REWARD} coins`,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    
+    showToast(`✅ +${COINS_REWARD} Coins added!`);
+    timerText.textContent=`🎉 +${COINS_REWARD} Coins claimed! You can uninstall app now`;
+    verifyBtn.textContent=`✅ Claimed ${COINS_REWARD} Coins!`;
+    installBtn.style.display='none';
+    
+    setTimeout(()=>{ location.href='./home.html'; }, 2000);
+    
+  }catch(e){
+    showToast(e.message);
+    verifyBtn.disabled=false;
+    verifyBtn.textContent="✅ Verify & Claim 1000 Coins";
+  }
+};
 
-function handleDice(){
-  const faces = ['⚀','⚁','⚂','⚃','⚄','⚅'];
-  let r = Math.floor(Math.random()*6);
-  document.getElementById('diceFace').innerText = faces[r];
-  if(r==5) addCoins(10);
-}
-
-function addCoins(amount){
-  const user = firebase.auth().currentUser;
-  if(!user) return;
-  db.collection('users').doc(user.uid).update({
-    coins: firebase.firestore.FieldValue.increment(amount)
-  });
-}
-
-// --- OGADS CONFIG - CHANGE THIS ONE LINE AFTER APPROVAL ---
-// After OGAds approves you, go to members.ogads.com -> Content Lockers -> Create -> Copy LINK
-// Replace below:
-const OGADS_LINK = "YOUR_OGADS_CONTENT_LOCKER_LINK_HERE"; // e.g. https://mobiwol.com/cl/xxxxx
-// Postback will be added later
-
-document.getElementById('ogads-spin-link').href = OGADS_LINK;
+auth.onAuthStateChanged(async u=>{
+  if(!u){ location.href='./index.html'; return; }
+  currentUser=u;
+  const doc=await db.collection('users').doc(u.uid).get();
+  if(doc.exists) userData=doc.data();
+});
 </script>
-
-<!-- OGAds Content Locker Script - Add after approval -->
-<!-- STEP AFTER APPROVAL: Paste your OGAds locker JS here 
-<script type="text/javascript" src="https://mobiwol.com/cl/xxxxx"></script>
--->
-
 </body>
 </html>
