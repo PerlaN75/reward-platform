@@ -4,9 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Offers - Coins</title>
-<meta name="monetag" content="ac12b34f63f863388a198226e7eeeaa5">
-<script>(function(s){s.dataset.zone='12083693',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-<script>(function(s){s.dataset.zone='12083688',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 <style>
 *{ -webkit-tap-highlight-color:transparent }
 *:focus{outline:none !important}
@@ -43,23 +40,20 @@ h2{margin:8px 0 6px 0;color:#111827;font-size:22px;font-weight:900}
 <div class="bar"><div class="fill" id="fill"></div></div>
 <div id="countText">0/5 done - Resets midnight</div>
 
-<!-- ADSTERRA NATIVE SAFE -->
-<div style="margin:10px 0;">
-<div style="font-size:9px;color:#999;">Sponsored</div>
-<script async="async" data-cfasync="false" src="https://bicea.org/21/23e1e60b5d9d8473949f8c3ca250759b"></script>
-<div id="container-23e1e60b5d9d8473949f8c3ca250759b"></div>
-</div>
-
 <div id="offersList" style="margin-top:10px"></div>
 <a class="back" href="home.html">Back Home</a>
 <div class="note">Min withdraw 3000 Coins = $1.5 • 1000 Coins = $0.5<br>Coins added after 12 sec verification.</div>
+
+<!-- OGADS WILL GO HERE AFTER APPROVAL -->
+<!-- <div id="ogads-offerwall"></div> -->
+
 </div>
 <div id="timerModal" class="modal"><div class="modal-content">
 <div style="font-size:26px">⏳</div>
 <h3 id="modalTitle">Verifying Offer...</h3>
-<p id="modalDesc">Keep offer tab open for 12 seconds</p>
+<p id="modalDesc">Keep page open for 12 seconds</p>
 <div class="timer" id="timerNum">12</div>
-<div class="ad-hint" id="adHint">⏳ Ad loading...</div>
+<div class="ad-hint" id="adHint">⏳ Verifying...</div>
 </div></div>
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
@@ -69,7 +63,6 @@ try {
   appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);
 } catch(e) {}
 const auth=firebase.auth(), db=firebase.firestore();
-const DIRECT_LINK = "https://asiafilm.org/4/fea14e9f802d182828ceef74e57a3a5b";
 const LIMIT = 5; const PER_OFFER = 1; const WAIT_SEC = 12;
 function getToday(){return new Date().toISOString().split('T')[0];}
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',2500);}
@@ -87,16 +80,17 @@ function render(){
 function clickOffer(n){
   if(stat.count >= LIMIT){ showToast("Daily limit reached!"); return; }
   if(document.getElementById('timerModal').style.display==='flex') return;
-  curOffer=n; window.open(DIRECT_LINK, "_blank");
+  curOffer=n; 
+  // CLEAN VERSION FOR OGADS REVIEW - NO EXTERNAL AD LINK
   sec=WAIT_SEC; 
   document.getElementById('timerNum').innerText=sec;
   document.getElementById('modalTitle').innerText='Verifying Offer...';
-  document.getElementById('modalDesc').innerText='Keep offer tab open for 12 seconds';
-  document.getElementById('adHint').innerText='⏳ Ad loading... Please keep tab open';
+  document.getElementById('modalDesc').innerText='Keep page open for 12 seconds';
+  document.getElementById('adHint').innerText='⏳ Verifying...';
   document.getElementById('timerModal').style.display='flex';
   timerInt=setInterval(async ()=>{
     sec--; document.getElementById('timerNum').innerText=sec;
-    if(sec==8) document.getElementById('adHint').innerText='📡 Offer loaded - verifying...';
+    if(sec==8) document.getElementById('adHint').innerText='📡 Verifying...';
     if(sec==4){ document.getElementById('adHint').innerText='✅ Verified - almost done...'; document.getElementById('modalTitle').innerText='Almost Ready...'; }
     if(sec<=0){ clearInterval(timerInt); document.getElementById('timerModal').style.display='none'; await rewardOffer(); }
   },1000);
