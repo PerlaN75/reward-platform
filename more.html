@@ -206,9 +206,10 @@ auth.onAuthStateChanged(u=>{cachedUser=u;});
   setLang(lang, null, true);
 })();
 function getCoinsFromDoc(d){ return d.coins ?? d.balance ?? d.points ?? 0; }
-function openProfile(){
+window.openProfile=function(){
   document.getElementById('profileModal').style.display='flex';
-  let user=auth.currentUser||cachedUser; if(!user){setTimeout(openProfile,1000); return;}
+  let user=auth.currentUser||cachedUser; 
+  if(!user){ setTimeout(()=>window.openProfile(),800); return; }
   db.collection("users").doc(user.uid).onSnapshot(async snap=>{
     if(!snap.exists) return; const d=snap.data();
     const username=d.username||user.email.split('@')[0];
@@ -224,13 +225,13 @@ function openProfile(){
     document.getElementById('pRefs').innerText=ref;
   });
 }
-function closeProfile(){document.getElementById('profileModal').style.display='none';}
-function openAbout(){document.getElementById('aboutModal').style.display='flex';}
-function closeAbout(){document.getElementById('aboutModal').style.display='none';}
-function openHistory(){document.getElementById('historyModal').style.display='flex'; loadHistory();}
-function closeHistory(){document.getElementById('historyModal').style.display='none';}
-function openSettings(){document.getElementById('settingsModal').style.display='flex';}
-function closeSettings(){document.getElementById('settingsModal').style.display='none';}
+window.closeProfile=function(){document.getElementById('profileModal').style.display='none';}
+window.openAbout=function(){document.getElementById('aboutModal').style.display='flex';}
+window.closeAbout=function(){document.getElementById('aboutModal').style.display='none';}
+window.openHistory=function(){document.getElementById('historyModal').style.display='flex'; loadHistory();}
+window.closeHistory=function(){document.getElementById('historyModal').style.display='none';}
+window.openSettings=function(){document.getElementById('settingsModal').style.display='flex';}
+window.closeSettings=function(){document.getElementById('settingsModal').style.display='none';}
 async function loadHistory(){
   const user=auth.currentUser||cachedUser; if(!user) return;
   document.getElementById('historyList').innerHTML='<p style="text-align:center;color:#888">Loading...</p>';
@@ -255,10 +256,10 @@ function render(data){
     list.innerHTML+=`<div class="item"><div><div class="item-title">${i.title}</div><div class="item-desc">${i.desc}<br>${d}</div></div><div style="color:${i.points>0?'#22c55e':'#ef4444'}">${pts}</div></div>`;
   });
 }
-function filterBy(k,btn){currentFilter=k; document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); render(allData);}
-function clearHistoryView(){document.getElementById('confirmModal').style.display='flex';}
-function cancelClear(){document.getElementById('confirmModal').style.display='none';}
-function confirmClear(){
+window.filterBy=function(k,btn){currentFilter=k; document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); render(allData);}
+window.clearHistoryView=function(){document.getElementById('confirmModal').style.display='flex';}
+window.cancelClear=function(){document.getElementById('confirmModal').style.display='none';}
+window.confirmClear=function(){
   const user=auth.currentUser||cachedUser;
   const now = new Date();
   historyClearedDate = now;
@@ -269,7 +270,7 @@ function confirmClear(){
   document.getElementById('countText').innerText='0 records - Cleared';
 }
 const translations={ en:{More:"More",Profile:"Profile",History:"History",Settings:"Settings",Support:"Help/Support",About:"Rules",Back:"Back Home"}, fr:{More:"Plus",Profile:"Profil",History:"Historique",Settings:"Parametres",Support:"Aide/Support",About:"Regles",Back:"Retour Accueil"}, rw:{More:"Byinshi",Profile:"Umwirondoro",History:"Amateka",Settings:"Igenamiterere",Support:"Ubufasha",About:"Amategeko",Back:"Subira Ahabanza"} };
-function setLang(code, el, init=false){
+window.setLang=function(code, el, init=false){
   if(!init){ localStorage.setItem('app_lang', code); }
   const t = translations[code] || translations.en;
   document.getElementById('txtMore').innerText = t.More;
@@ -282,7 +283,7 @@ function setLang(code, el, init=false){
   document.querySelectorAll('.lang-option').forEach(o=>{ o.classList.remove('active'); });
   if(el){ el.classList.add('active'); }
 }
-function setMode(mode, init=false){
+window.setMode=function(mode, init=false){
   if(!init){ localStorage.setItem('app_mode', mode); }
   document.body.classList.remove('light','dark');
   document.body.classList.add(mode);
