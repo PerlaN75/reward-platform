@@ -16,7 +16,7 @@
     body.dark .menu-list a:not(:last-child){border-color:#334155}
     body.dark .modal-box{background:#1e293b;color:#fff}
     .top-bar{background:#1e3a8a;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;position:sticky;top:0;z-index:100}
-    .back-circle{width:36px;height:36px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;text-decoration:none;cursor:pointer;border:none}
+    .back-circle{width:36px;height:36px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:900;text-decoration:none;cursor:pointer;border:none}
     .center-pill{background:#fff;border-radius:20px;padding:6px 16px;font-weight:800;font-size:14px;color:#111;display:flex;align-items:center;gap:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
     .bell{color:#fbbf24;font-size:22px}
     .container{max-width:500px;margin:0 auto;padding:14px 12px 90px 12px}
@@ -24,8 +24,7 @@
     .menu-list a{display:flex;align-items:center;justify-content:space-between;width:100%;padding:18px 14px;color:#111;text-decoration:none;font-size:15px;font-weight:700;border-radius:12px;cursor:pointer}
     .menu-list a:not(:last-child){border-bottom:1px solid #f1f5f9}
     .arrow{color:#9ca3af;font-size:20px}
-    .back-home{display:block;width:46%;max-width:210px;margin:20px auto 0 auto;background:#2563eb;color:#fff;border:none;border-radius:12px;padding:12px;font-weight:800;font-size:14px;text-align:center;text-decoration:none}
-    .sub-info{text-align:center;font-size:11px;color:#9ca3af;margin-top:10px}
+    .sub-info{text-align:center;font-size:11px;color:#9ca3af;margin-top:14px}
     .modal{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.55);justify-content:center;align-items:center;padding:15px}
     .modal-box{background:#fff;width:100%;max-width:420px;border-radius:18px;padding:20px;max-height:85vh;overflow-y:auto;color:#111;position:relative}
     .close{position:absolute;top:12px;right:15px;font-size:22px;font-weight:bold;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#f3f4f6;border-radius:50%;color:#111}
@@ -51,7 +50,6 @@
     .confirm-actions button{flex:1;padding:11px;border-radius:10px;border:none;font-weight:bold;cursor:pointer}
     .c-cancel{background:#f3f4f6;color:#111}
     .c-ok{background:#ef4444;color:#fff}
-    /* SETTINGS RESTORED */
     .set-section{margin:16px 0}
     .set-label{font-size:13px;font-weight:800;color:#111;margin-bottom:8px;display:block}
     .lang-option{display:flex;justify-content:space-between;align-items:center;padding:12px;border:1px solid #e5e7eb;border-radius:12px;margin-bottom:8px;cursor:pointer;background:#fff}
@@ -64,7 +62,7 @@
 </head>
 <body>
 <div class="top-bar">
-  <a href="home.html" class="back-circle">←</a>
+  <a href="home.html" class="back-circle">✕</a>
   <div class="center-pill">⚙️ More</div>
   <div class="bell">🔔</div>
 </div>
@@ -79,7 +77,6 @@
       <a onclick="document.getElementById('aboutModal').style.display='flex'"><div class="left">📜 Rules</div><span class="arrow">›</span></a>
     </div>
   </div>
-  <a href="home.html" class="back-home">Back Home</a>
   <div class="sub-info">1000 Coins = $0.5 • Min 3000 Coins = $1.5</div>
 </div>
 
@@ -113,7 +110,6 @@
       <button class="btn btn-refresh" onclick="loadHistory()">Refresh</button>
       <button class="btn btn-clear" onclick="document.getElementById('confirmModal').style.display='flex'">Clear</button>
     </div>
-    <!-- FILTERS REMOVED AS YOU ASKED -->
     <div id="historyList" style="margin-top:12px;max-height:55vh;overflow-y:auto;color:#6b7280;text-align:center">Loading...</div>
   </div>
 </div>
@@ -122,14 +118,12 @@
   <div class="modal-box" onclick="event.stopPropagation()">
     <span class="close" onclick="document.getElementById('settingsModal').style.display='none'">×</span>
     <h3 style="text-align:center;margin-bottom:14px">⚙️ Settings</h3>
-    
     <div class="set-section">
       <span class="set-label">Language</span>
       <div class="lang-option active" id="lang-en" onclick="setLang('en',this)"><span>English</span><span>✓</span></div>
       <div class="lang-option" id="lang-fr" onclick="setLang('fr',this)"><span>Français</span><span></span></div>
       <div class="lang-option" id="lang-rw" onclick="setLang('rw',this)"><span>Kinyarwanda</span><span></span></div>
     </div>
-
     <div class="set-section">
       <span class="set-label">Appearance - Mode</span>
       <div class="mode-box">
@@ -137,7 +131,6 @@
         <div class="mode-btn" id="modeDark" onclick="setMode('dark')">🌙 Dark</div>
       </div>
     </div>
-
     <button onclick="saveSettings()" class="save-close-btn">Save & Close</button>
   </div>
 </div>
@@ -145,7 +138,7 @@
 <div id="confirmModal" class="confirm-overlay" onclick="this.style.display='none'">
   <div class="confirm-box" onclick="event.stopPropagation()">
     <h4>Delete History Forever?</h4>
-    <p style="font-size:12px;color:#6b7280;margin-top:6px">This will permanently delete all history. It will never appear again even after refresh.</p>
+    <p style="font-size:12px;color:#6b7280;margin-top:6px">It will never appear again even after refresh.</p>
     <div class="confirm-actions">
       <button class="c-cancel" onclick="document.getElementById('confirmModal').style.display='none'">Cancel</button>
       <button class="c-ok" onclick="permanentClearHistory()">Yes, Delete Forever</button>
@@ -160,11 +153,11 @@
       <span class="close" onclick="document.getElementById('aboutModal').style.display='none'" style="position:static;background:#fff;color:#111">×</span>
     </div>
     <div style="padding:16px;max-height:65vh;overflow-y:auto">
-      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:12px;margin:10px 0"><b>1. One Account</b><br><span style="font-size:12px">ONE per device</span></div>
-      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:12px;margin:10px 0"><b>2. Anti-Cheating</b><br><span style="font-size:12px">No bots</span></div>
-      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:12px;margin:10px 0"><b>3. Coins</b><br><span style="font-size:12px">1000 = $0.5 - Min 3000 = $1.5</span></div>
-      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:12px;margin:10px 0"><b>4. Referral - 5 Coins</b><br><span style="font-size:12px">5 per referral</span></div>
-      <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin:10px 0"><b>5. Daily Limits</b><br><span style="font-size:12px">Checkin 3 - Watch 10 - Bonus 3 - Offers 5 - Ads 10</span></div>
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:12px;margin:10px 0"><b>1. One Account</b></div>
+      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:12px;margin:10px 0"><b>2. Anti-Cheating</b></div>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:12px;margin:10px 0"><b>3. Coins - 1000 = $0.5 - Min 3000 = $1.5</b></div>
+      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:12px;margin:10px 0"><b>4. Referral - 5 Coins</b></div>
+      <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin:10px 0"><b>5. Daily Limits</b></div>
     </div>
   </div>
 </div>
@@ -176,13 +169,11 @@ try{ firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', tr
 const auth=firebase.auth(), db=firebase.firestore();
 let cachedUser=null, allData=[];
 function getCoinsFromDoc(d){ return d.coins ?? d.balance ?? d.points ?? 0; }
-
 async function loadProfile(){
   try{ const c=JSON.parse(localStorage.getItem('userData')||'{}'); if(c.username){ document.getElementById('pUsername').innerText=c.username; document.getElementById('pEmail').innerText=c.email||'...'; document.getElementById('pPoints').innerText=(c.balance??c.coins??0)+' 🪙'; document.getElementById('pRefs').innerText=c.referralCount||0; document.getElementById('avatarLetter').innerText=(c.username||'U').charAt(0).toUpperCase(); if(c.uid) document.getElementById('pId').innerText=c.uid.substring(0,8).toUpperCase(); } }catch(e){}
   const u=auth.currentUser||cachedUser; if(!u) return;
   try{ const snap=await db.collection('users').doc(u.uid).get(); if(!snap.exists) return; const d=snap.data(); const username=d.username||u.email.split('@')[0]; document.getElementById('pUsername').innerText=username; document.getElementById('pEmail').innerText=d.email||u.email; document.getElementById('pPoints').innerText=getCoinsFromDoc(d)+' 🪙'; document.getElementById('pId').innerText=u.uid.substring(0,8).toUpperCase(); document.getElementById('avatarLetter').innerText=username.charAt(0).toUpperCase(); document.getElementById('pLevel').innerText=d.level||Math.floor(getCoinsFromDoc(d)/100)+1; document.getElementById('pRefs').innerText=d.referralCount??0; let reg="Unknown"; if(d.createdAt&&d.createdAt.toDate) reg=d.createdAt.toDate().toLocaleDateString(); else if(u.metadata.creationTime) reg=new Date(u.metadata.creationTime).toLocaleDateString(); document.getElementById('pDate').innerText=reg; }catch(e){}
 }
-
 async function loadHistory(){
   const user=auth.currentUser||cachedUser; if(!user) return;
   document.getElementById('historyList').innerHTML='<p>Loading...</p>'; allData=[];
@@ -193,68 +184,32 @@ async function loadHistory(){
     render(allData);
   }catch(e){ document.getElementById('historyList').innerHTML='<p>No history yet</p>'; }
 }
-
 function render(data){
   const list=document.getElementById('historyList');
   document.getElementById('countText').innerText=data.length+' records';
   if(data.length===0){list.innerHTML='<p style="padding:20px">No history - Cleared forever</p>';return;}
-  list.innerHTML=''; data.forEach(i=>{ const d=i.date.toLocaleDateString(); list.innerHTML+=`<div class="item"><div><div style="font-weight:bold;font-size:13px">${i.title}</div><div style="font-size:11px;color:#9ca3af">${i.desc} - ${d}</div></div><div style="color:#22c55e;font-weight:900;font-size:13px">+${i.points} 🪙</div></div>`; });
+  list.innerHTML=''; data.forEach(i=>{ const d=i.date.toLocaleDateString(); list.innerHTML+=`<div class="item"><div><div style="font-weight:bold;font-size:13px">${i.title}</div><div style="font-size:11px;color:#9ca3af">${i.desc} - ${d}</div></div><div style="color:#22c55e;font-weight:900">+${i.points} 🪙</div></div>`; });
 }
-
-// PERMANENT DELETE - NEVER APPEAR AGAIN AFTER REFRESH
 async function permanentClearHistory(){
   const user=auth.currentUser||cachedUser; if(!user) return;
   document.getElementById('confirmModal').style.display='none';
   document.getElementById('historyList').innerHTML='<p>Deleting forever...</p>';
   try{
     const snap=await db.collection('users').doc(user.uid).collection('earnHistory').get();
-    const batch = db.batch();
-    snap.forEach(doc=>{ batch.delete(doc.ref); });
-    await batch.commit();
-    // Also delete convertHistory
+    const batch = db.batch(); snap.forEach(doc=>{ batch.delete(doc.ref); }); await batch.commit();
     try{ const c2=await db.collection('users').doc(user.uid).collection('convertHistory').get(); const b2=db.batch(); c2.forEach(doc=>b2.delete(doc.ref)); await b2.commit(); }catch(e){}
-    
     const now = new Date().toISOString();
     localStorage.setItem('history_cleared_at_'+user.uid, now);
-    localStorage.setItem('history_cleared_at', now);
     await db.collection('users').doc(user.uid).set({historyClearedAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge:true});
-    
     allData=[]; render(allData);
-    document.getElementById('countText').innerText='0 records - Permanently cleared';
   }catch(e){
-    // Even if Firestore delete fails, hide locally forever
-    const now = new Date().toISOString();
-    localStorage.setItem('history_cleared_at_'+user.uid, now);
-    allData=[]; render(allData);
+    const now = new Date().toISOString(); localStorage.setItem('history_cleared_at_'+user.uid, now); allData=[]; render(allData);
   }
 }
-
-// SETTINGS - LANGUAGES + MODE RESTORED
-function setLang(code, el){
-  localStorage.setItem('app_lang', code);
-  document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active'));
-  el.classList.add('active');
-}
-function setMode(mode){
-  localStorage.setItem('app_mode', mode);
-  document.getElementById('modeLight').classList.toggle('active', mode==='light');
-  document.getElementById('modeDark').classList.toggle('active', mode==='dark');
-  if(mode==='dark') document.body.classList.add('dark'); else document.body.classList.remove('dark');
-}
-function saveSettings(){
-  document.getElementById('settingsModal').style.display='none';
-  location.reload();
-}
-(function(){
-  const mode=localStorage.getItem('app_mode')||'light';
-  const lang=localStorage.getItem('app_lang')||'en';
-  if(mode==='dark') document.body.classList.add('dark');
-  document.getElementById('modeLight').classList.toggle('active', mode==='light');
-  document.getElementById('modeDark').classList.toggle('active', mode==='dark');
-  document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active'));
-  const el=document.getElementById('lang-'+lang); if(el) el.classList.add('active');
-})();
-
+function setLang(code, el){ localStorage.setItem('app_lang', code); document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active')); el.classList.add('active'); }
+function setMode(mode){ localStorage.setItem('app_mode', mode); document.getElementById('modeLight').classList.toggle('active', mode==='light'); document.getElementById('modeDark').classList.toggle('active', mode==='dark'); if(mode==='dark') document.body.classList.add('dark'); else document.body.classList.remove('dark'); }
+function saveSettings(){ document.getElementById('settingsModal').style.display='none'; }
+(function(){ const mode=localStorage.getItem('app_mode')||'light'; const lang=localStorage.getItem('app_lang')||'en'; if(mode==='dark') document.body.classList.add('dark'); document.getElementById('modeLight').classList.toggle('active', mode==='light'); document.getElementById('modeDark').classList.toggle('active', mode==='dark'); document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active')); const el=document.getElementById('lang-'+lang); if(el) el.classList.add('active'); })();
 auth.onAuthStateChanged(u=>{ if(!u){ location.href='./index.html'; return; } cachedUser=u; loadProfile(); });
 </script>
 </body>
