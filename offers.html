@@ -3,26 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Offers - Upgrading to Partner</title>
+<title>Offers - Partner Offers</title>
 <style>
 *{ -webkit-tap-highlight-color:transparent } *:focus{outline:none !important}
 body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;display:flex;justify-content:center;padding:12px 10px 80px 10px;box-sizing:border-box;min-height:100vh}
-.card{background:#ffffff;border:2px solid #e5e7eb;border-radius:22px;padding:18px 14px 18px 14px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.06);margin:10px auto 30px;height:auto}
+.card{background:#ffffff;border:2px solid #e5e7eb;border-radius:22px;padding:16px 14px 18px 14px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.06);margin:10px auto 30px}
 h2{margin:8px 0 6px 0;color:#111827;font-size:22px;font-weight:900}
 .badge{border:1.5px solid #a855f7;border-radius:20px;padding:6px 12px;display:inline-block;margin:8px 0;color:#7e22ce;background:#faf5ff;font-weight:bold;font-size:12px}
-.upgrade-box{background:linear-gradient(135deg,#fdf4ff 0%,#f3e8ff 100%);border:2px solid #e9d5ff;border-radius:16px;padding:18px 14px;margin:14px 0;text-align:left}
-.compare{display:flex;gap:8px;margin:12px 0}
-.compare div{flex:1;border-radius:12px;padding:10px;text-align:center}
-.old{background:#f9fafb;border:1.5px solid #e5e7eb}
-.new{background:#a855f7;color:#fff;border:1.5px solid #9333ea;box-shadow:0 3px 0 #7e22ce}
-.btn{width:100%;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:14px;cursor:pointer;margin-top:10px;box-sizing:border-box}
-.btn-notify{background:#a855f7;color:#fff;box-shadow:0 3px 0 #7e22ce}
-.btn-notify:active{transform:translateY(2px);box-shadow:0 1px 0 #7e22ce}
-.btn-notify.done{background:#e5e7eb;color:#9ca3af;box-shadow:none}
+.offerwall-container{margin-top:14px;border:2px solid #e9d5ff;border-radius:16px;overflow:hidden;background:#faf5ff;min-height:480px}
 .back{background:#fff;color:#111827;padding:10px 24px;border-radius:20px;display:inline-block;margin-top:14px;text-decoration:none;font-weight:bold;font-size:14px;border:1.5px solid #e5e7eb;box-shadow:0 2px 0 #e5e7eb}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#ffffff;border:2px solid #e5e7eb;color:#111827;padding:12px 18px;border-radius:12px;font-weight:bold;z-index:9999;display:none;max-width:90%;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.1)}
-.step{display:flex;gap:10px;align-items:flex-start;margin:8px 0;text-align:left;font-size:12px;color:#4b5563}
-.step span{font-size:16px}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
@@ -32,50 +22,35 @@ h2{margin:8px 0 6px 0;color:#111827;font-size:22px;font-weight:900}
 <body>
 <div id="toast"></div>
 <div class="card">
-<h2>🔥 Offers</h2>
-<div class="badge">🚀 Upgrading to Partner Offerwall</div>
-<div class="upgrade-box">
-<div style="font-weight:900;font-size:14px;margin-bottom:8px;color:#7e22ce">We are upgrading Offers for you!</div>
-<div class="compare">
-<div class="old"><div style="font-size:18px">📢</div><div style="font-size:10px;color:#6b7280;margin-top:2px">OLD</div><div style="font-weight:900;font-size:13px">1 Coin</div><div style="font-size:9px;color:#6b7280">per task</div></div>
-<div class="new"><div style="font-size:18px">💎</div><div style="font-size:10px;opacity:0.9;margin-top:2px">NEW - SOON</div><div style="font-weight:900;font-size:13px">50-500 Coins</div><div style="font-size:9px;opacity:0.9">per offer</div></div>
+<h2>💎 Partner Offers</h2>
+<div class="badge">Earn up to 3000 Coins per Offer</div>
+<div style="font-size:11px;color:#6b7280;margin-top:6px">Apps, games, surveys - Coins added automatically</div>
+
+<div class="offerwall-container" id="offerwall">
+<div style="padding:30px 20px">
+<div style="font-size:40px">🎮</div>
+<div style="font-weight:900;font-size:15px;margin:10px 0">Partner Offerwall</div>
+<div style="font-size:11px;color:#6b7280;line-height:1.6">Choose an offer, complete the steps,<br>and earn Coins instantly<br><br>🔹 App Installs - 100-500 Coins<br>🔹 Games - 500-3000 Coins<br>🔹 Surveys - 100-400 Coins</div>
+<div style="margin-top:18px;padding:9px 14px;background:#fff;border:1px solid #e9d5ff;border-radius:20px;font-size:10px;color:#a855f7;font-weight:700;display:inline-block">⚡ Loading offers...</div>
 </div>
-<div class="step"><span>✅</span><div><b>What is Torox?</b><br>Trusted partner with 100+ high paying offers - app installs, games, surveys, trials.</div></div>
-<div class="step"><span>⏳</span><div><b>Why wait?</b><br>Torox is reviewing our app (2-3 days). After approval, offers go live automatically.</div></div>
-<div class="step"><span>💰</span><div><b>How much?</b><br>50 to 500 Coins per completed offer (vs 1 Coin before). No daily limit.</div></div>
-<div class="step"><span>🔔</span><div><b>You will be notified</b><br>Click Notify below - we will send you message when Partner Offers are ready.</div></div>
 </div>
-<button class="btn btn-notify" id="notifyBtn" onclick="notifyMe()">🔔 Notify Me When Ready</button>
-<div style="font-size:10px;color:#9ca3af;margin-top:8px" id="notifyCount">0 users waiting</div>
+
 <a class="back" href="home.html">Back Home</a>
-<div style="font-size:9px;color:#9ca3af;margin-top:10px;line-height:1.4">Old 5 bonus offers removed to make room for high-value partner offers.<br>Ads Earn still has 10 tasks (10 Coins/day) earning normally.</div>
+<div style="font-size:9px;color:#9ca3af;margin-top:10px;line-height:1.4">Coins credited after partner verification (5-30 min)<br>Follow offer instructions exactly to get Coins</div>
 </div>
+
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
 try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
-const auth=firebase.auth(), db=firebase.firestore();
-function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',2500);}
-let currentUser=null;
-async function notifyMe(){
-  const btn=document.getElementById('notifyBtn');
-  if(btn.classList.contains('done')){ showToast("Already registered!"); return; }
-  if(!currentUser){ showToast("Login first"); return; }
-  btn.innerText="⏳ Saving..."; btn.disabled=true;
-  try{
-    await db.collection('users').doc(currentUser.uid).update({wantsToroxNotify:true, wantsToroxNotifyAt: firebase.firestore.FieldValue.serverTimestamp()});
-    await db.collection('toroxWaitlist').doc(currentUser.uid).set({uid:currentUser.uid, email:currentUser.email||'', createdAt: firebase.firestore.FieldValue.serverTimestamp()});
-    btn.innerText="✅ You will be notified!"; btn.classList.add('done'); showToast("✅ We will notify you when Partner Offers are live!");
-  }catch(e){ btn.innerText="🔔 Notify Me When Ready"; btn.disabled=false; showToast(e.message); }
-}
-auth.onAuthStateChanged(async u=>{
+const auth=firebase.auth();
+auth.onAuthStateChanged(u=>{
   if(!u){ location.href='./index.html'; return; }
-  currentUser=u;
-  const doc=await db.collection('users').doc(u.uid).get();
-  if(doc.exists && doc.data().wantsToroxNotify){
-    const b=document.getElementById('notifyBtn'); b.innerText="✅ You will be notified!"; b.classList.add('done');
+  // PASTE YOUR TOROX WALL ID HERE WHEN APPROVED
+  const TOROX_WALL_ID = ""; // e.g. "abc123"
+  if(TOROX_WALL_ID){
+    document.getElementById('offerwall').innerHTML=`<iframe src="https://torox.io/offerwall/${TOROX_WALL_ID}?user_id=${u.uid}" width="100%" height="700" frameborder="0" style="border-radius:14px"></iframe>`;
   }
-  try{ const snap=await db.collection('toroxWaitlist').get(); document.getElementById('notifyCount').innerText=`${snap.size} users waiting for Partner Offers`; }catch(e){}
 });
 </script>
 </body>
