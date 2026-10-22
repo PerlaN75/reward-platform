@@ -25,7 +25,6 @@ h2{font-size:22px;font-weight:900;margin-bottom:4px}
 .disclosure{background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:10px;margin:10px 0;font-size:10px;color:#9a3412;text-align:left;line-height:1.4}
 .btn{width:100%;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:15px;cursor:pointer;margin-top:10px;transition:0.15s}
 .btn-install{background:#22c55e;color:#fff;box-shadow:0 4px 0 #15803d}
-.btn-install:active{transform:translateY(2px);box-shadow:0 2px 0 #15803d}
 .btn-verify{background:#f59e0b;color:#000;box-shadow:0 4px 0 #d97706;display:none}
 .btn:disabled{background:#9ca3af;color:#fff;box-shadow:none;cursor:not-allowed}
 .timer-box{display:none;background:#fffbeb;border:2px solid #f59e0b;border-radius:12px;padding:12px;margin:12px 0}
@@ -40,21 +39,21 @@ h2{font-size:22px;font-weight:900;margin-bottom:4px}
 <div id="toast"></div>
 <div class="card">
 <h2>🎮 Play & Earn <span class="badge">BETA</span></h2>
-<div class="sub">Install & try apps, get rewarded. OGAds / Adscend offers.<br>Supported by Reward Platform RW</div>
+<div class="sub">Install & try apps, get rewarded.<br>Supported by Reward Platform RW</div>
 <div class="stats">
 <div class="stat"><b id="todayCount">0</b>Today</div>
-<div class="stat"><b>200 🪙</b>Per Offer</div>
+<div class="stat"><b>50 🪙</b>Per Offer</div>
 <div class="stat"><b id="limitCount">10</b>Limit / Day</div>
 </div>
 <div class="offer-box">
 <div class="app-icon">📱</div>
 <div class="app-name" id="offerName">Top Free Apps</div>
-<div class="app-reward">+200 Coins = $0.10 per install</div>
+<div class="app-reward">+50 Coins per install</div>
 <div style="font-size:10px;color:#166534;margin-top:6px">Sponsored offers - incentivized</div>
 </div>
 <div class="disclosure">
-<b>⚠️ Incentivized Traffic Disclosure (Required by OGAds):</b><br>
-You will be rewarded with 200 Coins on our platform for installing and trying this app. This is incentivized traffic. Advertiser gets a real install. You must install from official Play Store and open app at least 35 seconds.
+<b>⚠️ Incentivized Traffic Disclosure:</b><br>
+You will be rewarded with 50 Coins on our platform for installing and trying this app. This is incentivized traffic. Advertiser gets a real install. You must install from official Play Store and open app at least 35 seconds.
 </div>
 <div class="steps">
 <b>How it works:</b><br>
@@ -62,26 +61,24 @@ You will be rewarded with 200 Coins on our platform for installing and trying th
 2️⃣ Install from Play Store (real device only)<br>
 3️⃣ <b style="color:#d97706">Open app & keep open 35 seconds</b><br>
 4️⃣ Come back here, click Verify<br>
-5️⃣ Get 200 coins instantly<br>
+5️⃣ Get 50 coins instantly<br>
 <span style="font-size:10px;color:#6b7280">• One verification per offer • Max 10/day • Anti-fraud: AppCheck + Device ID • No VPN</span>
 </div>
 <div class="timer-box" id="timerBox">
 <div class="timer-num" id="timerNum">35</div>
 <div class="timer-text" id="timerText">⏳ Open the installed app now... Keep it open</div>
 </div>
-<button class="btn btn-install" id="installBtn">📲 Install App - Earn 200 Coins</button>
-<button class="btn btn-verify" id="verifyBtn">✅ Verify & Claim 200 Coins</button>
+<button class="btn btn-install" id="installBtn">📲 Install App - Earn 50 Coins</button>
+<button class="btn btn-verify" id="verifyBtn">✅ Verify & Claim 50 Coins</button>
 <button class="back" onclick="location.href='./home.html'">← Back Home</button>
 <div style="font-size:9px;color:#9ca3af;margin-top:10px">Contact: rewardplatformrw@gmail.com | @SilasN75 | AppCheck Protected | 3000 Coins = $1.5 USDT</div>
 </div>
 <script>
-// ===== CONFIG - OGAds / Adscend =====
 const DEFAULT_OGADS_LINK = "https://ogads... your link here ...";
-const COINS_REWARD = 200;
+const COINS_REWARD = 50;
 const OPEN_TIME = 35;
 const DAILY_LIMIT = 10;
 const STORAGE_KEY = "rw_playearn_state";
-// =====================================
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
 try{ firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);}catch(e){}
@@ -115,7 +112,7 @@ async function fetchOfferLink(){
     if(params.get('offer')) OGADS_LINK = params.get('offer');
   }catch(e){ console.log("config fetch error", e); }
 }
-  function startTimer(remaining=OPEN_TIME){
+function startTimer(remaining=OPEN_TIME){
   sec = remaining; canVerify = false;
   installBtn.disabled = true;
   installBtn.textContent = "⏳ Install in progress - wait 35s";
@@ -171,7 +168,7 @@ installBtn.onclick=async()=>{
     return;
   }
   if(!OGADS_LINK || OGADS_LINK.includes("YOUR-OGADS")){
-    showToast("⚠️ Offer link not set yet - Admin will add after OGAds approval. Contact @SilasN75");
+    showToast("⚠️ Offer link not set yet - Contact @SilasN75");
   } else {
     window.open(OGADS_LINK, '_blank');
     try{
