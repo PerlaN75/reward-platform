@@ -9,81 +9,83 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-    body{background:#0f1508;min-height:100vh;padding:20px;color:white;transition:0.3s}
-    body.light{background:#f2f4f7;color:#000}
-.container{max-width:500px;margin:0 auto}
-.header{text-align:center;margin:20px 0;color:#fbbf24;font-size:28px;font-weight:bold}
-.card{background:#fff;border-radius:16px;padding:8px;box-shadow:0 4px 12px rgba(0,0,0,0.25)}
-.menu-list a{display:flex;align-items:center;justify-content:space-between;width:100%;padding:18px 16px;color:#000;text-decoration:none;font-size:16px;font-weight:bold;border-radius:10px;cursor:pointer}
-.menu-list a:not(:last-child){border-bottom:1px solid #e5e5e5}
-.left{display:flex;align-items:center;gap:12px}
-.arrow{color:#999;font-size:22px}
-.modal{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);justify-content:center;align-items:center;padding:15px}
-.modal-box{background:#fff;width:100%;max-width:420px;border-radius:18px;padding:20px;max-height:85vh;overflow-y:auto;color:#000;position:relative}
-.close{position:absolute;top:12px;right:15px;font-size:30px;font-weight:bold;cursor:pointer;z-index:99999;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:#f3f4f6;border-radius:50%;color:#000}
-.back-home{display:block;width:40%!important;max-width:200px!important;margin:24px auto 0 auto;background:#fbbf24;color:#000;border:none;border-radius:50px;padding:12px;font-weight:bold;font-size:14px;text-align:center;text-decoration:none;box-shadow:0 3px 0 #e5a500}
-.top-actions{display:flex;gap:10px;margin:12px 0}
-.btn{flex:1;padding:10px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:13px}
-.btn-refresh{background:#fbbf24;color:#000}
-.btn-clear{background:#000;color:#fff}
-.filters{display:flex;gap:6px;overflow-x:auto;padding:8px 0;white-space:nowrap}
-.filters button{padding:6px 10px;border-radius:20px;border:1px solid #fbbf24;background:transparent;color:#f59e0b;font-size:10px;font-weight:bold;cursor:pointer}
-.filters button.active{background:#fbbf24;color:#000}
-.item{background:#f9fafb;border:1px solid #eee;border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.item-title{font-weight:bold;font-size:12px}
-.item-desc{font-size:10px;color:#666}
-.confirm-overlay{display:none;position:fixed;z-index:10000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center}
-.confirm-box{background:#fff;border-radius:16px;padding:20px;width:85%;max-width:320px;text-align:center}
-.confirm-actions{display:flex;gap:10px}
-.confirm-actions button{flex:1;padding:11px;border-radius:10px;border:none;font-weight:bold;cursor:pointer}
-.c-cancel{background:#f3f4f6;color:#000}
-.c-ok{background:#fbbf24;color:#000}
-.set-section{margin:16px 0}
-.set-label{font-size:13px;font-weight:bold;color:#111;margin-bottom:8px;display:block}
-.lang-option{display:flex;justify-content:space-between;align-items:center;padding:12px;border:1px solid #eee;border-radius:10px;margin-bottom:6px;cursor:pointer}
-.lang-option.active{border-color:#fbbf24;background:#fffbeb}
-.mode-box{display:flex;gap:10px;margin:0 auto;width:65%;max-width:200px;justify-content:center}
-.mode-btn{flex:1;padding:10px 6px;border-radius:12px;border:2px solid #eee;background:#f9fafb;cursor:pointer;text-align:center;font-weight:bold;font-size:12px;max-width:90px}
-.mode-btn.active{border-color:#fbbf24;background:#fbbf24;color:#000}
-.save-close-btn{width:50%!important;max-width:170px!important;margin:15px auto 0 auto!important;display:block!important;background:#fbbf24!important;border:none!important;padding:10px!important;border-radius:10px!important;font-weight:bold!important;cursor:pointer!important;font-size:13px!important;color:#000!important}
-.profile-header{text-align:center;padding-top:8px}
-.avatar-letter{width:86px;height:86px;background:linear-gradient(135deg,#fbbf24,#f59e0b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900;color:#000;margin:8px auto 10px auto;border:4px solid #fef3c7;box-shadow:0 4px 10px rgba(0,0,0,0.15)}
-.profile-name{font-size:18px;font-weight:900;color:#111;margin:4px 0}
-.profile-details{text-align:left;background:#f9fafb;border:1px solid #f1f1f1;border-radius:14px;padding:14px;margin:14px 0}
-.profile-row{display:flex;gap:8px;align-items:flex-start;margin:10px 0;font-size:13px;color:#666;line-height:1.4}
-.profile-row b{color:#111;min-width:82px}
-.profile-stats{display:flex;gap:8px}
-.stat-box{flex:1;border-radius:12px;padding:12px 6px;text-align:center}
-.stat-box p:first-child{font-size:16px;font-weight:900;color:#111}
-.stat-box p:last-child{font-size:10px;color:#666;margin-top:2px;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px}
-.stat-points{background:#fffbeb;border:1px solid #fde68a}
-.stat-refs{background:#f0fdf4;border:1px solid #bbf7d0}
-.stat-level{background:#eff6ff;border:1px solid #bfdbfe}
+    body{background:#f3f4f6;min-height:100vh;color:#111;overflow-x:hidden}
+    /* BLUE HEADER LIKE SCREENSHOT */
+    .top-bar{background:#2563eb;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;position:sticky;top:0;z-index:100}
+    .back-circle{width:36px;height:36px;background:rgba(0,0,0,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;text-decoration:none;cursor:pointer;border:none}
+    .center-pill{background:#fff;border-radius:20px;padding:6px 16px;font-weight:800;font-size:14px;color:#111;display:flex;align-items:center;gap:6px;box-shadow:0 1px 3px rgba(0,0,0,0.15)}
+    .bell{color:#fff;font-size:22px}
+    .container{max-width:500px;margin:0 auto;padding:14px 12px 90px 12px}
+    .card{background:#fff;border-radius:16px;padding:6px;box-shadow:0 1px 4px rgba(0,0,0,0.06);border:1px solid #eef0f3}
+    .menu-list a{display:flex;align-items:center;justify-content:space-between;width:100%;padding:18px 14px;color:#111;text-decoration:none;font-size:15px;font-weight:700;border-radius:12px;cursor:pointer;transition:0.15s}
+    .menu-list a:not(:last-child){border-bottom:1px solid #f1f5f9}
+    .menu-list a:active{background:#f8fafc;transform:scale(0.98)}
+    .left{display:flex;align-items:center;gap:12px}
+    .arrow{color:#9ca3af;font-size:20px}
+    .back-home{display:block;width:46%;max-width:210px;margin:20px auto 0 auto;background:#2563eb;color:#fff;border:none;border-radius:12px;padding:12px;font-weight:800;font-size:14px;text-align:center;text-decoration:none;box-shadow:0 2px 6px rgba(37,99,235,0.3)}
+    .sub-info{text-align:center;font-size:11px;color:#9ca3af;margin-top:10px}
+    /* MODALS - light */
+    .modal{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.55);justify-content:center;align-items:center;padding:15px}
+    .modal-box{background:#fff;width:100%;max-width:420px;border-radius:18px;padding:20px;max-height:85vh;overflow-y:auto;color:#111;position:relative;border:1px solid #e5e7eb}
+    .close{position:absolute;top:12px;right:15px;font-size:22px;font-weight:bold;cursor:pointer;z-index:99999;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#f3f4f6;border-radius:50%;color:#111}
+    .top-actions{display:flex;gap:10px;margin:12px 0}
+    .btn{flex:1;padding:10px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:13px}
+    .btn-refresh{background:#fbbf24;color:#000}
+    .btn-clear{background:#111;color:#fff}
+    .filters{display:flex;gap:6px;overflow-x:auto;padding:8px 0;white-space:nowrap}
+    .filters button{padding:6px 10px;border-radius:20px;border:1px solid #e5e7eb;background:#fff;color:#6b7280;font-size:10px;font-weight:bold;cursor:pointer}
+    .filters button.active{background:#2563eb;color:#fff;border-color:#2563eb}
+    .item{background:#f9fafb;border:1px solid #f1f5f9;border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+    .profile-header{text-align:center}
+    .avatar-letter{width:78px;height:78px;background:#eff6ff;border:3px solid #dbeafe;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:#2563eb;margin:8px auto}
+    .profile-name{font-size:18px;font-weight:900;color:#111}
+    .profile-details{background:#f9fafb;border:1px solid #f1f5f9;border-radius:14px;padding:14px;margin:14px 0}
+    .profile-row{display:flex;gap:8px;margin:10px 0;font-size:13px;color:#6b7280}
+    .profile-row b{color:#111;min-width:82px}
+    .profile-stats{display:flex;gap:8px}
+    .stat-box{flex:1;border-radius:12px;padding:12px 6px;text-align:center;border:1px solid #f1f5f9}
+    .stat-points{background:#fffbeb;border-color:#fde68a}
+    .stat-refs{background:#f0fdf4;border-color:#bbf7d0}
+    .stat-level{background:#eff6ff;border-color:#bfdbfe}
+    .confirm-overlay{display:none;position:fixed;z-index:10000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center}
+    .confirm-box{background:#fff;border-radius:16px;padding:20px;width:85%;max-width:320px;text-align:center}
+    .confirm-actions{display:flex;gap:10px;margin-top:14px}
+    .confirm-actions button{flex:1;padding:11px;border-radius:10px;border:none;font-weight:bold;cursor:pointer}
+    .c-cancel{background:#f3f4f6;color:#111}
+    .c-ok{background:#2563eb;color:#fff}
   </style>
 </head>
 <body>
-<div class="container">
-  <div class="header" id="txtMore">More</div>
-  <div class="card">
-    <div class="menu-list">
-      <a onclick="document.getElementById('profileModal').style.display='flex'; loadProfile()"><div class="left">👤 <span id="txtProfile">Profile</span></div><span class="arrow">›</span></a>
-      <a onclick="document.getElementById('historyModal').style.display='flex'; loadHistory()"><div class="left">📜 <span id="txtHistory">History</span></div><span class="arrow">›</span></a>
-      <a onclick="document.getElementById('settingsModal').style.display='flex'"><div class="left">⚙️ <span id="txtSettings">Settings</span></div><span class="arrow">›</span></a>
-      <a href="support.html"><div class="left">💬 <span id="txtSupport">Help/Support</span></div><span class="arrow">›</span></a>
-      <a onclick="document.getElementById('aboutModal').style.display='flex'"><div class="left">📜 <span id="txtAbout">Rules</span></div><span class="arrow">›</span></a>
-    </div>
-  </div>
-  <a href="home.html" class="back-home" id="txtBackHome">Back Home</a>
-  <div style="text-align:center;font-size:10px;color:#999;margin-top:10px;">1000 Coins = $0.5 • Min 3000 Coins = $1.5</div>
+<!-- BLUE TOP BAR LIKE SCREENSHOT -->
+<div class="top-bar">
+  <a href="home.html" class="back-circle">←</a>
+  <div class="center-pill">⚙️ More</div>
+  <div class="bell">🔔</div>
 </div>
 
-<div id="profileModal" class="modal" onclick="document.getElementById('profileModal').style.display='none'">
+<div class="container">
+  <div class="card">
+    <div class="menu-list">
+      <a onclick="document.getElementById('profileModal').style.display='flex'; loadProfile()"><div class="left">👤 <span>Profile</span></div><span class="arrow">›</span></a>
+      <a onclick="document.getElementById('historyModal').style.display='flex'; loadHistory()"><div class="left">📜 <span>History</span></div><span class="arrow">›</span></a>
+      <a onclick="document.getElementById('settingsModal').style.display='flex'"><div class="left">⚙️ <span>Settings</span></div><span class="arrow">›</span></a>
+      <a href="support.html"><div class="left">💬 <span>Help/Support</span></div><span class="arrow">›</span></a>
+      <a onclick="document.getElementById('aboutModal').style.display='flex'"><div class="left">📜 <span>Rules</span></div><span class="arrow">›</span></a>
+    </div>
+  </div>
+  <a href="home.html" class="back-home">Back Home</a>
+  <div class="sub-info">1000 Coins = $0.5 • Min 3000 Coins = $1.5</div>
+  <div class="sub-info" style="margin-top:6px">inezarose25@gmail.com</div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div id="profileModal" class="modal" onclick="this.style.display='none'">
   <div class="modal-box" onclick="event.stopPropagation()">
     <span class="close" onclick="document.getElementById('profileModal').style.display='none'">×</span>
     <div class="profile-header">
       <div id="avatarLetter" class="avatar-letter">U</div>
       <h3 id="pUsername" class="profile-name">Loading...</h3>
-      <p style="margin:6px 0; color:#22c55e; font-weight:900; font-size:13px;">✓ Verified</p>
+      <p style="color:#22c55e;font-weight:900;font-size:12px;margin-top:4px">✓ Verified</p>
     </div>
     <div class="profile-details">
       <div class="profile-row">📧 <b>Email:</b> <span id="pEmail">...</span></div>
@@ -91,18 +93,18 @@
       <div class="profile-row">🆔 <b>User ID:</b> <span id="pId">...</span></div>
     </div>
     <div class="profile-stats">
-      <div class="stat-box stat-points"><p id="pPoints">0 🪙</p><p>Coins</p></div>
-      <div class="stat-box stat-refs"><p id="pRefs">0</p><p>Referrals</p></div>
-      <div class="stat-box stat-level"><p id="pLevel">1</p><p>Level</p></div>
+      <div class="stat-box stat-points"><p id="pPoints">0 🪙</p><p style="font-size:10px;color:#6b7280">Coins</p></div>
+      <div class="stat-box stat-refs"><p id="pRefs">0</p><p style="font-size:10px;color:#6b7280">Referrals</p></div>
+      <div class="stat-box stat-level"><p id="pLevel">1</p><p style="font-size:10px;color:#6b7280">Level</p></div>
     </div>
   </div>
 </div>
 
-<div id="historyModal" class="modal" onclick="document.getElementById('historyModal').style.display='none'">
+<div id="historyModal" class="modal" onclick="this.style.display='none'">
   <div class="modal-box" onclick="event.stopPropagation()">
     <span class="close" onclick="document.getElementById('historyModal').style.display='none'">×</span>
-    <h3 style="text-align:center">📜 History - Coins 🪙</h3>
-    <p id="countText" style="text-align:center;color:#888;font-size:11px;margin-bottom:8px"></p>
+    <h3 style="text-align:center;font-size:15px">📜 History - Coins 🪙</h3>
+    <p id="countText" style="text-align:center;color:#9ca3af;font-size:11px;margin:6px 0"></p>
     <div class="top-actions">
       <button class="btn btn-refresh" onclick="loadHistory()">Refresh</button>
       <button class="btn btn-clear" onclick="document.getElementById('confirmModal').style.display='flex'">Clear</button>
@@ -110,185 +112,74 @@
     <div class="filters">
       <button class="active" onclick="filterBy('all',this)">All</button>
       <button onclick="filterBy('Wallet',this)">Wallet</button>
-      <button onclick="filterBy('Daily Checkin',this)">Checkin</button>
+      <button onclick="filterBy('Checkin',this)">Checkin</button>
       <button onclick="filterBy('Watch',this)">Watch</button>
-      <button onclick="filterBy('Play',this)">Play</button>
-      <button onclick="filterBy('Survey',this)">Survey</button>
-      <button onclick="filterBy('Refer',this)">Refer</button>
-      <button onclick="filterBy('Bonus',this)">Bonus</button>
-      <button onclick="filterBy('Ads',this)">Ads</button>
-      <button onclick="filterBy('Offer',this)">Offers</button>
     </div>
-    <div id="historyList" style="margin-top:10px;max-height:50vh;overflow-y:auto"></div>
+    <div id="historyList" style="margin-top:10px;max-height:50vh;overflow-y:auto;color:#6b7280;text-align:center">Loading...</div>
   </div>
 </div>
 
-<div id="settingsModal" class="modal" onclick="document.getElementById('settingsModal').style.display='none'">
+<div id="settingsModal" class="modal" onclick="this.style.display='none'">
   <div class="modal-box" onclick="event.stopPropagation()">
     <span class="close" onclick="document.getElementById('settingsModal').style.display='none'">×</span>
-    <h3 style="text-align:center;margin-bottom:10px">⚙️ Settings</h3>
-    <div class="set-section">
-      <span class="set-label">Language</span>
-      <div class="lang-option active" onclick="setLang('en',this)"><span>English</span><span>✓</span></div>
-      <div class="lang-option" onclick="setLang('fr',this)"><span>Francais</span><span></span></div>
-      <div class="lang-option" onclick="setLang('rw',this)"><span>Kinyarwanda</span><span></span></div>
-    </div>
-    <div class="set-section">
-      <span class="set-label">Appearance</span>
-      <div class="mode-box">
-        <div class="mode-btn active" id="modeLight" onclick="setMode('light')">Light</div>
-        <div class="mode-btn" id="modeDark" onclick="setMode('dark')">Dark</div>
-      </div>
-    </div>
-    <button onclick="document.getElementById('settingsModal').style.display='none'" class="save-close-btn">Save & Close</button>
+    <h3 style="text-align:center">⚙️ Settings</h3>
+    <button onclick="document.getElementById('settingsModal').style.display='none'" style="display:block;width:60%;margin:20px auto;background:#2563eb;color:#fff;border:none;padding:12px;border-radius:10px;font-weight:bold">Save & Close</button>
   </div>
 </div>
 
-<div id="confirmModal" class="confirm-overlay" onclick="document.getElementById('confirmModal').style.display='none'">
+<div id="confirmModal" class="confirm-overlay" onclick="this.style.display='none'">
   <div class="confirm-box" onclick="event.stopPropagation()">
     <h4>Clear History?</h4>
-    <p>This will only clear the view. Your coins are safe.</p>
+    <p style="font-size:12px;color:#6b7280;margin-top:6px">Coins are safe.</p>
     <div class="confirm-actions">
       <button class="c-cancel" onclick="document.getElementById('confirmModal').style.display='none'">Cancel</button>
-      <button class="c-ok" onclick="confirmClear()">Yes, Clear</button>
+      <button class="c-ok" onclick="document.getElementById('confirmModal').style.display='none'; allData=[]; render(allData);">Yes, Clear</button>
     </div>
   </div>
 </div>
 
-<div id="aboutModal" class="modal" onclick="document.getElementById('aboutModal').style.display='none'">
+<div id="aboutModal" class="modal" onclick="this.style.display='none'">
   <div class="modal-box" onclick="event.stopPropagation()" style="padding:0;overflow:hidden">
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid #eee">
-      <h3 style="font-size:18px;font-weight:900;color:#111">Rules - Coins 🪙</h3>
-      <span class="close" onclick="document.getElementById('aboutModal').style.display='none'" style="position:static">×</span>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:16px;border-bottom:1px solid #f1f5f9;background:#2563eb;color:#fff">
+      <h3 style="font-size:15px">Rules - Coins 🪙</h3>
+      <span class="close" onclick="document.getElementById('aboutModal').style.display='none'" style="position:static;background:#fff;color:#111">×</span>
     </div>
-    <div style="padding:18px;max-height:70vh;overflow-y:auto;text-align:left">
-      <p style="text-align:center;font-size:36px;margin:4px 0">🪙📜</p>
-      <h2 style="text-align:center;font-size:16px;font-weight:900;color:#111;margin:4px 0">Reward Platform RW - Coins Rules</h2>
-      <p style="text-align:center;font-size:11px;color:#9ca3af;margin-bottom:14px">May 2026 - Coins System</p>
-      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:14px;margin:12px 0">
-        <p style="font-weight:900;font-size:13px;color:#991b1b">1. One Account Policy</p>
-        <p style="font-size:12px;color:#7f1d1d">- ONE account per device<br>- Multiple = ban + loss of all coins</p>
-      </div>
-      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px;margin:12px 0">
-        <p style="font-weight:900;font-size:13px;color:#92400e">2. Anti-Cheating</p>
-        <p style="font-size:12px;color:#78350f">- No bots, scripts<br>- Fraud = coins 0</p>
-      </div>
-      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:14px;margin:12px 0">
-        <p style="font-weight:900;font-size:13px;color:#065f46">3. Coins & Withdrawals</p>
-        <p style="font-size:12px;color:#064e3b">- 1000 Coins = $0.5 USDT<br>- Min 3000 Coins = $1.5 USDT<br>- 24-72h payout</p>
-      </div>
-      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px;margin:12px 0">
-        <p style="font-weight:900;font-size:13px;color:#1e40af">4. Referral - 5 Coins</p>
-        <p style="font-size:12px;color:#1e3a8a">- 5 Coins per referral<br>- Max 10 per day</p>
-      </div>
-      <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:14px;margin:12px 0">
-        <p style="font-weight:900;font-size:13px;color:#111">5. Daily Limits</p>
-        <p style="font-size:12px;color:#374151">- Checkin 3 Coins<br>- Watch 10 Coins<br>- Bonus 3 Coins<br>- Offers 5 Coins<br>- Ads Earn 10 Coins</p>
-      </div>
+    <div style="padding:16px;max-height:65vh;overflow-y:auto">
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:12px;margin:10px 0"><b>1. One Account</b><br><span style="font-size:12px">ONE per device - Multiple = ban</span></div>
+      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:12px;margin:10px 0"><b>2. Anti-Cheating</b><br><span style="font-size:12px">No bots - Fraud = coins 0</span></div>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:12px;margin:10px 0"><b>3. Coins</b><br><span style="font-size:12px">1000 = $0.5 - Min 3000 = $1.5 - 24-72h payout</span></div>
+      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:12px;margin:10px 0"><b>4. Referral - 5 Coins</b><br><span style="font-size:12px">5 per referral - Max 10/day</span></div>
+      <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin:10px 0"><b>5. Daily Limits</b><br><span style="font-size:12px">Checkin 3 - Watch 10 - Bonus 3 - Offers 5 - Ads 10</span></div>
     </div>
   </div>
 </div>
 
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
-// APPCHECK PROTECTION - SAFE, NON-BLOCKING
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-try{
-  const appCheck = firebase.appCheck();
-  appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);
-}catch(e){ console.log("AppCheck protection will still work via Firebase Console"); }
-
+try{ firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true); }catch(e){}
 const auth=firebase.auth(), db=firebase.firestore();
 let cachedUser=null, allData=[], currentFilter='all';
 function getCoinsFromDoc(d){ return d.coins ?? d.balance ?? d.points ?? 0; }
-
 async function loadProfile(){
-  try{
-    const cached=JSON.parse(localStorage.getItem('userData')||'{}');
-    if(cached.username || cached.email){
-      document.getElementById('pUsername').innerText=cached.username||cached.email.split('@')[0];
-      document.getElementById('pEmail').innerText=cached.email||'...';
-      document.getElementById('pPoints').innerText=(cached.balance??cached.coins??0)+' 🪙';
-      document.getElementById('pRefs').innerText=cached.referralCount||0;
-      document.getElementById('pLevel').innerText=cached.level||1;
-      if(cached.uid) document.getElementById('pId').innerText=cached.uid.substring(0,8).toUpperCase();
-      document.getElementById('avatarLetter').innerText=(cached.username||'U').charAt(0).toUpperCase();
-      if(cached.createdAt && cached.createdAt.seconds) document.getElementById('pDate').innerText=new Date(cached.createdAt.seconds*1000).toLocaleDateString();
-    }
-  }catch(e){}
+  try{ const c=JSON.parse(localStorage.getItem('userData')||'{}'); if(c.username){ document.getElementById('pUsername').innerText=c.username; document.getElementById('pEmail').innerText=c.email||'...'; document.getElementById('pPoints').innerText=(c.balance??c.coins??0)+' 🪙'; document.getElementById('pRefs').innerText=c.referralCount||0; document.getElementById('avatarLetter').innerText=(c.username||'U').charAt(0).toUpperCase(); if(c.uid) document.getElementById('pId').innerText=c.uid.substring(0,8).toUpperCase(); } }catch(e){}
   const u=auth.currentUser||cachedUser; if(!u) return;
-  try{
-    const snap=await db.collection('users').doc(u.uid).get();
-    if(!snap.exists) return;
-    const d=snap.data();
-    const username=d.username||u.email.split('@')[0];
-    document.getElementById('pUsername').innerText=username;
-    document.getElementById('pEmail').innerText=d.email||u.email;
-    document.getElementById('pPoints').innerText=getCoinsFromDoc(d)+' 🪙';
-    document.getElementById('pId').innerText=u.uid.substring(0,8).toUpperCase();
-    document.getElementById('avatarLetter').innerText=username.charAt(0).toUpperCase();
-    document.getElementById('pLevel').innerText=d.level||Math.floor(getCoinsFromDoc(d)/100)+1;
-    document.getElementById('pRefs').innerText=d.referralCount??0;
-    let reg="Unknown";
-    if(d.createdAt&&d.createdAt.toDate) reg=d.createdAt.toDate().toLocaleDateString();
-    else if(d.createdAt && d.createdAt.seconds) reg=new Date(d.createdAt.seconds*1000).toLocaleDateString();
-    else if(u.metadata.creationTime) reg=new Date(u.metadata.creationTime).toLocaleDateString();
-    document.getElementById('pDate').innerText=reg;
-  }catch(e){ console.log("Profile load error", e); }
+  try{ const snap=await db.collection('users').doc(u.uid).get(); if(!snap.exists) return; const d=snap.data(); const username=d.username||u.email.split('@')[0]; document.getElementById('pUsername').innerText=username; document.getElementById('pEmail').innerText=d.email||u.email; document.getElementById('pPoints').innerText=getCoinsFromDoc(d)+' 🪙'; document.getElementById('pId').innerText=u.uid.substring(0,8).toUpperCase(); document.getElementById('avatarLetter').innerText=username.charAt(0).toUpperCase(); document.getElementById('pLevel').innerText=d.level||Math.floor(getCoinsFromDoc(d)/100)+1; document.getElementById('pRefs').innerText=d.referralCount??0; let reg="Unknown"; if(d.createdAt&&d.createdAt.toDate) reg=d.createdAt.toDate().toLocaleDateString(); else if(u.metadata.creationTime) reg=new Date(u.metadata.creationTime).toLocaleDateString(); document.getElementById('pDate').innerText=reg; }catch(e){}
 }
-
 async function loadHistory(){
   const user=auth.currentUser||cachedUser; if(!user) return;
-  document.getElementById('historyList').innerHTML='<p style="text-align:center;color:#888">Loading...</p>';
-  allData=[];
-  try{
-    const earn=await db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(150).get();
-    earn.forEach(d=>{const v=d.data(); allData.push({title:v.action||'Earn',desc:v.desc||'',points:v.coins ?? v.points ?? 0,date:v.timestamp?.toDate?v.timestamp.toDate():new Date(),type:v.action||''});});
-    try{const c=await db.collection('users').doc(user.uid).collection('convertHistory').orderBy('timestamp','desc').limit(50).get(); c.forEach(d=>{const v=d.data(); allData.push({title:'Wallet',desc:`${v.coins ?? v.points} 🪙 → ${v.usdt?.toFixed(4)} USDT`,points:-Math.abs(v.coins ?? v.points ||0),date:v.timestamp?.toDate?v.timestamp.toDate():new Date(),type:'Wallet'});});}catch(e){}
-    try{const w=await db.collection('withdrawals').where('uid','==',user.uid).orderBy('createdAt','desc').limit(50).get(); w.forEach(d=>{const v=d.data(); allData.push({title:'Wallet',desc:`Withdraw ${v.amount} USDT - ${v.status}`,points:0,date:v.createdAt?.toDate?v.createdAt.toDate():new Date(),type:'Wallet'});});}catch(e){}
-    allData.sort((a,b)=>b.date-a.date); render(allData);
-  }catch(e){document.getElementById('historyList').innerHTML='<p style="text-align:center;color:#888">No history yet</p>';}
+  document.getElementById('historyList').innerHTML='<p>Loading...</p>'; allData=[];
+  try{ const earn=await db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(150).get(); earn.forEach(d=>{const v=d.data(); allData.push({title:v.action||'Earn',desc:v.desc||'',points:v.coins ?? v.points ?? 0,date:v.timestamp?.toDate?v.timestamp.toDate():new Date(),type:v.action||''});}); allData.sort((a,b)=>b.date-a.date); render(allData); }catch(e){ document.getElementById('historyList').innerHTML='<p>No history yet</p>'; }
 }
 function render(data){
   const list=document.getElementById('historyList');
   const filtered=currentFilter==='all'?data:data.filter(x=>(x.type||x.title||'').toLowerCase().includes(currentFilter.toLowerCase()));
   document.getElementById('countText').innerText=filtered.length+' records';
-  if(filtered.length===0){list.innerHTML='<p style="text-align:center;color:#888;padding:20px">No records</p>';return;}
-  list.innerHTML=''; filtered.forEach(i=>{
-    const d=i.date.toLocaleDateString()+' '+i.date.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-    const pts=i.points>0?`+${i.points} 🪙`:i.points<0?`${i.points} 🪙`:'';
-    list.innerHTML+=`<div class="item"><div><div class="item-title">${i.title}</div><div class="item-desc">${i.desc}<br>${d}</div></div><div style="color:${i.points>0?'#22c55e':'#ef4444'};font-weight:bold;font-size:12px">${pts}</div></div>`;
-  });
+  if(filtered.length===0){list.innerHTML='<p style="padding:20px">No records</p>';return;}
+  list.innerHTML=''; filtered.forEach(i=>{ const d=i.date.toLocaleDateString(); list.innerHTML+=`<div class="item"><div><div style="font-weight:bold;font-size:12px">${i.title}</div><div style="font-size:10px;color:#9ca3af">${i.desc} - ${d}</div></div><div style="color:#22c55e;font-weight:bold">+${i.points} 🪙</div></div>`; });
 }
 function filterBy(k,btn){currentFilter=k; document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); render(allData);}
-function confirmClear(){ document.getElementById('confirmModal').style.display='none'; allData=[]; render(allData); }
-
-const translations={ en:{More:"More",Profile:"Profile",History:"History",Settings:"Settings",Support:"Help/Support",About:"Rules",Back:"Back Home"}, fr:{More:"Plus",Profile:"Profil",History:"Historique",Settings:"Parametres",Support:"Aide/Support",About:"Regles",Back:"Retour Accueil"}, rw:{More:"Byinshi",Profile:"Umwirondoro",History:"Amateka",Settings:"Igenamiterere",Support:"Ubufasha",About:"Amategeko",Back:"Subira Ahabanza"} };
-function setLang(code, el){
-  localStorage.setItem('app_lang', code);
-  const t = translations[code] || translations.en;
-  document.getElementById('txtMore').innerText = t.More;
-  document.getElementById('txtProfile').innerText = t.Profile;
-  document.getElementById('txtHistory').innerText = t.History;
-  document.getElementById('txtSettings').innerText = t.Settings;
-  document.getElementById('txtSupport').innerText = t.Support;
-  document.getElementById('txtAbout').innerText = t.About;
-  document.getElementById('txtBackHome').innerText = t.Back;
-  document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active'));
-  if(el) el.classList.add('active');
-}
-function setMode(mode){
-  localStorage.setItem('app_mode', mode);
-  document.body.classList.remove('light','dark'); document.body.classList.add(mode);
-  document.getElementById('modeLight').classList.toggle('active', mode==='light');
-  document.getElementById('modeDark').classList.toggle('active', mode==='dark');
-}
-(function(){ const mode=localStorage.getItem('app_mode')||'dark'; const lang=localStorage.getItem('app_lang')||'en'; setMode(mode); setLang(lang,null); })();
-
-auth.onAuthStateChanged(async u=>{
-  if(!u){ location.href='./index.html'; return; }
-  cachedUser=u; loadProfile();
-});
+auth.onAuthStateChanged(u=>{ if(!u){ location.href='./index.html'; return; } cachedUser=u; loadProfile(); });
 </script>
 </body>
 </html>
