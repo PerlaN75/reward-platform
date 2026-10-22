@@ -66,20 +66,20 @@
   <div class="header" id="txtMore">More</div>
   <div class="card">
     <div class="menu-list">
-      <a onclick="openProfile()"><div class="left">👤 <span id="txtProfile">Profile</span></div><span class="arrow">›</span></a>
-      <a onclick="openHistory()"><div class="left">📜 <span id="txtHistory">History</span></div><span class="arrow">›</span></a>
-      <a onclick="openSettings()"><div class="left">⚙️ <span id="txtSettings">Settings</span></div><span class="arrow">›</span></a>
+      <a onclick="document.getElementById('profileModal').style.display='flex'"><div class="left">👤 <span id="txtProfile">Profile</span></div><span class="arrow">›</span></a>
+      <a onclick="document.getElementById('historyModal').style.display='flex'"><div class="left">📜 <span id="txtHistory">History</span></div><span class="arrow">›</span></a>
+      <a onclick="document.getElementById('settingsModal').style.display='flex'"><div class="left">⚙️ <span id="txtSettings">Settings</span></div><span class="arrow">›</span></a>
       <a href="support.html"><div class="left">💬 <span id="txtSupport">Help/Support</span></div><span class="arrow">›</span></a>
-      <a onclick="openAbout()"><div class="left">📜 <span id="txtAbout">Rules</span></div><span class="arrow">›</span></a>
+      <a onclick="document.getElementById('aboutModal').style.display='flex'"><div class="left">📜 <span id="txtAbout">Rules</span></div><span class="arrow">›</span></a>
     </div>
   </div>
   <a href="home.html" class="back-home" id="txtBackHome">Back Home</a>
   <div style="text-align:center;font-size:10px;color:#999;margin-top:10px;">1000 Coins = $0.5 • Min 3000 Coins = $1.5</div>
 </div>
 
-<div id="profileModal" class="modal" onclick="closeProfile()">
+<div id="profileModal" class="modal" onclick="document.getElementById('profileModal').style.display='none'">
   <div class="modal-box" onclick="event.stopPropagation()">
-    <span class="close" onclick="closeProfile()">×</span>
+    <span class="close" onclick="document.getElementById('profileModal').style.display='none'">×</span>
     <div class="profile-header">
       <div id="avatarLetter" class="avatar-letter">U</div>
       <h3 id="pUsername" class="profile-name">Loading...</h3>
@@ -98,14 +98,14 @@
   </div>
 </div>
 
-<div id="historyModal" class="modal" onclick="closeHistory()">
+<div id="historyModal" class="modal" onclick="document.getElementById('historyModal').style.display='none'">
   <div class="modal-box" onclick="event.stopPropagation()">
-    <span class="close" onclick="closeHistory()">×</span>
+    <span class="close" onclick="document.getElementById('historyModal').style.display='none'">×</span>
     <h3 style="text-align:center">📜 History - Coins 🪙</h3>
     <p id="countText" style="text-align:center;color:#888;font-size:11px;margin-bottom:8px"></p>
     <div class="top-actions">
       <button class="btn btn-refresh" onclick="loadHistory()">Refresh</button>
-      <button class="btn btn-clear" onclick="clearHistoryView()">Clear</button>
+      <button class="btn btn-clear" onclick="document.getElementById('confirmModal').style.display='flex'">Clear</button>
     </div>
     <div class="filters">
       <button class="active" onclick="filterBy('all',this)">All</button>
@@ -123,9 +123,9 @@
   </div>
 </div>
 
-<div id="settingsModal" class="modal" onclick="closeSettings()">
+<div id="settingsModal" class="modal" onclick="document.getElementById('settingsModal').style.display='none'">
   <div class="modal-box" onclick="event.stopPropagation()">
-    <span class="close" onclick="closeSettings()">×</span>
+    <span class="close" onclick="document.getElementById('settingsModal').style.display='none'">×</span>
     <h3 style="text-align:center;margin-bottom:10px">⚙️ Settings</h3>
     <div class="set-section">
       <span class="set-label">Language</span>
@@ -140,26 +140,26 @@
         <div class="mode-btn" id="modeDark" onclick="setMode('dark')">Dark</div>
       </div>
     </div>
-    <button onclick="closeSettings()" class="save-close-btn">Save & Close</button>
+    <button onclick="document.getElementById('settingsModal').style.display='none'" class="save-close-btn">Save & Close</button>
   </div>
 </div>
 
-<div id="confirmModal" class="confirm-overlay" onclick="cancelClear()">
+<div id="confirmModal" class="confirm-overlay" onclick="document.getElementById('confirmModal').style.display='none'">
   <div class="confirm-box" onclick="event.stopPropagation()">
     <h4>Clear History?</h4>
     <p>This will only clear the view. Your coins are safe.</p>
     <div class="confirm-actions">
-      <button class="c-cancel" onclick="cancelClear()">Cancel</button>
+      <button class="c-cancel" onclick="document.getElementById('confirmModal').style.display='none'">Cancel</button>
       <button class="c-ok" onclick="confirmClear()">Yes, Clear</button>
     </div>
   </div>
 </div>
 
-<div id="aboutModal" class="modal" onclick="closeAbout()">
+<div id="aboutModal" class="modal" onclick="document.getElementById('aboutModal').style.display='none'">
   <div class="modal-box" onclick="event.stopPropagation()" style="padding:0;overflow:hidden">
     <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid #eee">
       <h3 style="font-size:18px;font-weight:900;color:#111">Rules - Coins 🪙</h3>
-      <span class="close" onclick="closeAbout()" style="position:static">×</span>
+      <span class="close" onclick="document.getElementById('aboutModal').style.display='none'" style="position:static">×</span>
     </div>
     <div style="padding:18px;max-height:70vh;overflow-y:auto;text-align:left">
       <p style="text-align:center;font-size:36px;margin:4px 0">🪙📜</p>
@@ -197,39 +197,15 @@
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
-// PROTECTION: AppCheck
-try {
-  const appCheck = firebase.appCheck();
-  appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);
-} catch(e) {}
+try{ firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true); }catch(e){}
 const auth=firebase.auth(), db=firebase.firestore();
 let cachedUser=null, allData=[], currentFilter='all';
 let historyClearedDate = localStorage.getItem('history_cleared_at')? new Date(localStorage.getItem('history_cleared_at')) : null;
-
 function getCoinsFromDoc(d){ return d.coins ?? d.balance ?? d.points ?? 0; }
-
-function fillFromCache(){
-  try{
-    const cached = JSON.parse(localStorage.getItem('userData')||'{}');
-    if(cached && (cached.username || cached.email)){
-      const username = cached.username || cached.email.split('@')[0];
-      document.getElementById('pUsername').innerText = username;
-      document.getElementById('pEmail').innerText = cached.email || 'Loading...';
-      document.getElementById('pPoints').innerText = (cached.balance ?? cached.coins ?? cached.points ?? 0) + ' 🪙';
-      document.getElementById('pRefs').innerText = cached.referralCount ?? 0;
-      document.getElementById('pLevel').innerText = cached.level || Math.floor((cached.balance ?? cached.coins ?? 0)/100)+1;
-      document.getElementById('avatarLetter').innerText = username.charAt(0).toUpperCase();
-      if(cached.uid) document.getElementById('pId').innerText = cached.uid.substring(0,8).toUpperCase();
-      if(cached.createdAt && cached.createdAt.seconds) document.getElementById('pDate').innerText = new Date(cached.createdAt.seconds*1000).toLocaleDateString();
-    }
-  }catch(e){}
-}
 
 auth.onAuthStateChanged(async u=>{
   if(!u){ location.href='./index.html'; return; }
   cachedUser=u;
-  fillFromCache();
-  // PROTECTION: Real-time Firestore sync
   db.collection("users").doc(u.uid).onSnapshot(snap=>{
     if(!snap.exists) return;
     const d=snap.data();
@@ -250,36 +226,18 @@ auth.onAuthStateChanged(async u=>{
   });
 });
 
-(function initSettings(){
-  const mode = localStorage.getItem('app_mode') || 'dark';
-  const lang = localStorage.getItem('app_lang') || 'en';
-  setMode(mode, true);
-  setLang(lang, null, true);
-  fillFromCache();
-})();
-
-function openProfile(){ document.getElementById('profileModal').style.display='flex'; fillFromCache(); }
-function closeProfile(){ document.getElementById('profileModal').style.display='none'; }
-function openAbout(){ document.getElementById('aboutModal').style.display='flex'; }
-function closeAbout(){ document.getElementById('aboutModal').style.display='none'; }
-function openHistory(){ document.getElementById('historyModal').style.display='flex'; loadHistory(); }
-function closeHistory(){ document.getElementById('historyModal').style.display='none'; }
-function openSettings(){ document.getElementById('settingsModal').style.display='flex'; }
-function closeSettings(){ document.getElementById('settingsModal').style.display='none'; }
-
 async function loadHistory(){
   const user=auth.currentUser||cachedUser; if(!user) return;
   document.getElementById('historyList').innerHTML='<p style="text-align:center;color:#888">Loading...</p>';
   allData=[];
   try{
-    // Earn history - EVERY activity
     const earn=await db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(150).get();
     earn.forEach(d=>{const v=d.data(); allData.push({title:v.action||'Earn',desc:v.desc||'',points:v.coins ?? v.points ?? 0,date:v.timestamp?.toDate?v.timestamp.toDate():new Date(),type:v.action||''});});
     try{const c=await db.collection('users').doc(user.uid).collection('convertHistory').orderBy('timestamp','desc').limit(50).get(); c.forEach(d=>{const v=d.data(); allData.push({title:'Wallet',desc:`${v.coins ?? v.points} 🪙 → ${v.usdt?.toFixed(4)} USDT`,points:-Math.abs(v.coins ?? v.points ||0),date:v.timestamp?.toDate?v.timestamp.toDate():new Date(),type:'Wallet'});});}catch(e){}
     try{const w=await db.collection('withdrawals').where('uid','==',user.uid).orderBy('createdAt','desc').limit(50).get(); w.forEach(d=>{const v=d.data(); allData.push({title:'Wallet',desc:`Withdraw ${v.amount} USDT - ${v.status}`,points:0,date:v.createdAt?.toDate?v.createdAt.toDate():new Date(),type:'Wallet'});});}catch(e){}
     if(historyClearedDate){ allData = allData.filter(item => item.date > historyClearedDate); }
     allData.sort((a,b)=>b.date-a.date); render(allData);
-  }catch(e){document.getElementById('historyList').innerHTML='<p style="text-align:center;color:#888">No history - do tasks to see records</p>';}
+  }catch(e){document.getElementById('historyList').innerHTML='<p style="text-align:center;color:#888">No history</p>';}
 }
 function render(data){
   const list=document.getElementById('historyList');
@@ -293,8 +251,6 @@ function render(data){
   });
 }
 function filterBy(k,btn){currentFilter=k; document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); render(allData);}
-function clearHistoryView(){document.getElementById('confirmModal').style.display='flex';}
-function cancelClear(){document.getElementById('confirmModal').style.display='none';}
 function confirmClear(){
   const user=auth.currentUser||cachedUser;
   const now = new Date();
@@ -326,6 +282,7 @@ function setMode(mode, init=false){
   document.getElementById('modeLight').classList.toggle('active', mode==='light');
   document.getElementById('modeDark').classList.toggle('active', mode==='dark');
 }
+(function(){ const mode=localStorage.getItem('app_mode')||'dark'; const lang=localStorage.getItem('app_lang')||'en'; setMode(mode,true); setLang(lang,null,true); })();
 </script>
 </body>
 </html>
