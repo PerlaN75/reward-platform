@@ -19,7 +19,7 @@
 .arrow{color:#999;font-size:22px}
 .modal{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.7);justify-content:center;align-items:center;padding:15px}
 .modal-box{background:#fff;width:100%;max-width:420px;border-radius:18px;padding:20px;max-height:85vh;overflow-y:auto;color:#000;position:relative}
-.close{position:absolute;top:12px;right:15px;font-size:26px;font-weight:bold;cursor:pointer}
+.close{position:absolute;top:12px;right:15px;font-size:28px;font-weight:bold;cursor:pointer;z-index:100;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#f3f4f6;border-radius:50%}
 .back-home{display:block;width:40%!important;max-width:200px!important;margin:24px auto 0 auto;background:#fbbf24;color:#000;border:none;border-radius:50px;padding:12px;font-weight:bold;font-size:14px;text-align:center;text-decoration:none;box-shadow:0 3px 0 #e5a500}
 .top-actions{display:flex;gap:10px;margin:12px 0}
 .btn{flex:1;padding:10px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:13px}
@@ -65,13 +65,12 @@
   <div class="header" id="txtMore">More</div>
   <div class="card">
     <div class="menu-list">
-      <div class="menu-list">
-  <a onclick="document.getElementById('profileModal').style.display='flex'" style="cursor:pointer"><div class="left">👤 <span>Profile</span></div><span class="arrow">›</span></a>
-  <a onclick="document.getElementById('historyModal').style.display='flex'" style="cursor:pointer"><div class="left">📜 <span>History</span></div><span class="arrow">›</span></a>
-  <a onclick="document.getElementById('settingsModal').style.display='flex'" style="cursor:pointer"><div class="left">⚙️ <span>Settings</span></div><span class="arrow">›</span></a>
-  <a href="support.html" style="cursor:pointer"><div class="left">💬 <span>Help/Support</span></div><span class="arrow">›</span></a>
-  <a onclick="document.getElementById('aboutModal').style.display='flex'" style="cursor:pointer"><div class="left">📜 <span>Rules</span></div><span class="arrow">›</span></a>
-</div>
+      <a onclick="openProfile()"><div class="left">👤 <span id="txtProfile">Profile</span></div><span class="arrow">›</span></a>
+      <a onclick="openHistory()"><div class="left">📜 <span id="txtHistory">History</span></div><span class="arrow">›</span></a>
+      <a onclick="openSettings()"><div class="left">⚙️ <span id="txtSettings">Settings</span></div><span class="arrow">›</span></a>
+      <a href="support.html"><div class="left">💬 <span id="txtSupport">Help/Support</span></div><span class="arrow">›</span></a>
+      <a onclick="openAbout()"><div class="left">📜 <span id="txtAbout">Rules</span></div><span class="arrow">›</span></a>
+    </div>
   </div>
   <a href="home.html" class="back-home" id="txtBackHome">Back Home</a>
   <div style="text-align:center;font-size:10px;color:#999;margin-top:10px;">1000 Coins = $0.5 • Min 3000 Coins = $1.5</div>
@@ -158,7 +157,7 @@
   <div class="modal-box" onclick="event.stopPropagation()" style="padding:0;overflow:hidden">
     <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid #eee">
       <h3 style="font-size:18px;font-weight:900;color:#111">Rules - Coins 🪙</h3>
-      <span class="close" onclick="closeAbout()" style="position:static;font-size:22px;color:#666;background:#f3f4f6;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">×</span>
+      <span class="close" onclick="closeAbout()" style="position:static">×</span>
     </div>
     <div style="padding:18px;max-height:70vh;overflow-y:auto;text-align:left">
       <p style="text-align:center;font-size:36px;margin:4px 0">🪙📜</p>
@@ -185,10 +184,6 @@
         <p style="font-size:12px;color:#374151;line-height:1.6">- Checkin 3 Coins<br>- Watch 10 Coins<br>- Bonus 3 Coins<br>- Offers 5 Coins<br>- Ads Earn 10 Coins</p>
       </div>
       <p style="text-align:center;font-size:11px;color:#6b7280;margin-top:16px">By using app, you agree to all rules.</p>
-      <div style="display:flex;gap:8px;justify-content:center;margin-top:14px">
-        <span style="background:#111;color:#fbbf24;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:900">V 2.0 - Coins</span>
-        <span style="background:#fde68a;color:#92400e;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:900">3000 = $1.5</span>
-      </div>
     </div>
   </div>
 </div>
@@ -199,32 +194,66 @@ if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore();
 let cachedUser=null, allData=[], currentFilter='all';
 let historyClearedDate = localStorage.getItem('history_cleared_at')? new Date(localStorage.getItem('history_cleared_at')) : null;
-auth.onAuthStateChanged(u=>{cachedUser=u;});
+
+function getCoinsFromDoc(d){ return d.coins ?? d.balance ?? d.points ?? 0; }
+
+function fillProfileFromCache(){
+  try{
+    const cached = JSON.parse(localStorage.getItem('userData')||'{}');
+    if(cached && cached.username){
+      const username = cached.username;
+      document.getElementById('pUsername').innerText = username;
+      document.getElementById('pEmail').innerText = cached.email || '...';
+      document.getElementById('pPoints').innerText = (cached.balance || cached.coins || 0) + ' 🪙';
+      document.getElementById('pRefs').innerText = cached.referralCount || 0;
+      document.getElementById('pLevel').innerText = cached.level || Math.floor((cached.balance||0)/100)+1;
+      document.getElementById('avatarLetter').innerText = username.charAt(0).toUpperCase();
+      if(cached.uid) document.getElementById('pId').innerText = cached.uid.substring(0,8).toUpperCase();
+      if(cached.createdAt && cached.createdAt.seconds){
+        document.getElementById('pDate').innerText = new Date(cached.createdAt.seconds*1000).toLocaleDateString();
+      } else {
+        document.getElementById('pDate').innerText = new Date().toLocaleDateString();
+      }
+    }
+  }catch(e){}
+}
+
+auth.onAuthStateChanged(u=>{
+  cachedUser=u;
+  if(u){
+    db.collection("users").doc(u.uid).get().then(snap=>{
+      if(!snap.exists) return;
+      const d=snap.data();
+      localStorage.setItem('userData', JSON.stringify({...d, uid:u.uid}));
+      fillProfileFromCache();
+      const username=d.username||u.email.split('@')[0];
+      document.getElementById('pUsername').innerText=username;
+      document.getElementById('pEmail').innerText=d.email||u.email;
+      let reg="Unknown"; 
+      if(d.createdAt&&d.createdAt.toDate) reg=d.createdAt.toDate().toLocaleDateString(); 
+      else if(d.createdAt && d.createdAt.seconds) reg=new Date(d.createdAt.seconds*1000).toLocaleDateString();
+      else if(u.metadata.creationTime) reg=new Date(u.metadata.creationTime).toLocaleDateString();
+      document.getElementById('pDate').innerText=reg;
+      document.getElementById('pPoints').innerText=(getCoinsFromDoc(d))+' 🪙';
+      document.getElementById('pId').innerText=u.uid.substring(0,8).toUpperCase();
+      document.getElementById('avatarLetter').innerText=username.charAt(0).toUpperCase();
+      document.getElementById('pLevel').innerText=d.level||Math.floor((getCoinsFromDoc(d))/100)+1;
+      document.getElementById('pRefs').innerText=d.referralCount??0;
+    });
+  }
+});
+
 (function initSettings(){
   const mode = localStorage.getItem('app_mode') || 'dark';
   const lang = localStorage.getItem('app_lang') || 'en';
   setMode(mode, true);
   setLang(lang, null, true);
+  fillProfileFromCache();
 })();
-function getCoinsFromDoc(d){ return d.coins ?? d.balance ?? d.points ?? 0; }
+
 window.openProfile=function(){
   document.getElementById('profileModal').style.display='flex';
-  let user=auth.currentUser||cachedUser; 
-  if(!user){ setTimeout(()=>window.openProfile(),800); return; }
-  db.collection("users").doc(user.uid).onSnapshot(async snap=>{
-    if(!snap.exists) return; const d=snap.data();
-    const username=d.username||user.email.split('@')[0];
-    document.getElementById('pUsername').innerText=username;
-    document.getElementById('pEmail').innerText=d.email||user.email;
-    let reg="Unknown"; if(d.createdAt&&d.createdAt.toDate) reg=d.createdAt.toDate().toLocaleDateString(); else if(user.metadata.creationTime) reg=new Date(user.metadata.creationTime).toLocaleDateString();
-    document.getElementById('pDate').innerText=reg;
-    document.getElementById('pPoints').innerText=(getCoinsFromDoc(d))+' 🪙';
-    document.getElementById('pId').innerText=user.uid.substring(0,8).toUpperCase();
-    document.getElementById('avatarLetter').innerText=username.charAt(0).toUpperCase();
-    document.getElementById('pLevel').innerText=d.level||Math.floor((getCoinsFromDoc(d))/100)+1;
-    let ref=d.referralCount??0;
-    document.getElementById('pRefs').innerText=ref;
-  });
+  fillProfileFromCache();
 }
 window.closeProfile=function(){document.getElementById('profileModal').style.display='none';}
 window.openAbout=function(){document.getElementById('aboutModal').style.display='flex';}
@@ -233,6 +262,7 @@ window.openHistory=function(){document.getElementById('historyModal').style.disp
 window.closeHistory=function(){document.getElementById('historyModal').style.display='none';}
 window.openSettings=function(){document.getElementById('settingsModal').style.display='flex';}
 window.closeSettings=function(){document.getElementById('settingsModal').style.display='none';}
+
 async function loadHistory(){
   const user=auth.currentUser||cachedUser; if(!user) return;
   document.getElementById('historyList').innerHTML='<p style="text-align:center;color:#888">Loading...</p>';
