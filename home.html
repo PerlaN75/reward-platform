@@ -17,17 +17,16 @@ body{background:#ffffff !important;min-height:100vh;padding:16px 14px 100px 14px
 .menu-btn:active{filter:brightness(0.95);transform:scale(0.98)}
 .menu-btn.emoji{font-size:22px;display:block;line-height:1}
 .logout-btn{width:35%;height:50px;margin:32px auto 30px;display:block;background:#f59e0b;color:#000;border:none;border-radius:999px;font-weight:bold;cursor:pointer;font-size:13px;-webkit-tap-highlight-color:transparent;outline:none;user-select:none}
-.logout-btn:active{filter:brightness(0.95);transform:scale(0.98)}
+.action-btn{width:100%;padding:16px;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer;margin-top:8px}
+.action-btn:disabled{opacity:0.6}
+.input-box{width:100%;padding:14px;margin:8px 0;background:#000;border:2px solid #444;border-radius:12px;color:#fff}
+.success-msg{background:#1a2e1a;border:1px solid #22c55e;color:#22c55e;padding:10px;border-radius:8px;margin-top:10px;display:none;text-align:center}
 .modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.85);justify-content:center;align-items:center;padding:15px}
 .modal-content{background:#2f3e1a;border:3px solid #fbbf24;border-radius:20px;padding:18px;width:100%;max-width:420px;color:#fff;max-height:95vh;overflow-y:auto}
 #customToast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:14px 22px;border-radius:12px;font-weight:bold;z-index:99999;display:none;max-width:90%;text-align:center}
 #maintenanceOverlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
-.action-btn{width:100%;padding:16px;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer;margin-top:8px;-webkit-tap-highlight-color:transparent;outline:none}
-.action-btn:disabled{opacity:0.6;cursor:not-allowed}
-.input-box{width:100%;padding:14px;margin:8px 0;background:#000;border:2px solid #444;border-radius:12px;color:#fff}
-.success-msg{background:#1a2e1a;border:1px solid #22c55e;color:#22c55e;padding:10px;border-radius:8px;margin-top:10px;display:none;text-align:center}
-.ad-gate{background:#111a0b;border:1px dashed #fbbf24;border-radius:12px;padding:10px;margin:10px 0;text-align:center;display:none}
-.ad-gate-timer{color:#fbbf24;font-weight:bold;font-size:13px;margin-bottom:6px}
+.ad-gate{background:#0f1a08;border:1px dashed #fbbf24;border-radius:12px;padding:10px;margin:12px 0;text-align:center;display:none}
+.ad-gate-timer{color:#fbbf24;font-weight:bold;font-size:13px;margin-bottom:8px}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
@@ -66,10 +65,6 @@ body{background:#ffffff !important;min-height:100vh;padding:16px 14px 100px 14px
 <button class="menu-btn" onclick="location.href='./ads_earn.html'" style="border:2px solid #06b6d4; background: linear-gradient(180deg,#ecfeff,#a5f3fc);"><span class="emoji">📢</span>Ads Earn</button>
 <button class="menu-btn" onclick="location.href='./offers.html'" style="border:2px solid #d946ef; background: linear-gradient(180deg,#fdf4ff,#f5d0fe);"><span class="emoji">💎</span>Offers</button>
 </div>
-<div style="width:100%;max-width:360px;margin:12px auto;display:flex;justify-content:center;min-height:60px">
-<script async data-cfasync="false" src="https://bicea.org/21/23e1e60b5d9d8473949f8c3ca250759b"></script>
-<div id="container-23e1e60b5d9d8473949f8c3ca250759b"></div>
-</div>
 <button class="logout-btn" onclick="logout()">Logout</button>
 </div>
 <div id="walletModal" class="modal"><div class="modal-content"><div style="display:flex;justify-content:space-between"><h2>💰 Wallet</h2><span onclick="closeWallet()" style="font-size:24px;cursor:pointer">&times;</span></div>
@@ -84,13 +79,13 @@ body{background:#ffffff !important;min-height:100vh;padding:16px 14px 100px 14px
 <div style="font-size:11px;color:#aaa;text-align:center">Rate: 1 coin = $0.0005 USDT • 3000 coins = $1.5 • No minimum to convert</div>
 <div id="convertAdGate" class="ad-gate">
 <div id="convertTimer" class="ad-gate-timer">🔒 Verifying balance... 15s</div>
-<div style="margin:6px auto;display:flex;justify-content:center">
-<script>atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script>
-<script src="https://bicea.org/22/fe25c5bd01f4bc5e60243e36cd83277c"></script>
+<div style="margin:8px auto;display:flex;justify-content:center">
+<script type="text/javascript">atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script>
+<script type="text/javascript" src="https://bicea.org/22/fe25c5bd01f4bc5e60243e36cd83277c"></script>
 </div>
-<div style="margin:6px auto;display:flex;justify-content:center">
-<script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script>
-<script src="https://bicea.org/22/bf10cacdbe9f50d0c5d66a94e0785f29"></script>
+<div style="margin:8px auto;display:flex;justify-content:center">
+<script type="text/javascript">atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script>
+<script type="text/javascript" src="https://bicea.org/22/bf10cacdbe9f50d0c5d66a94e0785f29"></script>
 </div>
 <div style="font-size:10px;color:#888">Ad helps keep conversion free</div>
 </div>
@@ -104,51 +99,50 @@ body{background:#ffffff !important;min-height:100vh;padding:16px 14px 100px 14px
 <div id="withdrawNote" style="font-size:12px;color:#aaa;text-align:center;margin-top:4px">Available: 0.0000 USDT • Min $1.5 (3000 coins)</div>
 <div id="withdrawAdGate" class="ad-gate">
 <div id="withdrawTimer" class="ad-gate-timer">🔒 Security verification... 20s</div>
-<div style="margin:6px auto;display:flex;justify-content:center">
-<script async data-cfasync="false" src="https://bicea.org/21/23e1e60b5d9d8473949f8c3ca250759b"></script>
-<div id="container-23e1e60b5d9d8473949f8c3ca250759b-w"></div>
+<div style="margin:8px auto;display:flex;justify-content:center">
+<script type="text/javascript">atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script>
+<script type="text/javascript" src="https://bicea.org/22/fe25c5bd01f4bc5e60243e36cd83277c"></script>
 </div>
-<div style="margin:6px auto;display:flex;justify-content:center">
-<script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script>
-<script src="https://bicea.org/22/bf10cacdbe9f50d0c5d66a94e0785f29"></script>
+<div style="margin:8px auto;display:flex;justify-content:center">
+<script type="text/javascript">atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script>
+<script type="text/javascript" src="https://bicea.org/22/bf10cacdbe9f50d0c5d66a94e0785f29"></script>
 </div>
-<div style="font-size:10px;color:#888">Withdraw verification - please wait</div>
 </div>
 <button class="action-btn" id="withdrawBtn" onclick="handleWithdrawClick()">Request Withdraw</button>
 </div>
 </div></div>
-<div id="checkinModal" class="modal"><div class="modal-content"><div style="display:flex;justify-content:space-between"><h2>📅 Daily Checkin</h2><span onclick="closeCheckin()" style="font-size:24px;cursor:pointer">&times;</span></div><div style="background:#000;border:2px dashed #fbbf24;border-radius:15px;padding:20px;text-align:center;margin:10px 0"><div style="font-size:50px">🎁</div><h3 style="color:#fbbf24">Daily Reward</h3><p>Claim 5 coins every 24h</p>
-<div id="checkinAdGate" class="ad-gate" style="display:block;background:#111a0b">
+<div id="checkinModal" class="modal"><div class="modal-content"><div style="display:flex;justify-content:space-between"><h2>📅 Daily Checkin</h2><span onclick="closeCheckin()" style="font-size:24px;cursor:pointer">&times;</span></div><div style="background:#000;border:2px dashed #fbbf24;border-radius:15px;padding:15px;text-align:center;margin:10px 0"><div style="font-size:40px">🎁</div><h3 style="color:#fbbf24">Daily Reward</h3><p style="font-size:13px">Claim 5 coins every 24h</p>
+<div id="checkinAdGate" class="ad-gate" style="display:none">
 <div id="checkinTimer" class="ad-gate-timer">🎁 Unlocking reward... 12s</div>
 <div style="margin:8px auto;display:flex;justify-content:center">
-<script async data-cfasync="false" src="https://bicea.org/21/23e1e60b5d9d8473949f8c3ca250759b"></script>
-<div id="container-23e1e60b5d9d8473949f8c3ca250759b-c"></div>
+<script type="text/javascript">atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script>
+<script type="text/javascript" src="https://bicea.org/22/fe25c5bd01f4bc5e60243e36cd83277c"></script>
 </div>
-<div style="margin:8px auto;display:flex;justify-content:center;min-height:250px">
-<script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script>
-<script src="https://bicea.org/22/bf10cacdbe9f50d0c5d66a94e0785f29"></script>
+<div style="margin:8px auto;display:flex;justify-content:center">
+<script type="text/javascript">atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script>
+<script type="text/javascript" src="https://bicea.org/22/bf10cacdbe9f50d0c5d66a94e0785f29"></script>
 </div>
 </div>
 <button class="action-btn" id="claimBtn" onclick="handleCheckinClick()">Claim 5 Coins</button><div class="success-msg" id="successMsg">✓ 5 Coins Added!</div><p id="checkinNote" style="font-size:12px;color:#aaa">Tap to claim</p></div></div></div>
 <script>
-function canShowVignette(){const last=localStorage.getItem('vignette_last');return !last || (Date.now()-parseInt(last)) > (30*60*1000);}
-function canShowPop(){const last=localStorage.getItem('pop_last');return !last || (Date.now()-parseInt(last)) > (60*60*1000);}
-function loadVignette(){if(!canShowVignette()) return;(function(s){s.dataset.zone='12083688',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));localStorage.setItem('vignette_last', Date.now().toString());}
-function loadPop(){if(!canShowPop()) return;(function(s){s.dataset.zone='12083693',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));localStorage.setItem('pop_last', Date.now().toString());}
+function canShowVignette(){const last=localStorage.getItem('vignette_last');return !last || (Date.now()-parseInt(last))>1800000;}
+function canShowPop(){const last=localStorage.getItem('pop_last');return !last || (Date.now()-parseInt(last))>3600000;}
+function loadVignette(){if(!canShowVignette())return;var s=document.createElement('script');s.dataset.zone='12083688';s.src='https://n6wxm.com/vignette.min.js';document.body.appendChild(s);localStorage.setItem('vignette_last',Date.now().toString());}
+function loadPop(){if(!canShowPop())return;var s=document.createElement('script');s.dataset.zone='12083693';s.src='https://al5sm.com/tag.min.js';document.body.appendChild(s);localStorage.setItem('pop_last',Date.now().toString());}
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
-try {const appCheck = firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);} catch(e) { console.log("AppCheck skipped"); }
+try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
 const auth=firebase.auth(),db=firebase.firestore();
 function showToast(m){const t=document.getElementById('customToast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);} window.alert=showToast;
 let currentUser=null,userData={},isClaimingDaily=false;
-const POINT_RATE=0.0005,MIN_WITHDRAW=1.5,MIN_POINTS=3000;
-let convertGatePassed=false, convertTimer=null, convertSec=15;
-let withdrawGatePassed=false, withdrawTimer=null, withdrawSec=20;
-let checkinGatePassed=false, checkinTimer=null, checkinSec=12;
+const POINT_RATE=0.0005,MIN_WITHDRAW=1.5;
+let convertGatePassed=false,convertTimer=null,convertSec=15;
+let withdrawGatePassed=false,withdrawTimer=null,withdrawSec=20;
+let checkinGatePassed=false,checkinTimer=null,checkinSec=12;
 function loadData(d){
   userData=d;
-  if(userData.usdtBalance==null) userData.usdtBalance=0;
-  if(userData.balance==null) userData.balance=0;
+  if(userData.usdtBalance==null)userData.usdtBalance=0;
+  if(userData.balance==null)userData.balance=0;
   document.getElementById('headerText').innerText=d.username||'User';
   document.getElementById('balance').innerText=(d.balance||0)+' coins';
   document.getElementById('usdBalance').innerText=`≈ $${((d.balance||0)*POINT_RATE).toFixed(4)}`;
@@ -157,34 +151,34 @@ function loadData(d){
   const wn=document.getElementById('withdrawNote'); if(wn) wn.innerText='Available: '+(userData.usdtBalance||0).toFixed(4)+' USDT • Min $1.5 (3000 coins)';
 }
 const cached=JSON.parse(localStorage.getItem('userData')||'{}');if(cached.username)loadData(cached);
-window.openWallet=function(){loadData(userData);document.getElementById('walletModal').style.display='flex'; convertGatePassed=false; withdrawGatePassed=false; resetConvertGate(); resetWithdrawGate();}
-window.closeWallet=function(){document.getElementById('walletModal').style.display='none'; clearInterval(convertTimer); clearInterval(withdrawTimer);}
+window.openWallet=function(){loadData(userData);document.getElementById('walletModal').style.display='flex';convertGatePassed=false;withdrawGatePassed=false;resetConvertGate();resetWithdrawGate();}
+window.closeWallet=function(){document.getElementById('walletModal').style.display='none';clearInterval(convertTimer);clearInterval(withdrawTimer);}
 window.switchTab=function(t){document.getElementById('convertTab').style.display=t==='convert'?'block':'none';document.getElementById('withdrawTab').style.display=t==='withdraw'?'block':'none';document.getElementById('tab1').style.background=t==='convert'?'#fbbf24':'#ffffff';document.getElementById('tab2').style.background=t==='withdraw'?'#fbbf24':'#ffffff';}
 window.calcConvert=function(){const pts=parseFloat(document.getElementById('convertAmount').value)||0;document.getElementById('convertResult').innerText=`You will receive: ${(pts*POINT_RATE).toFixed(4)} USDT`;}
-function resetConvertGate(){document.getElementById('convertAdGate').style.display='none';document.getElementById('convertBtn').innerText='Convert to USDT';document.getElementById('convertBtn').disabled=false;convertSec=15; convertGatePassed=false;clearInterval(convertTimer);}
+function resetConvertGate(){document.getElementById('convertAdGate').style.display='none';document.getElementById('convertBtn').innerText='Convert to USDT';document.getElementById('convertBtn').disabled=false;convertSec=15;convertGatePassed=false;clearInterval(convertTimer);}
 window.handleConvertClick=function(){
   if(!convertGatePassed){
-    const pts=parseFloat(document.getElementById('convertAmount').value); if(!pts||pts<=0) return showToast('Enter coins amount'); if(pts>userData.balance) return showToast('Not enough coins');
-    document.getElementById('convertAdGate').style.display='block'; document.getElementById('convertBtn').disabled=true; loadVignette();
+    const pts=parseFloat(document.getElementById('convertAmount').value);if(!pts||pts<=0)return showToast('Enter coins amount');if(pts>userData.balance)return showToast('Not enough coins');
+    document.getElementById('convertAdGate').style.display='block';document.getElementById('convertBtn').disabled=true;loadVignette();
     convertTimer=setInterval(()=>{convertSec--;document.getElementById('convertTimer').innerText=`🔒 Verifying balance... ${convertSec}s`;document.getElementById('convertBtn').innerText=`Please wait ${convertSec}s...`;if(convertSec<=0){clearInterval(convertTimer);convertGatePassed=true;document.getElementById('convertBtn').disabled=false;document.getElementById('convertBtn').innerText='✓ Confirm Convert';document.getElementById('convertTimer').innerText='✓ Verified - Click Confirm';showToast('Verified! Click Confirm');}},1000);
-  } else {convertPoints();resetConvertGate();}
+  }else{convertPoints();resetConvertGate();}
 }
-window.convertPoints=async function(){const pts=parseFloat(document.getElementById('convertAmount').value);if(!pts||pts<=0) return showToast('Enter coins amount');if(pts>userData.balance) return showToast('Not enough coins');const usdt = pts*POINT_RATE;userData.balance-=pts;userData.usdtBalance=(userData.usdtBalance||0)+usdt;await db.collection('users').doc(currentUser.uid).update({balance:userData.balance, usdtBalance:userData.usdtBalance});await db.collection('users').doc(currentUser.uid).collection('convertHistory').add({points: pts,usdt: usdt,timestamp: firebase.firestore.FieldValue.serverTimestamp()});await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action: 'Converted to USDT',points: -pts,desc: `${pts} coins → ${usdt.toFixed(4)} USDT`,timestamp: firebase.firestore.FieldValue.serverTimestamp()});loadData(userData);localStorage.setItem('userData',JSON.stringify(userData));showToast(`✓ ${pts} coins → ${usdt.toFixed(4)} USDT`);document.getElementById('convertAmount').value='';calcConvert();}
-function resetWithdrawGate(){document.getElementById('withdrawAdGate').style.display='none';document.getElementById('withdrawBtn').innerText='Request Withdraw';document.getElementById('withdrawBtn').disabled=false;withdrawSec=20; withdrawGatePassed=false;clearInterval(withdrawTimer);}
+window.convertPoints=async function(){const pts=parseFloat(document.getElementById('convertAmount').value);if(!pts||pts<=0)return showToast('Enter coins amount');if(pts>userData.balance)return showToast('Not enough coins');const usdt=pts*POINT_RATE;userData.balance-=pts;userData.usdtBalance=(userData.usdtBalance||0)+usdt;await db.collection('users').doc(currentUser.uid).update({balance:userData.balance,usdtBalance:userData.usdtBalance});await db.collection('users').doc(currentUser.uid).collection('convertHistory').add({points:pts,usdt:usdt,timestamp:firebase.firestore.FieldValue.serverTimestamp()});await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Converted to USDT',points:-pts,desc:`${pts} coins → ${usdt.toFixed(4)} USDT`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});loadData(userData);localStorage.setItem('userData',JSON.stringify(userData));showToast(`✓ ${pts} coins → ${usdt.toFixed(4)} USDT`);document.getElementById('convertAmount').value='';calcConvert();}
+function resetWithdrawGate(){document.getElementById('withdrawAdGate').style.display='none';document.getElementById('withdrawBtn').innerText='Request Withdraw';document.getElementById('withdrawBtn').disabled=false;withdrawSec=20;withdrawGatePassed=false;clearInterval(withdrawTimer);}
 window.handleWithdrawClick=function(){
   if(!withdrawGatePassed){
-    const usdtAmount=parseFloat(document.getElementById('withdrawAmount').value);const payId=document.getElementById('walletAddress').value.trim();if(!payId) return showToast('Enter Pay ID / Email');if(!usdtAmount||usdtAmount<MIN_WITHDRAW) return showToast('Min withdrawal $1.5 (3000 coins)');if(usdtAmount>(userData.usdtBalance||0)) return showToast('Not enough USDT. Convert coins first');
-    document.getElementById('withdrawAdGate').style.display='block';document.getElementById('withdrawBtn').disabled=true;loadPop();setTimeout(()=>{ loadVignette(); }, 4000);
+    const usdtAmount=parseFloat(document.getElementById('withdrawAmount').value);const payId=document.getElementById('walletAddress').value.trim();if(!payId)return showToast('Enter Pay ID / Email');if(!usdtAmount||usdtAmount<MIN_WITHDRAW)return showToast('Min withdrawal $1.5 (3000 coins)');if(usdtAmount>(userData.usdtBalance||0))return showToast('Not enough USDT. Convert coins first');
+    document.getElementById('withdrawAdGate').style.display='block';document.getElementById('withdrawBtn').disabled=true;loadPop();setTimeout(()=>{loadVignette();},4000);
     withdrawTimer=setInterval(()=>{withdrawSec--;document.getElementById('withdrawTimer').innerText=`🔒 Security verification... ${withdrawSec}s`;document.getElementById('withdrawBtn').innerText=`Verifying ${withdrawSec}s...`;if(withdrawSec<=0){clearInterval(withdrawTimer);withdrawGatePassed=true;document.getElementById('withdrawBtn').disabled=false;document.getElementById('withdrawBtn').innerText='✓ Confirm Withdraw';document.getElementById('withdrawTimer').innerText='✓ Verified - Confirm Withdraw';showToast('Security verified! Confirm');}},1000);
-  } else {requestWithdraw();resetWithdrawGate();}
+  }else{requestWithdraw();resetWithdrawGate();}
 }
-window.requestWithdraw=async function(){const usdtAmount=parseFloat(document.getElementById('withdrawAmount').value);const payId=document.getElementById('walletAddress').value.trim();const method=document.getElementById('payMethod').value;if(!payId) return showToast('Enter Pay ID / Email');if(!usdtAmount||usdtAmount<MIN_WITHDRAW) return showToast('Min withdrawal $1.5 (3000 coins)');if(usdtAmount>(userData.usdtBalance||0)) return showToast('Not enough USDT. Convert coins first');userData.usdtBalance-=usdtAmount;await db.collection('users').doc(currentUser.uid).update({usdtBalance:userData.usdtBalance});await db.collection('withdrawals').add({uid:currentUser.uid,username:userData.username,email:userData.email,method:method,crypto:'USDT',payId:payId,amount:usdtAmount,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp()});loadData(userData);localStorage.setItem('userData',JSON.stringify(userData));showToast(`Withdraw ${usdtAmount.toFixed(2)} USDT requested!`);closeWallet();}
+window.requestWithdraw=async function(){const usdtAmount=parseFloat(document.getElementById('withdrawAmount').value);const payId=document.getElementById('walletAddress').value.trim();const method=document.getElementById('payMethod').value;if(!payId)return showToast('Enter Pay ID / Email');if(!usdtAmount||usdtAmount<MIN_WITHDRAW)return showToast('Min withdrawal $1.5 (3000 coins)');if(usdtAmount>(userData.usdtBalance||0))return showToast('Not enough USDT. Convert coins first');userData.usdtBalance-=usdtAmount;await db.collection('users').doc(currentUser.uid).update({usdtBalance:userData.usdtBalance});await db.collection('withdrawals').add({uid:currentUser.uid,username:userData.username,email:userData.email,method:method,crypto:'USDT',payId:payId,amount:usdtAmount,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp()});loadData(userData);localStorage.setItem('userData',JSON.stringify(userData));showToast(`Withdraw ${usdtAmount.toFixed(2)} USDT requested!`);closeWallet();}
 window.openCheckin=function(){document.getElementById('checkinModal').style.display='flex';checkClaimStatus();}
-window.closeCheckin=function(){document.getElementById('checkinModal').style.display='none'; clearInterval(checkinTimer);}
+window.closeCheckin=function(){document.getElementById('checkinModal').style.display='none';clearInterval(checkinTimer);}
 function getToday(){return new Date().toISOString().split('T')[0];}
-function checkClaimStatus(){const today=getToday();if(userData.lastCheckin===today){document.getElementById('claimBtn').disabled=true;document.getElementById('claimBtn').innerText='Already Claimed';document.getElementById('checkinAdGate').style.display='none';document.getElementById('checkinTimer').innerText='Already claimed today';} else {if(checkinGatePassed){document.getElementById('claimBtn').disabled=false;document.getElementById('claimBtn').innerText='Claim 5 Coins';document.getElementById('checkinAdGate').style.display='none';return;}document.getElementById('checkinAdGate').style.display='block';document.getElementById('claimBtn').disabled=true;checkinSec=12;loadVignette();clearInterval(checkinTimer);checkinTimer=setInterval(()=>{checkinSec--;document.getElementById('checkinTimer').innerText=`🎁 Unlocking reward... ${checkinSec}s`;document.getElementById('claimBtn').innerText=`Unlocking ${checkinSec}s...`;if(checkinSec<=0){clearInterval(checkinTimer);checkinGatePassed=true;document.getElementById('claimBtn').disabled=false;document.getElementById('claimBtn').innerText='Claim 5 Coins';document.getElementById('checkinAdGate').style.display='none';document.getElementById('checkinTimer').innerText='✓ Unlocked';}},1000);}}
+function checkClaimStatus(){const today=getToday();if(userData.lastCheckin===today){document.getElementById('claimBtn').disabled=true;document.getElementById('claimBtn').innerText='Already Claimed';document.getElementById('checkinAdGate').style.display='none';}else{if(checkinGatePassed){document.getElementById('claimBtn').disabled=false;document.getElementById('claimBtn').innerText='Claim 5 Coins';document.getElementById('checkinAdGate').style.display='none';return;}document.getElementById('checkinAdGate').style.display='block';document.getElementById('claimBtn').disabled=true;checkinSec=12;loadVignette();clearInterval(checkinTimer);checkinTimer=setInterval(()=>{checkinSec--;document.getElementById('checkinTimer').innerText=`🎁 Unlocking reward... ${checkinSec}s`;document.getElementById('claimBtn').innerText=`Unlocking ${checkinSec}s...`;if(checkinSec<=0){clearInterval(checkinTimer);checkinGatePassed=true;document.getElementById('claimBtn').disabled=false;document.getElementById('claimBtn').innerText='Claim 5 Coins';document.getElementById('checkinAdGate').style.display='none';}},1000);}}
 window.handleCheckinClick=function(){if(!checkinGatePassed){showToast('Please wait for unlock');return;}claimDaily();}
-window.claimDaily=async function(){if(isClaimingDaily)return;isClaimingDaily=true;const today=getToday();if(userData.lastCheckin===today){showToast('Already claimed today'); isClaimingDaily=false; return;}userData.balance=(userData.balance||0)+5;userData.lastCheckin=today;localStorage.setItem('userData',JSON.stringify(userData));await db.collection('users').doc(currentUser.uid).update({balance:userData.balance,lastCheckin:today});await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Daily Checkin', points:5, desc:'Daily Bonus', timestamp: firebase.firestore.FieldValue.serverTimestamp()});loadData(userData);document.getElementById('successMsg').style.display='block';checkClaimStatus();isClaimingDaily=false;showToast('✓ 5 Coins Added!');checkinGatePassed=false;}
+window.claimDaily=async function(){if(isClaimingDaily)return;isClaimingDaily=true;const today=getToday();if(userData.lastCheckin===today){showToast('Already claimed today');isClaimingDaily=false;return;}userData.balance=(userData.balance||0)+5;userData.lastCheckin=today;localStorage.setItem('userData',JSON.stringify(userData));await db.collection('users').doc(currentUser.uid).update({balance:userData.balance,lastCheckin:today});await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Daily Checkin',points:5,desc:'Daily Bonus',timestamp:firebase.firestore.FieldValue.serverTimestamp()});loadData(userData);document.getElementById('successMsg').style.display='block';checkClaimStatus();isClaimingDaily=false;showToast('✓ 5 Coins Added!');checkinGatePassed=false;}
 db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maintenanceOverlay').style.display='flex';}else{document.getElementById('maintenanceOverlay').style.display='none';}});
 auth.onAuthStateChanged(async u=>{if(u){currentUser=u;const doc=await db.collection('users').doc(u.uid).get();if(doc.exists){const data=doc.data();localStorage.setItem('userData',JSON.stringify(data));loadData(data);}}else{location.href='./index.html';}});
 window.logout=async function(){await auth.signOut();localStorage.clear();location.href='./index.html';}
