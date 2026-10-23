@@ -79,6 +79,7 @@ body{background:#ffffff !important;min-height:100vh;padding:16px 14px 100px 14px
 <div id="convertTimer" class="ad-gate-timer">🔒 Verifying balance... 15s</div>
 <div style="margin:6px auto;display:flex;justify-content:center"><script>atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script><script src="https://bicea.org/22/fe25c5bd01f4bc5e60243e36cd83277c"></script></div>
 <div style="margin:6px auto;display:flex;justify-content:center"><script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script><script src="https://bicea.org/22/bf10cacdbe9f50d0c5d66a94e0785f29"></script></div>
+<div style="font-size:10px;color:#888">Monetag Vignette + Adsterra banners</div>
 </div>
 <button class="action-btn" id="convertBtn" onclick="handleConvertClick()">Convert to USDT</button>
 </div>
@@ -92,24 +93,17 @@ body{background:#ffffff !important;min-height:100vh;padding:16px 14px 100px 14px
 <div id="withdrawTimer" class="ad-gate-timer">🔒 Security verification... 20s</div>
 <div style="margin:6px auto;display:flex;justify-content:center"><script>atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script><script src="https://bicea.org/22/fe25c5bd01f4bc5e60243e36cd83277c"></script></div>
 <div style="margin:6px auto;display:flex;justify-content:center"><script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script><script src="https://bicea.org/22/bf10cacdbe9f50d0c5d66a94e0785f29"></script></div>
+<div style="font-size:10px;color:#888">Monetag Pop + Vignette + Adsterra</div>
 </div>
 <button class="action-btn" id="withdrawBtn" onclick="handleWithdrawClick()">Request Withdraw</button>
 </div>
 </div></div>
 <div id="checkinModal" class="modal"><div class="modal-content"><div style="display:flex;justify-content:space-between"><h2>📅 Daily Checkin</h2><span onclick="closeCheckin()" style="font-size:24px;cursor:pointer">&times;</span></div><div style="background:#000;border:2px dashed #fbbf24;border-radius:15px;padding:15px;text-align:center;margin:10px 0"><div style="font-size:40px">🎁</div><h3 style="color:#fbbf24">Daily Reward</h3><p style="font-size:13px">Claim 5 coins every 24h</p>
-<div id="checkinAdGate1" class="ad-gate">
-<div id="checkinTimer1" class="ad-gate-timer">🎁 Unlocking reward... 8s</div>
+<div id="checkinAdGate" class="ad-gate">
+<div id="checkinTimer" class="ad-gate-timer">🎁 Unlocking reward... 12s</div>
 <div style="margin:6px auto;display:flex;justify-content:center"><script>atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script><script src="https://bicea.org/22/fe25c5bd01f4bc5e60243e36cd83277c"></script></div>
 <div style="margin:6px auto;display:flex;justify-content:center"><script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script><script src="https://bicea.org/22/bf10cacdbe9f50d0c5d66a94e0785f29"></script></div>
-</div>
-<div id="checkinAdGate2" class="ad-gate">
-<div id="checkinTimer2" class="ad-gate-timer">✅ Verified! Final reward... 8s</div>
-<div style="margin:6px auto;display:flex;justify-content:center"><script>atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script><script src="https://bicea.org/22/fe25c5bd01f4bc5e60243e36cd83277c"></script></div>
-<div style="margin:6px auto;display:flex;justify-content:center"><script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script><script src="https://bicea.org/22/bf10cacdbe9f50d0c5d66a94e0785f29"></script></div>
-</div>
-<div id="checkinAdGate3" class="ad-gate">
-<div id="checkinTimer3" class="ad-gate-timer">🎁 Claiming... 6s</div>
-<div style="margin:6px auto;display:flex;justify-content:center"><script>atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script><script src="https://bicea.org/22/fe25c5bd01f4bc5e60243e36cd83277c"></script></div>
+<div style="font-size:10px;color:#888">Ad pays for your coins</div>
 </div>
 <button class="action-btn" id="claimBtn" onclick="handleCheckinClick()">Claim 5 Coins</button><div class="success-msg" id="successMsg">✓ 5 Coins Added!</div><p id="checkinNote" style="font-size:12px;color:#aaa">Tap to claim</p></div></div></div>
 <script>
@@ -126,7 +120,7 @@ let currentUser=null,userData={},isClaimingDaily=false,isConverting=false,isWith
 const POINT_RATE=0.0005,MIN_WITHDRAW=1.5;
 let convertGatePassed=false,convertTimer=null,convertSec=15;
 let withdrawGatePassed=false,withdrawTimer=null,withdrawSec=20;
-let checkinPhase=0,checkinInterval=null,checkinSec=0;
+let checkinGatePassed=false,checkinTimer=null,checkinSec=12;
 function loadData(d){
   userData=d;
   if(userData.usdtBalance==null)userData.usdtBalance=0;
@@ -192,62 +186,36 @@ window.requestWithdraw=async function(){
   isWithdrawing=false;document.getElementById('withdrawBtn').disabled=false;document.getElementById('withdrawBtn').innerText='Request Withdraw';
 }
 window.openCheckin=function(){document.getElementById('checkinModal').style.display='flex';checkClaimStatus();}
-window.closeCheckin=function(){document.getElementById('checkinModal').style.display='none';clearInterval(checkinInterval);checkinPhase=0;}
+window.closeCheckin=function(){document.getElementById('checkinModal').style.display='none';clearInterval(checkinTimer);}
 function getToday(){return new Date().toISOString().split('T')[0];}
 function checkClaimStatus(){
   const today=getToday();
   if(userData.lastCheckin===today){
-    document.getElementById('claimBtn').disabled=true;document.getElementById('claimBtn').innerText='Already Claimed';
-    document.getElementById('checkinAdGate1').style.display='none';document.getElementById('checkinAdGate2').style.display='none';document.getElementById('checkinAdGate3').style.display='none';
-    checkinPhase=99;
-  }else{startCheckinPhase1();}
-}
-function startCheckinPhase1(){
-  checkinPhase=1;checkinSec=8;
-  document.getElementById('checkinAdGate1').style.display='block';document.getElementById('checkinAdGate2').style.display='none';document.getElementById('checkinAdGate3').style.display='none';
-  document.getElementById('claimBtn').disabled=true;document.getElementById('claimBtn').innerText=`Unlocking ${checkinSec}s...`;
-  loadVignette();
-  clearInterval(checkinInterval);
-  checkinInterval=setInterval(()=>{checkinSec--;document.getElementById('checkinTimer1').innerText=`🎁 Unlocking reward... ${checkinSec}s`;document.getElementById('claimBtn').innerText=`Unlocking ${checkinSec}s...`;if(checkinSec<=0){clearInterval(checkinInterval);startCheckinPhase2();}},1000);
-}
-function startCheckinPhase2(){
-  checkinPhase=2;checkinSec=8;
-  document.getElementById('checkinAdGate1').style.display='none';document.getElementById('checkinAdGate2').style.display='block';document.getElementById('checkinAdGate3').style.display='none';
-  document.getElementById('claimBtn').innerText=`Verifying ${checkinSec}s...`;
-  loadPop();
-  checkinInterval=setInterval(()=>{checkinSec--;document.getElementById('checkinTimer2').innerText=`✅ Verified! Final reward... ${checkinSec}s`;document.getElementById('claimBtn').innerText=`Verifying ${checkinSec}s...`;if(checkinSec<=0){clearInterval(checkinInterval);startCheckinPhase3();}},1000);
-}
-function startCheckinPhase3(){
-  checkinPhase=3;
-  document.getElementById('checkinAdGate1').style.display='none';document.getElementById('checkinAdGate2').style.display='none';document.getElementById('checkinAdGate3').style.display='none';
-  document.getElementById('claimBtn').disabled=false;document.getElementById('claimBtn').innerText='Claim 5 Coins';
-  document.getElementById('checkinNote').innerText='Ready to claim!';
-  showToast('Reward unlocked! Click Claim');
+    document.getElementById('claimBtn').disabled=true;document.getElementById('claimBtn').innerText='Already Claimed';document.getElementById('checkinAdGate').style.display='none';checkinGatePassed=true;
+  }else{
+    checkinGatePassed=false;checkinSec=12;
+    document.getElementById('checkinAdGate').style.display='block';document.getElementById('claimBtn').disabled=true;document.getElementById('claimBtn').innerText=`Unlocking ${checkinSec}s...`;document.getElementById('successMsg').style.display='none';
+    loadVignette();clearInterval(checkinTimer);
+    checkinTimer=setInterval(()=>{checkinSec--;document.getElementById('checkinTimer').innerText=`🎁 Unlocking reward... ${checkinSec}s`;document.getElementById('claimBtn').innerText=`Unlocking ${checkinSec}s...`;if(checkinSec<=0){clearInterval(checkinTimer);checkinGatePassed=true;document.getElementById('checkinAdGate').style.display='none';document.getElementById('claimBtn').disabled=false;document.getElementById('claimBtn').innerText='Claim 5 Coins';document.getElementById('checkinNote').innerText='Ready to claim!';showToast('Reward unlocked! Click Claim');}},1000);
+  }
 }
 window.handleCheckinClick=function(){
-  if(checkinPhase===99){showToast('Already claimed today');return;}
-  if(checkinPhase!==3){showToast('Please wait for unlock');return;}
-  startCheckinPhase4();
+  if(userData.lastCheckin===getToday()){showToast('Already claimed today');return;}
+  if(!checkinGatePassed){showToast('Please wait for unlock');return;}
+  claimDaily();
 }
-function startCheckinPhase4(){
-  checkinPhase=4;checkinSec=6;
-  document.getElementById('checkinAdGate3').style.display='block';
-  document.getElementById('claimBtn').disabled=true;document.getElementById('claimBtn').innerText=`Claiming ${checkinSec}s...`;
-  checkinInterval=setInterval(()=>{checkinSec--;document.getElementById('checkinTimer3').innerText=`🎁 Claiming... ${checkinSec}s`;document.getElementById('claimBtn').innerText=`Claiming ${checkinSec}s...`;if(checkinSec<=0){clearInterval(checkinInterval);doRealClaimDaily();}},1000);
-}
-async function doRealClaimDaily(){
+window.claimDaily=async function(){
   if(isClaimingDaily)return;isClaimingDaily=true;
   const today=getToday();if(userData.lastCheckin===today){showToast('Already claimed today');isClaimingDaily=false;return;}
-  document.getElementById('claimBtn').innerText='Processing...';
+  document.getElementById('claimBtn').disabled=true;document.getElementById('claimBtn').innerText='Processing...';
   try{
     userData.balance=(userData.balance||0)+5;userData.lastCheckin=today;localStorage.setItem('userData',JSON.stringify(userData));
     await db.collection('users').doc(currentUser.uid).update({balance:userData.balance,lastCheckin:today});
     await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Daily Checkin',points:5,desc:'Daily Bonus',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-    loadData(userData);document.getElementById('successMsg').style.display='block';document.getElementById('checkinAdGate3').style.display='none';document.getElementById('claimBtn').disabled=true;document.getElementById('claimBtn').innerText='Already Claimed';checkinPhase=99;showToast('✓ 5 Coins Added!');
+    loadData(userData);document.getElementById('successMsg').style.display='block';document.getElementById('claimBtn').innerText='Already Claimed';showToast('✓ 5 Coins Added!');
   }catch(e){showToast('Claim failed');document.getElementById('claimBtn').disabled=false;document.getElementById('claimBtn').innerText='Claim 5 Coins';}
   isClaimingDaily=false;
 }
-window.claimDaily=doRealClaimDaily;
 db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maintenanceOverlay').style.display='flex';}else{document.getElementById('maintenanceOverlay').style.display='none';}});
 auth.onAuthStateChanged(async u=>{if(u){currentUser=u;const doc=await db.collection('users').doc(u.uid).get();if(doc.exists){const data=doc.data();localStorage.setItem('userData',JSON.stringify(data));loadData(data);}}else{location.href='./index.html';}});
 window.logout=async function(){await auth.signOut();localStorage.clear();location.href='./index.html';}
