@@ -54,7 +54,7 @@ video,iframe{width:100%;height:100%;display:none;border:0}
 </div>
 
 <script>
-// ===== MONETAG + ADSTERRA - NO FIGHT - 15s SAFE =====
+// ===== MONETAG + ADSTERRA - NO FIGHT =====
 function canShowVignette(){const last=localStorage.getItem('vignette_last_watch');return !last || (Date.now()-parseInt(last))>1800000;}
 function canShowPop(){const last=localStorage.getItem('pop_last_watch');return !last || (Date.now()-parseInt(last))>3600000;}
 function loadVignette(){
@@ -82,7 +82,6 @@ setInterval(()=>{
   if(ov.style.display==='flex' && ov.innerHTML.includes('Tap Start')) loadAllBanners();
 },45000);
 
-// NEW FREE VIDEOS - NO YOUTUBE COPYRIGHT
 const ALL_VIDEOS=[
 {src:"https://www.w3schools.com/html/mov_bbb.mp4",title:"Big Buck Bunny Adventure"},
 {src:"https://test-videos.co.uk/vids/sintel/mp4/h264/720/Sintel_720_10s_1MB.mp4",title:"Morning Motivation"},
@@ -120,9 +119,29 @@ appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);
 const auth=firebase.auth(),db=firebase.firestore();
 let bal=0,today=0,currentUser=null,timer=null,dailyData=null;
 const ov=document.getElementById('ov'),vid=document.getElementById('v'),yt=document.getElementById('yt'),btn=document.getElementById('btn'),pbar=document.getElementById('pbar'),balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),vtEl=document.getElementById('vt');
-function getCoins(d){ return d.coins ?? d.balance ?? d.points ?? 0; }
+
+// FIXED: Read balance FIRST - fixes 788 bug
+function getCoins(d){ return d.balance ?? d.coins ?? d.points ?? 0; }
+
 function updateUI(){balEl.textContent=bal+' 🪙';todayEl.textContent=today+'/10';if(dailyData&&today<10){vtEl.textContent=`Next: ${dailyData.playlist[today].title}`;ov.innerHTML=`<div>${dailyData.playlist[today].title}</div><small style="opacity:.7;margin-top:6px">Tap Start - 1 Coin (15s)</small>`;}}
-auth.onAuthStateChanged(async(u)=>{if(!u){location.href='./index.html';return;}currentUser=u;dailyData=getTodayPlaylist();const s=await db.collection('users').doc(u.uid).get();if(s.exists){const d=s.data();bal=getCoins(d);today=d.todayCount||d.today||0;const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null;if(last&&new Date().toDateString()!==last.toDateString())today=0;}updateUI();if(today>=10){ov.style.display='flex';ov.innerHTML='🎉 10/10 Done!<br>New order tomorrow';btn.disabled=true;btn.textContent='Limit Reached';}});
+
+auth.onAuthStateChanged(async(u)=>{
+  if(!u){location.href='./index.html';return;}
+  currentUser=u;dailyData=getTodayPlaylist();
+  const s=await db.collection('users').doc(u.uid).get();
+  if(s.exists){
+    const d=s.data();
+    bal=getCoins(d); // NOW READS balance FIRST = 788 correctly
+    today=d.todayCount||d.today||0;
+    const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null;
+    if(last&&new Date().toDateString()!==last.toDateString())today=0;
+  }
+  updateUI();
+  if(today>=10){
+    ov.style.display='flex';ov.innerHTML='🎉 10/10 Done!<br>New order tomorrow';
+    btn.disabled=true;btn.textContent='Limit Reached';
+  }
+});
 
 function doAd(){
   if(today>=10){ov.style.display='flex';ov.innerHTML='🎉 10/10 Done!<br>New order tomorrow';btn.disabled=true;btn.textContent='Limit Reached';BLAST();return;}
@@ -131,7 +150,8 @@ function doAd(){
   setTimeout(()=>{startVideo();},1000);
 }
 function startVideo(){
-  if(!dailyData)dailyData=getTodayPlaylist();const cur=dailyData.playlist[today];vtEl.textContent=`Playing: ${cur.title}`;ov.style.display='none';
+  if(!dailyData)dailyData=getTodayPlaylist();const cur=dailyData.playlist[today];
+  vtEl.textContent=`Playing: ${cur.title}`;ov.style.display='none';
   if(cur.src.startsWith('yt:')){yt.src=`https://www.youtube.com/embed/${cur.src.slice(3)}?autoplay=1&controls=1&rel=0`;yt.style.display='block';vid.style.display='none';}
   else{vid.src=cur.src;vid.load();vid.style.display='block';yt.style.display='none';yt.src='';vid.play().catch(()=>{});}
   const msgs=[`🔥 Enjoying ${cur.title}?`,`💰 Earning 1 coin...`,`👀 Keep watching!`,`⭐ Great video!`,`🎬 Best part coming`];
@@ -146,17 +166,53 @@ function startVideo(){
     }
   },1000);
 }
+// FIXED CLAIM - uses increment, not overwrite - fixes 788 bug permanently
 async function claim(){
   if(!currentUser)return;
   loadPop();
-  btn.disabled=true;btn.textContent='Saving...';bal+=1;today++;
+  btn.disabled=true;btn.textContent='Saving...';
   try{
-    await db.collection('users').doc(currentUser.uid).set({balance:bal,coins:bal,points:bal,todayCount:today,today:today,lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
-    await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Watch & Earn',type:'watch',points:1,coins:1,desc:dailyData.playlist[today-1].title + ' - 1 coin',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-  }catch(e){}
-  yt.src='';vid.style.display='none';yt.style.display='none';pbar.style.width='0%';btn.textContent='Start & Earn 1 🪙';btn.disabled=false;btn.onclick=doAd;updateUI();
+    await db.collection('users').doc(currentUser.uid).update({
+      balance: firebase.firestore.FieldValue.increment(1),
+      coins: firebase.firestore.FieldValue.increment(1),
+      points: firebase.firestore.FieldValue.increment(1),
+      todayCount: firebase.firestore.FieldValue.increment(1),
+      today: firebase.firestore.FieldValue.increment(1),
+      lastWatchDate: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({
+      action:'Watch & Earn',type:'watch',points:1,coins:1,
+      desc:dailyData.playlist[today].title + ' - 1 coin',
+      timestamp:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    // Re-read fresh balance from Firestore
+    const doc=await db.collection('users').doc(currentUser.uid).get();
+    if(doc.exists){
+      bal=getCoins(doc.data());
+      today=doc.data().todayCount||doc.data().today||0;
+    } else {
+      bal+=1;today+=1;
+    }
+  }catch(e){
+    console.log('Update failed, trying set',e);
+    try{
+      await db.collection('users').doc(currentUser.uid).set({
+        balance: firebase.firestore.FieldValue.increment(1),
+        coins: firebase.firestore.FieldValue.increment(1),
+        points: firebase.firestore.FieldValue.increment(1),
+        todayCount: firebase.firestore.FieldValue.increment(1),
+        today: firebase.firestore.FieldValue.increment(1),
+        lastWatchDate: firebase.firestore.FieldValue.serverTimestamp()
+      },{merge:true});
+      const doc=await db.collection('users').doc(currentUser.uid).get();
+      if(doc.exists){bal=getCoins(doc.data());today=doc.data().todayCount||0;}
+    }catch(e2){bal+=1;today+=1;}
+  }
+  yt.src='';vid.style.display='none';yt.style.display='none';pbar.style.width='0%';
+  btn.textContent='Start & Earn 1 🪙';btn.disabled=false;btn.onclick=doAd;updateUI();
   if(today>=10){
-    ov.style.display='flex';ov.innerHTML='🎉 10/10 Done!<br>💥 BLAST! New order tomorrow';btn.textContent='Limit Reached';btn.disabled=true;BLAST();
+    ov.style.display='flex';ov.innerHTML='🎉 10/10 Done!<br>💥 BLAST! New order tomorrow';
+    btn.textContent='Limit Reached';btn.disabled=true;BLAST();
   }
 }
 btn.onclick=doAd;
