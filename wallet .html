@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html><head><title>Wallet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#ffffff;min-height:100vh;padding:16px 14px 100px 14px;color:#000}
+.header{display:flex;align-items:center;gap:12px;margin:20px 0 10px}
+.back{width:38px;height:38px;background:#2f3e1a;border:2px solid #fbbf24;color:#fbbf24;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer}
+.card{background:#2f3e1a;border:2px solid #fbbf24;border-radius:16px;padding:14px;text-align:center;margin:10px 0}
+.tabs{display:flex;justify-content:center;gap:10px;margin:12px 0}
+.tab{padding:10px 18px;border-radius:10px;border:none;font-weight:bold;cursor:pointer}
+.tab.active{background:#fbbf24;color:#000}
+.tab.inactive{background:#e5e7eb;color:#000}
+.input-box{width:100%;padding:14px;margin:8px 0;background:#000;border:2px solid #444;border-radius:12px;color:#fff}
+.result{background:#000;padding:12px;border-radius:12px;border:1px dashed #fbbf24;text-align:center;margin:8px 0;color:#fbbf24;font-weight:bold}
+.action-btn{width:100%;padding:16px;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer;margin-top:8px}
+#customToast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:14px 22px;border-radius:12px;font-weight:bold;z-index:99999;display:none;text-align:center}
+.note{font-size:11px;color:#888;text-align:center;margin-top:6px}
+</style>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+</head><body>
+<div id="customToast"></div>
+<div style="max-width:500px;margin:0 auto">
+<div class="header"><div class="back" onclick="location.href='./home.html'">‹</div><h2>💰 Wallet</h2></div>
+
+<div class="card">
+<div style="color:#ccc;font-size:11px">Your Balance</div>
+<div style="display:flex;justify-content:space-around;margin-top:8px">
+<div><div style="font-size:11px;color:#aaa">⭐ COINS</div><div id="coinBal" style="font-size:22px;color:#fbbf24;font-weight:bold">0 coins</div><div id="usdEq" style="font-size:10px;color:#888">≈ $0.00</div></div>
+<div style="width:1px;background:rgba(251,191,36,0.35)"></div>
+<div><div style="font-size:11px;color:#aaa">💵 USDT</div><div id="usdtBal" style="font-size:22px;color:#22c55e;font-weight:bold">0.0000 USDT</div><div style="font-size:9px;color:#6b8f5a">Available</div></div>
+</div>
+</div>
+
+<div class="tabs">
+<button id="tab1" class="tab active" onclick="switchTab('convert')">Convert</button>
+<button id="tab2" class="tab inactive" onclick="switchTab('withdraw')">Withdraw</button>
+</div>
+
+<div id="convertTab">
+<input type="number" id="convertAmount" class="input-box" placeholder="Enter coins amount" oninput="calcConvert()">
+<div id="convertResult" class="result">You will receive: 0.0000 USDT</div>
+<div class="note">Rate: 1 coin = $0.0005 USDT • 3000 coins = $1.5 • No minimum</div>
+<button class="action-btn" onclick="convertPoints()">Convert to USDT</button>
+</div>
+
+<div id="withdrawTab" style="display:none">
+<select id="payMethod" class="input-box"><option value="binance">Binance Pay - 0 Fee</option><option value="okx">OKX Pay - 0 Fee</option></select>
+<select id="withdrawCrypto" class="input-box"><option>USDT</option></select>
+<input id="walletAddress" class="input-box" placeholder="Pay ID / Email / UID">
+<input id="withdrawAmount" class="input-box" type="number" step="0.01" placeholder="Amount USDT - Min $1.5">
+<div id="withdrawNote" class="note">Available: 0.0000 USDT • Min $1.5</div>
+<button class="action-btn" onclick="requestWithdraw()">Request Withdraw</button>
+</div>
+
+</div>
+
+<script>
+const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(),db=firebase.firestore();
+function showToast(m){const t=document.getElementById('customToast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
+const POINT_RATE=0.0005,MIN_WITHDRAW=1.5;
+let currentUser=null,userData={};
+
+function loadData(d){
+  userData=d;
+  document.getElementById('coinBal').innerText=(d.balance||0)+' coins';
+  document.getElementById('usdEq').innerText=`≈ $${((d.balance||0)*POINT_RATE).toFixed(4)}`;
+  document.getElementById('usdtBal').innerText=(d.usdtBalance||0).toFixed(4)+' USDT';
+  document.getElementById('withdrawNote').innerText=`Available: ${(d.usdtBalance||0).toFixed(4)} USDT • Min $1.5`;
+}
+function calcConvert(){
+  const pts=parseFloat(document.getElementById('convertAmount').value)||0;
+  document.getElementById('convertResult').innerText=`You will receive: ${(pts*POINT_RATE).toFixed(4)} USDT`;
+}
+function switchTab(t){
+  document.getElementById('convertTab').style.display=t==='convert'?'block':'none';
+  document.getElementById('withdrawTab').style.display=t==='withdraw'?'block':'none';
+  document.getElementById('tab1').className=t==='convert'?'tab active':'tab inactive';
+  document.getElementById('tab2').className=t==='withdraw'?'tab active':'tab inactive';
+}
+
+async function convertPoints(){
+  const pts=parseFloat(document.getElementById('convertAmount').value);
+  if(!pts||pts<=0) return showToast('Enter coins amount');
+  if(pts<1) return showToast('Min 1 coin');
+  const usdt=pts*POINT_RATE;
+  try{
+    await db.runTransaction(async (tr)=>{
+      const ref=db.collection('users').doc(currentUser.uid);
+      const snap=await tr.get(ref);
+      if(!snap.exists) throw "No user";
+      const realBal=snap.data().balance||0;
+      if(pts>realBal) throw "Not enough coins";
+      tr.update(ref,{
+        balance: realBal - pts,
+        usdtBalance: firebase.firestore.FieldValue.increment(usdt)
+      });
+    });
+    // log history after success
+    await db.collection('users').doc(currentUser.uid).collection('convertHistory').add({points:pts,usdt:usdt,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Converted to USDT',points:-pts,desc:`${pts} → ${usdt.toFixed(4)} USDT`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    // refresh from server (source of truth)
+    const doc=await db.collection('users').doc(currentUser.uid).get();
+    const data=doc.data(); localStorage.setItem('userData',JSON.stringify(data)); loadData(data);
+    document.getElementById('convertAmount').value=''; calcConvert();
+    showToast(`✓ ${pts} coins → ${usdt.toFixed(4)} USDT`);
+  }catch(e){
+    if(e==="Not enough coins") showToast('Not enough coins');
+    else if(typeof e==='string') showToast(e);
+    else {console.log(e); showToast('Failed, reload');}
+    const doc=await db.collection('users').doc(currentUser.uid).get(); if(doc.exists){localStorage.setItem('userData',JSON.stringify(doc.data())); loadData(doc.data());}
+  }
+}
+
+async function requestWithdraw(){
+  const usdtAmount=parseFloat(document.getElementById('withdrawAmount').value);
+  const payId=document.getElementById('walletAddress').value.trim();
+  const method=document.getElementById('payMethod').value;
+  if(!payId) return showToast('Enter Pay ID / Email');
+  if(!usdtAmount||usdtAmount<MIN_WITHDRAW) return showToast('Min $1.5');
+  try{
+    await db.runTransaction(async (tr)=>{
+      const ref=db.collection('users').doc(currentUser.uid);
+      const snap=await tr.get(ref);
+      const realUsdt=snap.data().usdtBalance||0;
+      if(usdtAmount>realUsdt) throw "Not enough USDT";
+      tr.update(ref,{usdtBalance: realUsdt - usdtAmount});
+    });
+    await db.collection('withdrawals').add({uid:currentUser.uid,username:userData.username,email:userData.email,method:method,crypto:'USDT',payId:payId,amount:usdtAmount,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    const doc=await db.collection('users').doc(currentUser.uid).get(); localStorage.setItem('userData',JSON.stringify(doc.data())); loadData(doc.data());
+    showToast(`Withdraw ${usdtAmount.toFixed(2)} USDT requested!`);
+    document.getElementById('withdrawAmount').value=''; document.getElementById('walletAddress').value='';
+  }catch(e){
+    if(e==="Not enough USDT") showToast('Not enough USDT. Convert first');
+    else showToast('Failed');
+    const doc=await db.collection('users').doc(currentUser.uid).get(); if(doc.exists){localStorage.setItem('userData',JSON.stringify(doc.data())); loadData(doc.data());}
+  }
+}
+
+auth.onAuthStateChanged(async u=>{
+  if(u){
+    currentUser=u;
+    const doc=await db.collection('users').doc(u.uid).get();
+    if(doc.exists){const data=doc.data(); localStorage.setItem('userData',JSON.stringify(data)); loadData(data);}
+  }else{location.href='./index.html';}
+});
+window.calcConvert=calcConvert; window.switchTab=switchTab; window.convertPoints=convertPoints; window.requestWithdraw=requestWithdraw;
+</script></body></html>
