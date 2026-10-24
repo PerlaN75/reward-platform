@@ -1,206 +1,122 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Articles Earn</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Articles Earn - Coins</title>
+<script src="https://www.google.com/recaptcha/enterprise.js?render=6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-html, body {
-  overscroll-behavior-y: contain;
-  overscroll-behavior: none;
-  overscroll-behavior-y: none;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
-}
-body{background:#fff;min-height:100vh;padding:0 0 100px 0;color:#000;overflow-x:hidden}
-.header{background:#2f3e1a;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
-.header b{color:#fbbf24;font-size:16px}
-.header .x{color:#fff;font-size:22px;cursor:pointer;background:none;border:none}
-.balance-bar{background:#fffbeb;border:2px solid #fbbf24;border-radius:12px;margin:10px 14px;padding:8px 12px;display:flex;justify-content:space-between}
-.ad-box{background:#f3f4f6;border:1px dashed #bbb;border-radius:8px;margin:10px 14px;min-height:70px;display:flex;align-items:center;justify-content:center;text-align:center}
-.article-card{background:#fff;border:2px solid #e5e7eb;border-radius:14px;margin:10px 14px;padding:12px;display:flex;gap:10px;cursor:pointer}
-.article-card.done{opacity:0.5;pointer-events:none;border-color:#22c55e}
-.article-thumb{width:80px;height:60px;background:#ddd;border-radius:8px;flex-shrink:0;object-fit:cover}
-.article-info{flex:1}
-.article-info b{font-size:13px;display:block;margin-bottom:4px}
-.article-info span{font-size:11px;color:#666}
-.read-btn{background:#a855f7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:bold;margin-top:4px}
-.progress-bar{background:#e5e7eb;height:6px;border-radius:99px;margin:8px 14px;overflow:hidden}
-.progress-fill{background:#22c55e;height:100%;width:0%;transition:0.3s}
-#timerModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;justify-content:center;align-items:center;padding:14px}
-.modal-box{background:#2f3e1a;border:3px solid #fbbf24;border-radius:20px;padding:18px;width:100%;max-width:420px;color:#fff;max-height:95vh;overflow-y:auto}
-#customToast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:12px 20px;border-radius:12px;font-weight:bold;z-index:99999;display:none}
+*{ -webkit-tap-highlight-color:transparent } *:focus{outline:none !important}
+body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;display:flex;justify-content:center;padding:12px 10px 80px 10px;box-sizing:border-box;min-height:100vh}
+.card{background:#ffffff;border:2px solid #e5e7eb;border-radius:22px;padding:16px 14px 18px 14px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.06);margin:10px auto 30px}
+.header-row{display:flex;justify-content:space-between;align-items:center;margin:6px 0 8px 0}
+h2{margin:0;color:#111827;font-size:22px;font-weight:900;text-align:left}
+.close-x{width:34px;height:34px;border-radius:50%;background:#ffffff;border:2px solid #e5e7eb;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#111827;font-weight:900;font-size:18px;cursor:pointer;box-shadow:0 2px 0 #e5e7eb}
+.close-x:active{transform:scale(0.9)}
+.badge{border:1.5px solid #22c55e;border-radius:20px;padding:6px 12px;display:inline-block;margin:8px 0;color:#166534;background:#f0fdf4;font-weight:bold;font-size:13px}
+.bar{height:7px;background:#e5e7eb;border-radius:10px;margin:10px 0;overflow:hidden}
+.fill{height:100%;background:#22c55e;width:0%;transition:0.3s}
+.task{display:flex;align-items:center;gap:10px;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:12px;padding:10px;margin:8px 0;text-align:left}
+.task.easy{border-left:4px solid #22c55e} .task.standard{border-left:4px solid #f59e0b} .task.premium{border-left:4px solid #ef4444;background:#fef2f2}
+.btn{padding:8px 14px;border-radius:20px;border:none;font-weight:bold;font-size:12px;cursor:pointer;min-width:68px}
+.btn.start{background:linear-gradient(180deg,#dcfce7,#bbf7d0);color:#000;border:2px solid #22c55e;box-shadow:0 2px 0 #86efac}
+.btn.start:active{transform:translateY(1px);box-shadow:0 1px 0 #86efac}
+.btn.done{background:#e5e7eb;color:#9ca3af;border:2px solid #e5e7eb}
+#countText{font-size:12px;color:#111827;margin:6px 0;font-weight:900}
+.tip-text{font-size:11px;color:#1d4ed8;margin:8px 0 4px 0;font-weight:900;line-height:1.3}
+.sponsored{font-size:9px;color:#9ca3af;margin:8px 0 2px 0;letter-spacing:0.5px;font-weight:bold}
+.modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.65);justify-content:center;align-items:center;padding:8px;box-sizing:border-box}
+.modal-content{background:#ffffff;border:2px solid #e5e7eb;border-radius:14px;padding:14px 12px;width:92%;max-width:320px;text-align:center;box-shadow:0 12px 32px rgba(0,0,0,0.12);max-height:95vh;overflow-y:auto}
+.modal-content h3{margin:6px 0 4px 0;font-size:16px;color:#111827;font-weight:900}
+.modal-content p{margin:2px 0;font-size:11px;color:#6b7280}
+.timer{font-size:32px;color:#22c55e;font-weight:bold;margin:6px 0}
+.ad-hint{font-size:11px;color:#9ca3af;margin-top:6px;font-style:italic}
+.ad-gate{background:#f9fafb;border:1px dashed #22c55e;border-radius:10px;padding:8px;margin:10px 0;text-align:center}
+.article-box{background:#ffffff;border:1px solid #e5e7eb;border-radius:10px;padding:10px;margin:10px 0;text-align:left;font-size:12px;line-height:1.5;color:#374151;max-height:200px;overflow-y:auto}
+.bonus-btn{width:100%;padding:14px;background:linear-gradient(90deg,#bbf7d0,#22c55e);color:#000;border:none;border-radius:12px;font-weight:900;font-size:15px;cursor:pointer;margin:10px 0;box-shadow:0 3px 0 #15803d;display:none}
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#ffffff;border:2px solid #e5e7eb;color:#111827;padding:12px 18px;border-radius:12px;font-weight:bold;z-index:9999;display:none;max-width:90%;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.1)}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
+<div id="toast"></div>
+<div class="card">
+<div class="header-row"><h2>📰 Articles Earn</h2><a href="home.html" class="close-x">X</a></div>
+<div class="badge" id="totalPtsBadge">Total Today: 0 🪙 Coins</div>
+<div class="bar"><div class="fill" id="progBar"></div></div>
+<div id="countText">0/10 done - Resets midnight</div>
+<div class="tip-text">👀 Tip: Never miss adverts below, you may meet helpful article. Have a look to them!</div>
 
-<div class="header">
-  <b>📰 Articles Earn</b>
-  <button class="x" onclick="location.href='./home.html'">✕</button>
+<div class="sponsored">SPONSORED - SUPPORT US</div>
+<div id="topBanner" style="margin:6px auto;display:flex;justify-content:center"></div>
+
+<div id="list" style="margin-top:10px"></div>
+
+<div id="midBannerWrap" style="display:none"><div class="sponsored">SPONSORED</div><div id="midBanner" style="margin:6px auto;display:flex;justify-content:center"></div></div>
+
+<button id="bonusBtn" class="bonus-btn" onclick="startBonus()">🎁 Claim Bonus 5 Coins - 12s</button>
+
+<div style="font-size:12px;color:#111827;margin-top:16px;font-weight:900;line-height:1.4">3000 Coins = $1.5 • Bonus 5 coins for completing all 10</div>
 </div>
 
-<div class="balance-bar">
-  <span>💰 <b id="coinBal">0</b> coins</span>
-  <span>📖 <b id="doneCount">0</b>/10 today</span>
-</div>
-
-<div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
-
-<!-- TOP AD 468x60 -->
-<div id="topAdBox" class="ad-box">Top Ad 468x60</div>
-
-<div id="articlesList"></div>
-
-<!-- MID AD 300x250 -->
-<div id="midAdBox" class="ad-box" style="min-height:260px">Mid Ad 300x250</div>
-
-<div id="customToast"></div>
-
-<!-- TIMER MODAL -->
-<div id="timerModal">
-  <div class="modal-box">
-    <div style="display:flex;justify-content:space-between"><h3 id="modalTitle">Reading...</h3><span onclick="closeModal()" style="font-size:22px;cursor:pointer">✕</span></div>
-    <div id="modalAd1" class="ad-box" style="background:#000;margin:10px 0;min-height:60px">Ad 468x60</div>
-    <div id="articleContent" style="background:#000;padding:12px;border-radius:10px;font-size:13px;line-height:1.5;margin:10px 0;max-height:200px;overflow-y:auto"></div>
-    <div id="modalAd2" class="ad-box" style="background:#000;margin:10px 0;min-height:250px">Ad 300x250</div>
-    <div style="text-align:center;margin:10px 0">
-      <div id="timerText" style="font-size:28px;color:#fbbf24;font-weight:bold">12s</div>
-      <div style="font-size:11px;color:#aaa">Keep reading to earn 2 coins</div>
-    </div>
-    <div class="progress-bar"><div id="timerFill" class="progress-fill"></div></div>
-  </div>
-</div>
+<div id="timerModal" class="modal"><div class="modal-content">
+<div style="font-size:26px">📰</div><h3 id="modalTitle">Reading...</h3><p id="modalDesc">Monetag distracting...</p>
+<div class="timer" id="timerNum">12</div>
+<div id="distractPhase" style="font-size:11px;color:#22c55e;font-weight:bold;margin:6px 0">🎁 Monetag Vignette</div>
+<div id="articleBox" class="article-box"></div>
+<div id="adGateInside" class="ad-gate" style="display:none">
+<div style="font-size:11px;color:#15803d;font-weight:bold;margin-bottom:6px">🔒 Adsterra verifying - Keep open</div>
+<div style="margin:6px auto;display:flex;justify-content:center"><script>atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script><script src="https://bicea.org/22/fe25c5bd01f4bc5e60243e36cd83277c"></script></div>
+<div style="margin:6px auto;display:flex;justify-content:center"><script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script><script src="https://bicea.org/22/bf10cacdbe9f50d0c5d66a94e0785f29"></script></div>
+</div><div class="ad-hint" id="adHint">⏳ Verifying...</div>
+</div></div>
 
 <script>
+function canShowVignette(){const last=localStorage.getItem('vignette_last');return !last || (Date.now()-parseInt(last))>1800000;}
+function canShowPop(){const last=localStorage.getItem('pop_last');return !last || (Date.now()-parseInt(last))>3600000;}
+function loadVignette(){if(!canShowVignette())return false;var s=document.createElement('script');s.dataset.zone='12083688';s.src='https://n6wxm.com/vignette.min.js';document.body.appendChild(s);localStorage.setItem('vignette_last',Date.now().toString());return true;}
+function loadPop(){if(!canShowPop())return false;var s=document.createElement('script');s.dataset.zone='12083693';s.src='https://al5sm.com/tag.min.js';document.body.appendChild(s);localStorage.setItem('pop_last',Date.now().toString());return true;}
+function injectBanner(id,key,w,h){if(document.getElementById('timerModal').style.display==='flex')return;const c=document.getElementById(id);c.innerHTML='';const at=document.createElement('script');at.innerHTML=`atOptions={'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}};`;c.appendChild(at);const s=document.createElement('script');s.src=`https://bicea.org/22/${key}`;c.appendChild(s);}
+function loadAllBanners(){if(document.getElementById('timerModal').style.display==='flex')return;injectBanner('topBanner','fe25c5bd01f4bc5e60243e36cd83277c',60,468);injectBanner('midBanner','bf10cacdbe9f50d0c5d66a94e0785f29',250,300);document.getElementById('midBannerWrap').style.display='block';}
+loadAllBanners(); setInterval(()=>{if(document.getElementById('timerModal').style.display!=='flex'){loadAllBanners();}},30000);
+
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
-firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth(), db=firebase.firestore();
-
-const ARTICLES=[
-{t:"Rwanda launches new tech hub in Kigali",c:"Rwanda has launched a new innovation hub to support young entrepreneurs..."},
-{t:"How to earn money online in 2026",c:"There are many ways to earn money online, reading articles is one of the easiest..."},
-{t:"1win bonuses for new players",c:"1win offers great bonuses for new players in Rwanda..."},
-{t:"Crypto market update today",c:"Bitcoin reaches new high as investors..."},
-{t:"Best phones under $200 in Rwanda",c:"Looking for affordable phones? Here are best options..."},
-{t:"Health tips: Drink more water",c:"Water is essential for your body, health experts say..."},
-{t:"Football: Rwanda vs Kenya match",c:"The national team prepares for upcoming match..."},
-{t:"How to save money daily",c:"Small savings can become big money over time..."},
-{t:"New movie coming this week",c:"Hollywood releases new action movie..."},
-{t:"Education: Online courses free",c:"Free online courses available for Rwandan students..."},
-{t:"Weather forecast Kigali",c:"Kigali weather this week will be sunny..."},
-{t:"Business ideas 2026",c:"Top business ideas for 2026 in Africa..."}
+firebase.initializeApp(firebaseConfig); try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
+const auth=firebase.auth(),db=firebase.firestore();
+const articles=[
+{title:"How to Earn Free USDT in Rwanda 2026",text:"Learn top 5 legit ways to earn USDT in Rwanda. From tasks, surveys, referrals. Reward Platform RW pays 3000 coins = $1.5 USDT. Start small, be consistent, withdraw weekly. Never pay to earn."},
+{title:"Best Money Apps in East Africa",text:"MTN MoMo, Airtel Money, Binance, Trust Wallet - all used for rewards. Our platform supports MoMo & USDT. Keep your wallet secure, enable 2FA, never share seed phrase."},
+{title:"What is Adsterra & Monetag?",text:"Adsterra shows banners like 1win, Monetag shows Vignette & Pop. They pay us per view. We share 70% with you as coins. More views = more income for both. Support by viewing ads."},
+{title:"How to Avoid Scam Platforms",text:"Real platforms never ask for deposit. Check reviews, payment proofs. Reward Platform RW is free, contact rewardplatformrw@gmail.com, @SilasN75 on Telegram. We show sponsors clearly."},
+{title:"5 Tips to Save Money Daily",text:"1) Track spending 2) Use MoMo budget 3) Avoid loans 4) Earn small tasks daily 5) Withdraw only when need. Small coins daily = $45/month if consistent 10 tasks/day."},
+{title:"Why Articles Pay You?",text:"Advertisers pay for attention. When you read 12s, Adsterra & Monetag count view. We get paid, you get coins. It's incentivized traffic but disclosed - ethical & allowed."},
+{title:"USDT TRC20 vs BEP20 Guide",text:"TRC20 fee ~$1, BEP20 fee ~$0.2. For $1.5 withdrawals, BEP20 cheaper. Always copy address correctly. Test with small amount. We pay in USDT via Binance Pay soon."},
+{title:"How Referrals Double Earnings",text:"Invite friend with your link, get 10% of their earnings forever. Share on WhatsApp, Facebook groups in Kigali. Don't spam, explain how platform works honestly."},
+{title:"Future of Reward Platform RW",text:"We plan to add video earn, daily check-in, lucky spin. No more offerwalls that fail. Only guaranteed tasks like ads & articles. Stay tuned for version 6.0 with more coins."},
+{title:"Privacy & AppCheck Security",text:"We use Google AppCheck + Recaptcha Enterprise to block bots. Your data stays in Firebase. No selling. Device ID checked to prevent multi-accounts. Fair play for all Rwandans."}
 ];
-
-let currentUser=null,userData={},currentArticle=null,timer=null,timeLeft=12;
-let todayStr=new Date().toISOString().split('T')[0];
-
-function showToast(m){const t=document.getElementById('customToast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',2500);}
-function loadLocal(){try{return JSON.parse(localStorage.getItem('userData')||'{}')}catch(e){return{}}}
-function getDone(){const k='articlesEarn_'+todayStr;return parseInt(localStorage.getItem(k)||'0')}
-function setDone(n){const k='articlesEarn_'+todayStr;localStorage.setItem(k,n)}
-
-function renderArticles(){
-  const done=getDone();
-  const list=document.getElementById('articlesList');
-  list.innerHTML='';
-  ARTICLES.slice(0,10).forEach((a,i)=>{
-    const isDone=i<done;
-    const div=document.createElement('div');
-    div.className='article-card'+(isDone?' done':'');
-    div.innerHTML=`<div class="article-thumb" style="background:#a855f7;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px">📰</div>
-    <div class="article-info"><b>${a.t}</b><span>2 coins • 12s read</span><br><button class="read-btn">${isDone?'✓ Done':'Read'}</button></div>`;
-    div.onclick=()=>{if(!isDone) openArticle(a,i)};
-    list.appendChild(div);
-  });
-  document.getElementById('doneCount').innerText=done;
-  document.getElementById('progressFill').style.width=(done/10*100)+'%';
-  if(done>=10){showToast('Come back tomorrow +5 bonus');}
+const tasksConfig=articles.map((a,i)=>({id:i,reward:i<3?1:i<7?2:3,sec:i<3?8:i<7?12:15,tier:i<3?'easy':i<7?'standard':'premium',label:i<3?'🟢 Easy - 8s':i<7?'🟡 Standard - 12s':'🔴 Premium - 15s',emoji:'📰',title:a.title,text:a.text}));
+const BONUS_REWARD=5,BONUS_SEC=12,EARN_COOLDOWN=15;
+function getToday(){return new Date().toISOString().split('T')[0];}
+function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
+let done=[],total=0,cur=0,sec=12,tmr=null,currentUser=null,userData={},lastEarnTime=0,bonusClaimed=false;
+function getCoins(d){return d.coins??d.balance??d.points??0;}
+function render(){
+  document.getElementById('totalPtsBadge').innerText=`Total Today: ${total} 🪙 Coins`;
+  document.getElementById('countText').innerText=`${done.length}/10 done - Resets midnight`;
+  document.getElementById('progBar').style.width=(done.length*10)+'%';
+  let html=''; tasksConfig.forEach(cfg=>{let isDone=done.includes(cfg.id);html+=`<div class="task ${cfg.tier}"><div style="font-size:20px">${cfg.emoji}</div><div style="flex:1;font-size:13px;text-align:left;color:#111827"><b>${cfg.title}</b><br><span style="color:#6b7280;font-size:10px">${cfg.label}</span> <span style="color:#16a34a;font-size:11px;font-weight:700">+${cfg.reward} 🪙</span></div><button class="btn ${isDone?'done':'start'}" onclick="startAd(${cfg.id})" ${isDone?'disabled':''}>${isDone?'Done ✓':'Read'}</button></div>`;});
+  document.getElementById('list').innerHTML=html;
+  const bonusBtn=document.getElementById('bonusBtn');if(done.length>=10&&!bonusClaimed)bonusBtn.style.display='block';else if(!bonusClaimed)bonusBtn.style.display='none';if(bonusClaimed){bonusBtn.innerText='Bonus Claimed ✓';bonusBtn.disabled=true;bonusBtn.style.display='block';}
 }
-
-function openArticle(a,idx){
-  if(getDone()>=10) return showToast('Limit 10/day');
-  currentArticle={...a,idx};
-  document.getElementById('modalTitle').innerText=a.t;
-  document.getElementById('articleContent').innerText=a.c+'\n\n'+a.c+'\n\n'+a.c;
-  document.getElementById('timerModal').style.display='flex';
-  timeLeft=12;
-  document.getElementById('timerText').innerText=timeLeft+'s';
-  document.getElementById('timerFill').style.width='0%';
-  clearInterval(timer);
-  timer=setInterval(()=>{
-    timeLeft--;
-    document.getElementById('timerText').innerText=timeLeft+'s';
-    document.getElementById('timerFill').style.width=((12-timeLeft)/12*100)+'%';
-    if(timeLeft<=0){clearInterval(timer); finishArticle();}
-  },1000);
-}
-function closeModal(){clearInterval(timer);document.getElementById('timerModal').style.display='none';}
-async function finishArticle(){
-  closeModal();
-  // Monetag Pop - after reading
-  if(canShowPop()){
-    try{/* your monetag pop code here */ localStorage.setItem('lastPop',Date.now())}catch(e){}
-  }
-  const newDone=getDone()+1;
-  setDone(newDone);
-  // update coins
-  const pts=2;
-  let data=loadLocal();
-  data.balance=(data.balance||0)+pts;
-  localStorage.setItem('userData',JSON.stringify(data));
-  document.getElementById('coinBal').innerText=data.balance;
-  // Firestore
-  if(currentUser){
-    try{
-      const ref=db.collection('users').doc(currentUser.uid);
-      await ref.update({balance: firebase.firestore.FieldValue.increment(pts), ['articlesEarn_'+todayStr]: newDone, articlesEarn_date: todayStr});
-      await ref.collection('earnHistory').add({action:'Articles Earn',points:pts,desc:currentArticle.t,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-    }catch(e){}
-  }
-  showToast('+2 coins added!');
-  renderArticles();
-  // bonus 5 coins at 10
-  if(newDone===10){
-    let d=loadLocal(); d.balance=(d.balance||0)+5; localStorage.setItem('userData',JSON.stringify(d));
-    if(currentUser){ try{ await db.collection('users').doc(currentUser.uid).update({balance:firebase.firestore.FieldValue.increment(5)}); }catch(e){} }
-    showToast('Bonus +5 coins!');
-  }
-}
-
-// Ads refresh every 30s - NOT page refresh
-setInterval(()=>{
-  if(document.getElementById('timerModal').style.display==='flex') return;
-  // reload banners here - your Adsterra code
-  // document.getElementById('topAdBox').innerHTML = ... new ad
-},30000);
-
-function canShowPop(){const last=parseInt(localStorage.getItem('lastPop')||'0');return Date.now()-last>60*60*1000;}
-function canShowVignette(){const last=parseInt(localStorage.getItem('lastVig')||'0');return Date.now()-last>30*60*1000;}
-
-auth.onAuthStateChanged(async u=>{
-  if(u){currentUser=u; const doc=await db.collection('users').doc(u.uid).get(); if(doc.exists){const d=doc.data(); localStorage.setItem('userData',JSON.stringify(d)); userData=d; document.getElementById('coinBal').innerText=d.balance||0;} }
-  else{const d=loadLocal(); document.getElementById('coinBal').innerText=d.balance||0;}
-});
-renderArticles();
-
-// BLOCK PULL-TO-REFRESH - FIX FOR YOUR QUESTION
-let startY=0;
-document.addEventListener('touchstart', e=>{
-  startY=e.touches[0].pageY;
-},{passive:false});
-document.addEventListener('touchmove', e=>{
-  const y=e.touches[0].pageY;
-  const isTop=window.scrollY<=0;
-  if(isTop && y>startY){
-    e.preventDefault();
-  }
-},{passive:false});
-document.addEventListener('touchend', ()=>{startY=0;});
-window.addEventListener('beforeunload', ()=>{clearInterval(timer);});
+function startAd(i){if(done.includes(i))return;if(document.getElementById('timerModal').style.display==='flex')return;const now=Date.now()/1000;if(now-lastEarnTime<EARN_COOLDOWN){showToast(`Wait ${Math.ceil(EARN_COOLDOWN-(now-lastEarnTime))}s`);return;}let cfg=tasksConfig[i];cur=i;sec=cfg.sec;document.getElementById('timerNum').innerText=sec;document.getElementById('modalTitle').innerText=cfg.title;document.getElementById('modalDesc').innerText='Monetag distracting...';document.getElementById('articleBox').innerText=cfg.text;document.getElementById('adHint').innerText='🎁 Loading Vignette...';document.getElementById('distractPhase').style.display='block';document.getElementById('distractPhase').innerText=`🎁 Monetag Vignette - ${cfg.tier}`;document.getElementById('adGateInside').style.display='none';document.getElementById('timerModal').style.display='flex';if(cfg.tier!=='easy')loadVignette();setTimeout(()=>{document.getElementById('distractPhase').style.display='none';document.getElementById('adGateInside').style.display='block';document.getElementById('modalTitle').innerText=`Reading: ${cfg.title}`;document.getElementById('modalDesc').innerText=`Keep open ${cfg.sec}s - Adsterra`;document.getElementById('adHint').innerText=`🔒 Adsterra ${cfg.sec}s verifying...`;tmr=setInterval(async()=>{sec--;document.getElementById('timerNum').innerText=sec;if(sec<=0){clearInterval(tmr);document.getElementById('timerModal').style.display='none';await claimAd();}},1000);},cfg.tier==='easy'?800:2500);}
+function startBonus(){if(bonusClaimed)return;if(done.length<10)return showToast('Complete 10 articles first');if(document.getElementById('timerModal').style.display==='flex')return;const now=Date.now()/1000;if(now-lastEarnTime<EARN_COOLDOWN){showToast(`Wait ${Math.ceil(EARN_COOLDOWN-(now-lastEarnTime))}s`);return;}sec=BONUS_SEC;document.getElementById('timerNum').innerText=sec;document.getElementById('modalTitle').innerText='🎁 Bonus 5 Coins';document.getElementById('articleBox').innerText='Bonus article: Thank you for reading 10 articles! You support our sponsors and earn. Keep going daily for extra income.';document.getElementById('modalDesc').innerText='Monetag distracting...';document.getElementById('adHint').innerText='🎁 Loading Vignette for bonus...';document.getElementById('distractPhase').style.display='block';document.getElementById('distractPhase').innerText='🎁 Bonus Vignette';document.getElementById('adGateInside').style.display='none';document.getElementById('timerModal').style.display='flex';loadVignette();setTimeout(()=>{document.getElementById('distractPhase').style.display='none';document.getElementById('adGateInside').style.display='block';document.getElementById('modalTitle').innerText='Bonus Verifying...';document.getElementById('modalDesc').innerText='Keep open 12s - Adsterra for bonus';document.getElementById('adHint').innerText='🔒 Adsterra bonus verifying...';tmr=setInterval(async()=>{sec--;document.getElementById('timerNum').innerText=sec;if(sec<=0){clearInterval(tmr);document.getElementById('timerModal').style.display='none';await claimBonus();}},1000);},2500);}
+async function claimAd(){if(done.includes(cur))return;let cfg=tasksConfig[cur];if(cfg.tier==='premium')loadPop();done.push(cur);total+=cfg.reward;render();localStorage.setItem('articlesEarn_done',JSON.stringify(done));localStorage.setItem('articlesEarn_total',total);localStorage.setItem('articlesEarn_date',getToday());if(currentUser){try{let currentCoins=getCoins(userData);let newBal=currentCoins+cfg.reward;userData.balance=newBal;userData.coins=newBal;userData.articlesEarn_date=getToday();userData.articlesEarn_done=done;userData.articlesEarn_total=total;localStorage.setItem('userData',JSON.stringify(userData));await db.collection('users').doc(currentUser.uid).update({balance:newBal,coins:newBal,points:newBal,lastEarnAt:firebase.firestore.FieldValue.serverTimestamp(),articlesEarn_date:getToday(),articlesEarn_done:done,articlesEarn_total:total});await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Articles Earn',coins:cfg.reward,points:cfg.reward,desc:`${cfg.title} +${cfg.reward} coins`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});lastEarnTime=Date.now()/1000;showToast(`✓ +${cfg.reward} 🪙 added!`);}catch(e){showToast(e.message);}}}
+async function claimBonus(){if(bonusClaimed)return;loadPop();bonusClaimed=true;total+=BONUS_REWARD;render();localStorage.setItem('articlesEarn_bonus',getToday());localStorage.setItem('articlesEarn_total',total);if(currentUser){try{let currentCoins=getCoins(userData);let newBal=currentCoins+BONUS_REWARD;userData.balance=newBal;userData.coins=newBal;userData.articlesEarn_bonus=getToday();userData.articlesEarn_total=total;localStorage.setItem('userData',JSON.stringify(userData));await db.collection('users').doc(currentUser.uid).update({balance:newBal,coins:newBal,points:newBal,lastEarnAt:firebase.firestore.FieldValue.serverTimestamp(),articlesEarn_bonus:getToday(),articlesEarn_total:total});await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Articles Earn Bonus',coins:BONUS_REWARD,points:BONUS_REWARD,desc:`Bonus +${BONUS_REWARD} coins for 10 articles`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});lastEarnTime=Date.now()/1000;showToast(`🎁 Bonus +${BONUS_REWARD} 🪙 added! Total 25!`);}catch(e){showToast(e.message);}}}
+auth.onAuthStateChanged(async u=>{if(!u){location.href='./index.html';return;}currentUser=u;const doc=await db.collection('users').doc(u.uid).get();if(doc.exists){userData=doc.data();localStorage.setItem('userData',JSON.stringify(userData));if(userData.lastEarnAt&&userData.lastEarnAt.toMillis){lastEarnTime=userData.lastEarnAt.toMillis()/1000;}const today=getToday();const fbDate=userData.articlesEarn_date||'';if(fbDate===today){done=userData.articlesEarn_done||[];total=userData.articlesEarn_total||0;bonusClaimed=(userData.articlesEarn_bonus===today);}else{done=[];total=0;bonusClaimed=false;await db.collection('users').doc(u.uid).update({articlesEarn_date:today,articlesEarn_done:[],articlesEarn_total:0,articlesEarn_bonus:''});}}render();}); render();
 </script>
 </body>
 </html>
