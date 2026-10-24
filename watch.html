@@ -12,7 +12,10 @@
 *:focus{outline:none !important}
 body{background:#f3f4f6;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:14px 10px 90px 10px}
 .card{width:100%;max-width:360px;background:#ffffff;border:2px solid #e5e7eb;border-radius:24px;padding:16px 14px;position:relative;z-index:1;margin:10px auto;box-shadow:0 8px 24px rgba(0,0,0,0.06)}
-h1{color:#111827;text-align:center;font-size:24px;font-weight:900;margin-bottom:12px}
+.top-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.back-square{width:42px;height:38px;background:#38bdf8;border:2px solid #e0f2fe;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 8px rgba(56,189,248,0.4);flex-shrink:0}
+.back-square:active{transform:scale(0.96)}
+h1{color:#111827;text-align:left;font-size:22px;font-weight:900;margin:0;flex:1}
 .balance-box{background:#fffbeb;border:2px solid #fde68a;border-radius:16px;padding:12px;text-align:center;color:#111827;margin-bottom:12px}
 .video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #e5e7eb}
 .player{aspect-ratio:16/10;background:#000;position:relative;display:flex;align-items:center;justify-content:center}
@@ -30,7 +33,10 @@ video,iframe{width:100%;height:100%;display:none;border:0}
 <body>
 <canvas id="confetti" style="position:fixed;inset:0;pointer-events:none;z-index:9999;display:none"></canvas>
 <div class="card">
+<div class="top-header">
+<div class="back-square" onclick="location.href='home.html'">‹</div>
 <h1>📺 Watch & Earn</h1>
+</div>
 <div class="balance-box">Balance: <b id="bal">Loading...</b><br><span style="font-size:13px;color:#6b7280"><span id="today">0/10</span> today • 1 Coin per video • 1000 Coins = $0.5</span><div class="vtitle" id="vt">Loading...</div></div>
 <div class="video-box">
 <div class="player"><video id="v" playsinline></video><iframe id="yt" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="overlay" id="ov">Tap Start</div></div>
@@ -79,7 +85,6 @@ const auth=firebase.auth(),db=firebase.firestore();
 let bal=0,today=0,currentUser=null,timer=null,dailyData=null;
 const ov=document.getElementById('ov'),vid=document.getElementById('v'),yt=document.getElementById('yt'),btn=document.getElementById('btn'),pbar=document.getElementById('pbar'),balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),vtEl=document.getElementById('vt');
 function getCoins(d){ return d.coins ?? d.balance ?? d.points ?? 0; }
-
 function updateUI(){balEl.textContent=bal+' 🪙';todayEl.textContent=today+'/10';if(dailyData&&today<10){vtEl.textContent=`Next: ${dailyData.playlist[today].title}`;ov.innerHTML=`<div>${dailyData.playlist[today].title}</div><small style="opacity:.7;margin-top:6px">Tap Start - 1 Coin</small>`;}}
 auth.onAuthStateChanged(async(u)=>{if(!u){location.href='./index.html';return;}currentUser=u;dailyData=getTodayPlaylist();const s=await db.collection('users').doc(u.uid).get();if(s.exists){const d=s.data();bal=getCoins(d);today=d.todayCount||d.today||0;const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null;if(last&&new Date().toDateString()!==last.toDateString())today=0;}updateUI();if(today>=10){ov.style.display='flex';ov.innerHTML='🎉 10/10 Done!<br>New order tomorrow';btn.disabled=true;btn.textContent='Limit Reached';}});
 function doAd(){
