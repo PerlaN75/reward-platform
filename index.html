@@ -11,16 +11,13 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent}
 *:focus{outline:none !important}
+*{-webkit-tap-highlight-color:transparent}
+a,button{ -webkit-tap-highlight-color:transparent; outline:none; user-select:none }
+a:active,button:active{ filter:brightness(0.97) }
 body{width:100%;background:#ffffff;color:#1e1b4b;overflow-x:hidden;display:block}
-
-/* NEW TOP BAR - dark like screenshot */
-.top-bar{width:100%;background:#1e1b4b;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #2d2a5a;position:sticky;top:0;z-index:20}
-.top-left,.top-right{display:flex;gap:8px;align-items:center}
-.btn-top{padding:7px 14px;border-radius:8px;text-decoration:none;font-weight:800;font-size:13px;text-align:center;background:transparent;color:#fff;border:1.5px solid #fff;cursor:pointer}
-.logo-alone{height:28px;width:auto;display:block;background:#fff;border-radius:6px;padding:2px 4px}
-
-.hamburger{width:38px;height:30px;background:transparent;color:#fff;border:1px solid #fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer}
-
+.top-bar{width:100%;background:#ffffff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ede9fe;position:sticky;top:0;z-index:20}
+.hamburger{width:48px;height:30px;background:#1e1b4b;color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;margin-left:12px;-webkit-tap-highlight-color:transparent;outline:none}
+.logo-alone{height:32px;width:auto;display:block;background:#fff;border:none;margin-right:12px}
 .hero{width:100%;background:#ffffff;padding:20px 16px 24px;text-align:center;display:flex;flex-direction:column;align-items:center}
 .welcome-card{width:92%;max-width:360px;background:#ffffff;border:2px solid #4B5320;border-radius:22px;padding:20px 18px 16px;text-align:center;box-shadow:0 5px 0 #4B5320,0 12px 30px rgba(75,83,32,0.22);margin:6px auto 0}
 .welcome-card h1{font-size:26px;font-weight:900;line-height:1.2;color:#1e1b4b;margin:0}
@@ -42,6 +39,7 @@ body{width:100%;background:#ffffff;color:#1e1b4b;overflow-x:hidden;display:block
 .drawer-inner{padding:14px 14px 14px 16px}
 .section-bold{font-weight:900;font-size:19px;color:#1e1b4b;margin:22px 0 12px 2px}
 .sub-item-clean{width:100%;background:transparent;border:none;padding:12px 0;text-align:left;font-size:14.5px;font-weight:700;color:#1e1b4b;cursor:pointer;display:block;margin-left:28px;font-family:'Poppins',sans-serif;letter-spacing:0.15px}
+.sub-item-clean:hover{color:#4c1d95}
 .sub-content{background:#f8f5ff;border-left:3px solid #4c1d95;padding:10px 12px;margin:2px 0 14px 28px;border-radius:0 8px 8px 0;font-size:13px;color:#374151;line-height:1.55;display:none}
 .sub-content.open{display:block}
 .legal-separator{border:none;border-top:1.5px solid #e5e7eb;margin:26px 0 10px 2px}
@@ -60,17 +58,9 @@ footer{background:#1e1b4b;padding:16px 16px 20px;text-align:center;width:100%;ma
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
-<!-- NEW TOP BAR: Login + Register next to Menu -->
 <div class="top-bar">
-<div class="top-left">
-<a href="log.html" onclick="secureNavigate('log.html');return false;" class="btn-top">Login</a>
-<a href="reg.html" onclick="secureNavigate('reg.html');return false;" class="btn-top">Register</a>
-</div>
-<div class="top-right">
-<img src="logo.jpg" alt="RP" class="logo-alone" style="margin-right:8px">
 <div class="hamburger" onclick="toggleDrawer()"><i class="fa fa-bars"></i></div>
-<div class="btn-top" onclick="toggleDrawer()" style="margin-left:2px">Menu</div>
-</div>
+<img src="logo.jpg" alt="RP Logo" class="logo-alone">
 </div>
 
 <div class="hero">
@@ -89,7 +79,7 @@ footer{background:#1e1b4b;padding:16px 16px 20px;text-align:center;width:100%;ma
 <a href="log.html" onclick="secureNavigate('log.html');return false;" class="btn-h-same">Login</a>
 <a href="reg.html" onclick="secureNavigate('reg.html');return false;" class="btn-h-same">Register</a>
 </div>
-<div class="btn-h-same" onclick="toggleDrawer()">Menu</div>
+<a href="index.html" class="btn-h-same">Menu</a>
 </div>
 <div class="drawer-inner">
 <div class="section-bold">How it works</div>
@@ -99,6 +89,7 @@ footer{background:#1e1b4b;padding:16px 16px 20px;text-align:center;width:100%;ma
 <div id="s2" class="sub-content">Choose from trusted partners like Lootably, Timewall, BitLabs and Prime to earn coins.</div>
 <button class="sub-item-clean" onclick="toggleSub('s3')">💰 Earn Coins & Withdraw</button>
 <div id="s3" class="sub-content">Earn coins 🪙 for every task. 1000 Coins = $0.5. Min 3000 Coins = $1.5 USDT. Coins added in real-time.</div>
+
 <div class="section-bold">Why choose Reward Platform RW?</div>
 <button class="sub-item-clean" onclick="toggleSub('s4')">🛡️ Anti-Fraud Protection</button>
 <div id="s4" class="sub-content">Protected with reCAPTCHA Enterprise, App Check and manual review to protect your coins.</div>
@@ -108,6 +99,7 @@ footer{background:#1e1b4b;padding:16px 16px 20px;text-align:center;width:100%;ma
 <div id="s6" class="sub-content">We work with Lootably, Timewall, BitLabs and Prime for offers.</div>
 <button class="sub-item-clean" onclick="toggleSub('s7')">📱 Mobile Optimized</button>
 <div id="s7" class="sub-content">100% optimized for phones, works on low data networks. Earn coins anywhere.</div>
+
 <div class="section-bold">Frequently Asked Questions</div>
 <button class="sub-item-clean" onclick="toggleSub('s8')">🆓 Is this platform free?</button>
 <div id="s8" class="sub-content">Yes, completely free to join and earn coins. No investment needed.</div>
@@ -119,6 +111,7 @@ footer{background:#1e1b4b;padding:16px 16px 20px;text-align:center;width:100%;ma
 <div id="s11" class="sub-content">Go to Dashboard > Convert 1000 coins to $0.5, then Withdraw when you reach 3000 coins = $1.5 min.</div>
 <button class="sub-item-clean" onclick="toggleSub('s12')">📧 How to contact support?</button>
 <div id="s12" class="sub-content">Email us at rewardplatformrw@gmail.com - Coins support 24h.</div>
+
 <hr class="legal-separator">
 <div class="section-bold">Legal & Support</div>
 <button class="legal-item" onclick="toggleSub('p1')">📄 Privacy Policy</button>
