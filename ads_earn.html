@@ -10,7 +10,10 @@
 *:focus{outline:none !important}
 body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;display:flex;justify-content:center;padding:12px 10px 80px 10px;box-sizing:border-box;min-height:100vh}
 .card{background:#ffffff;border:2px solid #e5e7eb;border-radius:22px;padding:16px 14px 18px 14px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.06);margin:10px auto 30px;height:auto}
-h2{margin:8px 0 6px 0;color:#111827;font-size:22px;font-weight:900}
+.header-row{display:flex;justify-content:space-between;align-items:center;margin:6px 0 8px 0}
+h2{margin:0;color:#111827;font-size:22px;font-weight:900;text-align:left}
+.close-x{width:34px;height:34px;border-radius:50%;background:#f3f4f6;border:1.8px solid #d1d5db;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#111827;font-weight:900;font-size:18px;cursor:pointer;line-height:1}
+.close-x:active{transform:scale(0.9);background:#e5e7eb}
 .badge{border:1.5px solid #f59e0b;border-radius:20px;padding:6px 12px;display:inline-block;margin:8px 0;color:#92400e;background:#fffbeb;font-weight:bold;font-size:13px}
 .bar{height:7px;background:#e5e7eb;border-radius:10px;margin:10px 0;overflow:hidden}
 .fill{height:100%;background:#f59e0b;width:0%;transition:0.3s}
@@ -19,11 +22,10 @@ h2{margin:8px 0 6px 0;color:#111827;font-size:22px;font-weight:900}
 .task.standard{border-left:4px solid #f59e0b}
 .task.premium{border-left:4px solid #ef4444;background:#fef2f2}
 .btn{padding:8px 14px;border-radius:20px;border:none;font-weight:bold;font-size:12px;cursor:pointer;min-width:68px}
-.btn.start{background:#f59e0b;color:#000;box-shadow:0 2px 0 #d97706}
-.btn.start:active{transform:translateY(1px);box-shadow:0 1px 0 #d97706}
+.btn.start{background:#22c55e;color:#ffffff;box-shadow:0 2px 0 #16a34a}
+.btn.start:active{transform:translateY(1px);box-shadow:0 1px 0 #16a34a;background:#16a34a}
 .btn.done{background:#e5e7eb;color:#9ca3af}
 #countText{font-size:12px;color:#6b7280;margin:4px 0}
-.back{background:#fff;color:#111827;padding:10px 24px;border-radius:20px;display:inline-block;margin-top:14px;text-decoration:none;font-weight:bold;font-size:14px;border:1.5px solid #e5e7eb;box-shadow:0 2px 0 #e5e7eb}
 .modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.65);justify-content:center;align-items:center;padding:8px;box-sizing:border-box}
 .modal-content{background:#ffffff;border:2px solid #e5e7eb;border-radius:14px;padding:14px 12px;width:92%;max-width:320px;text-align:center;box-shadow:0 12px 32px rgba(0,0,0,0.12);max-height:95vh;overflow-y:auto}
 .modal-content h3{margin:6px 0 4px 0;font-size:16px;color:#111827;font-weight:900}
@@ -43,7 +45,10 @@ h2{margin:8px 0 6px 0;color:#111827;font-size:22px;font-weight:900}
 <body>
 <div id="toast"></div>
 <div class="card">
+<div class="header-row">
 <h2>📢 Ads Earn</h2>
+<a href="home.html" class="close-x">X</a>
+</div>
 <div class="badge" id="totalPtsBadge">Total Today: 0 🪙 Coins</div>
 <div class="bar"><div class="fill" id="progBar"></div></div>
 <div id="countText">0/10 done - Resets midnight</div>
@@ -57,8 +62,7 @@ h2{margin:8px 0 6px 0;color:#111827;font-size:22px;font-weight:900}
 
 <button id="bonusBtn" class="bonus-btn" onclick="startBonus()">🎁 Claim Bonus 5 Coins - 12s</button>
 
-<a class="back" href="home.html">Back Home</a>
-<div style="font-size:9px;color:#9ca3af;margin-top:10px">3000 Coins = $1.5 • Bonus 5 coins for completing all 10</div>
+<div style="font-size:11px;color:#111827;margin-top:14px;font-weight:900">3000 Coins = $1.5 • Bonus 5 coins for completing all 10</div>
 </div>
 
 <div id="timerModal" class="modal"><div class="modal-content">
@@ -84,15 +88,14 @@ h2{margin:8px 0 6px 0;color:#111827;font-size:22px;font-weight:900}
 <script>
 function canShowVignette(){const last=localStorage.getItem('vignette_last');return !last || (Date.now()-parseInt(last))>1800000;}
 function canShowPop(){const last=localStorage.getItem('pop_last');return !last || (Date.now()-parseInt(last))>3600000;}
-function loadVignette(){if(!canShowVignette()){console.log('Vignette capped');return false;}var s=document.createElement('script');s.dataset.zone='12083688';s.src='https://n6wxm.com/vignette.min.js';document.body.appendChild(s);localStorage.setItem('vignette_last',Date.now().toString());return true;}
-function loadPop(){if(!canShowPop()){console.log('Pop capped');return false;}var s=document.createElement('script');s.dataset.zone='12083693';s.src='https://al5sm.com/tag.min.js';document.body.appendChild(s);localStorage.setItem('pop_last',Date.now().toString());return true;}
+function loadVignette(){if(!canShowVignette()){return false;}var s=document.createElement('script');s.dataset.zone='12083688';s.src='https://n6wxm.com/vignette.min.js';document.body.appendChild(s);localStorage.setItem('vignette_last',Date.now().toString());return true;}
+function loadPop(){if(!canShowPop()){return false;}var s=document.createElement('script');s.dataset.zone='12083693';s.src='https://al5sm.com/tag.min.js';document.body.appendChild(s);localStorage.setItem('pop_last',Date.now().toString());return true;}
 
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
 try { const appCheck = firebase.appCheck(); appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);} catch(e) {}
 const auth=firebase.auth(), db=firebase.firestore();
 
-// OPTION B TIERS - Attractive
 const tasksConfig=[
   {id:0,reward:1,sec:8,tier:'easy',label:'🟢 Easy - 8s',emoji:'⚡'},
   {id:1,reward:1,sec:8,tier:'easy',label:'🟢 Easy - 8s',emoji:'⚡'},
@@ -123,27 +126,15 @@ function render(){
     html+=`<div class="task ${cfg.tier}"><div style="font-size:20px">${cfg.emoji}</div><div style="flex:1;font-size:13px;text-align:left;color:#111827"><b>Task ${i+1} ${cfg.label}</b><br><span style="color:#d97706;font-size:11px;font-weight:700">+${cfg.reward} 🪙</span></div><button class="btn ${isDone?'done':'start'}" onclick="startAd(${i})" ${isDone?'disabled':''}>${isDone?'Done ✓':'Start'}</button></div>`;
   } 
   document.getElementById('list').innerHTML=html;
-  // Bonus button
   const bonusBtn=document.getElementById('bonusBtn');
-  if(done.length>=10 && !bonusClaimed){
-    bonusBtn.style.display='block';
-  } else {
-    bonusBtn.style.display='none';
-  }
-  if(bonusClaimed){
-    bonusBtn.innerText='Bonus Claimed ✓';
-    bonusBtn.disabled=true;
-    bonusBtn.style.display='block';
-  }
+  if(done.length>=10 && !bonusClaimed){ bonusBtn.style.display='block'; } else if(!bonusClaimed){ bonusBtn.style.display='none'; }
+  if(bonusClaimed){ bonusBtn.innerText='Bonus Claimed ✓'; bonusBtn.disabled=true; bonusBtn.style.display='block'; }
 }
 function startAd(i){
   if(done.includes(i)) return;
   if(document.getElementById('timerModal').style.display==='flex') return;
   const now = Date.now()/1000;
-  if(now - lastEarnTime < EARN_COOLDOWN){
-    showToast(`Wait ${Math.ceil(EARN_COOLDOWN - (now-lastEarnTime))}s`);
-    return;
-  }
+  if(now - lastEarnTime < EARN_COOLDOWN){ showToast(`Wait ${Math.ceil(EARN_COOLDOWN - (now-lastEarnTime))}s`); return; }
   let cfg=tasksConfig[i];
   cur=i; sec=cfg.sec; isBonus=false;
   document.getElementById('timerNum').innerText=sec;
@@ -154,7 +145,6 @@ function startAd(i){
   document.getElementById('distractPhase').innerText=`🎁 Monetag Vignette - ${cfg.tier}`;
   document.getElementById('adGateInside').style.display='none';
   document.getElementById('timerModal').style.display='flex';
-  // STEP 1: Monetag Vignette ONLY
   if(cfg.tier!=='easy'){ loadVignette(); }
   setTimeout(()=>{
     document.getElementById('distractPhase').style.display='none';
@@ -163,8 +153,7 @@ function startAd(i){
     document.getElementById('modalDesc').innerText=`Keep open ${cfg.sec}s - Adsterra`;
     document.getElementById('adHint').innerText=`🔒 Adsterra ${cfg.sec}s verifying...`;
     tmr=setInterval(async ()=>{
-      sec--; 
-      document.getElementById('timerNum').innerText=sec;
+      sec--; document.getElementById('timerNum').innerText=sec;
       if(sec==Math.floor(cfg.sec/2)){ document.getElementById('adHint').innerText='📡 Adsterra checking...'; }
       if(sec==2){ document.getElementById('adHint').innerText='✅ Almost done...'; }
       if(sec<=0){ clearInterval(tmr); document.getElementById('timerModal').style.display='none'; await claimAd(); }
@@ -176,10 +165,7 @@ function startBonus(){
   if(done.length<10) return showToast('Complete 10 tasks first');
   if(document.getElementById('timerModal').style.display==='flex') return;
   const now = Date.now()/1000;
-  if(now - lastEarnTime < EARN_COOLDOWN){
-    showToast(`Wait ${Math.ceil(EARN_COOLDOWN - (now-lastEarnTime))}s`);
-    return;
-  }
+  if(now - lastEarnTime < EARN_COOLDOWN){ showToast(`Wait ${Math.ceil(EARN_COOLDOWN - (now-lastEarnTime))}s`); return; }
   isBonus=true; cur=-1; sec=BONUS_SEC;
   document.getElementById('timerNum').innerText=sec;
   document.getElementById('modalTitle').innerText='🎁 Bonus 5 Coins';
@@ -189,7 +175,6 @@ function startBonus(){
   document.getElementById('distractPhase').innerText='🎁 Bonus Vignette';
   document.getElementById('adGateInside').style.display='none';
   document.getElementById('timerModal').style.display='flex';
-  // BONUS STEP 1: Vignette ONLY - no conflict
   loadVignette();
   setTimeout(()=>{
     document.getElementById('distractPhase').style.display='none';
@@ -198,8 +183,7 @@ function startBonus(){
     document.getElementById('modalDesc').innerText='Keep open 12s - Adsterra for bonus';
     document.getElementById('adHint').innerText='🔒 Adsterra bonus verifying...';
     tmr=setInterval(async ()=>{
-      sec--; 
-      document.getElementById('timerNum').innerText=sec;
+      sec--; document.getElementById('timerNum').innerText=sec;
       if(sec<=0){ clearInterval(tmr); document.getElementById('timerModal').style.display='none'; await claimBonus(); }
     },1000);
   },2500);
@@ -207,9 +191,8 @@ function startBonus(){
 async function claimAd(){
   if(done.includes(cur)) return;
   const now = Date.now()/1000;
-  if(now - lastEarnTime < EARN_COOLDOWN){ showToast(`Too fast! Wait ${EARN_COOLDOWN}s`); return; }
+  if(now - lastEarnTime < EARN_COOLDOWN){ showToast(`Too fast!`); return; }
   let cfg=tasksConfig[cur];
-  // STEP 3: Pop ONLY for premium - no conflict
   if(cfg.tier==='premium'){ loadPop(); }
   done.push(cur); total+=cfg.reward; render();
   localStorage.setItem('adsEarn_done',JSON.stringify(done));
@@ -246,7 +229,6 @@ async function claimBonus(){
   if(bonusClaimed) return;
   const now = Date.now()/1000;
   if(now - lastEarnTime < EARN_COOLDOWN){ showToast(`Too fast!`); return; }
-  // BONUS STEP 3: Pop ONLY - no conflict, earns extra
   loadPop();
   bonusClaimed=true; total+=BONUS_REWARD; render();
   localStorage.setItem('adsEarn_bonus',getToday());
@@ -256,8 +238,7 @@ async function claimBonus(){
       let currentCoins=getCoins(userData);
       let newBal=currentCoins+BONUS_REWARD;
       userData.balance=newBal; userData.coins=newBal;
-      userData.adsEarn_bonus=getToday();
-      userData.adsEarn_total=total;
+      userData.adsEarn_bonus=getToday(); userData.adsEarn_total=total;
       localStorage.setItem('userData',JSON.stringify(userData));
       await db.collection('users').doc(currentUser.uid).update({
         balance:newBal, coins:newBal, points:newBal,
