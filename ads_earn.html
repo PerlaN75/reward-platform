@@ -9,24 +9,30 @@
 *{ -webkit-tap-highlight-color:transparent }
 *:focus{outline:none !important}
 body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;display:flex;justify-content:center;padding:12px 10px 80px 10px;box-sizing:border-box;min-height:100vh}
-.card{background:#ffffff;border:2px solid #e5e7eb;border-radius:22px;padding:16px 14px 18px 14px;width:100%;max-width:340px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.06);margin:10px auto 30px;height:auto}
+.card{background:#ffffff;border:2px solid #e5e7eb;border-radius:22px;padding:16px 14px 18px 14px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.06);margin:10px auto 30px;height:auto}
 h2{margin:8px 0 6px 0;color:#111827;font-size:22px;font-weight:900}
 .badge{border:1.5px solid #f59e0b;border-radius:20px;padding:6px 12px;display:inline-block;margin:8px 0;color:#92400e;background:#fffbeb;font-weight:bold;font-size:13px}
 .bar{height:7px;background:#e5e7eb;border-radius:10px;margin:10px 0;overflow:hidden}
 .fill{height:100%;background:#f59e0b;width:0%;transition:0.3s}
 .task{display:flex;align-items:center;gap:10px;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:12px;padding:10px;margin:8px 0;text-align:left}
+.task.easy{border-left:4px solid #22c55e}
+.task.standard{border-left:4px solid #f59e0b}
+.task.premium{border-left:4px solid #ef4444;background:#fef2f2}
 .btn{padding:8px 14px;border-radius:20px;border:none;font-weight:bold;font-size:12px;cursor:pointer;min-width:68px}
 .btn.start{background:#f59e0b;color:#000;box-shadow:0 2px 0 #d97706}
 .btn.start:active{transform:translateY(1px);box-shadow:0 1px 0 #d97706}
 .btn.done{background:#e5e7eb;color:#9ca3af}
 #countText{font-size:12px;color:#6b7280;margin:4px 0}
 .back{background:#fff;color:#111827;padding:10px 24px;border-radius:20px;display:inline-block;margin-top:14px;text-decoration:none;font-weight:bold;font-size:14px;border:1.5px solid #e5e7eb;box-shadow:0 2px 0 #e5e7eb}
-.modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.45);justify-content:center;align-items:center;padding:8px;box-sizing:border-box}
-.modal-content{background:#ffffff;border:2px solid #e5e7eb;border-radius:14px;padding:14px 12px;width:88%;max-width:280px;text-align:center;box-shadow:0 12px 32px rgba(0,0,0,0.12)}
+.modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.65);justify-content:center;align-items:center;padding:8px;box-sizing:border-box}
+.modal-content{background:#ffffff;border:2px solid #e5e7eb;border-radius:14px;padding:14px 12px;width:92%;max-width:320px;text-align:center;box-shadow:0 12px 32px rgba(0,0,0,0.12);max-height:95vh;overflow-y:auto}
 .modal-content h3{margin:6px 0 4px 0;font-size:16px;color:#111827;font-weight:900}
 .modal-content p{margin:2px 0;font-size:11px;color:#6b7280}
 .timer{font-size:32px;color:#f59e0b;font-weight:bold;margin:6px 0}
 .ad-hint{font-size:11px;color:#9ca3af;margin-top:6px;font-style:italic}
+.ad-gate{background:#f9fafb;border:1px dashed #f59e0b;border-radius:10px;padding:8px;margin:10px 0;text-align:center}
+.bonus-btn{width:100%;padding:14px;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;font-weight:900;font-size:15px;cursor:pointer;margin:10px 0;box-shadow:0 3px 0 #d97706;display:none}
+.bonus-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #d97706}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#ffffff;border:2px solid #e5e7eb;color:#111827;padding:12px 18px;border-radius:12px;font-weight:bold;z-index:9999;display:none;max-width:90%;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.1)}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -42,41 +48,93 @@ h2{margin:8px 0 6px 0;color:#111827;font-size:22px;font-weight:900}
 <div class="bar"><div class="fill" id="progBar"></div></div>
 <div id="countText">0/10 done - Resets midnight</div>
 
+<div style="margin:10px auto;display:flex;justify-content:center">
+<script>atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script>
+<script src="https://bicea.org/22/fe25c5bd01f4bc5e60243e36cd83277c"></script>
+</div>
+
 <div id="list" style="margin-top:10px"></div>
 
+<button id="bonusBtn" class="bonus-btn" onclick="startBonus()">🎁 Claim Bonus 5 Coins - 12s</button>
+
 <a class="back" href="home.html">Back Home</a>
-<div style="font-size:9px;color:#9ca3af;margin-top:10px">3000 Coins = $1.5 • 1000 Coins = $0.5 • 10 Coins/day max here</div>
+<div style="font-size:9px;color:#9ca3af;margin-top:10px">3000 Coins = $1.5 • Bonus 5 coins for completing all 10</div>
 </div>
+
 <div id="timerModal" class="modal"><div class="modal-content">
 <div style="font-size:26px">⏳</div>
-<h3 id="modalTitle">Verifying...</h3>
-<p id="modalDesc">Keep page open for 12 seconds</p>
+<h3 id="modalTitle">Preparing...</h3>
+<p id="modalDesc">Monetag distracting...</p>
 <div class="timer" id="timerNum">12</div>
+<div id="distractPhase" style="font-size:11px;color:#f59e0b;font-weight:bold;margin:6px 0">🎁 Monetag Vignette</div>
+<div id="adGateInside" class="ad-gate" style="display:none">
+<div style="font-size:11px;color:#d97706;font-weight:bold;margin-bottom:6px">🔒 Adsterra verifying - Keep open</div>
+<div style="margin:6px auto;display:flex;justify-content:center">
+<script>atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script>
+<script src="https://bicea.org/22/fe25c5bd01f4bc5e60243e36cd83277c"></script>
+</div>
+<div style="margin:6px auto;display:flex;justify-content:center">
+<script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script>
+<script src="https://bicea.org/22/bf10cacdbe9f50d0c5d66a94e0785f29"></script>
+</div>
+</div>
 <div class="ad-hint" id="adHint">⏳ Verifying...</div>
 </div></div>
+
 <script>
+function canShowVignette(){const last=localStorage.getItem('vignette_last');return !last || (Date.now()-parseInt(last))>1800000;}
+function canShowPop(){const last=localStorage.getItem('pop_last');return !last || (Date.now()-parseInt(last))>3600000;}
+function loadVignette(){if(!canShowVignette()){console.log('Vignette capped');return false;}var s=document.createElement('script');s.dataset.zone='12083688';s.src='https://n6wxm.com/vignette.min.js';document.body.appendChild(s);localStorage.setItem('vignette_last',Date.now().toString());return true;}
+function loadPop(){if(!canShowPop()){console.log('Pop capped');return false;}var s=document.createElement('script');s.dataset.zone='12083693';s.src='https://al5sm.com/tag.min.js';document.body.appendChild(s);localStorage.setItem('pop_last',Date.now().toString());return true;}
+
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
-try {
-  const appCheck = firebase.appCheck();
-  appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);
-} catch(e) {}
+try { const appCheck = firebase.appCheck(); appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);} catch(e) {}
 const auth=firebase.auth(), db=firebase.firestore();
-const coinsReward=[1,1,1,1,1,1,1,1,1,1];
-const WAIT_SEC = 12;
+
+// OPTION B TIERS - Attractive
+const tasksConfig=[
+  {id:0,reward:1,sec:8,tier:'easy',label:'🟢 Easy - 8s',emoji:'⚡'},
+  {id:1,reward:1,sec:8,tier:'easy',label:'🟢 Easy - 8s',emoji:'⚡'},
+  {id:2,reward:1,sec:8,tier:'easy',label:'🟢 Easy - 8s',emoji:'⚡'},
+  {id:3,reward:2,sec:12,tier:'standard',label:'🟡 Standard - 12s',emoji:'📢'},
+  {id:4,reward:2,sec:12,tier:'standard',label:'🟡 Standard - 12s',emoji:'📢'},
+  {id:5,reward:2,sec:12,tier:'standard',label:'🟡 Standard - 12s',emoji:'📢'},
+  {id:6,reward:2,sec:12,tier:'standard',label:'🟡 Standard - 12s',emoji:'📢'},
+  {id:7,reward:3,sec:15,tier:'premium',label:'🔴 Premium - 15s',emoji:'💎'},
+  {id:8,reward:3,sec:15,tier:'premium',label:'🔴 Premium - 15s',emoji:'💎'},
+  {id:9,reward:3,sec:15,tier:'premium',label:'🔴 Premium - 15s',emoji:'💎'},
+];
+const BONUS_REWARD=5;
+const BONUS_SEC=12;
 const EARN_COOLDOWN = 15;
 function getToday(){return new Date().toISOString().split('T')[0];}
-function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',2500);}
-let done=[], total=0, cur=0, sec=WAIT_SEC, tmr=null, currentUser=null, userData={}, lastEarnTime=0;
+function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
+let done=[], total=0, cur=0, sec=12, tmr=null, currentUser=null, userData={}, lastEarnTime=0, isBonus=false, bonusClaimed=false;
 function getCoins(d){ return d.coins ?? d.balance ?? d.points ?? 0; }
 function render(){
   document.getElementById('totalPtsBadge').innerText=`Total Today: ${total} 🪙 Coins`;
   document.getElementById('countText').innerText=`${done.length}/10 done - Resets midnight`;
   document.getElementById('progBar').style.width=(done.length*10)+'%';
-  let html=''; for(let i=0;i<10;i++){
+  let html=''; 
+  for(let cfg of tasksConfig){
+    let i=cfg.id;
     let isDone=done.includes(i);
-    html+=`<div class="task"><div style="font-size:20px">📢</div><div style="flex:1;font-size:13px;text-align:left;color:#111827"><b>Task ${i+1}</b><br><span style="color:#d97706;font-size:11px;font-weight:700">+${coinsReward[i]} 🪙</span></div><button class="btn ${isDone?'done':'start'}" onclick="startAd(${i})" ${isDone?'disabled':''}>${isDone?'Done ✓':'Start'}</button></div>`;
-  } document.getElementById('list').innerHTML=html;
+    html+=`<div class="task ${cfg.tier}"><div style="font-size:20px">${cfg.emoji}</div><div style="flex:1;font-size:13px;text-align:left;color:#111827"><b>Task ${i+1} ${cfg.label}</b><br><span style="color:#d97706;font-size:11px;font-weight:700">+${cfg.reward} 🪙</span></div><button class="btn ${isDone?'done':'start'}" onclick="startAd(${i})" ${isDone?'disabled':''}>${isDone?'Done ✓':'Start'}</button></div>`;
+  } 
+  document.getElementById('list').innerHTML=html;
+  // Bonus button
+  const bonusBtn=document.getElementById('bonusBtn');
+  if(done.length>=10 && !bonusClaimed){
+    bonusBtn.style.display='block';
+  } else {
+    bonusBtn.style.display='none';
+  }
+  if(bonusClaimed){
+    bonusBtn.innerText='Bonus Claimed ✓';
+    bonusBtn.disabled=true;
+    bonusBtn.style.display='block';
+  }
 }
 function startAd(i){
   if(done.includes(i)) return;
@@ -86,67 +144,134 @@ function startAd(i){
     showToast(`Wait ${Math.ceil(EARN_COOLDOWN - (now-lastEarnTime))}s`);
     return;
   }
-  cur=i; 
-  sec=WAIT_SEC; 
+  let cfg=tasksConfig[i];
+  cur=i; sec=cfg.sec; isBonus=false;
   document.getElementById('timerNum').innerText=sec;
-  document.getElementById('modalTitle').innerText='Verifying...';
-  document.getElementById('modalDesc').innerText='Keep page open for 12 seconds';
-  document.getElementById('adHint').innerText='⏳ Verifying...';
+  document.getElementById('modalTitle').innerText=`Task ${i+1} ${cfg.label}`;
+  document.getElementById('modalDesc').innerText='Monetag distracting...';
+  document.getElementById('adHint').innerText='🎁 Loading Vignette...';
+  document.getElementById('distractPhase').style.display='block';
+  document.getElementById('distractPhase').innerText=`🎁 Monetag Vignette - ${cfg.tier}`;
+  document.getElementById('adGateInside').style.display='none';
   document.getElementById('timerModal').style.display='flex';
-  tmr=setInterval(async ()=>{
-    sec--; 
-    document.getElementById('timerNum').innerText=sec;
-    if(sec==8){ document.getElementById('adHint').innerText='📡 Verifying...'; }
-    if(sec==4){ document.getElementById('adHint').innerText='✅ Verified - almost done...'; document.getElementById('modalTitle').innerText='Almost Ready...'; }
-    if(sec<=0){ clearInterval(tmr); document.getElementById('timerModal').style.display='none'; await claimAd(); }
-  },1000);
+  // STEP 1: Monetag Vignette ONLY
+  if(cfg.tier!=='easy'){ loadVignette(); }
+  setTimeout(()=>{
+    document.getElementById('distractPhase').style.display='none';
+    document.getElementById('adGateInside').style.display='block';
+    document.getElementById('modalTitle').innerText=`Verifying ${cfg.label}`;
+    document.getElementById('modalDesc').innerText=`Keep open ${cfg.sec}s - Adsterra`;
+    document.getElementById('adHint').innerText=`🔒 Adsterra ${cfg.sec}s verifying...`;
+    tmr=setInterval(async ()=>{
+      sec--; 
+      document.getElementById('timerNum').innerText=sec;
+      if(sec==Math.floor(cfg.sec/2)){ document.getElementById('adHint').innerText='📡 Adsterra checking...'; }
+      if(sec==2){ document.getElementById('adHint').innerText='✅ Almost done...'; }
+      if(sec<=0){ clearInterval(tmr); document.getElementById('timerModal').style.display='none'; await claimAd(); }
+    },1000);
+  }, cfg.tier==='easy'?800:2500);
+}
+function startBonus(){
+  if(bonusClaimed) return;
+  if(done.length<10) return showToast('Complete 10 tasks first');
+  if(document.getElementById('timerModal').style.display==='flex') return;
+  const now = Date.now()/1000;
+  if(now - lastEarnTime < EARN_COOLDOWN){
+    showToast(`Wait ${Math.ceil(EARN_COOLDOWN - (now-lastEarnTime))}s`);
+    return;
+  }
+  isBonus=true; cur=-1; sec=BONUS_SEC;
+  document.getElementById('timerNum').innerText=sec;
+  document.getElementById('modalTitle').innerText='🎁 Bonus 5 Coins';
+  document.getElementById('modalDesc').innerText='Monetag distracting...';
+  document.getElementById('adHint').innerText='🎁 Loading Vignette for bonus...';
+  document.getElementById('distractPhase').style.display='block';
+  document.getElementById('distractPhase').innerText='🎁 Bonus Vignette';
+  document.getElementById('adGateInside').style.display='none';
+  document.getElementById('timerModal').style.display='flex';
+  // BONUS STEP 1: Vignette ONLY - no conflict
+  loadVignette();
+  setTimeout(()=>{
+    document.getElementById('distractPhase').style.display='none';
+    document.getElementById('adGateInside').style.display='block';
+    document.getElementById('modalTitle').innerText='Bonus Verifying...';
+    document.getElementById('modalDesc').innerText='Keep open 12s - Adsterra for bonus';
+    document.getElementById('adHint').innerText='🔒 Adsterra bonus verifying...';
+    tmr=setInterval(async ()=>{
+      sec--; 
+      document.getElementById('timerNum').innerText=sec;
+      if(sec<=0){ clearInterval(tmr); document.getElementById('timerModal').style.display='none'; await claimBonus(); }
+    },1000);
+  },2500);
 }
 async function claimAd(){
   if(done.includes(cur)) return;
   const now = Date.now()/1000;
   if(now - lastEarnTime < EARN_COOLDOWN){ showToast(`Too fast! Wait ${EARN_COOLDOWN}s`); return; }
-  done.push(cur); total+=coinsReward[cur]; render();
+  let cfg=tasksConfig[cur];
+  // STEP 3: Pop ONLY for premium - no conflict
+  if(cfg.tier==='premium'){ loadPop(); }
+  done.push(cur); total+=cfg.reward; render();
   localStorage.setItem('adsEarn_done',JSON.stringify(done));
   localStorage.setItem('adsEarn_total',total);
   localStorage.setItem('adsEarn_date',getToday());
   if(currentUser){
     try{
       let currentCoins=getCoins(userData);
-      let newBal=currentCoins+coinsReward[cur];
-      userData.balance=newBal;
-      userData.coins=newBal;
-      userData.adsEarn_date=getToday();
-      userData.adsEarn_done=done;
-      userData.adsEarn_total=total;
+      let newBal=currentCoins+cfg.reward;
+      userData.balance=newBal; userData.coins=newBal;
+      userData.adsEarn_date=getToday(); userData.adsEarn_done=done; userData.adsEarn_total=total;
       localStorage.setItem('userData',JSON.stringify(userData));
       await db.collection('users').doc(currentUser.uid).update({
-        balance:newBal,
-        coins:newBal,
-        points:newBal,
+        balance:newBal, coins:newBal, points:newBal,
         lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),
-        adsEarn_date:getToday(),
-        adsEarn_done:done,
-        adsEarn_total:total
+        adsEarn_date:getToday(), adsEarn_done:done, adsEarn_total:total
       });
       await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({
-        action:'Ads Earn',
-        coins:coinsReward[cur],
-        points:coinsReward[cur],
-        desc:`Task ${cur+1} +${coinsReward[cur]} coins`,
+        action:'Ads Earn', coins:cfg.reward, points:cfg.reward,
+        desc:`Task ${cur+1} ${cfg.label} +${cfg.reward} coins`,
         timestamp:firebase.firestore.FieldValue.serverTimestamp()
       });
       lastEarnTime = Date.now()/1000;
-      showToast(`✓ +${coinsReward[cur]} 🪙 added!`);
+      showToast(`✓ +${cfg.reward} 🪙 added!`);
     }catch(e){
       if(e.message.includes("permissions") || e.code === "permission-denied"){
-        showToast(`Wait ${EARN_COOLDOWN}s between earns`);
-        done = done.filter(x=>x!==cur);
-        total-=coinsReward[cur];
-        render();
-      } else {
-        showToast(e.message);
-      }
+        showToast(`Wait ${EARN_COOLDOWN}s`);
+        done = done.filter(x=>x!==cur); total-=cfg.reward; render();
+      } else { showToast(e.message); }
     }
+  }
+}
+async function claimBonus(){
+  if(bonusClaimed) return;
+  const now = Date.now()/1000;
+  if(now - lastEarnTime < EARN_COOLDOWN){ showToast(`Too fast!`); return; }
+  // BONUS STEP 3: Pop ONLY - no conflict, earns extra
+  loadPop();
+  bonusClaimed=true; total+=BONUS_REWARD; render();
+  localStorage.setItem('adsEarn_bonus',getToday());
+  localStorage.setItem('adsEarn_total',total);
+  if(currentUser){
+    try{
+      let currentCoins=getCoins(userData);
+      let newBal=currentCoins+BONUS_REWARD;
+      userData.balance=newBal; userData.coins=newBal;
+      userData.adsEarn_bonus=getToday();
+      userData.adsEarn_total=total;
+      localStorage.setItem('userData',JSON.stringify(userData));
+      await db.collection('users').doc(currentUser.uid).update({
+        balance:newBal, coins:newBal, points:newBal,
+        lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),
+        adsEarn_bonus:getToday(), adsEarn_total:total
+      });
+      await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({
+        action:'Ads Earn Bonus', coins:BONUS_REWARD, points:BONUS_REWARD,
+        desc:`Bonus +${BONUS_REWARD} coins for completing 10 tasks`,
+        timestamp:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      lastEarnTime = Date.now()/1000;
+      showToast(`🎁 Bonus +${BONUS_REWARD} 🪙 added! Total 25!`);
+    }catch(e){ showToast(e.message); }
   }
 }
 auth.onAuthStateChanged(async u=>{
@@ -154,12 +279,16 @@ auth.onAuthStateChanged(async u=>{
   currentUser=u; const doc=await db.collection('users').doc(u.uid).get();
   if(doc.exists){
     userData=doc.data(); localStorage.setItem('userData', JSON.stringify(userData));
-    if(userData.lastEarnAt && userData.lastEarnAt.toMillis){
-      lastEarnTime = userData.lastEarnAt.toMillis()/1000;
+    if(userData.lastEarnAt && userData.lastEarnAt.toMillis){ lastEarnTime = userData.lastEarnAt.toMillis()/1000; }
+    const today=getToday(); 
+    const fbDate=userData.adsEarn_date||'';
+    if(fbDate===today){ 
+      done=userData.adsEarn_done||[]; total=userData.adsEarn_total||0; 
+      bonusClaimed = (userData.adsEarn_bonus===today);
+    } else { 
+      done=[]; total=0; bonusClaimed=false;
+      await db.collection('users').doc(u.uid).update({adsEarn_date:today,adsEarn_done:[],adsEarn_total:0,adsEarn_bonus:''}); 
     }
-    const today=getToday(); const fbDate=userData.adsEarn_date||'';
-    if(fbDate===today){ done=userData.adsEarn_done||[]; total=userData.adsEarn_total||0; }
-    else{ done=[]; total=0; await db.collection('users').doc(u.uid).update({adsEarn_date:today,adsEarn_done:[],adsEarn_total:0}); }
   } render();
 }); render();
 </script>
