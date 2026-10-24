@@ -7,6 +7,7 @@
 <script src="https://www.google.com/recaptcha/enterprise.js?render=6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1"></script>
 <style>
 *{ -webkit-tap-highlight-color:transparent } *:focus{outline:none !important}
+html,body{overscroll-behavior:none; -webkit-overflow-scrolling:touch}
 body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;display:flex;justify-content:center;padding:12px 10px 80px 10px;box-sizing:border-box;min-height:100vh}
 .card{background:#ffffff;border:2px solid #e5e7eb;border-radius:22px;padding:16px 14px 18px 14px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.06);margin:10px auto 30px}
 .header-row{display:flex;justify-content:space-between;align-items:center;margin:6px 0 8px 0}
@@ -103,7 +104,6 @@ const BONUS_REWARD=5,BONUS_SEC=12,EARN_COOLDOWN=15;
 function getToday(){return new Date().toISOString().split('T')[0];}
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
 let done=[],total=0,cur=0,sec=12,tmr=null,currentUser=null,userData={},lastEarnTime=0,bonusClaimed=false;
-function getCoins(d){return d.coins??d.balance??d.points??0;}
 function render(){
   document.getElementById('totalPtsBadge').innerText=`Total Today: ${total} 🪙 Coins`;
   document.getElementById('countText').innerText=`${done.length}/10 done - Resets midnight`;
@@ -114,9 +114,86 @@ function render(){
 }
 function startAd(i){if(done.includes(i))return;if(document.getElementById('timerModal').style.display==='flex')return;const now=Date.now()/1000;if(now-lastEarnTime<EARN_COOLDOWN){showToast(`Wait ${Math.ceil(EARN_COOLDOWN-(now-lastEarnTime))}s`);return;}let cfg=tasksConfig[i];cur=i;sec=cfg.sec;document.getElementById('timerNum').innerText=sec;document.getElementById('modalTitle').innerText=cfg.title;document.getElementById('modalDesc').innerText='Monetag distracting...';document.getElementById('articleBox').innerText=cfg.text;document.getElementById('adHint').innerText='🎁 Loading Vignette...';document.getElementById('distractPhase').style.display='block';document.getElementById('distractPhase').innerText=`🎁 Monetag Vignette - ${cfg.tier}`;document.getElementById('adGateInside').style.display='none';document.getElementById('timerModal').style.display='flex';if(cfg.tier!=='easy')loadVignette();setTimeout(()=>{document.getElementById('distractPhase').style.display='none';document.getElementById('adGateInside').style.display='block';document.getElementById('modalTitle').innerText=`Reading: ${cfg.title}`;document.getElementById('modalDesc').innerText=`Keep open ${cfg.sec}s - Adsterra`;document.getElementById('adHint').innerText=`🔒 Adsterra ${cfg.sec}s verifying...`;tmr=setInterval(async()=>{sec--;document.getElementById('timerNum').innerText=sec;if(sec<=0){clearInterval(tmr);document.getElementById('timerModal').style.display='none';await claimAd();}},1000);},cfg.tier==='easy'?800:2500);}
 function startBonus(){if(bonusClaimed)return;if(done.length<10)return showToast('Complete 10 articles first');if(document.getElementById('timerModal').style.display==='flex')return;const now=Date.now()/1000;if(now-lastEarnTime<EARN_COOLDOWN){showToast(`Wait ${Math.ceil(EARN_COOLDOWN-(now-lastEarnTime))}s`);return;}sec=BONUS_SEC;document.getElementById('timerNum').innerText=sec;document.getElementById('modalTitle').innerText='🎁 Bonus 5 Coins';document.getElementById('articleBox').innerText='Bonus article: Thank you for reading 10 articles! You support our sponsors and earn. Keep going daily for extra income.';document.getElementById('modalDesc').innerText='Monetag distracting...';document.getElementById('adHint').innerText='🎁 Loading Vignette for bonus...';document.getElementById('distractPhase').style.display='block';document.getElementById('distractPhase').innerText='🎁 Bonus Vignette';document.getElementById('adGateInside').style.display='none';document.getElementById('timerModal').style.display='flex';loadVignette();setTimeout(()=>{document.getElementById('distractPhase').style.display='none';document.getElementById('adGateInside').style.display='block';document.getElementById('modalTitle').innerText='Bonus Verifying...';document.getElementById('modalDesc').innerText='Keep open 12s - Adsterra for bonus';document.getElementById('adHint').innerText='🔒 Adsterra bonus verifying...';tmr=setInterval(async()=>{sec--;document.getElementById('timerNum').innerText=sec;if(sec<=0){clearInterval(tmr);document.getElementById('timerModal').style.display='none';await claimBonus();}},1000);},2500);}
-async function claimAd(){if(done.includes(cur))return;let cfg=tasksConfig[cur];if(cfg.tier==='premium')loadPop();done.push(cur);total+=cfg.reward;render();localStorage.setItem('articlesEarn_done',JSON.stringify(done));localStorage.setItem('articlesEarn_total',total);localStorage.setItem('articlesEarn_date',getToday());if(currentUser){try{let currentCoins=getCoins(userData);let newBal=currentCoins+cfg.reward;userData.balance=newBal;userData.coins=newBal;userData.articlesEarn_date=getToday();userData.articlesEarn_done=done;userData.articlesEarn_total=total;localStorage.setItem('userData',JSON.stringify(userData));await db.collection('users').doc(currentUser.uid).update({balance:newBal,coins:newBal,points:newBal,lastEarnAt:firebase.firestore.FieldValue.serverTimestamp(),articlesEarn_date:getToday(),articlesEarn_done:done,articlesEarn_total:total});await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Articles Earn',coins:cfg.reward,points:cfg.reward,desc:`${cfg.title} +${cfg.reward} coins`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});lastEarnTime=Date.now()/1000;showToast(`✓ +${cfg.reward} 🪙 added!`);}catch(e){showToast(e.message);}}}
-async function claimBonus(){if(bonusClaimed)return;loadPop();bonusClaimed=true;total+=BONUS_REWARD;render();localStorage.setItem('articlesEarn_bonus',getToday());localStorage.setItem('articlesEarn_total',total);if(currentUser){try{let currentCoins=getCoins(userData);let newBal=currentCoins+BONUS_REWARD;userData.balance=newBal;userData.coins=newBal;userData.articlesEarn_bonus=getToday();userData.articlesEarn_total=total;localStorage.setItem('userData',JSON.stringify(userData));await db.collection('users').doc(currentUser.uid).update({balance:newBal,coins:newBal,points:newBal,lastEarnAt:firebase.firestore.FieldValue.serverTimestamp(),articlesEarn_bonus:getToday(),articlesEarn_total:total});await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Articles Earn Bonus',coins:BONUS_REWARD,points:BONUS_REWARD,desc:`Bonus +${BONUS_REWARD} coins for 10 articles`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});lastEarnTime=Date.now()/1000;showToast(`🎁 Bonus +${BONUS_REWARD} 🪙 added! Total 25!`);}catch(e){showToast(e.message);}}}
-auth.onAuthStateChanged(async u=>{if(!u){location.href='./index.html';return;}currentUser=u;const doc=await db.collection('users').doc(u.uid).get();if(doc.exists){userData=doc.data();localStorage.setItem('userData',JSON.stringify(userData));if(userData.lastEarnAt&&userData.lastEarnAt.toMillis){lastEarnTime=userData.lastEarnAt.toMillis()/1000;}const today=getToday();const fbDate=userData.articlesEarn_date||'';if(fbDate===today){done=userData.articlesEarn_done||[];total=userData.articlesEarn_total||0;bonusClaimed=(userData.articlesEarn_bonus===today);}else{done=[];total=0;bonusClaimed=false;await db.collection('users').doc(u.uid).update({articlesEarn_date:today,articlesEarn_done:[],articlesEarn_total:0,articlesEarn_bonus:''});}}render();}); render();
+
+// SECURE CLAIM - uses increment, not overwrite (fixes 788 bug)
+async function claimAd(){
+  if(done.includes(cur)) return;
+  let cfg=tasksConfig[cur];
+  if(cfg.tier==='premium') loadPop();
+  done.push(cur); total+=cfg.reward; render();
+  localStorage.setItem('articlesEarn_done',JSON.stringify(done));
+  localStorage.setItem('articlesEarn_total',total);
+  localStorage.setItem('articlesEarn_date',getToday());
+  if(currentUser){
+    try{
+      await db.collection('users').doc(currentUser.uid).update({
+        balance: firebase.firestore.FieldValue.increment(cfg.reward),
+        coins: firebase.firestore.FieldValue.increment(cfg.reward),
+        points: firebase.firestore.FieldValue.increment(cfg.reward),
+        lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),
+        articlesEarn_date: getToday(),
+        articlesEarn_done: done,
+        articlesEarn_total: total
+      });
+      await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({
+        action:'Articles Earn',coins:cfg.reward,points:cfg.reward,
+        desc:`${cfg.title} +${cfg.reward} coins`,
+        timestamp:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      const doc=await db.collection('users').doc(currentUser.uid).get();
+      if(doc.exists){ userData=doc.data(); localStorage.setItem('userData',JSON.stringify(userData)); }
+      lastEarnTime=Date.now()/1000;
+      showToast(`✓ +${cfg.reward} 🪙 added!`);
+    }catch(e){ showToast(e.message); }
+  }
+}
+async function claimBonus(){
+  if(bonusClaimed) return;
+  loadPop(); bonusClaimed=true; total+=BONUS_REWARD; render();
+  localStorage.setItem('articlesEarn_bonus',getToday());
+  localStorage.setItem('articlesEarn_total',total);
+  if(currentUser){
+    try{
+      await db.collection('users').doc(currentUser.uid).update({
+        balance: firebase.firestore.FieldValue.increment(BONUS_REWARD),
+        coins: firebase.firestore.FieldValue.increment(BONUS_REWARD),
+        points: firebase.firestore.FieldValue.increment(BONUS_REWARD),
+        lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),
+        articlesEarn_bonus: getToday(),
+        articlesEarn_total: total
+      });
+      await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({
+        action:'Articles Earn Bonus',coins:BONUS_REWARD,points:BONUS_REWARD,
+        desc:`Bonus +${BONUS_REWARD} coins for 10 articles`,
+        timestamp:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      const doc=await db.collection('users').doc(currentUser.uid).get();
+      if(doc.exists){ userData=doc.data(); localStorage.setItem('userData',JSON.stringify(userData)); }
+      lastEarnTime=Date.now()/1000;
+      showToast(`🎁 Bonus +${BONUS_REWARD} 🪙 added! Total 25!`);
+    }catch(e){ showToast(e.message); }
+  }
+}
+
+auth.onAuthStateChanged(async u=>{
+  if(!u){location.href='./index.html';return;}
+  currentUser=u;
+  const doc=await db.collection('users').doc(u.uid).get();
+  if(doc.exists){
+    userData=doc.data(); localStorage.setItem('userData',JSON.stringify(userData));
+    if(userData.lastEarnAt&&userData.lastEarnAt.toMillis){ lastEarnTime=userData.lastEarnAt.toMillis()/1000; }
+    const today=getToday(); const fbDate=userData.articlesEarn_date||'';
+    if(fbDate===today){
+      done=userData.articlesEarn_done||[]; total=userData.articlesEarn_total||0;
+      bonusClaimed=(userData.articlesEarn_bonus===today);
+    }else{
+      done=[]; total=0; bonusClaimed=false;
+      await db.collection('users').doc(u.uid).update({articlesEarn_date:today,articlesEarn_done:[],articlesEarn_total:0,articlesEarn_bonus:''});
+    }
+  }
+  render();
+});
+render();
 </script>
 </body>
 </html>
