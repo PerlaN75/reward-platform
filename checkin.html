@@ -1,123 +1,103 @@
 <!DOCTYPE html>
-<html><head><title>Daily Checkin</title>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{background:#ffffff;min-height:100vh;padding:16px 14px;color:#000}
-.header{display:flex;align-items:center;gap:12px;margin:20px 0 10px}
-.back{width:38px;height:38px;background:#2f3e1a;border:2px solid #fbbf24;color:#fbbf24;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer}
-.box{max-width:420px;margin:0 auto}
-.card{background:#2f3e1a;border:3px solid #fbbf24;border-radius:20px;padding:20px;text-align:center;color:#fff;margin-top:20px}
-.reward{font-size:50px;margin-bottom:8px}
-.action-btn{width:100%;padding:16px;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer;margin-top:12px}
-.action-btn:disabled{background:#555;color:#999;cursor:not-allowed}
-.success{background:#1a2e1a;border:1px solid #22c55e;color:#22c55e;padding:10px;border-radius:8px;margin-top:12px;display:none}
-#customToast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:14px 22px;border-radius:12px;font-weight:bold;z-index:99999;display:none;text-align:center}
-.streak{display:flex;gap:6px;justify-content:center;margin:12px 0}
-.day{width:36px;height:36px;border-radius:10px;background:#111;border:1px solid #444;display:flex;align-items:center;justify-content:center;font-size:12px;color:#666}
-.day.done{background:#fbbf24;color:#000;border-color:#fbbf24;font-weight:bold}
+<title>Daily Check-in</title>
+<style>
+body{font-family:Arial;background:#f5f7fb;margin:0;padding:20px;text-align:center}
+.card{background:#fff;max-width:400px;margin:40px auto;padding:25px;border-radius:16px;box-shadow:0 8px 20px rgba(0,0,0,0.08)}
+button{width:100%;padding:14px;border:0;border-radius:10px;background:#3b82f6;color:#fff;font-size:16px;font-weight:600;cursor:pointer}
+button:disabled{background:#9ca3af;cursor:not-allowed}
+.coin{font-size:42px;font-weight:800;color:#f59e0b}
+.msg{margin-top:15px;font-size:14px;color:#16a34a}
 </style>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-</head><body>
-<div id="customToast"></div>
-<div class="box">
-<div class="header"><div class="back" onclick="location.href='./home.html'">‹</div><h2>📅 Daily Checkin</h2></div>
-
+</head>
+<body>
 <div class="card">
-<div class="reward">🎁</div>
-<h3 style="color:#fbbf24">Daily Reward</h3>
-<p style="color:#ccc;font-size:14px;margin:6px 0">Claim 5 coins every 24h</p>
-
-<div class="streak" id="streak"></div>
-
-<button class="action-btn" id="claimBtn" onclick="claimDaily()">Claim 5 Coins</button>
-<div class="success" id="successMsg">✓ 5 Coins Added!</div>
-<p id="checkinNote" style="font-size:12px;color:#aaa;margin-top:8px">Tap to claim</p>
-
-<div style="margin-top:18px;background:#000;border-radius:12px;padding:12px;border:1px dashed #fbbf24">
-<div style="font-size:11px;color:#aaa">Your Balance</div>
-<div id="bal" style="font-size:20px;color:#fbbf24;font-weight:bold;margin-top:4px">0 coins</div>
-</div>
-</div>
+  <h2>Daily Check-in</h2>
+  <p>Claim every 24h</p>
+  <div class="coin" id="coins">--</div>
+  <p id="status">Checking...</p>
+  <button id="checkinBtn" disabled>Loading...</button>
+  <div class="msg" id="msg"></div>
+  <br><a href="./home.html">← Back Home</a>
 </div>
 
+<!-- Firebase v9 Compat -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script>
-const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
+const firebaseConfig = {
+  apiKey: "AIzaSy...YOUR_KEY",
+  authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
+  projectId: "reward-platform-rw-2e13d",
+  appId: "YOUR_APP_ID"
+};
 firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth(),db=firebase.firestore();
-function showToast(m){const t=document.getElementById('customToast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
-let currentUser=null,userData={},isClaiming=false;
-function getToday(){return new Date().toISOString().split('T')[0];}
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-function loadData(d){
-  userData=d;
-  document.getElementById('bal').innerText=(d.balance||0)+' coins';
-  checkStatus();
-}
-function checkStatus(){
-  const today=getToday();
-  const btn=document.getElementById('claimBtn');
-  const note=document.getElementById('checkinNote');
-  const success=document.getElementById('successMsg');
-  if(userData.lastCheckin===today){
-    btn.disabled=true; btn.innerText='Already Claimed Today ✓';
-    note.innerText='Come back tomorrow';
-    success.style.display='block';
-  }else{
-    btn.disabled=false; btn.innerText='Claim 5 Coins';
-    note.innerText='Tap to claim';
-    success.style.display='none';
-  }
-  // streak visual
-  const streakDiv=document.getElementById('streak');
-  streakDiv.innerHTML='';
-  for(let i=0;i<7;i++){
-    const div=document.createElement('div');
-    div.className='day'+(userData.lastCheckin===today && i===0?' done':'');
-    div.innerText='D'+(i+1);
-    streakDiv.appendChild(div);
-  }
-  if(userData.lastCheckin===today){
-    streakDiv.children[0].className='day done';
-    streakDiv.children[0].innerText='✓';
-  }
-}
+let userId = null;
+let userData = null;
 
-async function claimDaily(){
-  if(isClaiming) return;
-  isClaiming=true;
-  const today=getToday();
-  if(userData.lastCheckin===today){showToast('Already claimed today'); isClaiming=false; return;}
-  try{
-    await db.runTransaction(async (tr)=>{
-      const ref=db.collection('users').doc(currentUser.uid);
-      const snap=await tr.get(ref);
-      const data=snap.data();
-      if(data.lastCheckin===today) throw "already";
-      tr.update(ref,{
-        balance: firebase.firestore.FieldValue.increment(5),
-        lastCheckin: today
-      });
-    });
-    await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Daily Checkin',points:5,desc:'Daily Bonus',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-    // reload real data
-    const doc=await db.collection('users').doc(currentUser.uid).get();
-    const data=doc.data(); localStorage.setItem('userData',JSON.stringify(data)); loadData(data);
-    showToast('✓ 5 Coins Added!');
-  }catch(e){
-    if(e==="already") showToast('Already claimed today');
-    else {console.log(e); showToast('Failed, try again');}
-    const doc=await db.collection('users').doc(currentUser.uid).get(); if(doc.exists){localStorage.setItem('userData',JSON.stringify(doc.data())); loadData(doc.data());}
+auth.onAuthStateChanged(async (user)=>{
+  if(!user){ window.location.href="./index.html"; return; }
+  userId = user.uid;
+  const doc = await db.collection("users").doc(userId).get();
+  userData = doc.data() || {coins:0};
+  document.getElementById("coins").innerText = (userData.coins||0)+" Coins";
+  
+  const today = new Date().toISOString().split('T')[0];
+  const last = userData.lastCheckin || "";
+  
+  if(last === today){
+    document.getElementById("status").innerText = "Already checked in today ✅ Come back tomorrow";
+    document.getElementById("checkinBtn").innerText = "Checked ✓";
+    document.getElementById("checkinBtn").disabled = true;
+  } else {
+    document.getElementById("status").innerText = "Ready to claim 5 coins!";
+    document.getElementById("checkinBtn").innerText = "Claim 5 Coins";
+    document.getElementById("checkinBtn").disabled = false;
   }
-  isClaiming=false;
-}
-
-auth.onAuthStateChanged(async u=>{
-  if(u){
-    currentUser=u;
-    const doc=await db.collection('users').doc(u.uid).get();
-    if(doc.exists){const data=doc.data(); localStorage.setItem('userData',JSON.stringify(data)); loadData(data);}
-  }else{location.href='./index.html';}
 });
-</script></body></html>
+
+document.getElementById("checkinBtn").onclick = async ()=>{
+  const btn = document.getElementById("checkinBtn");
+  btn.disabled = true;
+  btn.innerText = "Claiming...";
+  
+  try{
+    const today = new Date().toISOString().split('T')[0];
+    // Re-check from server to prevent double claim
+    const freshDoc = await db.collection("users").doc(userId).get();
+    const fresh = freshDoc.data();
+    if(fresh.lastCheckin === today){
+      throw new Error("Already claimed today");
+    }
+    
+    // SECURE LOGIC - same as wallet - never overwrite, use increment
+    await db.collection("users").doc(userId).update({
+      coins: firebase.firestore.FieldValue.increment(5),
+      lastCheckin: today,
+      streak: firebase.firestore.FieldValue.increment(1),
+      totalCheckins: firebase.firestore.FieldValue.increment(1)
+    });
+    
+    const newDoc = await db.collection("users").doc(userId).get();
+    const newCoins = newDoc.data().coins;
+    document.getElementById("coins").innerText = newCoins+" Coins";
+    document.getElementById("msg").innerText = "✅ +5 Coins added! Stays after refresh.";
+    document.getElementById("status").innerText = "Checked in for "+today;
+    btn.innerText = "Checked ✓";
+    
+  }catch(e){
+    document.getElementById("msg").innerText = "❌ "+e.message;
+    btn.disabled = false;
+    btn.innerText = "Try Again";
+  }
+};
+</script>
+</body>
+</html>
