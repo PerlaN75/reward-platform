@@ -33,7 +33,7 @@ video{width:100%;height:100%;display:none}
 
 <div class="balance-box">Balance: <b id="bal">Loading...</b><br><span style="font-size:13px;color:#6b7280"><span id="today">0/10</span> today • 1 Coin per video</span><div style="font-size:11px;color:#d97706;margin-top:6px" id="vt"></div></div>
 
-<div class="tip-box">💡 <b>Tip:</b> <i>Press on Start, watch and Claim. But also those offers might be useful to You</i></div>
+<div class="tip-box">💡 <i>Press on Start, watch and Claim. But also those offers might be useful to You</i></div>
 
 <div class="sponsored">SPONSORED - TOP</div>
 <div class="ad-box" id="adTop"></div>
@@ -51,7 +51,6 @@ video{width:100%;height:100%;display:none}
 </div>
 
 <script>
-// ADS - Work on both phone + computer
 function loadAdsterra(containerId, key){
   var c=document.getElementById(containerId); if(!c) return;
   var s1=document.createElement('script'); s1.innerHTML="atOptions={'key':'"+key+"','format':'iframe','height':250,'width':300,'params':{}};"; c.appendChild(s1);
@@ -59,14 +58,10 @@ function loadAdsterra(containerId, key){
 }
 loadAdsterra('adTop','bf10cacdbe9f50d0c5d66a94e0785f29');
 setTimeout(function(){loadAdsterra('adBottom','bf10cacdbe9f50d0c5d66a94e0785f29');},1500);
-
-// Monetag controlled
 function canShowV(){var l=localStorage.getItem('v_last');return !l||Date.now()-parseInt(l)>30*60*1000}
 function canShowP(){var l=localStorage.getItem('p_last');return !l||Date.now()-parseInt(l)>60*60*1000}
 function loadV(){if(!canShowV())return; if(document.querySelector('script[data-zone="12083688"]'))return; var s=document.createElement('script');s.dataset.zone='12083688';s.src='https://n6wxm.com/vignette.min.js';document.body.appendChild(s);localStorage.setItem('v_last',Date.now())}
 function loadP(){if(!canShowP())return; if(document.querySelector('script[data-zone="12083693"]'))return; var s=document.createElement('script');s.dataset.zone='12083693';s.src='https://al5sm.com/tag.min.js';document.body.appendChild(s);localStorage.setItem('p_last',Date.now())}
-
-// Videos
 const ALL_VIDEOS=[{src:"https://www.w3schools.com/html/mov_bbb.mp4",title:"Big Buck Bunny"},{src:"https://test-videos.co.uk/vids/sintel/mp4/h264/720/Sintel_720_10s_1MB.mp4",title:"Morning Motivation"},{src:"https://test-videos.co.uk/vids/flower/mp4/h264/720/Flower_720_10s_1MB.mp4",title:"Peaceful Flowers"}];
 function getDayOfYear(){return Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/86400000);}
 function getTodayPlaylist(){const off=getDayOfYear()%ALL_VIDEOS.length;let pl=[];for(let i=0;i<10;i++)pl.push(ALL_VIDEOS[(off+i)%ALL_VIDEOS.length]);return{playlist:pl}}
