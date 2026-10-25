@@ -9,8 +9,11 @@
     *:focus{outline:none !important}
     body { background: #f3f4f6; min-height: 100vh; padding: 14px 14px 90px 14px; color: #111827; }
     .container { max-width: 500px; margin: 0 auto; }
-    .header { text-align: center; margin: 14px 0 18px 0; }
-    .header h2 { font-size: 24px; font-weight: 900; color: #111827; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .header { display:flex; align-items:center; gap:10px; margin: 14px 0 18px 0; }
+    .header h2 { font-size: 22px; font-weight: 900; color: #111827; display: flex; align-items: center; gap: 8px; flex:1 }
+    /* SAME BACK BUTTON AS DAILY CHECKIN / BONUS */
+    .back-btn-checkin{width:42px;height:38px;border-radius:12px;background:linear-gradient(180deg,#fff5f5,#fecaca);border:2px solid #f87171;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5;flex-shrink:0}
+    .back-btn-checkin:active{transform:scale(0.92)}
     .link-card { background: #ffffff; border: 2px solid #e5e7eb; border-radius: 20px; padding: 18px; margin-bottom: 14px; box-shadow:0 8px 24px rgba(0,0,0,0.06); }
     .link-label { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 900; margin-bottom: 12px; color:#111827 }
     .link-box { background: #f9fafb; border: 1.5px dashed #e5e7eb; border-radius: 12px; padding: 12px; font-size: 12.5px; word-break: break-all; margin-bottom: 14px; color:#111827 }
@@ -22,8 +25,6 @@
     .btn-whatsapp:active{transform:translateY(2px);box-shadow:0 1px 0 #16a34a}
     .referrals-card { background: #ffffff; border:2px solid #e5e7eb; border-radius:20px; padding: 18px; box-shadow:0 8px 24px rgba(0,0,0,0.06); }
     .referral-item { display: flex; justify-content: space-between; align-items: center; background: #f9fafb; border:1.5px solid #e5e7eb; padding: 12px; border-radius: 12px; margin-bottom: 8px; font-size: 14px; color:#111827 }
-    .back-btn { width: 42%; margin: 20px auto 0 auto; display: block; padding: 13px; background: #fff; color: #111827; border: 1.5px solid #e5e7eb; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow:0 2px 0 #e5e7eb }
-    .back-btn:active{transform:scale(0.98)}
     .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #111827; color: #fff; padding: 12px 18px; border-radius: 12px; font-weight: bold; z-index: 9999; box-shadow:0 8px 24px rgba(0,0,0,0.12); }
     .empty { text-align: center; color: #9ca3af; padding: 16px 0; font-size:13px }
     .airtel-card { background: #ffffff; border: 2px solid #e5e7eb; border-radius: 20px; padding: 18px; margin-bottom: 14px; box-shadow:0 8px 24px rgba(0,0,0,0.06); }
@@ -39,7 +40,7 @@
 </head>
 <body>
   <div class="container">
-    <div class="header"><h2>💰 Refer & Earn</h2></div>
+    <div class="header"><a href="home.html" class="back-btn-checkin">‹</a><h2>💰 Refer & Earn</h2></div>
     <div class="link-card">
       <div class="link-label">🔗 Your Referral Link</div>
       <div class="link-box" id="referralLink">Loading...</div>
@@ -63,7 +64,6 @@
       <div class="link-label">👥 Your Referrals</div>
       <div id="referralsList"><div class="empty">Loading...</div></div>
     </div>
-    <button class="back-btn" onclick="window.location.href='./home.html'">Back</button>
   </div>
 <script>
   const firebaseConfig = {apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain: "reward-platform-rw-2e13d.firebaseapp.com",projectId: "reward-platform-rw-2e13d"};
