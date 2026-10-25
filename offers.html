@@ -8,10 +8,13 @@
 *{ -webkit-tap-highlight-color:transparent } *:focus{outline:none !important}
 body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;display:flex;justify-content:center;padding:12px 10px 80px 10px;box-sizing:border-box;min-height:100vh}
 .card{background:#ffffff;border:2px solid #e5e7eb;border-radius:22px;padding:16px 14px 18px 14px;width:100%;max-width:400px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.06);margin:10px auto 30px}
-h2{margin:8px 0 6px 0;color:#111827;font-size:22px;font-weight:900}
+.header-row{display:flex;align-items:center;gap:10px;margin:6px 0 12px 0;text-align:left}
+.header-row h2{margin:0;color:#111827;font-size:22px;font-weight:900;flex:1}
+/* SAME BACK BUTTON AS DAILY CHECKIN / BONUS */
+.back-btn-checkin{width:42px;height:38px;border-radius:12px;background:linear-gradient(180deg,#fff5f5,#fecaca);border:2px solid #f87171;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5;flex-shrink:0}
+.back-btn-checkin:active{transform:scale(0.92)}
 .badge{border:1.5px solid #a855f7;border-radius:20px;padding:6px 12px;display:inline-block;margin:8px 0;color:#7e22ce;background:#faf5ff;font-weight:bold;font-size:12px}
 .offerwall-container{margin-top:14px;border:2px solid #e9d5ff;border-radius:16px;overflow:hidden;background:#faf5ff;min-height:480px}
-.back{background:#fff;color:#111827;padding:10px 24px;border-radius:20px;display:inline-block;margin-top:14px;text-decoration:none;font-weight:bold;font-size:14px;border:1.5px solid #e5e7eb;box-shadow:0 2px 0 #e5e7eb}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#ffffff;border:2px solid #e5e7eb;color:#111827;padding:12px 18px;border-radius:12px;font-weight:bold;z-index:9999;display:none;max-width:90%;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.1)}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -22,7 +25,7 @@ h2{margin:8px 0 6px 0;color:#111827;font-size:22px;font-weight:900}
 <body>
 <div id="toast"></div>
 <div class="card">
-<h2>💎 Partner Offers</h2>
+<div class="header-row"><a href="home.html" class="back-btn-checkin">‹</a><h2>💎 Partner Offers</h2></div>
 <div class="badge">Earn up to 1500 Coins per Offer</div>
 <div style="font-size:11px;color:#6b7280;margin-top:6px">Apps, games, surveys - Coins added automatically</div>
 
@@ -35,8 +38,7 @@ h2{margin:8px 0 6px 0;color:#111827;font-size:22px;font-weight:900}
 </div>
 </div>
 
-<a class="back" href="home.html">Back Home</a>
-<div style="font-size:9px;color:#9ca3af;margin-top:10px;line-height:1.4">Coins credited after partner verification (5-30 min)<br>Follow offer instructions exactly to get Coins</div>
+<div style="font-size:9px;color:#9ca3af;margin-top:14px;line-height:1.4">Coins credited after partner verification (5-30 min)<br>Follow offer instructions exactly to get Coins</div>
 </div>
 
 <script>
