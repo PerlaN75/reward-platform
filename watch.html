@@ -28,29 +28,27 @@ video{width:100%;height:100%;display:none}
 </style>
 </head>
 <body>
+<canvas id="confetti" style="position:fixed;inset:0;pointer-events:none;z-index:9999;display:none"></canvas>
 <div class="card">
 <div class="top-header"><div class="back-square" onclick="location.href='home.html'">‹</div><h1>📺 Watch & Earn</h1></div>
-
 <div class="balance-box">Balance: <b id="bal">Loading...</b><br><span style="font-size:13px;color:#6b7280"><span id="today">0/10</span> today • 1 Coin per video</span><div style="font-size:11px;color:#d97706;margin-top:6px" id="vt"></div></div>
-
 <div class="tip-box">💡 <i>Press on Start, watch and Claim. But also those offers might be useful to You</i></div>
-
 <div class="sponsored">SPONSORED - TOP</div>
 <div class="ad-box" id="adTop"></div>
-
 <div class="video-box" style="margin-top:12px">
 <div class="player"><video id="v" playsinline></video><div class="overlay" id="ov">Tap Start</div></div>
 <div class="progress"><div class="progress-bar" id="pbar"></div></div>
 <div style="padding:0 12px 12px"><button class="btn" id="btn">Start & Earn 1 🪙</button></div>
 </div>
-
 <div class="sponsored">SPONSORED - BOTTOM</div>
 <div class="ad-box" id="adBottom" style="margin-bottom:8px"></div>
 <div id="container-23e1e60b5d9d8473949f8c3ca250759b"></div>
 <script async data-cfasync="false" src="https://bicea.org/21/23e1e60b5d9d8473949f8c3ca250759b"></script>
 </div>
-
 <script>
+// CONFETTI BLAST - For 10th video
+function BLAST(){const c=document.getElementById('confetti');c.style.display='block';const ctx=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;let pieces=[];const colors=['#f59e0b','#22c55e','#ef4444','#fbbf24','#3b82f6'];for(let i=0;i<150;i++)pieces.push({x:c.width/2,y:c.height/3,vx:(Math.random()-0.5)*22,vy:(Math.random()-0.5)*22-8,r:Math.random()*9+4,color:colors[Math.floor(Math.random()*colors.length)],rot:Math.random()*360,vr:(Math.random()-0.5)*20});let f=0;(function anim(){ctx.clearRect(0,0,c.width,c.height);pieces.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.35;p.rot+=p.vr;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r);ctx.restore();});if(++f<220)requestAnimationFrame(anim);else c.style.display='none';})();}
+
 function loadAdsterra(containerId, key){
   var c=document.getElementById(containerId); if(!c) return;
   var s1=document.createElement('script'); s1.innerHTML="atOptions={'key':'"+key+"','format':'iframe','height':250,'width':300,'params':{}};"; c.appendChild(s1);
@@ -71,11 +69,11 @@ const auth=firebase.auth(),db=firebase.firestore();
 let bal=0,today=0,currentUser=null,timer=null,dailyData=null;
 const ov=document.getElementById('ov'),vid=document.getElementById('v'),btn=document.getElementById('btn'),pbar=document.getElementById('pbar'),balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),vtEl=document.getElementById('vt');
 function getCoins(d){return d.balance??d.coins??0;}
-function updateUI(){balEl.textContent=bal+' 🪙';todayEl.textContent=Math.min(today,10)+'/10';if(dailyData&&today<10)vtEl.textContent='Next: '+dailyData.playlist[today].title;else if(today>=10)vtEl.textContent='All done!';}
-auth.onAuthStateChanged(async(u)=>{if(!u){location.href='./index.html';return;}currentUser=u;dailyData=getTodayPlaylist();const ref=db.collection('users').doc(u.uid);const s=await ref.get();if(s.exists){const d=s.data();bal=getCoins(d);today=d.todayCount??0;const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null;if(last&&last.toDateString()!==new Date().toDateString()){today=0;await ref.set({today:0,todayCount:0},{merge:true});}}updateUI();if(today>=10){ov.innerHTML='🎉 10/10 Done!';btn.disabled=true;}else{ov.innerHTML=`<div>${dailyData.playlist[today].title}</div><small>Tap Start</small>`;}});
+function updateUI(){balEl.textContent=bal+' 🪙';todayEl.textContent=Math.min(today,10)+'/10';if(dailyData&&today<10)vtEl.textContent='Next: '+dailyData.playlist[today].title;else if(today>=10)vtEl.textContent='All done today! Come back tomorrow!';}
+auth.onAuthStateChanged(async(u)=>{if(!u){location.href='./index.html';return;}currentUser=u;dailyData=getTodayPlaylist();const ref=db.collection('users').doc(u.uid);const s=await ref.get();if(s.exists){const d=s.data();bal=getCoins(d);today=d.todayCount??0;const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null;if(last&&last.toDateString()!==new Date().toDateString()){today=0;await ref.set({today:0,todayCount:0},{merge:true});}}updateUI();if(today>=10){ov.innerHTML='🎉 10/10 Done! 🎊<br>Come back tomorrow!';btn.disabled=true;btn.textContent='Limit Reached';}else{ov.innerHTML=`<div>${dailyData.playlist[today].title}</div><small>Tap Start</small>`;}});
 function doAd(){if(today>=10)return;loadV();btn.disabled=true;ov.innerHTML='Loading...';pbar.style.width='0%';setTimeout(()=>startVideo(),500);}
 function startVideo(){const cur=dailyData.playlist[Math.min(today,9)];ov.style.display='none';vid.src=cur.src;vid.load();vid.style.display='block';vid.play().catch(()=>{});let sec=0;btn.textContent='⏳ Earning...';timer=setInterval(()=>{sec++;pbar.style.width=(sec/15*100)+'%';if(sec>=15){clearInterval(timer);vid.pause();btn.textContent='🎉 Claim 1 🪙!';btn.disabled=false;btn.onclick=claim;ov.style.display='flex';ov.innerHTML='✅ Done! Tap to claim';}},1000);}
-async function claim(){if(today>=10)return;loadP();btn.disabled=true;btn.textContent='Saving...';try{const ref=db.collection('users').doc(currentUser.uid);await ref.update({balance:firebase.firestore.FieldValue.increment(1),coins:firebase.firestore.FieldValue.increment(1),todayCount:firebase.firestore.FieldValue.increment(1),today:firebase.firestore.FieldValue.increment(1),lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()});const doc=await ref.get();bal=getCoins(doc.data());today=doc.data().todayCount??0;}catch(e){bal++;today++;}vid.style.display='none';pbar.style.width='0%';btn.textContent='Start & Earn 1 🪙';btn.disabled=false;btn.onclick=doAd;updateUI();if(today>=10){ov.innerHTML='🎉 10/10 Done!';btn.disabled=true;}else{ov.innerHTML=`<div>${dailyData.playlist[today].title}</div><small>Tap Start</small>`;ov.style.display='flex';}}
+async function claim(){if(today>=10)return;loadP();btn.disabled=true;btn.textContent='Saving...';let wasLast = (today+1) >= 10; try{const ref=db.collection('users').doc(currentUser.uid);await ref.update({balance:firebase.firestore.FieldValue.increment(1),coins:firebase.firestore.FieldValue.increment(1),todayCount:firebase.firestore.FieldValue.increment(1),today:firebase.firestore.FieldValue.increment(1),lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()});const doc=await ref.get();bal=getCoins(doc.data());today=doc.data().todayCount??0;}catch(e){bal++;today++;}vid.style.display='none';pbar.style.width='0%';btn.textContent='Start & Earn 1 🪙';btn.disabled=false;btn.onclick=doAd;updateUI();if(today>=10){ov.innerHTML='🎉 10/10 DONE! 🎊<br>Amazing job!';btn.textContent='Limit Reached';btn.disabled=true; BLAST();}else{ov.innerHTML=`<div>${dailyData.playlist[today].title}</div><small>Tap Start</small>`;ov.style.display='flex';if(wasLast) BLAST();}}
 btn.onclick=doAd;
 </script>
 </body>
