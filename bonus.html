@@ -11,27 +11,37 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial;-webkit-tap-highlight-color:transparent}
 *:focus{outline:none !important}
-body{background:#f3f4f6;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;color:#111827}
-.card{width:100%;max-width:380px;background:#ffffff;border:2px solid #e5e7eb;border-radius:24px;padding:22px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.06)}
-h1{color:#111827;font-size:26px;font-weight:900;margin-bottom:6px}
-.sub{color:#6b7280;font-size:13px;margin-bottom:16px}
-.bonus-box{background:#f9fafb;border:2px dashed #f59e0b;border-radius:16px;padding:18px;margin:14px 0}
+body{background:#f3f4f6;min-height:100vh;display:flex;justify-content:center;padding:14px 10px 90px 10px;color:#111827}
+.card{width:100%;max-width:380px;background:#ffffff;border:2px solid #e5e7eb;border-radius:24px;padding:16px 14px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.06)}
+.top-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;text-align:left}
+.back-square{width:42px;height:38px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;flex-shrink:0}
+h1{color:#111827;font-size:22px;font-weight:900;flex:1}
+.sub{color:#6b7280;font-size:12px;margin-bottom:10px}
+.bonus-box{background:#f9fafb;border:2px dashed #f59e0b;border-radius:16px;padding:18px;margin:10px 0}
 .big{font-size:48px;margin-bottom:8px}
 .points{font-size:24px;color:#d97706;font-weight:900}
 .timer{font-size:13px;color:#6b7280;margin-top:10px;font-weight:600}
 .ad-hint{font-size:10px;color:#9ca3af;margin-top:6px;font-style:italic}
+.tip-box{background:#f0fdf4;border:1px solid #bbf7d0;border-left:4px solid #22c55e;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:13px;color:#166534;line-height:1.4;text-align:left}
 .btn{width:100%;background:#f59e0b;color:#000;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:15px;cursor:pointer;margin-top:14px;box-shadow:0 4px 0 #d97706}
 .btn:active{transform:translateY(2px);box-shadow:0 2px 0 #d97706}
 .btn:disabled{background:#9ca3af;color:#fff;cursor:not-allowed;box-shadow:none}
-.back{width:42%;height:44px;margin:16px auto 0;background:#fff;color:#111827;border:1.5px solid #e5e7eb;border-radius:999px;font-weight:700;cursor:pointer;box-shadow:0 2px 0 #e5e7eb}
-.back:active{transform:scale(0.98)}
+.sponsored{font-size:9px;color:#9ca3af;font-weight:bold;text-align:center;margin:10px 0 4px}
+.ad-box{min-height:250px;display:flex;justify-content:center;align-items:center;background:#fafafa;border-radius:12px;border:1px dashed #e5e7eb}
 .info{font-size:12px;color:#6b7280;margin-top:12px}
 </style>
 </head>
 <body>
+<canvas id="confetti" style="position:fixed;inset:0;pointer-events:none;z-index:9999;display:none"></canvas>
 <div class="card">
-<h1>🎁 Daily Bonus</h1>
+<div class="top-header"><div class="back-square" onclick="location.href='home.html'">‹</div><h1>🎁 Daily Bonus</h1></div>
 <div class="sub">Claim once every 24h - 3000 Coins = $1.5</div>
+
+<div class="sponsored">SPONSORED - TOP</div>
+<div class="ad-box" id="adTop"></div>
+
+<div class="tip-box">💡 <i>Claim daily bonus, but also check those offers - might be useful to You</i></div>
+
 <div class="bonus-box">
 <div class="big">🪙</div>
 <div class="points">+3 Coins</div>
@@ -41,10 +51,33 @@ h1{color:#111827;font-size:26px;font-weight:900;margin-bottom:6px}
 
 <button class="btn" id="claimBtn" disabled>Loading...</button>
 <div class="info" id="info">Daily reward - 1000 Coins = $0.5</div>
-<button class="back" onclick="location.href='./home.html'">Back Home</button>
+
+<div class="sponsored">SPONSORED - BOTTOM</div>
+<div class="ad-box" id="adBottom" style="margin-bottom:8px"></div>
+<div id="container-23e1e60b5d9d8473949f8c3ca250759b"></div>
+<script async data-cfasync="false" src="https://bicea.org/21/23e1e60b5d9d8473949f8c3ca250759b"></script>
+
 <div style="font-size:9px;color:#9ca3af;margin-top:10px">Protected + Min withdraw 3000 Coins = $1.5</div>
 </div>
 <script>
+// BLAST
+function BLAST(){const c=document.getElementById('confetti');c.style.display='block';const ctx=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;let pieces=[];const colors=['#f59e0b','#22c55e','#ef4444','#fbbf24','#3b82f6'];for(let i=0;i<150;i++)pieces.push({x:c.width/2,y:c.height/3,vx:(Math.random()-0.5)*22,vy:(Math.random()-0.5)*22-8,r:Math.random()*9+4,color:colors[Math.floor(Math.random()*colors.length)],rot:Math.random()*360,vr:(Math.random()-0.5)*20});let f=0;(function anim(){ctx.clearRect(0,0,c.width,c.height);pieces.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.35;p.rot+=p.vr;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r);ctx.restore();});if(++f<220)requestAnimationFrame(anim);else c.style.display='none';})();}
+
+// ADS - Works on phone + computer - NO document.write
+function loadAdsterra(containerId, key){
+  var c=document.getElementById(containerId); if(!c) return;
+  var s1=document.createElement('script'); s1.innerHTML="atOptions={'key':'"+key+"','format':'iframe','height':250,'width':300,'params':{}};"; c.appendChild(s1);
+  var s2=document.createElement('script'); s2.src='https://bicea.org/22/'+key; c.appendChild(s2);
+}
+loadAdsterra('adTop','bf10cacdbe9f50d0c5d66a94e0785f29');
+setTimeout(function(){loadAdsterra('adBottom','bf10cacdbe9f50d0c5d66a94e0785f29');},1500);
+
+// MONETAG - Managed with cooldown (30min vignette, 60min push)
+function canShowV(){var l=localStorage.getItem('v_last');return !l||Date.now()-parseInt(l)>30*60*1000}
+function canShowP(){var l=localStorage.getItem('p_last');return !l||Date.now()-parseInt(l)>60*60*1000}
+function loadV(){if(!canShowV())return; if(document.querySelector('script[data-zone="12083688"]'))return; var s=document.createElement('script');s.dataset.zone='12083688';s.src='https://n6wxm.com/vignette.min.js';document.body.appendChild(s);localStorage.setItem('v_last',Date.now())}
+function loadP(){if(!canShowP())return; if(document.querySelector('script[data-zone="12083693"]'))return; var s=document.createElement('script');s.dataset.zone='12083693';s.src='https://al5sm.com/tag.min.js';document.body.appendChild(s);localStorage.setItem('p_last',Date.now())}
+
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
 try {
@@ -99,6 +132,7 @@ if(sec>0){
 claimBtn.textContent=`Wait ${sec}s...`;
 timerEl.textContent=`Please wait ${sec} seconds`;
 if(sec<=5) adHintEl.textContent='✅ Verified - almost ready...';
+if(sec==5) loadV();
 }else{
 clearInterval(waitTimer);
 canClaim=true;
@@ -111,6 +145,7 @@ adHintEl.style.display='none';
 }
 claimBtn.onclick=async()=>{
 if(!canClaim||!currentUser) return;
+loadP();
 claimBtn.disabled=true;
 claimBtn.textContent='Claiming...';
 bal+=3;
@@ -131,6 +166,7 @@ claimBtn.onclick=function(){location.href='./home.html';};
 claimBtn.disabled=false;
 infoEl.textContent='Thanks! Bonus added to your balance';
 adHintEl.style.display='none';
+BLAST();
 }catch(e){
 claimBtn.disabled=false;
 claimBtn.textContent='🎉 Claim 3 Coins Free';
