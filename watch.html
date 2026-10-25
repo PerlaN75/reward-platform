@@ -14,7 +14,8 @@ body{background:#f3f4f6;min-height:100vh;display:flex;justify-content:center;pad
 .top-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .back-square{width:42px;height:38px;background:#fef2f2;border:2px solid #ef4444;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer}
 h1{font-size:22px;font-weight:900;flex:1}
-.balance-box{background:#fffbeb;border:2px solid #fde68a;border-radius:16px;padding:12px;text-align:center;margin-bottom:12px}
+.balance-box{background:#fffbeb;border:2px solid #fde68a;border-radius:16px;padding:12px;text-align:center;margin-bottom:10px}
+.tip-box{background:#f0fdf4;border:1px solid #bbf7d0;border-left:4px solid #22c55e;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:13px;color:#166534;line-height:1.4}
 .video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #e5e7eb}
 .player{aspect-ratio:16/10;background:#000;position:relative;display:flex;align-items:center;justify-content:center}
 video{width:100%;height:100%;display:none}
@@ -29,7 +30,10 @@ video{width:100%;height:100%;display:none}
 <body>
 <div class="card">
 <div class="top-header"><div class="back-square" onclick="location.href='home.html'">‹</div><h1>📺 Watch & Earn</h1></div>
-<div class="balance-box">Balance: <b id="bal">Loading...</b><br><span style="font-size:13px;color:#6b7280"><span id="today">0/10</span> today</span><div style="font-size:11px;color:#d97706;margin-top:6px" id="vt"></div></div>
+
+<div class="balance-box">Balance: <b id="bal">Loading...</b><br><span style="font-size:13px;color:#6b7280"><span id="today">0/10</span> today • 1 Coin per video</span><div style="font-size:11px;color:#d97706;margin-top:6px" id="vt"></div></div>
+
+<div class="tip-box">💡 <b>Tip:</b> <i>Press on Start, watch and Claim. But also those offers might be useful to You</i></div>
 
 <div class="sponsored">SPONSORED - TOP</div>
 <div class="ad-box" id="adTop"></div>
@@ -47,29 +51,23 @@ video{width:100%;height:100%;display:none}
 </div>
 
 <script>
-// ADS THAT WORK ON BOTH PHONE + COMPUTER - NO document.write
+// ADS - Work on both phone + computer
 function loadAdsterra(containerId, key){
-  var c = document.getElementById(containerId);
-  if(!c) return;
-  var s1 = document.createElement('script');
-  s1.innerHTML = "atOptions={'key':'"+key+"','format':'iframe','height':250,'width':300,'params':{}};";
-  c.appendChild(s1);
-  var s2 = document.createElement('script');
-  s2.src = 'https://bicea.org/22/'+key;
-  c.appendChild(s2);
+  var c=document.getElementById(containerId); if(!c) return;
+  var s1=document.createElement('script'); s1.innerHTML="atOptions={'key':'"+key+"','format':'iframe','height':250,'width':300,'params':{}};"; c.appendChild(s1);
+  var s2=document.createElement('script'); s2.src='https://bicea.org/22/'+key; c.appendChild(s2);
 }
-// 300x250 works on BOTH phone and computer
-loadAdsterra('adTop', 'bf10cacdbe9f50d0c5d66a94e0785f29');
-setTimeout(function(){ loadAdsterra('adBottom', 'bf10cacdbe9f50d0c5d66a94e0785f29'); }, 1500);
+loadAdsterra('adTop','bf10cacdbe9f50d0c5d66a94e0785f29');
+setTimeout(function(){loadAdsterra('adBottom','bf10cacdbe9f50d0c5d66a94e0785f29');},1500);
 
-// Monetag
+// Monetag controlled
 function canShowV(){var l=localStorage.getItem('v_last');return !l||Date.now()-parseInt(l)>30*60*1000}
 function canShowP(){var l=localStorage.getItem('p_last');return !l||Date.now()-parseInt(l)>60*60*1000}
 function loadV(){if(!canShowV())return; if(document.querySelector('script[data-zone="12083688"]'))return; var s=document.createElement('script');s.dataset.zone='12083688';s.src='https://n6wxm.com/vignette.min.js';document.body.appendChild(s);localStorage.setItem('v_last',Date.now())}
 function loadP(){if(!canShowP())return; if(document.querySelector('script[data-zone="12083693"]'))return; var s=document.createElement('script');s.dataset.zone='12083693';s.src='https://al5sm.com/tag.min.js';document.body.appendChild(s);localStorage.setItem('p_last',Date.now())}
 
-// Firebase + Video
-const ALL_VIDEOS=[{src:"https://www.w3schools.com/html/mov_bbb.mp4",title:"Big Buck Bunny"},{src:"https://test-videos.co.uk/vids/sintel/mp4/h264/720/Sintel_720_10s_1MB.mp4",title:"Morning Motivation"},{src:"https://test-videos.co.uk/vids/flower/mp4/h264/720/Flower_720_10s_1MB.mp4",title:"Flowers"}];
+// Videos
+const ALL_VIDEOS=[{src:"https://www.w3schools.com/html/mov_bbb.mp4",title:"Big Buck Bunny"},{src:"https://test-videos.co.uk/vids/sintel/mp4/h264/720/Sintel_720_10s_1MB.mp4",title:"Morning Motivation"},{src:"https://test-videos.co.uk/vids/flower/mp4/h264/720/Flower_720_10s_1MB.mp4",title:"Peaceful Flowers"}];
 function getDayOfYear(){return Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/86400000);}
 function getTodayPlaylist(){const off=getDayOfYear()%ALL_VIDEOS.length;let pl=[];for(let i=0;i<10;i++)pl.push(ALL_VIDEOS[(off+i)%ALL_VIDEOS.length]);return{playlist:pl}}
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
@@ -78,10 +76,10 @@ const auth=firebase.auth(),db=firebase.firestore();
 let bal=0,today=0,currentUser=null,timer=null,dailyData=null;
 const ov=document.getElementById('ov'),vid=document.getElementById('v'),btn=document.getElementById('btn'),pbar=document.getElementById('pbar'),balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),vtEl=document.getElementById('vt');
 function getCoins(d){return d.balance??d.coins??0;}
-function updateUI(){balEl.textContent=bal+' 🪙';todayEl.textContent=Math.min(today,10)+'/10';if(dailyData&&today<10)vtEl.textContent='Next: '+dailyData.playlist[today].title;}
-auth.onAuthStateChanged(async(u)=>{if(!u){location.href='./index.html';return;}currentUser=u;dailyData=getTodayPlaylist();const ref=db.collection('users').doc(u.uid);const s=await ref.get();if(s.exists){const d=s.data();bal=getCoins(d);today=d.todayCount??0;const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null;if(last&&last.toDateString()!==new Date().toDateString()){today=0;await ref.set({today:0,todayCount:0},{merge:true});}}updateUI();if(today>=10){ov.innerHTML='🎉 Done!';btn.disabled=true;}else{ov.innerHTML=`<div>${dailyData.playlist[today].title}</div><small>Tap Start</small>`;}});
+function updateUI(){balEl.textContent=bal+' 🪙';todayEl.textContent=Math.min(today,10)+'/10';if(dailyData&&today<10)vtEl.textContent='Next: '+dailyData.playlist[today].title;else if(today>=10)vtEl.textContent='All done!';}
+auth.onAuthStateChanged(async(u)=>{if(!u){location.href='./index.html';return;}currentUser=u;dailyData=getTodayPlaylist();const ref=db.collection('users').doc(u.uid);const s=await ref.get();if(s.exists){const d=s.data();bal=getCoins(d);today=d.todayCount??0;const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null;if(last&&last.toDateString()!==new Date().toDateString()){today=0;await ref.set({today:0,todayCount:0},{merge:true});}}updateUI();if(today>=10){ov.innerHTML='🎉 10/10 Done!';btn.disabled=true;}else{ov.innerHTML=`<div>${dailyData.playlist[today].title}</div><small>Tap Start</small>`;}});
 function doAd(){if(today>=10)return;loadV();btn.disabled=true;ov.innerHTML='Loading...';pbar.style.width='0%';setTimeout(()=>startVideo(),500);}
-function startVideo(){const cur=dailyData.playlist[Math.min(today,9)];ov.style.display='none';vid.src=cur.src;vid.load();vid.style.display='block';vid.play().catch(()=>{});let sec=0;btn.textContent='⏳ Earning...';timer=setInterval(()=>{sec++;pbar.style.width=(sec/15*100)+'%';if(sec>=15){clearInterval(timer);vid.pause();btn.textContent='🎉 Claim 1 🪙!';btn.disabled=false;btn.onclick=claim;ov.style.display='flex';ov.innerHTML='✅ Done!';}},1000);}
+function startVideo(){const cur=dailyData.playlist[Math.min(today,9)];ov.style.display='none';vid.src=cur.src;vid.load();vid.style.display='block';vid.play().catch(()=>{});let sec=0;btn.textContent='⏳ Earning...';timer=setInterval(()=>{sec++;pbar.style.width=(sec/15*100)+'%';if(sec>=15){clearInterval(timer);vid.pause();btn.textContent='🎉 Claim 1 🪙!';btn.disabled=false;btn.onclick=claim;ov.style.display='flex';ov.innerHTML='✅ Done! Tap to claim';}},1000);}
 async function claim(){if(today>=10)return;loadP();btn.disabled=true;btn.textContent='Saving...';try{const ref=db.collection('users').doc(currentUser.uid);await ref.update({balance:firebase.firestore.FieldValue.increment(1),coins:firebase.firestore.FieldValue.increment(1),todayCount:firebase.firestore.FieldValue.increment(1),today:firebase.firestore.FieldValue.increment(1),lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()});const doc=await ref.get();bal=getCoins(doc.data());today=doc.data().todayCount??0;}catch(e){bal++;today++;}vid.style.display='none';pbar.style.width='0%';btn.textContent='Start & Earn 1 🪙';btn.disabled=false;btn.onclick=doAd;updateUI();if(today>=10){ov.innerHTML='🎉 10/10 Done!';btn.disabled=true;}else{ov.innerHTML=`<div>${dailyData.playlist[today].title}</div><small>Tap Start</small>`;ov.style.display='flex';}}
 btn.onclick=doAd;
 </script>
