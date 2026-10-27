@@ -10,7 +10,8 @@
 body{margin:0;background:#f3f4f6;font-family:Georgia,serif;display:flex;justify-content:center;padding:0 0 80px;min-height:100vh}
 .card{background:#fffefb;border:2px solid #e5e7eb;width:100%;max-width:420px;min-height:100vh}
 .header-row{display:flex;align-items:center;gap:12px;padding:16px 14px;background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:0;z-index:10}
-.back-btn-checkin{
+/* SAME BACK FOR OFFERS AND FRONT PAGE - IDENTICAL */
+.back-btn{
   width:42px;height:38px;
   background:linear-gradient(180deg,#fef2f2,#ffe4e6);
   border:2px solid #ef4444;
@@ -22,8 +23,9 @@ body{margin:0;background:#f3f4f6;font-family:Georgia,serif;display:flex;justify-
   cursor:pointer;
   box-shadow:0 2px 0 #fca5a5;
   text-decoration:none;
+  line-height:1;
 }
-.back-btn-checkin:active{transform:scale(0.96);box-shadow:0 1px 0 #fca5a5}
+.back-btn:active{transform:scale(0.96);box-shadow:0 1px 0 #fca5a5}
 h2{margin:0;font-size:22px;font-weight:900;flex:1;font-family:Arial;color:#111827}
 .badge{margin:10px;background:#111827;color:#fff;padding:6px 10px;display:inline-block;font-weight:900;font-size:11px}
 .bar{height:4px;background:#e5e7eb}.fill{height:100%;background:#bb0000;width:0%;transition:.3s}
@@ -37,25 +39,11 @@ h2{margin:0;font-size:22px;font-weight:900;flex:1;font-family:Arial;color:#11182
 .meta-row{display:flex;justify-content:space-between;margin-top:10px;border-top:1px solid #e5e7eb;padding-top:8px}.meta{font-size:10px;color:#6b7280;font-weight:700;font-family:Arial}.earn{font-size:11px;font-weight:900;background:#111827;color:#fff;padding:4px 10px}
 #articlePage{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#fffefb;z-index:50;overflow-y:auto}
 .article-header{position:sticky;top:0;background:#fff;border-bottom:2px solid #111827;padding:10px 12px;display:flex;align-items:center;gap:10px;z-index:11}
-.article-header .back{
-  width:42px;height:38px;
-  background:linear-gradient(180deg,#fef2f2,#ffe4e6);
-  border:2px solid #ef4444;
-  color:#991b1b;
-  border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:22px;
-  font-weight:900;
-  cursor:pointer;
-  box-shadow:0 2px 0 #fca5a5;
-}
-.article-header .back:active{transform:scale(0.96);box-shadow:0 1px 0 #fca5a5}
 .article-paper{max-width:420px;margin:0 auto;padding:0 0 110px}.article-top{padding:18px 16px 12px;border-bottom:1px solid #e5e7eb}.article-kicker{font-size:11px;font-weight:900;color:#bb0000;letter-spacing:1.2px;margin-bottom:8px;font-family:Arial}.article-h1{font-size:25px;font-weight:900;line-height:1.2;margin:0 0 10px}.article-img{width:100%;max-height:260px;object-fit:cover;background:#eee}.article-body{padding:16px;font-size:16px;line-height:1.7;color:#1f2937}.article-body p{margin:14px 0}.sponsored{font-size:9px;color:#9ca3af;letter-spacing:1px;font-weight:700;text-align:center;margin:14px 0 4px;font-family:Arial}
 .sticky-earn{position:fixed;bottom:0;width:100%;max-width:420px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;z-index:60;box-sizing:border-box}.right{font-size:14px;font-weight:900;color:#facc15}
 #howToPopup{display:flex;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:100;justify-content:center;align-items:center;padding:12px;box-sizing:border-box}.how-box{background:#fffefb;border:3px solid #111827;padding:18px 16px;width:92%;max-width:350px}.how-box .close-btn{width:100%;background:#111827;color:#fff;border:none;padding:12px;font-weight:900;cursor:pointer;margin-top:8px}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:12px 18px;font-weight:900;z-index:9999;display:none}
 #coinBubble{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:120px;height:120px;background:#1e40af;border:4px solid #fff;border-radius:50%;z-index:90;align-items:center;justify-content:center;flex-direction:column;box-shadow:0 12px 32px rgba(0,0,0,.5)}
-#linkOverlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:80;flex-direction:column}#linkFrame{flex:1;border:none;width:100%}
 @keyframes floatShakeCenter{0%{transform:translate(-50%,-50%) translateX(0) rotate(0deg) scale(1)}25%{transform:translate(-50%,-50%) translateY(-14px) translateX(-8px) rotate(-5deg) scale(1.05)}50%{transform:translate(-50%,-50%) translateX(8px) rotate(5deg) scale(1)}75%{transform:translate(-50%,-50%) translateY(-10px) translateX(-5px) rotate(-3deg) scale(1.05)}100%{transform:translate(-50%,-50%) translateX(0) rotate(0deg) scale(1)}}@keyframes fadeOutCenter{to{opacity:0;transform:translate(-50%,-80%) scale(0.8)}}.bubble-anim{animation:floatShakeCenter .8s ease-in-out infinite alternate}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -66,10 +54,9 @@ h2{margin:0;font-size:22px;font-weight:900;flex:1;font-family:Arial;color:#11182
 <body>
 <div id="toast"></div>
 <div id="coinBubble"><div style="font-size:20px;font-weight:900;color:#facc15;text-align:center;line-height:1.1" id="bubbleText">+2<br>🪙</div><div style="font-size:11px;color:#fff;font-weight:700;margin-top:4px">Earned!</div></div>
-<div id="linkOverlay"><div style="display:flex;align-items:center;gap:10px;padding:10px;background:#111827;color:#fff"><button onclick="closeLink()" style="background:#fff;color:#111827;border:none;width:32px;height:32px;font-weight:900">‹</button><div style="font-weight:900;font-size:12px;font-family:Arial">Original - Already earned ✓</div></div><iframe id="linkFrame" src=""></iframe></div>
-<div id="howToPopup"><div class="how-box"><div style="font-size:28px;text-align:center">📰</div><h3 style="margin:0 0 10px;font-size:20px;font-weight:900">OFFERS Newspaper</h3><div style="font-size:11px;font-weight:900;color:#bb0000;margin-bottom:10px">READ 40s = 2 COINS</div><ol style="margin:0 0 12px 18px;font-size:13px;line-height:1.5;font-family:Arial"><li>Tap any card to read</li><li>Read for 40s to gain 2 coins</li><li>Sources update hourly</li></ol><button class="close-btn" onclick="closeHowTo()">Continue</button></div></div>
+<div id="howToPopup"><div class="how-box"><div style="font-size:28px;text-align:center">📰</div><h3 style="margin:0 0 10px;font-size:20px;font-weight:900">OFFERS Newspaper</h3><div style="font-size:11px;font-weight:900;color:#bb0000;margin-bottom:10px">WATCH 40s = 2 COINS</div><ol style="margin:0 0 12px 18px;font-size:13px;line-height:1.5;font-family:Arial"><li>Tap any card to read</li><li>Watch for 40s to gain 2 coins</li><li>Sources update hourly</li></ol><button class="close-btn" onclick="closeHowTo()">Start Reading ✕</button></div></div>
 <div class="card">
-<div class="header-row"><a href="home.html" class="back-btn-checkin">‹</a><h2>OFFERS</h2><div style="font-size:10px;font-weight:900;background:#bb0000;color:#fff;padding:4px 8px">12 LIVE</div></div>
+<div class="header-row"><a href="home.html" class="back-btn">‹</a><h2>OFFERS</h2><div style="font-size:10px;font-weight:900;background:#bb0000;color:#fff;padding:4px 8px">12 LIVE</div></div>
 <div class="badge" id="totalPtsBadge">TODAY: 0 🪙</div>
 <div class="bar"><div class="fill" id="progBar"></div></div>
 <div style="display:flex;justify-content:space-between;padding:6px 14px;font-size:10px;font-weight:900;font-family:Arial"><span id="countText">0/10 READ</span><span>Resets midnight</span></div>
@@ -79,7 +66,7 @@ h2{margin:0;font-size:22px;font-weight:900;flex:1;font-family:Arial;color:#11182
 <div id="midBannerWrap" style="display:none"><div class="sponsored">ADVERTISEMENT</div><div id="midBanner" style="display:flex;justify-content:center;margin:6px"></div></div>
 </div>
 <div id="articlePage">
-<div class="article-header"><button class="back" onclick="closeArticle()">‹</button><div style="font-weight:900;font-family:Arial">Front Page</div></div>
+<div class="article-header"><button class="back-btn" onclick="closeArticle()">‹</button><div style="font-weight:900;font-family:Arial">Front Page</div></div>
 <div class="article-paper">
 <div class="article-top"><div class="article-kicker" id="artKicker">NEWS</div><h1 class="article-h1" id="artTitle">Title</h1><div style="font-size:11px;color:#6b7280;font-family:Arial"><span id="artSource">BBC</span> • <span id="artDate">Today</span> • 40s</div></div>
 <img id="artImage" class="article-img" src="" style="display:none"><div class="article-body" id="artBody"></div>
@@ -143,15 +130,11 @@ async function fetchRSS(){
   ];
   let combined=[...all];
   let bi=0;
-  while(combined.length<10){
-    combined.push(backup[bi % backup.length]);
-    bi++;
-  }
+  while(combined.length<10){ combined.push(backup[bi % backup.length]); bi++; }
   combined=combined.slice(0,10);
   tasksConfig=combined.map((a,i)=>({id:i,reward:2,title:a.title,shortDesc:a.desc,fullDesc:a.fullDesc,link:a.link,image:a.image,source:a.source,type:a.type,pubDate:a.pubDate}));
   done=done.filter(id=>id>=0 && id<10);
-  render();
-  loadVignette();
+  render(); loadVignette();
 }
 function render(){
   document.getElementById('totalPtsBadge').innerText=`TODAY: ${total} 🪙`;
@@ -176,10 +159,11 @@ function openArticle(id){
   document.getElementById('artLink').href=cfg.link;
   document.getElementById('artLink').innerText='🔒 Locked - unlocks after 40s';
   document.getElementById('artLink').style.color='#9ca3af'; document.getElementById('artLink').style.pointerEvents='none';
+  document.getElementById('artLink').onclick=null;
   let imgEl=document.getElementById('artImage'); if(cfg.image){imgEl.src=cfg.image;imgEl.style.display='block';}else{imgEl.style.display='none';}
   let baseText = (cfg.fullDesc && cfg.fullDesc.length > 30) ? cfg.fullDesc : cfg.shortDesc;
   baseText = baseText.split('.').slice(0,3).join('. ') + '.';
-  let longText = `${baseText}\n\nFor more details from source, wait for 40s to open the link. Never leave before getting your 2 coins`;
+  let longText = `${baseText}\n\nFor more details from source, wait for 40s to open the link. Never leave before getting you 2 coins`;
   document.getElementById('artBody').innerHTML=longText.split("\n").map(p=>`<p>${p}</p>`).join('');
   document.getElementById('articlePage').style.display='block';
   document.getElementById('stickyTimer').innerText=`${sec}s left`;
@@ -188,7 +172,6 @@ function openArticle(id){
   timerInterval=setInterval(async()=>{sec--; document.getElementById('stickyTimer').innerText=`${sec}s left`; if(sec<=0){clearInterval(timerInterval); await autoClaim();}},1000);
 }
 function closeArticle(){document.getElementById('articlePage').style.display='none';clearInterval(timerInterval);currentReadingId=null;}
-function closeLink(){document.getElementById('linkOverlay').style.display='none'; document.getElementById('linkFrame').src='';}
 function showBlueBubble(reward){
   const b=document.getElementById('coinBubble');
   document.getElementById('bubbleText').innerHTML=`+${reward}<br>🪙`;
@@ -203,9 +186,14 @@ async function autoClaim(){
   done.push(currentReadingId); total+=cfg.reward; render();
   showBlueBubble(cfg.reward);
   let linkEl=document.getElementById('artLink');
-  linkEl.innerText='✓ Open original '+cfg.source+' link (earned)';
+  linkEl.innerText=`✓ Open original ${cfg.source} in new tab (earned)`;
   linkEl.style.color='#1e40af'; linkEl.style.pointerEvents='auto'; linkEl.style.textDecoration='underline';
-  linkEl.onclick=function(e){ e.preventDefault(); document.getElementById('linkFrame').src=this.href; document.getElementById('linkOverlay').style.display='flex'; return false; };
+  linkEl.href=cfg.link;
+  linkEl.onclick=function(e){
+    e.preventDefault();
+    window.open(this.href,'_blank');
+    return false;
+  };
   localStorage.setItem('offersEarn_done',JSON.stringify(done)); localStorage.setItem('offersEarn_total',total); localStorage.setItem('offersEarn_date',getToday());
   if(currentUser){
     try{
