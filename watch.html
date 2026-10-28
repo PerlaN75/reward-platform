@@ -1,145 +1,156 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Watch & Earn</title>
+<title>Watch & Earn - Final 20</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="monetag" content="b671b8351bfc48ed0161f6bd0b6a5340">
+<script src="https://quge5.com/88/tag.min.js" data-zone="286869" async data-cfasync="false"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:#f3f4f6;min-height:100vh;display:flex;justify-content:center;padding:14px 10px 90px}
-.card{width:100%;max-width:380px;background:#fff;border:2px solid #e5e7eb;border-radius:24px;padding:16px 14px}
-.top-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.back-square{width:42px;height:38px;background:#fef2f2;border:2px solid #ef4444;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer}
-h1{font-size:22px;font-weight:900;flex:1}
-.balance-box{background:#fffbeb;border:2px solid #fde68a;border-radius:16px;padding:12px;text-align:center;margin-bottom:10px}
-.tip-box{background:#f0fdf4;border:1px solid #bbf7d0;border-left:4px solid #22c55e;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:13px;color:#166534;line-height:1.4}
-.video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #e5e7eb}
-.player{aspect-ratio:9/16;max-height:520px;background:#000;position:relative;display:flex;align-items:center;justify-content:center}
-video{width:100%;height:100%;display:none;object-fit:contain}
-.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.85);color:#fff;text-align:center;padding:12px;flex-direction:column;z-index:2;font-weight:700}
-.progress{height:8px;background:#e5e7eb}.progress-bar{height:100%;background:#f59e0b;width:0%;transition:width .3s}
-.btn{width:100%;background:#f59e0b;color:#000;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:15px;cursor:pointer;margin:12px 0 0}
-.btn:disabled{background:#9ca3af;color:#fff}
-.sponsored{font-size:9px;color:#9ca3af;font-weight:bold;text-align:center;margin:10px 0 4px}
-.ad-box{min-height:250px;display:flex;justify-content:center;align-items:center;background:#fafafa;border-radius:12px;border:1px dashed #e5e7eb}
-.pool-info{font-size:11px;color:#6b7280;text-align:center;margin-top:8px}
+body{background:#0e1a0e;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;overflow:hidden}
+.card{width:100%;max-width:400px;background:#1d331d;border:3px solid #fbbf24;border-radius:24px;padding:20px 18px;position:relative;z-index:1}
+h1{color:#facc15;text-align:center;font-size:28px;margin-bottom:12px}
+.balance-box{background:#0a120a;border:2px solid #fbbf24;border-radius:16px;padding:12px;text-align:center;color:#fff;margin-bottom:14px}
+.video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #2a4a2a}
+.player{aspect-ratio:16/9;background:#000;position:relative;display:flex;align-items:center;justify-content:center}
+video{width:100%;height:100%;object-fit:contain;background:#000}
+.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.92);color:#fff;text-align:center;padding:14px;flex-direction:column;z-index:2;font-weight:800;font-size:16px;line-height:1.3}
+.progress{height:10px;background:#2a4a2a}.progress-bar{height:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);width:0%;transition:width .3s}
+.btn{width:100%;background:#fbbf24;color:#000;border:none;border-radius:12px;padding:14px;font-weight:900;font-size:16px;cursor:pointer;margin:14px 0 0}
+.btn:disabled{background:#5a4a1a;color:#aaa}
+.vtitle{font-size:12px;color:#facc15;margin-top:6px}
+.bubble{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#000;padding:14px 22px;border-radius:999px;font-weight:900;z-index:10000;display:none;box-shadow:0 10px 30px rgba(0,0,0,.5)}
 </style>
 </head>
 <body>
 <canvas id="confetti" style="position:fixed;inset:0;pointer-events:none;z-index:9999;display:none"></canvas>
+<div id="bubble" class="bubble"></div>
 <div class="card">
-<div class="top-header"><div class="back-square" onclick="location.href='home.html'">‹</div><h1>📺 Watch & Earn</h1></div>
-<div class="balance-box">Balance: <b id="bal">Loading...</b><br><span style="font-size:13px;color:#6b7280"><span id="today">0/10</span> today • 1 Coin per video</span><div style="font-size:11px;color:#d97706;margin-top:6px" id="vt"></div></div>
-<div class="tip-box">💡 Press Start, watch 40s and Claim. Videos change every day!</div>
-<div class="sponsored">SPONSORED - TOP</div>
-<div class="ad-box" id="adTop"></div>
-<div class="video-box" style="margin-top:12px">
-<div class="player"><video id="v" playsinline preload="metadata"></video><div class="overlay" id="ov">Tap Start</div></div>
+<h1>Watch & Earn</h1>
+<div class="balance-box">Balance: <b id="bal">Loading...</b><br><span style="font-size:13px"><span id="today">0/10</span> today</span><div class="vtitle" id="vt">Loading...</div></div>
+<div class="video-box">
+<div class="player"><video id="v" playsinline controls></video><div class="overlay" id="ov">Tap Start</div></div>
 <div class="progress"><div class="progress-bar" id="pbar"></div></div>
-<div style="padding:0 12px 12px"><button class="btn" id="btn">Start & Earn 1 🪙</button></div>
+<div style="padding:0 12px 12px"><button class="btn" id="btn">Start & Earn</button></div>
 </div>
-<div class="sponsored">SPONSORED - BOTTOM</div>
-<div class="ad-box" id="adBottom"></div>
-<div class="pool-info" id="poolInfo"></div>
+<button style="display:block;margin:16px auto 0;background:#f59e0b;border:0;padding:10px 24px;border-radius:999px;font-weight:700" onclick="location.href='./home.html'">Back</button>
 </div>
 <script>
-function BLAST(){const c=document.getElementById('confetti');c.style.display='block';const ctx=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;let pieces=[];const colors=['#f59e0b','#22c55e','#ef4444','#fbbf24','#3b82f6'];for(let i=0;i<150;i++)pieces.push({x:c.width/2,y:c.height/3,vx:(Math.random()-0.5)*22,vy:(Math.random()-0.5)*22-8,r:Math.random()*9+4,color:colors[Math.floor(Math.random()*colors.length)],rot:Math.random()*360,vr:(Math.random()-0.5)*20});let f=0;(function anim(){ctx.clearRect(0,0,c.width,c.height);pieces.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.35;p.rot+=p.vr;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r);ctx.restore();});if(++f<220)requestAnimationFrame(anim);else c.style.display='none';})();}
-function loadAdsterra(id,key){var c=document.getElementById(id);if(!c)return;c.innerHTML="";var s1=document.createElement('script');s1.textContent="atOptions={'key':'"+key+"','format':'iframe','height':250,'width':300,'params':{}};";c.appendChild(s1);var s2=document.createElement('script');s2.src='https://bicea.org/22/'+key;c.appendChild(s2);}
-loadAdsterra('adTop','bf10cacdbe9f50d0c5d66a94e0785f29');
-setTimeout(()=>loadAdsterra('adBottom','bf10cacdbe9f50d0c5d66a94e0785f29'),1500);
-
-// === YOUR FINAL 20 SAFE POOL - 100% CLEAN - ZERO TROUBLE ===
-const BASE_POOL = [
- {src:"videos/01_veggie_learn.mp4", title:"🥦 Baby Learns Veggies"},
- {src:"videos/02_bunk_bed.mp4", title:"🛏️ Smart Bunk Bed"},
- {src:"videos/03_horse_mosque.mp4", title:"🐴 Horse Mosque Miracle 🕌"},
- {src:"videos/04_baby_doctor.mp4", title:"👶 Baby Doctor"},
- {src:"videos/05_life_journey.mp4", title:"💓 Heartbeat Life Journey"},
- {src:"videos/06_hand_health.mp4", title:"✋ Hand Health Trick"},
- {src:"videos/07_animals_ring.mp4", title:"🦁 Animal Ring Guess"},
- {src:"videos/08_shadow_fake.mp4", title:"👤 Funny Shadow Trick"},
- {src:"videos/09_monkey_wheat.mp4", title:"🐒 Monkey Wheat Harvest"},
- {src:"videos/10_baby_boss.mp4", title:"👶 Baby Boss - Mama First!"},
- {src:"videos/11_river_kindness.mp4", title:"💧 Kindness River"},
- {src:"videos/12_pastor_boniface.mp4", title:"⛪ Pastor Boniface Message"},
- {src:"videos/13_kungfu_baby.mp4", title:"🥋 Kung Fu Baby"},
- {src:"videos/14_dream_house_mountains.mp4", title:"🏔️ Dream House Mountains"},
- {src:"videos/15_toyota_luxury_van.mp4", title:"🚐 Toyota Luxury Van"},
- {src:"videos/16_mango_lifecycle.mp4", title:"🥭 Mango Lifecycle"},
- {src:"videos/17_guitar_mzee.mp4", title:"🎸 Guitar Mzee Talent"},
- {src:"videos/18_center_table_10000.mp4", title:"💪 Strong Center Table 10000"},
- {src:"videos/19_kindness_interview_ceo.mp4", title:"💙 Kindness Tested Before Rewarded"},
- {src:"videos/20_inflatable_air_bed_clean.mp4", title:"😴 Strong Inflatable Bed - Auto Pump"},
+const DIRECT_LINK="https://omg10.com/4/11905870";
+const ALL_VIDEOS=[
+{src:"https://files.catbox.moe/17yhra.mp4",title:"Video 1"},
+{src:"https://files.catbox.moe/lqslkw.mp4",title:"Video 2"},
+{src:"https://files.catbox.moe/lzrb1b.mp4",title:"Video 3"},
+{src:"https://files.catbox.moe/bfwi05.mp4",title:"Video 4"},
+{src:"https://files.catbox.moe/cjgsgh.mp4",title:"Video 5"},
+{src:"https://files.catbox.moe/kk1m1y.mp4",title:"Video 6"},
+{src:"https://files.catbox.moe/0t28n3.mp4",title:"Video 7"},
+{src:"https://files.catbox.moe/ztv7tq.mp4",title:"Video 8"},
+{src:"https://files.catbox.moe/kaqty3.mp4",title:"Video 9"},
+{src:"https://files.catbox.moe/vg97gl.mp4",title:"Video 10"},
+{src:"https://files.catbox.moe/7f1csg.mp4",title:"Video 11"},
+{src:"https://files.catbox.moe/g6lh9z.mp4",title:"Video 12"},
+{src:"https://files.catbox.moe/0v9uqy.mp4",title:"Video 13"},
+{src:"https://files.catbox.moe/l9iqr6.mp4",title:"Video 14"},
+{src:"https://files.catbox.moe/1zb7z3.mp4",title:"Video 15"},
+{src:"https://files.catbox.moe/263scw.mp4",title:"Video 16"},
+{src:"https://files.catbox.moe/7rc61u.mp4",title:"Video 17"},
+{src:"https://files.catbox.moe/a5uhee.mp4",title:"Video 18"},
+{src:"https://files.catbox.moe/rkt1x6.mp4",title:"Video 19"},
+{src:"https://files.catbox.moe/9mvxej.mp4",title:"Video 20"}
 ];
 
-function getAllVideos(){
- let extra=[]; try{extra=JSON.parse(localStorage.getItem('extra_pool')||'[]');}catch(e){}
- return BASE_POOL.concat(extra);
+function getRandomPlaylist(){
+  // Shuffle copy of ALL_VIDEOS
+  let arr=[...ALL_VIDEOS];
+  for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
+  return arr.slice(0,10);
 }
-function seededShuffle(arr,seed){
- let a=arr.slice(); let s=seed;
- function rand(){s=(s*9301+49297)%233280; return s/233280;}
- for(let i=a.length-1;i>0;i--){let j=Math.floor(rand()*(i+1)); [a[i],a[j]]=[a[j],a[i]];}
- return a;
+
+function showBubble(text){
+  const b=document.getElementById('bubble');
+  b.textContent=text; b.style.display='block';
+  setTimeout(()=>b.style.display='none',2200);
 }
-function getDayOfYear(){return Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/86400000);}
-function getTodayPlaylist(){
- const all=getAllVideos(); const day=getDayOfYear();
- const shuffled=seededShuffle(all, day);
- return {playlist: shuffled.slice(0,10), poolSize: all.length, day};
-}
-window.addVideoToPool=function(src,title){
- let extra=[]; try{extra=JSON.parse(localStorage.getItem('extra_pool')||'[]');}catch(e){}
- extra.push({src,title}); localStorage.setItem('extra_pool', JSON.stringify(extra));
- alert('Added! Pool now '+(BASE_POOL.length+extra.length));
+
+function BLAST(){
+  const c=document.getElementById('confetti');
+  c.style.display='block'; const ctx=c.getContext('2d');
+  c.width=window.innerWidth; c.height=window.innerHeight;
+  let pieces=[]; const colors=['#fbbf24','#f59e0b','#22c55e','#ef4444','#3b82f6','#ec4899','#fff'];
+  for(let i=0;i<180;i++){pieces.push({x:c.width/2,y:c.height/2.5,vx:(Math.random()-0.5)*26,vy:(Math.random()-0.5)*26-8,r:Math.random()*9+4,color:colors[Math.floor(Math.random()*colors.length)],rot:Math.random()*360,vr:(Math.random()-0.5)*30});}
+  let frame=0; function anim(){ctx.clearRect(0,0,c.width,c.height); pieces.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.38;p.rot+=p.vr;p.vx*=0.99;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.color; if(Math.random()>0.5) ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r); else {ctx.beginPath();ctx.arc(0,0,p.r/2,0,Math.PI*2);ctx.fill();} ctx.restore();}); frame++; if(frame<160) requestAnimationFrame(anim); else c.style.display='none';} anim();
+  if(navigator.vibrate) navigator.vibrate([80,40,80,40,150]);
 }
 
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
-firebase.initializeApp(firebaseConfig);
-firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);
-const auth=firebase.auth(),db=firebase.firestore();
-let bal=0,today=0,currentUser=null,timer=null,dailyData=null;
+firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.firestore();
+let bal=0,today=0,currentUser=null,timer=null,dailyPlaylist=[];
 const ov=document.getElementById('ov'),vid=document.getElementById('v'),btn=document.getElementById('btn'),pbar=document.getElementById('pbar'),balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),vtEl=document.getElementById('vt');
-function getCoins(d){return d.balance??d.coins??0;}
-function updateUI(){
- balEl.textContent=bal+' 🪙'; todayEl.textContent=Math.min(today,10)+'/10';
- document.getElementById('poolInfo').textContent='Pool: '+dailyData.poolSize+' videos • Day '+dailyData.day+' • Changes daily';
- if(dailyData&&today<10) vtEl.textContent='Next: '+dailyData.playlist[today].title;
- else if(today>=10) vtEl.textContent='Done! New mix tomorrow!';
-}
+
+function updateUI(){balEl.textContent=bal+' pts';todayEl.textContent=today+'/10'; if(dailyPlaylist.length && today<10){vtEl.textContent=`Next: ${dailyPlaylist[today].title}`; ov.innerHTML=`<div>${dailyPlaylist[today].title}</div><small style="opacity:.7;margin-top:6px">Tap Start</small>`;}}
+
 auth.onAuthStateChanged(async(u)=>{
- if(!u){location.href='./index.html';return;}
- currentUser=u; dailyData=getTodayPlaylist();
- const ref=db.collection('users').doc(u.uid); const s=await ref.get();
- if(s.exists){const d=s.data();bal=getCoins(d);today=d.todayCount??0;
-  const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null;
-  if(last&&last.toDateString()!==new Date().toDateString()){today=0; await ref.set({today:0,todayCount:0},{merge:true}); dailyData=getTodayPlaylist();}
- }
- updateUI();
- if(today>=10){ov.innerHTML='🎉 10/10 Done! 🎊<br>New videos tomorrow!';btn.disabled=true;btn.textContent='Limit Reached';}
- else{ov.innerHTML=`<div>${dailyData.playlist[today].title}</div><small>Tap Start • ${today+1}/10</small>`;}
+  if(!u){location.href='./index.html';return;}
+  currentUser=u;
+  dailyPlaylist=getRandomPlaylist();
+  const s=await db.collection('users').doc(u.uid).get();
+  if(s.exists){
+    const d=s.data(); bal=d.balance||d.points||0; today=d.todayCount||d.today||0;
+    const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null;
+    if(last && new Date().toDateString()!==last.toDateString()){today=0; dailyPlaylist=getRandomPlaylist();}
+  }
+  updateUI();
+  if(today>=10){ov.style.display='flex';ov.innerHTML='🎉 10/10 Done!<br>New videos tomorrow';btn.disabled=true;btn.textContent='Limit Reached';}
 });
-function doAd(){if(today>=10)return;btn.disabled=true;ov.innerHTML='Loading...';pbar.style.width='0%';setTimeout(()=>startVideo(),600);}
-function startVideo(){
- const cur=dailyData.playlist[Math.min(today,9)]; ov.style.display='none';
- vid.src=cur.src; vid.load(); vid.style.display='block'; vid.play().catch(()=>{});
- let sec=0; btn.textContent='⏳ '+sec+'s / 40s'; clearInterval(timer);
- timer=setInterval(()=>{sec++; pbar.style.width=(sec/40*100)+'%'; btn.textContent='⏳ '+sec+'s / 40s';
-  if(sec>=40){clearInterval(timer);vid.pause();btn.textContent='🎉 Claim 1 🪙!';btn.disabled=false;btn.onclick=claim;ov.style.display='flex';ov.innerHTML='✅ Done! Tap claim';}
- },1000);
+
+function doAd(){
+  if(today>=10){ov.style.display='flex';ov.innerHTML='🎉 10/10 Done!<br>💥 New tomorrow';btn.disabled=true;btn.textContent='Limit Reached';BLAST();return;}
+  window.open(DIRECT_LINK,'_blank');
+  btn.disabled=true; ov.style.display='flex'; ov.innerHTML='Verifying ad...'; pbar.style.width='0%'; vid.pause();
+  let ad=6; let adInt=setInterval(()=>{ov.innerHTML=`📢 Ad check ${ad}s...<br><small>Don't close</small>`; ad--; if(ad<0){clearInterval(adInt); startVideo();}},1000);
 }
+
+function startVideo(){
+  const cur=dailyPlaylist[today];
+  vtEl.textContent=`Playing: ${cur.title}`; ov.style.display='none';
+  vid.src=cur.src; vid.load(); vid.style.display='block'; vid.play().catch(()=>{});
+  let sec=0; btn.textContent=`🔥 Watching ${cur.title}`; btn.disabled=true;
+  const msgs=[`💰 Earning 2 coins...`,`👀 Keep watching!`,`⭐ Great video!`,`🎬 Best part coming`,`🔥 Almost there!`];
+  let mi=0;
+  timer=setInterval(()=>{
+    sec++; pbar.style.width=(sec/40*100)+'%';
+    if(sec%8===0){mi=(mi+1)%msgs.length; btn.textContent=msgs[mi];}
+    if(sec>=40){
+      clearInterval(timer); vid.pause();
+      btn.textContent='🎉 Claim 2 pts!'; btn.disabled=false; btn.onclick=claim;
+      ov.style.display='flex'; ov.innerHTML=`✅ Done!<br>Tap to claim`; if(navigator.vibrate) navigator.vibrate(100);
+    }
+  },1000);
+}
+
 async function claim(){
- if(today>=10)return; btn.disabled=true; btn.textContent='Saving...';
- try{const ref=db.collection('users').doc(currentUser.uid);
-  await ref.update({balance:firebase.firestore.FieldValue.increment(1),coins:firebase.firestore.FieldValue.increment(1),todayCount:firebase.firestore.FieldValue.increment(1),today:firebase.firestore.FieldValue.increment(1),lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()});
-  const doc=await ref.get();bal=getCoins(doc.data());today=doc.data().todayCount??0;
- }catch(e){bal++;today++;}
- vid.style.display='none';pbar.style.width='0%';btn.textContent='Start & Earn 1 🪙';btn.disabled=false;btn.onclick=doAd;updateUI();
- if(today>=10){ov.innerHTML='🎉 10/10 DONE! 🎊<br>New mix tomorrow!';btn.textContent='Limit Reached';btn.disabled=true;BLAST();}
- else{ov.innerHTML=`<div>${dailyData.playlist[today].title}</div><small>Tap Start • ${today+1}/10</small>`;ov.style.display='flex';}
+  if(!currentUser) return;
+  btn.disabled=true; btn.textContent='Saving...';
+  bal+=2; today++;
+  showBubble(`+2 coins! ${dailyPlaylist[today-1].title}`);
+  try{
+    await db.collection('users').doc(currentUser.uid).set({balance:bal,points:bal,todayCount:today,today:today,lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+    await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Watch & Earn',type:'watch',points:2,desc:dailyPlaylist[today-1].title,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+  }catch(e){}
+  vid.src=''; vid.style.display='none'; pbar.style.width='0%';
+  btn.textContent='Start & Earn'; btn.disabled=false; btn.onclick=doAd;
+  updateUI();
+  if(today>=10){
+    ov.style.display='flex'; ov.innerHTML='🎉 10/10 Done!<br>💥 BLAST! New tomorrow';
+    btn.textContent='Limit Reached'; btn.disabled=true; BLAST();
+  } else {
+    // Auto load next random already set in playlist
+    ov.style.display='flex'; ov.innerHTML=`<div>Ready: ${dailyPlaylist[today].title}</div><small>Tap Start for next</small>`;
+  }
 }
 btn.onclick=doAd;
 </script>
