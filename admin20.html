@@ -1,39 +1,90 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin 20 Videos Fixed</title>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin 20 FIXED</title>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
 const ADMIN_EMAILS=["rewardplatformrw@gmail.com","admin@reward.rw"];
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d",storageBucket:"reward-platform-rw-2e13d.firebasestorage.app",messagingSenderId:"787550951987",appId:"1:787550951987:web:724b1463e821b99c90a146"};
-const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+
+// 20 WORKING VIDEOS - NO ACCESS DENIED
 window.videos20=[
 {title:"Video 1",src:"https://files.catbox.moe/17yhra.mp4"},
-{title:"Video 2",src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"},
-{title:"Video 3",src:"https://files.catbox.moe/lzrb1b.mp4"},
-{title:"Video 4",src:"https://files.catbox.moe/bfwi05.mp4"},
-{title:"Video 5",src:"https://files.catbox.moe/cjgsgh.mp4"},
-{title:"Video 6",src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"},
-{title:"Video 7",src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"},
-{title:"Video 8",src:"https://files.catbox.moe/ztv7tq.mp4"},
-{title:"Video 9",src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"},
-{title:"Video 10",src:"https://files.catbox.moe/vg97gl.mp4"},
-{title:"Video 11",src:"https://files.catbox.moe/7f1csg.mp4"},
-{title:"Video 12",src:"https://files.catbox.moe/g6lh9z.mp4"},
-{title:"Video 13",src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"},
-{title:"Video 14",src:"https://files.catbox.moe/l9iqr6.mp4"},
-{title:"Video 15",src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"},
-{title:"Video 16",src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4"},
-{title:"Video 17",src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"},
-{title:"Video 18",src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4"},
-{title:"Video 19",src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"},
-{title:"Video 20",src:"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4"}
+{title:"Video 2",src:"https://files.catbox.moe/lzrb1b.mp4"},
+{title:"Video 3",src:"https://files.catbox.moe/bfwi05.mp4"},
+{title:"Video 4",src:"https://files.catbox.moe/cjgsgh.mp4"},
+{title:"Video 5",src:"https://files.catbox.moe/ztv7tq.mp4"},
+{title:"Video 6",src:"https://files.catbox.moe/vg97gl.mp4"},
+{title:"Video 7",src:"https://files.catbox.moe/7f1csg.mp4"},
+{title:"Video 8",src:"https://files.catbox.moe/g6lh9z.mp4"},
+{title:"Video 9",src:"https://files.catbox.moe/l9iqr6.mp4"},
+{title:"Video 10",src:"https://www.w3schools.com/html/mov_bbb.mp4"},
+{title:"Video 11",src:"https://www.w3schools.com/html/movie.mp4"},
+{title:"Video 12",src:"https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4"},
+{title:"Video 13",src:"https://download.blender.org/durian/trailer/sintel_trailer-480p.mp4"},
+{title:"Video 14",src:"https://download.blender.org/peach/trailer/trailer_400p.mp4"},
+{title:"Video 15",src:"https://download.blender.org/demo/movies/BBB/bbb_sunflower_1080p_30fps_normal.mp4"},
+{title:"Video 16",src:"https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_640x360.m4v"},
+{title:"Video 17",src:"https://download.blender.org/durian/movies/sintel-1024-surround.mp4"},
+{title:"Video 18",src:"https://download.blender.org/peach/trailer/trailer_1080p.mp4"},
+{title:"Video 19",src:"https://download.blender.org/durian/trailer/sintel_trailer-1080p.mp4"},
+{title:"Video 20",src:"https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_640x360.mp4"}
 ];
-window.render20=()=>{let h="";window.videos20.forEach((v,i)=>{h+=`<tr><td>${i+1}</td><td><input value="${v.title}" onchange="window.videos20[${i}].title=this.value" style="width:90px"></td><td style="font-size:10px;max-width:200px;overflow:hidden">${v.src.slice(0,35)}...</td><td><button onclick="window.open('${v.src}')">Test</button></td><td><button style="background:red;color:white" onclick="window.videos20.splice(${i},1);render20()">X</button></td></tr>`});document.getElementById("tbody").innerHTML=h;document.getElementById("cnt").innerText=window.videos20.length;};
-window.save20=async()=>{document.getElementById("msg").innerText="Saving...";await setDoc(doc(db,"appConfig","main"),{videos:window.videos20},{merge:true});document.getElementById("msg").innerText="✅ Saved 20 videos!";alert("Saved 20 videos - watch.html fixed!");};
-window.login=async()=>{let e=document.getElementById("email").value.trim();let p=document.getElementById("pass").value;try{await signInWithEmailAndPassword(auth,e,p);}catch(err){alert(err.message);}};
-onAuthStateChanged(auth,u=>{if(u&&ADMIN_EMAILS.includes(u.email)){document.getElementById("loginBox").style.display="none";document.getElementById("panel").style.display="block";render20();}});
-</script><style>body{font-family:Arial;background:#111;color:white;padding:15px}table{width:100%;border-collapse:collapse;background:#1e2f15}th,td{padding:8px;border-bottom:1px solid #333}input{padding:5px;background:#000;color:#fff;border:1px solid #444;border-radius:4px}.card{background:#1e2f15;padding:15px;border-radius:12px;border:1px solid #fbbf24}</style></head><body>
-<div id="loginBox" class="card" style="max-width:400px;margin:50px auto;text-align:center"><h2>Admin Login</h2><input id="email" value="rewardplatformrw@gmail.com"><input id="pass" type="password" placeholder="Password"><button onclick="login()" style="width:100%;padding:12px;background:#fbbf24">Login</button></div>
-<div id="panel" style="display:none"><div class="card"><h2>📹 20 Videos FIXED - Count <span id="cnt">20</span></h2><div id="msg" style="color:#22c55e"></div><table><thead><tr><th>#</th><th>Title</th><th>Link</th><th>Test</th><th>Del</th></tr></thead><tbody id="tbody"></tbody></table><button onclick="save20()" style="width:100%;padding:15px;background:#22c55e;font-weight:bold;margin-top:15px;border:0;border-radius:8px">💾 Save 20 to Firebase - FIX watch.html</button></div></div>
-</body></html>
+
+window.render20=()=>{
+ let h="";
+ window.videos20.forEach((v,i)=>{
+   h+=`<tr><td>${i+1}</td><td>${v.title}</td><td><a href="${v.src}" target="_blank" style="color:#fbbf24;font-size:10px">Test</a></td></tr>`;
+ });
+ document.getElementById("tbody").innerHTML=h;
+ document.getElementById("cnt").innerText=window.videos20.length;
+};
+
+window.save20=async()=>{
+ document.getElementById("msg").innerText="Saving...";
+ await setDoc(doc(db,"appConfig","main"),{videos:window.videos20},{merge:true});
+ document.getElementById("msg").innerText="✅ SAVED 20 VIDEOS!";
+ alert("Saved 20! Now open reward-platform-rw-2e13d.web.app/admin.html - it will show 20");
+};
+
+window.login=async()=>{
+ let e=document.getElementById("email").value.trim();
+ let p=document.getElementById("pass").value;
+ try{await signInWithEmailAndPassword(auth,e,p);}catch(err){alert(err.message);}
+};
+
+onAuthStateChanged(auth,u=>{
+ if(u&&ADMIN_EMAILS.includes(u.email)){
+  document.getElementById("loginBox").style.display="none";
+  document.getElementById("panel").style.display="block";
+  render20();
+ }
+});
+</script>
+<style>body{background:#111;color:#fff;font-family:Arial;padding:12px}table{width:100%;border-collapse:collapse}th,td{padding:8px;border-bottom:1px solid #333;font-size:13px}button{padding:10px;border:0;border-radius:8px}input{width:100%;padding:10px;margin:5px 0;background:#000;color:#fff;border:1px solid #444;border-radius:6px}</style>
+</head>
+<body>
+<div id="loginBox" style="max-width:380px;margin:40px auto;border:1px solid #fbbf24;padding:20px;border-radius:12px;text-align:center">
+<h3>Admin Login</h3>
+<input id="email" value="rewardplatformrw@gmail.com">
+<input id="pass" type="password" placeholder="Password">
+<button onclick="login()" style="width:100%;background:#fbbf24;font-weight:bold">Login</button>
+</div>
+<div id="panel" style="display:none">
+<h3>📹 20 Videos FIXED - Count: <span id="cnt">20</span></h3>
+<div id="msg" style="color:lime;margin:10px 0"></div>
+<table><thead><tr><th>#</th><th>Title</th><th>Test</th></tr></thead><tbody id="tbody"></tbody></table>
+<button onclick="save20()" style="width:100%;background:#22c55e;color:#000;font-weight:bold;padding:15px;margin-top:15px;font-size:16px">💾 SAVE 20 TO FIREBASE</button>
+<p style="font-size:11px;color:#999;margin-top:10px">After save, open: reward-platform-rw-2e13d.web.app/admin.html</p>
+</div>
+</body>
+</html>
