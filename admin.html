@@ -65,7 +65,7 @@ input,select,textarea{padding:11px;background:#111;border:1px solid #444;border-
 </head>
 <body>
 <div id="overlay" onclick="toggleSidebar()"></div>
-<div id="loginBox" style="width:100%;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#2f3e1a;position:fixed;z-index:200;top:0;left:0;padding:20px"><div class="card" style="max-width:460px;width:100%;text-align:center;padding:38px 30px;border-radius:20px;border:2px solid #fbbf24"><h1 style="color:#fbbf24;font-size:32px">Admin Login</h1><input id="aEmail" type="email" value="admin@reward.rw"><input id="aPass" type="password" placeholder="Password"><button class="btn btn-edit" style="width:100%;padding:16px;margin-top:20px" onclick="adminLogin()">Login</button><div id="aError" style="color:#ef4444;margin-top:16px"></div></div></div>
+<div id="loginBox" style="width:100%;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#2f3e1a;position:fixed;z-index:200;top:0;left:0;padding:20px"><div class="card" style="max-width:460px;width:100%;text-align:center;padding:38px 30px;border-radius:20px;border:2px solid #fbbf24"><h1 style="color:#fbbf24;font-size:32px">Admin Login</h1><input id="aEmail" type="email" value="rewardplatformrw@gmail.com"><input id="aPass" type="password" placeholder="Password"><button class="btn btn-edit" style="width:100%;padding:16px;margin-top:20px" onclick="adminLogin()">Login</button><div id="aError" style="color:#ef4444;margin-top:16px"></div></div></div>
 <div id="panel" class="hidden" style="width:100%;display:flex"><div class="sidebar collapsed" id="sidebar"><div style="margin-bottom:15px"><h2 style="margin:0">ADMIN</h2></div><ul class="menu"><li class="active" onclick="openPage('dashboard', this)">📊 Dashboard</li><li onclick="openPage('users', this)">👥 Users</li><li onclick="openPage('withdrawals', this)">💸 Withdrawals <span id="wdCount" style="background:#fbbf24;color:black;padding:2px 6px;border-radius:10px;font-size:11px">0</span></li><li onclick="openPage('support', this)">🎧 Support <span id="supportCount" style="background:#ef4444;color:white;padding:2px 6px;border-radius:10px;font-size:11px">0</span></li><li onclick="openPage('fraud', this)">🚨 Fraud</li><li onclick="openPage('flagged', this)">🚩 Flagged</li><li onclick="openPage('logs', this)">📜 Logs</li><li onclick="openPage('config', this)">⚙️ Config</li><li onclick="openPage('videos', this)">📹 Videos <span id="vidCount" style="background:#fbbf24;color:black;padding:2px 6px;border-radius:10px;font-size:11px">0</span></li><li onclick="openPage('settings', this)">🔧 Settings</li><li class="notif-menu" onclick="openPage('notifications', this)">🔔 Notifications</li><li class="logout-small" onclick="logout()">🚪 Logout</li></ul></div><div class="main"><div id="page-dashboard"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Dashboard</h1></div><div class="stats"><div class="stat"><p>Total Users</p><h3 id="totalUsers">0</h3></div><div class="stat"><p>Banned</p><h3 id="totalBanned">0</h3></div><div class="stat"><p>Pending WD</p><h3 id="totalPending">0</h3></div><div class="stat"><p>Open Tickets</p><h3 id="totalTickets">0</h3></div></div><div class="card" id="dashConfigPreview">Loading config...</div></div>
 <div id="page-users" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Users</h1></div><div style="display:flex;gap:8px;margin:15px 0"><input id="searchInput" placeholder="Search username or email"><button class="btn btn-edit" onclick="searchUser()">Search</button><button class="btn" onclick="loadUsers(true)">Reset</button></div><div class="card"><div class="table-wrap"><table id="usersTable"><thead><tr><th>Username</th><th>Email</th><th>Points</th><th>Ref</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table></div><div style="margin-top:15px;display:flex;gap:10px"><button class="btn btn-edit" onclick="loadUsers(false)">Next 50</button><button class="btn" onclick="loadUsers(true)">First 50</button></div></div></div>
 <div id="page-withdrawals" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1 id="wdTitle">Withdrawal - Binance Pay & OKX Pay (0 FEE)</h1></div><div class="card"><div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap"><button class="btn btn-edit" onclick="loadWithdrawals('pending')">Pending</button><button class="btn btn-ok" onclick="loadWithdrawals('approved')">Approved</button><button class="btn btn-ban" onclick="loadWithdrawals('rejected')">Rejected</button><button class="btn" onclick="loadWithdrawals('all')">All</button><button class="btn" style="background:#111;border:1px solid #444" onclick="loadWithdrawals(currentWDFilter)">Refresh</button></div><div id="wdConfigInfo" style="font-size:12px;color:#22c55e;margin-bottom:10px"></div><div id="wdList">Loading...</div></div></div>
@@ -74,9 +74,7 @@ input,select,textarea{padding:11px;background:#111;border:1px solid #444;border-
 <div id="page-flagged" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>🚩 Flagged - Device & Balance Check</h1></div><div class="card"><div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap"><button class="btn btn-edit" onclick="loadFlagged()">🔍 Scan Flagged Now</button><button class="btn" onclick="document.getElementById('flaggedList').innerHTML='Cleared'">Clear</button></div><div style="font-size:12px;color:#aaa;margin-bottom:10px">Checks: 1) Same deviceId = multi-account 2) Balance > history total 3) High balance low referrals</div><div id="flaggedList">Click Scan to detect cheaters. Safe read-only, no auto-ban.</div></div></div>
 <div id="page-logs" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Logs</h1></div><div class="card"><button class="btn btn-edit" onclick="loadLogs()">Refresh</button><div id="logsList">Loading...</div></div></div>
 <div id="page-config" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>App Config - Crypto</h1></div><div class="card"><label class="label">Points = $0.5</label><input id="cPointsPerHalf" type="number" value="1000" oninput="updatePreview()"><label class="label">Min Withdraw USD</label><input id="cMinWithdraw" type="number" value="5" oninput="updatePreview()"><label class="label">Withdraw Fee % (Crypto only, Binance & OKX = 0%)</label><input id="cWithdrawFee" type="number" value="15" oninput="updatePreview()"><label class="label">Referral Bonus</label><input id="cRefBonus" type="number" value="50"><label class="label">Max Ref per 24h (fraud limit) - DYNAMIC</label><input id="cMaxRef" type="number" value="10" oninput="updatePreview()"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px"><label style="background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cUSDT" checked> USDT</label><label style="background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cBNB" checked> BNB</label><label style="background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cXRP" checked> XRP</label><label style="background:#111;padding:10px;border-radius:8px"><input type="checkbox" id="cXLM" checked> XLM</label></div><label class="label">Maintenance</label><select id="cMaintenance"><option value="off">OFF</option><option value="on">ON</option></select><input id="cMaintMsg" type="text" placeholder="Message"><button class="btn btn-ok" style="width:100%;padding:14px;margin-top:20px" onclick="saveConfig()">Save Config</button><div id="configMsg" style="margin-top:12px"></div><p id="cPreview" style="color:#22c55e"></p></div></div>
-
-<!-- VIDEOS PAGE NEW -->
-<div id="page-videos" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>📹 Videos - Watch & Earn</h1></div><div class="card"><div style="font-size:12px;color:#aaa;margin-bottom:10px">Manage videos for watch.html. Save here -> users see instantly. Test each link, delete dead 0:00 ones.</div><div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap"><input id="vTitle" placeholder="Title e.g. Video 21" style="flex:1"><input id="vSrc" placeholder="https://...mp4" style="flex:2"><button class="btn btn-ok" onclick="addVideoAdmin()">+ Add</button></div><div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-edit" onclick="loadVideosAdmin()">🔄 Load</button><button class="btn btn-ok" onclick="saveVideosAdmin()">💾 Save to Firebase</button><button class="btn btn-del" onclick="if(confirm('Clear all?')){videosAdmin=[];renderVideosAdmin()}">Clear</button></div><div id="videosAdminList">Click Load</div><div id="videosAdminMsg" style="margin-top:10px"></div></div></div>
+<div id="page-videos" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>📹 Videos - Watch & Earn</h1></div><div class="card"><div style="font-size:12px;color:#aaa;margin-bottom:10px">Manage videos for watch.html. Save here -> users see instantly. Test each link, delete dead 0:00 ones.</div><div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap"><input id="vTitle" placeholder="Title e.g. Video 21" style="flex:1"><input id="vSrc" placeholder="https://...mp4" style="flex:2"><button class="btn btn-ok" onclick="addVideoAdmin()">+ Add</button></div><div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-edit" onclick="loadVideosAdmin()">🔄 Load</button><button class="btn btn-ok" onclick="saveVideosAdmin()">💾 Save to Firebase</button><button class="btn btn-del" onclick="if(confirm('Clear all?')){window.videosAdmin=[];renderVideosAdmin()}">Clear</button></div><div id="videosAdminList">Click Load</div><div id="videosAdminMsg" style="margin-top:10px"></div></div></div>
 
 <div id="page-settings" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Settings</h1></div><div class="card"><input id="oldPass" type="password" placeholder="Current"><input id="newPass" type="password" placeholder="New"><input id="newPass2" type="password" placeholder="Confirm"><button class="btn btn-ok" onclick="changePassword()">Update</button><div id="settingsMsg"></div></div></div>
 <div id="page-notifications" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>🔔 Notifications</h1></div><div class="card"><label class="label">Write notification for all users (index.html)</label><textarea id="notifMessage" rows="4" placeholder="Example: New bonus available! Earn 2x today..."></textarea><button class="btn btn-ok" style="width:100%;padding:14px;margin-top:10px" onclick="sendNotification()">📢 Send to All Users</button><div id="notifSendMsg" style="margin-top:10px"></div></div><div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><h3 style="color:#fbbf24">Recent Notifications (50)</h3><button class="btn" onclick="loadNotificationsAdmin()">Refresh</button></div><div id="notifAdminList">Loading...</div></div></div>
@@ -125,11 +123,13 @@ input,select,textarea{padding:11px;background:#111;border:1px solid #444;border-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, query, where, getDocs, getCountFromServer, doc, updateDoc, deleteDoc, orderBy, limit, startAfter, getDoc, setDoc, increment, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-const SUPER_ADMIN_EMAIL = "admin@reward.rw";
+const ADMIN_EMAILS = ["rewardplatformrw@gmail.com","admin@reward.rw"];
+const SUPER_ADMIN_EMAIL = "rewardplatformrw@gmail.com";
+const isAdminEmail = (email)=> ADMIN_EMAILS.includes(email);
 const firebaseConfig = { apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co", authDomain: "reward-platform-rw-2e13d.firebaseapp.com", projectId: "reward-platform-rw-2e13d", storageBucket: "reward-platform-rw-2e13d.firebasestorage.app", messagingSenderId: "787550951987", appId: "1:787550951987:web:724b1463e821b99c90a146" };
 const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
 let lastVisible=null,currentEditId=null,currentTicketId=null,currentWDFilter='pending',currentWDId=null,globalConfig={pointsPerDollar:2000,pointsPerHalfDollar:1000,minWithdrawUSD:5,withdrawFeePercent:15,enabledUSDT:true,enabledBNB:true,enabledXRP:true,enabledXLM:true,maxRefPer24h:10};
-let videosAdmin=[];
+window.videosAdmin=[];
 window.toggleSidebar=()=>{const sb=document.getElementById('sidebar');const ov=document.getElementById('overlay');sb.classList.toggle('collapsed');if(!sb.classList.contains('collapsed')){ov.classList.add('show');}else{ov.classList.remove('show');}}
 async function loadAppConfigGlobal(){try{const s=await getDoc(doc(db,"appConfig","main"));if(s.exists()){globalConfig=s.data();const maxR=globalConfig.maxRefPer24h||10;document.getElementById('wdConfigInfo').innerText=`Rate ${globalConfig.pointsPerHalfDollar}pts=$0.5 | Min $${globalConfig.minWithdrawUSD} | Fee ${globalConfig.withdrawFeePercent}% (Binance & OKX = 0 FEE) | Fraud Limit ${maxR}/24h DYNAMIC`;document.getElementById('dashConfigPreview').innerHTML=`Crypto Live ${globalConfig.pointsPerHalfDollar}pts=$0.5 -> Min ${globalConfig.pointsPerDollar*globalConfig.minWithdrawUSD}pts = $${globalConfig.minWithdrawUSD} -> Receive $${(globalConfig.minWithdrawUSD-globalConfig.minWithdrawUSD*globalConfig.withdrawFeePercent/100).toFixed(2)} | MaxRef ${maxR}/24h DYNAMIC | Binance Pay & OKX Pay 0 FEE`;document.getElementById('fraudTitle').innerText=`Fraud - ${maxR+1} in 24h Detector (DYNAMIC, Config=${maxR})`;document.getElementById('wdTitle').innerText=`Withdrawals - Binance Pay & OKX Pay 0 FEE - Fraud Limit ${maxR}/24h`;document.getElementById('mRefLimit').innerText=maxR;if(s.data().videos)document.getElementById('vidCount').innerText=s.data().videos.length;}}catch(e){}}
 async function loadDashboard(){const t=await getCountFromServer(collection(db,"users"));document.getElementById('totalUsers').innerText=t.data().count;const b=await getCountFromServer(query(collection(db,"users"),where("isBanned","==",true)));document.getElementById('totalBanned').innerText=b.data().count;const p=await getCountFromServer(query(collection(db,"withdrawals"),where("status","==","pending"))).catch(()=>({data:()=>({count:0})}));document.getElementById('totalPending').innerText=p.data().count;document.getElementById('wdCount').innerText=p.data().count;loadSupportCount();}
@@ -172,15 +172,15 @@ window.updatePreview=()=>{const pph=parseFloat(document.getElementById('cPointsP
 window.loadConfig=async()=>{try{const s=await getDoc(doc(db,"appConfig","main"));if(s.exists()){const c=s.data();document.getElementById('cPointsPerHalf').value=c.pointsPerHalfDollar||1000;document.getElementById('cMinWithdraw').value=c.minWithdrawUSD||5;document.getElementById('cWithdrawFee').value=c.withdrawFeePercent||15;document.getElementById('cRefBonus').value=c.referralBonus||50;document.getElementById('cMaxRef').value=c.maxRefPer24h||10;document.getElementById('cUSDT').checked=c.enabledUSDT!==false;document.getElementById('cBNB').checked=c.enabledBNB!==false;document.getElementById('cXRP').checked=c.enabledXRP!==false;document.getElementById('cXLM').checked=c.enabledXLM!==false;document.getElementById('cMaintenance').value=c.maintenanceMode||'off';document.getElementById('cMaintMsg').value=c.maintenanceMessage||'';updatePreview();}}catch(e){}}
 window.saveConfig=async()=>{const pph=parseInt(document.getElementById('cPointsPerHalf').value);const data={pointsPerHalfDollar:pph,pointsPerDollar:pph*2,minWithdrawUSD:parseFloat(document.getElementById('cMinWithdraw').value),withdrawFeePercent:parseFloat(document.getElementById('cWithdrawFee').value),referralBonus:parseInt(document.getElementById('cRefBonus').value),maxRefPer24h:parseInt(document.getElementById('cMaxRef').value),enabledUSDT:document.getElementById('cUSDT').checked,enabledBNB:document.getElementById('cBNB').checked,enabledXRP:document.getElementById('cXRP').checked,enabledXLM:document.getElementById('cXLM').checked,maintenanceMode:document.getElementById('cMaintenance').value,maintenanceMessage:document.getElementById('cMaintMsg').value,updatedBy:SUPER_ADMIN_EMAIL,updatedAt:new Date()};await setDoc(doc(db,"appConfig","main"),data,{merge:true});await setDoc(doc(db,"adminLogs",Date.now().toString()),{action:"config_update",by:SUPER_ADMIN_EMAIL,at:new Date(),note:`Rate ${pph} maxRef ${data.maxRefPer24h}`});document.getElementById('configMsg').innerHTML="<div style='background:#22c55e;color:black;padding:12px;border-radius:8px;text-align:center;font-weight:bold'>✅ Config Saved - Fraud limit now DYNAMIC = "+data.maxRefPer24h+"/24h</div>"; setTimeout(()=>{document.getElementById('configMsg').innerHTML=""},4000); loadAppConfigGlobal();}
 
-// VIDEOS ADMIN FUNCTIONS
+// FIXED VIDEOS FUNCTIONS - X NOW WORKS
 window.loadVideosAdmin=async()=>{
   const el=document.getElementById('videosAdminList'); el.innerHTML="Loading...";
   try{
     const s=await getDoc(doc(db,"appConfig","main"));
     if(s.exists() && s.data().videos && s.data().videos.length>0){
-      videosAdmin=s.data().videos;
+      window.videosAdmin=s.data().videos;
     } else {
-      videosAdmin=[
+      window.videosAdmin=[
         {src:"https://files.catbox.moe/17yhra.mp4",title:"Video 1"},
         {src:"https://files.catbox.moe/lqslkw.mp4",title:"Video 2"},
         {src:"https://files.catbox.moe/lzrb1b.mp4",title:"Video 3"},
@@ -206,34 +206,55 @@ window.loadVideosAdmin=async()=>{
     renderVideosAdmin();
   }catch(e){el.innerHTML="Error: "+e.message;}
 }
-function renderVideosAdmin(){
+window.renderVideosAdmin=()=>{
   const el=document.getElementById('videosAdminList');
-  document.getElementById('vidCount').innerText=videosAdmin.length;
-  if(videosAdmin.length===0){el.innerHTML="No videos";return;}
+  document.getElementById('vidCount').innerText=window.videosAdmin.length;
+  if(window.videosAdmin.length===0){el.innerHTML="No videos";return;}
   let html="<div class='table-wrap'><table style='min-width:600px'><tr><th>#</th><th>Title</th><th>Link</th><th>Test</th><th>Del</th></tr>";
-  videosAdmin.forEach((v,i)=>{
-    html+=`<tr><td>${i+1}</td><td><input value="${v.title}" onchange="videosAdmin[${i}].title=this.value" style="width:90px"></td><td style="max-width:220px;overflow:hidden;text-overflow:ellipsis" title="${v.src}">${v.src.substring(0,40)}...</td><td><button class="btn btn-copy" onclick="window.open('${v.src}','_blank')">Test</button></td><td><button class="btn btn-ban" onclick="videosAdmin.splice(${i},1);renderVideosAdmin()">X</button></td></tr>`;
+  window.videosAdmin.forEach((v,i)=>{
+    html+=`<tr><td>${i+1}</td><td><input value="${v.title.replace(/"/g,'')}" onchange="window.videosAdmin[${i}].title=this.value" style="width:90px"></td><td style="max-width:220px;overflow:hidden;text-overflow:ellipsis" title="${v.src}">${v.src.substring(0,35)}...</td><td><button class="btn btn-copy" onclick="window.open('${v.src}','_blank')">Test</button></td><td><button class="btn btn-ban" onclick="deleteVideoAdmin(${i})">X</button></td></tr>`;
   });
   html+="</table></div>"; el.innerHTML=html;
 }
+window.deleteVideoAdmin=(i)=>{
+  if(!confirm('Delete Video '+(i+1)+' - '+window.videosAdmin[i].title+' ?')) return;
+  window.videosAdmin.splice(i,1);
+  renderVideosAdmin();
+  showToast('🗑️ Deleted, click Save',' #ef4444');
+}
 window.addVideoAdmin=()=>{
-  const t=document.getElementById('vTitle').value.trim()||`Video ${videosAdmin.length+1}`;
+  const t=document.getElementById('vTitle').value.trim()||`Video ${window.videosAdmin.length+1}`;
   const s=document.getElementById('vSrc').value.trim();
   if(!s){showToast("Paste link first","#ef4444");return;}
-  videosAdmin.push({src:s,title:t});
+  window.videosAdmin.push({src:s,title:t});
   document.getElementById('vTitle').value=""; document.getElementById('vSrc').value="";
   renderVideosAdmin(); showToast("Added - now Save");
 }
 window.saveVideosAdmin=async()=>{
   try{
-    await setDoc(doc(db,"appConfig","main"),{videos:videosAdmin, videosUpdatedBy:SUPER_ADMIN_EMAIL, videosUpdatedAt:new Date()},{merge:true});
-    document.getElementById('videosAdminMsg').innerHTML=`<div style='background:#22c55e;color:black;padding:10px;border-radius:8px;text-align:center'>✅ Saved ${videosAdmin.length} videos - watch.html will use them instantly</div>`;
-    showToast(`✅ ${videosAdmin.length} videos saved`);
+    await setDoc(doc(db,"appConfig","main"),{videos:window.videosAdmin, videosUpdatedBy:SUPER_ADMIN_EMAIL, videosUpdatedAt:new Date()},{merge:true});
+    document.getElementById('videosAdminMsg').innerHTML=`<div style='background:#22c55e;color:black;padding:10px;border-radius:8px;text-align:center'>✅ Saved ${window.videosAdmin.length} videos</div>`;
+    showToast(`✅ ${window.videosAdmin.length} videos saved`);
     setTimeout(()=>document.getElementById('videosAdminMsg').innerHTML="",3000);
   }catch(e){showToast(e.message,"#ef4444");}
 }
-window.adminLogin=async()=>{const e=document.getElementById('aEmail').value.trim();const p=document.getElementById('aPass').value;if(e!==SUPER_ADMIN_EMAIL){document.getElementById('aError').innerText="Only admin@reward.rw";return;}try{await signInWithEmailAndPassword(auth,e,p);}catch(err){document.getElementById('aError').innerText=err.message;}}
-onAuthStateChanged(auth,async(user)=>{if(user&&user.email===SUPER_ADMIN_EMAIL){document.getElementById('loginBox').classList.add('hidden');document.getElementById('panel').classList.remove('hidden');document.getElementById('panel').style.display='flex';openPage('dashboard',document.querySelector('.menu li'));loadDashboard();loadUsers(true);loadWithdrawals('pending');loadSupportCount();loadAppConfigGlobal();}else if(user){await signOut(auth);}});
+window.adminLogin=async()=>{
+  const e=document.getElementById('aEmail').value.trim();
+  const p=document.getElementById('aPass').value;
+  if(!isAdminEmail(e)){document.getElementById('aError').innerText="Only admin emails allowed: "+ADMIN_EMAILS.join(', ');return;}
+  try{await signInWithEmailAndPassword(auth,e,p);}catch(err){document.getElementById('aError').innerText=err.message;}}
+onAuthStateChanged(auth,async(user)=>{
+  if(user && isAdminEmail(user.email)){
+    document.getElementById('loginBox').classList.add('hidden');
+    document.getElementById('panel').classList.remove('hidden');
+    document.getElementById('panel').style.display='flex';
+    openPage('dashboard',document.querySelector('.menu li'));
+    loadDashboard();loadUsers(true);loadWithdrawals('pending');loadSupportCount();loadAppConfigGlobal();
+  }else if(user){
+    await signOut(auth);
+    document.getElementById('aError').innerText="Access denied: "+user.email;
+  }
+});
 window.openPage=(p,el)=>{document.querySelectorAll('.main > div').forEach(d=>d.classList.add('hidden'));document.getElementById('page-'+p).classList.remove('hidden');document.querySelectorAll('.menu li').forEach(l=>l.classList.remove('active'));if(el)el.classList.add('active');if(window.innerWidth<900){document.getElementById('sidebar').classList.add('collapsed');document.getElementById('overlay').classList.remove('show');}if(p==='withdrawals')loadWithdrawals(currentWDFilter);if(p==='support')loadSupport('open');if(p==='fraud')loadFraud();if(p==='flagged')loadFlagged();if(p==='logs')loadLogs();if(p==='config')loadConfig();if(p==='notifications')loadNotificationsAdmin();if(p==='videos')loadVideosAdmin();if(p==='dashboard')loadDashboard();}
 window.changePassword=async()=>{const oldP=document.getElementById('oldPass').value;const newP=document.getElementById('newPass').value;const newP2=document.getElementById('newPass2').value;if(newP!==newP2)return showToast("Passwords don't match","#ef4444");const user=auth.currentUser;try{const cred=EmailAuthProvider.credential(user.email,oldP);await reauthenticateWithCredential(user,cred);await updatePassword(user,newP);showToast("✅ Password Updated");}catch(e){showToast(e.message,"#ef4444");}}
 window.logout=async()=>{await signOut(auth);location.reload();}
