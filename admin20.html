@@ -1,5 +1,5 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin 20 FINAL - Your Links</title>
+<title>Admin 20 FINAL - Your Videy Links</title>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -9,35 +9,35 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);
 
 window.videos20=[
-{title:"Video 1",src:"https://files.catbox.moe/17yhra.mp4"},
-{title:"Video 2",src:"https://files.catbox.moe/lzrb1b.mp4"},
-{title:"Video 3",src:"https://files.catbox.moe/bfwi05.mp4"},
-{title:"Video 4",src:"https://files.catbox.moe/cjgsgh.mp4"},
-{title:"Video 5",src:"https://files.catbox.moe/ztv7tq.mp4"},
-{title:"Video 6",src:"https://files.catbox.moe/vg97gl.mp4"},
-{title:"Video 7",src:"https://files.catbox.moe/7f1csg.mp4"},
-{title:"Video 8",src:"https://files.catbox.moe/g6lh9z.mp4"},
-{title:"Video 9",src:"https://files.catbox.moe/l9iqr6.mp4"},
-{title:"Video 10",src:"https://files.catbox.moe/0t28n3.mp4"},
-{title:"Video 11",src:"https://files.catbox.moe/0v9uqy.mp4"},
-{title:"Video 12",src:"https://files.catbox.moe/1zb7z3.mp4"},
-{title:"Video 13",src:"https://files.catbox.moe/263scw.mp4"},
-{title:"Video 14",src:"https://files.catbox.moe/7rc61u.mp4"},
-{title:"Video 15",src:"https://files.catbox.moe/a5uhee.mp4"},
-{title:"Video 16",src:"https://files.catbox.moe/0t28n3.mp4"},
-{title:"Video 17",src:"https://www.w3schools.com/html/mov_bbb.mp4"},
-{title:"Video 18",src:"https://www.w3schools.com/html/movie.mp4"},
-{title:"Video 19",src:"https://files.catbox.moe/1zb7z3.mp4"},
-{title:"Video 20",src:"https://files.catbox.moe/263scw.mp4"}
+{title:"Video 1",src:"https://cdn.videy.co/4KScO3m11.mp4"},
+{title:"Video 2",src:"https://cdn.videy.co/qwwV5liZ1.mp4"},
+{title:"Video 3",src:"https://cdn.videy.co/SNuocZec1.mp4"},
+{title:"Video 4",src:"https://cdn.videy.co/4Zqqtaia1.mp4"},
+{title:"Video 5",src:"https://cdn.videy.co/Gjvd5XCv1.mp4"},
+{title:"Video 6",src:"https://cdn.videy.co/ID5Yult41.mp4"},
+{title:"Video 7",src:"https://cdn.videy.co/D2phmwCi1.mp4"},
+{title:"Video 8",src:"https://cdn.videy.co/XibFgqY31.mp4"},
+{title:"Video 9",src:"https://cdn.videy.co/YxatrGBT1.mp4"},
+{title:"Video 10",src:"https://cdn.videy.co/8a7z5Gnt1.mp4"},
+{title:"Video 11",src:"https://cdn.videy.co/nxGIoUIv1.mp4"},
+{title:"Video 12",src:"https://cdn.videy.co/Y7sBjXCy1.mp4"},
+{title:"Video 13",src:"https://cdn.videy.co/CWMR0s9c1.mp4"},
+{title:"Video 14",src:"https://cdn.videy.co/qKROYUIW1.mp4"},
+{title:"Video 15",src:"https://cdn.videy.co/RF0mt4bh1.mp4"},
+{title:"Video 16",src:"https://cdn.videy.co/f4Do13Yy1.mp4"},
+{title:"Video 17",src:"https://cdn.videy.co/VZSZ7vKz1.mp4"},
+{title:"Video 18",src:"https://cdn.videy.co/ZEbftTDj1.mp4"},
+{title:"Video 19",src:"https://www.w3schools.com/html/mov_bbb.mp4"},
+{title:"Video 20",src:"https://files.catbox.moe/lzrb1b.mp4"}
 ];
 
 window.render20=()=>{let h="";window.videos20.forEach((v,i)=>{h+=`<tr><td>${i+1}</td><td style="font-size:10px;word-break:break-all">${v.src}</td><td><a href="${v.src}" target="_blank" style="color:#fbbf24">Test</a></td></tr>`});document.getElementById("tbody").innerHTML=h;};
-window.save20=async()=>{document.getElementById("msg").innerText="Saving 20...";await setDoc(doc(db,"appConfig","main"),{videos:window.videos20},{merge:true});document.getElementById("msg").innerText="✅ SAVED 20!";alert("Saved 20! Now check admin.html");};
+window.save20=async()=>{document.getElementById("msg").innerText="Saving 20...";await setDoc(doc(db,"appConfig","main"),{videos:window.videos20},{merge:true});document.getElementById("msg").innerText="✅ SAVED 20!";alert("Saved 20! Now check watch.html");};
 window.login=async()=>{await signInWithEmailAndPassword(auth,document.getElementById("email").value,document.getElementById("pass").value);};
 onAuthStateChanged(auth,u=>{if(u&&ADMIN_EMAILS.includes(u.email)){document.getElementById("loginBox").style.display="none";document.getElementById("panel").style.display="block";render20();}});
 </script>
 <style>body{background:#111;color:#fff;font-family:Arial;padding:12px}th,td{padding:6px;border-bottom:1px solid #333;font-size:12px}input{width:100%;padding:10px;margin:5px 0;background:#000;color:#fff;border:1px solid #444}</style>
 </head><body>
 <div id="loginBox" style="max-width:380px;margin:40px auto;border:1px solid #fbbf24;padding:20px;border-radius:12px;text-align:center"><h3>Admin Login</h3><input id="email" value="rewardplatformrw@gmail.com"><input id="pass" type="password" placeholder="Password"><button onclick="login()" style="width:100%;background:#fbbf24;padding:12px;font-weight:bold">Login</button></div>
-<div id="panel" style="display:none"><h3>📹 20 Videos - Your Links (16 Catbox + 4 safe)</h3><div id="msg" style="color:lime"></div><table><thead><tr><th>#</th><th>Link</th><th>Test</th></tr></thead><tbody id="tbody"></tbody></table><button onclick="save20()" style="width:100%;background:#22c55e;padding:15px;font-weight:bold;margin-top:15px">💾 SAVE 20 TO FIREBASE</button></div>
+<div id="panel" style="display:none"><h3>📹 20 Videos - FINAL Videy (18 + 2 safe)</h3><div id="msg" style="color:lime"></div><table><thead><tr><th>#</th><th>Link</th><th>Test</th></tr></thead><tbody id="tbody"></tbody></table><button onclick="save20()" style="width:100%;background:#22c55e;padding:15px;font-weight:bold;margin-top:15px">💾 SAVE 20 TO FIREBASE</button></div>
 </body></html>
