@@ -1,158 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Watch & Earn - Final 20</title>
+<title>Admin - Upload Videos</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="monetag" content="b671b8351bfc48ed0161f6bd0b6a5340">
-<script src="https://quge5.com/88/tag.min.js" data-zone="286869" async data-cfasync="false"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:#0e1a0e;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;overflow:hidden}
-.card{width:100%;max-width:400px;background:#1d331d;border:3px solid #fbbf24;border-radius:24px;padding:20px 18px;position:relative;z-index:1}
-h1{color:#facc15;text-align:center;font-size:28px;margin-bottom:12px}
-.balance-box{background:#0a120a;border:2px solid #fbbf24;border-radius:16px;padding:12px;text-align:center;color:#fff;margin-bottom:14px}
-.video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #2a4a2a}
-.player{aspect-ratio:16/9;background:#000;position:relative;display:flex;align-items:center;justify-content:center}
-video{width:100%;height:100%;object-fit:contain;background:#000}
-.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.92);color:#fff;text-align:center;padding:14px;flex-direction:column;z-index:2;font-weight:800;font-size:16px;line-height:1.3}
-.progress{height:10px;background:#2a4a2a}.progress-bar{height:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);width:0%;transition:width .3s}
-.btn{width:100%;background:#fbbf24;color:#000;border:none;border-radius:12px;padding:14px;font-weight:900;font-size:16px;cursor:pointer;margin:14px 0 0}
-.btn:disabled{background:#5a4a1a;color:#aaa}
-.vtitle{font-size:12px;color:#facc15;margin-top:6px}
-.bubble{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#000;padding:14px 22px;border-radius:999px;font-weight:900;z-index:10000;display:none;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+body{background:#0e1a0e;color:#fff;font-family:Arial;padding:16px}
+.card{max-width:500px;margin:0 auto;background:#1d331d;border:2px solid #fbbf24;border-radius:16px;padding:16px}
+h2{color:#facc15;text-align:center;margin-bottom:12px}
+input,button{width:100%;padding:12px;border-radius:10px;border:none;margin:8px 0;font-weight:700}
+button{background:#fbbf24;cursor:pointer}
+.log{background:#000;border-radius:10px;padding:10px;font-size:12px;max-height:400px;overflow:auto;white-space:pre-wrap;word-break:break-all;margin-top:12px}
+.progress{height:8px;background:#2a4a2a;border-radius:4px;overflow:hidden;margin:4px 0}
+.bar{height:100%;background:#fbbf24;width:0%}
 </style>
 </head>
 <body>
-<canvas id="confetti" style="position:fixed;inset:0;pointer-events:none;z-index:9999;display:none"></canvas>
-<div id="bubble" class="bubble"></div>
 <div class="card">
-<h1>Watch & Earn</h1>
-<div class="balance-box">Balance: <b id="bal">Loading...</b><br><span style="font-size:13px"><span id="today">0/10</span> today</span><div class="vtitle" id="vt">Loading...</div></div>
-<div class="video-box">
-<div class="player"><video id="v" playsinline controls></video><div class="overlay" id="ov">Tap Start</div></div>
-<div class="progress"><div class="progress-bar" id="pbar"></div></div>
-<div style="padding:0 12px 12px"><button class="btn" id="btn">Start & Earn</button></div>
-</div>
-<button style="display:block;margin:16px auto 0;background:#f59e0b;border:0;padding:10px 24px;border-radius:999px;font-weight:700" onclick="location.href='./home.html'">Back</button>
+<h2>Upload 20 Videos to Firebase</h2>
+<p style="font-size:13px;opacity:.8;text-align:center">Select all 20 videos from phone. Will upload one by one and give permanent links.</p>
+<input type="file" id="files" multiple accept="video/mp4,video/*">
+<button onclick="uploadAll()">Start Upload</button>
+<div id="status"></div>
+<div class="log" id="log">Waiting...</div>
 </div>
 <script>
-const DIRECT_LINK="https://omg10.com/4/11905870";
-const ALL_VIDEOS=[
-{src:"https://files.catbox.moe/17yhra.mp4",title:"Video 1"},
-{src:"https://files.catbox.moe/lqslkw.mp4",title:"Video 2"},
-{src:"https://files.catbox.moe/lzrb1b.mp4",title:"Video 3"},
-{src:"https://files.catbox.moe/bfwi05.mp4",title:"Video 4"},
-{src:"https://files.catbox.moe/cjgsgh.mp4",title:"Video 5"},
-{src:"https://files.catbox.moe/kk1m1y.mp4",title:"Video 6"},
-{src:"https://files.catbox.moe/0t28n3.mp4",title:"Video 7"},
-{src:"https://files.catbox.moe/ztv7tq.mp4",title:"Video 8"},
-{src:"https://files.catbox.moe/kaqty3.mp4",title:"Video 9"},
-{src:"https://files.catbox.moe/vg97gl.mp4",title:"Video 10"},
-{src:"https://files.catbox.moe/7f1csg.mp4",title:"Video 11"},
-{src:"https://files.catbox.moe/g6lh9z.mp4",title:"Video 12"},
-{src:"https://files.catbox.moe/0v9uqy.mp4",title:"Video 13"},
-{src:"https://files.catbox.moe/l9iqr6.mp4",title:"Video 14"},
-{src:"https://files.catbox.moe/1zb7z3.mp4",title:"Video 15"},
-{src:"https://files.catbox.moe/263scw.mp4",title:"Video 16"},
-{src:"https://files.catbox.moe/7rc61u.mp4",title:"Video 17"},
-{src:"https://files.catbox.moe/a5uhee.mp4",title:"Video 18"},
-{src:"https://files.catbox.moe/rkt1x6.mp4",title:"Video 19"},
-{src:"https://files.catbox.moe/9mvxej.mp4",title:"Video 20"}
-];
+const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d",storageBucket:"reward-platform-rw-2e13d.appspot.com"};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(), storage=firebase.storage();
+auth.signInAnonymously().catch(()=>{});
 
-function getRandomPlaylist(){
-  // Shuffle copy of ALL_VIDEOS
-  let arr=[...ALL_VIDEOS];
-  for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
-  return arr.slice(0,10);
-}
-
-function showBubble(text){
-  const b=document.getElementById('bubble');
-  b.textContent=text; b.style.display='block';
-  setTimeout(()=>b.style.display='none',2200);
-}
-
-function BLAST(){
-  const c=document.getElementById('confetti');
-  c.style.display='block'; const ctx=c.getContext('2d');
-  c.width=window.innerWidth; c.height=window.innerHeight;
-  let pieces=[]; const colors=['#fbbf24','#f59e0b','#22c55e','#ef4444','#3b82f6','#ec4899','#fff'];
-  for(let i=0;i<180;i++){pieces.push({x:c.width/2,y:c.height/2.5,vx:(Math.random()-0.5)*26,vy:(Math.random()-0.5)*26-8,r:Math.random()*9+4,color:colors[Math.floor(Math.random()*colors.length)],rot:Math.random()*360,vr:(Math.random()-0.5)*30});}
-  let frame=0; function anim(){ctx.clearRect(0,0,c.width,c.height); pieces.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.38;p.rot+=p.vr;p.vx*=0.99;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.color; if(Math.random()>0.5) ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r); else {ctx.beginPath();ctx.arc(0,0,p.r/2,0,Math.PI*2);ctx.fill();} ctx.restore();}); frame++; if(frame<160) requestAnimationFrame(anim); else c.style.display='none';} anim();
-  if(navigator.vibrate) navigator.vibrate([80,40,80,40,150]);
-}
-
-const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
-firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.firestore();
-let bal=0,today=0,currentUser=null,timer=null,dailyPlaylist=[];
-const ov=document.getElementById('ov'),vid=document.getElementById('v'),btn=document.getElementById('btn'),pbar=document.getElementById('pbar'),balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),vtEl=document.getElementById('vt');
-
-function updateUI(){balEl.textContent=bal+' pts';todayEl.textContent=today+'/10'; if(dailyPlaylist.length && today<10){vtEl.textContent=`Next: ${dailyPlaylist[today].title}`; ov.innerHTML=`<div>${dailyPlaylist[today].title}</div><small style="opacity:.7;margin-top:6px">Tap Start</small>`;}}
-
-auth.onAuthStateChanged(async(u)=>{
-  if(!u){location.href='./index.html';return;}
-  currentUser=u;
-  dailyPlaylist=getRandomPlaylist();
-  const s=await db.collection('users').doc(u.uid).get();
-  if(s.exists){
-    const d=s.data(); bal=d.balance||d.points||0; today=d.todayCount||d.today||0;
-    const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null;
-    if(last && new Date().toDateString()!==last.toDateString()){today=0; dailyPlaylist=getRandomPlaylist();}
+let links=[];
+async function uploadAll(){
+  const input=document.getElementById('files');
+  if(!input.files.length){alert('Select videos first');return;}
+  const files=[...input.files];
+  const logEl=document.getElementById('log'), statusEl=document.getElementById('status');
+  logEl.textContent=''; links=[];
+  for(let i=0;i<files.length;i++){
+    const file=files[i];
+    const safeName=file.name.replace(/[^a-z0-9.]/gi,'_');
+    const path=`videos/video_${i+1}_${safeName}`;
+    statusEl.innerHTML=`<p>Uploading ${i+1}/${files.length}: ${file.name}</p><div class="progress"><div class="bar" id="bar"></div></div>`;
+    try{
+      const ref=storage.ref(path);
+      const task=ref.put(file);
+      await new Promise((res,rej)=>{
+        task.on('state_changed',snap=>{
+          const pct=(snap.bytesTransferred/snap.totalBytes*100).toFixed(0);
+          document.getElementById('bar').style.width=pct+'%';
+        },rej,async()=>{
+          const url=await task.snapshot.ref.getDownloadURL();
+          links.push(`{src:"${url}",title:"Video ${i+1}"},`);
+          logEl.textContent+=`✅ Video ${i+1} DONE\n${url}\n\n`;
+          res();
+        });
+      });
+    }catch(e){ logEl.textContent+=`❌ Failed ${file.name}: ${e.message}\n`; }
   }
-  updateUI();
-  if(today>=10){ov.style.display='flex';ov.innerHTML='🎉 10/10 Done!<br>New videos tomorrow';btn.disabled=true;btn.textContent='Limit Reached';}
-});
-
-function doAd(){
-  if(today>=10){ov.style.display='flex';ov.innerHTML='🎉 10/10 Done!<br>💥 New tomorrow';btn.disabled=true;btn.textContent='Limit Reached';BLAST();return;}
-  window.open(DIRECT_LINK,'_blank');
-  btn.disabled=true; ov.style.display='flex'; ov.innerHTML='Verifying ad...'; pbar.style.width='0%'; vid.pause();
-  let ad=6; let adInt=setInterval(()=>{ov.innerHTML=`📢 Ad check ${ad}s...<br><small>Don't close</small>`; ad--; if(ad<0){clearInterval(adInt); startVideo();}},1000);
+  logEl.textContent+=`\n\n--- COPY THIS ARRAY FOR watch.html ---\nconst ALL_VIDEOS=[\n${links.join('\n')}\n];\n`;
+  statusEl.innerHTML+=`<p style="color:#facc15">All done! Scroll down, copy the array.</p>`;
 }
-
-function startVideo(){
-  const cur=dailyPlaylist[today];
-  vtEl.textContent=`Playing: ${cur.title}`; ov.style.display='none';
-  vid.src=cur.src; vid.load(); vid.style.display='block'; vid.play().catch(()=>{});
-  let sec=0; btn.textContent=`🔥 Watching ${cur.title}`; btn.disabled=true;
-  const msgs=[`💰 Earning 2 coins...`,`👀 Keep watching!`,`⭐ Great video!`,`🎬 Best part coming`,`🔥 Almost there!`];
-  let mi=0;
-  timer=setInterval(()=>{
-    sec++; pbar.style.width=(sec/40*100)+'%';
-    if(sec%8===0){mi=(mi+1)%msgs.length; btn.textContent=msgs[mi];}
-    if(sec>=40){
-      clearInterval(timer); vid.pause();
-      btn.textContent='🎉 Claim 2 pts!'; btn.disabled=false; btn.onclick=claim;
-      ov.style.display='flex'; ov.innerHTML=`✅ Done!<br>Tap to claim`; if(navigator.vibrate) navigator.vibrate(100);
-    }
-  },1000);
-}
-
-async function claim(){
-  if(!currentUser) return;
-  btn.disabled=true; btn.textContent='Saving...';
-  bal+=2; today++;
-  showBubble(`+2 coins! ${dailyPlaylist[today-1].title}`);
-  try{
-    await db.collection('users').doc(currentUser.uid).set({balance:bal,points:bal,todayCount:today,today:today,lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
-    await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Watch & Earn',type:'watch',points:2,desc:dailyPlaylist[today-1].title,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-  }catch(e){}
-  vid.src=''; vid.style.display='none'; pbar.style.width='0%';
-  btn.textContent='Start & Earn'; btn.disabled=false; btn.onclick=doAd;
-  updateUI();
-  if(today>=10){
-    ov.style.display='flex'; ov.innerHTML='🎉 10/10 Done!<br>💥 BLAST! New tomorrow';
-    btn.textContent='Limit Reached'; btn.disabled=true; BLAST();
-  } else {
-    // Auto load next random already set in playlist
-    ov.style.display='flex'; ov.innerHTML=`<div>Ready: ${dailyPlaylist[today].title}</div><small>Tap Start for next</small>`;
-  }
-}
-btn.onclick=doAd;
 </script>
 </body>
 </html>
