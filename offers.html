@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Offers - BNB Faucet</title>
+<title>Offers</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#f8fafc;min-height:100vh}
+body{background:#f5f5f5;min-height:100vh}
 .top-bar{background:#fff;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:2px solid #f1f5f9;position:sticky;top:0;z-index:10}
 .back-btn{width:42px;height:38px;border-radius:10px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;display:flex;align-items:center;justify-content:center;color:#991b1b;font-weight:900;font-size:22px;text-decoration:none}
 .center-pill{background:#f8fafc;border:2px solid #e5e7eb;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px}
 .container{max-width:500px;margin:0 auto;padding:14px 14px 90px}
 .balance-card{background:#12230a;border:2px solid #fbbf24;border-radius:18px;padding:14px;display:flex;justify-content:space-around;text-align:center;color:#fff}
 .balance-card b{color:#fbbf24;font-size:18px}.usdt{color:#22f59b;font-weight:900;font-size:18px}
-.section-title{font-weight:900;font-size:14px;margin:18px 0 10px;color:#111827}
-.btn-faucet{width:100%;background:#fff;border:2px solid #f1f5f9;border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.05);text-align:left}
-.btn-faucet:active{transform:scale(0.98)}
-.btn-faucet-left{display:flex;gap:12px;align-items:center}
-.emoji-box{width:44px;height:44px;border-radius:12px;background:#fffbeb;border:2px solid #fde68a;display:flex;align-items:center;justify-content:center;font-size:22px}
-.faucet-title{font-weight:900;font-size:13px;color:#111827}
-.faucet-sub{font-size:11px;color:#6b7280;margin-top:2px}
-.faucet-right{background:linear-gradient(90deg,#fbbf24,#f59e0b);border-radius:999px;padding:6px 12px;font-weight:900;font-size:11px;color:#000;box-shadow:0 2px 0 #d97706}
-.offer{background:#fff;border:2px solid #f1f5f9;border-radius:14px;padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+
+/* GRID LIKE BNBPICK SCREENSHOT */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.card{background:#fff;border:2px solid #e5e7eb;border-radius:16px;padding:18px 10px;text-align:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:0.15s}
+.card:active{transform:scale(0.97);border-color:#fbbf24}
+.card-logo{height:32px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;font-weight:900;font-size:16px}
+.card-name{font-size:13px;font-weight:600;color:#333;margin-top:4px}
+.card.active{border-color:#fbbf24;background:#fffbeb}
+
+.cpx{font-family:Arial;letter-spacing:-0.5px}
+.cpx span{font-weight:900}
+.timewall{font-weight:800}.timewall span{background:#4ade80;color:#fff;padding:1px 6px;border-radius:4px;margin-left:2px}
+.monlix{font-weight:900;font-size:20px;letter-spacing:-1px}.monlix b{color:#111}.monlix x{color:#22c55e}
+.bitlabs{font-weight:900;font-size:19px;display:flex;align-items:center;justify-content:center;gap:6px}
+.theorem{font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;gap:4px}
+.bnbpick{font-weight:900;color:#f0b90b;font-size:16px}
 </style>
 </head>
 <body>
 <div class="top-bar">
 <a href="home.html" class="back-btn">‹</a>
-<div class="center-pill">💎 Offers</div>
+<div class="center-pill">💎 Offers Wall</div>
 <div style="width:42px"></div>
 </div>
 <div class="container">
@@ -39,88 +46,61 @@ body{background:#f8fafc;min-height:100vh}
 <div><div class="usdt" id="balUsdt">0 USDT</div><div style="font-size:10px;color:#9ca3af">Withdrawable</div></div>
 </div>
 
-<div class="section-title">💧 BNB Faucet - Gold Level (Your Link)</div>
+<div class="grid" id="grid"></div>
 
-<button class="btn-faucet" onclick="openFaucet('https://bnbpick.io/?ref=SilasN75','faucet_claim',100)">
-<div class="btn-faucet-left"><div class="emoji-box">💧</div><div><div class="faucet-title">Claim BNB Faucet</div><div class="faucet-sub">Gold • 0.00003750 BNB every hour</div></div></div>
-<div class="faucet-right">+100 🪙</div>
-</button>
-
-<button class="btn-faucet" onclick="openFaucet('https://bnbpick.io/?ref=SilasN75','faucet_level',50)">
-<div class="btn-faucet-left"><div class="emoji-box">🏆</div><div><div class="faucet-title">My Level: Gold ✓</div><div class="faucet-sub">Payout 0.00003750 BNB • Next: Platinum</div></div></div>
-<div class="faucet-right">+50 🪙</div>
-</button>
-
-<button class="btn-faucet" onclick="openFaucet('https://bnbpick.io/?ref=SilasN75','faucet_timer',30)">
-<div class="btn-faucet-left"><div class="emoji-box">⏰</div><div><div class="faucet-title">Check Timer & Balance</div><div class="faucet-sub">See 19:59 timer • 0.00022185 BNB balance</div></div></div>
-<div class="faucet-right">+30 🪙</div>
-</button>
-
-<button class="btn-faucet" onclick="openFaucet('https://bnbpick.io/?ref=SilasN75','faucet_referral',80)">
-<div class="btn-faucet-left"><div class="emoji-box">👥</div><div><div class="faucet-title">Earn Referral Bonus</div><div class="faucet-sub">Share your faucet link & earn 20%</div></div></div>
-<div class="faucet-right">+80 🪙</div>
-</button>
-
-<div class="section-title">🎁 Other Offers (Resets Daily)</div>
-<div id="otherOffers"></div>
-
-<div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px">All offers reset at midnight • BNB faucet claims every hour</div>
+<div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:18px">Tap any wall to open • Resets daily • +Coins auto added</div>
 </div>
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore();
 let cachedUser=null;
-const OTHER=[
-  {id:'telegram', title:'Join Telegram', sub:'Get updates', emoji:'✈️', coins:80, link:'https://t.me'},
-  {id:'survey', title:'Daily Survey', sub:'3 questions • 30 sec', emoji:'📝', coins:120, link:'#'},
-  {id:'game', title:'Play Game & Earn', sub:'Play 2 min', emoji:'🎮', coins:150, link:'https://play.google.com'},
-  {id:'invite', title:'Invite Friend', sub:'Share referral link', emoji:'🎁', coins:200, link:'home.html'},
+
+const MY_LINK = "https://bnbpick.io/?ref=SilasN75";
+
+const WALLS=[
+  {id:'cpx', name:'CPX-Research', html:'<div class="cpx"><span>◍ CPX RESEARCH</span></div>', coins:100},
+  {id:'timewall', name:'TimeWall', html:'<div class="timewall">time<span>wall</span></div>', coins:100},
+  {id:'monlix', name:'Monlix', html:'<div class="monlix"><b>Monli</b><x>x</x></div>', coins:80},
+  {id:'bitlabs', name:'Bitlabs', html:'<div class="bitlabs">🧪 Bitlabs</div>', coins:80},
+  {id:'theorem', name:'Theoremreach', html:'<div class="theorem">📱 theoremreach</div>', coins:80},
+  {id:'bnbpick', name:'Bnbpick.io', html:'<div class="bnbpick">💧 Bnbpick.io - Faucet</div>', coins:120},
 ];
 
-function renderOther(){
-  const el=document.getElementById('otherOffers');
-  el.innerHTML='';
-  const today=new Date().toISOString().split('T')[0];
-  OTHER.forEach(o=>{
-    const done=localStorage.getItem(`offer_done_${o.id}_${cachedUser?.uid}`)===today;
-    el.innerHTML+=`<div class="offer"><div style="display:flex;gap:12px;align-items:center"><div class="emoji-box">${o.emoji}</div><div><div class="faucet-title">${o.title}</div><div class="faucet-sub">${o.sub}</div></div></div><div style="text-align:right"><div style="font-weight:900;font-size:11px;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:999px;padding:3px 8px;display:inline-block;margin-bottom:6px">+${o.coins} 🪙</div><br><button class="faucet-right" style="border:none;cursor:pointer" ${done?'disabled':''} onclick="openFaucet('${o.link}','${o.id}',${o.coins})">${done?'✓ Done':'Claim'}</button></div></div>`;
+function render(){
+  const grid=document.getElementById('grid');
+  grid.innerHTML='';
+  WALLS.forEach(w=>{
+    grid.innerHTML+=`
+    <div class="card" onclick="openWall('${w.id}',${w.coins})">
+      <div class="card-logo">${w.html}</div>
+      <div class="card-name">${w.name}</div>
+    </div>`;
   });
 }
 
-async function openFaucet(link, offerId, coins){
+async function openWall(wallId, coins){
   const user=auth.currentUser||cachedUser; if(!user) return;
+  // open your link for ALL walls (so referral counts)
+  window.open(MY_LINK, '_blank');
+  
+  // Give coins (once per wall per day)
   const today=new Date().toISOString().split('T')[0];
-  const doneKey=`offer_done_${offerId}_${user.uid}`;
-  // Faucet can be claimed every hour, other offers daily
-  const isFaucet = offerId.startsWith('faucet');
-  const lastClaim = localStorage.getItem(doneKey);
-  if(!isFaucet && lastClaim===today){ alert('Already claimed today. Tomorrow resets!'); return; }
-  if(isFaucet && lastClaim){
-    const diff = Date.now() - parseInt(lastClaim);
-    if(diff < 3600000){ // 1 hour
-      const mins = Math.ceil((3600000 - diff)/60000);
-      alert(`Faucet: Wait ${mins} min. Your Gold level claims every hour. Come back soon!`); 
-      // Still open link for checking balance
-      if(link!=='#') window.open(link,'_blank');
-      return;
-    }
-  }
-  if(link!=='#') window.open(link,'_blank');
-  const btn=event.currentTarget; 
+  const doneKey=`wall_done_${wallId}_${user.uid}_${today}`;
+  if(localStorage.getItem(doneKey)===today){ return; }
+
   try{
     const userRef=db.collection('users').doc(user.uid);
-    const subid=`${user.uid}_${offerId}_${Date.now()}`;
+    const subid=`${user.uid}_${wallId}_${Date.now()}`;
     await db.runTransaction(async t=>{
       const d=await t.get(userRef);
       t.update(userRef,{balance:(d.data().balance||0)+coins});
-      t.set(userRef.collection('offerClicks').doc(subid),{offerId, coins, status:'completed', createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-      t.set(userRef.collection('earnHistory').doc(),{action:'Offers - BNB', desc:offerId, coins, timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+      t.set(userRef.collection('offerClicks').doc(subid),{offerId:wallId, coins, status:'completed', createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+      t.set(userRef.collection('earnHistory').doc(),{action:'Offers Wall', desc:wallId, coins, timestamp:firebase.firestore.FieldValue.serverTimestamp()});
     });
-    localStorage.setItem(doneKey, isFaucet ? Date.now().toString() : today);
-    alert(`+${coins} coins added! ${isFaucet ? 'Your BNB faucet gives you real BNB on bnbpick.io + coins here!' : ''}`);
-    loadBalance(); renderOther();
-  }catch(e){ alert(e.message); }
+    localStorage.setItem(doneKey, today);
+    loadBalance();
+  }catch(e){ console.log(e); }
 }
 
 function loadBalance(){
@@ -137,7 +117,7 @@ function loadBalance(){
     document.getElementById('balUsdt').innerText=Number(d.usdtBalance||0).toFixed(4)+' USDT';
   });
 }
-auth.onAuthStateChanged(u=>{ if(!u){location.href='index.html';return;} cachedUser=u; loadBalance(); renderOther(); });
+auth.onAuthStateChanged(u=>{ if(!u){location.href='index.html';return;} cachedUser=u; loadBalance(); render(); });
 </script>
 </body>
 </html>
