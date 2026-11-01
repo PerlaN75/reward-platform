@@ -1,35 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Offers - Postback Ready</title>
+<title>Offers - BNB Faucet</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#fff;min-height:100vh}
+body{background:#f8fafc;min-height:100vh}
 .top-bar{background:#fff;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:2px solid #f1f5f9;position:sticky;top:0;z-index:10}
 .back-btn{width:42px;height:38px;border-radius:10px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;display:flex;align-items:center;justify-content:center;color:#991b1b;font-weight:900;font-size:22px;text-decoration:none}
 .center-pill{background:#f8fafc;border:2px solid #e5e7eb;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px}
 .container{max-width:500px;margin:0 auto;padding:14px 14px 90px}
 .balance-card{background:#12230a;border:2px solid #fbbf24;border-radius:18px;padding:14px;display:flex;justify-content:space-around;text-align:center;color:#fff}
 .balance-card b{color:#fbbf24;font-size:18px}.usdt{color:#22f59b;font-weight:900;font-size:18px}
-.offer{background:#fff;border:2px solid #f1f5f9;border-radius:16px;padding:14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 6px 18px rgba(0,0,0,0.05)}
-.offer-left{display:flex;gap:12px;align-items:center}
-.offer-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;background:#fffbeb;border:2px solid #fde68a}
-.offer-title{font-weight:900;font-size:13px}.offer-desc{font-size:11px;color:#6b7280;margin-top:2px}
-.offer-right{text-align:right}
-.reward{font-weight:900;font-size:12px;color:#92400e;background:#fffbeb;border:1.5px solid #fde68a;border-radius:999px;padding:4px 8px;display:inline-block;margin-bottom:6px}
-.btn{border:none;border-radius:10px;padding:9px 14px;font-weight:900;font-size:12px;cursor:pointer;background:linear-gradient(90deg,#fbbf24,#f59e0b);box-shadow:0 3px 0 #d97706}
-.btn:disabled{background:#f3f4f6;color:#9ca3af;box-shadow:none}
-.status{font-size:10px;color:#16a34a;font-weight:800;margin-top:4px}
+.section-title{font-weight:900;font-size:14px;margin:18px 0 10px;color:#111827}
+.btn-faucet{width:100%;background:#fff;border:2px solid #f1f5f9;border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.05);text-align:left}
+.btn-faucet:active{transform:scale(0.98)}
+.btn-faucet-left{display:flex;gap:12px;align-items:center}
+.emoji-box{width:44px;height:44px;border-radius:12px;background:#fffbeb;border:2px solid #fde68a;display:flex;align-items:center;justify-content:center;font-size:22px}
+.faucet-title{font-weight:900;font-size:13px;color:#111827}
+.faucet-sub{font-size:11px;color:#6b7280;margin-top:2px}
+.faucet-right{background:linear-gradient(90deg,#fbbf24,#f59e0b);border-radius:999px;padding:6px 12px;font-weight:900;font-size:11px;color:#000;box-shadow:0 2px 0 #d97706}
+.offer{background:#fff;border:2px solid #f1f5f9;border-radius:14px;padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
 </style>
 </head>
 <body>
 <div class="top-bar">
 <a href="home.html" class="back-btn">‹</a>
-<div class="center-pill">💎 Offers - Postback Ready</div>
+<div class="center-pill">💎 Offers</div>
 <div style="width:42px"></div>
 </div>
 <div class="container">
@@ -38,80 +38,89 @@ body{background:#fff;min-height:100vh}
 <div style="width:1px;background:#2a3a1a"></div>
 <div><div class="usdt" id="balUsdt">0 USDT</div><div style="font-size:10px;color:#9ca3af">Withdrawable</div></div>
 </div>
-<div id="offersList" style="margin-top:16px"></div>
-<div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:12px">Postback Status: <span id="pbStatus">Instant Pay (No Card) - Ready to switch</span></div>
+
+<div class="section-title">💧 BNB Faucet - Gold Level (Your Link)</div>
+
+<button class="btn-faucet" onclick="openFaucet('https://bnbpick.io/?ref=SilasN75','faucet_claim',100)">
+<div class="btn-faucet-left"><div class="emoji-box">💧</div><div><div class="faucet-title">Claim BNB Faucet</div><div class="faucet-sub">Gold • 0.00003750 BNB every hour</div></div></div>
+<div class="faucet-right">+100 🪙</div>
+</button>
+
+<button class="btn-faucet" onclick="openFaucet('https://bnbpick.io/?ref=SilasN75','faucet_level',50)">
+<div class="btn-faucet-left"><div class="emoji-box">🏆</div><div><div class="faucet-title">My Level: Gold ✓</div><div class="faucet-sub">Payout 0.00003750 BNB • Next: Platinum</div></div></div>
+<div class="faucet-right">+50 🪙</div>
+</button>
+
+<button class="btn-faucet" onclick="openFaucet('https://bnbpick.io/?ref=SilasN75','faucet_timer',30)">
+<div class="btn-faucet-left"><div class="emoji-box">⏰</div><div><div class="faucet-title">Check Timer & Balance</div><div class="faucet-sub">See 19:59 timer • 0.00022185 BNB balance</div></div></div>
+<div class="faucet-right">+30 🪙</div>
+</button>
+
+<button class="btn-faucet" onclick="openFaucet('https://bnbpick.io/?ref=SilasN75','faucet_referral',80)">
+<div class="btn-faucet-left"><div class="emoji-box">👥</div><div><div class="faucet-title">Earn Referral Bonus</div><div class="faucet-sub">Share your faucet link & earn 20%</div></div></div>
+<div class="faucet-right">+80 🪙</div>
+</button>
+
+<div class="section-title">🎁 Other Offers (Resets Daily)</div>
+<div id="otherOffers"></div>
+
+<div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:16px">All offers reset at midnight • BNB faucet claims every hour</div>
 </div>
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore();
 let cachedUser=null;
-
-// CONFIG - You can edit coins here, later from Firebase appConfig/offers
-const OFFERS=[
-  {id:'offer_install_1', title:'Install TikTok Lite', desc:'Install & open', coins:150, icon:'📲', link:'https://play.google.com/store/apps/details?id=com.zhiliaoapp.musically.go', payout:'$0.40', postback:false},
-  {id:'offer_survey_1', title:'Quick Survey - 2 min', desc:'Answer 3 questions', coins:120, icon:'📝', link:'#', payout:'$0.30', postback:false},
-  {id:'offer_telegram', title:'Join Telegram Channel', desc:'Join & stay', coins:80, icon:'✈️', link:'https://t.me', payout:'$0.15', postback:false},
-  {id:'offer_cpa_1', title:'CPA Offer - Game', desc:'Install game & reach Lvl 5', coins:300, icon:'🎮', link:'https://example.com/cpa?subid={SUBID}', payout:'$1.20', postback:true}, // This one will use postback later
+const OTHER=[
+  {id:'telegram', title:'Join Telegram', sub:'Get updates', emoji:'✈️', coins:80, link:'https://t.me'},
+  {id:'survey', title:'Daily Survey', sub:'3 questions • 30 sec', emoji:'📝', coins:120, link:'#'},
+  {id:'game', title:'Play Game & Earn', sub:'Play 2 min', emoji:'🎮', coins:150, link:'https://play.google.com'},
+  {id:'invite', title:'Invite Friend', sub:'Share referral link', emoji:'🎁', coins:200, link:'home.html'},
 ];
 
-function render(){
-  const list=document.getElementById('offersList');
-  list.innerHTML='';
-  OFFERS.forEach(o=>{
-    const subid=cachedUser?`${cachedUser.uid}_${o.id}_${Date.now()}`:'';
-    const doneKey=`offer_done_${o.id}_${cachedUser?.uid}`;
-    const isDone=localStorage.getItem(doneKey)===new Date().toDateString();
-    list.innerHTML+=`
-    <div class="offer">
-      <div class="offer-left">
-        <div class="offer-icon">${o.icon}</div>
-        <div><div class="offer-title">${o.title}</div><div class="offer-desc">${o.desc} • Pays ${o.payout} to you</div></div>
-      </div>
-      <div class="offer-right">
-        <div class="reward">+${o.coins} 🪙</div><br>
-        <button class="btn" ${isDone?'disabled':''} onclick="clickOffer('${o.id}',${o.coins},'${o.link}','${subid}',${o.postback})">${isDone?'✓ Done':'Claim'}</button>
-        ${o.postback?'<div class="status">Postback Ready</div>':''}
-      </div>
-    </div>`;
+function renderOther(){
+  const el=document.getElementById('otherOffers');
+  el.innerHTML='';
+  const today=new Date().toISOString().split('T')[0];
+  OTHER.forEach(o=>{
+    const done=localStorage.getItem(`offer_done_${o.id}_${cachedUser?.uid}`)===today;
+    el.innerHTML+=`<div class="offer"><div style="display:flex;gap:12px;align-items:center"><div class="emoji-box">${o.emoji}</div><div><div class="faucet-title">${o.title}</div><div class="faucet-sub">${o.sub}</div></div></div><div style="text-align:right"><div style="font-weight:900;font-size:11px;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:999px;padding:3px 8px;display:inline-block;margin-bottom:6px">+${o.coins} 🪙</div><br><button class="faucet-right" style="border:none;cursor:pointer" ${done?'disabled':''} onclick="openFaucet('${o.link}','${o.id}',${o.coins})">${done?'✓ Done':'Claim'}</button></div></div>`;
   });
 }
 
-async function clickOffer(offerId, coins, linkTemplate, subid, isPostbackOffer){
+async function openFaucet(link, offerId, coins){
   const user=auth.currentUser||cachedUser; if(!user) return;
-  const finalLink=linkTemplate.replace('{SUBID}', subid);
-  // 1. Save click as pending
-  const clickRef=db.collection('users').doc(user.uid).collection('offerClicks').doc(subid);
-  await clickRef.set({offerId, subid, coins, link:finalLink, status:'pending', createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-  
-  if(finalLink!=='#') window.open(finalLink,'_blank');
-
-  const btn=event.target; btn.innerText='Checking...'; btn.disabled=true;
-
-  // NOW MODE: Instant pay (because no Visa / no Functions)
-  // LATER MODE: If isPostbackOffer=true, we keep pending and wait for postback.html call from OGAds
-  if(!isPostbackOffer || localStorage.getItem('force_instant')==='1'){
-    // Instant pay now
-    try{
-      await db.runTransaction(async t=>{
-        const userRef=db.collection('users').doc(user.uid);
-        const doc=await t.get(userRef);
-        const newBal=(doc.data().balance||0)+coins;
-        t.update(userRef,{balance:newBal});
-        t.update(clickRef,{status:'completed', completedAt:firebase.firestore.FieldValue.serverTimestamp()});
-        const histRef=userRef.collection('earnHistory').doc();
-        t.set(histRef,{action:'Offers Earn', desc:offerId, coins:coins, timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-      });
-      localStorage.setItem(`offer_done_${offerId}_${user.uid}`, new Date().toDateString());
-      btn.innerText='✓ Completed +'+coins;
-      loadBalance(); render();
-    }catch(e){ alert(e.message); btn.innerText='Claim'; btn.disabled=false; }
-  } else {
-    // Postback mode - wait
-    btn.innerText='⏳ Pending Postback';
-    alert('Offer clicked! You will get coins when OGAds confirms install. Keep app open. (For now instant because force_instant=1)');
-    // For demo, still pay instantly, but in real postback, OGAds will call postback.html?subid=...
+  const today=new Date().toISOString().split('T')[0];
+  const doneKey=`offer_done_${offerId}_${user.uid}`;
+  // Faucet can be claimed every hour, other offers daily
+  const isFaucet = offerId.startsWith('faucet');
+  const lastClaim = localStorage.getItem(doneKey);
+  if(!isFaucet && lastClaim===today){ alert('Already claimed today. Tomorrow resets!'); return; }
+  if(isFaucet && lastClaim){
+    const diff = Date.now() - parseInt(lastClaim);
+    if(diff < 3600000){ // 1 hour
+      const mins = Math.ceil((3600000 - diff)/60000);
+      alert(`Faucet: Wait ${mins} min. Your Gold level claims every hour. Come back soon!`); 
+      // Still open link for checking balance
+      if(link!=='#') window.open(link,'_blank');
+      return;
+    }
   }
+  if(link!=='#') window.open(link,'_blank');
+  const btn=event.currentTarget; 
+  try{
+    const userRef=db.collection('users').doc(user.uid);
+    const subid=`${user.uid}_${offerId}_${Date.now()}`;
+    await db.runTransaction(async t=>{
+      const d=await t.get(userRef);
+      t.update(userRef,{balance:(d.data().balance||0)+coins});
+      t.set(userRef.collection('offerClicks').doc(subid),{offerId, coins, status:'completed', createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+      t.set(userRef.collection('earnHistory').doc(),{action:'Offers - BNB', desc:offerId, coins, timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    });
+    localStorage.setItem(doneKey, isFaucet ? Date.now().toString() : today);
+    alert(`+${coins} coins added! ${isFaucet ? 'Your BNB faucet gives you real BNB on bnbpick.io + coins here!' : ''}`);
+    loadBalance(); renderOther();
+  }catch(e){ alert(e.message); }
 }
 
 function loadBalance(){
@@ -128,8 +137,7 @@ function loadBalance(){
     document.getElementById('balUsdt').innerText=Number(d.usdtBalance||0).toFixed(4)+' USDT';
   });
 }
-
-auth.onAuthStateChanged(u=>{ if(!u){location.href='index.html';return;} cachedUser=u; loadBalance(); render(); localStorage.setItem('force_instant','1'); });
+auth.onAuthStateChanged(u=>{ if(!u){location.href='index.html';return;} cachedUser=u; loadBalance(); renderOther(); });
 </script>
 </body>
 </html>
