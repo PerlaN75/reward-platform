@@ -73,14 +73,12 @@
   <div class="center-pill">⚙️ More</div>
   <div class="bell">🔔</div>
 </div>
-
 <div class="container">
   <div class="card">
     <div class="menu-list">
       <a onclick="openModal('profileModal')"><div>👤 Profile</div><span class="arrow">›</span></a>
       <a onclick="openModal('historyModal')"><div>📜 History</div><span class="arrow">›</span></a>
       <a onclick="openModal('settingsModal')"><div>⚙️ Settings</div><span class="arrow">›</span></a>
-      <!-- WIRED TO HELP.HTML -->
       <a href="help.html"><div>💬 Help/Support</div><span class="arrow">›</span></a>
     </div>
   </div>
@@ -156,8 +154,8 @@
 
 <div id="confirmModal" class="confirm-overlay" onclick="this.style.display='none'">
   <div class="confirm-box" onclick="event.stopPropagation()">
-    <h4>Delete History Forever?</h4>
-    <p style="font-size:12px;color:#6b7280;margin-top:6px">It will never appear again even after refresh.</p>
+    <h4>Delete History Forever from Firebase?</h4>
+    <p style="font-size:12px;color:#6b7280;margin-top:6px">This will permanently delete all records from Firebase — they will NOT come back after refresh.</p>
     <div class="confirm-actions">
       <button class="c-cancel" onclick="document.getElementById('confirmModal').style.display='none'">Cancel</button>
       <button class="c-ok" onclick="permanentClearHistory()">Yes, Delete Forever</button>
@@ -221,42 +219,76 @@ async function loadProfile(){
     document.getElementById('hUsdt').innerText=Number(usdt).toFixed(4)+' USDT';
   });
 }
+
+// FIXED - NO FAKE FILTER, REAL DATA
 async function loadHistory(){
   const user=auth.currentUser||cachedUser; if(!user) return;
   document.getElementById('historyList').innerHTML='<p>Loading...</p>'; allData=[];
   try{
-    const cleared = localStorage.getItem('history_cleared_at_'+user.uid);
-    db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(200).onSnapshot(snap=>{
+    db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(300).onSnapshot(snap=>{
       allData=[]; snap.forEach(d=>{
         const v=d.data(); const date=v.timestamp?.toDate?v.timestamp.toDate():new Date(); 
-        if(cleared && date < new Date(cleared)) return; 
-        allData.push({title:v.action||'Earn',desc:v.desc||'',points:v.coins ?? v.points ?? 0,date:date});
+        allData.push({id:d.id, title:v.action||'Earn',desc:v.desc||'',points:v.coins ?? v.points ?? 0,date:date});
       });
       render(allData);
-      localStorage.setItem('myHistory', JSON.stringify(allData.map(x=>({title:x.title,desc:x.desc,points:x.points}))));
     });
-  }catch(e){ document.getElementById('historyList').innerHTML='<p>No history yet</p>'; }
+  }catch(e){ 
+    // Fallback if no index
+    db.collection('users').doc(user.uid).collection('earnHistory').onSnapshot(snap=>{
+      allData=[]; snap.forEach(d=>{
+        const v=d.data(); const date=v.timestamp?.toDate?v.timestamp.toDate():new Date();
+        allData.push({id:d.id, title:v.action||'Earn',desc:v.desc||'',points:v.coins ?? v.points ?? 0,date:date});
+      });
+      allData.sort((a,b)=>b.date - a.date);
+      render(allData);
+    });
+  }
 }
+
 function render(data){
   const list=document.getElementById('historyList');
   document.getElementById('countText').innerText=data.length+' records';
-  if(data.length===0){list.innerHTML='<p style="padding:20px">No history - Cleared forever</p>';return;}
+  if(data.length===0){list.innerHTML='<p style="padding:20px">No history - Cleared forever ✅</p>';return;}
   list.innerHTML=''; data.forEach(i=>{ const d=i.date.toLocaleDateString(); list.innerHTML+=`<div class="item"><div><div style="font-weight:bold;font-size:13px">${i.title}</div><div style="font-size:11px;color:#9ca3af">${i.desc} - ${d}</div></div><div style="color:#22c55e;font-weight:900">+${i.points} 🪙</div></div>`; });
 }
+
+// NEW PERMANENT DELETE - DELETES FROM FIREBASE FOR REAL
 async function permanentClearHistory(){
   const user=auth.currentUser||cachedUser; if(!user) return;
+  const listEl=document.getElementById('historyList');
+  const countEl=document.getElementById('countText');
   document.getElementById('confirmModal').style.display='none';
-  document.getElementById('historyList').innerHTML='<p>Deleting forever...</p>';
+  listEl.innerHTML='<p style="padding:20px;text-align:center">🗑️ Deleting from Firebase... Please keep app open</p>';
+  countEl.innerText='Deleting...';
   try{
     const snap=await db.collection('users').doc(user.uid).collection('earnHistory').get();
-    const batch = db.batch(); snap.forEach(doc=>{ batch.delete(doc.ref); }); await batch.commit();
-    const now = new Date().toISOString();
-    localStorage.setItem('history_cleared_at_'+user.uid, now);
+    if(snap.empty){
+      allData=[]; render(allData); return;
+    }
+    let batch = db.batch();
+    let count = 0;
+    let totalDeleted = 0;
+    const docs = snap.docs;
+    for(let i=0; i<docs.length; i++){
+      batch.delete(docs[i].ref);
+      count++;
+      if(count === 400 || i === docs.length -1){
+        await batch.commit();
+        totalDeleted += count;
+        listEl.innerHTML=`<p style="padding:20px;text-align:center">🗑️ Deleted ${totalDeleted}/${docs.length}... Keep open</p>`;
+        batch = db.batch();
+        count = 0;
+      }
+    }
     localStorage.setItem('myHistory', JSON.stringify([]));
     await db.collection('users').doc(user.uid).set({historyClearedAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge:true});
     allData=[]; render(allData);
-  }catch(e){ const now = new Date().toISOString(); localStorage.setItem('history_cleared_at_'+user.uid, now); localStorage.setItem('myHistory', JSON.stringify([])); allData=[]; render(allData); }
+    countEl.innerText='0 records - Deleted forever from Firebase ✅';
+  }catch(e){
+    listEl.innerHTML=`<div style="background:#fef2f2;border:2px solid #fecaca;border-radius:12px;padding:12px"><p style="color:#991b1b;font-weight:700;font-size:13px">Delete failed: ${e.message}</p><p style="font-size:11px;margin-top:6px;color:#6b7280">Make sure you Published the new Rules with allow delete: if isOwner(userId)</p></div>`;
+  }
 }
+
 function setLang(code, el){ localStorage.setItem('app_lang', code); localStorage.setItem('appLang', code); document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active')); el.classList.add('active'); }
 function setMode(mode){ localStorage.setItem('app_mode', mode); document.getElementById('modeLight').classList.toggle('active', mode==='light'); document.getElementById('modeDark').classList.toggle('active', mode==='dark'); if(mode==='dark') document.body.classList.add('dark'); else document.body.classList.remove('dark'); }
 function saveSettings(){ closeModal('settingsModal'); }
