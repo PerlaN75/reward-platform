@@ -48,14 +48,12 @@ let cachedUser=null;
 
 const MY_BNB = "https://bnbpick.io/?ref=SilasN75";
 
-// POSTBACK-READY OFFERS YOU ASKED - No prices, only coins
+// REDUCED POINTS - Postback ready
 const OFFERS=[
-  {id:'bnb_faucet', emoji:'💧', name:'BNB Faucet', sub:'Gold Level', coins:100, link:MY_BNB, postback:true},
-  {id:'install_game', emoji:'🎮', name:'Play Game', sub:'Play & Earn', coins:150, link:'https://play.google.com/store', postback:true},
-  {id:'daily_survey', emoji:'📝', name:'Daily Survey', sub:'30 Sec', coins:120, link:'#', postback:true},
-  {id:'telegram_join', emoji:'✈️', name:'Telegram', sub:'Join Channel', coins:80, link:'https://t.me', postback:false},
-  {id:'install_app', emoji:'📲', name:'Install App', sub:'Install & Open', coins:150, link:'https://play.google.com', postback:true},
-  {id:'invite_friend', emoji:'👥', name:'Invite Friend', sub:'Share Link', coins:200, link:'home.html', postback:false},
+  {id:'bnb_faucet', emoji:'💧', name:'BNB Faucet', sub:'Gold Level', coins:15, link:MY_BNB, postback:true},
+  {id:'play_game', emoji:'🎮', name:'Play Game', sub:'Play & Earn', coins:25, link:'https://play.google.com/store', postback:true},
+  {id:'install_app', emoji:'📲', name:'Install App', sub:'Install & Open', coins:20, link:'https://play.google.com', postback:true},
+  {id:'telegram_join', emoji:'✈️', name:'Telegram', sub:'Join Channel', coins:10, link:'https://t.me', postback:false},
 ];
 
 function render(){
@@ -69,7 +67,7 @@ function render(){
       <div class="emoji">${o.emoji}</div>
       <div class="name">${o.name}</div>
       <div class="sub">${o.sub}</div>
-      <div class="badge">${done?'✓ Done Today':'+'+o.coins+' 🪙'}</div>
+      <div class="badge">${done?'✓ Done':'+'+o.coins+' 🪙'}</div>
     </div>`;
   });
 }
@@ -82,15 +80,11 @@ async function clickOffer(offerId, coins, link, isPostback){
 
   const subid=`${user.uid}_${offerId}_${Date.now()}`;
   const clickRef=db.collection('users').doc(user.uid).collection('offerClicks').doc(subid);
-
-  // 1. Create pending click (postback-ready)
   await clickRef.set({offerId, subid, coins, status:'pending', postback:isPostback, createdAt:firebase.firestore.FieldValue.serverTimestamp()});
 
-  if(link && link!=='#' ) window.open(link,'_blank');
+  if(link && link!=='#') window.open(link,'_blank');
 
-  // NOW MODE (no Visa): instant pay. LATER: if postback=true, keep pending until postback.html called by network
-  const forceInstant = true; // set false when you have Visa + real postback
-
+  const forceInstant = true; // false when you have Visa
   if(forceInstant || !isPostback){
     try{
       const userRef=db.collection('users').doc(user.uid);
@@ -103,8 +97,6 @@ async function clickOffer(offerId, coins, link, isPostback){
       localStorage.setItem(doneKey, today);
       render(); loadBalance();
     }catch(e){ alert(e.message); }
-  } else {
-    alert('Offer pending - coins will come after completion (postback)');
   }
 }
 
