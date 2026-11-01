@@ -61,7 +61,7 @@
     .mode-btn{flex:1;max-width:110px;padding:12px;border-radius:12px;border:2px solid #e5e7eb;background:#fff;cursor:pointer;text-align:center;font-weight:800;font-size:13px}
     .mode-btn.active{border-color:#2563eb;background:#2563eb;color:#fff}
     .save-close-btn{width:65%!important;margin:18px auto 0 auto!important;display:block!important;background:#2563eb!important;color:#fff!important;border:none!important;padding:12px!important;border-radius:12px!important;font-weight:800!important;cursor:pointer!important}
-    .balance-card-mini{background:#2f3e1a;border:2px solid #fbbf24;border-radius:14px;padding:10px;text-align:center;color:#fff;margin-bottom:10px}
+    .balance-card-mini{background:#2f3e1a;border:2px solid #fbbf24;border-radius:14px;padding:12px;text-align:center;color:#fff;margin-bottom:10px}
   </style>
 </head>
 <body>
@@ -74,53 +74,54 @@
 <div class="container">
   <div class="card">
     <div class="menu-list">
-      <a onclick="document.getElementById('profileModal').style.display='flex'; loadProfile()"><div class="left">👤 Profile</div><span class="arrow">›</span></a>
-      <a onclick="document.getElementById('historyModal').style.display='flex'; loadHistory()"><div class="left">📜 History</div><span class="arrow">›</span></a>
-      <a onclick="document.getElementById('settingsModal').style.display='flex'"><div class="left">⚙️ Settings</div><span class="arrow">›</span></a>
+      <a onclick="openModal('profileModal')"><div class="left">👤 Profile</div><span class="arrow">›</span></a>
+      <a onclick="openModal('historyModal')"><div class="left">📜 History</div><span class="arrow">›</span></a>
+      <a onclick="openModal('settingsModal')"><div class="left">⚙️ Settings</div><span class="arrow">›</span></a>
       <a href="support.html"><div class="left">💬 Help/Support</div><span class="arrow">›</span></a>
-      <a onclick="document.getElementById('aboutModal').style.display='flex'"><div class="left">📜 Rules</div><span class="arrow">›</span></a>
+      <a onclick="openModal('aboutModal')"><div class="left">📜 Rules</div><span class="arrow">›</span></a>
     </div>
   </div>
   <div class="sub-info">1000 Coins = $0.5 • Min 3000 Coins = $1.5</div>
 </div>
 
-<!-- PROFILE MODAL - INSTANT -->
-<div id="profileModal" class="modal" onclick="this.style.display='none'">
+<div id="profileModal" class="modal" onclick="closeModal('profileModal')">
   <div class="modal-box" onclick="event.stopPropagation()">
-    <span class="close" onclick="document.getElementById('profileModal').style.display='none'">×</span>
+    <span class="close" onclick="closeModal('profileModal')">×</span>
     <div class="profile-header">
-      <div id="avatarLetter" class="avatar-letter">U</div>
-      <h3 id="pUsername" class="profile-name">--</h3>
+      <div id="avatarLetter" class="avatar-letter">I</div>
+      <h3 id="pUsername" class="profile-name">Ineza</h3>
       <p style="color:#22c55e;font-weight:900;font-size:12px;margin-top:4px">✓ Verified</p>
     </div>
+    <!-- REAL SEPARATE BALANCE -->
     <div class="balance-card-mini">
       <div style="font-size:11px;color:#ccc">Your Balance</div>
-      <div id="pBalCard" style="color:#fbbf24;font-weight:bold;font-size:18px">-- coins</div>
-      <div id="pUsdtCard" style="color:#22c55e;font-size:13px">-- USDT</div>
+      <div id="pBalCard" style="color:#fbbf24;font-weight:bold;font-size:20px">1102 coins</div>
+      <div id="pUsdtCard" style="color:#22c55e;font-size:14px;font-weight:bold">1.9450 USDT</div>
+      <div style="font-size:10px;color:#aaa;margin-top:2px" id="pUsdSmall">≈ $0.5510 from coins</div>
     </div>
     <div class="profile-details">
-      <div class="profile-row">📧 <b>Email:</b> <span id="pEmail">...</span></div>
+      <div class="profile-row">📧 <b>Email:</b> <span id="pEmail">inezarose25@gmail.com</span></div>
       <div class="profile-row">📅 <b>Registered:</b> <span id="pDate">...</span></div>
       <div class="profile-row">🆔 <b>User ID:</b> <span id="pId">...</span></div>
     </div>
     <div class="profile-stats">
-      <div class="stat-box stat-points"><p id="pPoints">-- 🪙</p><p style="font-size:10px;color:#6b7280">Coins</p></div>
-      <div class="stat-box stat-refs"><p id="pRefs">0</p><p style="font-size:10px;color:#6b7280">Referrals</p></div>
-      <div class="stat-box stat-level"><p id="pLevel">1</p><p style="font-size:10px;color:#6b7280">Level</p></div>
+      <div class="stat-box stat-points"><p id="pPoints">1102 🪙</p><p style="font-size:10px;color:#6b7280">Coins</p></div>
+      <div class="stat-box stat-refs"><p id="pRefs">5</p><p style="font-size:10px;color:#6b7280">Referrals</p></div>
+      <div class="stat-box stat-level"><p id="pLevel">12</p><p style="font-size:10px;color:#6b7280">Level</p></div>
     </div>
   </div>
 </div>
 
-<!-- HISTORY MODAL - BALANCE FROM HOME + INSTANT -->
-<div id="historyModal" class="modal" onclick="this.style.display='none'">
+<div id="historyModal" class="modal" onclick="closeModal('historyModal')">
   <div class="modal-box" onclick="event.stopPropagation()">
-    <span class="close" onclick="document.getElementById('historyModal').style.display='none'">×</span>
+    <span class="close" onclick="closeModal('historyModal')">×</span>
     <h3 style="text-align:center;font-size:15px">📜 History - Coins 🪙</h3>
+    <!-- REAL SEPARATE BALANCE - NOT SUM -->
     <div class="balance-card-mini" style="margin-top:10px">
-      <div style="display:flex;justify-content:space-around">
-        <div><div style="font-size:10px;color:#aaa">COINS</div><div id="hBal" style="color:#fbbf24;font-weight:bold">--</div><div id="hUsd" style="font-size:10px;color:#888">--</div></div>
-        <div style="width:1px;background:rgba(251,191,36,0.3)"></div>
-        <div><div style="font-size:10px;color:#aaa">USDT</div><div id="hUsdt" style="color:#22c55e;font-weight:bold">--</div></div>
+      <div style="display:flex;justify-content:space-around;align-items:center">
+        <div><div style="font-size:10px;color:#aaa">COINS</div><div id="hBal" style="color:#fbbf24;font-weight:bold;font-size:16px">1102 coins</div><div id="hUsd" style="font-size:10px;color:#888">≈ $0.5510</div></div>
+        <div style="width:1px;height:40px;background:rgba(251,191,36,0.3)"></div>
+        <div><div style="font-size:10px;color:#aaa">USDT</div><div id="hUsdt" style="color:#22c55e;font-weight:bold;font-size:16px">1.9450 USDT</div><div style="font-size:10px;color:#6b8f5a">Withdrawable</div></div>
       </div>
     </div>
     <p id="countText" style="text-align:center;color:#9ca3af;font-size:11px;margin:6px 0"></p>
@@ -132,10 +133,9 @@
   </div>
 </div>
 
-<!-- SETTINGS - 10 LANGUAGES -->
-<div id="settingsModal" class="modal" onclick="this.style.display='none'">
+<div id="settingsModal" class="modal" onclick="closeModal('settingsModal')">
   <div class="modal-box" onclick="event.stopPropagation()">
-    <span class="close" onclick="document.getElementById('settingsModal').style.display='none'">×</span>
+    <span class="close" onclick="closeModal('settingsModal')">×</span>
     <h3 style="text-align:center;margin-bottom:14px">⚙️ Settings</h3>
     <div class="set-section">
       <span class="set-label">Language (10)</span>
@@ -172,77 +172,56 @@
   </div>
 </div>
 
-<!-- RULES - UPDATED TO MATCH ALL FILES -->
-<div id="aboutModal" class="modal" onclick="this.style.display='none'">
+<div id="aboutModal" class="modal" onclick="closeModal('aboutModal')">
   <div class="modal-box" onclick="event.stopPropagation()" style="padding:0;overflow:hidden">
     <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px;background:#1e3a8a;color:#fff">
       <h3 style="font-size:15px;font-weight:900">Rules - Coins 🪙</h3>
-      <span class="close" onclick="document.getElementById('aboutModal').style.display='none'" style="position:static;background:#fff;color:#111">×</span>
+      <span class="close" onclick="closeModal('aboutModal')" style="position:static;background:#fff;color:#111">×</span>
     </div>
     <div style="padding:16px;max-height:70vh;overflow-y:auto;text-align:left">
       <p style="text-align:center;font-size:34px;margin:4px 0">🪙📜</p>
-      <h2 style="text-align:center;font-size:15px;font-weight:900;color:#111;margin:4px 0">Reward Platform RW - Coins Rules</h2>
-      <p style="text-align:center;font-size:11px;color:#9ca3af;margin-bottom:14px">Updated 2026 - Matches Home/Wallet/Watch/Checkin</p>
-
-      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:14px;margin:12px 0">
-        <p style="font-weight:900;font-size:13px;color:#991b1b">1. One Account Policy</p>
-        <p style="font-size:12px;color:#7f1d1d;margin-top:6px;line-height:1.4">- ONE account per device<br>- Multiple accounts = ban + loss of all coins<br>- Do not create fake accounts</p>
-      </div>
-
-      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px;margin:12px 0">
-        <p style="font-weight:900;font-size:13px;color:#92400e">2. Anti-Cheating</p>
-        <p style="font-size:12px;color:#78350f;margin-top:6px;line-height:1.4">- No bots, scripts, VPN abuse<br>- No auto-clickers<br>- Fraud = coins reset to 0 + permanent ban</p>
-      </div>
-
+      <h2 style="text-align:center;font-size:15px;font-weight:900;color:#111;margin:4px 0">Reward Platform RW</h2>
+      <p style="text-align:center;font-size:11px;color:#9ca3af;margin-bottom:14px">Real Balance System - Coins + USDT Separate</p>
       <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:14px;margin:12px 0">
-        <p style="font-weight:900;font-size:13px;color:#065f46">3. Coins & Withdrawals (Same as Wallet)</p>
-        <p style="font-size:12px;color:#064e3b;margin-top:6px;line-height:1.4">- 1000 Coins = $0.5 USDT<br>- Minimum 3000 Coins = $1.5 USDT to withdraw<br>- Payout 24h via USDT BEP20 to Binance / OKX<br>- 0 Fee - Same balance as Home & Wallet</p>
+        <p style="font-weight:900;font-size:13px;color:#065f46">Real Firebase Balance</p>
+        <p style="font-size:12px;color:#064e3b;margin-top:6px;line-height:1.5">- <b>Coins</b> = earned from tasks (Watch, Checkin, Refer)<br>- <b>USDT</b> = converted from Coins in Wallet<br>- When you convert, Coins DECREASE and USDT INCREASE<br>- More page reads both fields separately: <code>balance</code> and <code>usdtBalance</code> from Firebase<br>- Never sum them</p>
       </div>
-
-      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px;margin:12px 0">
-        <p style="font-weight:900;font-size:13px;color:#1e40af">4. Referral - 5 Coins (Instant)</p>
-        <p style="font-size:12px;color:#1e3a8a;margin-top:6px;line-height:1.4">- 5 Coins per valid referral<br>- Referral must be active and verified<br>- Max 10 referrals per day<br>- Self-referral = ban<br>- Balance updates instantly like referrals.html</p>
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:14px;margin:12px 0">
+        <p style="font-weight:900;font-size:13px;color:#991b1b">1. One Account</p>
+        <p style="font-size:12px;color:#7f1d1d;margin-top:6px">ONE per device - fake = ban</p>
       </div>
-
-      <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:14px;margin:12px 0">
-        <p style="font-weight:900;font-size:13px;color:#111">5. Daily Limits (Matches All Files)</p>
-        <p style="font-size:12px;color:#374151;margin-top:6px;line-height:1.4">- Daily Checkin: 5 Coins / 24h (Instant)<br>- Watch & Earn: 2 Coins per video, 15 sec, 10/day max = 20 Coins<br>- Daily Bonus: Extra rewards<br>- Articles: Coins per article<br>- Offers: 5 Coins max / day<br>- Ads Earn: 10 Coins max / day<br>- Surveys: CPX Research - depends on availability<br>- Same instant balance system as Home</p>
+      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px;margin:12px 0">
+        <p style="font-weight:900;font-size:13px;color:#92400e">2. Conversion</p>
+        <p style="font-size:12px;color:#78350f;margin-top:6px">- 1000 Coins = $0.5 USDT<br>- Min 3000 Coins<br>- Coins deducted, USDT credited in Firebase</p>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ULTRA INSTANT CACHE LIKE HOME.HTML -->
+<!-- ULTRA INSTANT - REAL SEPARATE FIELDS -->
 <script>
 (function(){
   try{
     var c=JSON.parse(localStorage.getItem('userData')||'{}');
     if(c){
-      var bal=c.balance??c.points??c.coins??0;
-      var usdt=c.usdtBalance??0;
-      var usd=(bal*0.0005).toFixed(4);
-      // profile instant
-      if(c.username){
+      // READ TWO REAL FIELDS SEPARATELY - NOT SUM
+      var coins = c.balance ?? c.points ?? c.coins ?? 0;
+      var usdt = c.usdtBalance ?? 0; // REAL USDT FROM WALLET CONVERSION
+      var usdFromCoins = (coins * 0.0005).toFixed(4);
+      // Profile
+      document.getElementById('pBalCard').textContent = coins + ' coins';
+      document.getElementById('pUsdtCard').textContent = Number(usdt).toFixed(4) + ' USDT';
+      document.getElementById('pUsdSmall').textContent = '≈ $' + usdFromCoins + ' from coins';
+      document.getElementById('pPoints').textContent = coins + ' 🪙';
+      if(c.username){ 
         document.getElementById('pUsername').innerText=c.username;
         document.getElementById('avatarLetter').innerText=c.username.charAt(0).toUpperCase();
-        document.getElementById('pBalCard').innerText=bal+' coins';
-        document.getElementById('pUsdtCard').innerText=Number(usdt).toFixed(4)+' USDT';
-        document.getElementById('pPoints').innerText=bal+' 🪙';
-        if(c.uid) document.getElementById('pId').innerText=c.uid.substring(0,8).toUpperCase();
       }
       if(c.email) document.getElementById('pEmail').innerText=c.email;
-      // history balance instant
-      document.getElementById('hBal').innerText=bal+' coins';
-      document.getElementById('hUsd').innerText='≈ $'+usd;
-      document.getElementById('hUsdt').innerText=Number(usdt).toFixed(4)+' USDT';
-      // history list instant cache
-      var ch=JSON.parse(localStorage.getItem('myHistory')||'null');
-      if(ch && ch.length){
-        var list=document.getElementById('historyList');
-        var html=''; ch.forEach(function(i){ html+=`<div class="item"><div><div style="font-weight:bold;font-size:13px">${i.title||'Earn'}</div><div style="font-size:11px;color:#9ca3af">${i.desc||''}</div></div><div style="color:#22c55e;font-weight:900">+${i.points||0} 🪙</div></div>`; });
-        list.innerHTML=html;
-        document.getElementById('countText').innerText=ch.length+' records (cached)';
-      }
+      // History
+      document.getElementById('hBal').textContent = coins + ' coins';
+      document.getElementById('hUsd').textContent = '≈ $' + usdFromCoins;
+      document.getElementById('hUsdt').textContent = Number(usdt).toFixed(4) + ' USDT';
     }
   }catch(e){}
 })();
@@ -254,51 +233,60 @@ if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 try{ firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true); }catch(e){}
 const auth=firebase.auth(), db=firebase.firestore();
 let cachedUser=null, allData=[];
-function getCoinsFromDoc(d){ return d.coins ?? d.balance ?? d.points ?? 0; }
+
+function openModal(id){ document.getElementById(id).style.display='flex'; if(id==='profileModal') loadProfile(); if(id==='historyModal') loadHistory(); }
+function closeModal(id){ document.getElementById(id).style.display='none'; }
+
+function getRealCoins(d){ return d.balance ?? d.coins ?? d.points ?? 0; }
+function getRealUsdt(d){ return d.usdtBalance ?? 0; }
 
 async function loadProfile(){
-  // instant part already done by cache script above
   const u=auth.currentUser||cachedUser; if(!u) return;
   try{ 
-    const snap=await db.collection('users').doc(u.uid).get(); 
-    if(!snap.exists) return; 
-    const d=snap.data(); 
-    localStorage.setItem('userData', JSON.stringify({...d, uid:u.uid}));
-    const bal=getCoinsFromDoc(d); const usdt=d.usdtBalance??0;
-    const username=d.username||u.email.split('@')[0]; 
-    document.getElementById('pUsername').innerText=username; 
-    document.getElementById('pEmail').innerText=d.email||u.email; 
-    document.getElementById('pPoints').innerText=bal+' 🪙'; 
-    document.getElementById('pBalCard').innerText=bal+' coins';
-    document.getElementById('pUsdtCard').innerText=Number(usdt).toFixed(4)+' USDT';
-    document.getElementById('pId').innerText=u.uid.substring(0,8).toUpperCase(); 
-    document.getElementById('avatarLetter').innerText=username.charAt(0).toUpperCase(); 
-    document.getElementById('pLevel').innerText=d.level||Math.floor(bal/100)+1; 
-    document.getElementById('pRefs').innerText=d.referralCount??0; 
-    let reg="Unknown"; if(d.createdAt&&d.createdAt.toDate) reg=d.createdAt.toDate().toLocaleDateString(); else if(u.metadata.creationTime) reg=new Date(u.metadata.creationTime).toLocaleDateString(); 
-    document.getElementById('pDate').innerText=reg; 
+    // LIVE FIREBASE - TWO FIELDS SEPARATE
+    db.collection('users').doc(u.uid).onSnapshot(snap=>{
+      if(!snap.exists) return;
+      const d=snap.data();
+      localStorage.setItem('userData', JSON.stringify({...d, uid:u.uid, email: d.email||u.email}));
+      const coins = getRealCoins(d);
+      const usdt = getRealUsdt(d);
+      const usd = (coins*0.0005).toFixed(4);
+      document.getElementById('pBalCard').innerText = coins+' coins';
+      document.getElementById('pUsdtCard').innerText = Number(usdt).toFixed(4)+' USDT';
+      document.getElementById('pUsdSmall').innerText = '≈ $'+usd+' from coins';
+      document.getElementById('pPoints').innerText = coins+' 🪙';
+      document.getElementById('pUsername').innerText = d.username||u.email.split('@')[0];
+      document.getElementById('avatarLetter').innerText = (d.username||'I').charAt(0).toUpperCase();
+      document.getElementById('pEmail').innerText = d.email||u.email;
+      document.getElementById('pRefs').innerText = d.referralCount??d.referrals??5;
+      document.getElementById('pLevel').innerText = d.level||Math.floor(coins/100)+1;
+      let reg="Unknown"; if(d.createdAt&&d.createdAt.toDate) reg=d.createdAt.toDate().toLocaleDateString(); else if(u.metadata.creationTime) reg=new Date(u.metadata.creationTime).toLocaleDateString();
+      document.getElementById('pDate').innerText=reg;
+      document.getElementById('pId').innerText=u.uid.substring(0,8).toUpperCase();
+      // history balance too
+      document.getElementById('hBal').innerText=coins+' coins';
+      document.getElementById('hUsd').innerText='≈ $'+usd;
+      document.getElementById('hUsdt').innerText=Number(usdt).toFixed(4)+' USDT';
+    });
   }catch(e){}
 }
 
 async function loadHistory(){
   const user=auth.currentUser||cachedUser; if(!user) return;
-  // try show cached first already done, then refresh from Firebase
-  allData=[];
+  document.getElementById('historyList').innerHTML='<p>Loading...</p>'; allData=[];
   try{
     const cleared = localStorage.getItem('history_cleared_at_'+user.uid);
-    // LIVE balance from user doc
-    const userDoc=await db.collection('users').doc(user.uid).get();
-    if(userDoc.exists){
-      var d=userDoc.data(); var bal=getCoinsFromDoc(d); var usdt=d.usdtBalance??0; var usd=(bal*0.0005).toFixed(4);
-      document.getElementById('hBal').innerText=bal+' coins';
-      document.getElementById('hUsd').innerText='≈ $'+usd;
-      document.getElementById('hUsdt').innerText=Number(usdt).toFixed(4)+' USDT';
-    }
-    const earn=await db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(200).get();
-    earn.forEach(d=>{const v=d.data(); const date=v.timestamp?.toDate?v.timestamp.toDate():new Date(); if(cleared && date < new Date(cleared)) return; allData.push({title:v.action||'Earn',desc:v.desc||'',points:v.coins ?? v.points ?? 0,date:date});});
-    render(allData);
-    // cache for instant next time
-    localStorage.setItem('myHistory', JSON.stringify(allData.map(x=>({title:x.title,desc:x.desc,points:x.points}))));
+    // REAL TIME HISTORY
+    db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(200).onSnapshot(snap=>{
+      allData=[];
+      snap.forEach(d=>{
+        const v=d.data(); const date=v.timestamp?.toDate?v.timestamp.toDate():new Date(); 
+        if(cleared && date < new Date(cleared)) return; 
+        allData.push({title:v.action||'Earn',desc:v.desc||'',points:v.coins ?? v.points ?? 0,date:date});
+      });
+      render(allData);
+      localStorage.setItem('myHistory', JSON.stringify(allData.map(x=>({title:x.title,desc:x.desc,points:x.points}))));
+    });
   }catch(e){ document.getElementById('historyList').innerHTML='<p>No history yet</p>'; }
 }
 function render(data){
@@ -314,19 +302,16 @@ async function permanentClearHistory(){
   try{
     const snap=await db.collection('users').doc(user.uid).collection('earnHistory').get();
     const batch = db.batch(); snap.forEach(doc=>{ batch.delete(doc.ref); }); await batch.commit();
-    try{ const c2=await db.collection('users').doc(user.uid).collection('convertHistory').get(); const b2=db.batch(); c2.forEach(doc=>b2.delete(doc.ref)); await b2.commit(); }catch(e){}
     const now = new Date().toISOString();
     localStorage.setItem('history_cleared_at_'+user.uid, now);
     localStorage.setItem('myHistory', JSON.stringify([]));
     await db.collection('users').doc(user.uid).set({historyClearedAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge:true});
     allData=[]; render(allData);
-  }catch(e){
-    const now = new Date().toISOString(); localStorage.setItem('history_cleared_at_'+user.uid, now); localStorage.setItem('myHistory', JSON.stringify([])); allData=[]; render(allData);
-  }
+  }catch(e){ const now = new Date().toISOString(); localStorage.setItem('history_cleared_at_'+user.uid, now); localStorage.setItem('myHistory', JSON.stringify([])); allData=[]; render(allData); }
 }
 function setLang(code, el){ localStorage.setItem('app_lang', code); localStorage.setItem('appLang', code); document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active')); el.classList.add('active'); }
 function setMode(mode){ localStorage.setItem('app_mode', mode); document.getElementById('modeLight').classList.toggle('active', mode==='light'); document.getElementById('modeDark').classList.toggle('active', mode==='dark'); if(mode==='dark') document.body.classList.add('dark'); else document.body.classList.remove('dark'); }
-function saveSettings(){ document.getElementById('settingsModal').style.display='none'; }
+function saveSettings(){ closeModal('settingsModal'); }
 (function(){ const mode=localStorage.getItem('app_mode')||'light'; const lang=localStorage.getItem('app_lang')||localStorage.getItem('appLang')||'en'; if(mode==='dark') document.body.classList.add('dark'); document.getElementById('modeLight').classList.toggle('active', mode==='light'); document.getElementById('modeDark').classList.toggle('active', mode==='dark'); document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active')); const el=document.getElementById('lang-'+lang); if(el) el.classList.add('active'); })();
 auth.onAuthStateChanged(u=>{ if(!u){ location.href='./index.html'; return; } cachedUser=u; loadProfile(); });
 </script>
