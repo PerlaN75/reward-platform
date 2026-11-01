@@ -36,13 +36,25 @@ body{background:#ffffff;min-height:100vh;padding:16px 14px;color:#000}
 </div>
 </div>
 
-<!-- ULTRA INSTANT CACHE -->
+<!-- ULTRA INSTANT - SHOWS YOUR SCREENSHOT IN 0.01s -->
 <script>
 (function(){
   try{
     var c = JSON.parse(localStorage.getItem('userData')||'{}');
-    if(c && (c.balance!=null || c.points!=null)){
-      document.getElementById('bal').textContent = (c.balance ?? c.points ?? 0) + ' coins';
+    var today = new Date().toISOString().split('T')[0];
+    if(c){
+      // instant balance
+      if(c.balance!=null || c.points!=null){
+        document.getElementById('bal').textContent = (c.balance ?? c.points ?? 0) + ' coins';
+      }
+      // instant claimed status - like your screenshot
+      if(c.lastCheckin === today){
+        var btn = document.getElementById('claimBtn');
+        btn.disabled = true;
+        btn.innerText = 'Already Claimed Today ✓';
+        document.getElementById('successMsg').style.display = 'block';
+        document.getElementById('checkinNote').innerText = 'Come back tomorrow';
+      }
     }
   }catch(e){}
 })();
@@ -89,12 +101,12 @@ async function claimDaily(){
   const today=getToday();
   if(userData.lastCheckin===today){showToast('Already claimed today'); isClaiming=false; return;}
 
-  // INSTANT UI - show +5 immediately
+  // INSTANT UI
   const btn=document.getElementById('claimBtn');
-  btn.disabled=true; btn.innerText='Claiming...';
+  btn.disabled=true; btn.innerText='Already Claimed Today ✓';
   document.getElementById('bal').innerText=((userData.balance||0)+5)+' coins';
   document.getElementById('successMsg').style.display='block';
-  document.getElementById('checkinNote').innerText='✓ Added!';
+  document.getElementById('checkinNote').innerText='Come back tomorrow';
   showToast('✓ 5 Coins Added!');
 
   try{
@@ -109,28 +121,13 @@ async function claimDaily(){
     await db.runTransaction(async (tr)=>{
       const ref=db.collection('users').doc(currentUser.uid);
       const snap=await tr.get(ref);
-      const data=snap.data();
-      if(data.lastCheckin===today) throw "already";
-      tr.update(ref,{
-        balance: firebase.firestore.FieldValue.increment(5),
-        lastCheckin: today
-      });
+      if(snap.data().lastCheckin===today) throw "already";
+      tr.update(ref,{ balance: firebase.firestore.FieldValue.increment(5), lastCheckin: today });
     });
     await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Daily Checkin',points:5,desc:'Daily Bonus',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
   }catch(e){
-    if(e==="already"){
-      showToast('Already claimed today');
-      checkStatus();
-    }else{
-      console.log(e);
-      // rollback cache if failed
-      try{
-        var rollback = JSON.parse(localStorage.getItem('userData')||'{}');
-        rollback.balance = (rollback.balance||5)-5;
-        rollback.points = (rollback.points||5)-5;
-        localStorage.setItem('userData', JSON.stringify(rollback));
-      }catch(err){}
-      showToast('Failed, try again');
+    if(e==="already") checkStatus();
+    else{
       const doc=await db.collection('users').doc(currentUser.uid).get(); 
       if(doc.exists) loadData(doc.data());
     }
