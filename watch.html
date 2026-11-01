@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Watch & Earn - FINAL</title>
+<title>Watch & Earn</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="monetag" content="b671b8351bfc48ed0161f6bd0b6a5340">
 <script src="https://quge5.com/88/tag.min.js" data-zone="286869" async data-cfasync="false"></script>
@@ -10,10 +10,13 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:#0e1a0e;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;overflow-x:hidden}
-.header-bar{width:100%;max-width:400px;display:flex;align-items:center;gap:12px;margin:8px 0 14px 0}
-.back-btn{background:#fff;border:2px solid #fca5a5;border-radius:12px;width:44px;height:40px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#991b1b;cursor:pointer;box-shadow:0 2px 0 #fecaca}
-.back-btn:active{transform:scale(0.96)}
+body{background:#0e1a0e;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px 14px 100px 14px;overflow-x:hidden}
+
+/* EXACT BACK BUTTON FROM WALLET.HTML */
+.header{display:flex;align-items:center;gap:12px;margin:20px 0 10px;width:100%;max-width:400px}
+.back{width:42px;height:38px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;color:#991b1b;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;cursor:pointer;box-shadow:0 2px 0 #fca5a5}
+.back:active{transform:scale(0.96);box-shadow:0 1px 0 #fca5a5}
+
 .card{width:100%;max-width:400px;background:#1d331d;border:3px solid #fbbf24;border-radius:24px;padding:20px 18px}
 h1{color:#facc15;text-align:center;font-size:28px;margin-bottom:12px}
 .balance-box{background:#0a120a;border:2px solid #fbbf24;border-radius:16px;padding:12px;text-align:center;color:#fff;margin-bottom:14px}
@@ -33,16 +36,10 @@ video{width:100%;height:100%;object-fit:contain;background:#000}
 <canvas id="confetti" style="position:fixed;inset:0;pointer-events:none;z-index:9999;display:none"></canvas>
 <div id="bubble" class="bubble"></div>
 
-<!-- WALLET-STYLE BACK BUTTON -->
-<div class="header-bar">
-  <button class="back-btn" onclick="location.href='./home.html'">❮</button>
-  <div style="display:flex;align-items:center;gap:6px;font-size:22px;font-weight:900;color:#fff">
-    <span>📺</span> Watch & Earn
-  </div>
-</div>
+<!-- WALLET BACK BUTTON COPIED -->
+<div class="header"><div class="back" onclick="location.href='./home.html'">‹</div><h2 style="color:#fff;font-size:20px">📺 Watch & Earn</h2></div>
 
 <div class="card">
-<h1 style="display:none">Watch & Earn</h1>
 <div class="balance-box">Balance: <b id="bal">-- pts</b><br><span style="font-size:13px"><span id="today">0/10</span> today</span><div class="vtitle" id="vt">Loading...</div><div id="err" class="err"></div></div>
 <div class="video-box">
 <div class="player"><video id="v" playsinline controls preload="metadata" crossorigin="anonymous" loop></video><div class="overlay" id="ov">Loading videos...</div></div>
@@ -89,18 +86,7 @@ firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.fi
 let bal=0,today=0,currentUser=null,timer=null,dailyPlaylist=[],failCount=0, loadChecker=null, adWindowOpened=false, currentVideo=null;
 const ov=document.getElementById('ov'),vid=document.getElementById('v'),btn=document.getElementById('btn'),pbar=document.getElementById('pbar'),balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),vtEl=document.getElementById('vt'),errEl=document.getElementById('err');
 function updateUI(){ let displayToday = Math.min(today,10); balEl.textContent=bal+' pts'; todayEl.textContent=displayToday+'/10'; if(dailyPlaylist.length && today<10 && dailyPlaylist[today]){vtEl.textContent=`Next: ${dailyPlaylist[today].title}`;} }
-
-// INSTANT CACHE FOR BALANCE
-try{
-  const c = JSON.parse(localStorage.getItem('userData')||'{}');
-  if(c && (c.balance!=null || c.points!=null)){
-    bal = c.balance ?? c.points ?? 0;
-    today = c.todayCount ?? c.today ?? 0;
-    balEl.textContent = bal+' pts';
-    todayEl.textContent = Math.min(today,10)+'/10';
-  }
-}catch(e){}
-
+try{ const c = JSON.parse(localStorage.getItem('userData')||'{}'); if(c && (c.balance!=null || c.points!=null)){ bal = c.balance ?? c.points ?? 0; today = c.todayCount ?? c.today ?? 0; balEl.textContent = bal+' pts'; todayEl.textContent = Math.min(today,10)+'/10'; } }catch(e){}
 auth.onAuthStateChanged(async(u)=>{
   if(!u){location.href='./index.html';return;} currentUser=u; 
   ov.innerHTML='📡 Loading videos...'; await loadLiveVideos(); dailyPlaylist=getRandomPlaylist();
