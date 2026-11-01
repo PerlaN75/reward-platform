@@ -72,13 +72,30 @@ function loadData(d){
   userData=d;
   if(userData.usdtBalance==null) userData.usdtBalance=0;
   if(userData.balance==null) userData.balance=0;
+  if(userData.points==null) userData.points=userData.balance;
   document.getElementById('headerText').innerText=d.username||'User';
-  document.getElementById('balance').innerText=(d.balance||0)+' coins';
-  document.getElementById('usdBalance').innerText=`≈ $${((d.balance||0)*POINT_RATE).toFixed(4)}`;
+  document.getElementById('balance').innerText=(d.balance ?? d.points ?? 0)+' coins';
+  document.getElementById('usdBalance').innerText=`≈ $${((d.balance ?? d.points ?? 0)*POINT_RATE).toFixed(4)}`;
   document.getElementById('usdtBalanceDisplay').innerText=(userData.usdtBalance||0).toFixed(4)+' USDT';
+  localStorage.setItem('userData',JSON.stringify(d));
 }
-const cached=JSON.parse(localStorage.getItem('userData')||'{}');if(cached.username)loadData(cached);
 db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maintenanceOverlay').style.display='flex';}else{document.getElementById('maintenanceOverlay').style.display='none';}});
-auth.onAuthStateChanged(async u=>{if(u){currentUser=u;const doc=await db.collection('users').doc(u.uid).get();if(doc.exists){const data=doc.data();localStorage.setItem('userData',JSON.stringify(data));loadData(data);}}else{location.href='./index.html';}});
+
+// FIXED: LIVE listener instead of one-time get()
+auth.onAuthStateChanged(u=>{
+  if(u){
+    currentUser=u;
+    db.collection('users').doc(u.uid).onSnapshot(doc=>{
+      if(doc.exists){
+        loadData(doc.data());
+      }
+    }, err=>{
+      console.log("Snapshot error", err);
+    });
+  }else{
+    location.href='./index.html';
+  }
+});
+
 window.logout=async function(){await auth.signOut();localStorage.clear();location.href='./index.html';}
 </script></body></html>
