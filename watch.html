@@ -10,43 +10,49 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:#0e1a0e;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px 14px 100px 14px;overflow-x:hidden}
+body{background:#ffffff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px 14px 100px 14px;overflow-x:hidden}
 
-/* EXACT BACK BUTTON FROM WALLET.HTML */
-.header{display:flex;align-items:center;gap:12px;margin:20px 0 10px;width:100%;max-width:400px}
+/* BACK BUTTON EXACT FROM WALLET */
+.header{display:flex;align-items:center;gap:12px;margin:20px 0 12px;width:100%;max-width:500px}
 .back{width:42px;height:38px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;color:#991b1b;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;cursor:pointer;box-shadow:0 2px 0 #fca5a5}
-.back:active{transform:scale(0.96);box-shadow:0 1px 0 #fca5a5}
+.back:active{transform:scale(0.96)}
 
-.card{width:100%;max-width:400px;background:#1d331d;border:3px solid #fbbf24;border-radius:24px;padding:20px 18px}
-h1{color:#facc15;text-align:center;font-size:28px;margin-bottom:12px}
-.balance-box{background:#0a120a;border:2px solid #fbbf24;border-radius:16px;padding:12px;text-align:center;color:#fff;margin-bottom:14px}
-.video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #2a4a2a}
+/* PROFESSIONAL CARD - LIKE WALLET */
+.main-card{width:100%;max-width:500px;background:#ffffff;border:2px solid #f1f5f9;border-radius:20px;padding:16px;box-shadow:0 8px 30px rgba(0,0,0,0.06)}
+.balance-box{background:#2f3e1a;border:2px solid #fbbf24;border-radius:16px;padding:14px;text-align:center;color:#fff;margin-bottom:16px}
+.video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #111827}
 .player{aspect-ratio:16/9;background:#000;position:relative;display:flex;align-items:center;justify-content:center}
 video{width:100%;height:100%;object-fit:contain;background:#000}
 .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.92);color:#fff;text-align:center;padding:14px;flex-direction:column;z-index:2;font-weight:800;font-size:15px}
-.progress{height:10px;background:#2a4a2a}.progress-bar{height:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);width:0%;transition:width .3s}
-.btn{width:100%;background:#fbbf24;color:#000;border:none;border-radius:12px;padding:14px;font-weight:900;font-size:16px;cursor:pointer;margin:14px 0 0}
-.btn:disabled{background:#5a4a1a;color:#aaa}
+.progress{height:10px;background:#1f2937}.progress-bar{height:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);width:0%;transition:width .3s}
+.btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;padding:16px;font-weight:900;font-size:16px;cursor:pointer;margin:14px 0 0;box-shadow:0 3px 0 #d97706}
+.btn:active{transform:scale(0.98)}
+.btn:disabled{background:#e5e7eb;color:#9ca3af;box-shadow:none}
 .vtitle{font-size:12px;color:#facc15;margin-top:6px}
 .bubble{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#000;padding:14px 22px;border-radius:999px;font-weight:900;z-index:10000;display:none;box-shadow:0 10px 30px rgba(0,0,0,.5)}
-.err{font-size:12px;color:#ff8a8a;margin-top:8px}
+.err{font-size:12px;color:#ef4444;margin-top:8px}
 </style>
 </head>
 <body>
 <canvas id="confetti" style="position:fixed;inset:0;pointer-events:none;z-index:9999;display:none"></canvas>
 <div id="bubble" class="bubble"></div>
 
-<!-- WALLET BACK BUTTON COPIED -->
-<div class="header"><div class="back" onclick="location.href='./home.html'">‹</div><h2 style="color:#fff;font-size:20px">📺 Watch & Earn</h2></div>
+<div class="header"><div class="back" onclick="location.href='./home.html'">‹</div><h2 style="color:#000;font-size:20px">📺 Watch & Earn</h2></div>
 
-<div class="card">
-<div class="balance-box">Balance: <b id="bal">-- pts</b><br><span style="font-size:13px"><span id="today">0/10</span> today</span><div class="vtitle" id="vt">Loading...</div><div id="err" class="err"></div></div>
+<div class="main-card">
+<div class="balance-box">
+<div style="color:#ccc;font-size:11px;letter-spacing:0.5px">Your Balance</div>
+<div style="margin-top:6px"><span style="font-size:20px;color:#fbbf24;font-weight:bold" id="bal">-- pts</span> <span style="font-size:13px;color:#fff;opacity:0.8">• <span id="today">0/10</span> today</span></div>
+<div class="vtitle" id="vt">Loading...</div><div id="err" class="err"></div>
+</div>
+
 <div class="video-box">
 <div class="player"><video id="v" playsinline controls preload="metadata" crossorigin="anonymous" loop></video><div class="overlay" id="ov">Loading videos...</div></div>
 <div class="progress"><div class="progress-bar" id="pbar"></div></div>
-<div style="padding:0 12px 12px"><button class="btn" id="btn" disabled>Loading...</button></div>
+<div style="padding:0 12px 12px;background:#000"><button class="btn" id="btn" disabled>Loading...</button></div>
 </div>
 </div>
+
 <script>
 const DIRECT_LINK="https://omg10.com/4/11905870";
 const LIVE_API="https://steep-mountain-1ce5.silntr235.workers.dev";
@@ -74,16 +80,13 @@ const ALL_VIDEOS_FALLBACK=[
 {src:"https://files.catbox.moe/lzrb1b.mp4",title:"Video 20"}
 ];
 let ALL_VIDEOS=[...ALL_VIDEOS_FALLBACK];
-async function loadLiveVideos(){
-  try{ const res = await fetch(LIVE_API); const data = await res.json(); if(Array.isArray(data) && data.length >= 5){ ALL_VIDEOS = data; return true; } }catch(e){}
-  return false;
-}
+async function loadLiveVideos(){ try{ const res = await fetch(LIVE_API); const data = await res.json(); if(Array.isArray(data) && data.length >= 5){ ALL_VIDEOS = data; return true; } }catch(e){} return false; }
 function getRandomPlaylist(){ let arr=[...ALL_VIDEOS]; for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];} return arr.slice(0,10); }
 function showBubble(t){const b=document.getElementById('bubble'); b.textContent=t; b.style.display='block'; setTimeout(()=>b.style.display='none',2200);}
 function BLAST(){ const c=document.getElementById('confetti'); c.style.display='block'; const ctx=c.getContext('2d'); c.width=innerWidth; c.height=innerHeight; let p=[]; const col=['#fbbf24','#f59e0b','#22c55e','#ef4444','#3b82f6','#ec4899','#fff']; for(let i=0;i<180;i++) p.push({x:c.width/2,y:c.height/2.5,vx:(Math.random()-0.5)*26,vy:(Math.random()-0.5)*26-8,r:Math.random()*9+4,color:col[Math.floor(Math.random()*col.length)],rot:Math.random()*360,vr:(Math.random()-0.5)*30}); let f=0; (function anim(){ctx.clearRect(0,0,c.width,c.height); p.forEach(o=>{o.x+=o.vx;o.y+=o.vy;o.vy+=0.38;o.rot+=o.vr;o.vx*=0.99;ctx.save();ctx.translate(o.x,o.y);ctx.rotate(o.rot*Math.PI/180);ctx.fillStyle=o.color; ctx.fillRect(-o.r/2,-o.r/2,o.r,o.r); ctx.restore();}); f++; if(f<160) requestAnimationFrame(anim); else c.style.display='none';})(); if(navigator.vibrate) navigator.vibrate([80,40,80,40,150]);}
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.firestore();
-let bal=0,today=0,currentUser=null,timer=null,dailyPlaylist=[],failCount=0, loadChecker=null, adWindowOpened=false, currentVideo=null;
+let bal=0,today=0,currentUser=null,timer=null,dailyPlaylist=[],loadChecker=null, adWindowOpened=false, currentVideo=null;
 const ov=document.getElementById('ov'),vid=document.getElementById('v'),btn=document.getElementById('btn'),pbar=document.getElementById('pbar'),balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),vtEl=document.getElementById('vt'),errEl=document.getElementById('err');
 function updateUI(){ let displayToday = Math.min(today,10); balEl.textContent=bal+' pts'; todayEl.textContent=displayToday+'/10'; if(dailyPlaylist.length && today<10 && dailyPlaylist[today]){vtEl.textContent=`Next: ${dailyPlaylist[today].title}`;} }
 try{ const c = JSON.parse(localStorage.getItem('userData')||'{}'); if(c && (c.balance!=null || c.points!=null)){ bal = c.balance ?? c.points ?? 0; today = c.todayCount ?? c.today ?? 0; balEl.textContent = bal+' pts'; todayEl.textContent = Math.min(today,10)+'/10'; } }catch(e){}
@@ -101,7 +104,7 @@ function startVideo(){
   loadChecker=setInterval(()=>{ secondsWaiting++; const stuck = (vid.readyState < 2 || vid.duration === 0 || isNaN(vid.duration) || vid.networkState === 3); if(secondsWaiting >= 4 && stuck){ clearInterval(loadChecker); handleVideoError(`Dead: ${currentVideo.title}`); return; } if(vid.readyState >= 2){ clearInterval(loadChecker); vid.play().catch(()=>{}); let sec=0; btn.textContent=`💰 Earning...`; btn.disabled=true; pbar.style.width='0%'; clearInterval(timer); timer=setInterval(()=>{ sec++; pbar.style.width=(sec/REQUIRED_WATCH_SEC*100)+'%'; btn.textContent=`💰 ${sec}/${REQUIRED_WATCH_SEC}s`; if(sec>=REQUIRED_WATCH_SEC){ clearInterval(timer); timer=null; vid.pause(); btn.textContent='🎉 Claim 2 pts!'; btn.disabled=false; btn.onclick=claim; ov.style.display='flex'; ov.innerHTML=`✅ Done!<br>Tap to claim`; if(navigator.vibrate) navigator.vibrate(100); } },1000); } },1000);
   vid.onerror=()=>{ clearInterval(loadChecker); handleVideoError(`Error: ${currentVideo.title}`); };
 }
-function handleVideoError(msg){ clearInterval(timer); timer=null; clearInterval(loadChecker); failCount++; errEl.textContent=`${msg} - skipping...`; ov.style.display='flex'; ov.innerHTML=`⚠️ ${currentVideo?.title||'Video'} DEAD<br><small>Skipping...</small>`; setTimeout(()=>{ today++; if(today>=10){ ov.innerHTML='🎉 10/10 Done!'; btn.textContent='Limit Reached'; btn.disabled=true; BLAST(); updateUI(); return; } if(today>=dailyPlaylist.length){ dailyPlaylist=getRandomPlaylist(); today=0; } updateUI(); ov.innerHTML=`<div>Next: ${dailyPlaylist[today]?.title||'Ready'}</div><small>✨ ${ALL_VIDEOS.length} Premium Videos</small>`; btn.textContent='Start & Earn'; btn.disabled=false; btn.onclick=doAd; pbar.style.width='0%'; vid.removeAttribute('src'); vid.load(); },2000); }
+function handleVideoError(msg){ clearInterval(timer); timer=null; clearInterval(loadChecker); errEl.textContent=`${msg} - skipping...`; ov.style.display='flex'; ov.innerHTML=`⚠️ ${currentVideo?.title||'Video'} DEAD<br><small>Skipping...</small>`; setTimeout(()=>{ today++; if(today>=10){ ov.innerHTML='🎉 10/10 Done!'; btn.textContent='Limit Reached'; btn.disabled=true; BLAST(); updateUI(); return; } if(today>=dailyPlaylist.length){ dailyPlaylist=getRandomPlaylist(); today=0; } updateUI(); ov.innerHTML=`<div>Next: ${dailyPlaylist[today]?.title||'Ready'}</div><small>✨ ${ALL_VIDEOS.length} Premium Videos</small>`; btn.textContent='Start & Earn'; btn.disabled=false; btn.onclick=doAd; pbar.style.width='0%'; vid.removeAttribute('src'); vid.load(); },2000); }
 async function claim(){
   if(!currentUser) return; if(today>=10){ ov.innerHTML='🎉 10/10 Done!'; btn.textContent='Limit Reached'; btn.disabled=true; return; } if(!adWindowOpened){errEl.textContent='Ad not opened'; return;} if(!currentVideo){ errEl.textContent='No video'; return; }
   btn.disabled=true; btn.textContent='Saving...'; const videoTitleToSave = currentVideo.title;
@@ -109,14 +112,7 @@ async function claim(){
     await db.collection('users').doc(currentUser.uid).set({ balance: firebase.firestore.FieldValue.increment(2), points: firebase.firestore.FieldValue.increment(2), todayCount: firebase.firestore.FieldValue.increment(1), today: firebase.firestore.FieldValue.increment(1), lastWatchDate: firebase.firestore.FieldValue.serverTimestamp() },{merge:true}); 
     await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({ action:'Watch & Earn',type:'watch',points:2,desc:videoTitleToSave, timestamp:firebase.firestore.FieldValue.serverTimestamp() }); 
     showBubble(`+2 coins!`);
-    try{
-      var cached = JSON.parse(localStorage.getItem('userData')||'{}');
-      cached.balance = (cached.balance||bal||0)+2;
-      cached.points = (cached.points||bal||0)+2;
-      cached.todayCount = (cached.todayCount||today||0)+1;
-      cached.today = (cached.today||today||0)+1;
-      localStorage.setItem('userData', JSON.stringify(cached));
-    }catch(e){}
+    try{ var cached = JSON.parse(localStorage.getItem('userData')||'{}'); cached.balance = (cached.balance||bal||0)+2; cached.points = (cached.points||bal||0)+2; cached.todayCount = (cached.todayCount||today||0)+1; cached.today = (cached.today||today||0)+1; localStorage.setItem('userData', JSON.stringify(cached)); }catch(e){}
     currentVideo=null; 
   }catch(e){ errEl.textContent='Save failed: '+e.message; btn.disabled=false; btn.textContent='Try Again'; return; }
   adWindowOpened=false; vid.removeAttribute('src'); vid.load(); pbar.style.width='0%'; btn.textContent='Start & Earn'; btn.disabled=false; btn.onclick=doAd;
