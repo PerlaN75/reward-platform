@@ -9,23 +9,19 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-    body{background:#ffffff;min-height:100vh;color:#111827;transition:0.2s}
+    body{background:#ffffff;min-height:100vh;color:#111827}
     body.dark{background:#0f172a;color:#fff}
     body.dark .card{background:#1e293b;border-color:#334155}
     body.dark .menu-list a{color:#fff}
-    body.dark .menu-list a:not(:last-child){border-color:#334155}
     body.dark .modal-box{background:#1e293b;color:#fff}
-    body.dark .profile-details{background:#0f172a;border-color:#334155}
-    body.dark .lang-option{background:#1e293b;color:#fff;border-color:#334155}
-    /* PROFESSIONAL WHITE TOP BAR LIKE WALLET */
     .top-bar{background:#ffffff;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;border-bottom:2px solid #f1f5f9;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
-    .back-btn-checkin{width:42px;height:38px;border-radius:10px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5;flex-shrink:0}
+    .back-btn-checkin{width:42px;height:38px;border-radius:10px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5}
     .back-btn-checkin:active{transform:scale(0.92)}
-    .center-pill{background:#f8fafc;border:2px solid #e5e7eb;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#111827;display:flex;align-items:center;gap:6px}
+    .center-pill{background:#f8fafc;border:2px solid #e5e7eb;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#111827}
     .bell{color:#fbbf24;font-size:22px}
     .container{max-width:500px;margin:0 auto;padding:16px 14px 90px 14px}
     .card{background:#ffffff;border:2px solid #f1f5f9;border-radius:20px;padding:8px;box-shadow:0 8px 30px rgba(0,0,0,0.06)}
-    .menu-list a{display:flex;align-items:center;justify-content:space-between;width:100%;padding:18px 16px;color:#111827;text-decoration:none;font-size:15px;font-weight:800;border-radius:14px;cursor:pointer;transition:0.15s}
+    .menu-list a{display:flex;align-items:center;justify-content:space-between;width:100%;padding:19px 16px;color:#111827;text-decoration:none;font-size:15px;font-weight:800;border-radius:14px;cursor:pointer}
     .menu-list a:not(:last-child){border-bottom:1px solid #f8fafc}
     .menu-list a:active{background:#f9fafb;transform:scale(0.98)}
     .arrow{color:#9ca3af;font-size:20px}
@@ -38,7 +34,6 @@
     .btn-refresh{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 3px 0 #d97706}
     .btn-refresh:active{transform:translateY(2px);box-shadow:0 1px 0 #d97706}
     .btn-clear{background:#111827;color:#fff;box-shadow:0 3px 0 #000}
-    .btn-clear:active{transform:translateY(2px);box-shadow:0 1px 0 #000}
     .item{background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
     .profile-header{text-align:center}
     .avatar-letter{width:78px;height:78px;background:linear-gradient(180deg,#eff6ff,#dbeafe);border:3px solid #bfdbfe;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:#2563eb;margin:8px auto}
@@ -52,12 +47,11 @@
     .stat-refs{background:linear-gradient(180deg,#f0fdf4,#dcfce7);border-color:#bbf7d0}
     .stat-level{background:linear-gradient(180deg,#eff6ff,#dbeafe);border-color:#bfdbfe}
     .confirm-overlay{display:none;position:fixed;z-index:10000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center}
-    .confirm-box{background:#fff;border-radius:16px;padding:20px;width:85%;max-width:320px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.2)}
+    .confirm-box{background:#fff;border-radius:16px;padding:20px;width:85%;max-width:320px;text-align:center}
     .confirm-actions{display:flex;gap:10px;margin-top:14px}
     .confirm-actions button{flex:1;padding:11px;border-radius:10px;border:none;font-weight:bold;cursor:pointer}
     .c-cancel{background:#f3f4f6;color:#111827}
     .c-ok{background:#ef4444;color:#fff}
-    .set-section{margin:16px 0}
     .set-label{font-size:13px;font-weight:800;color:#111827;margin-bottom:8px;display:block}
     .lang-option{display:flex;justify-content:space-between;align-items:center;padding:14px;border:2px solid #e5e7eb;border-radius:12px;margin-bottom:8px;cursor:pointer;background:#fff}
     .lang-option.active{border-color:#fbbf24;background:#fffbeb;color:#92400e;font-weight:800}
@@ -65,8 +59,13 @@
     .mode-btn{flex:1;max-width:110px;padding:12px;border-radius:12px;border:2px solid #e5e7eb;background:#fff;cursor:pointer;text-align:center;font-weight:800;font-size:13px}
     .mode-btn.active{border-color:#fbbf24;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000}
     .save-close-btn{width:65%!important;margin:18px auto 0 auto!important;display:block!important;background:linear-gradient(90deg,#fbbf24,#f59e0b)!important;color:#000!important;border:none!important;padding:12px!important;border-radius:12px!important;font-weight:800!important;cursor:pointer!important;box-shadow:0 3px 0 #d97706}
-    /* PROFESSIONAL BALANCE CARD - SAME AS WALLET */
-    .balance-card-mini{background:#2f3e1a;border:3px solid #fbbf24;border-radius:16px;padding:14px;text-align:center;color:#fff;margin-bottom:12px;box-shadow:0 4px 15px rgba(47,62,26,0.2)}
+    /* NEW PROFESSIONAL BALANCE COLOR - WHITE/GOLD INSTEAD OF DARK GREEN */
+    .balance-card-pro{background:#ffffff;border:2px solid #fbbf24;border-radius:16px;padding:14px;text-align:center;box-shadow:0 4px 20px rgba(251,191,36,0.15);margin-bottom:12px}
+    .balance-card-pro .coin-val{color:#d97706;font-weight:900;font-size:20px}
+    .balance-card-pro .usdt-val{color:#16a34a;font-weight:900;font-size:15px;margin-top:2px}
+    .balance-card-pro .usd-small{color:#9ca3af;font-size:10px;margin-top:3px}
+    .balance-split{display:flex;justify-content:space-around;align-items:center}
+    .balance-divider{width:1px;height:42px;background:#fef3c7}
   </style>
 </head>
 <body>
@@ -79,11 +78,10 @@
 <div class="container">
   <div class="card">
     <div class="menu-list">
-      <a onclick="openModal('profileModal')"><div class="left">👤 Profile</div><span class="arrow">›</span></a>
-      <a onclick="openModal('historyModal')"><div class="left">📜 History</div><span class="arrow">›</span></a>
-      <a onclick="openModal('settingsModal')"><div class="left">⚙️ Settings</div><span class="arrow">›</span></a>
-      <a href="support.html"><div class="left">💬 Help/Support</div><span class="arrow">›</span></a>
-      <a onclick="openModal('aboutModal')"><div class="left">📜 Rules</div><span class="arrow">›</span></a>
+      <a onclick="openModal('profileModal')"><div>👤 Profile</div><span class="arrow">›</span></a>
+      <a onclick="openModal('historyModal')"><div>📜 History</div><span class="arrow">›</span></a>
+      <a onclick="openModal('settingsModal')"><div>⚙️ Settings</div><span class="arrow">›</span></a>
+      <a href="support.html"><div>💬 Help/Support</div><span class="arrow">›</span></a>
     </div>
   </div>
   <div class="sub-info">1000 Coins = $0.5 • Min 3000 Coins = $1.5</div>
@@ -94,14 +92,14 @@
     <span class="close" onclick="closeModal('profileModal')">×</span>
     <div class="profile-header">
       <div id="avatarLetter" class="avatar-letter">I</div>
-      <h3 id="pUsername" class="profile-name">Ineza</h3>
+      <h3 id="pUsername" class="profile-name">--</h3>
       <p style="color:#22c55e;font-weight:900;font-size:12px;margin-top:4px">✓ Verified</p>
     </div>
-    <div class="balance-card-mini">
-      <div style="font-size:11px;color:#ccc;letter-spacing:0.5px">Your Balance</div>
-      <div id="pBalCard" style="color:#fbbf24;font-weight:bold;font-size:20px;margin-top:4px">-- coins</div>
-      <div id="pUsdtCard" style="color:#22c55e;font-size:14px;font-weight:bold">-- USDT</div>
-      <div style="font-size:10px;color:#aaa;margin-top:2px" id="pUsdSmall">≈ $-- from coins</div>
+    <div class="balance-card-pro">
+      <div style="font-size:11px;color:#9ca3af;letter-spacing:0.5px;font-weight:700">YOUR BALANCE</div>
+      <div id="pBalCard" class="coin-val">-- coins</div>
+      <div id="pUsdtCard" class="usdt-val">-- USDT</div>
+      <div id="pUsdSmall" class="usd-small">≈ $-- from coins</div>
     </div>
     <div class="profile-details">
       <div class="profile-row">📧 <b>Email:</b> <span id="pEmail">...</span></div>
@@ -120,11 +118,11 @@
   <div class="modal-box" onclick="event.stopPropagation()">
     <span class="close" onclick="closeModal('historyModal')">×</span>
     <h3 style="text-align:center;font-size:15px;font-weight:900">📜 History - Coins 🪙</h3>
-    <div class="balance-card-mini" style="margin-top:12px">
-      <div style="display:flex;justify-content:space-around;align-items:center">
-        <div><div style="font-size:10px;color:#aaa">COINS</div><div id="hBal" style="color:#fbbf24;font-weight:bold;font-size:16px">-- coins</div><div id="hUsd" style="font-size:10px;color:#888">≈ $--</div></div>
-        <div style="width:1px;height:40px;background:rgba(251,191,36,0.3)"></div>
-        <div><div style="font-size:10px;color:#aaa">USDT</div><div id="hUsdt" style="color:#22c55e;font-weight:bold;font-size:16px">-- USDT</div><div style="font-size:10px;color:#6b8f5a">Withdrawable</div></div>
+    <div class="balance-card-pro" style="margin-top:12px">
+      <div class="balance-split">
+        <div><div style="font-size:10px;color:#9ca3af;font-weight:700">COINS</div><div id="hBal" style="color:#d97706;font-weight:900;font-size:16px">--</div><div id="hUsd" style="font-size:10px;color:#9ca3af">≈ $--</div></div>
+        <div class="balance-divider"></div>
+        <div><div style="font-size:10px;color:#9ca3af;font-weight:700">USDT</div><div id="hUsdt" style="color:#16a34a;font-weight:900;font-size:16px">-- USDT</div><div style="font-size:10px;color:#16a34a">Withdrawable</div></div>
       </div>
     </div>
     <p id="countText" style="text-align:center;color:#9ca3af;font-size:11px;margin:6px 0"></p>
@@ -136,17 +134,16 @@
   </div>
 </div>
 
-<!-- SETTINGS - ENGLISH ONLY -->
 <div id="settingsModal" class="modal" onclick="closeModal('settingsModal')">
   <div class="modal-box" onclick="event.stopPropagation()">
     <span class="close" onclick="closeModal('settingsModal')">×</span>
     <h3 style="text-align:center;margin-bottom:14px;font-weight:900">⚙️ Settings</h3>
-    <div class="set-section">
+    <div style="margin:16px 0">
       <span class="set-label">Language</span>
       <div class="lang-option active" id="lang-en" onclick="setLang('en',this)"><span>English 🇺🇸 - Default</span><span>✓</span></div>
-      <div style="font-size:11px;color:#9ca3af;margin-top:8px">App is English only to avoid translation work. No extra work needed.</div>
+      <div style="font-size:11px;color:#9ca3af;margin-top:8px">English only — no translation work needed.</div>
     </div>
-    <div class="set-section">
+    <div style="margin:16px 0">
       <span class="set-label">Appearance - Mode</span>
       <div class="mode-box">
         <div class="mode-btn active" id="modeLight" onclick="setMode('light')">☀️ Light</div>
@@ -168,32 +165,6 @@
   </div>
 </div>
 
-<div id="aboutModal" class="modal" onclick="closeModal('aboutModal')">
-  <div class="modal-box" onclick="event.stopPropagation()" style="padding:0;overflow:hidden">
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px;background:#ffffff;border-bottom:2px solid #f1f5f9;color:#111827">
-      <h3 style="font-size:15px;font-weight:900">📜 Rules - Coins 🪙</h3>
-      <span class="close" onclick="closeModal('aboutModal')" style="position:static">×</span>
-    </div>
-    <div style="padding:16px;max-height:70vh;overflow-y:auto;text-align:left">
-      <p style="text-align:center;font-size:34px;margin:4px 0">🪙📜</p>
-      <h2 style="text-align:center;font-size:15px;font-weight:900;color:#111827;margin:4px 0">Reward Platform RW</h2>
-      <p style="text-align:center;font-size:11px;color:#9ca3af;margin-bottom:14px">Professional - Real Balance System</p>
-      <div style="background:#f0fdf4;border:2px solid #bbf7d0;border-radius:12px;padding:14px;margin:12px 0">
-        <p style="font-weight:900;font-size:13px;color:#065f46">Real Firebase Balance</p>
-        <p style="font-size:12px;color:#064e3b;margin-top:6px;line-height:1.5">- <b>Coins</b> = earned tasks<br>- <b>USDT</b> = converted in Wallet<br>- Coins decrease, USDT increase on convert<br>- Reads <code>balance</code> + <code>usdtBalance</code> separately</p>
-      </div>
-      <div style="background:#fef2f2;border:2px solid #fecaca;border-radius:12px;padding:14px;margin:12px 0">
-        <p style="font-weight:900;font-size:13px;color:#991b1b">1. One Account</p>
-        <p style="font-size:12px;color:#7f1d1d;margin-top:6px">ONE per device - fake = ban</p>
-      </div>
-      <div style="background:#fffbeb;border:2px solid #fde68a;border-radius:12px;padding:14px;margin:12px 0">
-        <p style="font-weight:900;font-size:13px;color:#92400e">2. Conversion</p>
-        <p style="font-size:12px;color:#78350f;margin-top:6px">1000 Coins = $0.5 USDT - Min 3000</p>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
 (function(){
   try{
@@ -206,10 +177,7 @@
       document.getElementById('pUsdtCard').textContent = Number(usdt).toFixed(4) + ' USDT';
       document.getElementById('pUsdSmall').textContent = '≈ $' + usdFromCoins + ' from coins';
       document.getElementById('pPoints').textContent = coins + ' 🪙';
-      if(c.username){ 
-        document.getElementById('pUsername').innerText=c.username;
-        document.getElementById('avatarLetter').innerText=c.username.charAt(0).toUpperCase();
-      }
+      if(c.username){ document.getElementById('pUsername').innerText=c.username; document.getElementById('avatarLetter').innerText=c.username.charAt(0).toUpperCase(); }
       if(c.email) document.getElementById('pEmail').innerText=c.email;
       document.getElementById('hBal').textContent = coins + ' coins';
       document.getElementById('hUsd').textContent = '≈ $' + usdFromCoins;
@@ -235,9 +203,7 @@ async function loadProfile(){
     if(!snap.exists) return;
     const d=snap.data();
     localStorage.setItem('userData', JSON.stringify({...d, uid:u.uid, email: d.email||u.email}));
-    const coins = getRealCoins(d);
-    const usdt = getRealUsdt(d);
-    const usd = (coins*0.0005).toFixed(4);
+    const coins = getRealCoins(d); const usdt = getRealUsdt(d); const usd = (coins*0.0005).toFixed(4);
     document.getElementById('pBalCard').innerText = coins+' coins';
     document.getElementById('pUsdtCard').innerText = Number(usdt).toFixed(4)+' USDT';
     document.getElementById('pUsdSmall').innerText = '≈ $'+usd+' from coins';
@@ -245,7 +211,7 @@ async function loadProfile(){
     document.getElementById('pUsername').innerText = d.username||u.email.split('@')[0];
     document.getElementById('avatarLetter').innerText = (d.username||'I').charAt(0).toUpperCase();
     document.getElementById('pEmail').innerText = d.email||u.email;
-    document.getElementById('pRefs').innerText = d.referralCount??d.referrals??5;
+    document.getElementById('pRefs').innerText = d.referralCount??d.referrals??0;
     document.getElementById('pLevel').innerText = d.level||Math.floor(coins/100)+1;
     let reg="Unknown"; if(d.createdAt&&d.createdAt.toDate) reg=d.createdAt.toDate().toLocaleDateString(); else if(u.metadata.creationTime) reg=new Date(u.metadata.creationTime).toLocaleDateString();
     document.getElementById('pDate').innerText=reg;
@@ -261,8 +227,7 @@ async function loadHistory(){
   try{
     const cleared = localStorage.getItem('history_cleared_at_'+user.uid);
     db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(200).onSnapshot(snap=>{
-      allData=[];
-      snap.forEach(d=>{
+      allData=[]; snap.forEach(d=>{
         const v=d.data(); const date=v.timestamp?.toDate?v.timestamp.toDate():new Date(); 
         if(cleared && date < new Date(cleared)) return; 
         allData.push({title:v.action||'Earn',desc:v.desc||'',points:v.coins ?? v.points ?? 0,date:date});
@@ -292,22 +257,10 @@ async function permanentClearHistory(){
     allData=[]; render(allData);
   }catch(e){ const now = new Date().toISOString(); localStorage.setItem('history_cleared_at_'+user.uid, now); localStorage.setItem('myHistory', JSON.stringify([])); allData=[]; render(allData); }
 }
-function setLang(code, el){ 
-  localStorage.setItem('app_lang', code); localStorage.setItem('appLang', code); 
-  document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active')); 
-  el.classList.add('active'); 
-}
+function setLang(code, el){ localStorage.setItem('app_lang', code); localStorage.setItem('appLang', code); document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active')); el.classList.add('active'); }
 function setMode(mode){ localStorage.setItem('app_mode', mode); document.getElementById('modeLight').classList.toggle('active', mode==='light'); document.getElementById('modeDark').classList.toggle('active', mode==='dark'); if(mode==='dark') document.body.classList.add('dark'); else document.body.classList.remove('dark'); }
 function saveSettings(){ closeModal('settingsModal'); }
-(function(){ 
-  const mode=localStorage.getItem('app_mode')||'light'; 
-  const lang=localStorage.getItem('app_lang')||localStorage.getItem('appLang')||'en'; 
-  if(mode==='dark') document.body.classList.add('dark'); 
-  document.getElementById('modeLight').classList.toggle('active', mode==='light'); 
-  document.getElementById('modeDark').classList.toggle('active', mode==='dark'); 
-  document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active')); 
-  const el=document.getElementById('lang-'+lang); if(el) el.classList.add('active'); 
-})();
+(function(){ const mode=localStorage.getItem('app_mode')||'light'; const lang=localStorage.getItem('app_lang')||localStorage.getItem('appLang')||'en'; if(mode==='dark') document.body.classList.add('dark'); document.getElementById('modeLight').classList.toggle('active', mode==='light'); document.getElementById('modeDark').classList.toggle('active', mode==='dark'); document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active')); const el=document.getElementById('lang-'+lang); if(el) el.classList.add('active'); })();
 auth.onAuthStateChanged(u=>{ if(!u){ location.href='./index.html'; return; } cachedUser=u; loadProfile(); });
 </script>
 </body>
