@@ -9,76 +9,33 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <style>
-.card-active { border: 2.5px solid #f59e0b !important; box-shadow: 0 4px 15px rgba(245,158,11,0.25); }
-.back-btn-checkin{width:42px;height:38px;border-radius:12px;background:linear-gradient(180deg,#fff5f5,#fecaca);border:2px solid #f87171;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5;flex-shrink:0}
+.back-btn-checkin{width:42px;height:38px;border-radius:10px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5;flex-shrink:0}
 .back-btn-checkin:active{transform:scale(0.92)}
 </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-white">
 <div class="bg-blue-600 p-3 flex items-center justify-between sticky top-0 z-20">
   <a href="home.html" class="back-btn-checkin">‹</a>
-  <div class="bg-white rounded-full px-4 py-1.5 text-sm font-bold">📋 Surveys</div>
+  <div class="bg-white rounded-full px-4 py-1.5 text-sm font-bold">📋 CPX Surveys</div>
   <i class="fa fa-bell text-white"></i>
 </div>
 
 <div class="p-3 max-w-2xl mx-auto">
-  <!-- 4 CARDS - 2x2 GRID SAME SIZE -->
-  <div class="grid grid-cols-2 gap-3">
-    <button onclick="switchTab('bitlabs')" id="card-bitlabs" class="card-active bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
-      <div class="flex items-center gap-1.5 font-black text-[16px]"><span class="bg-blue-600 text-white p-1 rounded"><i class="fa fa-flask text-xs"></i></span> BitLabs</div>
-      <div class="text-[12px] text-gray-700 mt-1">Bitlabs</div>
-    </button>
-    <button onclick="switchTab('adscend')" id="card-adscend" class="bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
-      <div class="font-black text-[16px] text-gray-800">Adscend<span class="text-purple-600">Media</span></div>
-      <div class="text-[12px] text-gray-700 mt-1">Adscend</div>
-    </button>
-    <button onclick="switchTab('cpx')" id="card-cpx" class="bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
-      <div class="font-black text-[16px] text-black"><i class="fa fa-circle-notch text-green-500"></i> CPX RESEARCH</div>
-      <div class="text-[12px] text-gray-700 mt-1">CPX Live</div>
-    </button>
-    <button onclick="switchTab('inbrain')" id="card-inbrain" class="bg-white rounded-2xl p-4 shadow border-2 border-transparent flex flex-col items-center justify-center h-[90px]">
-      <div class="font-black text-[16px] text-[#0E2A47]">inBrain<span class="text-green-500">.ai</span></div>
-      <div class="text-[12px] text-gray-700 mt-1">Inbrain - Pending</div>
-    </button>
-  </div>
-  <div class="mt-4 bg-white rounded-xl shadow overflow-hidden">
-    <div class="bg-blue-600 p-3 flex items-center justify-between text-white font-bold tracking-wide" id="contentHeader">BITLABS</div>
+
+  <div class="mt-2 bg-white rounded-xl shadow overflow-hidden border border-gray-100">
+    <div class="bg-blue-600 p-3 flex items-center justify-between text-white font-bold tracking-wide">
+      <span><i class="fa fa-circle-notch text-green-300 mr-2"></i>CPX RESEARCH LIVE</span>
+      <span class="bg-white text-blue-600 text-[10px] px-2 py-1 rounded-full">App 37033</span>
+    </div>
     
-    <div id="content-bitlabs" class="p-4">
-      <div class="border border-gray-100 rounded-xl p-8 text-center min-h-[360px] flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-50">
-        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 animate-pulse"><i class="fa fa-flask text-2xl text-blue-600"></i></div>
-        <h3 class="font-bold">BitLabs Surveys Ready</h3>
-        <p class="text-gray-500 text-sm mt-2">High paying surveys $0.20 - $2 for Rwanda.</p>
-        <div id="bitlabs-iframe-holder" class="w-full mt-4"></div>
-      </div>
-    </div>
-
-    <div id="content-adscend" class="p-4 hidden">
-      <div class="border border-gray-100 rounded-xl p-8 text-center min-h-[360px] flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-50">
-        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4 animate-pulse"><i class="fa fa-diamond text-2xl text-purple-600"></i></div>
-        <h3 class="font-bold">Adscend Offers Loading</h3>
-        <p class="text-gray-500 text-sm mt-2">Best surveys + offers for East Africa.</p>
-        <div id="adscend-iframe-holder" class="w-full mt-4"></div>
-      </div>
-    </div>
-
-    <div id="content-cpx" class="p-4 hidden">
+    <div class="p-2">
       <div class="border border-gray-100 rounded-xl p-2 bg-white min-h-[600px]">
         <div id="cpx-loading" class="p-8 text-center">
           <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto animate-pulse"><i class="fa fa-circle-notch text-2xl text-green-600"></i></div>
           <h3 class="font-bold">CPX Research Live</h3>
-          <p class="text-gray-500 text-sm mt-2">App ID 37033 - Active - Surveys for Rwanda<br>Loading your personal surveys...</p>
+          <p class="text-gray-500 text-sm mt-2">Active - Surveys for Rwanda<br>Loading your personal surveys...</p>
         </div>
         <div id="cpx-iframe-holder" class="w-full hidden"></div>
-      </div>
-    </div>
-
-    <div id="content-inbrain" class="p-4 hidden">
-      <div class="border border-gray-100 rounded-xl p-8 text-center min-h-[360px] flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-50">
-        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4"><i class="fa fa-brain text-2xl text-green-600"></i></div>
-        <h3 class="font-bold">Inbrain - Pending Invite</h3>
-        <p class="text-gray-500 text-sm mt-2">Waiting for Inbrain email. Submission received.</p>
-        <div class="mt-5 bg-yellow-100 text-yellow-800 rounded-full px-5 py-2 text-xs border border-yellow-200"><i class="fa fa-clock mr-2"></i> Waiting 24h</div>
       </div>
     </div>
 
@@ -99,23 +56,13 @@ firebase.auth().onAuthStateChanged(user => {
     document.getElementById('userEmail').innerText = user.email;
     const uid = encodeURIComponent(user.uid);
     const cpxUrl = `https://offers.cpx-research.com/index.php?app_id=37033&ext_user_id=${uid}&subid_1=&subid_2=`;
-    document.getElementById('cpx-iframe-holder').innerHTML = `<iframe src="${cpxUrl}" class="w-full h-[650px] border-0 rounded-xl"></iframe>`;
+    document.getElementById('cpx-iframe-holder').innerHTML = `<iframe src="${cpxUrl}" class="w-full h-[700px] border-0 rounded-xl" allow="fullscreen"></iframe>`;
     document.getElementById('cpx-iframe-holder').classList.remove('hidden');
     document.getElementById('cpx-loading').classList.add('hidden');
   } else {
     window.location.href = 'index.html';
   }
 });
-
-function switchTab(tab) {
-  ['bitlabs','adscend','cpx','inbrain'].forEach(t=>{
-    document.getElementById('content-'+t).classList.add('hidden');
-    document.getElementById('card-'+t).classList.remove('card-active');
-  });
-  document.getElementById('content-'+tab).classList.remove('hidden');
-  document.getElementById('card-'+tab).classList.add('card-active');
-  document.getElementById('contentHeader').innerText = tab.toUpperCase();
-}
 </script>
 </body>
 </html>
