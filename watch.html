@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Watch & Earn - v5 LIVE API</title>
+<title>Watch & Earn - v6 FIXED 15sec LOOP</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="monetag" content="b671b8351bfc48ed0161f6bd0b6a5340">
 <script src="https://quge5.com/88/tag.min.js" data-zone="286869" async data-cfasync="false"></script>
@@ -31,9 +31,9 @@ video{width:100%;height:100%;object-fit:contain;background:#000}
 <div id="bubble" class="bubble"></div>
 <div class="card">
 <h1>Watch & Earn</h1>
-<div class="balance-box">Balance: <b id="bal">Loading...</b><br><span style="font-size:13px"><span id="today">0/10</span> today</span><div class="vtitle" id="vt">Loading LIVE videos...</div><div id="err" class="err"></div></div>
+<div class="balance-box">Balance: <b id="bal">Loading...</b><br><span style="font-size:13px"><span id="today">0/10</span> today</span><div class="vtitle" id="vt">Loading LIVE...</div><div id="err" class="err"></div></div>
 <div class="video-box">
-<div class="player"><video id="v" playsinline controls preload="metadata" crossorigin="anonymous"></video><div class="overlay" id="ov">Loading videos...</div></div>
+<div class="player"><video id="v" playsinline controls preload="metadata" crossorigin="anonymous" loop></video><div class="overlay" id="ov">Loading videos...</div></div>
 <div class="progress"><div class="progress-bar" id="pbar"></div></div>
 <div style="padding:0 12px 12px"><button class="btn" id="btn" disabled>Loading...</button></div>
 </div>
@@ -41,9 +41,8 @@ video{width:100%;height:100%;object-fit:contain;background:#000}
 </div>
 <script>
 const DIRECT_LINK="https://omg10.com/4/11905870";
-// === YOUR LIVE API LINKS ===
 const LIVE_API="https://steep-mountain-1ce5.silntr235.workers.dev";
-const NPOINT_DIRECT="https://api.npoint.io/d97cf4b84498889999f6";
+const REQUIRED_WATCH_SEC = 15; // <-- CHANGED FROM 40 to 15
 
 const ALL_VIDEOS_FALLBACK=[
 {src:"https://cdn.videy.co/4KScO3m11.mp4",title:"Video 1"},
@@ -69,20 +68,14 @@ const ALL_VIDEOS_FALLBACK=[
 ];
 let ALL_VIDEOS=[...ALL_VIDEOS_FALLBACK];
 
-// NEW: Fetch LIVE videos from your API
 async function loadLiveVideos(){
   try{
     const res = await fetch(LIVE_API);
     const data = await res.json();
-    if(Array.isArray(data) && data.length >= 5){
-      ALL_VIDEOS = data;
-      console.log("LIVE API loaded:", ALL_VIDEOS.length);
-      return true;
-    }
-  }catch(e){ console.log("LIVE API failed, using fallback", e); }
+    if(Array.isArray(data) && data.length >= 5){ ALL_VIDEOS = data; return true; }
+  }catch(e){}
   return false;
 }
-
 function getRandomPlaylist(){
   let arr=[...ALL_VIDEOS];
   for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
@@ -104,17 +97,22 @@ function updateUI(){balEl.textContent=bal+' pts'; todayEl.textContent=today+'/10
 
 auth.onAuthStateChanged(async(u)=>{
   if(!u){location.href='./index.html';return;} currentUser=u; 
-  
-  // === LOAD LIVE VIDEOS FIRST ===
   ov.innerHTML='📡 Loading LIVE videos...';
   await loadLiveVideos();
-  
   dailyPlaylist=getRandomPlaylist();
-  const s=await db.collection('users').doc(u.uid).get();
-  if(s.exists){const d=s.data(); bal=d.balance||d.points||0; today=d.todayCount||d.today||0; const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null; if(last && new Date().toDateString()!==last.toDateString()){today=0; dailyPlaylist=getRandomPlaylist();}}
-  updateUI(); 
-  btn.disabled=false; btn.textContent='Start & Earn';
-  if(today>=10){ov.style.display='flex'; ov.innerHTML='🎉 10/10 Done!<br>New tomorrow'; btn.disabled=true; btn.textContent='Limit Reached';} else { ov.style.display='flex'; ov.innerHTML=`<div>${dailyPlaylist[today].title}</div><small style="opacity:.7">Tap Start - ${ALL_VIDEOS.length} videos LIVE</small>`; }
+  // FIXED: listen real-time so home and watch stay sync
+  db.collection('users').doc(u.uid).onSnapshot(s=>{
+    if(s.exists){
+      const d=s.data(); 
+      bal=d.balance ?? d.points ?? 0;
+      today=d.todayCount ?? d.today ?? 0;
+      const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null; 
+      if(last && new Date().toDateString()!==last.toDateString()){today=0;}
+      updateUI();
+      if(today>=10){ov.style.display='flex'; ov.innerHTML='🎉 10/10 Done!<br>New tomorrow'; btn.disabled=true; btn.textContent='Limit Reached';} 
+      else if(dailyPlaylist.length){ ov.style.display='flex'; ov.innerHTML=`<div>${dailyPlaylist[today].title}</div><small>Tap Start - ${ALL_VIDEOS.length} videos LIVE (15s loop)</small>`; btn.disabled=false; btn.textContent='Start & Earn'; }
+    }
+  });
 });
 
 function doAd(){
@@ -124,22 +122,20 @@ function doAd(){
   if(!win || win.closed || typeof win.closed=='undefined'){
     errEl.textContent='⚠️ Allow popups! Ad must open to earn';
     ov.innerHTML='⚠️ Popup blocked!<br><small>Allow popups & tap again</small>';
-    btn.textContent='Tap Again - Allow Popup';
-    btn.disabled=false;
-    return;
+    btn.textContent='Tap Again - Allow Popup'; btn.disabled=false; return;
   }
-  adWindowOpened=true;
-  errEl.textContent='';
+  adWindowOpened=true; errEl.textContent='';
   btn.disabled=true; ov.style.display='flex'; ov.innerHTML='Verifying ad...<br><small>3s - stay here</small>'; pbar.style.width='0%'; vid.pause();
   let ad=3; let adInt=setInterval(()=>{
     if(document.hidden){ov.innerHTML='⚠️ Stay on page!<br><small>Ad verification paused</small>'; return;}
-    ad--; ov.innerHTML=`📢 Ad check ${ad}s...<br><small>Revenue secured</small>`; 
+    ad--; ov.innerHTML=`📢 Ad check ${ad}s...`; 
     if(ad<=0){clearInterval(adInt); startVideo();}
   },1000);
 }
 function startVideo(){
   const cur=dailyPlaylist[today];
-  vtEl.textContent=`Playing: ${cur.title}`; errEl.textContent=''; ov.style.display='none';
+  vtEl.textContent=`Playing: ${cur.title} (loop 15s)`; errEl.textContent=''; ov.style.display='none';
+  vid.loop = true; // <-- KEY FIX FOR SHORT VIDEOS
   vid.removeAttribute('src'); vid.load();
   vid.src=cur.src; vid.load(); 
   btn.textContent=`🔄 Loading ${cur.title}...`; pbar.style.width='5%';
@@ -148,51 +144,46 @@ function startVideo(){
   loadChecker=setInterval(()=>{
     secondsWaiting++;
     const stuck = (vid.readyState < 2 || vid.duration === 0 || isNaN(vid.duration) || vid.networkState === 3);
-    if(secondsWaiting >= 4 && stuck){
-      clearInterval(loadChecker);
-      handleVideoError(`Dead link: ${cur.title} (0:00)`);
-      return;
-    }
-    if(vid.readyState >= 2 && vid.duration > 1){
+    if(secondsWaiting >= 4 && stuck){ clearInterval(loadChecker); handleVideoError(`Dead: ${cur.title}`); return; }
+    if(vid.readyState >= 2){
       clearInterval(loadChecker);
       vid.play().catch(()=>{});
-      let sec=0; btn.textContent=`💰 Earning...`; btn.disabled=true; pbar.style.width='0%';
+      let sec=0; btn.textContent=`💰 Earning... ${REQUIRED_WATCH_SEC}s`; btn.disabled=true; pbar.style.width='0%';
       clearInterval(timer);
       timer=setInterval(()=>{
         if(document.hidden){return;}
-        sec++; pbar.style.width=(sec/40*100)+'%';
-        if(sec%10===0) btn.textContent=['👀 Keep watching!','⭐ Great!','🎬 Best part','🔥 Almost!'][Math.floor(sec/10)%4];
-        if(sec>=40){ clearInterval(timer); vid.pause(); btn.textContent='🎉 Claim 2 pts!'; btn.disabled=false; btn.onclick=claim; ov.style.display='flex'; ov.innerHTML=`✅ Done!<br>Tap to claim`; if(navigator.vibrate) navigator.vibrate(100); }
+        sec++; pbar.style.width=(sec/REQUIRED_WATCH_SEC*100)+'%';
+        btn.textContent=`💰 ${sec}/${REQUIRED_WATCH_SEC}s - ${cur.title}`;
+        if(sec>=REQUIRED_WATCH_SEC){ clearInterval(timer); vid.pause(); btn.textContent='🎉 Claim 2 pts!'; btn.disabled=false; btn.onclick=claim; ov.style.display='flex'; ov.innerHTML=`✅ 15s Done!<br>Tap to claim`; if(navigator.vibrate) navigator.vibrate(100); }
       },1000);
     }
   },1000);
   vid.onerror=()=>{ clearInterval(loadChecker); handleVideoError(`Error: ${cur.title}`); };
 }
 function handleVideoError(msg){
-  clearInterval(timer); clearInterval(loadChecker);
-  failCount++;
-  errEl.textContent=`${msg} - auto skipping... (${failCount})`;
-  ov.style.display='flex'; ov.innerHTML=`⚠️ ${dailyPlaylist[today].title} DEAD<br><small>Auto skipping in 2s...</small>`;
-  setTimeout(()=>{
-    today++; 
-    if(today>=dailyPlaylist.length){ dailyPlaylist=getRandomPlaylist(); today=0; }
-    updateUI();
-    if(today>=10){ ov.innerHTML='🎉 10/10 Done!'; btn.textContent='Limit Reached'; btn.disabled=true; BLAST(); }
-    else { ov.innerHTML=`<div>Next: ${dailyPlaylist[today].title}</div><small>Tap Start</small>`; btn.textContent='Start & Earn'; btn.disabled=false; btn.onclick=doAd; pbar.style.width='0%'; vid.removeAttribute('src'); vid.load(); }
-  },2000);
+  clearInterval(timer); clearInterval(loadChecker); failCount++;
+  errEl.textContent=`${msg} - auto skipping...`;
+  ov.style.display='flex'; ov.innerHTML=`⚠️ ${dailyPlaylist[today].title} DEAD<br><small>Skipping...</small>`;
+  setTimeout(()=>{ today++; if(today>=dailyPlaylist.length){ dailyPlaylist=getRandomPlaylist(); today=0; } updateUI(); if(today>=10){ ov.innerHTML='🎉 10/10 Done!'; btn.textContent='Limit Reached'; btn.disabled=true; BLAST(); } else { ov.innerHTML=`<div>Next: ${dailyPlaylist[today].title}</div><small>Tap Start</small>`; btn.textContent='Start & Earn'; btn.disabled=false; btn.onclick=doAd; pbar.style.width='0%'; vid.removeAttribute('src'); vid.load(); } },2000);
 }
 async function claim(){
   if(!currentUser) return; 
   if(!adWindowOpened){errEl.textContent='Ad not opened - no points'; return;}
-  btn.disabled=true; btn.textContent='Saving...'; bal+=2; today++; showBubble(`+2 coins!`);
+  btn.disabled=true; btn.textContent='Saving...';
   try{
-    await db.collection('users').doc(currentUser.uid).set({balance:bal,points:bal,todayCount:today,today:today,lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
-    await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Watch & Earn',type:'watch',points:2,desc:dailyPlaylist[today-1].title,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-  }catch(e){}
+    // FIXED: Use increment so home.html sees it instantly, no overwrite after convert
+    await db.collection('users').doc(currentUser.uid).set({
+      balance: firebase.firestore.FieldValue.increment(2),
+      points: firebase.firestore.FieldValue.increment(2),
+      todayCount: firebase.firestore.FieldValue.increment(1),
+      today: firebase.firestore.FieldValue.increment(1),
+      lastWatchDate: firebase.firestore.FieldValue.serverTimestamp()
+    },{merge:true});
+    await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Watch & Earn',type:'watch',points:2,desc:dailyPlaylist[today].title,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+    showBubble(`+2 coins!`);
+  }catch(e){ errEl.textContent='Save failed: '+e.message; btn.disabled=false; return; }
   adWindowOpened=false;
-  vid.removeAttribute('src'); vid.load(); pbar.style.width='0%'; btn.textContent='Start & Earn'; btn.disabled=false; btn.onclick=doAd; updateUI();
-  if(today>=10){ ov.style.display='flex'; ov.innerHTML='🎉 10/10 Done!<br>💥 BLAST!'; btn.textContent='Limit Reached'; btn.disabled=true; BLAST(); }
-  else { ov.style.display='flex'; ov.innerHTML=`<div>Ready: ${dailyPlaylist[today].title}</div><small>Tap Start</small>`; }
+  vid.removeAttribute('src'); vid.load(); pbar.style.width='0%'; btn.textContent='Start & Earn'; btn.disabled=false; btn.onclick=doAd;
 }
 btn.onclick=doAd;
 document.addEventListener("visibilitychange",()=>{if(document.hidden && timer){ov.innerHTML='⚠️ Stay! Timer paused';}});
