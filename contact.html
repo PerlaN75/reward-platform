@@ -3,55 +3,57 @@
 <head>
 <title>Support - Rewards</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
 body{background:#ffffff;min-height:100vh;color:#111827}
-.top-bar{background:#ffffff;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;border-bottom:2px solid #f1f5f9;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
-.top-title{font-weight:900;font-size:16px;color:#111827;background:#f8fafc;border:2px solid #e5e7eb;border-radius:999px;padding:6px 18px}
-.close-x-page{width:40px;height:36px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#991b1b;cursor:pointer;text-decoration:none;box-shadow:0 2px 0 #fca5a5}
-.container{max-width:500px;margin:0 auto;padding:16px 14px 90px 14px}
-.card{background:#ffffff;border:2px solid #f1f5f9;border-radius:20px;padding:20px;box-shadow:0 8px 30px rgba(0,0,0,0.06);margin-bottom:14px}
-.card-title{font-size:18px;font-weight:900;color:#111827;margin-bottom:6px}
-.card-sub{font-size:12px;color:#6b7280;margin-bottom:16px}
-.input{width:100%;background:#ffffff;border:2px solid #e5e7eb;border-radius:12px;padding:13px 14px;font-size:14px;margin-bottom:12px;outline:none}
-.input:focus{border-color:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,0.15)}
-.textarea{width:100%;background:#ffffff;border:2px solid #e5e7eb;border-radius:12px;padding:13px 14px;font-size:14px;min-height:115px;outline:none}
-.textarea:focus{border-color:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,0.15)}
-.btn-send{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;padding:14px;font-weight:900;font-size:15px;cursor:pointer;box-shadow:0 4px 0 #d97706;margin-top:12px}
-.btn-send:active{transform:translateY(3px);box-shadow:0 1px 0 #d97706}
+.top-bar{background:#ffffff;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;border-bottom:2px solid #f1f5f9;box-shadow:0 2px 12px rgba(0,0,0,0.05)}
+.top-pill{font-weight:900;font-size:15px;background:#f8fafc;border:2px solid #e5e7eb;border-radius:999px;padding:7px 18px}
+.close-x{width:42px;height:40px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#991b1b;text-decoration:none;box-shadow:0 2px 0 #fca5a5}
+.container{max-width:500px;margin:0 auto;padding:16px 14px 90px}
+.card{background:#ffffff;border:2px solid #f1f5f9;border-radius:20px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,0.06);margin-bottom:14px}
+.title{font-size:19px;font-weight:900}
+.sub{font-size:12px;color:#6b7280;margin:6px 0 16px;line-height:1.4}
+.input{width:100%;background:#fff;border:2px solid #e5e7eb;border-radius:12px;padding:13px 14px;font-size:14px;margin-bottom:12px;outline:none}
+.input:focus{border-color:#fbbf24;box-shadow:0 0 0 4px rgba(251,191,36,0.15)}
+.area{width:100%;background:#fff;border:2px solid #e5e7eb;border-radius:12px;padding:13px 14px;font-size:14px;min-height:120px;outline:none}
+.area:focus{border-color:#fbbf24;box-shadow:0 0 0 4px rgba(251,191,36,0.15)}
+.btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:13px;padding:14px;font-weight:900;font-size:15px;cursor:pointer;box-shadow:0 4px 0 #d97706;margin-top:14px}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #d97706}
 </style>
 </head>
 <body>
 <div class="top-bar">
-  <div class="top-title">💬 Support</div>
-  <a href="more.html" class="close-x-page">×</a>
+  <div class="top-pill">💬 Support v3 GOLD</div>
+  <a href="more.html?v=3" class="close-x">×</a>
 </div>
 <div class="container">
-<div class="card">
-  <div class="card-title">Contact Support</div>
-  <div class="card-sub">No email needed — message goes directly to admin.</div>
-  <input id="nameInput" class="input" readonly>
-  <input id="emailInput" class="input" readonly>
-  <textarea id="issueInput" class="textarea" placeholder="Describe your issue..."></textarea>
-  <button class="btn-send" onclick="sendTicket()">Send Message</button>
-  <div id="sendStatus" style="text-align:center;font-size:12px;margin-top:12px;color:#6b7280;font-weight:700"></div>
-</div>
-<div class="card">
-  <div class="card-title">Your Tickets & Replies</div>
-  <div id="ticketsList" style="margin-top:14px"><p style="color:#9ca3af;text-align:center;padding:20px 0">Loading...</p></div>
-</div>
+  <div class="card">
+    <div class="title">Contact Support</div>
+    <div class="sub">Message goes directly to admin — NEW GOLD VERSION v3.</div>
+    <input id="nameInput" class="input" readonly>
+    <input id="emailInput" class="input" readonly>
+    <textarea id="issueInput" class="area" placeholder="Describe your issue... min 10 chars"></textarea>
+    <button class="btn" onclick="sendTicket()">Send Message — GOLD</button>
+    <div id="status" style="text-align:center;font-size:13px;margin-top:12px;color:#6b7280;font-weight:700"></div>
+  </div>
+  <div class="card">
+    <div class="title">Your Tickets & Replies</div>
+    <div id="ticketsList" style="margin-top:14px"><p style="color:#9ca3af;text-align:center;padding:20px 0">Loading...</p></div>
+  </div>
 </div>
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore(); let cachedUser=null;
 (function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}'); if(c.username) document.getElementById('nameInput').value=c.username; if(c.email) document.getElementById('emailInput').value=c.email;}catch(e){}})();
-auth.onAuthStateChanged(u=>{ if(!u){location.href='./index.html';return;} cachedUser=u; db.collection('users').doc(u.uid).onSnapshot(s=>{ if(s.exists){ var d=s.data(); localStorage.setItem('userData', JSON.stringify({...d,uid:u.uid})); document.getElementById('nameInput').value=d.username||''; document.getElementById('emailInput').value=d.email||u.email||''; }}); loadTickets(); });
-async function sendTicket(){ var issue=document.getElementById('issueInput').value.trim(); var s=document.getElementById('sendStatus'); if(!issue||issue.length<10){ s.innerText='Min 10 chars'; s.style.color='#ef4444'; return;} s.innerText='Sending...'; try{ var user=auth.currentUser||cachedUser; var ud=JSON.parse(localStorage.getItem('userData')||'{}'); await db.collection('supportTickets').add({uid:user.uid,username:ud.username||document.getElementById('nameInput').value,email:ud.email||document.getElementById('emailInput').value,message:issue,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp(),adminReply:''}); document.getElementById('issueInput').value=''; s.style.color='#16a34a'; s.innerText='✓ Sent!'; }catch(e){ s.style.color='#ef4444'; s.innerText='Error: '+e.message;} }
-function loadTickets(){ var user=auth.currentUser||cachedUser; if(!user) return; var list=document.getElementById('ticketsList'); db.collection('supportTickets').where('uid','==',user.uid).orderBy('createdAt','desc').limit(20).onSnapshot(snap=>{ if(snap.empty){ list.innerHTML='<p style="color:#9ca3af;text-align:center;padding:15px">No tickets yet</p>'; return;} var html=''; snap.forEach(doc=>{ var d=doc.data(); var date=d.createdAt?.toDate?d.createdAt.toDate().toLocaleDateString():'Now'; html+=`<div style="background:#f9fafb;border:2px solid #f1f5f9;border-radius:14px;padding:12px;margin-bottom:10px"><div style="display:flex;justify-content:space-between"><span style="background:#fef3c7;border:2px solid #fde68a;border-radius:999px;padding:2px 8px;font-size:10px;font-weight:900">${(d.status||'pending').toUpperCase()}</span><span style="font-size:11px;color:#9ca3af">${date}</span></div><div style="font-weight:700;margin-top:6px;font-size:13px">${d.message}</div>${d.adminReply?`<div style="background:#fff;border:2px solid #bbf7d0;border-radius:10px;padding:8px;margin-top:8px"><b style="color:#16a34a;font-size:11px">Admin:</b><div style="font-size:13px;color:#065f46">${d.adminReply}</div></div>`:'<div style="font-size:11px;color:#9ca3af;margin-top:6px">⏳ Waiting...</div>'}</div>`; }); list.innerHTML=html; }, err=>{ list.innerHTML=`<div style="background:#fef2f2;border:2px solid #fecaca;border-radius:12px;padding:12px"><p style="color:#991b1b;font-size:12px">Error: ${err.message}</p><p style="font-size:11px;margin-top:6px">Publish rules with supportTickets then refresh.</p></div>`; }); }
+auth.onAuthStateChanged(u=>{ if(!u){location.href='./index.html';return;} cachedUser=u; db.collection('users').doc(u.uid).get().then(s=>{ if(s.exists){ var d=s.data(); localStorage.setItem('userData', JSON.stringify({...d,uid:u.uid})); document.getElementById('nameInput').value=d.username||''; document.getElementById('emailInput').value=d.email||u.email||''; }}); loadTickets(); });
+async function sendTicket(){ var issue=document.getElementById('issueInput').value.trim(); var el=document.getElementById('status'); if(!issue||issue.length<10){ el.style.color='#ef4444'; el.innerText='Min 10 chars'; return;} el.style.color='#6b7280'; el.innerText='Sending...'; try{ var user=auth.currentUser||cachedUser; var ud=JSON.parse(localStorage.getItem('userData')||'{}'); await db.collection('supportTickets').add({uid:user.uid,username:ud.username||document.getElementById('nameInput').value,email:ud.email||document.getElementById('emailInput').value,message:issue,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp(),adminReply:''}); document.getElementById('issueInput').value=''; el.style.color='#16a34a'; el.innerText='✓ Sent!'; }catch(e){ el.style.color='#ef4444'; el.innerText='Error: '+e.message;} }
+function loadTickets(){ var user=auth.currentUser||cachedUser; if(!user) return; var list=document.getElementById('ticketsList'); db.collection('supportTickets').where('uid','==',user.uid).orderBy('createdAt','desc').limit(20).onSnapshot(snap=>{ if(snap.empty){ list.innerHTML='<p style="text-align:center;padding:20px;color:#9ca3af">No tickets yet</p>'; return;} var h=''; snap.forEach(d=>{ var v=d.data(); var date=v.createdAt?.toDate?v.createdAt.toDate().toLocaleDateString():'Now'; h+=`<div style="background:#f9fafb;border:2px solid #f1f5f9;border-radius:14px;padding:12px;margin-bottom:10px"><div style="display:flex;justify-content:space-between"><span style="background:#fffbeb;border:2px solid #fde68a;border-radius:999px;padding:2px 8px;font-size:10px;font-weight:900">${(v.status||'pending').toUpperCase()}</span><span style="font-size:11px;color:#9ca3af">${date}</span></div><div style="font-weight:700;margin-top:6px;font-size:13px">${v.message}</div>${v.adminReply?`<div style="background:#fff;border:2px solid #bbf7d0;border-radius:10px;padding:8px;margin-top:8px"><b style="color:#16a34a;font-size:11px">Admin:</b><div style="font-size:13px;color:#065f46">${v.adminReply}</div></div>`:''}</div>`; }); list.innerHTML=h; }, err=>{ list.innerHTML=`<div style="background:#fef2f2;border:2px solid #fecaca;border-radius:12px;padding:12px"><p style="color:#991b1b;font-weight:700;font-size:12px">${err.message}</p><p style="font-size:11px;margin-top:6px">Publish rules with supportTickets in Firebase Console → Firestore → Rules</p></div>`; }); }
 </script>
 </body>
 </html>
