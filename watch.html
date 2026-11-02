@@ -11,13 +11,9 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
 body{background:#ffffff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px 14px 100px 14px;overflow-x:hidden}
-
-/* BACK BUTTON EXACT FROM WALLET */
 .header{display:flex;align-items:center;gap:12px;margin:20px 0 12px;width:100%;max-width:500px}
 .back{width:42px;height:38px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;color:#991b1b;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;cursor:pointer;box-shadow:0 2px 0 #fca5a5}
 .back:active{transform:scale(0.96)}
-
-/* PROFESSIONAL CARD - LIKE WALLET */
 .main-card{width:100%;max-width:500px;background:#ffffff;border:2px solid #f1f5f9;border-radius:20px;padding:16px;box-shadow:0 8px 30px rgba(0,0,0,0.06)}
 .balance-box{background:#2f3e1a;border:2px solid #fbbf24;border-radius:16px;padding:14px;text-align:center;color:#fff;margin-bottom:16px}
 .video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #111827}
@@ -36,48 +32,44 @@ video{width:100%;height:100%;object-fit:contain;background:#000}
 <body>
 <canvas id="confetti" style="position:fixed;inset:0;pointer-events:none;z-index:9999;display:none"></canvas>
 <div id="bubble" class="bubble"></div>
-
 <div class="header"><div class="back" onclick="location.href='./home.html'">‹</div><h2 style="color:#000;font-size:20px">📺 Watch & Earn</h2></div>
-
 <div class="main-card">
 <div class="balance-box">
 <div style="color:#ccc;font-size:11px;letter-spacing:0.5px">Your Balance</div>
 <div style="margin-top:6px"><span style="font-size:20px;color:#fbbf24;font-weight:bold" id="bal">-- pts</span> <span style="font-size:13px;color:#fff;opacity:0.8">• <span id="today">0/10</span> today</span></div>
 <div class="vtitle" id="vt">Loading...</div><div id="err" class="err"></div>
 </div>
-
 <div class="video-box">
 <div class="player"><video id="v" playsinline controls preload="metadata" crossorigin="anonymous" loop></video><div class="overlay" id="ov">Loading videos...</div></div>
 <div class="progress"><div class="progress-bar" id="pbar"></div></div>
 <div style="padding:0 12px 12px;background:#000"><button class="btn" id="btn" disabled>Loading...</button></div>
 </div>
 </div>
-
 <script>
 const DIRECT_LINK="https://omg10.com/4/11905870";
 const LIVE_API="https://steep-mountain-1ce5.silntr235.workers.dev";
 const REQUIRED_WATCH_SEC = 15;
 const ALL_VIDEOS_FALLBACK=[
-{src:"https://cdn.videy.co/4KScO3m11.mp4",title:"Video 1"},
-{src:"https://cdn.videy.co/qwwV5liZ1.mp4",title:"Video 2"},
-{src:"https://cdn.videy.co/SNuocZec1.mp4",title:"Video 3"},
-{src:"https://cdn.videy.co/4Zqqtaia1.mp4",title:"Video 4"},
-{src:"https://cdn.videy.co/Gjvd5XCv1.mp4",title:"Video 5"},
-{src:"https://cdn.videy.co/ID5Yult41.mp4",title:"Video 6"},
-{src:"https://cdn.videy.co/D2phmwCi1.mp4",title:"Video 7"},
-{src:"https://cdn.videy.co/XibFgqY31.mp4",title:"Video 8"},
-{src:"https://cdn.videy.co/YxatrGBT1.mp4",title:"Video 9"},
-{src:"https://cdn.videy.co/8a7z5Gnt1.mp4",title:"Video 10"},
-{src:"https://cdn.videy.co/nxGIoUIv1.mp4",title:"Video 11"},
-{src:"https://cdn.videy.co/Y7sBjXCy1.mp4",title:"Video 12"},
-{src:"https://cdn.videy.co/CWMR0s9c1.mp4",title:"Video 13"},
-{src:"https://cdn.videy.co/qKROYUIW1.mp4",title:"Video 14"},
-{src:"https://cdn.videy.co/RF0mt4bh1.mp4",title:"Video 15"},
-{src:"https://cdn.videy.co/f4Do13Yy1.mp4",title:"Video 16"},
-{src:"https://cdn.videy.co/VZSZ7vKz1.mp4",title:"Video 17"},
-{src:"https://cdn.videy.co/ZEbftTDj1.mp4",title:"Video 18"},
-{src:"https://www.w3schools.com/html/mov_bbb.mp4",title:"Video 19"},
-{src:"https://files.catbox.moe/lzrb1b.mp4",title:"Video 20"}
+{src:"https://cdn.videy.co/4KScO3m11.mp4",title:"Video 1",reward:2},
+{src:"https://cdn.videy.co/qwwV5liZ1.mp4",title:"Video 2",reward:2},
+{src:"https://cdn.videy.co/SNuocZec1.mp4",title:"Video 3",reward:2},
+{src:"https://cdn.videy.co/4Zqqtaia1.mp4",title:"Video 4",reward:2},
+{src:"https://cdn.videy.co/Gjvd5XCv1.mp4",title:"Video 5",reward:2},
+{src:"https://cdn.videy.co/ID5Yult41.mp4",title:"Video 6",reward:2},
+{src:"https://cdn.videy.co/D2phmwCi1.mp4",title:"Video 7",reward:2},
+{src:"https://cdn.videy.co/XiBfgqY31.mp4",title:"Video 8",reward:2},
+{src:"https://cdn.videy.co/YxatrGBT1.mp4",title:"Video 9",reward:2},
+{src:"https://cdn.videy.co/8a7z5Gnt1.mp4",title:"Video 10",reward:2},
+{src:"https://cdn.videy.co/nxGloUIv1.mp4",title:"Video 11",reward:2},
+{src:"https://cdn.videy.co/Y7sBjXCy1.mp4",title:"Video 12",reward:2},
+{src:"https://cdn.videy.co/CWMr0s9c1.mp4",title:"Video 13",reward:2},
+{src:"https://cdn.videy.co/qKROYUIW1.mp4",title:"Video 14",reward:2},
+{src:"https://cdn.videy.co/RF0mt4bh1.mp4",title:"Video 15",reward:2},
+{src:"https://cdn.videy.co/f4Do13Yy1.mp4",title:"Video 16",reward:2},
+{src:"https://cdn.videy.co/VZSZ7vKz1.mp4",title:"Video 17",reward:2},
+{src:"https://cdn.videy.co/ZEbftDJj1.mp4",title:"Video 18",reward:2},
+{src:"https://www.w3schools.com/html/mov_bbb.mp4",title:"Video 19",reward:2},
+{src:"https://files.catbox.moe/lzrb1b.mp4",title:"Video 20",reward:2}
 ];
 let ALL_VIDEOS=[...ALL_VIDEOS_FALLBACK];
 async function loadLiveVideos(){ try{ const res = await fetch(LIVE_API); const data = await res.json(); if(Array.isArray(data) && data.length >= 5){ ALL_VIDEOS = data; return true; } }catch(e){} return false; }
@@ -89,11 +81,28 @@ firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.fi
 let bal=0,today=0,currentUser=null,timer=null,dailyPlaylist=[],loadChecker=null, adWindowOpened=false, currentVideo=null;
 const ov=document.getElementById('ov'),vid=document.getElementById('v'),btn=document.getElementById('btn'),pbar=document.getElementById('pbar'),balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),vtEl=document.getElementById('vt'),errEl=document.getElementById('err');
 function updateUI(){ let displayToday = Math.min(today,10); balEl.textContent=bal+' pts'; todayEl.textContent=displayToday+'/10'; if(dailyPlaylist.length && today<10 && dailyPlaylist[today]){vtEl.textContent=`Next: ${dailyPlaylist[today].title}`;} }
-try{ const c = JSON.parse(localStorage.getItem('userData')||'{}'); if(c && (c.balance!=null || c.points!=null)){ bal = c.balance ?? c.points ?? 0; today = c.todayCount ?? c.today ?? 0; balEl.textContent = bal+' pts'; todayEl.textContent = Math.min(today,10)+'/10'; } }catch(e){}
+
 auth.onAuthStateChanged(async(u)=>{
   if(!u){location.href='./index.html';return;} currentUser=u; 
   ov.innerHTML='📡 Loading videos...'; await loadLiveVideos(); dailyPlaylist=getRandomPlaylist();
-  db.collection('users').doc(u.uid).onSnapshot(s=>{ if(s.exists){ const d=s.data(); bal=d.balance ?? d.points ?? 0; today=d.todayCount ?? d.today ?? 0; const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null; if(last && new Date().toDateString()!==last.toDateString()){today=0;} updateUI(); if(today>=10){ ov.style.display='flex'; ov.innerHTML='🎉 10/10 Done!<br>Come back tomorrow'; btn.disabled=true; btn.textContent='Limit Reached'; pbar.style.width='100%'; } else if(dailyPlaylist.length){ ov.style.display='flex'; if(!timer) ov.innerHTML=`<div>${dailyPlaylist[today]?.title||'Ready'}</div><small>✨ ${ALL_VIDEOS.length} Premium Videos</small>`; btn.disabled=false; btn.textContent='Start & Earn'; } } });
+  db.collection('users').doc(u.uid).onSnapshot(s=>{ 
+    if(s.exists){ 
+      const d=s.data(); 
+      bal=d.balance ?? d.points ?? 0; 
+      // FIXED: Use only todayCount, ignore old 'today' field that caused double count
+      let serverCount = d.todayCount ?? 0;
+      const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null; 
+      if(last && new Date().toDateString()!==last.toDateString()){
+        serverCount=0;
+        // Auto-reset for new day
+        db.collection('users').doc(u.uid).set({todayCount:0, today:0},{merge:true});
+      }
+      today = serverCount;
+      updateUI(); 
+      if(today>=10){ ov.style.display='flex'; ov.innerHTML='🎉 10/10 Done!<br>Come back tomorrow'; btn.disabled=true; btn.textContent='Limit Reached'; pbar.style.width='100%'; } 
+      else if(dailyPlaylist.length){ ov.style.display='flex'; if(!timer) ov.innerHTML=`<div>${dailyPlaylist[today]?.title||'Ready'}</div><small>✨ ${ALL_VIDEOS.length} Premium Videos • 2 pts each</small>`; btn.disabled=false; btn.textContent='Start & Earn'; } 
+    } 
+  });
 });
 function doAd(){ if(today>=10){ov.style.display='flex'; ov.innerHTML='🎉 10/10 Done!<br>💥 New tomorrow'; btn.disabled=true; btn.textContent='Limit Reached'; BLAST(); return;} adWindowOpened=false; const win=window.open(DIRECT_LINK,'_blank'); if(!win || win.closed || typeof win.closed=='undefined'){ errEl.textContent='⚠️ Allow popups!'; ov.innerHTML='⚠️ Popup blocked!<br><small>Allow & tap again</small>'; btn.textContent='Tap Again'; btn.disabled=false; return; } adWindowOpened=true; errEl.textContent=''; btn.disabled=true; ov.style.display='flex'; ov.innerHTML='Verifying ad...<br><small>3s</small>'; pbar.style.width='0%'; vid.pause(); let ad=3; let adInt=setInterval(()=>{ ad--; ov.innerHTML=`📢 Ad check ${ad}s...`; if(ad<=0){clearInterval(adInt); startVideo();} },1000); }
 function startVideo(){
@@ -108,11 +117,18 @@ function handleVideoError(msg){ clearInterval(timer); timer=null; clearInterval(
 async function claim(){
   if(!currentUser) return; if(today>=10){ ov.innerHTML='🎉 10/10 Done!'; btn.textContent='Limit Reached'; btn.disabled=true; return; } if(!adWindowOpened){errEl.textContent='Ad not opened'; return;} if(!currentVideo){ errEl.textContent='No video'; return; }
   btn.disabled=true; btn.textContent='Saving...'; const videoTitleToSave = currentVideo.title;
+  const rewardToGive = currentVideo.reward ?? 2;
   try{ 
-    await db.collection('users').doc(currentUser.uid).set({ balance: firebase.firestore.FieldValue.increment(2), points: firebase.firestore.FieldValue.increment(2), todayCount: firebase.firestore.FieldValue.increment(1), today: firebase.firestore.FieldValue.increment(1), lastWatchDate: firebase.firestore.FieldValue.serverTimestamp() },{merge:true}); 
-    await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({ action:'Watch & Earn',type:'watch',points:2,desc:videoTitleToSave, timestamp:firebase.firestore.FieldValue.serverTimestamp() }); 
-    showBubble(`+2 coins!`);
-    try{ var cached = JSON.parse(localStorage.getItem('userData')||'{}'); cached.balance = (cached.balance||bal||0)+2; cached.points = (cached.points||bal||0)+2; cached.todayCount = (cached.todayCount||today||0)+1; cached.today = (cached.today||today||0)+1; localStorage.setItem('userData', JSON.stringify(cached)); }catch(e){}
+    // FIXED: Only increment todayCount once, not today+todayCount
+    await db.collection('users').doc(currentUser.uid).set({ 
+      balance: firebase.firestore.FieldValue.increment(rewardToGive), 
+      points: firebase.firestore.FieldValue.increment(rewardToGive), 
+      todayCount: firebase.firestore.FieldValue.increment(1), 
+      today: 0,
+      lastWatchDate: firebase.firestore.FieldValue.serverTimestamp() 
+    },{merge:true}); 
+    await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({ action:'Watch & Earn',type:'watch',points:rewardToGive,desc:videoTitleToSave, timestamp:firebase.firestore.FieldValue.serverTimestamp() }); 
+    showBubble(`+${rewardToGive} coins!`);
     currentVideo=null; 
   }catch(e){ errEl.textContent='Save failed: '+e.message; btn.disabled=false; btn.textContent='Try Again'; return; }
   adWindowOpened=false; vid.removeAttribute('src'); vid.load(); pbar.style.width='0%'; btn.textContent='Start & Earn'; btn.disabled=false; btn.onclick=doAd;
