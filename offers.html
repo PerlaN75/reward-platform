@@ -61,11 +61,10 @@ let cachedUser=null;
 const MY_BNB = "https://bnbpick.io/?ref=SilasN75";
 const OFFERS=[
   {id:'bnb_faucet', emoji:'💧', name:'BNB Faucet', sub:'Verify to earn', coins:15, link:MY_BNB, locked:false, type:'bnb'},
-  {id:'telegram_join', emoji:'✈️', name:'Telegram', sub:'Join Channel', coins:10, link:'https://t.me', locked:false, type:'instant'},
+  {id:'telegram_join', emoji:'✈️', name:'Telegram', sub:'Join Channel', coins:10, link:'https://t.me/formrw_earning', locked:false, type:'instant'},
   {id:'play_game', emoji:'🎮', name:'Play Game', sub:'Coming Soon', coins:25, locked:true},
   {id:'install_app', emoji:'📲', name:'Install App', sub:'Coming Soon', coins:20, locked:true},
 ];
-
 function render(){
   const grid=document.getElementById('grid');
   grid.innerHTML='';
@@ -82,7 +81,6 @@ function render(){
     </div>`;
   });
 }
-
 function clickOffer(id){
   const o=OFFERS.find(x=>x.id===id);
   if(o.locked){ alert('🔒 Locked — waiting for postback partner (Visa needed)'); return; }
@@ -93,38 +91,22 @@ function clickOffer(id){
     doInstant(o);
   }
 }
-
 function closeModal(){ document.getElementById('bnbModal').style.display='none'; }
-
 async function submitBnb(){
   const username=document.getElementById('bnbUserInput').value.trim();
   if(username.length<3){ alert('Enter valid bnbpick username'); return; }
   const user=auth.currentUser||cachedUser;
   const subid=`${user.uid}_bnb_${Date.now()}`;
   const o=OFFERS.find(x=>x.id==='bnb_faucet');
-  
-  // Save in 2 places: user history + global verification queue
   await db.collection('bnbVerifications').doc(subid).set({
-    uid:user.uid,
-    email:user.email,
-    bnbUsername:username,
-    coins:o.coins,
-    status:'waiting_admin',
-    createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    uid:user.uid, email:user.email, bnbUsername:username, coins:o.coins, status:'waiting_admin', createdAt:firebase.firestore.FieldValue.serverTimestamp()
   });
   await db.collection('users').doc(user.uid).collection('offerClicks').doc(subid).set({
-    offerId:'bnb_faucet',
-    bnbUsername:username,
-    coins:o.coins,
-    status:'waiting_admin',
-    subid,
-    createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    offerId:'bnb_faucet', bnbUsername:username, coins:o.coins, status:'waiting_admin', subid, createdAt:firebase.firestore.FieldValue.serverTimestamp()
   });
-  
   closeModal();
   alert('✅ Submitted! Admin will verify your BNB username "'+username+'" in bnbpick referrals. If exists, you get +15 coins. Check in 1-2 hours.');
 }
-
 async function doInstant(o){
   const user=auth.currentUser||cachedUser;
   const today=new Date().toISOString().split('T')[0];
@@ -143,7 +125,6 @@ async function doInstant(o){
   localStorage.setItem(doneKey,today);
   render(); loadBalance();
 }
-
 function loadBalance(){
   const c=JSON.parse(localStorage.getItem('userData')||'{}');
   document.getElementById('balCoins').innerText=(c.balance??0)+' coins';
