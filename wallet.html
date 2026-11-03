@@ -21,7 +21,6 @@ body{background:#ffffff;min-height:100vh;padding:16px 14px 100px 14px;color:#000
 <div id="customToast"></div>
 <div style="max-width:500px;margin:0 auto">
 <div class="header"><div class="back" onclick="location.href='./home.html'">‹</div><h2>💰 Wallet</h2></div>
-
 <div class="card">
 <div style="color:#ccc;font-size:11px">Your Balance</div>
 <div style="display:flex;justify-content:space-around;margin-top:8px">
@@ -30,8 +29,6 @@ body{background:#ffffff;min-height:100vh;padding:16px 14px 100px 14px;color:#000
 <div><div style="font-size:11px;color:#aaa">💵 USDT</div><div id="usdtBal" style="font-size:22px;color:#22c55e;font-weight:bold">-- USDT</div><div style="font-size:9px;color:#6b8f5a">Available</div></div>
 </div>
 </div>
-
-<!-- ULTRA INSTANT CACHE -->
 <script>
 (function(){
   try{
@@ -42,25 +39,20 @@ body{background:#ffffff;min-height:100vh;padding:16px 14px 100px 14px;color:#000
       document.getElementById('coinBal').textContent = bal + ' coins';
       document.getElementById('usdEq').textContent = '≈ $' + (bal*0.0005).toFixed(4);
       document.getElementById('usdtBal').textContent = Number(usdt).toFixed(4) + ' USDT';
-      var note = document.getElementById('withdrawNote');
-      if(note) note.textContent = 'Available: ' + Number(usdt).toFixed(4) + ' USDT • Min $1.5';
     }
   }catch(e){}
 })();
 </script>
-
 <div class="tabs">
 <button id="tab1" class="tab active" onclick="switchTab('convert')">Convert</button>
 <button id="tab2" class="tab inactive" onclick="switchTab('withdraw')">Withdraw</button>
 </div>
-
 <div id="convertTab">
 <input type="number" id="convertAmount" class="input-box" placeholder="Enter coins amount" oninput="calcConvert()">
 <div id="convertResult" class="result">You will receive: 0.0000 USDT</div>
 <div class="note">Rate: 1 coin = $0.0005 USDT • 3000 coins = $1.5 • No minimum</div>
 <button class="action-btn" onclick="convertPoints()">Convert to USDT</button>
 </div>
-
 <div id="withdrawTab" style="display:none">
 <select id="payMethod" class="input-box"><option value="binance">Binance Pay - 0 Fee</option><option value="okx">OKX Pay - 0 Fee</option></select>
 <select id="withdrawCrypto" class="input-box"><option>USDT</option></select>
@@ -69,9 +61,7 @@ body{background:#ffffff;min-height:100vh;padding:16px 14px 100px 14px;color:#000
 <div id="withdrawNote" class="note">Available: -- USDT • Min $1.5</div>
 <button class="action-btn" onclick="requestWithdraw()">Request Withdraw</button>
 </div>
-
 </div>
-
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
@@ -82,7 +72,6 @@ const auth=firebase.auth(),db=firebase.firestore();
 function showToast(m){const t=document.getElementById('customToast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
 const POINT_RATE=0.0005,MIN_WITHDRAW=1.5;
 let currentUser=null,userData={};
-
 function loadData(d){
   if(!d) return;
   userData=d;
@@ -104,35 +93,27 @@ function switchTab(t){
   document.getElementById('tab1').className=t==='convert'?'tab active':'tab inactive';
   document.getElementById('tab2').className=t==='withdraw'?'tab active':'tab inactive';
 }
-
 async function convertPoints(){
   const pts=parseFloat(document.getElementById('convertAmount').value);
   if(!pts||pts<=0) return showToast('Enter coins amount');
-  if(pts<1) return showToast('Min 1 coin');
   const usdt=pts*POINT_RATE;
   try{
+    const userRef=db.collection('users').doc(currentUser.uid);
+    const convertRef=userRef.collection('convertHistory').doc();
+    const earnRef=userRef.collection('earnHistory').doc();
     await db.runTransaction(async (tr)=>{
-      const ref=db.collection('users').doc(currentUser.uid);
-      const snap=await tr.get(ref);
+      const snap=await tr.get(userRef);
       if(!snap.exists) throw "No user";
-      const realBal=snap.data().balance||0;
-      if(pts>realBal) throw "Not enough coins";
-      tr.update(ref,{
-        balance: realBal - pts,
-        usdtBalance: firebase.firestore.FieldValue.increment(usdt)
-      });
+      const data=snap.data();
+      if((data.balance||0) < pts) throw "Not enough coins";
+      tr.update(userRef,{balance:(data.balance||0)-pts, usdtBalance:(data.usdtBalance||0)+usdt});
+      tr.set(convertRef,{points:pts,usdt:usdt,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+      tr.set(earnRef,{action:'Converted to USDT',points:-pts,desc:`${pts} → ${usdt.toFixed(4)} USDT`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
     });
-    await db.collection('users').doc(currentUser.uid).collection('convertHistory').add({points:pts,usdt:usdt,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-    await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Converted to USDT',points:-pts,desc:`${pts} → ${usdt.toFixed(4)} USDT`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-    showToast(`✓ ${pts} coins → ${usdt.toFixed(4)} USDT`);
+    showToast(`✓ ${pts} → ${usdt.toFixed(4)} USDT`);
     document.getElementById('convertAmount').value=''; calcConvert();
-  }catch(e){
-    if(e==="Not enough coins") showToast('Not enough coins');
-    else if(typeof e==='string') showToast(e);
-    else {console.log(e); showToast('Failed, reload');}
-  }
+  }catch(e){ showToast(e==="Not enough coins" ? 'Not enough coins' : 'Failed'); }
 }
-
 async function requestWithdraw(){
   const usdtAmount=parseFloat(document.getElementById('withdrawAmount').value);
   const payId=document.getElementById('walletAddress').value.trim();
@@ -140,30 +121,22 @@ async function requestWithdraw(){
   if(!payId) return showToast('Enter Pay ID / Email');
   if(!usdtAmount||usdtAmount<MIN_WITHDRAW) return showToast('Min $1.5');
   try{
+    const userRef=db.collection('users').doc(currentUser.uid);
+    const withdrawRef=db.collection('withdrawals').doc();
     await db.runTransaction(async (tr)=>{
-      const ref=db.collection('users').doc(currentUser.uid);
-      const snap=await tr.get(ref);
+      const snap=await tr.get(userRef);
       const realUsdt=snap.data().usdtBalance||0;
       if(usdtAmount>realUsdt) throw "Not enough USDT";
-      tr.update(ref,{usdtBalance: realUsdt - usdtAmount});
+      tr.update(userRef,{usdtBalance: realUsdt - usdtAmount});
+      tr.set(withdrawRef,{uid:currentUser.uid,userId:currentUser.uid,username:userData.username||'',email:userData.email||currentUser.email,method:method,crypto:'USDT',payId:payId,amount:usdtAmount,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp()});
     });
-    await db.collection('withdrawals').add({uid:currentUser.uid,username:userData.username,email:userData.email,method:method,crypto:'USDT',payId:payId,amount:usdtAmount,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp()});
     showToast(`Withdraw ${usdtAmount.toFixed(2)} USDT requested!`);
     document.getElementById('withdrawAmount').value=''; document.getElementById('walletAddress').value='';
-  }catch(e){
-    if(e==="Not enough USDT") showToast('Not enough USDT. Convert first');
-    else showToast('Failed');
-  }
+  }catch(e){ showToast(e==="Not enough USDT" ? 'Not enough USDT. Convert first' : 'Failed: '+e); }
 }
-
-// LIVE SYNC - INSTANT + REALTIME
 auth.onAuthStateChanged(u=>{
-  if(u){
-    currentUser=u;
-    db.collection('users').doc(u.uid).onSnapshot(doc=>{
-      if(doc.exists) loadData(doc.data());
-    });
-  }else{location.href='./index.html';}
+  if(u){ currentUser=u; db.collection('users').doc(u.uid).onSnapshot(doc=>{ if(doc.exists) loadData(doc.data()); }); }
+  else{location.href='./index.html';}
 });
 window.calcConvert=calcConvert; window.switchTab=switchTab; window.convertPoints=convertPoints; window.requestWithdraw=requestWithdraw;
 </script></body></html>
