@@ -18,13 +18,16 @@ body{background:#f5f5f5;min-height:100vh}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
 .card{background:#fff;border:2px solid #e5e7eb;border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.06);position:relative}
 .card.locked{opacity:0.55;background:#f9fafb}
+.card.claimed{opacity:0.6;background:#f0fdf4;border-color:#86efac}
 .lock-badge{position:absolute;top:6px;right:6px;background:#111827;color:#fff;font-size:8px;font-weight:900;padding:3px 6px;border-radius:999px}
 .emoji{font-size:28px;margin-bottom:6px}.name{font-weight:900;font-size:12px}.sub{font-size:10px;color:#6b7280}.badge{display:inline-block;margin-top:6px;background:#fffbeb;border:1.5px solid #fde68a;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:900;color:#92400e}
+.badge.done{background:#dcfce7;border-color:#86efac;color:#166534}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:99;padding:20px}
 .modal-box{background:#fff;border-radius:18px;padding:20px;width:100%;max-width:360px}
 .modal-box input{width:100%;border:2px solid #e5e7eb;border-radius:12px;padding:12px;margin:10px 0;font-size:15px}
 .btn{width:100%;border:none;border-radius:12px;padding:12px;font-weight:900;margin-top:6px;cursor:pointer}
 .btn-yellow{background:#fbbf24}.btn-dark{background:#111827;color:#fff}
+.btn:disabled{background:#9ca3af;cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -45,11 +48,12 @@ body{background:#f5f5f5;min-height:100vh}
 <div class="modal" id="bnbModal">
 <div class="modal-box">
 <h3 style="font-weight:900">Verify BNB Registration</h3>
-<p style="font-size:12px;color:#6b7280;margin-top:6px">1. Register on bnbpick.io with your username<br>2. Enter same username below<br>3. Admin will verify and approve +15 coins</p>
+<p style="font-size:12px;color:#6b7280;margin-top:6px">1. Register on bnbpick.io with your username<br>2. Enter same username below<br>3. Admin will verify and approve +15 coins ONCE FOREVER</p>
 <input id="bnbUserInput" placeholder="Your bnbpick.io username" />
-<button class="btn btn-yellow" onclick="submitBnb()">Submit for Verification</button>
-<button class="btn btn-dark" onclick="closeModal()">Cancel</button>
+<button class="btn btn-yellow" id="bnbSubmitBtn" onclick="submitBnb()">Submit for Verification</button>
+<button class="btn btn-dark" onclick="closeModal()">X Close (No Submit)</button>
 <div style="font-size:10px;color:#9ca3af;margin-top:8px;text-align:center">Check referrals at bnbpick.io dashboard</div>
+<div id="bnbStatus" style="font-size:11px;margin-top:8px;text-align:center;color:#5B4DFF"></div>
 </div>
 </div>
 
@@ -65,66 +69,154 @@ const OFFERS=[
   {id:'play_game', emoji:'🎮', name:'Play Game', sub:'Coming Soon', coins:25, locked:true},
   {id:'install_app', emoji:'📲', name:'Install App', sub:'Coming Soon', coins:20, locked:true},
 ];
-function render(){
+
+async function render(){
   const grid=document.getElementById('grid');
   grid.innerHTML='';
-  const today=new Date().toISOString().split('T')[0];
+  if(!cachedUser) return;
+  
+  // CHECK FIRESTORE FOR FOREVER CLAIM
+  let foreverClaimed = {};
+  try{
+    const bnbDoc = await db.collection('claimedOffers').doc(`${cachedUser.uid}_bnb_faucet`).get();
+    if(bnbDoc.exists) foreverClaimed['bnb_faucet']=true;
+    const tgDoc = await db.collection('claimedOffers').doc(`${cachedUser.uid}_telegram_join`).get();
+    if(tgDoc.exists) foreverClaimed['telegram_join']=true;
+  }catch(e){}
+
   OFFERS.forEach(o=>{
-    const done=localStorage.getItem(`offer_done_${o.id}_${cachedUser?.uid}`)===today;
+    const isClaimedForever = foreverClaimed[o.id] === true;
+    const localForever = localStorage.getItem(`forever_${o.id}_${cachedUser.uid}`)==='1';
+    const claimed = isClaimedForever || localForever;
+
     grid.innerHTML+=`
-    <div class="card ${o.locked?'locked':''}" onclick="clickOffer('${o.id}')">
+    <div class="card ${o.locked?'locked':''} ${claimed?'claimed':''}" onclick="clickOffer('${o.id}')">
       ${o.locked?'<div class="lock-badge">🔒 LOCKED</div>':''}
       <div class="emoji">${o.emoji}</div>
       <div class="name">${o.name}</div>
       <div class="sub">${o.sub}</div>
-      <div class="badge">${o.locked?'Waiting Postback':(done?'✓ Done':'+'+o.coins+' 🪙')}</div>
+      <div class="badge ${claimed?'done':''}">${o.locked?'Waiting Postback':(claimed?'✓ Claimed Forever':'+'+o.coins+' 🪙')}</div>
     </div>`;
   });
 }
+
 function clickOffer(id){
   const o=OFFERS.find(x=>x.id===id);
   if(o.locked){ alert('🔒 Locked — waiting for postback partner (Visa needed)'); return; }
+  
+  const isClaimed = localStorage.getItem(`forever_${o.id}_${cachedUser?.uid}`)==='1';
+  if(isClaimed){ alert('✅ Already claimed forever! You can still login many times and claim hourly inside bnbpick.io / Telegram for new offers, but no extra coins here.'); return; }
+
   if(o.type==='bnb'){
     window.open(o.link,'_blank');
-    setTimeout(()=>{ document.getElementById('bnbModal').style.display='flex'; }, 1200);
+    setTimeout(()=>{ document.getElementById('bnbModal').style.display='flex'; }, 800);
   } else if(o.type==='instant'){
     doInstant(o);
   }
 }
-function closeModal(){ document.getElementById('bnbModal').style.display='none'; }
+
+// X = ONLY CLOSE, NEVER SUBMIT (FIXES CHEAT)
+function closeModal(){ 
+  document.getElementById('bnbModal').style.display='none';
+  document.getElementById('bnbUserInput').value='';
+  document.getElementById('bnbStatus').innerText='';
+}
+
 async function submitBnb(){
   const username=document.getElementById('bnbUserInput').value.trim();
+  const statusEl=document.getElementById('bnbStatus');
+  const btn=document.getElementById('bnbSubmitBtn');
   if(username.length<3){ alert('Enter valid bnbpick username'); return; }
+  
   const user=auth.currentUser||cachedUser;
-  const subid=`${user.uid}_bnb_${Date.now()}`;
-  const o=OFFERS.find(x=>x.id==='bnb_faucet');
-  await db.collection('bnbVerifications').doc(subid).set({
-    uid:user.uid, email:user.email, bnbUsername:username, coins:o.coins, status:'waiting_admin', createdAt:firebase.firestore.FieldValue.serverTimestamp()
-  });
-  await db.collection('users').doc(user.uid).collection('offerClicks').doc(subid).set({
-    offerId:'bnb_faucet', bnbUsername:username, coins:o.coins, status:'waiting_admin', subid, createdAt:firebase.firestore.FieldValue.serverTimestamp()
-  });
-  closeModal();
-  alert('✅ Submitted! Admin will verify your BNB username "'+username+'" in bnbpick referrals. If exists, you get +15 coins. Check in 1-2 hours.');
+  const foreverDocId = `${user.uid}_bnb_faucet`;
+  
+  // ANTI-CHEAT: ONE VERIFICATION FOREVER
+  try{
+    const exists = await db.collection('claimedOffers').doc(foreverDocId).get();
+    if(exists.exists){
+      statusEl.style.color='red';
+      statusEl.innerText='Already claimed forever!';
+      localStorage.setItem(`forever_bnb_faucet_${user.uid}`,'1');
+      render();
+      setTimeout(closeModal,1000);
+      return;
+    }
+
+    // Check duplicate username used by other user
+    const q = await db.collection('claimedOffers').where('bnbUsername','==',username.toLowerCase()).get();
+    if(!q.empty){
+      statusEl.style.color='red';
+      statusEl.innerText='This username already used by another user';
+      return;
+    }
+
+    btn.disabled=true; btn.innerText='Submitting...';
+    statusEl.innerText='Submitting once forever...';
+
+    // 1. Lock forever immediately
+    await db.collection('claimedOffers').doc(foreverDocId).set({
+      uid:user.uid, offerId:'bnb_faucet', bnbUsername:username.toLowerCase(), coins:15, status:'waiting_admin', createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    // 2. Add to admin verification queue
+    await db.collection('bnbVerifications').doc(foreverDocId).set({
+      uid:user.uid, email:user.email, bnbUsername:username, coins:15, status:'waiting_admin', createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    localStorage.setItem(`forever_bnb_faucet_${user.uid}`,'1');
+    closeModal();
+    alert('✅ Submitted ONCE FOREVER! Admin will verify "'+username+'" in bnbpick referrals. You can login many times, but no more coins for this offer. You will still earn hourly INSIDE bnbpick.io!');
+    render();
+  }catch(e){
+    btn.disabled=false; btn.innerText='Submit for Verification';
+    statusEl.style.color='red'; statusEl.innerText='Error: '+e.message;
+  }
 }
+
 async function doInstant(o){
   const user=auth.currentUser||cachedUser;
-  const today=new Date().toISOString().split('T')[0];
-  const doneKey=`offer_done_${o.id}_${user.uid}`;
-  if(localStorage.getItem(doneKey)===today){ alert('Already claimed today'); return; }
-  if(o.link) window.open(o.link,'_blank');
-  const subid=`${user.uid}_${o.id}_${Date.now()}`;
-  const clickRef=db.collection('users').doc(user.uid).collection('offerClicks').doc(subid);
-  await clickRef.set({offerId:o.id, coins:o.coins, status:'pending', createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-  await db.runTransaction(async t=>{
-    const d=await t.get(db.collection('users').doc(user.uid));
-    t.update(db.collection('users').doc(user.uid),{balance:(d.data().balance||0)+o.coins});
-    t.update(clickRef,{status:'completed'});
-    t.set(db.collection('users').doc(user.uid).collection('earnHistory').doc(),{action:'Offers', desc:o.id, coins:o.coins, timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-  });
-  localStorage.setItem(doneKey,today);
-  render(); loadBalance();
+  const foreverDocId = `${user.uid}_${o.id}`;
+  const foreverKey = `forever_${o.id}_${user.uid}`;
+
+  // ANTI-CHEAT: ONE CLAIM FOREVER FOR TELEGRAM
+  if(localStorage.getItem(foreverKey)==='1'){
+    alert('✅ Already claimed +10 forever! Stay in Telegram for new offers, but no extra coins here.');
+    return;
+  }
+  
+  try{
+    const exists = await db.collection('claimedOffers').doc(foreverDocId).get();
+    if(exists.exists){
+      localStorage.setItem(foreverKey,'1');
+      alert('Already claimed forever');
+      render();
+      return;
+    }
+
+    if(o.link) window.open(o.link,'_blank');
+
+    const subid=`${user.uid}_${o.id}_${Date.now()}`;
+    const clickRef=db.collection('users').doc(user.uid).collection('offerClicks').doc(subid);
+    
+    await clickRef.set({offerId:o.id, coins:o.coins, status:'pending', createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    
+    await db.runTransaction(async t=>{
+      const d=await t.get(db.collection('users').doc(user.uid));
+      const currentBal = d.data().balance||0;
+      t.update(db.collection('users').doc(user.uid),{balance: currentBal + o.coins});
+      t.update(clickRef,{status:'completed'});
+      t.set(db.collection('users').doc(user.uid).collection('earnHistory').doc(),{action:'Offers', desc:o.id+' (once forever)', coins:o.coins, timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+      // LOCK FOREVER
+      t.set(db.collection('claimedOffers').doc(foreverDocId),{uid:user.uid, offerId:o.id, coins:o.coins, status:'approved', createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    });
+    
+    localStorage.setItem(foreverKey,'1');
+    alert(`✅ +${o.coins} coins added ONCE FOREVER! You can login many times, but no more coins for Telegram. Stay in channel to see new offers hourly.`);
+    render(); loadBalance();
+  }catch(e){ alert('Error: '+e.message); }
 }
+
 function loadBalance(){
   const c=JSON.parse(localStorage.getItem('userData')||'{}');
   document.getElementById('balCoins').innerText=(c.balance??0)+' coins';
