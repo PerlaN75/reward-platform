@@ -16,17 +16,14 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent}
 *:focus{outline:none !important}
-html,body{height:100%}
-body{width:100%;background:#f8f7ff;color:#1e1b4b;overflow-x:hidden;display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
-
-/* 1. TOP PROPORTION - Make big area above Menu+Badge+Logo */
+body{width:100%;background:#f8f7ff;color:#1e1b4b;overflow-x:hidden;display:block}
+/* TOP NOT TOUCHED - keep 44px as you liked */
 .top-bar{width:100%;background:#ffffff;padding:12px 14px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ede9fe;position:relative;z-index:20;gap:8px;padding-top:calc(44px + env(safe-area-inset-top, 0px))}
 .hamburger{width:48px;height:30px;background:#1e1b4b;color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;margin-left:6px;flex-shrink:0}
 .logo-alone{height:32px;width:auto;display:block;background:#fff;border:none;margin-right:6px;flex-shrink:0}
 .top-bar-center{flex:1;display:flex;justify-content:center;align-items:center}
 .earn-pill{background:linear-gradient(90deg,#00A1DE 0%,#38bdf8 28%,#FAD201 55%,#4ade80 80%,#00A651 100%);color:#0f172a;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:900;box-shadow:0 2px 10px rgba(0,161,222,0.35);white-space:nowrap;border:1.8px solid #fff}
-
-.hero{width:100%;background:#f8f7ff;padding:16px 16px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;flex:1}
+.hero{width:100%;background:#f8f7ff;padding:16px 16px 6px;text-align:center;display:flex;flex-direction:column;align-items:center}
 .welcome-card{width:92%;max-width:360px;background:#ffffff;border:2px solid #4B5320;border-radius:22px;padding:20px 18px 16px;text-align:center;box-shadow:0 5px 0 #4B5320,0 12px 30px rgba(75,83,32,0.18);margin:4px auto 0}
 .welcome-card h1{font-size:26px;font-weight:900;line-height:1.2;color:#1e1b4b;margin:0}
 .gradient-text{background:linear-gradient(90deg,#7c3aed,#f59e0b,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -36,28 +33,21 @@ body{width:100%;background:#f8f7ff;color:#1e1b4b;overflow-x:hidden;display:flex;
 .activities-list{width:86%;max-width:300px;margin:4px auto;display:flex;flex-direction:column;gap:10px;padding:4px 0}
 .activity-item{display:flex;align-items:center;gap:14px;font-size:15px;font-weight:700;color:#1e1b4b;text-align:left}
 .activity-item .act-emoji{font-size:18px;width:26px;text-align:center;flex-shrink:0}
-
-/* 2. EMOJIS CLOSER TO YOUR BLUE DOTS */
-.auth-area{width:92%;max-width:320px;margin:10px auto 4px;display:flex;flex-direction:column;gap:12px}
+.auth-area{width:92%;max-width:320px;margin:10px auto 2px;display:flex;flex-direction:column;gap:12px}
 .auth-row{display:flex;align-items:center;justify-content:center;gap:10px}
 .standalone-emoji{font-size:24px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;position:relative}
 .center-btn{flex:0 1 190px;background:#ffffff;border:1.8px solid #ede9fe;border-radius:16px;padding:13px 10px;font-size:15px;font-weight:800;color:#1e1b4b;text-decoration:none;text-align:center;box-shadow:0 3px 12px rgba(0,0,0,0.07);cursor:pointer}
-.center-btn:active{transform:scale(0.97)}
 .bell-wrap{position:relative}
 .notif-count{position:absolute;top:-4px;right:-2px;background:#ef4444;color:#fff;min-width:18px;height:18px;padding:0 4px;border-radius:10px;font-size:10px;font-weight:bold;display:flex;align-items:center;justify-content:center;border:2px solid #fff}
 
-/* 3. BOTTOM PROPORTION - Proportional to top */
-footer{background:#ffffff;border-top:1px solid #ede9fe;padding:16px 18px 18px;text-align:center;width:100%;margin-top:auto;padding-bottom:calc(18px + env(safe-area-inset-bottom, 0px))}
-.bottom-spacer{width:100%;height:calc(36px + env(safe-area-inset-bottom, 0px));background:#f8f7ff;flex-shrink:0}
-.footer-links{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:8px}
+/* FOOTER MOVED UP - no big gap, no scrolling */
+footer{background:#ffffff;border-top:1px solid #ede9fe;padding:12px 18px 14px;text-align:center;width:100%;margin-top:10px}
+.footer-links{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:6px}
 .footer-links button{color:#5B4DFF;text-decoration:none;font-size:12.5px;font-weight:700;background:transparent;border:none;cursor:pointer}
-.footer-copy{color:#9ca3af;font-size:10px;line-height:1.5;max-width:600px;margin:6px auto 0}
+.footer-copy{color:#9ca3af;font-size:10px;line-height:1.5;max-width:600px;margin:4px auto 0}
 .footer-sub-content{display:none;background:#f8f5ff;border-left:3px solid #5B4DFF;padding:10px 12px;margin:8px auto;text-align:left;border-radius:0 10px 10px 0;max-width:360px;font-size:13px;color:#374151;line-height:1.5}
 .footer-sub-content.open{display:block}
-
-/* HIDE reCAPTCHA but keep working */
 .grecaptcha-badge{visibility:hidden !important;opacity:0 !important;width:0 !important;height:0 !important;overflow:hidden !important;pointer-events:none !important;position:absolute !important;left:-9999px !important}
-
 #overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:40;display:none}
 #drawer{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:50;transform:translateX(-100%);transition:transform 0.3s ease;overflow-y:auto}
 #drawer.open{transform:translateX(0)}#overlay.show{display:block}
@@ -85,7 +75,6 @@ footer{background:#ffffff;border-top:1px solid #ede9fe;padding:16px 18px 18px;te
 <div class="top-bar-center"><div class="earn-pill">🪙 1000 Coins = $0.5 USDT</div></div>
 <img src="logo.jpg" alt="RP Logo" class="logo-alone">
 </div>
-
 <div class="hero">
 <div class="welcome-card"><h1>Welcome to<br><span class="gradient-text">Reward Platform</span></h1></div>
 <div class="start-now-title">Start Now</div>
@@ -99,68 +88,37 @@ footer{background:#ffffff;border-top:1px solid #ede9fe;padding:16px 18px 18px;te
 <div class="activity-item"><span class="act-emoji">🎁</span><span>More Offers</span></div>
 </div>
 <hr class="divider">
-
 <div class="auth-area">
-<div class="auth-row">
-<span class="standalone-emoji">⭐</span>
-<a href="log.html" class="center-btn">Login</a>
-<span class="standalone-emoji" onclick="openNotifModal()">🎁</span>
-</div>
-<div class="auth-row">
-<span class="standalone-emoji">🏆</span>
-<a href="reg.html" class="center-btn">Register</a>
-<span class="standalone-emoji bell-wrap" onclick="openNotifModal()">🔔<div id="notifCount" class="notif-count" style="display:none;">0</div></span>
+<div class="auth-row"><span class="standalone-emoji">⭐</span><a href="log.html" class="center-btn">Login</a><span class="standalone-emoji" onclick="openNotifModal()">🎁</span></div>
+<div class="auth-row"><span class="standalone-emoji">🏆</span><a href="reg.html" class="center-btn">Register</a><span class="standalone-emoji bell-wrap" onclick="openNotifModal()">🔔<div id="notifCount" class="notif-count" style="display:none;">0</div></span></div>
 </div>
 </div>
-
-</div>
-
 <div id="overlay" onclick="toggleDrawer()"></div>
 <div id="drawer">
-<div class="drawer-header-new">
-<a href="log.html" class="btn-h-same">Login</a>
-<a href="reg.html" class="btn-h-same">Register</a>
-<div class="btn-h-same" onclick="toggleDrawer()">Menu</div>
-</div>
+<div class="drawer-header-new"><a href="log.html" class="btn-h-same">Login</a><a href="reg.html" class="btn-h-same">Register</a><div class="btn-h-same" onclick="toggleDrawer()">Menu</div></div>
 <div class="drawer-inner">
 <div class="section-bold">How it works</div>
-<button class="sub-item-clean" onclick="toggleSub('s1')">👤 Create account</button>
-<div id="s1" class="sub-content">Create your free account with email verification and start earning coins.</div>
-<button class="sub-item-clean" onclick="toggleSub('s2')">✅ Complete tasks</button>
-<div id="s2" class="sub-content">Choose from trusted partners like Lootably, Timewall, BitLabs and Prime to earn coins.</div>
-<button class="sub-item-clean" onclick="toggleSub('s3')">💰 Earn Coins & Withdraw</button>
-<div id="s3" class="sub-content">Earn coins 🪙 for every task. 1000 Coins = $0.5. Min 3000 Coins = $1.5 USDT.</div>
+<button class="sub-item-clean" onclick="toggleSub('s1')">👤 Create account</button><div id="s1" class="sub-content">Create your free account with email verification and start earning coins.</div>
+<button class="sub-item-clean" onclick="toggleSub('s2')">✅ Complete tasks</button><div id="s2" class="sub-content">Choose from trusted partners like Lootably, Timewall, BitLabs and Prime to earn coins.</div>
+<button class="sub-item-clean" onclick="toggleSub('s3')">💰 Earn Coins & Withdraw</button><div id="s3" class="sub-content">Earn coins 🪙 for every task. 1000 Coins = $0.5. Min 3000 Coins = $1.5 USDT.</div>
 <div class="section-bold">Why choose Reward Platform RW?</div>
-<button class="sub-item-clean" onclick="toggleSub('s4')">🛡️ Anti-Fraud Protection</button>
-<div id="s4" class="sub-content">Protected with reCAPTCHA Enterprise, App Check and manual review.</div>
-<button class="sub-item-clean" onclick="toggleSub('s5')">⚡ Real Time Coins Tracking</button>
-<div id="s5" class="sub-content">Coins 🪙 tracked instantly with Firebase Firestore.</div>
-<button class="sub-item-clean" onclick="toggleSub('s6')">🤝 Trusted Partners</button>
-<div id="s6" class="sub-content">We work with Lootably, Timewall, BitLabs and Prime for offers.</div>
-<button class="sub-item-clean" onclick="toggleSub('s7')">📱 Mobile Optimized</button>
-<div id="s7" class="sub-content">100% optimized for phones, works on low data networks.</div>
+<button class="sub-item-clean" onclick="toggleSub('s4')">🛡️ Anti-Fraud Protection</button><div id="s4" class="sub-content">Protected with reCAPTCHA Enterprise, App Check and manual review.</div>
+<button class="sub-item-clean" onclick="toggleSub('s5')">⚡ Real Time Coins Tracking</button><div id="s5" class="sub-content">Coins 🪙 tracked instantly with Firebase Firestore.</div>
+<button class="sub-item-clean" onclick="toggleSub('s6')">🤝 Trusted Partners</button><div id="s6" class="sub-content">We work with Lootably, Timewall, BitLabs and Prime for offers.</div>
+<button class="sub-item-clean" onclick="toggleSub('s7')">📱 Mobile Optimized</button><div id="s7" class="sub-content">100% optimized for phones, works on low data networks.</div>
 <div class="section-bold">Frequently Asked Questions</div>
-<button class="sub-item-clean" onclick="toggleSub('s8')">🆓 Is this platform free?</button>
-<div id="s8" class="sub-content">Yes, completely free to join and earn coins.</div>
-<button class="sub-item-clean" onclick="toggleSub('s9')">⭐ How do I earn coins?</button>
-<div id="s9" class="sub-content">Complete surveys, install apps, play games, watch videos. 1000 Coins = $0.5 USDT.</div>
-<button class="sub-item-clean" onclick="toggleSub('s10')">🔒 Is my data safe?</button>
-<div id="s10" class="sub-content">Yes. Firebase Secure Auth. We never sell your data.</div>
-<button class="sub-item-clean" onclick="toggleSub('s11')">💳 How to withdraw?</button>
-<div id="s11" class="sub-content">Go to Dashboard > Convert 1000 coins to $0.5, then Withdraw when you reach 3000 coins = $1.5 min.</div>
-<button class="sub-item-clean" onclick="toggleSub('s12')">📧 How to contact support?</button>
-<div id="s12" class="sub-content">Email us at rewardplatformrw@gmail.com</div>
+<button class="sub-item-clean" onclick="toggleSub('s8')">🆓 Is this platform free?</button><div id="s8" class="sub-content">Yes, completely free to join and earn coins.</div>
+<button class="sub-item-clean" onclick="toggleSub('s9')">⭐ How do I earn coins?</button><div id="s9" class="sub-content">Complete surveys, install apps, play games, watch videos. 1000 Coins = $0.5 USDT.</div>
+<button class="sub-item-clean" onclick="toggleSub('s10')">🔒 Is my data safe?</button><div id="s10" class="sub-content">Yes. Firebase Secure Auth. We never sell your data.</div>
+<button class="sub-item-clean" onclick="toggleSub('s11')">💳 How to withdraw?</button><div id="s11" class="sub-content">Go to Dashboard > Convert 1000 coins to $0.5, then Withdraw when you reach 3000 coins = $1.5 min.</div>
+<button class="sub-item-clean" onclick="toggleSub('s12')">📧 How to contact support?</button><div id="s12" class="sub-content">Email us at rewardplatformrw@gmail.com</div>
 <hr class="legal-separator">
 <div class="section-bold">Legal & Support</div>
-<button class="legal-item" onclick="toggleSub('p1')">📄 Privacy Policy</button>
-<div id="p1" class="sub-content">We only collect email for login and coins rewards.<br><a href="privacy.html" class="link-more">View full Privacy →</a></div>
-<button class="legal-item" onclick="toggleSub('p2')">📜 Terms of Service</button>
-<div id="p2" class="sub-content">One account per person, no bots or fraud. 1000 Coins = $0.5 USDT.<br><a href="terms.html" class="link-more">View full Terms →</a></div>
-<button class="legal-item" onclick="toggleSub('p3')">📞 Contact Us</button>
-<div id="p3" class="sub-content">Email: rewardplatformrw@gmail.com<br><a href="contact.html" class="link-more">Go to Contact →</a></div>
+<button class="legal-item" onclick="toggleSub('p1')">📄 Privacy Policy</button><div id="p1" class="sub-content">We only collect email for login and coins rewards.<br><a href="privacy.html" class="link-more">View full Privacy →</a></div>
+<button class="legal-item" onclick="toggleSub('p2')">📜 Terms of Service</button><div id="p2" class="sub-content">One account per person, no bots or fraud. 1000 Coins = $0.5 USDT.<br><a href="terms.html" class="link-more">View full Terms →</a></div>
+<button class="legal-item" onclick="toggleSub('p3')">📞 Contact Us</button><div id="p3" class="sub-content">Email: rewardplatformrw@gmail.com<br><a href="contact.html" class="link-more">Go to Contact →</a></div>
 </div>
 </div>
-
 <footer>
 <div class="footer-links">
 <button onclick="toggleFooter('fp1')">Privacy Policy</button>
@@ -172,10 +130,7 @@ footer{background:#ffffff;border-top:1px solid #ede9fe;padding:16px 18px 18px;te
 <div id="fp3" class="footer-sub-content">Email: rewardplatformrw@gmail.com<br><a href="contact.html" class="link-more">Go to Contact →</a></div>
 <div class="footer-copy">rewardplatformrw@gmail.com<br>© 2026 Reward Platform RW - Coins System V2.0</div>
 </footer>
-<div class="bottom-spacer"></div>
-
 <div id="notifModal" class="notif-modal" onclick="closeNotifModal()"><div class="notif-modal-box" onclick="event.stopPropagation()"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3>🔔 Notifications</h3><span style="font-size:26px;cursor:pointer" onclick="closeNotifModal()">×</span></div><div id="notifList"></div></div></div>
-
 <script>
 function toggleDrawer(){document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
 function toggleSub(id){const el=document.getElementById(id);const isOpen=el.classList.contains('open');document.querySelectorAll('.sub-content').forEach(c=>c.classList.remove('open'));if(!isOpen){el.classList.add('open');}}
