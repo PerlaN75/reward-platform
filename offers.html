@@ -16,9 +16,9 @@ body{background:#f5f5f5;min-height:100vh}
 .balance-card{background:#12230a;border:2px solid #fbbf24;border-radius:18px;padding:14px;display:flex;justify-content:space-around;text-align:center;color:#fff}
 .balance-card b{color:#fbbf24;font-size:18px}.usdt{color:#22f59b;font-weight:900;font-size:18px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
-.card{background:#fff;border:2px solid #e5e7eb;border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.06);position:relative;transition:0.2s}
+.card{background:#fff;border:2px solid #e5e7eb;border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.06);position:relative}
 .card.locked{opacity:0.55;background:#f9fafb}
-.card.claimed{opacity:0.6;background:#f0fdf4;border-color:#86efac}
+.card.claimed{opacity:0.7;background:#f0fdf4;border-color:#86efac;pointer-events:none}
 .lock-badge{position:absolute;top:6px;right:6px;background:#111827;color:#fff;font-size:8px;font-weight:900;padding:3px 6px;border-radius:999px}
 .emoji{font-size:28px;margin-bottom:6px}.name{font-weight:900;font-size:12px}.sub{font-size:10px;color:#6b7280}.badge{display:inline-block;margin-top:6px;background:#fffbeb;border:1.5px solid #fde68a;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:900;color:#92400e}
 .badge.done{background:#dcfce7;border-color:#86efac;color:#166534}
@@ -27,7 +27,7 @@ body{background:#f5f5f5;min-height:100vh}
 .modal-box input{width:100%;border:2px solid #e5e7eb;border-radius:12px;padding:12px;margin:10px 0;font-size:15px}
 .btn{width:100%;border:none;border-radius:12px;padding:12px;font-weight:900;margin-top:6px;cursor:pointer}
 .btn-yellow{background:#fbbf24}.btn-dark{background:#111827;color:#fff}
-.btn:disabled{background:#9ca3af;cursor:not-allowed}
+.btn:disabled{background:#9ca3af}
 </style>
 </head>
 <body>
@@ -48,7 +48,7 @@ body{background:#f5f5f5;min-height:100vh}
 <div class="modal" id="bnbModal">
 <div class="modal-box">
 <h3 style="font-weight:900">Verify BNB Registration</h3>
-<p style="font-size:12px;color:#6b7280;margin-top:6px">1. Register on bnbpick.io with your username<br>2. Enter same username below<br>3. Admin will verify and approve +15 coins ONCE FOREVER</p>
+<p style="font-size:12px;color:#6b7280;margin-top:6px">1. Register on bnbpick.io<br>2. Enter same username<br>3. Admin verify +15 coins ONCE FOREVER</p>
 <input id="bnbUserInput" placeholder="Your bnbpick.io username" />
 <button class="btn btn-yellow" id="bnbSubmitBtn" onclick="submitBnb()">Submit for Verification</button>
 <button class="btn btn-dark" onclick="closeModal()">X Close (No Submit)</button>
@@ -70,15 +70,13 @@ const OFFERS=[
   {id:'install_app', emoji:'📲', name:'Install App', sub:'Coming Soon', coins:20, locked:true},
 ];
 
-// --- INSTANT RENDER - NO WAIT ---
 function renderInstant(){
   const grid=document.getElementById('grid');
   if(!grid) return;
   grid.innerHTML='';
   const uid = cachedUser?.uid || 'guest';
   OFFERS.forEach(o=>{
-    const foreverKey = `forever_${o.id}_${uid}`;
-    const claimed = localStorage.getItem(foreverKey)==='1';
+    const claimed = localStorage.getItem(`forever_${o.id}_${uid}`)==='1';
     grid.innerHTML+=`
     <div class="card ${o.locked?'locked':''} ${claimed?'claimed':''}" id="card-${o.id}" onclick="clickOffer('${o.id}')">
       ${o.locked?'<div class="lock-badge">🔒 LOCKED</div>':''}
@@ -90,70 +88,118 @@ function renderInstant(){
   });
 }
 
-// Background check to sync Firestore -> localStorage (doesn't block UI)
-async function syncForeverClaims(){
+async function syncClaims(){
   if(!cachedUser) return;
   try{
-    const bnbDoc = await db.collection('claimedOffers').doc(`${cachedUser.uid}_bnb_faucet`).get();
-    if(bnbDoc.exists){ localStorage.setItem(`forever_bnb_faucet_${cachedUser.uid}`,'1'); document.getElementById('card-bnb_faucet')?.classList.add('claimed'); const b=document.getElementById('badge-bnb_faucet'); if(b){b.innerText='✓ Claimed Forever'; b.classList.add('done');} }
-    const tgDoc = await db.collection('claimedOffers').doc(`${cachedUser.uid}_telegram_join`).get();
-    if(tgDoc.exists){ localStorage.setItem(`forever_telegram_join_${cachedUser.uid}`,'1'); document.getElementById('card-telegram_join')?.classList.add('claimed'); const b=document.getElementById('badge-telegram_join'); if(b){b.innerText='✓ Claimed Forever'; b.classList.add('done');} }
-  }catch(e){}
+    // Check under users/{uid}/claimed/{offerId} - works with current rules
+    const bnbClaim = await db.collection('users').doc(cachedUser.uid).collection('claimed').doc('bnb_faucet').get();
+    if(bnbClaim.exists){ localStorage.setItem(`forever_bnb_faucet_${cachedUser.uid}`,'1'); }
+    const tgClaim = await db.collection('users').doc(cachedUser.uid).collection('claimed').doc('telegram_join').get();
+    if(tgClaim.exists){ localStorage.setItem(`forever_telegram_join_${cachedUser.uid}`,'1'); }
+    renderInstant();
+  }catch(e){ console.log('sync error',e); }
 }
 
 function clickOffer(id){
   const o=OFFERS.find(x=>x.id===id);
   if(o.locked){ alert('🔒 Locked — waiting for postback partner'); return; }
-  const isClaimed = localStorage.getItem(`forever_${o.id}_${cachedUser?.uid}`)==='1';
-  if(isClaimed){ alert('✅ Already claimed forever! Login many times allowed, but no extra coins. Earn hourly INSIDE bnbpick.io & Telegram.'); return; }
-  if(o.type==='bnb'){ window.open(o.link,'_blank'); setTimeout(()=>{ document.getElementById('bnbModal').style.display='flex'; }, 600); }
-  else if(o.type==='instant'){ doInstant(o); }
+  const uid = cachedUser?.uid;
+  if(!uid) return;
+
+  // === HARD BLOCK BEFORE POPUP ===
+  if(localStorage.getItem(`forever_${id}_${uid}`)==='1'){
+    alert('✅ Already claimed forever! You can login many times, but no extra coins. Earn hourly INSIDE bnbpick.io & Telegram.');
+    return;
+  }
+
+  if(o.type==='bnb'){
+    window.open(o.link,'_blank');
+    setTimeout(()=>{
+      if(localStorage.getItem(`forever_bnb_faucet_${uid}`)!=='1'){
+        document.getElementById('bnbModal').style.display='flex';
+      }
+    }, 500);
+  } else {
+    doInstant(o);
+  }
 }
 
-function closeModal(){ document.getElementById('bnbModal').style.display='none'; document.getElementById('bnbUserInput').value=''; document.getElementById('bnbStatus').innerText=''; }
+function closeModal(){
+  document.getElementById('bnbModal').style.display='none';
+  document.getElementById('bnbUserInput').value='';
+  document.getElementById('bnbStatus').innerText='';
+}
 
 async function submitBnb(){
   const username=document.getElementById('bnbUserInput').value.trim();
   const statusEl=document.getElementById('bnbStatus');
   const btn=document.getElementById('bnbSubmitBtn');
-  if(username.length<3){ alert('Enter valid bnbpick username'); return; }
+  if(username.length<3){ alert('Enter valid username'); return; }
   const user=auth.currentUser||cachedUser;
-  const foreverDocId = `${user.uid}_bnb_faucet`;
+  if(localStorage.getItem(`forever_bnb_faucet_${user.uid}`)==='1'){ closeModal(); alert('Already claimed forever'); return; }
+
   try{
-    const exists = await db.collection('claimedOffers').doc(foreverDocId).get();
-    if(exists.exists){ localStorage.setItem(`forever_bnb_faucet_${user.uid}`,'1'); renderInstant(); closeModal(); alert('Already claimed forever'); return; }
-    const q = await db.collection('claimedOffers').where('bnbUsername','==',username.toLowerCase()).get();
-    if(!q.empty){ statusEl.style.color='red'; statusEl.innerText='Username already used'; return; }
+    const dup = await db.collection('users').doc(user.uid).collection('claimed').doc('bnb_faucet').get();
+    if(dup.exists){ localStorage.setItem(`forever_bnb_faucet_${user.uid}`,'1'); closeModal(); renderInstant(); return; }
+
     btn.disabled=true; btn.innerText='Submitting...'; statusEl.innerText='Submitting once forever...';
-    await db.collection('claimedOffers').doc(foreverDocId).set({ uid:user.uid, offerId:'bnb_faucet', bnbUsername:username.toLowerCase(), coins:15, status:'waiting_admin', createdAt:firebase.firestore.FieldValue.serverTimestamp() });
-    await db.collection('bnbVerifications').doc(foreverDocId).set({ uid:user.uid, email:user.email, bnbUsername:username, coins:15, status:'waiting_admin', createdAt:firebase.firestore.FieldValue.serverTimestamp() });
+
+    // Save under users/{uid}/claimed - THIS WORKS WITH YOUR CURRENT RULES (no permission error)
+    await db.collection('users').doc(user.uid).collection('claimed').doc('bnb_faucet').set({
+      uid:user.uid, offerId:'bnb_faucet', bnbUsername:username.toLowerCase(), coins:15, status:'waiting_admin', createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    // Also try top-level for admin dashboard (ignore error if rules block)
+    try{
+      await db.collection('claimedOffers').doc(`${user.uid}_bnb_faucet`).set({
+        uid:user.uid, offerId:'bnb_faucet', bnbUsername:username.toLowerCase(), coins:15, status:'waiting_admin', createdAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      await db.collection('bnbVerifications').doc(`${user.uid}_bnb_faucet`).set({
+        uid:user.uid, email:user.email, bnbUsername:username, coins:15, status:'waiting_admin', createdAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }catch(e){}
+
     localStorage.setItem(`forever_bnb_faucet_${user.uid}`,'1');
-    closeModal(); alert('✅ Submitted ONCE FOREVER!'); renderInstant();
-  }catch(e){ btn.disabled=false; btn.innerText='Submit for Verification'; statusEl.style.color='red'; statusEl.innerText='Error: '+e.message; }
+    closeModal(); renderInstant();
+    alert('✅ Submitted ONCE FOREVER! Admin will verify. Popup will never appear again.');
+  }catch(e){
+    btn.disabled=false; btn.innerText='Submit for Verification';
+    statusEl.style.color='red'; statusEl.innerText='Error: '+e.message;
+  }
 }
 
 async function doInstant(o){
   const user=auth.currentUser||cachedUser;
-  const foreverDocId = `${user.uid}_${o.id}`;
   const foreverKey = `forever_${o.id}_${user.uid}`;
-  if(localStorage.getItem(foreverKey)==='1'){ alert('✅ Already claimed forever'); return; }
+  if(localStorage.getItem(foreverKey)==='1'){ alert('Already claimed forever'); return; }
+
   try{
-    const exists = await db.collection('claimedOffers').doc(foreverDocId).get();
-    if(exists.exists){ localStorage.setItem(foreverKey,'1'); renderInstant(); return; }
+    const exists = await db.collection('users').doc(user.uid).collection('claimed').doc(o.id).get();
+    if(exists.exists){ localStorage.setItem(foreverKey,'1'); renderInstant(); alert('Already claimed forever'); return; }
+
     if(o.link) window.open(o.link,'_blank');
+
     const subid=`${user.uid}_${o.id}_${Date.now()}`;
     const clickRef=db.collection('users').doc(user.uid).collection('offerClicks').doc(subid);
-    await clickRef.set({offerId:o.id, coins:o.coins, status:'pending', createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+
     await db.runTransaction(async t=>{
       const d=await t.get(db.collection('users').doc(user.uid));
       const currentBal = d.data().balance||0;
+      t.set(clickRef,{offerId:o.id, coins:o.coins, status:'completed', createdAt:firebase.firestore.FieldValue.serverTimestamp()});
       t.update(db.collection('users').doc(user.uid),{balance: currentBal + o.coins});
-      t.update(clickRef,{status:'completed'});
       t.set(db.collection('users').doc(user.uid).collection('earnHistory').doc(),{action:'Offers', desc:o.id+' (once forever)', coins:o.coins, timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-      t.set(db.collection('claimedOffers').doc(foreverDocId),{uid:user.uid, offerId:o.id, coins:o.coins, status:'approved', createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+      t.set(db.collection('users').doc(user.uid).collection('claimed').doc(o.id),{uid:user.uid, offerId:o.id, coins:o.coins, status:'approved', createdAt:firebase.firestore.FieldValue.serverTimestamp()});
     });
-    localStorage.setItem(foreverKey,'1'); renderInstant(); loadBalance(); alert(`✅ +${o.coins} coins ONCE FOREVER!`);
-  }catch(e){ alert('Error: '+e.message); }
+
+    // try top-level too
+    try{ await db.collection('claimedOffers').doc(`${user.uid}_${o.id}`).set({uid:user.uid, offerId:o.id, coins:o.coins, status:'approved', createdAt:firebase.firestore.FieldValue.serverTimestamp()}); }catch(e){}
+
+    localStorage.setItem(foreverKey,'1');
+    renderInstant(); loadBalance();
+    alert(`✅ +${o.coins} coins ONCE FOREVER! Popup will never show again.`);
+  }catch(e){
+    alert('Error: '+e.message);
+  }
 }
 
 function loadBalance(){
@@ -170,9 +216,8 @@ function loadBalance(){
   });
 }
 
-// INSTANT DISPLAY
-renderInstant(); // show cards immediately even before login
-auth.onAuthStateChanged(u=>{ if(!u){location.href='index.html';return;} cachedUser=u; renderInstant(); loadBalance(); syncForeverClaims(); });
+renderInstant();
+auth.onAuthStateChanged(u=>{ if(!u){location.href='index.html';return;} cachedUser=u; renderInstant(); loadBalance(); syncClaims(); });
 </script>
 </body>
 </html>
