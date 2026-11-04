@@ -1,52 +1,64 @@
 <!DOCTYPE html>
 <html><head><title>Home - Rewards</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;-webkit-tap-highlight-color:transparent}
 *:focus{outline:none}
-html,body{height:100%;overflow:hidden;background:#fff}
-.container{max-width:500px;margin:0 auto;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;border:1px solid #e5e7eb}
-.top-block{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #e5e7eb;flex-shrink:0}
-.back{width:32px;height:30px;background:#fff;border:1.5px solid #000;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;cursor:pointer;flex-shrink:0}
-.header-title{flex:1;text-align:center;font-size:17px;color:#000}
-.header-title span{color:#fbbf24;font-weight:800}
-.balance-block{padding:10px 0 12px;display:flex;justify-content:center;border-bottom:1px solid #e5e7eb;flex-shrink:0}
-.balance-card{background:#2f3e1a;border:2px solid #fbbf24;border-radius:12px;padding:6px 8px;text-align:center;width:72%;max-width:280px}
-.balance-row{display:flex;justify-content:space-between;align-items:center}
-.balance-side{flex:1;text-align:center}
-.balance-divider{width:1px;height:32px;background:rgba(251,191,36,0.35)}
-.buttons-block{flex:1;padding:10px 8px;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 10px;width:100%;justify-items:center}
-.menu-btn{background:linear-gradient(180deg,#fff,#e8e8e8);color:#000;border:none;border-radius:14px;padding:8px 4px;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 3px 0 #bbb;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:62px;width:88%;max-width:150px;margin:0 auto}
-.menu-btn .emoji{font-size:22px;line-height:1}
-.footer-block{border-top:1px solid #e5e7eb;padding:10px 12px 12px;text-align:center;flex-shrink:0;background:#fafafa}
-.footer-block h3{font-size:16px;font-weight:800;color:#000}
-.footer-block p{font-size:11px;color:#555;margin-top:4px;font-style:italic}
-#customToast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:12px 18px;border-radius:10px;font-weight:bold;z-index:99999;display:none}
+body{background:#ffffff !important;min-height:100vh;padding:16px 14px 100px 14px;color:#000;overflow-y:auto}
+.container{max-width:500px;margin:0 auto}
+.header{text-align:center;margin:50px 0 8px}
+.header h2{font-size:24px;color:#000}
+.header h2 span{color:#fbbf24}
+.balance-card{background:#2f3e1a;border:2px solid #fbbf24;border-radius:16px;padding:6px 8px;text-align:center;margin:0 auto 10px auto;width:88%;max-width:315px}
+.balance-row{display:flex;justify-content:space-between;align-items:center;margin-top:2px}
+.balance-side{flex:1;text-align:center;padding:2px 4px}
+.balance-divider{width:1px;height:38px;background:rgba(251,191,36,0.35)}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 10px;margin-bottom:10px;justify-items:center;padding:0 10px}
+.menu-btn{background:linear-gradient(180deg,#fff,#e8e8e8);color:#000;border:none;border-radius:14px;padding:8px 4px;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 3px 0 #bbb;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:62px;width:88%;max-width:150px;margin:0 auto;position:relative;-webkit-tap-highlight-color:transparent;outline:none;user-select:none}
+.menu-btn:active{filter:brightness(0.95);transform:scale(0.98)}
+.menu-btn.emoji{font-size:22px;display:block;line-height:1}
+.logout-btn{width:35%;height:50px;margin:32px auto 30px;display:block;background:#f59e0b;color:#000;border:none;border-radius:999px;font-weight:bold;cursor:pointer;font-size:13px}
+#customToast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:14px 22px;border-radius:12px;font-weight:bold;z-index:99999;display:none;max-width:90%;text-align:center}
 #maintenanceOverlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
 </style>
 </head><body>
-<div id="maintenanceOverlay"><div style="max-width:400px;width:100%"><div style="font-size:36px">🛠️</div><h1 style="color:#fbbf24;font-size:28px;margin-bottom:16px">Under Maintenance</h1></div></div>
+<div id="maintenanceOverlay"><div style="max-width:400px;width:100%"><div style="font-size:40px">🛠️</div><h1 style="color:#fbbf24;font-size:34px;margin-bottom:20px">Under Maintenance</h1><div style="background:#1e2f15;border:2px solid #fbbf24;border-radius:15px;padding:20px"><p style="color:white;font-size:18px">Maintenance for 20 min.</p></div><button onclick="location.href='index.html'" style="background:white;color:black;border:none;padding:14px 28px;border-radius:12px;font-weight:bold;margin-top:20px">Back</button></div></div>
 <div id="customToast"></div>
 <div class="container">
-
-<div class="top-block">
-  <div class="back" onclick="logout()">&lt;</div>
-  <div class="header-title">Welcome, <span id="headerText">Ineza</span> 👋</div>
-</div>
-
-<div class="balance-block">
-  <div class="balance-card">
-    <div style="color:#ccc;font-size:10px">your balance</div>
-    <div class="balance-row">
-      <div class="balance-side"><div style="font-size:9px;color:#aaa">⭐ COINS</div><div id="balance" style="font-size:18px;color:#fbbf24;font-weight:bold">-- coins</div></div>
-      <div class="balance-divider"></div>
-      <div class="balance-side"><div style="font-size:9px;color:#aaa">💵 USDT</div><div id="usdtBalanceDisplay" style="font-size:16px;color:#22c55e;font-weight:bold">-- USDT</div></div>
-    </div>
-    <div id="usdBalance" style="font-size:9px;color:#888;margin-top:2px">≈ $--</div>
+<div class="header"><h2><span style="color:#000 !important">Welcome, </span><span id="headerText" style="color:#fbbf24"></span> 👋</h2></div>
+<div class="balance-card">
+<div style="color:#ccc;font-size:11px;letter-spacing:0.5px">Your Balance</div>
+<div class="balance-row">
+  <div class="balance-side">
+    <div style="font-size:10px;color:#aaa;margin-bottom:1px">⭐ COINS</div>
+    <div id="balance" style="font-size:22px;color:#fbbf24;font-weight:bold;line-height:1.1">-- coins</div>
+    <div id="usdBalance" style="color:#888;font-size:10px;margin-top:1px">≈ $-- USD</div>
+  </div>
+  <div class="balance-divider"></div>
+  <div class="balance-side">
+    <div style="font-size:10px;color:#aaa;margin-bottom:1px">💵 USDT</div>
+    <div id="usdtBalanceDisplay" style="font-size:20px;color:#22c55e;font-weight:bold;line-height:1.1">-- USDT</div>
+    <div style="color:#6b8f5a;font-size:9px;margin-top:1px">Available to withdraw</div>
   </div>
 </div>
+</div>
 
-<div class="buttons-block">
+<!-- ULTRA INSTANT CACHE - RUNS IN 0.01s BEFORE FIREBASE -->
+<script>
+(function(){
+  try{
+    var c = JSON.parse(localStorage.getItem('userData')||'{}');
+    if(c && (c.balance!=null || c.points!=null || c.username)){
+      var bal = c.balance ?? c.points ?? 0;
+      var usdt = c.usdtBalance ?? 0;
+      document.getElementById('balance').textContent = bal + ' coins';
+      document.getElementById('usdBalance').textContent = '≈ $' + (bal*0.0005).toFixed(4);
+      document.getElementById('usdtBalanceDisplay').textContent = Number(usdt).toFixed(4) + ' USDT';
+      if(c.username) document.getElementById('headerText').textContent = c.username;
+    }
+  }catch(e){}
+})();
+</script>
+
 <div class="menu-grid">
 <button class="menu-btn" onclick="location.href='./wallet.html'" style="border:2px solid #f59e0b; background: linear-gradient(180deg,#fffbeb,#fde68a);"><span class="emoji">💰</span>Wallet</button>
 <button class="menu-btn" onclick="location.href='./checkin.html'" style="border:2px solid #ef4444; background: linear-gradient(180deg,#fef2f2,#fecaca);"><span class="emoji">📅</span>Daily Checkin</button>
@@ -59,79 +71,39 @@ html,body{height:100%;overflow:hidden;background:#fff}
 <button class="menu-btn" onclick="location.href='./ads_earn.html'" style="border:2px solid #06b6d4; background: linear-gradient(180deg,#ecfeff,#a5f3fc);"><span class="emoji">📢</span>Ads Earn</button>
 <button class="menu-btn" onclick="location.href='./offers.html'" style="border:2px solid #d946ef; background: linear-gradient(180deg,#fdf4ff,#f5d0fe);"><span class="emoji">💎</span>Offers</button>
 </div>
-</div>
-
-<div class="footer-block">
-  <h3>Start Now</h3>
-  <p>"Never give up — your time is now"</p>
-</div>
-
+<button class="logout-btn" onclick="logout()">Logout</button>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
-// INSTANT CACHE FIRST - NO WAIT
-(function(){
-  try{
-    var c = JSON.parse(localStorage.getItem('userData')||'{}');
-    if(c && (c.balance!=null || c.username)){
-      var b=c.balance??c.points??0;
-      var us=c.usdtBalance??0;
-      document.getElementById('balance').textContent=b+' coins';
-      document.getElementById('usdBalance').textContent='≈ $'+(b*0.0005).toFixed(4);
-      document.getElementById('usdtBalanceDisplay').textContent=Number(us).toFixed(4)+' USDT';
-      if(c.username) document.getElementById('headerText').textContent=c.username;
-    }
-  }catch(e){}
-})();
-
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
+try { const appCheck = firebase.appCheck(); appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true); } catch(e) {}
 const auth=firebase.auth(),db=firebase.firestore();
-auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-
-let authResolved = false;
-
+function showToast(m){const t=document.getElementById('customToast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);} window.alert=showToast;
+const POINT_RATE=0.0005;
 function loadData(d){
   if(!d) return;
   if(d.usdtBalance==null) d.usdtBalance=0;
   if(d.balance==null) d.balance=d.points||0;
-  document.getElementById('headerText').innerText=d.username||'Ineza';
-  document.getElementById('balance').innerText=(d.balance??0)+' coins';
-  document.getElementById('usdBalance').innerText=`≈ $${((d.balance??0)*0.0005).toFixed(4)}`;
+  document.getElementById('headerText').innerText=d.username||'';
+  document.getElementById('balance').innerText=(d.balance ?? d.points ?? 0)+' coins';
+  document.getElementById('usdBalance').innerText=`≈ $${((d.balance ?? d.points ?? 0)*POINT_RATE).toFixed(4)}`;
   document.getElementById('usdtBalanceDisplay').innerText=Number(d.usdtBalance||0).toFixed(4)+' USDT';
   localStorage.setItem('userData', JSON.stringify(d));
 }
-
+db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maintenanceOverlay').style.display='flex';}else{document.getElementById('maintenanceOverlay').style.display='none';}});
 auth.onAuthStateChanged(u=>{
-  authResolved = true;
   if(u){
-    db.collection('users').doc(u.uid).onSnapshot(doc=>{ if(doc.exists) loadData(doc.data()); });
-    db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maintenanceOverlay').style.display='flex';}else{document.getElementById('maintenanceOverlay').style.display='none';}});
-  } else {
-    // Only redirect if really no cache and after 2 sec
-    setTimeout(()=>{
-      if(!authResolved) return;
-      const hasCache = localStorage.getItem('userData');
-      if(!hasCache){
-        location.href='./index.html';
-      }
-    },2000);
-  }
-});
-
-// Extra safety: if still not auth after 3 sec and no cache, then redirect
-setTimeout(()=>{
-  if(!authResolved && !localStorage.getItem('userData')){
+    db.collection('users').doc(u.uid).onSnapshot(doc=>{
+      if(doc.exists) loadData(doc.data());
+    });
+  }else{
     location.href='./index.html';
   }
-},3500);
-
-window.logout=async function(){
-  localStorage.clear();
-  await auth.signOut();
-  location.href='./index.html';
-}
+});
+window.logout=async function(){ await auth.signOut(); localStorage.clear(); location.href='./index.html'; }
 </script></body></html>
