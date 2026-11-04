@@ -5,31 +5,27 @@
 *:focus{outline:none}
 html,body{height:100%;overflow:hidden;background:#fff}
 .container{max-width:500px;margin:0 auto;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;border:1px solid #e5e7eb}
-/* BLOCK 1 - HEADER */
 .top-block{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #e5e7eb;flex-shrink:0}
 .back{width:32px;height:30px;background:#fff;border:1.5px solid #000;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;cursor:pointer;flex-shrink:0}
 .header-title{flex:1;text-align:center;font-size:17px;color:#000}
 .header-title span{color:#fbbf24;font-weight:800}
-/* BLOCK 2 - BALANCE */
 .balance-block{padding:10px 0 12px;display:flex;justify-content:center;border-bottom:1px solid #e5e7eb;flex-shrink:0}
 .balance-card{background:#2f3e1a;border:2px solid #fbbf24;border-radius:12px;padding:6px 8px;text-align:center;width:72%;max-width:280px}
 .balance-row{display:flex;justify-content:space-between;align-items:center}
 .balance-side{flex:1;text-align:center}
 .balance-divider{width:1px;height:32px;background:rgba(251,191,36,0.35)}
-/* BLOCK 3 - 10 BUTTONS AS THEY ARE */
 .buttons-block{flex:1;padding:10px 8px;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 10px;width:100%;justify-items:center}
 .menu-btn{background:linear-gradient(180deg,#fff,#e8e8e8);color:#000;border:none;border-radius:14px;padding:8px 4px;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 3px 0 #bbb;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:62px;width:88%;max-width:150px;margin:0 auto}
 .menu-btn .emoji{font-size:22px;line-height:1}
-/* BLOCK 4 - START NOW */
 .footer-block{border-top:1px solid #e5e7eb;padding:10px 12px 12px;text-align:center;flex-shrink:0;background:#fafafa}
-.footer-block h3{font-size:16px;font-weight:800;color:#000;letter-spacing:0.5px}
+.footer-block h3{font-size:16px;font-weight:800;color:#000}
 .footer-block p{font-size:11px;color:#555;margin-top:4px;font-style:italic}
 #customToast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:12px 18px;border-radius:10px;font-weight:bold;z-index:99999;display:none}
 #maintenanceOverlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
 </style>
 </head><body>
-<div id="maintenanceOverlay"><div style="max-width:400px;width:100%"><div style="font-size:36px">🛠️</div><h1 style="color:#fbbf24;font-size:28px;margin-bottom:16px">Under Maintenance</h1><div style="background:#1e2f15;border:2px solid #fbbf24;border-radius:12px;padding:16px"><p style="color:white">Maintenance for 20 min.</p></div></div></div>
+<div id="maintenanceOverlay"><div style="max-width:400px;width:100%"><div style="font-size:36px">🛠️</div><h1 style="color:#fbbf24;font-size:28px;margin-bottom:16px">Under Maintenance</h1></div></div>
 <div id="customToast"></div>
 <div class="container">
 
@@ -71,20 +67,71 @@ html,body{height:100%;overflow:hidden;background:#fff}
 </div>
 
 </div>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
+// INSTANT CACHE FIRST - NO WAIT
+(function(){
+  try{
+    var c = JSON.parse(localStorage.getItem('userData')||'{}');
+    if(c && (c.balance!=null || c.username)){
+      var b=c.balance??c.points??0;
+      var us=c.usdtBalance??0;
+      document.getElementById('balance').textContent=b+' coins';
+      document.getElementById('usdBalance').textContent='≈ $'+(b*0.0005).toFixed(4);
+      document.getElementById('usdtBalanceDisplay').textContent=Number(us).toFixed(4)+' USDT';
+      if(c.username) document.getElementById('headerText').textContent=c.username;
+    }
+  }catch(e){}
+})();
+
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
-try{const a=firebase.appCheck();a.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
 const auth=firebase.auth(),db=firebase.firestore();
-function showToast(m){const t=document.getElementById('customToast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',2500);}
-const POINT_RATE=0.0005;
-function loadData(d){if(!d)return;if(d.usdtBalance==null)d.usdtBalance=0;if(d.balance==null)d.balance=d.points||0;document.getElementById('headerText').innerText=d.username||'Ineza';document.getElementById('balance').innerText=(d.balance??0)+' coins';document.getElementById('usdBalance').innerText=`≈ $${((d.balance??0)*POINT_RATE).toFixed(4)}`;document.getElementById('usdtBalanceDisplay').innerText=Number(d.usdtBalance||0).toFixed(4)+' USDT';localStorage.setItem('userData',JSON.stringify(d));}
-db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maintenanceOverlay').style.display='flex';}else{document.getElementById('maintenanceOverlay').style.display='none';}});
-auth.onAuthStateChanged(u=>{if(u){db.collection('users').doc(u.uid).onSnapshot(doc=>{if(doc.exists)loadData(doc.data());});}else{location.href='./index.html';}});
-window.logout=async function(){await auth.signOut();localStorage.clear();location.href='./index.html';}
-(function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}');if(c&&(c.balance!=null||c.username)){var b=c.balance??c.points??0;var us=c.usdtBalance??0;document.getElementById('balance').textContent=b+' coins';document.getElementById('usdBalance').textContent='≈ $'+(b*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').textContent=Number(us).toFixed(4)+' USDT';if(c.username)document.getElementById('headerText').textContent=c.username;}}catch(e){}})();
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
+let authResolved = false;
+
+function loadData(d){
+  if(!d) return;
+  if(d.usdtBalance==null) d.usdtBalance=0;
+  if(d.balance==null) d.balance=d.points||0;
+  document.getElementById('headerText').innerText=d.username||'Ineza';
+  document.getElementById('balance').innerText=(d.balance??0)+' coins';
+  document.getElementById('usdBalance').innerText=`≈ $${((d.balance??0)*0.0005).toFixed(4)}`;
+  document.getElementById('usdtBalanceDisplay').innerText=Number(d.usdtBalance||0).toFixed(4)+' USDT';
+  localStorage.setItem('userData', JSON.stringify(d));
+}
+
+auth.onAuthStateChanged(u=>{
+  authResolved = true;
+  if(u){
+    db.collection('users').doc(u.uid).onSnapshot(doc=>{ if(doc.exists) loadData(doc.data()); });
+    db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maintenanceOverlay').style.display='flex';}else{document.getElementById('maintenanceOverlay').style.display='none';}});
+  } else {
+    // Only redirect if really no cache and after 2 sec
+    setTimeout(()=>{
+      if(!authResolved) return;
+      const hasCache = localStorage.getItem('userData');
+      if(!hasCache){
+        location.href='./index.html';
+      }
+    },2000);
+  }
+});
+
+// Extra safety: if still not auth after 3 sec and no cache, then redirect
+setTimeout(()=>{
+  if(!authResolved && !localStorage.getItem('userData')){
+    location.href='./index.html';
+  }
+},3500);
+
+window.logout=async function(){
+  localStorage.clear();
+  await auth.signOut();
+  location.href='./index.html';
+}
 </script></body></html>
