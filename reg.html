@@ -29,6 +29,9 @@ input::placeholder{color:#9ca3af}
 .btn-back-outside:active{ filter:brightness(0.95); transform:scale(0.98) }
 .recaptcha-note{font-size:10px;color:#9ca3af;margin-top:14px}
 .pass-hint{font-size:11px;color:#d97706;text-align:left;margin:-4px 0 6px 6px;font-weight:600}
+.ref-locked{border-color:#22c55e !important;background:#f0fdf4 !important;font-weight:800 !important;color:#15803d !important}
+.ref-badge{font-size:11px;color:#15803d;background:#dcfce7;padding:6px 10px;border-radius:20px;display:none;margin:-2px 0 8px 0;font-weight:700;text-align:center}
+.ref-badge.show{display:block}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
@@ -45,7 +48,45 @@ input::placeholder{color:#9ca3af}
 <input type="password" id="password" placeholder="Password (5-10 chars)">
 <div class="pass-hint">Needs: 1 Capital, 1 Number, 1 Special (!@#)</div>
 <input type="password" id="confirmPassword" placeholder="Confirm Password">
+<div id="refBadge" class="ref-badge">✅ Referral applied</div>
 <input type="text" id="referral" placeholder="Referral Code (optional) +5 Coins">
+
+<!-- INSTANT REFERRAL FILL - 0ms - MUST BE RIGHT AFTER INPUT -->
+<script>
+(function(){
+  try{
+    var params = new URLSearchParams(window.location.search);
+    var ref = params.get('ref');
+    if(ref){
+      ref = decodeURIComponent(ref).trim();
+      if(ref){
+        localStorage.setItem('pendingRef', ref);
+        var el = document.getElementById('referral');
+        var badge = document.getElementById('refBadge');
+        if(el){
+          el.value = ref;
+          el.classList.add('ref-locked');
+          el.readOnly = true;
+          if(badge){ badge.innerText = '✅ Referral: ' + ref + ' (+5 Coins)'; badge.classList.add('show'); }
+        }
+      }
+    } else {
+      var saved = localStorage.getItem('pendingRef');
+      if(saved){
+        var el2 = document.getElementById('referral');
+        var badge2 = document.getElementById('refBadge');
+        if(el2 && !el2.value){
+          el2.value = saved;
+          el2.classList.add('ref-locked');
+          el2.readOnly = true;
+          if(badge2){ badge2.innerText = '✅ Referral: ' + saved + ' (+5 Coins)'; badge2.classList.add('show'); }
+        }
+      }
+    }
+  }catch(e){}
+})();
+</script>
+
 <button class="btn-register" id="regBtn" onclick="register()">Create Account</button>
 <div class="link-login" onclick="window.location.href='./log.html'">Already have account? <span>Login</span></div>
 <div class="recaptcha-note">Protected by reCAPTCHA Enterprise + App Check<br>Min withdraw 3000 Coins = $1.5</div>
@@ -150,7 +191,6 @@ async function register(){
 
     if(referral){
       try{
-        // support both old referralCode and username
         let refQuery = await db.collection("users").where("username","==",referral).get();
         if(refQuery.empty){ refQuery = await db.collection("users").where("referralCode","==",referral).get(); }
         if(!refQuery.empty){
@@ -171,7 +211,7 @@ async function register(){
         }
       }catch(e){ console.log(e); }
     }
-
+    localStorage.removeItem('pendingRef');
     sucEl.innerText="✅ Account created! Verify email then login.";
     await auth.signOut();
     setTimeout(()=>{ window.location.href='./log.html'; },2000);
