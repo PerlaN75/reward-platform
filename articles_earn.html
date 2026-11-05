@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>Articles Earn v3 - Scroll Fix</title>
+<title>Articles Earn v4 - Clean</title>
 <script src="https://www.google.com/recaptcha/enterprise.js?render=6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1"></script>
 <meta name="monetag" content="b671b8351bfc48ed0161f6bd0b6a5340">
 <script src="https://quge5.com/88/tag.min.js" data-zone="286869" async data-cfasync="false"></script>
 <style>
 *{ -webkit-tap-highlight-color:transparent }
 *:focus{outline:none !important}
-html{overscroll-behavior-y:auto} /* ALLOW PULL TO REFRESH */
+html{overscroll-behavior-y:auto}
 body{margin:0;background:#fafaf9;color:#111827;font-family:Arial,sans-serif;display:flex;justify-content:center;padding:12px 10px 90px 10px;min-height:100vh;overscroll-behavior-y:auto;-webkit-overflow-scrolling:touch}
 .card{background:#ffffff;border:2px solid #111827;border-radius:28px;padding:16px 14px 20px;width:100%;max-width:380px;box-shadow:6px 6px 0px #111827;margin:10px auto 30px}
 .header-row{display:flex;align-items:center;gap:8px;margin:6px 0 10px}
@@ -22,7 +22,6 @@ body{margin:0;background:#fafaf9;color:#111827;font-family:Arial,sans-serif;disp
 .bar{height:10px;background:#e7e5e4;border:2px solid #111827;border-radius:99px;margin:10px 0;overflow:hidden}
 .fill{height:100%;background:linear-gradient(90deg,#22c55e,#16a34a);width:0%;transition:0.4s}
 #countText{font-size:11px;color:#57534e;margin:6px 0;font-weight:800}
-.tip-text{font-size:11px;color:#1e3a8a;margin:10px 0;font-weight:800;line-height:1.4;background:#eff6ff;border:2px solid #111827;border-radius:12px;padding:10px;box-shadow:2px 2px 0 #111827}
 .article-card{background:#fff;border:2px solid #111827;border-radius:20px;padding:0;margin:14px 0;overflow:hidden;box-shadow:4px 4px 0 #111827}
 .article-cover{height:8px;width:100%}
 .easy .article-cover{background:linear-gradient(90deg,#22c55e,#bbf7d0)}
@@ -48,34 +47,11 @@ body{margin:0;background:#fafaf9;color:#111827;font-family:Arial,sans-serif;disp
 .btn.start{background:#22c55e;color:#000}
 .btn.done{background:#e7e5e4;color:#a8a29e;box-shadow:none;border-color:#d6d3d1}
 .sponsored{font-size:9px;color:#a8a29e;margin:14px 0 4px;text-align:center;font-weight:900;letter-spacing:1px}
-
-/* MODAL FIXED FOR SCROLL */
 .modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.75);justify-content:center;align-items:center;padding:10px;box-sizing:border-box}
 .modal-content{background:#fff;border:3px solid #111827;border-radius:22px;padding:14px;width:94%;max-width:360px;text-align:center;box-shadow:6px 6px 0 #111827;max-height:92vh;display:flex;flex-direction:column}
 .timer{font-size:32px;font-weight:900;background:#facc15;border:2px solid #111827;border-radius:12px;padding:4px;box-shadow:2px 2px 0 #111827;margin:6px 0;flex-shrink:0}
 .ad-gate{background:#f5f5f4;border:2px dashed #111827;border-radius:12px;padding:8px;margin:8px 0;flex-shrink:0}
-/* THIS IS THE SCROLLABLE PART - NOW FIXED */
-.article-box{
-  background:#fff;
-  border:2px solid #111827;
-  border-radius:12px;
-  padding:14px;
-  margin:8px 0;
-  text-align:left;
-  font-size:13px;
-  line-height:1.7;
-  color:#292524;
-  max-height:320px;
-  min-height:120px;
-  overflow-y:auto !important;
-  overflow-x:hidden;
-  -webkit-overflow-scrolling:touch !important;
-  overscroll-behavior:contain;
-  touch-action:pan-y !important;
-  box-shadow:2px 2px 0 #111827;
-  flex:1;
-  user-select:text;
-}
+.article-box{background:#fff;border:2px solid #111827;border-radius:12px;padding:14px;margin:8px 0;text-align:left;font-size:13px;line-height:1.7;color:#292524;max-height:320px;min-height:120px;overflow-y:auto !important;-webkit-overflow-scrolling:touch !important;overscroll-behavior:contain;touch-action:pan-y !important;box-shadow:2px 2px 0 #111827;flex:1;user-select:text}
 .bonus-btn{width:100%;padding:15px;background:#facc15;color:#000;border:3px solid #111827;border-radius:14px;font-weight:900;font-size:15px;margin:14px 0;box-shadow:4px 4px 0 #111827;display:none;cursor:pointer}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#111827;color:#facc15;padding:12px 20px;border-radius:99px;font-weight:900;z-index:9999;display:none;border:2px solid #facc15}
 </style>
@@ -87,22 +63,22 @@ body{margin:0;background:#fafaf9;color:#111827;font-family:Arial,sans-serif;disp
 <body>
 <div id="toast"></div>
 <div class="card">
-<div class="header-row"><div class="back" onclick="location.href='home.html'">‹</div><h2>📰 Daily Reads</h2><div class="refresh-btn" onclick="location.reload()" title="Refresh for new articles">🔄</div></div>
+<div class="header-row"><div class="back" onclick="location.href='home.html'">‹</div><h2>📰 Daily Reads</h2><div class="refresh-btn" onclick="location.reload()" title="Refresh">🔄</div></div>
 <div class="badge"><span id="totalPtsBadge">Total: 0 🪙</span><span id="countText">0/10</span></div>
 <div class="bar"><div class="fill" id="progBar"></div></div>
-<div id="poolInfo" style="font-size:10px;color:#57534e;font-weight:800;text-align:center;margin:4px 0">Loading daily pool...</div>
-<div class="tip-text">📚 Pool 30 articles • 10 new daily at midnight • Pull down to refresh page for new updates! Inside article you can now scroll content 👇</div>
-<div class="sponsored">ADVERTISEMENT - SUPPORT US</div>
-<div id="topBanner" style="margin:6px auto;display:flex;justify-content:center;min-height:62px"></div>
+<div id="poolInfo" style="font-size:10px;color:#57534e;font-weight:800;text-align:center;margin:6px 0">Loading daily pool...</div>
+
+<div id="topBanner" style="margin:8px auto;display:flex;justify-content:center;min-height:62px"></div>
+
 <div id="list" style="margin-top:12px"></div>
+
 <div id="midBannerWrap" style="display:none"><div class="sponsored">SPONSORED</div><div id="midBanner" style="margin:6px auto;display:flex;justify-content:center;min-height:262px"></div></div>
+
 <button id="bonusBtn" class="bonus-btn" onclick="startBonus()">🎁 Claim Bonus 5 Coins - 12s</button>
-<div style="display:flex;gap:8px;margin-top:12px"><button onclick="location.reload()" style="flex:1;padding:12px;background:#fff;border:2px solid #111827;border-radius:12px;font-weight:900;box-shadow:2px 2px 0 #111827;cursor:pointer">🔄 Refresh Page for Updates</button></div>
-<div style="font-size:11px;color:#57534e;margin-top:10px;font-weight:800;text-align:center;border:2px dashed #d6d3d1;padding:8px;border-radius:10px">v3 Scroll + Pull-to-Refresh Enabled • 3000 Coins = $1.5</div>
 </div>
 
 <div id="timerModal" class="modal"><div class="modal-content">
-<div style="display:flex;justify-content:space-between;align-items:center;flex-shrink:0"><div style="font-size:24px" id="modalIcon">📰</div><div style="font-size:11px;background:#f5f5f4;border:1.5px solid #111827;padding:4px 8px;border-radius:99px;font-weight:800">👇 SCROLL INSIDE ARTICLE 👇</div></div>
+<div style="display:flex;justify-content:space-between;align-items:center;flex-shrink:0"><div style="font-size:24px" id="modalIcon">📰</div><div style="font-size:10px;background:#f5f5f4;border:1.5px solid #111827;padding:4px 8px;border-radius:99px;font-weight:800">SCROLL INSIDE 👇</div></div>
 <h3 id="modalTitle" style="margin:8px 0 2px">Reading...</h3><p id="modalDesc" style="font-size:11px;color:#57534e;margin:2px 0"></p>
 <div class="timer" id="timerNum">12</div>
 <div id="distractPhase" style="font-size:11px;color:#15803d;font-weight:900;margin:4px 0"></div>
@@ -119,7 +95,7 @@ function canShowVignette(){const l=localStorage.getItem('vignette_last');return 
 function canShowPop(){const l=localStorage.getItem('pop_last');return !l||(Date.now()-parseInt(l))>3600000;}
 function loadVignette(){if(!canShowVignette())return false;var s=document.createElement('script');s.dataset.zone='12083688';s.src='https://n6wxm.com/vignette.min.js';document.body.appendChild(s);localStorage.setItem('vignette_last',Date.now().toString());return true;}
 function loadPop(){if(!canShowPop())return false;var s=document.createElement('script');s.dataset.zone='12083693';s.src='https://al5sm.com/tag.min.js';document.body.appendChild(s);localStorage.setItem('pop_last',Date.now().toString());return true;}
-function injectBanner(id,key,w,h){if(document.getElementById('timerModal').style.display==='flex')return;const c=document.getElementById(id);c.innerHTML='';const at=document.createElement('script');at.innerHTML=`atOptions={'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}};`;c.appendChild(at);const s=document.createElement('script');s.src=`https://bicea.org/22/${key}`;c.appendChild(s);}
+function injectBanner(id,key,w,h){if(document.getElementById('timerModal').style.display==='flex')return;const c=document.getElementById(id);if(!c)return;c.innerHTML='';const at=document.createElement('script');at.innerHTML=`atOptions={'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}};`;c.appendChild(at);const s=document.createElement('script');s.src=`https://bicea.org/22/${key}`;c.appendChild(s);}
 function loadAllBanners(){if(document.getElementById('timerModal').style.display==='flex')return;injectBanner('topBanner','fe25c5bd01f4bc5e60243e36cd83277c',60,468);injectBanner('midBanner','bf10cacdbe9f50d0c5d66a94e0785f29',250,300);document.getElementById('midBannerWrap').style.display='block';}
 loadAllBanners(); setInterval(()=>{if(document.getElementById('timerModal').style.display!=='flex')loadAllBanners();},30000);
 
@@ -138,13 +114,7 @@ Should you buy? Learn first. Don't invest money you can't lose. Price goes up an
 
 In 2026, Bitcoin is used by big companies like Tesla, MicroStrategy as treasury. El Salvador uses as legal tender. It's future money but volatile.
 
-Scroll down for more details:
-- Bitcoin halving every 4 years cuts supply
-- Wallet types: hot wallet (phone) vs cold wallet (offline)
-- How to buy: Binance P2P, then hold
-- Safety: Never share seed phrase
-
-Keep scrolling to read full article and earn coins!`},
+More: Bitcoin halving every 4 years cuts supply. Wallet types: hot wallet (phone) vs cold wallet (offline). How to buy: Binance P2P, then hold. Safety: Never share seed phrase. Keep scrolling to read full article and earn coins!`},
 {title:"USDT Explained: Why $1 = 1 USDT?",cat:"CRYPTO",icon:"💵",excerpt:"Stablecoin that never moves - why platforms pay you in USDT.",text:`USDT (Tether) is stablecoin. 1 USDT = $1 always. Unlike Bitcoin, it doesn't go up/down.
 
 Why stable? Tether company says they have $1 in bank for each USDT. So peg stays.
@@ -157,13 +127,7 @@ How to cash out: Receive USDT in Trust Wallet or Binance, then P2P sell to someo
 
 Always check address! If you send BEP20 USDT to TRC20 address, money lost forever.
 
-More details if you scroll:
-- USDT vs USDC difference
-- How Tether makes money
-- Why BEP20 cheaper than TRC20
-- How to avoid fake USDT tokens
-
-Scroll to continue reading!`},
+More: USDT vs USDC difference, how Tether makes money, why BEP20 cheaper than TRC20, how to avoid fake USDT tokens. Scroll to continue reading!`},
 {title:"How Blockchain Works - Simple Notebook Example",cat:"TECH",icon:"⛓️",excerpt:"Imagine a notebook everyone can see but no one can erase - that's blockchain.",text:`Blockchain = Chain of Blocks. Each block = page of transactions.
 
 Example: Page 1: A sent 1 USDT to B. Page 2: B sent 0.5 to C. All pages linked with code. If someone tries to change Page 1, code breaks, everyone sees fraud.
@@ -176,13 +140,7 @@ Public vs Private: Bitcoin blockchain is public, anyone can see. Banks use priva
 
 For you: When you earn coins and withdraw USDT, that transaction is written on blockchain forever. Transparent.
 
-Keep scrolling:
-- How miners work
-- What is hash
-- Why blockchain is secure
-- Rwanda land registry could use blockchain
-
-More info below, keep scrolling!`},
+More: How miners work, what is hash, why blockchain is secure, Rwanda land registry could use blockchain. Keep scrolling!`},
 {title:"5 Legit Ways to Earn Online in Rwanda 2026",cat:"FINANCE",icon:"💡",excerpt:"From freelancing to small tasks - real methods that pay in RWF or USDT.",text:`1) Freelance on Upwork: Writing, translation Kinyarwanda-English pays $5-$20 per article.
 2) Sell photos: Take nice Kigali photos, sell on Shutterstock.
 3) Task apps: Like this platform, 3000 coins = $1.5 daily = 45k RWF/month. Enough for data + airtime.
@@ -191,74 +149,52 @@ More info below, keep scrolling!`},
 
 Tips: Start small, 1 hour daily. Don't pay money to earn money - scam! Real sites never ask fee.
 
-Combine: Morning do checkin + watch videos (20 coins), afternoon articles (30 coins), evening share referral. Daily 50 coins = $0.025, but with bonus + referral you reach $1 daily fast.
+Combine: Morning do checkin + watch videos (20 coins), afternoon articles (30 coins), evening share referral. Daily 50 coins.
 
 Consistency > big one time.
 
-Scroll for more ideas:
-- How to create Upwork profile
-- Best niches for Rwandans
-- How to get first client
-- How to price your service
-
-Continue scrolling!`},
+More: How to create Upwork profile, best niches for Rwandans, how to get first client, how to price your service. Continue scrolling!`},
 {title:"How to Keep Crypto Wallet Safe - Seed Phrase",cat:"SECURITY",icon:"🔒",excerpt:"Your 12 words = your bank. Lose it = lose money forever.",text:`Wallet safety rules:
 
 1) 12-word seed phrase: Write on paper, hide. Never screenshot, never type in Google Form, Telegram. Anyone with seed can steal.
 2) 2FA: Enable Google Authenticator on Binance.
 3) Bookmark Binance.com - fake sites steal.
-4) Anti-phishing code: Set in Binance security, you will see it in every email.
+4) Anti-phishing code: Set in Binance security.
 5) Small test: Before sending $10 USDT, send $0.5 first to test.
 
-Scams in Rwanda: Telegram "Double your USDT", WhatsApp "You won", fake MTN MoMo messages with link. Real rewards never ask for payment. Keep your wallet locked.
+Scams in Rwanda: Telegram "Double your USDT", WhatsApp "You won", fake MTN MoMo messages with link. Real rewards never ask for payment.
 
 If hacked: Immediately move remaining funds to new wallet.
 
-Remember: Not your keys, not your coins. Keep keys safe.
+Remember: Not your keys, not your coins.
 
-More safety tips if you scroll:
-- What is cold wallet
-- How to spot fake Binance email
-- Why you need anti-phishing code
-- What to do if phone stolen`},
+More: What is cold wallet, how to spot fake Binance email, why you need anti-phishing code, what to do if phone stolen`},
 {title:"Binance Guide for Rwandans - P2P Explained",cat:"CRYPTO",icon:"🟡",excerpt:"How to receive USDT and convert to MoMo RWF safely.",text:`Binance is biggest exchange, 180M users.
 
 Steps for Rwanda:
 1) Download Binance, register with email.
 2) KYC: Need National ID + selfie. Takes 10 min.
-3) To receive: Go to Wallet > Deposit > USDT > Choose BEP20 > Copy address. Paste in withdraw page of this app.
-4) To cash out: Wallet > P2P > Sell USDT > Choose buyer with many trades + 98% rate > Sell > Buyer sends MoMo RWF > Confirm release.
+3) To receive: Go to Wallet > Deposit > USDT > Choose BEP20 > Copy address.
+4) To cash out: Wallet > P2P > Sell USDT > Choose buyer with many trades + 98% rate.
 
 Fees: Binance P2P 0% fee. BEP20 deposit 0 fee.
 
 Safety: Only trade inside Binance, don't go to WhatsApp. Use Verified merchants.
 
-Binance Pay: Send USDT to friends 0 fee instant. Great for paying.
+Binance Pay: Send USDT to friends 0 fee instant.
 
-Alternative: Trust Wallet, same BEP20 address.
+More: How to choose buyer, what if buyer doesn't send MoMo, how to appeal, how long P2P takes`},
+{title:"MTN MoMo vs USDT - Which is Better?",cat:"FINANCE",icon:"📱",excerpt:"Local mobile money vs global dollar money - pros and cons.",text:`MoMo: Controlled by MTN Rwanda, in RWF, instant, works without internet (USSD *182*). Good for market, moto, food. But inflation eats value.
 
-Scroll for detailed P2P steps:
-- How to choose buyer
-- What if buyer doesn't send MoMo
-- How to appeal
-- How long P2P takes`},
-{title:"MTN MoMo vs USDT - Which is Better?",cat:"FINANCE",icon:"📱",excerpt:"Local mobile money vs global dollar money - pros and cons.",text:`MoMo: Controlled by MTN Rwanda, in RWF, instant, works without internet (USSD *182*). Good for market, moto, food. But inflation eats value. 100k RWF today buys less next year.
+USDT: Global, dollar, works with internet, no central company can freeze (if self custody). Good for saving, online payments.
 
-USDT: Global, dollar, works with internet, no central company can freeze (if self custody). Good for saving, online payments, receiving from abroad. But needs smartphone + data, not accepted in local shop.
+Smart strategy: Earn in USDT, keep 50% savings in USDT, cash out 50% to MoMo for daily use.
 
-Smart strategy: Earn in USDT (stable dollar), keep 50% savings in USDT, cash out 50% to MoMo for daily use.
+Example: Earn $45/month = 135k RWF. Cash out 70k for expenses, keep $25 USDT savings. After 1 year you have $300 = 400k RWF protected.
 
-Example: Earn $45/month = 135k RWF. Cash out 70k for expenses, keep $25 USDT savings. After 1 year you have $300 = 400k RWF protected from inflation.
+Future: Rwanda is testing CBDC - digital RWF.
 
-Both need phone number verification. Both can be hacked if careless.
-
-Future: Rwanda is testing CBDC - digital RWF. Might combine both.
-
-More comparison if you scroll:
-- Fees comparison table
-- Which is faster
-- Which is safer
-- Best use case for each`},
+More: Fees comparison table, which is faster, which is safer, best use case for each`},
 {title:"Inflation - Why Bread Price Goes Up",cat:"FINANCE",icon:"📈",excerpt:"1000 RWF bread becomes 1200 next year - why your money loses power.",text:`Inflation = general price rise. Causes: Government prints more money, fuel price up, import costs.
 
 In Rwanda, inflation ~5-8% yearly. So 100k RWF in mattress loses 8k value yearly.
@@ -269,18 +205,11 @@ How to protect:
 3) Learn skill that pays more than inflation
 4) Earn in dollars (USDT) not only RWF
 
-USDT helps because dollar inflation is ~3%, less than RWF inflation. So saving in USDT preserves more.
+USDT helps because dollar inflation is ~3%, less than RWF inflation.
 
-Example: 2023 soda 500 RWF, 2026 800 RWF. 60% rise in 3 years. If you saved 50k RWF, now buys less soda. If saved 35 USDT, still buys same.
+Example: 2023 soda 500 RWF, 2026 800 RWF. 60% rise in 3 years.
 
-Small habit: Every time you earn coins, convert to USDT, don't cash all to RWF.
-
-Government tries to control inflation via National Bank interest rates.
-
-Scroll for more:
-- How inflation calculated
-- Why Rwanda inflation higher than US
-- How to calculate your personal inflation`},
+More: How inflation calculated, why Rwanda inflation higher than US, how to calculate your personal inflation`},
 {title:"AI in 2026 - How It Changes Jobs in Rwanda",cat:"TECH",icon:"🤖",excerpt:"AI won't take your job, but person using AI will.",text:`AI tools 2026: ChatGPT writes, Midjourney draws, DeepL translates Kinyarwanda perfect.
 
 Jobs affected: Simple translation, basic graphic design, data entry. But new jobs: AI prompt engineer, AI trainer.
@@ -295,13 +224,7 @@ Rwanda: Irembo could use AI for faster services.
 
 Don't fear: Learn 1 hour daily. Skill + AI = superpower.
 
-Example prompt: "I want to sell samosas in Kigali, give me business plan in Kinyarwanda with 50k budget"
-
-Scroll for:
-- 10 best free AI tools
-- How to write good prompt
-- AI for farmers in Rwanda
-- Will AI replace teachers?`},
+More: 10 best free AI tools, how to write good prompt, AI for farmers in Rwanda, will AI replace teachers?`},
 {title:"Save $1.5 Daily With Tiny Habits",cat:"FINANCE",icon:"🐷",excerpt:"Skip one soda = 500 RWF. Small habits = 45k RWF/month.",text:`Wealth = small habits daily.
 
 Habit 1: Morning checkin (5 coins) + watch 10 videos (20 coins) = 25 coins = 5 min.
@@ -313,16 +236,11 @@ Total monthly: From app ~ $30 if consistent + referral. From habits ~ 20k RWF.
 
 Place: Use envelope system. 3 envelopes: Needs, Wants, Savings (USDT). Put 30% to savings.
 
-Track: Write in notebook daily income. Seeing progress motivates.
+Track: Write in notebook daily income.
 
-Rwanda proverb: "Utazi gukusanya udashobora gutunga" - If you can't save small, can't manage big.
+Rwanda proverb: "Utazi gukusanya udashobora gutunga"
 
-Start today: Even 1000 coins = $0.5, but habit is gold.
-
-More habits if you scroll:
-- How to track expenses
-- 50/30/20 rule
-- How to avoid impulse buying`},
+More: How to track expenses, 50/30/20 rule, how to avoid impulse buying`},
 {title:"What is Ethereum and Smart Contracts?",cat:"CRYPTO",icon:"Ξ",excerpt:"Not just money, but computer that runs apps without owner.",text:`Ethereum created 2015 by Vitalik. Unlike Bitcoin which is only money, Ethereum is computer.
 
 Smart contract = code that executes automatically. Example: If you send 10 USDT, it automatically sends you 30000 coins. No human needed.
@@ -331,17 +249,11 @@ Apps on Ethereum: Uniswap (swap coins), Aave (lend), OpenSea (NFT). All run with
 
 Gas fee: To run app you pay ETH fee. Can be $1-$20 depending traffic. BEP20 is copy of Ethereum but cheaper.
 
-For you: This platform uses smart contract logic but on backend Firebase, not blockchain, to save fees.
-
 Future: RWAs - real world assets tokenized. Like house in Kigali could be token.
 
 Learn Solidity if you want dev job - pays $2000+ month.
 
-Scroll for more:
-- What is gas
-- Ethereum vs BSC difference
-- How to create smart contract
-- Best Ethereum wallets`},
+More: What is gas, Ethereum vs BSC difference, how to create smart contract, best Ethereum wallets`},
 {title:"How P2P Scams Work and How to Avoid",cat:"SECURITY",icon:"⚠️",excerpt:"Buyer says 'I sent MoMo' but you didn't receive - classic scam.",text:`Common P2P scams:
 
 1) Fake proof: Buyer shows screenshot of MoMo sent but not sent. Always check your MoMo balance *inside MTN app*, not screenshot.
@@ -355,12 +267,7 @@ Safe rules:
 - Never share Binance password.
 - If scam, appeal in Binance immediately with video proof.
 
-Binance protects if you stay inside app.
-
-More scam types if you scroll:
-- Fake Binance support on Telegram
-- How to record proof
-- What to do if scammed`},
+More: Fake Binance support on Telegram, how to record proof, what to do if scammed`},
 {title:"Trust Wallet vs Binance Wallet - Difference",cat:"CRYPTO",icon:"👛",excerpt:"One you control keys, one exchange controls - which is safer?",text:`Trust Wallet = self custody. You have 12 words, you control. If Trust Wallet company closes, your money still safe. But if you lose 12 words, no recovery.
 
 Binance Wallet = exchange custody. Binance has keys. If you forget password, Binance can reset via KYC. But if Binance hacked (rare), you could lose.
@@ -371,15 +278,10 @@ How to create Trust Wallet: Download, write 12 words on paper, receive USDT BEP2
 
 Never store seed in email, Drive, screenshot.
 
-In Rwanda, Trust Wallet works even if Binance P2P blocked one day.
-
-Scroll for:
-- How to backup Trust Wallet
-- Which is better for beginners
-- Fees comparison`},
+More: How to backup Trust Wallet, which is better for beginners, fees comparison`},
 {title:"How to Make Money with Referrals",cat:"FINANCE",icon:"👥",excerpt:"Invite 10 friends = $5 bonus - how referral system works.",text:`Referral = you invite friend with your link, you get % of their earnings.
 
-This platform: Likely you get 10% of friend's earnings forever? Or one-time 200 coins. Check home page.
+This platform: Likely you get 10% of friend's earnings forever? Or one-time 200 coins.
 
 Tips to get referrals in Rwanda:
 1) WhatsApp status: Share screenshot of withdrawal with link.
@@ -389,21 +291,18 @@ Tips to get referrals in Rwanda:
 
 Ethics: Only invite if platform really pays. Don't lie "Earn $100 daily" if it's $1.5.
 
-Math: 20 referrals each earning 30 coins daily = you get 3 coins each = 60 coins daily = $0.03 extra passive.
+Math: 20 referrals each earning 30 coins daily = you get 3 coins each = 60 coins daily.
 
 Biggest earners have 100+ referrals via YouTube.
 
 Your link is your asset.
 
-More tips if you scroll:
-- Best message to invite friends
-- How to make TikTok video
-- How to avoid being blocked as spam`},
+More: Best message to invite friends, how to make TikTok video, how to avoid being blocked as spam`},
 {title:"What is KYC and Why Binance Asks ID?",cat:"SECURITY",icon:"🪪",excerpt:"Know Your Customer - why you must send ID photo.",text:`KYC = Bank knows who you are to stop money laundering.
 
 Binance KYC steps: Photo of ID (National ID or passport), selfie, address. AI checks.
 
-Why needed: Without KYC, criminals use crypto to hide money. With KYC, government can track.
+Why needed: Without KYC, criminals use crypto to hide money.
 
 Privacy: Binance keeps data encrypted, not sold. It's required by law.
 
@@ -415,10 +314,7 @@ After KYC, limit rises from $0 to $100k daily.
 
 Never do KYC on random site promising free money - could be identity theft. Only Binance, Coinbase, etc.
 
-Scroll for:
-- How long KYC takes
-- What if KYC rejected
-- Can you use parent ID`},
+More: How long KYC takes, what if KYC rejected, can you use parent ID`},
 {title:"Understanding Candlestick Charts",cat:"CRYPTO",icon:"📊",excerpt:"Green candle = price up, red = down - basic trading view.",text:`Chart = price history. Each candle = time period (1 hour, 1 day).
 
 Body: Open to close price. Green if close higher than open (up), red if down.
@@ -437,9 +333,7 @@ Use TradingView app free to view charts.
 
 Remember: Past chart doesn't guarantee future.
 
-More chart patterns if you scroll:
-- What is support and resistance
-- How to avoid leverage liquidation`},
+More: What is support and resistance, how to avoid leverage liquidation`},
 {title:"How to Convert USDT to RWF via Mobile Money",cat:"FINANCE",icon:"💱",excerpt:"Step by step: USDT → Binance P2P → MoMo RWF in 5 minutes.",text:`Step 1: Open Binance > Wallet > Spot > USDT > Withdraw? No, you want Sell. Go to P2P.
 
 Step 2: P2P > Sell > USDT > Enter amount e.g., 10 USDT.
@@ -460,10 +354,7 @@ Fee: 0. Always check final RWF amount. Some buyers have low price.
 
 Time: 2-10 min.
 
-Scroll for troubleshooting:
-- Buyer not responding
-- MoMo delayed
-- How to cancel`},
+More: Buyer not responding, MoMo delayed, how to cancel`},
 {title:"What is DeFi? Bank Without Bank",cat:"TECH",icon:"🏦",excerpt:"Lend, borrow, earn interest without any bank building.",text:`DeFi = Decentralized Finance. Apps that run on blockchain, no bank.
 
 Example: Aave - you deposit 100 USDT, earn 5% yearly, others borrow. No ID needed, just wallet.
@@ -480,10 +371,7 @@ Don't put life savings. DeFi is experimental.
 
 Learn on testnet first - fake money to practice.
 
-Scroll for:
-- Best DeFi apps for beginners
-- How to avoid hacks
-- What is impermanent loss`},
+More: Best DeFi apps for beginners, how to avoid hacks, what is impermanent loss`},
 {title:"How Internet Works - Why Data Expensive?",cat:"TECH",icon:"🌐",excerpt:"Your phone → tower → undersea cable → Google server - why costs.",text:`Internet path: Your phone sends signal to MTN tower in Kigali, via fiber to undersea cable in Mombasa, to server in Europe/US, back same.
 
 Why expensive in Rwanda: No direct undersea cable, must pay Kenya/Tanzania transit + satellite backup. Plus taxes.
@@ -498,17 +386,10 @@ For this app: Articles mode uses little data (text), watch mode uses more (video
 
 Kigali has free WiFi spots: Amahoro Stadium, some cafes.
 
-More tips if you scroll:
-- How to check data usage
-- Best bundle for earning apps
-- How to use WiFi safely`},
+More: How to check data usage, best bundle for earning apps, how to use WiFi safely`},
 {title:"Goal Setting - How to Reach $100 Savings",cat:"FINANCE",icon:"🎯",excerpt:"Break big goal into daily coins - $100 in 2 months is possible.",text:`Goal $100 = 200,000 coins (since 3000=$1.5, so 200k = $100). Sounds big? Break:
 
-Daily: Checkin 5 + Watch 10*2=20 + Articles 10*2 avg=20 + Bonus 5 = 50 coins/day = $0.025? Wait recalc: 3000=$1.5 => 50 coins=$0.025. Actually need 2000 coins daily to make $1. Actually typical 50 coins = $0.025 is small. Need referral + consistent.
-
-Better: With referrals, daily 200 coins = $0.1 => $100 in 1000 days? Hmm.
-
-Reality: These apps give small extra, not full salary. Use as learning + airtime, not main job.
+Daily: Checkin 5 + Watch 10*2=20 + Articles 10*2 avg=20 + Bonus 5 = 50 coins/day.
 
 Set SMART goal: Earn 3000 coins daily for 30 days = $45. Save $20. In 5 months = $100.
 
@@ -518,10 +399,7 @@ Motivation: $100 can buy smartphone or pay school fees.
 
 Don't quit job for this. Use as side.
 
-Scroll for:
-- SMART goals explained
-- How to track in notebook
-- Why small goals work`},
+More: SMART goals explained, how to track in notebook, why small goals work`},
 {title:"What is NFT? Digital Art That Sells for Millions",cat:"TECH",icon:"🖼️",excerpt:"Picture that proves you own original - like Mona Lisa certificate.",text:`NFT = Non Fungible Token. Unique digital item on blockchain.
 
 Example: Artist makes 1 digital art of gorilla, mints as NFT, you buy. Everyone can copy image, but blockchain says you own original. Like real Mona Lisa vs poster.
@@ -540,10 +418,7 @@ No need to buy now, just understand.
 
 Future: Land title could be NFT.
 
-Scroll for:
-- How to make first NFT free
-- Best marketplaces
-- Why some NFTs worth millions`},
+More: How to make first NFT free, best marketplaces, why some NFTs worth millions`},
 {title:"Why You Should Learn English for Online Earning",cat:"FINANCE",icon:"🗣️",excerpt:"English = double income online - how to learn free.",text:`Most high paying online jobs require English: Freelance, Upwork, YouTube English audience pays more.
 
 How to learn free:
@@ -562,10 +437,7 @@ Don't fear mistakes. Rwandans are good learners.
 
 1 year daily 20 min = fluent enough for online work.
 
-Scroll for:
-- Best free English apps
-- How to practice speaking alone
-- How to get remote job`},
+More: Best free English apps, how to practice speaking alone, how to get remote job`},
 {title:"How to Spot Crypto Scams on WhatsApp",cat:"SECURITY",icon:"🚨",excerpt:"'Send 10k get 20k' - always scam. List of red flags.",text:`Scam signs:
 - Promise double in 24h
 - Need to send money first to receive
@@ -582,12 +454,7 @@ If scammed: Report to RIB (Rwanda Investigation Bureau) + Irembo, change passwor
 
 Remember: If too good to be true, it's scam. Real earning is slow, $1.5 daily, not $100 hourly.
 
-Tell friends to protect.
-
-More scam examples if you scroll:
-- Fake airdrops
-- How to verify website
-- What to do if scammed`},
+More: Fake airdrops, how to verify website, what to do if scammed`},
 {title:"What is Web3? Next Internet",cat:"TECH",icon:"🌍",excerpt:"Web1 read, Web2 read+write, Web3 read+write+own.",text:`Web1 (1990): You read static pages.
 Web2 (2004-now): You read and write (Facebook, YouTube) but companies own your data.
 Web3 (future): You read, write, and own your data via blockchain wallet.
@@ -604,10 +471,7 @@ For you: Create wallet, try Web3 app like Mirror (blogging that pays in crypto).
 
 Web3 = ownership economy.
 
-Scroll for:
-- Web3 vs Web2 comparison
-- How to try Web3 today
-- Best Web3 apps`},
+More: Web3 vs Web2 comparison, how to try Web3 today, best Web3 apps`},
 {title:"How to Create Strong Password",cat:"SECURITY",icon:"🔑",excerpt:"123456 = hacked in 1 second. How to make unhackable password.",text:`Weak passwords cracked instantly.
 
 Strong password rules:
@@ -629,10 +493,7 @@ For this app: Use strong password, because coins = money.
 
 Write master password on paper hidden.
 
-More if you scroll:
-- How password manager works
-- How to create master password
-- What is 2FA`},
+More: How password manager works, how to create master password, what is 2FA`},
 {title:"Side Hustle Ideas for Students in Kigali",cat:"FINANCE",icon:"🎓",excerpt:"Earn while studying - no capital needed ideas.",text:`1) Tutoring: Teach primary kids Math, 2000 RWF/hour.
 2) Phone repair: Learn to change screen protector, charge 1000 RWF.
 3) Design: Canva posters for shops, 5000 RWF per poster.
@@ -648,12 +509,7 @@ Save 50% of hustle money in USDT for future.
 
 Example: Student earns 30k RWF/month tutoring + 20k from app = 50k = enough for laptop in 6 months.
 
-Start now, small.
-
-More ideas if you scroll:
-- How to find tutoring clients
-- How to learn Canva in 1 hour
-- Best side hustle for your course`},
+More: How to find tutoring clients, how to learn Canva in 1 hour, best side hustle for your course`},
 {title:"What is Stablecoin and Why Need?",cat:"CRYPTO",icon:"⚖️",excerpt:"Crypto that doesn't go up/down - why world needs it.",text:`Stablecoin = pegged to stable asset like USD. USDT, USDC, DAI.
 
 How peg works: Company holds $1 for each coin, or algorithm.
@@ -669,10 +525,7 @@ For Rwanda: USDT best for earning apps because stable.
 
 Future: Rwandan Franc stablecoin maybe? RWFc?
 
-Scroll for more stablecoins:
-- USDC vs USDT which safer
-- What happened to Terra Luna
-- How stablecoins maintain peg`},
+More: USDC vs USDT which safer, what happened to Terra Luna, how stablecoins maintain peg`},
 {title:"How to Use ChatGPT to Earn Money",cat:"TECH",icon:"💬",excerpt:"Ask AI to write CV, business plan, translate - sell service.",text:`Ways:
 
 1) Write CVs for job seekers: Ask ChatGPT "Write CV for driver in Kigali", edit, sell 2000 RWF.
@@ -695,10 +548,7 @@ Combine with Canva for design + ChatGPT for text = full agency.
 
 Rwanda has many small businesses needing online presence - opportunity.
 
-Scroll for:
-- Best prompts for Rwanda business
-- How to sell service on WhatsApp
-- Pricing guide`},
+More: Best prompts for Rwanda business, how to sell service on WhatsApp, pricing guide`},
 {title:"How Mobile Money Charges Work",cat:"FINANCE",icon:"💸",excerpt:"Why sending 10k MoMo costs 250 RWF - breakdown.",text:`MoMo charges:
 - Sending: 0-5000 RWF free? Actually MTN charges tiered: 0-1000 = 0, 1001-5000 = 100, etc.
 - Withdraw: 5000 withdraw = 250 fee.
@@ -716,9 +566,7 @@ For cash out from Binance P2P, choose buyer who pays MoMo without extra fee (the
 
 Always calculate net: If you earn 3000 coins = $1.5 = 1980 RWF, MoMo withdraw fee 250 = you get 1730. So try to accumulate $10 before cash out to reduce % fee.
 
-Irembo payments also have fee.
-
-Scroll for fee table and saving tips.`},
+More: Fee table and saving tips.`},
 {title:"What is Halving? Why Bitcoin Price Up Every 4 Years",cat:"CRYPTO",icon:"✂️",excerpt:"Every 4 years, Bitcoin new supply cuts in half - why price history repeats.",text:`Bitcoin halving: Every 210,000 blocks (~4 years), reward for miners cuts half. 2009: 50 BTC per block, 2012: 25, 2016: 12.5, 2020: 6.25, 2024: 3.125.
 
 Why? To make Bitcoin scarce, like gold harder to mine over time.
@@ -735,10 +583,7 @@ Don't borrow money to buy before halving - risky.
 
 Learn to check halving countdown on binance.com.
 
-Scroll for:
-- Halving dates history
-- What happens to miners
-- Should you buy before halving`}
+More: Halving dates history, what happens to miners, should you buy before halving`}
 ];
 
 function hashString(str){let h=0;for(let i=0;i<str.length;i++){h=((h<<5)-h)+str.charCodeAt(i);h|=0;}return Math.abs(h);}
@@ -750,7 +595,7 @@ function getDailyArticles(){
   let arr=[...ARTICLES_POOL];
   for(let i=arr.length-1;i>0;i--){const j=Math.floor(rand()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
   const selected=arr.slice(0,10);
-  document.getElementById('poolInfo').innerText=`📅 ${today} • Pool ${ARTICLES_POOL.length} • Showing ${selected.length} • v3 Scroll Fixed`;
+  document.getElementById('poolInfo').innerText=`📅 ${today} • Pool ${ARTICLES_POOL.length} • Daily 10 new`;
   return selected;
 }
 
@@ -771,8 +616,8 @@ function render(){
   document.getElementById('list').innerHTML=html;
   const bonusBtn=document.getElementById('bonusBtn');if(done.length>=10&&!bonusClaimed)bonusBtn.style.display='block';else if(!bonusClaimed)bonusBtn.style.display='none';if(bonusClaimed){bonusBtn.innerText='Bonus Claimed ✓';bonusBtn.disabled=true;bonusBtn.style.display='block';}
 }
-function startAd(i){if(done.includes(i))return;if(document.getElementById('timerModal').style.display==='flex')return;const now=Date.now()/1000;if(now-lastEarnTime<EARN_COOLDOWN){showToast(`Wait ${Math.ceil(EARN_COOLDOWN-(now-lastEarnTime))}s`);return;}let cfg=tasksConfig[i];cur=i;sec=cfg.sec;document.getElementById('timerNum').innerText=sec;document.getElementById('modalTitle').innerText=cfg.title;document.getElementById('modalIcon').innerText=cfg.icon;document.getElementById('modalDesc').innerText=cfg.excerpt;document.getElementById('articleBox').innerText=cfg.text;document.getElementById('articleBox').scrollTop=0;document.getElementById('adHint').innerText='👇 Scroll inside article to read full content';document.getElementById('distractPhase').style.display='block';document.getElementById('distractPhase').innerText=`📚 ${cfg.cat} • SCROLLABLE NOW • ${cfg.tier}`;document.getElementById('adGateInside').style.display='none';document.getElementById('timerModal').style.display='flex';if(cfg.tier!=='easy')loadVignette();setTimeout(()=>{document.getElementById('distractPhase').style.display='none';document.getElementById('adGateInside').style.display='block';document.getElementById('modalTitle').innerText=`Reading: ${cfg.title}`;document.getElementById('modalDesc').innerText=`Keep open ${cfg.sec}s + scroll to earn`;document.getElementById('adHint').innerText=`🔒 Verifying ${cfg.sec}s... Scroll enabled`;tmr=setInterval(async()=>{sec--;document.getElementById('timerNum').innerText=sec;if(sec<=0){clearInterval(tmr);document.getElementById('timerModal').style.display='none';await claimAd();}},1000);},cfg.tier==='easy'?800:2200);}
-function startBonus(){if(bonusClaimed)return;if(done.length<10)return showToast('Complete 10 articles first');if(document.getElementById('timerModal').style.display==='flex')return;const now=Date.now()/1000;if(now-lastEarnTime<EARN_COOLDOWN){showToast(`Wait ${Math.ceil(EARN_COOLDOWN-(now-lastEarnTime))}s`);return;}sec=BONUS_SEC;document.getElementById('timerNum').innerText=sec;document.getElementById('modalTitle').innerText='🎁 Bonus 5 Coins';document.getElementById('modalIcon').innerText='🎁';document.getElementById('articleBox').innerText='Amazing! You read 10 different articles today! Tomorrow 10 NEW articles will appear automatically from pool of 30! Pull down on main page to refresh for updates. Inside article you can now scroll!';document.getElementById('articleBox').scrollTop=0;document.getElementById('modalDesc').innerText='Final bonus...';document.getElementById('adHint').innerText='Loading bonus...';document.getElementById('distractPhase').style.display='block';document.getElementById('distractPhase').innerText='🎁 DAILY BONUS';document.getElementById('adGateInside').style.display='none';document.getElementById('timerModal').style.display='flex';loadVignette();setTimeout(()=>{document.getElementById('distractPhase').style.display='none';document.getElementById('adGateInside').style.display='block';document.getElementById('modalTitle').innerText='Bonus Verifying...';document.getElementById('modalDesc').innerText='Keep open 12s to claim 5 coins';document.getElementById('adHint').innerText='🔒 Verifying bonus...';tmr=setInterval(async()=>{sec--;document.getElementById('timerNum').innerText=sec;if(sec<=0){clearInterval(tmr);document.getElementById('timerModal').style.display='none';await claimBonus();}},1000);},2200);}
+function startAd(i){if(done.includes(i))return;if(document.getElementById('timerModal').style.display==='flex')return;const now=Date.now()/1000;if(now-lastEarnTime<EARN_COOLDOWN){showToast(`Wait ${Math.ceil(EARN_COOLDOWN-(now-lastEarnTime))}s`);return;}let cfg=tasksConfig[i];cur=i;sec=cfg.sec;document.getElementById('timerNum').innerText=sec;document.getElementById('modalTitle').innerText=cfg.title;document.getElementById('modalIcon').innerText=cfg.icon;document.getElementById('modalDesc').innerText=cfg.excerpt;document.getElementById('articleBox').innerText=cfg.text;document.getElementById('articleBox').scrollTop=0;document.getElementById('adHint').innerText='👇 Scroll inside article';document.getElementById('distractPhase').style.display='block';document.getElementById('distractPhase').innerText=`📚 ${cfg.cat} • SCROLLABLE`;document.getElementById('adGateInside').style.display='none';document.getElementById('timerModal').style.display='flex';if(cfg.tier!=='easy')loadVignette();setTimeout(()=>{document.getElementById('distractPhase').style.display='none';document.getElementById('adGateInside').style.display='block';document.getElementById('modalTitle').innerText=`Reading: ${cfg.title}`;document.getElementById('modalDesc').innerText=`Keep open ${cfg.sec}s to earn +${cfg.reward} 🪙`;document.getElementById('adHint').innerText=`🔒 Verifying ${cfg.sec}s...`;tmr=setInterval(async()=>{sec--;document.getElementById('timerNum').innerText=sec;if(sec<=0){clearInterval(tmr);document.getElementById('timerModal').style.display='none';await claimAd();}},1000);},cfg.tier==='easy'?800:2200);}
+function startBonus(){if(bonusClaimed)return;if(done.length<10)return showToast('Complete 10 articles first');if(document.getElementById('timerModal').style.display==='flex')return;const now=Date.now()/1000;if(now-lastEarnTime<EARN_COOLDOWN){showToast(`Wait ${Math.ceil(EARN_COOLDOWN-(now-lastEarnTime))}s`);return;}sec=BONUS_SEC;document.getElementById('timerNum').innerText=sec;document.getElementById('modalTitle').innerText='🎁 Bonus 5 Coins';document.getElementById('modalIcon').innerText='🎁';document.getElementById('articleBox').innerText='Amazing! You read 10 different articles today! Tomorrow 10 NEW articles will appear automatically from pool of 30! Pull down on main page to refresh for updates.';document.getElementById('articleBox').scrollTop=0;document.getElementById('modalDesc').innerText='Final bonus...';document.getElementById('adHint').innerText='Loading bonus...';document.getElementById('distractPhase').style.display='block';document.getElementById('distractPhase').innerText='🎁 DAILY BONUS';document.getElementById('adGateInside').style.display='none';document.getElementById('timerModal').style.display='flex';loadVignette();setTimeout(()=>{document.getElementById('distractPhase').style.display='none';document.getElementById('adGateInside').style.display='block';document.getElementById('modalTitle').innerText='Bonus Verifying...';document.getElementById('modalDesc').innerText='Keep open 12s to claim 5 coins';document.getElementById('adHint').innerText='🔒 Verifying bonus...';tmr=setInterval(async()=>{sec--;document.getElementById('timerNum').innerText=sec;if(sec<=0){clearInterval(tmr);document.getElementById('timerModal').style.display='none';await claimBonus();}},1000);},2200);}
 async function claimAd(){if(done.includes(cur))return;let cfg=tasksConfig[cur];if(cfg.tier==='premium')loadPop();done.push(cur);total+=cfg.reward;render();localStorage.setItem('articlesEarn_done',JSON.stringify(done));localStorage.setItem('articlesEarn_total',total);localStorage.setItem('articlesEarn_date',getToday());if(currentUser){try{await db.collection('users').doc(currentUser.uid).update({balance:firebase.firestore.FieldValue.increment(cfg.reward),coins:firebase.firestore.FieldValue.increment(cfg.reward),points:firebase.firestore.FieldValue.increment(cfg.reward),lastEarnAt:firebase.firestore.FieldValue.serverTimestamp(),articlesEarn_date:getToday(),articlesEarn_done:done,articlesEarn_total:total});await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Articles Earn',coins:cfg.reward,points:cfg.reward,desc:`${cfg.title} +${cfg.reward} coins`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});const doc=await db.collection('users').doc(currentUser.uid).get();if(doc.exists){userData=doc.data();localStorage.setItem('userData',JSON.stringify(userData));}lastEarnTime=Date.now()/1000;showToast(`✓ +${cfg.reward} 🪙 added!`);}catch(e){showToast(e.message);}}}
 async function claimBonus(){if(bonusClaimed)return;loadPop();bonusClaimed=true;total+=BONUS_REWARD;render();localStorage.setItem('articlesEarn_bonus',getToday());localStorage.setItem('articlesEarn_total',total);if(currentUser){try{await db.collection('users').doc(currentUser.uid).update({balance:firebase.firestore.FieldValue.increment(BONUS_REWARD),coins:firebase.firestore.FieldValue.increment(BONUS_REWARD),points:firebase.firestore.FieldValue.increment(BONUS_REWARD),lastEarnAt:firebase.firestore.FieldValue.serverTimestamp(),articlesEarn_bonus:getToday(),articlesEarn_total:total});await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Articles Earn Bonus',coins:BONUS_REWARD,points:BONUS_REWARD,desc:`Bonus +${BONUS_REWARD} coins for 10 articles`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});const doc=await db.collection('users').doc(currentUser.uid).get();if(doc.exists){userData=doc.data();localStorage.setItem('userData',JSON.stringify(userData));}lastEarnTime=Date.now()/1000;showToast(`🎁 Bonus +${BONUS_REWARD} 🪙 added!`);}catch(e){showToast(e.message);}}}
 auth.onAuthStateChanged(async u=>{if(!u){location.href='./index.html';return;}currentUser=u;const doc=await db.collection('users').doc(u.uid).get();if(doc.exists){userData=doc.data();localStorage.setItem('userData',JSON.stringify(userData));if(userData.lastEarnAt&&userData.lastEarnAt.toMillis){lastEarnTime=userData.lastEarnAt.toMillis()/1000;}const today=getToday();const fbDate=userData.articlesEarn_date||'';if(fbDate===today){done=userData.articlesEarn_done||[];total=userData.articlesEarn_total||0;bonusClaimed=(userData.articlesEarn_bonus===today);}else{done=[];total=0;bonusClaimed=false;await db.collection('users').doc(u.uid).update({articlesEarn_date:today,articlesEarn_done:[],articlesEarn_total:0,articlesEarn_bonus:''});}}render();});
