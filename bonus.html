@@ -36,9 +36,7 @@ h1{color:#111827;font-size:22px;font-weight:900;flex:1}
 <div class="card">
 <div class="top-header"><div class="back-square" onclick="location.href='home.html'">‹</div><h1>🎁 Daily Bonus</h1></div>
 <div class="sub">Claim once every 24h - 3000 Coins = $1.5</div>
-
 <div class="tip-box">💡 <i>Claim daily bonus, but also check those offers - might be useful to You</i></div>
-
 <div class="bonus-box">
 <div class="big">🪙</div>
 <div class="points">+3 Coins</div>
@@ -47,18 +45,15 @@ h1{color:#111827;font-size:22px;font-weight:900;flex:1}
 </div>
 <button class="btn" id="claimBtn" disabled>Loading...</button>
 <div class="info" id="info">Daily reward - 1000 Coins = $0.5</div>
-
-<div class="sponsored">SPONSORED - BOTTOM - This helps us pay you</div>
+<div class="sponsored">SPONSORED - This helps us pay you</div>
 <div class="ad-box" id="adBottom"></div>
-
 <div style="font-size:9px;color:#9ca3af;margin-top:10px">Protected + Min withdraw 3000 Coins = $1.5</div>
 </div>
-
 <script>
 function BLAST(){const c=document.getElementById('confetti');c.style.display='block';const ctx=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;let pieces=[];const colors=['#f59e0b','#22c55e','#ef4444','#fbbf24','#3b82f6'];for(let i=0;i<150;i++)pieces.push({x:c.width/2,y:c.height/3,vx:(Math.random()-0.5)*22,vy:(Math.random()-0.5)*22-8,r:Math.random()*9+4,color:colors[Math.floor(Math.random()*colors.length)],rot:Math.random()*360,vr:(Math.random()-0.5)*20});let f=0;(function anim(){ctx.clearRect(0,0,c.width,c.height);pieces.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.35;p.rot+=p.vr;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r);ctx.restore();});if(++f<220)requestAnimationFrame(anim);else c.style.display='none';})();}
 
-// --- FINAL AD SETUP - DO NOT CHANGE ---
-// 1. Adsterra = 1 banner only, clean domain, high CPM
+// --- FINAL MONEY SETUP ---
+// Adsterra 300x250 - YOUR REAL KEY - CLEAN DOMAIN
 function loadAdsterra(){
   var c=document.getElementById('adBottom'); if(!c) return;
   c.innerHTML='';
@@ -69,12 +64,10 @@ function loadAdsterra(){
   s2.src='https://www.highperformanceformat.com/bf10cacdbe9f50d0c5d66a94e0785f29/invoke.js'; 
   c.appendChild(s2);
 }
-
-// 2. Monetag Vignette - pays per view
+// Monetag 12083688 Vignette - $1.70 earner
 function canShowV(){var l=localStorage.getItem('v_last');return !l||Date.now()-parseInt(l)>30*60*1000}
 function loadV(){if(!canShowV())return; if(document.querySelector('script[data-zone="12083688"]'))return; var s=document.createElement('script');s.dataset.zone='12083688';s.src='https://n6wxm.com/vignette.min.js';document.body.appendChild(s);localStorage.setItem('v_last',Date.now())}
-
-// 3. Monetag Push - pays per click, only after claim
+// Monetag 12083693 OnClick - extra after claim
 function canShowP(){var l=localStorage.getItem('p_last');return !l||Date.now()-parseInt(l)>60*60*1000}
 function loadP(){if(!canShowP())return; if(document.querySelector('script[data-zone="12083693"]'))return; var s=document.createElement('script');s.dataset.zone='12083693';s.src='https://al5sm.com/tag.min.js';document.body.appendChild(s);localStorage.setItem('p_last',Date.now())}
 
@@ -105,7 +98,7 @@ if(lastTs){
     claimBtn.textContent=`Come back in ${remain}h`;
     claimBtn.disabled=true;
     infoEl.textContent=`Next bonus in ${remain} hours`;
-    loadAdsterra(); // still show ad even if claimed, you still earn
+    loadAdsterra();
     return;
   }
 }
@@ -123,13 +116,13 @@ timerEl.textContent=`Please wait ${sec} seconds`;
 adHintEl.textContent='⏳ Verifying...';
 adHintEl.style.display='block';
 clearInterval(waitTimer);
-loadAdsterra(); // Load Adsterra immediately - counts as impression
+loadAdsterra();
 waitTimer=setInterval(()=>{
 sec--;
 if(sec>0){
 claimBtn.textContent=`Wait ${sec}s...`;
 timerEl.textContent=`Please wait ${sec} seconds`;
-if(sec==5) loadV(); // Monetag Vignette at 5s - this gives you $0.01-0.03 per view = your $1.73
+if(sec==5) loadV();
 }else{
 clearInterval(waitTimer);
 canClaim=true;
@@ -157,10 +150,7 @@ lastEarnAt: firebase.firestore.FieldValue.serverTimestamp()
 },{merge:true});
 timerEl.textContent='✅ Claimed! +3 🪙 added';
 claimBtn.textContent='✅ Claimed! Go Home';
-claimBtn.onclick=function(){
-  loadP(); // Monetag Push AFTER claim - pays extra without hurting claim
-  location.href='./home.html';
-};
+claimBtn.onclick=function(){ loadP(); location.href='./home.html'; };
 claimBtn.disabled=false;
 infoEl.textContent='Bonus added! Check home balance';
 adHintEl.style.display='none';
@@ -171,7 +161,7 @@ action:'Daily Bonus',type:'bonus',coins:3,points:3,
 desc:'Daily Bonus +3',timestamp:firebase.firestore.FieldValue.serverTimestamp()
 });
 }catch(e2){}
-loadP(); // extra earning after success
+loadP();
 }catch(e){
 alert("Error: "+e.message);
 claimBtn.disabled=false;
