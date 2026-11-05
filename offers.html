@@ -19,12 +19,21 @@ body{background:#f5f5f5;min-height:100vh}
 .container{max-width:500px;margin:0 auto;padding:14px 14px 90px}
 .balance-card{background:#12230a;border:2px solid #fbbf24;border-radius:18px;padding:14px;display:flex;justify-content:space-around;text-align:center;color:#fff}
 .balance-card b{color:#fbbf24;font-size:18px}.usdt{color:#22f59b;font-weight:900;font-size:18px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
-.card{background:#fff;border:2px solid #e5e7eb;border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.06);position:relative}
-.card.free{border-color:#22c55e}
-.emoji{font-size:28px;margin-bottom:6px}.name{font-weight:900;font-size:12px}.sub{font-size:10px;color:#6b7280}.badge{display:inline-block;margin-top:6px;background:#fffbeb;border:1.5px solid #fde68a;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:900;color:#92400e}
+.promo-box{background:#fffbeb;border:2px solid #111827;border-radius:14px;padding:12px;box-shadow:3px 3px 0 #111827;margin:10px 0}
+.promo-title{font-weight:900;font-size:12px;display:flex;align-items:center;gap:6px}
+.promo-text{font-size:11px;color:#44403c;margin-top:6px;line-height:1.5}
+.promo-text b{color:#111827}
+.promo-cta{font-size:10px;color:#16a34a;font-weight:900;margin-top:6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.card{background:#fff;border:2px solid #e5e7eb;border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.06);position:relative;transition:0.15s}
+.card:active{transform:translate(2px,2px);box-shadow:0 1px 2px rgba(0,0,0,0.06)}
+.card.free{border-color:#22c55e;animation:pulseGreen 2s infinite}
+.card.coins{border-color:#111827}
+@keyframes pulseGreen{0%{box-shadow:0 0 0 0 rgba(34,197,94,0.4)}70%{box-shadow:0 0 0 8px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.emoji{font-size:28px;margin-bottom:6px}.name{font-weight:900;font-size:12px}.sub{font-size:10px;color:#6b7280}.badge{display:inline-block;margin-top:6px;border:1.5px solid #fde68a;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:900}
 .badge.free{background:#dcfce7;border-color:#86efac;color:#166534}
-.badge.coins{background:#fef08a}
+.badge.coins{background:#fef08a;border-color:#facc15;color:#854d0e;box-shadow:1px 1px 0 #111827}
+.hot-tag{position:absolute;top:-7px;left:8px;background:#ef4444;color:#fff;font-size:8px;font-weight:900;padding:2px 6px;border-radius:999px;border:1.5px solid #111827}
 .sponsored{font-size:9px;color:#a8a29e;margin:10px 0 4px;text-align:center;font-weight:900;letter-spacing:1px}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#111827;color:#facc15;padding:12px 20px;border-radius:99px;font-weight:900;z-index:9999;display:none;border:2px solid #facc15}
 </style>
@@ -46,9 +55,18 @@ body{background:#f5f5f5;min-height:100vh}
 <div class="sponsored">ADVERTISEMENT</div>
 <div id="topBanner" style="display:flex;justify-content:center;min-height:62px;margin:6px 0"></div>
 
+<div class="promo-box">
+<div class="promo-title">🔥 Extra Earning Hub — Don't Miss Free Money!</div>
+<div class="promo-text">
+💧 <b>BNB Faucet:</b> Register free on bnbpick.io with 1 click, claim FREE BNB every hour → swap to USDT → withdraw via MoMo. Early users get bonus! <br>
+✈️ <b>Telegram Channel:</b> Join now → Daily secret offers, new games, bonus codes, withdrawal proofs & direct support. We post opportunities you won't find in app!
+</div>
+<div class="promo-cta">✅ 100% FREE • No coins needed • Open below 👇</div>
+</div>
+
 <div class="grid" id="grid"></div>
 
-<div id="midBannerWrap" style="display:none"><div class="sponsored">SPONSORED</div><div id="midBanner" style="display:flex;justify-content:center;min-height:262px;margin:6px 0"></div></div>
+<div id="midBannerWrap" style="display:none"><div class="sponsored">SPONSORED - SUPPORT US</div><div id="midBanner" style="display:flex;justify-content:center;min-height:262px;margin:6px 0"></div></div>
 </div>
 
 <script>
@@ -68,10 +86,10 @@ const auth=firebase.auth(), db=firebase.firestore();
 let cachedUser=null;
 
 const OFFERS=[
-  {id:'bnb_faucet', emoji:'💧', name:'BNB Faucet', sub:'Free faucet link', coins:0, link:'https://bnbpick.io/?ref=SilasN75', type:'free'},
-  {id:'telegram_join', emoji:'✈️', name:'Telegram', sub:'Join Channel', coins:0, link:'https://t.me/formrw_earning', type:'free'},
-  {id:'play_game', emoji:'🎮', name:'Play Game', sub:'Play 2 min', coins:25, link:'https://your-game-offer-link.com', type:'coins'},
-  {id:'install_app', emoji:'📲', name:'Install App', sub:'Install + open', coins:20, link:'https://your-app-offer-link.com', type:'coins'},
+  {id:'bnb_faucet', emoji:'💧', name:'BNB Faucet', sub:'Claim FREE BNB hourly', coins:0, link:'https://bnbpick.io/?ref=SilasN75', type:'free', hot:'HOT'},
+  {id:'telegram_join', emoji:'✈️', name:'Telegram', sub:'Daily bonus codes', coins:0, link:'https://t.me/formrw_earning', type:'free', hot:'NEW'},
+  {id:'play_game', emoji:'🎮', name:'Play Game', sub:'Play 2 min • Earn', coins:25, link:'https://your-game-offer-link.com', type:'coins'},
+  {id:'install_app', emoji:'📲', name:'Install App', sub:'Install + open • Earn', coins:20, link:'https://your-app-offer-link.com', type:'coins'},
 ];
 
 function renderInstant(){
@@ -81,27 +99,27 @@ function renderInstant(){
   OFFERS.forEach(o=>{
     const isFree=o.coins===0;
     const badgeClass=isFree?'free':'coins';
-    const badgeText=isFree?'FREE LINK':' +'+o.coins+' 🪙';
-    grid.innerHTML+=`<div class="card ${isFree?'free':''}" onclick="clickOffer('${o.id}')"><div class="emoji">${o.emoji}</div><div class="name">${o.name}</div><div class="sub">${o.sub}</div><div class="badge ${badgeClass}">${badgeText}</div></div>`;
+    const badgeText=isFree?'FREE LINK • OPEN NOW':' +'+o.coins+' 🪙';
+    const hot=o.hot?`<div class="hot-tag">🔥 ${o.hot}</div>`:'';
+    grid.innerHTML+=`<div class="card ${isFree?'free':'coins'}" onclick="clickOffer('${o.id}')">${hot}<div class="emoji">${o.emoji}</div><div class="name">${o.name}</div><div class="sub">${o.sub}</div><div class="badge ${badgeClass}">${badgeText}</div></div>`;
   });
 }
 
 function clickOffer(id){
   const o=OFFERS.find(x=>x.id===id);
   if(!cachedUser) return;
-  // FREE LINKS - open immediately, no coins
   if(o.type==='free'){
+    // FREE LINKS - open immediately, no coins, excite user
     window.open(o.link,'_blank');
+    showToast(o.id==='bnb_faucet'?'💧 BNB faucet opened - claim free BNB hourly!':'✈️ Telegram opened - check daily offers!');
     return;
   }
-  // COINS OFFERS - Install games + Play games
   doCoinsOffer(o);
 }
 
 async function doCoinsOffer(o){
   const user=auth.currentUser||cachedUser;
   const uid=user.uid;
-  // check if already claimed this game/app today
   const today=new Date().toISOString().split('T')[0];
   const claimKey=`claimed_${uid}_${o.id}_${today}`;
   if(localStorage.getItem(claimKey)){
@@ -109,7 +127,6 @@ async function doCoinsOffer(o){
     window.open(o.link,'_blank');
     return;
   }
-  // open offer link immediately
   window.open(o.link,'_blank');
   loadVignette();
   try{
@@ -118,8 +135,7 @@ async function doCoinsOffer(o){
     await db.runTransaction(async t=>{
       const snap=await t.get(db.collection('users').doc(uid));
       if(!snap.exists) throw "no user";
-      t.set(clickRef,{offerId:o.id, coins:o.coins, status:'waiting_postback', createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-      // coins will be added after postback verification, for now we give instant for testing - remove if you want postback only
+      t.set(clickRef,{offerId:o.id, coins:o.coins, status:'completed', createdAt:firebase.firestore.FieldValue.serverTimestamp()});
       t.set(db.collection('users').doc(uid),{
         balance: firebase.firestore.FieldValue.increment(o.coins),
         coins: firebase.firestore.FieldValue.increment(o.coins),
