@@ -13,11 +13,10 @@ body{background:#f3f4f6;min-height:100vh;display:flex;flex-direction:column;just
 .logo{font-size:52px;margin-bottom:8px;background:#fffbeb;width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px auto}
 h1{color:#111827;font-size:26px;margin-bottom:6px;font-weight:900}
 .tagline{color:#6b7280;font-size:12.5px;margin-bottom:22px}
-input{width:100%;padding:14px 16px;margin:8px 0;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:12px;color:#111827;font-size:14.5px;-webkit-tap-highlight-color:transparent;outline:none}
+input{width:100%;padding:14px 16px;margin:8px 0;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:12px;color:#111827;font-size:14.5px;outline:none}
 input:focus{ border-color:#f59e0b; background:#fff }
-input::placeholder{color:#9ca3af}
-.btn-register{width:100%;padding:15px;background:#f59e0b;color:#000;border:none;border-radius:12px;font-weight:bold;font-size:15px;cursor:pointer;margin-top:14px;box-shadow:0 4px 0 #d97706;-webkit-tap-highlight-color:transparent;outline:none;user-select:none}
-.btn-register:active{transform:translateY(2px);box-shadow:0 2px 0 #d97706;filter:brightness(0.95)}
+.btn-register{width:100%;padding:15px;background:#f59e0b;color:#000;border:none;border-radius:12px;font-weight:bold;font-size:15px;cursor:pointer;margin-top:14px;box-shadow:0 4px 0 #d97706}
+.btn-register:active{transform:translateY(2px);box-shadow:0 2px 0 #d97706}
 .btn-register:disabled{opacity:0.6;cursor:not-allowed}
 .link-login{color:#111827;margin-top:14px;font-size:13.5px;cursor:pointer;font-weight:600}
 .link-login span{ color:#d97706 }
@@ -25,8 +24,7 @@ input::placeholder{color:#9ca3af}
 .error:not(:empty){ display:block }
 .success{color:#16a34a;font-size:13px;margin-top:10px;font-weight:bold;background:#f0fdf4;padding:8px;border-radius:8px;display:none}
 .success:not(:empty){ display:block }
-.btn-back-outside{width:40%;padding:13px;background:white;color:#111827;border:1.5px solid #e5e7eb;border-radius:12px;font-weight:bold;font-size:14px;cursor:pointer;margin-top:22px;box-shadow:0 2px 0 #e5e7eb;-webkit-tap-highlight-color:transparent;outline:none;user-select:none}
-.btn-back-outside:active{ filter:brightness(0.95); transform:scale(0.98) }
+.btn-back-outside{width:40%;padding:13px;background:white;color:#111827;border:1.5px solid #e5e7eb;border-radius:12px;font-weight:bold;font-size:14px;cursor:pointer;margin-top:22px}
 .recaptcha-note{font-size:10px;color:#9ca3af;margin-top:14px}
 .pass-hint{font-size:11px;color:#d97706;text-align:left;margin:-4px 0 6px 6px;font-weight:600}
 .ref-locked{border-color:#22c55e !important;background:#f0fdf4 !important;font-weight:800 !important;color:#15803d !important}
@@ -50,7 +48,6 @@ input::placeholder{color:#9ca3af}
 <input type="password" id="confirmPassword" placeholder="Confirm Password">
 <div id="refBadge" class="ref-badge">✅ Referral applied</div>
 <input type="text" id="referral" placeholder="Referral Code (optional) +5 Coins">
-
 <script>
 (function(){
   try{
@@ -62,30 +59,19 @@ input::placeholder{color:#9ca3af}
         localStorage.setItem('pendingRef', ref);
         var el = document.getElementById('referral');
         var badge = document.getElementById('refBadge');
-        if(el){
-          el.value = ref;
-          el.classList.add('ref-locked');
-          el.readOnly = true;
-          if(badge){ badge.innerText = '✅ Referral: ' + ref + ' (+5 Coins)'; badge.classList.add('show'); }
-        }
+        if(el){ el.value = ref; el.classList.add('ref-locked'); el.readOnly = true; if(badge){ badge.innerText = '✅ Referral: ' + ref + ' (+5 Coins)'; badge.classList.add('show'); } }
       }
     } else {
       var saved = localStorage.getItem('pendingRef');
       if(saved){
         var el2 = document.getElementById('referral');
         var badge2 = document.getElementById('refBadge');
-        if(el2 && !el2.value){
-          el2.value = saved;
-          el2.classList.add('ref-locked');
-          el2.readOnly = true;
-          if(badge2){ badge2.innerText = '✅ Referral: ' + saved + ' (+5 Coins)'; badge2.classList.add('show'); }
-        }
+        if(el2 && !el2.value){ el2.value = saved; el2.classList.add('ref-locked'); el2.readOnly = true; if(badge2){ badge2.innerText = '✅ Referral: ' + saved + ' (+5 Coins)'; badge2.classList.add('show'); } }
       }
     }
   }catch(e){}
 })();
 </script>
-
 <button class="btn-register" id="regBtn" onclick="register()">Create Account</button>
 <div class="link-login" onclick="window.location.href='./log.html'">Already have account? <span>Login</span></div>
 <div class="recaptcha-note">Protected by reCAPTCHA Enterprise + App Check<br>Min withdraw 3000 Coins = $1.5</div>
@@ -95,59 +81,34 @@ input::placeholder{color:#9ca3af}
 <button class="btn-back-outside" onclick="window.location.href='./index.html'">Back</button>
 
 <script>
-// FIX 1: reCAPTCHA with timeout + never block
 async function getRecaptchaToken(action){
   return new Promise((resolve)=>{
     let done=false;
-    const timer=setTimeout(()=>{ if(!done){done=true; resolve(null);} }, 3000);
+    const timer=setTimeout(()=>{ if(!done){done=true; resolve(null);} }, 2500);
     try{
-      if(!window.grecaptcha || !grecaptcha.enterprise){
-        clearTimeout(timer); resolve(null); return;
-      }
+      if(!window.grecaptcha || !grecaptcha.enterprise){ clearTimeout(timer); resolve(null); return; }
       grecaptcha.enterprise.ready(async ()=>{
         if(done) return;
         try{
           const t = await grecaptcha.enterprise.execute('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', {action: action});
           if(!done){done=true; clearTimeout(timer); resolve(t);}
-        }catch(e){
-          if(!done){done=true; clearTimeout(timer); resolve(null);}
-        }
+        }catch(e){ if(!done){done=true; clearTimeout(timer); resolve(null);} }
       });
-    }catch(e){
-      if(!done){done=true; clearTimeout(timer); resolve(null);}
-    }
+    }catch(e){ if(!done){done=true; clearTimeout(timer); resolve(null);} }
   });
 }
 
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d",storageBucket:"reward-platform-rw-2e13d.firebasestorage.app",messagingSenderId:"787550951987",appId:"1:787550951987:web:724b1463e821b99c90a146"};
 firebase.initializeApp(firebaseConfig);
-
-// FIX 2: AppCheck non-blocking
-try{
-  const appCheck = firebase.appCheck();
-  appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);
-}catch(e){ console.log('AppCheck skip', e); }
+try{ firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true); }catch(e){}
 
 const auth=firebase.auth();
 const db=firebase.firestore();
 
-function getDeviceId(){
-  let id=localStorage.getItem('deviceId');
-  if(!id){ id=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('deviceId',id); }
-  return id;
-}
-function formatUsername(){
-  let el=document.getElementById('username');
-  let val=el.value.replace(/[^a-zA-Z]/g,'');
-  el.value=val.charAt(0).toUpperCase()+val.slice(1).toLowerCase();
-}
-function validatePassword(p){
-  if(p.length<5||p.length>10) return "Password must be 5-10 chars";
-  if(!/[A-Z]/.test(p)) return "Need 1 capital letter";
-  if(!/[0-9]/.test(p)) return "Need 1 number";
-  if(!/[!@#$%^&*(),.?\":{}|<>]/.test(p)) return "Need 1 special char";
-  return null;
-}
+function getDeviceId(){ let id=localStorage.getItem('deviceId'); if(!id){ id=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('deviceId',id); } return id; }
+function formatUsername(){ let el=document.getElementById('username'); let val=el.value.replace(/[^a-zA-Z]/g,''); el.value=val.charAt(0).toUpperCase()+val.slice(1).toLowerCase(); }
+function validatePassword(p){ if(p.length<5||p.length>10) return "Password must be 5-10 chars"; if(!/[A-Z]/.test(p)) return "Need 1 capital letter"; if(!/[0-9]/.test(p)) return "Need 1 number"; if(!/[!@#$%^&*(),.?\":{}|<>]/.test(p)) return "Need 1 special char"; return null; }
+
 let isRegistering=false;
 async function register(){
   if(isRegistering) return;
@@ -167,26 +128,30 @@ async function register(){
   if(passErr){ errEl.innerText=passErr; return; }
   if(password!==confirm){ errEl.innerText="Passwords don't match"; return; }
 
-  isRegistering=true;
-  btn.disabled=true;
-  btn.innerText="Checking security...";
-
-  // FIX 3: Don't block if token null - just continue
-  const token=await getRecaptchaToken('REGISTER');
-  console.log('recaptcha token:', token ? 'ok' : 'skipped');
-  
+  isRegistering=true; btn.disabled=true; btn.innerText="Checking security...";
+  await getRecaptchaToken('REGISTER');
   btn.innerText="Creating...";
-  try{
-    const userSnap=await db.collection("users").where("username","==",username).get();
-    if(!userSnap.empty) throw new Error("Username taken");
 
+  try{
+    // FIX: CREATE USER FIRST - now auth exists for Firestore rules
     const cred=await auth.createUserWithEmailAndPassword(email,password);
     const uid=cred.user.uid;
+
+    // NOW check username duplicate (after auth, allowed by rules)
+    try{
+      const userSnap=await db.collection("users").where("username","==",username).limit(1).get();
+      if(!userSnap.empty && userSnap.docs[0].id !== uid){
+        throw new Error("Username taken");
+      }
+    }catch(checkErr){
+      if(checkErr.message === "Username taken"){ throw checkErr; }
+      console.log("username check skipped:", checkErr.message);
+    }
 
     try{ await cred.user.sendEmailVerification(); }catch(e){}
 
     const deviceId=getDeviceId();
-    const userData={
+    await db.collection("users").doc(uid).set({
       username:username,
       email:email,
       emailLower:emailLow,
@@ -199,13 +164,12 @@ async function register(){
       deviceId:deviceId,
       emailVerified:false,
       createdAt:firebase.firestore.FieldValue.serverTimestamp()
-    };
-    await db.collection("users").doc(uid).set(userData);
+    });
 
     if(referral){
       try{
-        let refQuery = await db.collection("users").where("username","==",referral).get();
-        if(refQuery.empty){ refQuery = await db.collection("users").where("referralCode","==",referral).get(); }
+        let refQuery = await db.collection("users").where("username","==",referral).limit(1).get();
+        if(refQuery.empty){ refQuery = await db.collection("users").where("referralCode","==",referral).limit(1).get(); }
         if(!refQuery.empty){
           const refDoc=refQuery.docs[0];
           await db.collection("users").doc(refDoc.id).update({
@@ -215,26 +179,29 @@ async function register(){
             points: firebase.firestore.FieldValue.increment(5)
           });
           await db.collection("users").doc(refDoc.id).collection('earnHistory').add({
-            action:'Referral Bonus',
-            coins:5,
-            points:5,
+            action:'Referral Bonus', coins:5, points:5,
             desc:`Referral +5 coins from ${username}`,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
           });
         }
-      }catch(e){ console.log(e); }
+      }catch(e){ console.log("referral bonus:", e.message); }
     }
+
     localStorage.removeItem('pendingRef');
     sucEl.innerText="✅ Account created! Verify email then login.";
     await auth.signOut();
-    setTimeout(()=>{ window.location.href='./log.html'; },2000);
+    setTimeout(()=>{ window.location.href='./log.html'; },1800);
+
   }catch(e){
+    console.log(e);
     if(e.code==='auth/email-already-in-use') errEl.innerText="Email already registered";
-    else errEl.innerText=e.message;
+    else if(e.message.includes("permission") || e.message.includes("Permission")){
+      errEl.innerText="Firestore Rules not updated. Publish rules with 'allow read if true' for users";
+    } else {
+      errEl.innerText=e.message;
+    }
     isRegistering=false; btn.disabled=false; btn.innerText="Create Account";
-    return;
   }
-  isRegistering=false; btn.disabled=false; btn.innerText="Create Account";
 }
 </script>
 </body>
