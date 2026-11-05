@@ -10,17 +10,18 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:#ffffff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px 14px 100px 14px;overflow-x:hidden}
+html,body{overflow-x:hidden;max-width:100vw}
+body{background:#ffffff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px 14px 100px 14px}
 .header{display:flex;align-items:center;gap:12px;margin:20px 0 12px;width:100%;max-width:500px}
 .back{width:45px;height:30px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;color:#991b1b;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;cursor:pointer;box-shadow:0 2px 0 #fca5a5}
-.main-card{width:100%;max-width:500px;background:#ffffff;border:2px solid #f1f5f9;border-radius:20px;padding:16px;box-shadow:0 8px 30px rgba(0,0,0,0.06)}
+.main-card{width:100%;max-width:500px;background:#ffffff;border:2px solid #f1f5f9;border-radius:20px;padding:16px;box-shadow:0 8px 30px rgba(0,0,0,0.06);overflow:hidden}
 .balance-box{background:#2f3e1a;border:2px solid #fbbf24;border-radius:16px;padding:14px;text-align:center;color:#fff;margin-bottom:16px}
-.video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #111827;position:relative}
-.player{aspect-ratio:16/9;background:#000;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:280px}
-#bgV{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(22px) brightness(0.55);transform:scale(1.3);z-index:0}
-#v{position:relative;width:100%;height:100%;object-fit:contain;background:transparent;z-index:2}
+.video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #111827;position:relative;width:100%}
+.player{aspect-ratio:16/9;background:#000;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:260px;width:100%}
+#bgV{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;filter:blur(18px) brightness(0.5);z-index:0}
+#v{position:relative;width:100%;height:100%;object-fit:contain;background:transparent;z-index:2;object-position:center}
 .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.88);color:#fff;text-align:center;padding:14px;flex-direction:column;z-index:3;font-weight:800;font-size:15px}
-.progress{height:10px;background:#1f2937;position:relative;z-index:2}.progress-bar{height:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);width:0%;transition:width .3s}
+.progress{height:10px;background:#1f2937;position:relative;z-index:2;width:100%}.progress-bar{height:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);width:0%;transition:width .3s}
 .btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;padding:16px;font-weight:900;font-size:16px;cursor:pointer;margin:14px 0 0;box-shadow:0 3px 0 #d97706;position:relative;z-index:2}
 .btn:active{transform:scale(0.98)}
 .btn:disabled{background:#e5e7eb;color:#9ca3af;box-shadow:none}
@@ -81,7 +82,6 @@ firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.fi
 let bal=0,today=0,currentUser=null,timer=null,dailyPlaylist=[],loadChecker=null, adWindowOpened=false, currentVideo=null;
 const ov=document.getElementById('ov'),vid=document.getElementById('v'),bgV=document.getElementById('bgV'),btn=document.getElementById('btn'),pbar=document.getElementById('pbar'),balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),vtEl=document.getElementById('vt'),errEl=document.getElementById('err');
 function updateUI(){ let displayToday = Math.min(today,10); balEl.textContent=bal+' 🪙 coins'; todayEl.textContent=displayToday+'/10'; if(dailyPlaylist.length && today<10 && dailyPlaylist[today]){vtEl.textContent=`Next: ${dailyPlaylist[today].title}`;} }
-
 auth.onAuthStateChanged(async(u)=>{
   if(!u){location.href='./index.html';return;} currentUser=u; 
   ov.innerHTML='📡 Loading videos...'; await loadLiveVideos(); dailyPlaylist=getRandomPlaylist();
