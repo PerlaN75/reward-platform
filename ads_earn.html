@@ -76,6 +76,24 @@ const BONUS_REWARD=5,BONUS_SEC=12,EARN_COOLDOWN=15;
 function getToday(){return new Date().toISOString().split('T')[0];}
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
 let done=[],total=0,cur=0,sec=12,tmr=null,currentUser=null,userData={},lastEarnTime=0,bonusClaimed=false,isClaiming=false;
+
+// INSTANT LOAD FROM LOCALSTORAGE - prevents cheat on refresh
+(function initFromLocal(){
+  try{
+    const today=getToday();
+    const savedDate=localStorage.getItem('adsEarn_date');
+    if(savedDate===today){
+      done=JSON.parse(localStorage.getItem('adsEarn_done')||'[]');
+      total=parseInt(localStorage.getItem('adsEarn_total')||'0');
+      bonusClaimed=localStorage.getItem('adsEarn_bonus')===today;
+    }else{
+      localStorage.removeItem('adsEarn_done');
+      localStorage.removeItem('adsEarn_total');
+      localStorage.removeItem('adsEarn_bonus');
+    }
+  }catch(e){}
+})();
+
 function render(){
   document.getElementById('totalPtsBadge').innerText=`Total Today: ${total} 🪙 Coins`;
   document.getElementById('countText').innerText=`${done.length}/10 done - Resets midnight`;
@@ -91,6 +109,14 @@ async function claimAd(){
   if(done.includes(cur)){isClaiming=false;return;}
   let cfg=tasksConfig[cur];
   if(cfg.tier==='premium') loadPop();
+  // INSTANT UI UPDATE - prevents refresh cheat
+  if(!done.includes(cur)){
+    done.push(cur); total+=cfg.reward;
+    localStorage.setItem('adsEarn_done',JSON.stringify(done));
+    localStorage.setItem('adsEarn_total',total.toString());
+    localStorage.setItem('adsEarn_date',getToday());
+    render();
+  }
   try{
     await db.collection('users').doc(currentUser.uid).set({
       balance: firebase.firestore.FieldValue.increment(cfg.reward),
@@ -101,11 +127,6 @@ async function claimAd(){
       adsEarn_done: firebase.firestore.FieldValue.arrayUnion(cur),
       adsEarn_total: firebase.firestore.FieldValue.increment(cfg.reward)
     },{merge:true});
-    done.push(cur); total+=cfg.reward;
-    localStorage.setItem('adsEarn_done',JSON.stringify(done));
-    localStorage.setItem('adsEarn_total',total.toString());
-    localStorage.setItem('adsEarn_date',getToday());
-    render();
     lastEarnTime=Date.now()/1000;
     showToast(`✓ +${cfg.reward} 🪙 added!`);
     db.collection('users').doc(currentUser.uid).collection('earnHistory').add({
@@ -115,6 +136,11 @@ async function claimAd(){
     }).catch(()=>{});
   }catch(e){
     console.error(e); showToast("Error: "+e.message);
+    // revert if failed
+    done=done.filter(x=>x!==cur); total-=cfg.reward;
+    localStorage.setItem('adsEarn_done',JSON.stringify(done));
+    localStorage.setItem('adsEarn_total',total.toString());
+    render();
   }
   isClaiming=false;
 }
@@ -122,6 +148,10 @@ async function claimBonus(){
   if(isClaiming) return; isClaiming=true;
   if(bonusClaimed){isClaiming=false;return;}
   loadPop();
+  // instant UI
+  bonusClaimed=true;
+  localStorage.setItem('adsEarn_bonus',getToday());
+  render();
   try{
     await db.collection('users').doc(currentUser.uid).set({
       balance: firebase.firestore.FieldValue.increment(BONUS_REWARD),
@@ -131,8 +161,7 @@ async function claimBonus(){
       adsEarn_bonus: getToday(),
       adsEarn_total: firebase.firestore.FieldValue.increment(BONUS_REWARD)
     },{merge:true});
-    bonusClaimed=true; total+=BONUS_REWARD;
-    localStorage.setItem('adsEarn_bonus',getToday());
+    total+=BONUS_REWARD;
     localStorage.setItem('adsEarn_total',total.toString());
     render();
     lastEarnTime=Date.now()/1000;
@@ -142,10 +171,10 @@ async function claimBonus(){
       desc:`Bonus +${BONUS_REWARD} coins for completing 10 tasks`,
       timestamp:firebase.firestore.FieldValue.serverTimestamp()
     }).catch(()=>{});
-  }catch(e){ showToast(e.message); }
+  }catch(e){ showToast(e.message); bonusClaimed=false; localStorage.removeItem('adsEarn_bonus'); render(); }
   isClaiming=false;
 }
-auth.onAuthStateChanged(async u=>{if(!u){location.href='./index.html';return;}currentUser=u;const doc=await db.collection('users').doc(u.uid).get();if(doc.exists){userData=doc.data();localStorage.setItem('userData',JSON.stringify(userData));if(userData.lastEarnAt&&userData.lastEarnAt.toMillis){lastEarnTime=userData.lastEarnAt.toMillis()/1000;}const today=getToday();const fbDate=userData.adsEarn_date||'';if(fbDate===today){done=userData.adsEarn_done||[];total=userData.adsEarn_total||0;bonusClaimed=(userData.adsEarn_bonus===today);}else{done=[];total=0;bonusClaimed=false;}}render();}); render();
+auth.onAuthStateChanged(async u=>{if(!u){location.href='./index.html';return;}currentUser=u;const doc=await db.collection('users').doc(u.uid).get();if(doc.exists){userData=doc.data();localStorage.setItem('userData',JSON.stringify(userData));if(userData.lastEarnAt&&userData.lastEarnAt.toMillis){lastEarnTime=userData.lastEarnAt.toMillis()/1000;}const today=getToday();const fbDate=userData.adsEarn_date||'';if(fbDate===today){done=userData.adsEarn_done||done;total=userData.adsEarn_total||total;bonusClaimed=(userData.adsEarn_bonus===today)||bonusClaimed;}else if(fbDate!==today && fbDate!==''){done=[];total=0;bonusClaimed=false;localStorage.setItem('adsEarn_done','[]');localStorage.setItem('adsEarn_total','0');localStorage.removeItem('adsEarn_bonus');} }render();}); render();
 </script>
 </body>
 </html>
