@@ -36,6 +36,8 @@ body{background:#f5f5f5;min-height:100vh}
 .hot-tag{position:absolute;top:-7px;left:8px;background:#ef4444;color:#fff;font-size:8px;font-weight:900;padding:2px 6px;border-radius:999px;border:1.5px solid #111827}
 .sponsored{font-size:9px;color:#a8a29e;margin:10px 0 4px;text-align:center;font-weight:900;letter-spacing:1px}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#111827;color:#facc15;padding:12px 20px;border-radius:99px;font-weight:900;z-index:9999;display:none;border:2px solid #facc15}
+.bnb-timer{font-size:10px;font-weight:900;color:#ea580c;background:#fff7ed;border:1px dashed #fb923c;border-radius:999px;padding:3px 8px;margin-top:7px;display:none}
+.bnb-timer.ready{color:#166534;background:#dcfce7;border-color:#86efac}
 </style>
 </head>
 <body>
@@ -56,7 +58,7 @@ body{background:#f5f5f5;min-height:100vh}
 <div id="topBanner" style="display:flex;justify-content:center;min-height:62px;margin:6px 0"></div>
 
 <div class="promo-box">
-<div class="promo-title">🔥 Extra Earning Hub — Don't Miss Free Money!</div>
+<div class="promo-title">🔥 Extra Earning Hub – Don't Miss Free Money!</div>
 <div class="promo-text">
 💧 <b>BNB Faucet:</b> Register free on bnbpick.io with 1 click, claim FREE BNB every hour → swap to USDT → withdraw via MoMo. Early users get bonus! <br>
 ✈️ <b>Telegram Channel:</b> Join now → Daily secret offers, new games, bonus codes, withdrawal proofs & direct support. We post opportunities you won't find in app!
@@ -101,20 +103,51 @@ function renderInstant(){
     const badgeClass=isFree?'free':'coins';
     const badgeText=isFree?'FREE LINK • OPEN NOW':' +'+o.coins+' 🪙';
     const hot=o.hot?`<div class="hot-tag">🔥 ${o.hot}</div>`:'';
-    grid.innerHTML+=`<div class="card ${isFree?'free':'coins'}" onclick="clickOffer('${o.id}')">${hot}<div class="emoji">${o.emoji}</div><div class="name">${o.name}</div><div class="sub">${o.sub}</div><div class="badge ${badgeClass}">${badgeText}</div></div>`;
+    const timerHtml=o.id==='bnb_faucet'?`<div id="bnbTimer" class="bnb-timer"></div>`:'';
+    grid.innerHTML+=`<div class="card ${isFree?'free':'coins'}" onclick="clickOffer('${o.id}')">${hot}<div class="emoji">${o.emoji}</div><div class="name">${o.name}</div><div class="sub">${o.sub}</div><div class="badge ${badgeClass}">${badgeText}</div>${timerHtml}</div>`;
   });
+  startBnbTimer();
 }
 
 function clickOffer(id){
   const o=OFFERS.find(x=>x.id===id);
   if(!cachedUser) return;
   if(o.type==='free'){
-    // FREE LINKS - open immediately, no coins, excite user
+    if(o.id==='bnb_faucet'){
+      localStorage.setItem('bnb_last_claim',Date.now().toString());
+      startBnbTimer();
+    }
     window.open(o.link,'_blank');
-    showToast(o.id==='bnb_faucet'?'💧 BNB faucet opened - claim free BNB hourly!':'✈️ Telegram opened - check daily offers!');
+    showToast(o.id==='bnb_faucet'?'💧 BNB faucet opened - claim again in 60m!':'✈️ Telegram opened - check daily offers!');
     return;
   }
   doCoinsOffer(o);
+}
+
+// SMART TIMER - no loss, no ad fight, not boring
+let timerInterval=null;
+function startBnbTimer(){
+  const el=document.getElementById('bnbTimer');
+  if(!el) return;
+  const last=parseInt(localStorage.getItem('bnb_last_claim')||'0');
+  if(!last){ el.style.display='none'; return; }
+  el.style.display='inline-block';
+  if(timerInterval) clearInterval(timerInterval);
+  function update(){
+    const diff=3600000-(Date.now()-last);
+    if(diff<=0){
+      el.innerText='✅ Ready to claim again!';
+      el.className='bnb-timer ready';
+      clearInterval(timerInterval);
+      return;
+    }
+    const m=Math.floor(diff/60000);
+    const s=Math.floor((diff%60000)/1000);
+    el.innerText=`⏳ Next free claim in: ${m}m ${s}s`;
+    el.className='bnb-timer';
+  }
+  update();
+  timerInterval=setInterval(update,1000);
 }
 
 async function doCoinsOffer(o){
