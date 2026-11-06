@@ -31,7 +31,7 @@
     <div class="link-card">
       <div class="link-label">🔗 Your Referral Link</div>
       <div class="link-box" id="referralLink">Loading...</div>
-      <div class="badge-row" id="countBadge">💎 50 coins per referral • Max 10/day • 0 referrals</div>
+      <div class="badge-row" id="countBadge">💎 5 coins per referral • Max 10/day • 0 referrals</div>
       <div class="btn-row">
         <button class="btn btn-copy" onclick="copyLink()">Copy Link</button>
         <button class="btn btn-whatsapp" onclick="shareWhatsApp()">WhatsApp</button>
@@ -73,9 +73,9 @@
   function renderReferrals(snapshot){
     const listEl = document.getElementById('referralsList');
     const badgeEl = document.getElementById('countBadge');
-    badgeEl.innerText = `💎 50 coins per referral • Max 10/day • ${snapshot.size} referrals`;
+    badgeEl.innerText = `💎 5 coins per referral • Max 10/day • ${snapshot.size} referrals`;
     if(snapshot.empty){ 
-      listEl.innerHTML = '<div class="empty">No referrals yet<br>Share your link to earn 50 coins each!</div>';
+      listEl.innerHTML = '<div class="empty">No referrals yet<br>Share your link to earn 5 coins each!</div>';
       localStorage.setItem('myReferrals', JSON.stringify([]));
       return; 
     }
@@ -87,7 +87,7 @@
       cacheArr.push({username: d.username||'User', joined: joined});
       html += `<div class="referral-item">
         <div><div style="font-weight:900;">${d.username || 'User'}</div><div style="font-size:11px;color:#9ca3af;">${d.email||''} • ${joined}</div></div>
-        <span style="color:#22c55e; font-weight:900;">+50 🪙</span>
+        <span style="color:#22c55e; font-weight:900;">+5 🪙</span>
       </div>`;
     })
     listEl.innerHTML = html;
@@ -106,13 +106,12 @@
           myLink = `https://reward-platform-rw-2e13d.web.app/reg.html?ref=${encodeURIComponent(myUsername)}`;
           document.getElementById('referralLink').innerText = myLink;
 
-          // Query with error handler
           db.collection("users").where("referredBy", "==", myUsername)
             .onSnapshot(snapshot=>{
               renderReferrals(snapshot);
             }, err=>{
-              document.getElementById('debug').innerText = "Error: "+err.message+" | Check Firestore Rules";
-              document.getElementById('referralsList').innerHTML = `<div style="background:#fef2f2;border:2px solid #fecaca;border-radius:10px;padding:12px;font-size:12px;color:#991b1b"><b>Permission Error</b><br>${err.message}<br><br>Fix: Update Firestore Rules as I sent you.</div>`;
+              document.getElementById('debug').innerText = "Error: "+err.message;
+              document.getElementById('referralsList').innerHTML = `<div style="background:#fef2f2;border:2px solid #fecaca;border-radius:10px;padding:12px;font-size:12px;color:#991b1b"><b>Permission Error</b><br>${err.message}<br><br>Fix: Update Firestore Rules I sent you.</div>`;
             });
         }
       });
