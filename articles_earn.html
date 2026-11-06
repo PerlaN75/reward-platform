@@ -4,24 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>Articles Earn v4 - Clean</title>
+<title>Articles Earn v4 - Clean - NO LAST MSG</title>
 <script src="https://www.google.com/recaptcha/enterprise.js?render=6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1"></script>
 <meta name="monetag" content="b671b8351bfc48ed0161f6bd0b6a5340">
 <script src="https://quge5.com/88/tag.min.js" data-zone="286869" async data-cfasync="false"></script>
 <style>
 *{ -webkit-tap-highlight-color:transparent }
 *:focus{outline:none !important}
-html{overscroll-behavior-y:auto}
-body{margin:0;background:#fafaf9;color:#111827;font-family:Arial,sans-serif;display:flex;justify-content:center;padding:12px 10px 90px 10px;min-height:100vh;overscroll-behavior-y:auto;-webkit-overflow-scrolling:touch}
+body{margin:0;background:#fafaf9;color:#111827;font-family:Arial,sans-serif;display:flex;justify-content:center;padding:12px 10px 90px 10px;min-height:100vh}
 .card{background:#ffffff;border:2px solid #111827;border-radius:28px;padding:16px 14px 20px;width:100%;max-width:380px;box-shadow:6px 6px 0px #111827;margin:10px auto 30px}
 .header-row{display:flex;align-items:center;gap:8px;margin:6px 0 10px}
 .back{width:45px;height:30px;background:#fff;border:2px solid #111827;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;box-shadow:3px 3px 0 #111827;cursor:pointer}
 .refresh-btn{width:38px;height:30px;background:#facc15;border:2px solid #111827;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:2px 2px 0 #111827;cursor:pointer;margin-left:auto}
-.refresh-btn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 #111827}
 .badge{background:#111827;color:#facc15;border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;font-weight:900;font-size:13px;box-shadow:3px 3px 0 #facc15}
 .bar{height:10px;background:#e7e5e4;border:2px solid #111827;border-radius:99px;margin:10px 0;overflow:hidden}
 .fill{height:100%;background:linear-gradient(90deg,#22c55e,#16a34a);width:0%;transition:0.4s}
-#countText{font-size:11px;color:#57534e;margin:6px 0;font-weight:800}
 .article-card{background:#fff;border:2px solid #111827;border-radius:20px;padding:0;margin:14px 0;overflow:hidden;box-shadow:4px 4px 0 #111827}
 .article-cover{height:8px;width:100%}
 .easy .article-cover{background:linear-gradient(90deg,#22c55e,#bbf7d0)}
@@ -51,7 +48,7 @@ body{margin:0;background:#fafaf9;color:#111827;font-family:Arial,sans-serif;disp
 .modal-content{background:#fff;border:3px solid #111827;border-radius:22px;padding:14px;width:94%;max-width:360px;text-align:center;box-shadow:6px 6px 0 #111827;max-height:92vh;display:flex;flex-direction:column}
 .timer{font-size:32px;font-weight:900;background:#facc15;border:2px solid #111827;border-radius:12px;padding:4px;box-shadow:2px 2px 0 #111827;margin:6px 0;flex-shrink:0}
 .ad-gate{background:#f5f5f4;border:2px dashed #111827;border-radius:12px;padding:8px;margin:8px 0;flex-shrink:0}
-.article-box{background:#fff;border:2px solid #111827;border-radius:12px;padding:14px;margin:8px 0;text-align:left;font-size:13px;line-height:1.7;color:#292524;max-height:320px;min-height:120px;overflow-y:auto !important;-webkit-overflow-scrolling:touch !important;overscroll-behavior:contain;touch-action:pan-y !important;box-shadow:2px 2px 0 #111827;flex:1;user-select:text}
+.article-box{background:#fff;border:2px solid #111827;border-radius:12px;padding:14px;margin:8px 0;text-align:left;font-size:13px;line-height:1.7;color:#292524;max-height:320px;min-height:120px;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:2px 2px 0 #111827;flex:1}
 .bonus-btn{width:100%;padding:15px;background:#facc15;color:#000;border:3px solid #111827;border-radius:14px;font-weight:900;font-size:15px;margin:14px 0;box-shadow:4px 4px 0 #111827;display:none;cursor:pointer}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#111827;color:#facc15;padding:12px 20px;border-radius:99px;font-weight:900;z-index:9999;display:none;border:2px solid #facc15}
 </style>
@@ -63,22 +60,18 @@ body{margin:0;background:#fafaf9;color:#111827;font-family:Arial,sans-serif;disp
 <body>
 <div id="toast"></div>
 <div class="card">
-<div class="header-row"><div class="back" onclick="location.href='home.html'">‹</div><h2>📰 Daily Reads</h2><div class="refresh-btn" onclick="location.reload()" title="Refresh">🔄</div></div>
+<div class="header-row"><div class="back" onclick="location.href='home.html'">‹</div><h2>📰 Daily Reads</h2><div class="refresh-btn" onclick="location.reload()">🔄</div></div>
 <div class="badge"><span id="totalPtsBadge">Total: 0 🪙</span><span id="countText">0/10</span></div>
 <div class="bar"><div class="fill" id="progBar"></div></div>
 <div id="poolInfo" style="font-size:10px;color:#57534e;font-weight:800;text-align:center;margin:6px 0">Loading daily pool...</div>
-
 <div id="topBanner" style="margin:8px auto;display:flex;justify-content:center;min-height:62px"></div>
-
 <div id="list" style="margin-top:12px"></div>
-
 <div id="midBannerWrap" style="display:none"><div class="sponsored">SPONSORED</div><div id="midBanner" style="margin:6px auto;display:flex;justify-content:center;min-height:262px"></div></div>
-
 <button id="bonusBtn" class="bonus-btn" onclick="startBonus()">🎁 Claim Bonus 5 Coins - 12s</button>
 </div>
 
 <div id="timerModal" class="modal"><div class="modal-content">
-<div style="display:flex;justify-content:space-between;align-items:center;flex-shrink:0"><div style="font-size:24px" id="modalIcon">📰</div><div style="font-size:10px;background:#f5f5f4;border:1.5px solid #111827;padding:4px 8px;border-radius:99px;font-weight:800">SCROLL INSIDE 👇</div></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:24px" id="modalIcon">📰</div><div style="font-size:10px;background:#f5f5f4;border:1.5px solid #111827;padding:4px 8px;border-radius:99px;font-weight:800">SCROLL INSIDE 👇</div></div>
 <h3 id="modalTitle" style="margin:8px 0 2px">Reading...</h3><p id="modalDesc" style="font-size:11px;color:#57534e;margin:2px 0"></p>
 <div class="timer" id="timerNum">12</div>
 <div id="distractPhase" style="font-size:11px;color:#15803d;font-weight:900;margin:4px 0"></div>
@@ -87,7 +80,7 @@ body{margin:0;background:#fafaf9;color:#111827;font-family:Arial,sans-serif;disp
 <div style="font-size:11px;font-weight:900;margin-bottom:6px">🔒 Keep reading - verifying...</div>
 <div style="margin:6px auto;display:flex;justify-content:center"><script>atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script><script src="https://bicea.org/22/fe25c5bd01f4bc5e60243e36cd83277c"></script></div>
 <div style="margin:8px auto;display:flex;justify-content:center"><script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script><script src="https://bicea.org/22/bf10cacdbe9f50d0c5d66a94e0785f29"></script></div>
-</div><div id="adHint" style="font-size:11px;color:#a8a29e;font-style:italic;flex-shrink:0"></div>
+</div><div id="adHint" style="font-size:11px;color:#a8a29e;font-style:italic"></div>
 </div></div>
 
 <script>
@@ -605,6 +598,7 @@ const BONUS_REWARD=5,BONUS_SEC=12,EARN_COOLDOWN=15;
 function getToday(){return new Date().toISOString().split('T')[0];}
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
 let done=[],total=0,cur=0,sec=12,tmr=null,currentUser=null,userData={},lastEarnTime=0,bonusClaimed=false;
+
 function render(){
   document.getElementById('totalPtsBadge').innerText=`Total: ${total} 🪙 Coins`;
   document.getElementById('countText').innerText=`${done.length}/10 • ${getToday()}`;
@@ -614,12 +608,108 @@ function render(){
     html+=`<div class="article-card ${cfg.tier}"><div class="article-cover"></div><div class="article-inner"><div class="article-head"><div class="article-icon">${cfg.icon}</div><div style="flex:1"><div class="cat-row"><span class="category">${cfg.cat}</span><span class="time-chip">⏱ ${cfg.sec}s</span></div><div class="article-title">${cfg.title}</div></div></div><div class="article-desc">${cfg.excerpt}</div><div class="article-foot"><span class="earn-tag">+${cfg.reward} 🪙 • ${cfg.label}</span><button class="btn ${isDone?'done':'start'}" onclick="startAd(${cfg.id})" ${isDone?'disabled':''}>${isDone?'Done ✓':'Read'}</button></div></div></div>`;
   });
   document.getElementById('list').innerHTML=html;
-  const bonusBtn=document.getElementById('bonusBtn');if(done.length>=10&&!bonusClaimed)bonusBtn.style.display='block';else if(!bonusClaimed)bonusBtn.style.display='none';if(bonusClaimed){bonusBtn.innerText='Bonus Claimed ✓';bonusBtn.disabled=true;bonusBtn.style.display='block';}
+  const bonusBtn=document.getElementById('bonusBtn');
+  // FIXED: No message after finishing - just hide button when claimed, no "Bonus Claimed" text
+  if(done.length>=10 && !bonusClaimed) bonusBtn.style.display='block';
+  else bonusBtn.style.display='none';
 }
-function startAd(i){if(done.includes(i))return;if(document.getElementById('timerModal').style.display==='flex')return;const now=Date.now()/1000;if(now-lastEarnTime<EARN_COOLDOWN){showToast(`Wait ${Math.ceil(EARN_COOLDOWN-(now-lastEarnTime))}s`);return;}let cfg=tasksConfig[i];cur=i;sec=cfg.sec;document.getElementById('timerNum').innerText=sec;document.getElementById('modalTitle').innerText=cfg.title;document.getElementById('modalIcon').innerText=cfg.icon;document.getElementById('modalDesc').innerText=cfg.excerpt;document.getElementById('articleBox').innerText=cfg.text;document.getElementById('articleBox').scrollTop=0;document.getElementById('adHint').innerText='👇 Scroll inside article';document.getElementById('distractPhase').style.display='block';document.getElementById('distractPhase').innerText=`📚 ${cfg.cat} • SCROLLABLE`;document.getElementById('adGateInside').style.display='none';document.getElementById('timerModal').style.display='flex';if(cfg.tier!=='easy')loadVignette();setTimeout(()=>{document.getElementById('distractPhase').style.display='none';document.getElementById('adGateInside').style.display='block';document.getElementById('modalTitle').innerText=`Reading: ${cfg.title}`;document.getElementById('modalDesc').innerText=`Keep open ${cfg.sec}s to earn +${cfg.reward} 🪙`;document.getElementById('adHint').innerText=`🔒 Verifying ${cfg.sec}s...`;tmr=setInterval(async()=>{sec--;document.getElementById('timerNum').innerText=sec;if(sec<=0){clearInterval(tmr);document.getElementById('timerModal').style.display='none';await claimAd();}},1000);},cfg.tier==='easy'?800:2200);}
-function startBonus(){if(bonusClaimed)return;if(done.length<10)return showToast('Complete 10 articles first');if(document.getElementById('timerModal').style.display==='flex')return;const now=Date.now()/1000;if(now-lastEarnTime<EARN_COOLDOWN){showToast(`Wait ${Math.ceil(EARN_COOLDOWN-(now-lastEarnTime))}s`);return;}sec=BONUS_SEC;document.getElementById('timerNum').innerText=sec;document.getElementById('modalTitle').innerText='🎁 Bonus 5 Coins';document.getElementById('modalIcon').innerText='🎁';document.getElementById('articleBox').innerText='Amazing! You read 10 different articles today! Tomorrow 10 NEW articles will appear automatically from pool of 30! Pull down on main page to refresh for updates.';document.getElementById('articleBox').scrollTop=0;document.getElementById('modalDesc').innerText='Final bonus...';document.getElementById('adHint').innerText='Loading bonus...';document.getElementById('distractPhase').style.display='block';document.getElementById('distractPhase').innerText='🎁 DAILY BONUS';document.getElementById('adGateInside').style.display='none';document.getElementById('timerModal').style.display='flex';loadVignette();setTimeout(()=>{document.getElementById('distractPhase').style.display='none';document.getElementById('adGateInside').style.display='block';document.getElementById('modalTitle').innerText='Bonus Verifying...';document.getElementById('modalDesc').innerText='Keep open 12s to claim 5 coins';document.getElementById('adHint').innerText='🔒 Verifying bonus...';tmr=setInterval(async()=>{sec--;document.getElementById('timerNum').innerText=sec;if(sec<=0){clearInterval(tmr);document.getElementById('timerModal').style.display='none';await claimBonus();}},1000);},2200);}
-async function claimAd(){if(done.includes(cur))return;let cfg=tasksConfig[cur];if(cfg.tier==='premium')loadPop();done.push(cur);total+=cfg.reward;render();localStorage.setItem('articlesEarn_done',JSON.stringify(done));localStorage.setItem('articlesEarn_total',total);localStorage.setItem('articlesEarn_date',getToday());if(currentUser){try{await db.collection('users').doc(currentUser.uid).update({balance:firebase.firestore.FieldValue.increment(cfg.reward),coins:firebase.firestore.FieldValue.increment(cfg.reward),points:firebase.firestore.FieldValue.increment(cfg.reward),lastEarnAt:firebase.firestore.FieldValue.serverTimestamp(),articlesEarn_date:getToday(),articlesEarn_done:done,articlesEarn_total:total});await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Articles Earn',coins:cfg.reward,points:cfg.reward,desc:`${cfg.title} +${cfg.reward} coins`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});const doc=await db.collection('users').doc(currentUser.uid).get();if(doc.exists){userData=doc.data();localStorage.setItem('userData',JSON.stringify(userData));}lastEarnTime=Date.now()/1000;showToast(`✓ +${cfg.reward} 🪙 added!`);}catch(e){showToast(e.message);}}}
-async function claimBonus(){if(bonusClaimed)return;loadPop();bonusClaimed=true;total+=BONUS_REWARD;render();localStorage.setItem('articlesEarn_bonus',getToday());localStorage.setItem('articlesEarn_total',total);if(currentUser){try{await db.collection('users').doc(currentUser.uid).update({balance:firebase.firestore.FieldValue.increment(BONUS_REWARD),coins:firebase.firestore.FieldValue.increment(BONUS_REWARD),points:firebase.firestore.FieldValue.increment(BONUS_REWARD),lastEarnAt:firebase.firestore.FieldValue.serverTimestamp(),articlesEarn_bonus:getToday(),articlesEarn_total:total});await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Articles Earn Bonus',coins:BONUS_REWARD,points:BONUS_REWARD,desc:`Bonus +${BONUS_REWARD} coins for 10 articles`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});const doc=await db.collection('users').doc(currentUser.uid).get();if(doc.exists){userData=doc.data();localStorage.setItem('userData',JSON.stringify(userData));}lastEarnTime=Date.now()/1000;showToast(`🎁 Bonus +${BONUS_REWARD} 🪙 added!`);}catch(e){showToast(e.message);}}}
+
+function startAd(i){
+  if(done.includes(i))return;
+  if(document.getElementById('timerModal').style.display==='flex')return;
+  const now=Date.now()/1000;
+  if(now-lastEarnTime<EARN_COOLDOWN){showToast(`Wait ${Math.ceil(EARN_COOLDOWN-(now-lastEarnTime))}s`);return;}
+  let cfg=tasksConfig[i];cur=i;sec=cfg.sec;
+  document.getElementById('timerNum').innerText=sec;
+  document.getElementById('modalTitle').innerText=cfg.title;
+  document.getElementById('modalIcon').innerText=cfg.icon;
+  document.getElementById('modalDesc').innerText=cfg.excerpt;
+  document.getElementById('articleBox').innerText=cfg.text;
+  document.getElementById('articleBox').scrollTop=0;
+  document.getElementById('adHint').innerText='👇 Scroll inside article';
+  document.getElementById('distractPhase').style.display='block';
+  document.getElementById('distractPhase').innerText=`📚 ${cfg.cat} • SCROLLABLE`;
+  document.getElementById('adGateInside').style.display='none';
+  document.getElementById('timerModal').style.display='flex';
+  if(cfg.tier!=='easy')loadVignette();
+  setTimeout(()=>{
+    document.getElementById('distractPhase').style.display='none';
+    document.getElementById('adGateInside').style.display='block';
+    document.getElementById('modalTitle').innerText=`Reading: ${cfg.title}`;
+    document.getElementById('modalDesc').innerText=`Keep open ${cfg.sec}s to earn +${cfg.reward} 🪙`;
+    document.getElementById('adHint').innerText=`🔒 Verifying ${cfg.sec}s...`;
+    tmr=setInterval(async()=>{
+      sec--;document.getElementById('timerNum').innerText=sec;
+      if(sec<=0){clearInterval(tmr);document.getElementById('timerModal').style.display='none';await claimAd();}
+    },1000);
+  },cfg.tier==='easy'?800:2200);
+}
+
+// FIXED: No long message "Amazing you read 10 articles..." removed
+function startBonus(){
+  if(bonusClaimed)return;
+  if(done.length<10)return showToast('Complete 10 articles first');
+  if(document.getElementById('timerModal').style.display==='flex')return;
+  const now=Date.now()/1000;
+  if(now-lastEarnTime<EARN_COOLDOWN){showToast(`Wait ${Math.ceil(EARN_COOLDOWN-(now-lastEarnTime))}s`);return;}
+  sec=BONUS_SEC;
+  document.getElementById('timerNum').innerText=sec;
+  document.getElementById('modalTitle').innerText='🎁 Bonus 5 Coins';
+  document.getElementById('modalIcon').innerText='🎁';
+  // REMOVED THE LAST MESSAGE - now just short verifying text
+  document.getElementById('articleBox').innerText='Keep this open for 12 seconds to claim your bonus. Verifying...';
+  document.getElementById('articleBox').scrollTop=0;
+  document.getElementById('modalDesc').innerText='Bonus verification...';
+  document.getElementById('adHint').innerText='Loading bonus...';
+  document.getElementById('distractPhase').style.display='block';
+  document.getElementById('distractPhase').innerText='🎁 DAILY BONUS';
+  document.getElementById('adGateInside').style.display='none';
+  document.getElementById('timerModal').style.display='flex';
+  loadVignette();
+  setTimeout(()=>{
+    document.getElementById('distractPhase').style.display='none';
+    document.getElementById('adGateInside').style.display='block';
+    document.getElementById('modalTitle').innerText='Bonus Verifying...';
+    document.getElementById('modalDesc').innerText='Keep open 12s to claim 5 coins';
+    document.getElementById('adHint').innerText='🔒 Verifying bonus...';
+    tmr=setInterval(async()=>{
+      sec--;document.getElementById('timerNum').innerText=sec;
+      if(sec<=0){clearInterval(tmr);document.getElementById('timerModal').style.display='none';await claimBonus();}
+    },1000);
+  },2200);
+}
+
+async function claimAd(){
+  if(done.includes(cur))return;
+  let cfg=tasksConfig[cur];
+  if(cfg.tier==='premium')loadPop();
+  done.push(cur);total+=cfg.reward;render();
+  localStorage.setItem('articlesEarn_done',JSON.stringify(done));
+  localStorage.setItem('articlesEarn_total',total);
+  localStorage.setItem('articlesEarn_date',getToday());
+  if(currentUser){
+    try{
+      await db.collection('users').doc(currentUser.uid).update({balance:firebase.firestore.FieldValue.increment(cfg.reward),coins:firebase.firestore.FieldValue.increment(cfg.reward),lastEarnAt:firebase.firestore.FieldValue.serverTimestamp(),articlesEarn_date:getToday(),articlesEarn_done:done,articlesEarn_total:total});
+      await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Articles Earn',coins:cfg.reward,desc:`${cfg.title} +${cfg.reward} coins`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+      const doc=await db.collection('users').doc(currentUser.uid).get();if(doc.exists){userData=doc.data();localStorage.setItem('userData',JSON.stringify(userData));}
+      lastEarnTime=Date.now()/1000;showToast(`✓ +${cfg.reward} 🪙 added!`);
+    }catch(e){showToast(e.message);}
+  }
+}
+async function claimBonus(){
+  if(bonusClaimed)return;
+  loadPop();bonusClaimed=true;total+=BONUS_REWARD;render();
+  localStorage.setItem('articlesEarn_bonus',getToday());
+  localStorage.setItem('articlesEarn_total',total);
+  if(currentUser){
+    try{
+      await db.collection('users').doc(currentUser.uid).update({balance:firebase.firestore.FieldValue.increment(BONUS_REWARD),coins:firebase.firestore.FieldValue.increment(BONUS_REWARD),lastEarnAt:firebase.firestore.FieldValue.serverTimestamp(),articlesEarn_bonus:getToday(),articlesEarn_total:total});
+      await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Articles Earn Bonus',coins:BONUS_REWARD,desc:`Bonus +${BONUS_REWARD} coins for 10 articles`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+      const doc=await db.collection('users').doc(currentUser.uid).get();if(doc.exists){userData=doc.data();localStorage.setItem('userData',JSON.stringify(userData));}
+      lastEarnTime=Date.now()/1000;showToast(`🎁 Bonus +${BONUS_REWARD} 🪙 added!`);
+    }catch(e){showToast(e.message);}
+  }
+}
 auth.onAuthStateChanged(async u=>{if(!u){location.href='./index.html';return;}currentUser=u;const doc=await db.collection('users').doc(u.uid).get();if(doc.exists){userData=doc.data();localStorage.setItem('userData',JSON.stringify(userData));if(userData.lastEarnAt&&userData.lastEarnAt.toMillis){lastEarnTime=userData.lastEarnAt.toMillis()/1000;}const today=getToday();const fbDate=userData.articlesEarn_date||'';if(fbDate===today){done=userData.articlesEarn_done||[];total=userData.articlesEarn_total||0;bonusClaimed=(userData.articlesEarn_bonus===today);}else{done=[];total=0;bonusClaimed=false;await db.collection('users').doc(u.uid).update({articlesEarn_date:today,articlesEarn_done:[],articlesEarn_total:0,articlesEarn_bonus:''});}}render();});
 render();
 </script>
