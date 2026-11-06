@@ -6,23 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; -webkit-tap-highlight-color:transparent }
-    *:focus{outline:none !important}
     body { background: #f3f4f6; min-height: 100vh; padding: 14px 14px 90px 14px; color: #111827; }
     .container { max-width: 500px; margin: 0 auto; }
     .header { display:flex; align-items:center; gap:10px; margin: 14px 0 18px 0; }
-    .header h2 { font-size: 22px; font-weight: 900; color: #111827; display: flex; align-items: center; gap: 8px; flex:1 }
+    .header h2 { font-size: 20px; font-weight: 900; color: #111827; display: flex; align-items: center; gap: 8px; flex:1 }
     .back-btn-checkin{width:45px;height:30px;border-radius:12px;background:linear-gradient(180deg,#fff5f5,#fecaca);border:2px solid #f87171;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5;flex-shrink:0}
-    .back-btn-checkin:active{transform:scale(0.92)}
     .link-card { background: #ffffff; border: 2px solid #e5e7eb; border-radius: 20px; padding: 18px; margin-bottom: 14px; box-shadow:0 8px 24px rgba(0,0,0,0.06); }
-    .link-label { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 900; margin-bottom: 12px; color:#111827 }
+    .link-label { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 900; margin-bottom: 12px; color:#111827 }
     .link-box { background: #f9fafb; border: 1.5px dashed #cbd5e1; border-radius: 12px; padding: 12px; font-size: 12px; word-break: break-all; margin-bottom: 14px; color:#0f172a; font-weight:600 }
     .badge-row { font-size:11.5px; color:#2563eb; margin-bottom:12px; text-align:center; font-weight:800; background:#eff6ff; padding:7px; border-radius:10px; border:1px solid #dbeafe }
     .btn-row { display: flex; gap: 10px; }
     .btn { padding: 13px; border: none; border-radius: 12px; font-weight: bold; font-size: 14px; cursor: pointer; outline:none }
     .btn-copy { width: 40%; background: #2563eb; color: #fff; box-shadow:0 3px 0 #1d4ed8 }
-    .btn-copy:active{transform:translateY(2px);box-shadow:0 1px 0 #1d4ed8}
     .btn-whatsapp { flex: 1; background: #22c55e; color: #fff; box-shadow:0 3px 0 #16a34a }
-    .btn-whatsapp:active{transform:translateY(2px);box-shadow:0 1px 0 #16a34a}
     .referrals-card { background: #ffffff; border:2px solid #e5e7eb; border-radius:20px; padding: 18px; box-shadow:0 8px 24px rgba(0,0,0,0.06); min-height:120px }
     .referral-item { display: flex; justify-content: space-between; align-items: center; background: #f9fafb; border:1.5px solid #e5e7eb; padding: 12px; border-radius: 12px; margin-bottom: 8px; font-size: 14px; color:#111827 }
     .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #111827; color: #fff; padding: 12px 18px; border-radius: 12px; font-weight: bold; z-index: 9999; box-shadow:0 8px 24px rgba(0,0,0,0.12); font-size:13px }
@@ -35,7 +31,7 @@
     <div class="link-card">
       <div class="link-label">🔗 Your Referral Link</div>
       <div class="link-box" id="referralLink">Loading...</div>
-      <div class="badge-row" id="countBadge">💎 5 pts per referral • Max 10/day • 0 referrals</div>
+      <div class="badge-row" id="countBadge">💎 50 coins per referral • Max 10/day • 0 referrals</div>
       <div class="btn-row">
         <button class="btn btn-copy" onclick="copyLink()">Copy Link</button>
         <button class="btn btn-whatsapp" onclick="shareWhatsApp()">WhatsApp</button>
@@ -43,11 +39,11 @@
     </div>
     <div class="referrals-card">
       <div class="link-label">👥 Your Referrals</div>
-      <div id="referralsList"><div class="empty">No referrals yet<br>Share your link to earn 5 pts each!</div></div>
+      <div id="referralsList"><div class="empty">Loading referrals...</div></div>
+      <div id="debug" style="font-size:10px;color:#ef4444;margin-top:8px"></div>
     </div>
   </div>
 
-<!-- ULTRA INSTANT CACHE - SAME AS HOME.HTML -->
 <script>
 (function(){
   try{
@@ -59,30 +55,16 @@
       window.myLinkInstant = link;
       window.myUsernameInstant = uname;
     }
-    var cachedRefs = JSON.parse(localStorage.getItem('myReferrals')||'null');
-    var badge = document.getElementById('countBadge');
-    if(cachedRefs){
-      badge.innerText = `💎 5 pts per referral • Max 10/day • ${cachedRefs.length} referrals`;
-      if(cachedRefs.length>0){
-        var html='';
-        cachedRefs.forEach(function(d){
-          html+=`<div class="referral-item"><div><div style="font-weight:bold;">${d.username||'User'}</div><div style="font-size:12px;color:#9ca3af;">${d.joined||'Recently'}</div></div><span style="color:#22c55e; font-weight:bold;">+5 pts</span></div>`;
-        });
-        document.getElementById('referralsList').innerHTML=html;
-      }
-    }
   }catch(e){}
 })();
 </script>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
   const firebaseConfig = {apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain: "reward-platform-rw-2e13d.firebaseapp.com",projectId: "reward-platform-rw-2e13d"};
   firebase.initializeApp(firebaseConfig);
-  try { const appCheck = firebase.appCheck(); appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true); } catch(e) {}
   const auth = firebase.auth();
   const db = firebase.firestore();
   let myLink = window.myLinkInstant || "";
@@ -91,9 +73,9 @@
   function renderReferrals(snapshot){
     const listEl = document.getElementById('referralsList');
     const badgeEl = document.getElementById('countBadge');
-    badgeEl.innerText = `💎 5 pts per referral • Max 10/day • ${snapshot.size} referrals`;
+    badgeEl.innerText = `💎 50 coins per referral • Max 10/day • ${snapshot.size} referrals`;
     if(snapshot.empty){ 
-      listEl.innerHTML = '<div class="empty">No referrals yet<br>Share your link to earn 5 pts each!</div>';
+      listEl.innerHTML = '<div class="empty">No referrals yet<br>Share your link to earn 50 coins each!</div>';
       localStorage.setItem('myReferrals', JSON.stringify([]));
       return; 
     }
@@ -104,8 +86,8 @@
       const joined = d.createdAt ? d.createdAt.toDate().toLocaleDateString('en-GB', {day: '2-digit', month: 'short'}) : 'Recently';
       cacheArr.push({username: d.username||'User', joined: joined});
       html += `<div class="referral-item">
-        <div><div style="font-weight:bold;">${d.username || 'User'}</div><div style="font-size:12px;color:#9ca3af;">${joined}</div></div>
-        <span style="color:#22c55e; font-weight:bold;">+5 pts</span>
+        <div><div style="font-weight:900;">${d.username || 'User'}</div><div style="font-size:11px;color:#9ca3af;">${d.email||''} • ${joined}</div></div>
+        <span style="color:#22c55e; font-weight:900;">+50 🪙</span>
       </div>`;
     })
     listEl.innerHTML = html;
@@ -117,16 +99,21 @@
       db.collection("users").doc(user.uid).onSnapshot(doc=>{
         if(doc.exists){
           const data=doc.data();
-          localStorage.setItem('userData', JSON.stringify(data));
+          localStorage.setItem('userData', JSON.stringify({...data,uid:user.uid}));
           localStorage.setItem('username', data.username||'');
           myUsername = data.username || window.myUsernameInstant || '';
           if(!myUsername) return;
           myLink = `https://reward-platform-rw-2e13d.web.app/reg.html?ref=${encodeURIComponent(myUsername)}`;
           document.getElementById('referralLink').innerText = myLink;
-          window.myLinkInstant = myLink;
-          db.collection("users").where("referredBy", "==", myUsername).onSnapshot(snapshot=>{
-            renderReferrals(snapshot);
-          });
+
+          // Query with error handler
+          db.collection("users").where("referredBy", "==", myUsername)
+            .onSnapshot(snapshot=>{
+              renderReferrals(snapshot);
+            }, err=>{
+              document.getElementById('debug').innerText = "Error: "+err.message+" | Check Firestore Rules";
+              document.getElementById('referralsList').innerHTML = `<div style="background:#fef2f2;border:2px solid #fecaca;border-radius:10px;padding:12px;font-size:12px;color:#991b1b"><b>Permission Error</b><br>${err.message}<br><br>Fix: Update Firestore Rules as I sent you.</div>`;
+            });
         }
       });
     } else { window.location.replace('./index.html'); }
@@ -142,7 +129,7 @@
   window.shareWhatsApp = function(){ 
     const linkToShare = myLink || window.myLinkInstant || document.getElementById('referralLink').innerText;
     if(!linkToShare || linkToShare==='Loading...') return;
-    const msg = `🔥 Earn with me on Reward Platform RW! 💰\nI already earned points, join with my link and get started:\n\n${linkToShare}\n\n✅ Verified in Rwanda`; 
+    const msg = `🔥 Earn with me on Reward Platform RW! 💰\nJoin with my link:\n\n${linkToShare}`; 
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank'); 
   }
   function showToast(msg) { const t=document.createElement('div'); t.className='toast'; t.innerText=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),2500); }
