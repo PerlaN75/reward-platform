@@ -13,17 +13,12 @@ body{background:#ffffff;min-height:100vh;color:#111827}
 .top-bar{background:#ffffff;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;border-bottom:2px solid #f1f5f9;box-shadow:0 2px 12px rgba(0,0,0,0.04)}
 .top-pill{font-weight:900;font-size:14px;color:#1d4ed8;background:linear-gradient(180deg,#eff6ff,#dbeafe);border:2px solid #bfdbfe;border-radius:999px;padding:7px 18px}
 .close-profile{width:34px;height:34px;background:#f3f4f6;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#111827;cursor:pointer;text-decoration:none;border:2px solid #e5e7eb}
-.close-profile:active{transform:scale(0.92)}
 .container{max-width:500px;margin:0 auto;padding:16px 14px 90px}
 .card{background:#ffffff;border:2px solid #f1f5f9;border-radius:20px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,0.06);margin-bottom:14px}
 .input{width:100%;background:#fff;border:2px solid #e5e7eb;border-radius:12px;padding:13px 14px;font-size:14px;margin-bottom:12px;outline:none}
-.input:focus{border-color:#fbbf24;box-shadow:0 0 0 4px rgba(251,191,36,0.15)}
-.input:read-only{background:#f9fafb;color:#6b7280}
 .area{width:100%;background:#fff;border:2px solid #e5e7eb;border-radius:12px;padding:13px 14px;font-size:14px;min-height:125px;outline:none;resize:vertical}
-.area:focus{border-color:#fbbf24;box-shadow:0 0 0 4px rgba(251,191,36,0.15)}
 .btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:13px;padding:14px;font-weight:900;font-size:15px;cursor:pointer;box-shadow:0 4px 0 #d97706;margin-top:4px}
-.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #d97706}
-.title-small{font-size:18px;font-weight:900;color:#111827;margin-bottom:14px}
+.title-small{font-size:16px;font-weight:900;color:#111827;margin-bottom:14px}
 </style>
 </head>
 <body>
@@ -50,7 +45,7 @@ if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore(); let cachedUser=null;
 (function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}'); if(c.username) document.getElementById('nameInput').value=c.username; if(c.email) document.getElementById('emailInput').value=c.email;}catch(e){}})();
 auth.onAuthStateChanged(u=>{ if(!u){location.href='./index.html';return;} cachedUser=u; db.collection('users').doc(u.uid).get().then(s=>{ if(s.exists){ var d=s.data(); localStorage.setItem('userData', JSON.stringify({...d,uid:u.uid})); document.getElementById('nameInput').value=d.username||''; document.getElementById('emailInput').value=d.email||u.email||''; }}); loadTickets(); });
-async function sendTicket(){ var issue=document.getElementById('issueInput').value.trim(); var el=document.getElementById('status'); if(!issue||issue.length<10){ el.style.color='#ef4444'; el.innerText='Min 10 characters'; return;} el.style.color='#6b7280'; el.innerText='Sending...'; try{ var user=auth.currentUser||cachedUser; var ud=JSON.parse(localStorage.getItem('userData')||'{}'); await db.collection('supportTickets').add({uid:user.uid,username:ud.username||document.getElementById('nameInput').value,email:ud.email||document.getElementById('emailInput').value,message:issue,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp(),adminReply:''}); document.getElementById('issueInput').value=''; el.style.color='#16a34a'; el.innerText='✓ Sent! Admin will reply within 24h.'; setTimeout(()=>{el.innerText=''},3000);}catch(e){ el.style.color='#ef4444'; el.innerText='Error: '+e.message;} }
+async function sendTicket(){ var issue=document.getElementById('issueInput').value.trim(); var el=document.getElementById('status'); if(!issue||issue.length<10){ el.style.color='#ef4444'; el.innerText='Min 10 characters'; return;} el.style.color='#6b7280'; el.innerText='Sending...'; try{ var user=auth.currentUser||cachedUser; var ud=JSON.parse(localStorage.getItem('userData')||'{}'); await db.collection('supportTickets').add({uid:user.uid,username:ud.username||document.getElementById('nameInput').value,email:ud.email||document.getElementById('emailInput').value,message:issue,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp(),adminReply:'',reply:''}); document.getElementById('issueInput').value=''; el.style.color='#16a34a'; el.innerText='✓ Sent! Admin will reply within 24h.'; setTimeout(()=>{el.innerText=''},3000);}catch(e){ el.style.color='#ef4444'; el.innerText='Error: '+e.message;} }
 
 function loadTickets(){ 
   var user=auth.currentUser||cachedUser; 
@@ -70,8 +65,13 @@ function loadTickets(){
     });
     var h=''; 
     arr.slice(0,20).forEach(v=>{ 
-      var date=v.createdAt?.toDate?v.createdAt.toDate().toLocaleDateString():'Now'; 
-      h+=`<div style="background:#f9fafb;border:2px solid #f1f5f9;border-radius:14px;padding:12px;margin-bottom:10px"><div style="display:flex;justify-content:space-between"><span style="background:#fffbeb;border:2px solid #fde68a;border-radius:999px;padding:2px 8px;font-size:10px;font-weight:900">${(v.status||'pending').toUpperCase()}</span><span style="font-size:11px;color:#9ca3af">${date}</span></div><div style="font-weight:700;margin-top:6px;font-size:13px;line-height:1.4">${v.message}</div>${v.adminReply?`<div style="background:#ffffff;border:2px solid #bbf7d0;border-radius:10px;padding:8px;margin-top:8px"><b style="color:#16a34a;font-size:11px">Admin Reply:</b><div style="font-size:13px;color:#065f46;margin-top:2px">${v.adminReply}</div></div>`:'<div style="font-size:11px;color:#9ca3af;margin-top:6px">⏳ Waiting for admin reply...</div>'}</div>`; 
+      var date=v.createdAt?.toDate?v.createdAt.toDate().toLocaleDateString():'Now';
+      var replyText = v.adminReply || v.reply || '';
+      var hasReply = !!replyText;
+      var badge = hasReply 
+        ? `<span style="background:#dcfce7;border:2px solid #bbf7d0;border-radius:999px;padding:2px 8px;font-size:10px;font-weight:900;color:#166534">REPLIED</span>`
+        : `<span style="background:#fffbeb;border:2px solid #fde68a;border-radius:999px;padding:2px 8px;font-size:10px;font-weight:900;color:#92400e">PENDING</span>`;
+      h+=`<div style="background:${hasReply?'#f0fdf4':'#f9fafb'};border:2px solid ${hasReply?'#bbf7d0':'#f1f5f9'};border-radius:14px;padding:12px;margin-bottom:10px"><div style="display:flex;justify-content:space-between">${badge}<span style="font-size:11px;color:#9ca3af">${date}</span></div><div style="font-weight:700;margin-top:6px;font-size:13px;line-height:1.4">${v.message}</div>${hasReply?`<div style="background:#ffffff;border:2px solid #bbf7d0;border-radius:10px;padding:8px;margin-top:8px"><b style="color:#16a34a;font-size:11px">Admin Reply:</b><div style="font-size:13px;color:#065f46;margin-top:2px">${replyText}</div></div>`:'<div style="font-size:11px;color:#9ca3af;margin-top:6px">⏳ Waiting for admin reply...</div>'}</div>`; 
     }); 
     list.innerHTML=h; 
   }, err=>{ 
