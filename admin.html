@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin - Reward RW - FINAL COINS + NEW BADGE</title>
+<title>Admin - Reward RW - FINAL FIXED</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -57,7 +57,7 @@ input,select,textarea{padding:10px 12px;background:#fff;border:1px solid #e2e8f0
 <div id="page-dashboard"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Dashboard</h1><span style="margin-left:auto;font-size:10px;background:#dcfce7;color:#166534;padding:5px 10px;border-radius:20px;font-weight:800">● rewardplatformrw@gmail.com</span></div><div class="stats"><div class="stat"><p>Total Users</p><h3 id="totalUsers">0</h3></div><div class="stat"><p>Banned</p><h3 id="totalBanned">0</h3></div><div class="stat"><p>Pending WD</p><h3 id="totalPending">0</h3></div><div class="stat"><p>New Tickets</p><h3 id="totalTickets">0</h3></div></div></div>
 <div id="page-users" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Users</h1></div><div style="display:flex;gap:8px;margin-bottom:10px"><input id="searchInput" placeholder="Search username or email..." style="flex:1"><button class="btn btn-edit" onclick="searchUser()">Search</button><button class="btn btn-del" onclick="loadUsers(true)">Reset</button></div><div class="card" style="padding:0;overflow:hidden"><div class="table-wrap" style="border:none"><table id="usersTable"><thead><tr><th>Username</th><th>Email</th><th>Coins</th><th>Ref</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table></div><div style="padding:10px;display:flex;gap:8px"><button class="btn btn-edit" onclick="loadUsers(false)">Next 50</button><button class="btn btn-del" onclick="loadUsers(true)">First 50</button></div></div></div>
 <div id="page-withdrawals" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Withdrawals</h1></div><div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap"><button class="btn btn-edit" onclick="loadWithdrawals('pending')">Pending - NEW</button><button class="btn btn-del" onclick="loadWithdrawals('approved')">Approved</button><button class="btn btn-del" onclick="loadWithdrawals('rejected')">Rejected</button><button class="btn btn-del" onclick="loadWithdrawals('all')">All</button></div><div class="card"><div id="wdList">Loading...</div></div></div>
-<div id="page-support" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Support Tickets</h1></div><div style="display:flex;gap:6px;margin-bottom:10px"><button class="btn btn-edit" onclick="loadSupport('new')">New - NEW</button><button class="btn btn-del" onclick="loadSupport('all')">All Tickets</button><button class="btn btn-del" onclick="loadSupport('open')">Open</button><button class="btn btn-del" onclick="loadSupport('closed')">Closed</button></div><div class="card"><div id="supportList">Loading...</div></div></div>
+<div id="page-support" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Support Tickets</h1></div><div style="display:flex;gap:6px;margin-bottom:10px"><button class="btn btn-edit" onclick="loadSupport('new')">New - NEW</button><button class="btn btn-del" onclick="loadSupport('all')">All</button><button class="btn btn-del" onclick="loadSupport('pending')">Pending</button><button class="btn btn-del" onclick="loadSupport('replied')">Replied</button></div><div class="card"><div id="supportList">Loading...</div></div></div>
 <div id="page-fraud" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Fraud Detection</h1></div><div class="card"><button class="btn btn-edit" onclick="loadFraud()">🔍 Scan Fraud</button><div id="fraudList" style="margin-top:10px">Click scan...</div></div></div>
 <div id="page-flagged" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Flagged Accounts</h1></div><div class="card"><button class="btn btn-edit" onclick="loadFlagged()">🔍 Scan Flagged</button><div id="flaggedList" style="margin-top:10px">Click scan...</div></div></div>
 <div id="page-logs" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Admin Logs</h1></div><div class="card"><div style="display:flex;gap:8px"><button class="btn btn-edit" onclick="loadLogs()">🔄 Refresh</button><button class="btn btn-del" onclick="clearOldLogs()">🗑️ Clear old admin@reward.rw</button></div><div id="logsList" style="margin-top:10px">Loading logs...</div></div></div>
@@ -65,70 +65,73 @@ input,select,textarea{padding:10px 12px;background:#fff;border:1px solid #e2e8f0
 <div id="page-videos" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Video Management</h1></div><div class="card"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><button class="btn btn-edit" onclick="loadVideosCloudflare()">🔄 Cloudflare</button><button class="btn btn-del" onclick="loadVideosFirestore()">📦 Firestore</button><button class="btn btn-del" onclick="document.getElementById('videoAddBox').classList.toggle('hidden')">+ Add</button></div><div id="videoAddBox" class="hidden" style="background:#f8fafc;padding:10px;border-radius:8px;border:1px solid #e2e8f0;margin-bottom:10px"><input id="vTitle" placeholder="Title"><input id="vUrl" placeholder="YouTube URL"><input id="vReward" type="number" placeholder="Reward coins"><button class="btn btn-edit" style="width:100%;margin-top:6px" onclick="addVideo()">Add</button></div><div id="videosAdminList">Click Cloudflare...</div><div id="videosFirestoreList" class="hidden" style="margin-top:14px;border-top:1px dashed #e2e8f0;padding-top:10px"><h4 style="font-weight:800;font-size:13px">Firestore Videos</h4><div id="videosFirestoreInner">Not loaded</div></div></div></div>
 <div id="page-settings" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Settings</h1></div><div class="card"><input id="oldPass" type="password" placeholder="Current password"><input id="newPass" type="password" placeholder="New password"><input id="newPass2" type="password" placeholder="Confirm"><button class="btn btn-edit" style="margin-top:6px" onclick="changePassword()">Update</button></div></div>
 <div id="page-notifications" class="hidden"><div class="topbar"><button class="toggle-yellow" onclick="toggleSidebar()">☰</button><h1>Notifications</h1></div><div class="card"><textarea id="notifMessage" rows="3" placeholder="Write notification for all users..."></textarea><button class="btn btn-edit" style="width:100%;padding:10px;margin-top:8px;background:#fbbf24;color:#78350f;font-weight:800" onclick="sendNotification()">📢 Send to All Users</button><div id="notifSendMsg" style="margin-top:8px"></div></div><div class="card"><h3 style="font-weight:800;font-size:13px;margin-bottom:8px">Recent Notifications</h3><div id="notifAdminList">Loading...</div></div></div>
-</div></div><div id="userModal" class="modal hidden"><div class="modal-box"><h3 id="mUsername" style="font-weight:800;font-size:16px">User</h3><p id="mEmail" style="font-size:11px;color:#64748b;font-weight:600"></p><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0;background:#f8fafc;padding:10px;border-radius:8px"><div style="font-size:11px;font-weight:700">Coins: <b id="mPointsView">0</b></div><div style="font-size:11px;font-weight:700">Ref: <b id="mRefCount">0</b></div></div><label class="label">Edit Coins</label><input id="mPoints" type="number"><label class="label">Status</label><select id="mStatus"><option value="active">Active</option><option value="banned">Banned</option><option value="deactivated">Deactivated</option></select><input id="mNote" placeholder="Admin note"><div style="margin-top:10px"><b style="font-size:12px;font-weight:800">Earn History</b><div id="mEarnHist" style="max-height:100px;overflow:auto;background:#f8fafc;padding:6px;border-radius:6px;margin-top:4px;font-size:11px">Loading...</div></div><div style="display:flex;gap:6px;margin-top:10px"><button class="btn btn-ok" onclick="saveUserEdit()">Save</button><button class="btn btn-ban" onclick="openDeleteModal()">Delete</button><button class="btn btn-del" onclick="closeModal()">Close</button></div></div></div>
-<div id="supportModal" class="modal hidden"><div class="modal-box"><h3 id="sUser" style="font-weight:800;font-size:15px">Support Ticket</h3><p id="sEmail" style="font-size:11px;color:#64748b"></p><div style="background:#f8fafc;padding:10px;border-radius:8px;margin:8px 0;border:1px solid #e2e8f0"><p id="sMessage" style="font-size:12px;font-weight:600"></p></div><textarea id="sReplyInput" rows="3" placeholder="Write reply..."></textarea><div style="display:flex;gap:6px;margin-top:10px"><button class="btn btn-ok" onclick="sendReply()">Reply & Close - Removes NEW</button><button class="btn btn-edit" onclick="sendReplyKeepOpen()">Keep Open</button><button class="btn btn-del" onclick="closeSupportModal()">Close</button></div></div></div>
+</div></div>
+<div id="userModal" class="modal hidden"><div class="modal-box"><h3 id="mUsername" style="font-weight:800;font-size:16px">User</h3><p id="mEmail" style="font-size:11px;color:#64748b;font-weight:600"></p><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0;background:#f8fafc;padding:10px;border-radius:8px"><div style="font-size:11px;font-weight:700">Coins: <b id="mPointsView">0</b></div><div style="font-size:11px;font-weight:700">Ref: <b id="mRefCount">0</b></div></div><label class="label">Edit Coins</label><input id="mPoints" type="number"><label class="label">Status</label><select id="mStatus"><option value="active">Active</option><option value="banned">Banned</option><option value="deactivated">Deactivated</option></select><input id="mNote" placeholder="Admin note"><div style="margin-top:10px"><b style="font-size:12px;font-weight:800">Earn History</b><div id="mEarnHist" style="max-height:100px;overflow:auto;background:#f8fafc;padding:6px;border-radius:6px;margin-top:4px;font-size:11px">Loading...</div></div><div style="display:flex;gap:6px;margin-top:10px"><button class="btn btn-ok" onclick="saveUserEdit()">Save</button><button class="btn btn-ban" onclick="openDeleteModal()">Delete</button><button class="btn btn-del" onclick="closeModal()">Close</button></div></div></div>
+<div id="supportModal" class="modal hidden"><div class="modal-box"><h3 id="sUser" style="font-weight:800;font-size:15px">Support Ticket</h3><p id="sEmail" style="font-size:11px;color:#64748b"></p><div style="background:#f8fafc;padding:10px;border-radius:8px;margin:8px 0;border:1px solid #e2e8f0"><p id="sMessage" style="font-size:12px;font-weight:600"></p></div><textarea id="sReplyInput" rows="3" placeholder="Write reply to user..."></textarea><div style="display:flex;gap:6px;margin-top:10px"><button class="btn btn-ok" onclick="sendReply()">✅ Reply - User will see it</button><button class="btn btn-del" onclick="closeSupportModal()">Close</button></div></div></div>
 <div id="wdModal" class="modal hidden"><div class="modal-box"><h3 id="wdModalTitle" style="font-weight:800;font-size:15px">Withdrawal Details</h3><div id="wdModalBody" style="margin-top:10px;background:#f8fafc;padding:10px;border-radius:8px;font-size:12px;font-weight:600"></div><div style="display:flex;gap:6px;margin-top:12px"><button class="btn btn-ok" onclick="approveWDFromModal()">✅ Approve - Removes NEW</button><button class="btn btn-ban" onclick="rejectWDFromModal()">❌ Reject - Removes NEW</button><button class="btn btn-del" onclick="closeWDModal()">Close</button></div></div></div>
 <div id="deleteModal" class="custom-modal" onclick="closeDeleteModal()"><div class="custom-modal-box" onclick="event.stopPropagation()"><h3 style="font-weight:800;font-size:14px">Delete User?</h3><p style="font-size:12px;color:#64748b;margin-top:4px;font-weight:600"><span id="delUserName"></span></p><div style="display:flex;gap:8px;margin-top:14px"><button class="btn btn-del" style="flex:1" onclick="closeDeleteModal()">Cancel</button><button class="btn btn-ban" style="flex:1" onclick="confirmDeleteTicket()">Delete</button></div></div></div>
 <div id="toast"></div>
 <script>window.showToast=(m,c='#0f172a')=>{let t=document.getElementById('toast');t.style.background=c=='#ef4444'?'#ef4444':c=='#22c55e'?'#22c55e':'#0f172a';t.style.color='#fff';t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3500);}</script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, EmailAuthProvider, reauthenticateWithCredential, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, query, where, getDocs, getCountFromServer, doc, updateDoc, deleteDoc, orderBy, limit, startAfter, getDoc, setDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 const SUPER_ADMIN_EMAIL="rewardplatformrw@gmail.com";
 const VIDEO_CLOUDFLARE_API="https://steep-mountain-1ce5.silntr235.workers.dev";
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d",storageBucket:"reward-platform-rw-2e13d.firebasestorage.app",messagingSenderId:"787550951987",appId:"1:787550951987:web:724b1463e821b99c90a146"};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);
+setPersistence(auth,browserLocalPersistence).catch(()=>{});
 let lastVisible=null,currentEditId=null,currentTicketId=null,currentWDFilter='pending',currentWDId=null;
 window.toggleSidebar=()=>{const sb=document.getElementById('sidebar');const ov=document.getElementById('overlay');sb.classList.toggle('open');ov.classList.toggle('show');}
-window.adminLogin=async()=>{const e=document.getElementById('aEmail').value.trim().toLowerCase();const p=document.getElementById('aPass').value;if(e!==SUPER_ADMIN_EMAIL){document.getElementById('aError').innerText="Only "+SUPER_ADMIN_EMAIL+" allowed";return;}try{await signInWithEmailAndPassword(auth,e,p);}catch(err){document.getElementById('aError').innerText=err.message;}}
-onAuthStateChanged(auth,async(user)=>{if(user){const email=(user.email||"").toLowerCase();if(email!==SUPER_ADMIN_EMAIL){await signOut(auth);document.getElementById('aError').innerText="Access denied: "+email;return;}document.getElementById('loginBox').classList.add('hidden');document.getElementById('panel').classList.remove('hidden');document.getElementById('panel').style.display='flex';openPage('dashboard',document.querySelector('.menu li'));loadDashboard();loadUsers(true);loadConfig();}})
-
+window.adminLogin=async()=>{
+  const e=document.getElementById('aEmail').value.trim().toLowerCase();
+  const p=document.getElementById('aPass').value;
+  document.getElementById('aError').innerText="";
+  if(e!==SUPER_ADMIN_EMAIL){document.getElementById('aError').innerText="Only "+SUPER_ADMIN_EMAIL+" allowed";return;}
+  try{await signInWithEmailAndPassword(auth,e,p);}catch(err){document.getElementById('aError').innerText=err.message;}
+}
+onAuthStateChanged(auth,async(user)=>{
+  if(user){
+    const email=(user.email||"").toLowerCase().trim();
+    if(email!==SUPER_ADMIN_EMAIL){await signOut(auth);document.getElementById('loginBox').classList.remove('hidden');document.getElementById('panel').classList.add('hidden');document.getElementById('aError').innerText="Access denied: "+email;return;}
+    document.getElementById('loginBox').classList.add('hidden');
+    document.getElementById('panel').classList.remove('hidden');
+    document.getElementById('panel').style.display='flex';
+    openPage('dashboard',document.querySelector('.menu li'));
+    loadDashboard();loadUsers(true);loadConfig();
+  }else{
+    document.getElementById('loginBox').classList.remove('hidden');
+    document.getElementById('panel').classList.add('hidden');
+  }
+});
 async function loadDashboard(){
   try{
     const t=await getCountFromServer(collection(db,"users"));
     document.getElementById('totalUsers').innerText=t.data().count;
     const b=await getCountFromServer(query(collection(db,"users"),where("isBanned","==",true)));
     document.getElementById('totalBanned').innerText=b.data().count;
-
-    // Withdrawals NEW = pending
     const wdSnap=await getDocs(query(collection(db,"withdrawals"),where("status","==","pending")));
     const pendingCount=wdSnap.size;
     document.getElementById('totalPending').innerText=pendingCount;
     const wdBadge=document.getElementById('wdCount');
-    if(pendingCount>0){
-      wdBadge.innerHTML=pendingCount+" NEW";
-      wdBadge.className="badge badge-new";
-    }else{
-      wdBadge.innerText="0";
-      wdBadge.className="badge";
-      wdBadge.style.background="#fff";
-    }
-
-    // Support NEW = open, pending, new, or status missing AND no reply
+    if(pendingCount>0){wdBadge.innerHTML=pendingCount+" NEW";wdBadge.className="badge badge-new";}
+    else{wdBadge.innerText="0";wdBadge.className="badge";wdBadge.style.background="#fff";}
     let ticketCount=0;
     try{
       const snap=await getDocs(collection(db,"supportTickets"));
       snap.forEach(d=>{
         const data=d.data();
-        const status=(data.status||"open").toLowerCase();
-        const hasReply=!!(data.reply||data.repliedAt);
-        if(!hasReply && status!=="closed" && status!=="resolved") ticketCount++;
+        const status=(data.status||"pending").toLowerCase();
+        const hasReply=!!(data.reply||data.adminReply||data.repliedAt);
+        if(!hasReply && status!=="replied" && status!=="closed" && status!=="resolved") ticketCount++;
       });
     }catch(e){ticketCount=0;}
     document.getElementById('totalTickets').innerText=ticketCount;
     const spBadge=document.getElementById('supportCount');
-    if(ticketCount>0){
-      spBadge.innerHTML=ticketCount+" NEW";
-      spBadge.className="badge badge-new";
-    }else{
-      spBadge.innerText="0";
-      spBadge.className="badge";
-      spBadge.style.background="#fff";
-    }
+    if(ticketCount>0){spBadge.innerHTML=ticketCount+" NEW";spBadge.className="badge badge-new";}
+    else{spBadge.innerText="0";spBadge.className="badge";spBadge.style.background="#fff";}
   }catch(e){showToast("Dashboard: "+e.message,"#ef4444");}
 }
-
 window.loadUsers=async(isFirst)=>{if(isFirst)lastVisible=null;try{let q=lastVisible?query(collection(db,"users"),orderBy("createdAt","desc"),startAfter(lastVisible),limit(50)):query(collection(db,"users"),orderBy("createdAt","desc"),limit(50));const snap=await getDocs(q);if(!snap.empty)lastVisible=snap.docs[snap.docs.length-1];const tb=document.querySelector('#usersTable tbody');if(isFirst)tb.innerHTML="";snap.forEach(d=>{const u=d.data();tb.innerHTML+=`<tr><td style="font-weight:800">${u.username||''}</td><td style="font-size:12px">${u.email||''}</td><td>${u.balance||u.coins||u.points||0}</td><td>${u.referralCount||0}</td><td>${u.isBanned?'<span class=badge style="background:#fee2e2;color:#991b1b">BANNED</span>':'<span class=badge style="background:#dcfce7;color:#166534">ACTIVE</span>'}</td><td><button class="btn btn-edit" onclick="openModal('${d.id}')">Manage</button></td></tr>`;});}catch(e){document.querySelector('#usersTable tbody').innerHTML='<tr><td colspan=6 style="color:#ef4444">Permission: '+e.message+'</td></tr>';}}
 window.searchUser=async()=>{const v=document.getElementById('searchInput').value.trim();if(!v)return;try{let s=await getDocs(query(collection(db,"users"),where("username","==",v)));if(s.empty)s=await getDocs(query(collection(db,"users"),where("email","==",v)));const tb=document.querySelector('#usersTable tbody');tb.innerHTML="";s.forEach(d=>{const u=d.data();tb.innerHTML+=`<tr><td style="font-weight:800">${u.username}</td><td>${u.email}</td><td>${u.balance||0}</td><td>${u.referralCount||0}</td><td><button class="btn btn-edit" onclick="openModal('${d.id}')">Manage</button></td></tr>`;});}catch(e){showToast(e.message,"#ef4444");}}
 window.openModal=async(id)=>{currentEditId=id;try{const snap=await getDoc(doc(db,"users",id));if(!snap.exists()){showToast("User not found","#ef4444");return;}const u=snap.data();document.getElementById('mUsername').innerText=u.username||'User';document.getElementById('mEmail').innerText=(u.email||'')+' | '+id;document.getElementById('mPoints').value=u.balance||u.coins||u.points||0;document.getElementById('mPointsView').innerText=u.balance||u.coins||u.points||0;document.getElementById('mRefCount').innerText=u.referralCount||0;document.getElementById('mStatus').value=u.isBanned?'banned':u.isDeactivated?'deactivated':'active';document.getElementById('delUserName').innerText=u.username||'';document.getElementById('userModal').classList.remove('hidden');loadEarnHist(id);}catch(e){showToast(e.message,"#ef4444");}}
@@ -153,16 +156,14 @@ window.loadSupport=async(filter)=>{
     if(filter==='all'){
       snap=await getDocs(query(collection(db,"supportTickets"),orderBy("createdAt","desc"),limit(80)));
     }else if(filter==='new'){
-      // NEW = not closed and no reply
       const all=await getDocs(query(collection(db,"supportTickets"),orderBy("createdAt","desc"),limit(100)));
       let filtered=[];
       all.forEach(d=>{
         const data=d.data();
-        const status=(data.status||"open").toLowerCase();
-        const hasReply=!!(data.reply||data.repliedAt);
-        if(!hasReply && status!=="closed") filtered.push(d);
+        const status=(data.status||"pending").toLowerCase();
+        const hasReply=!!(data.reply||data.adminReply||data.repliedAt);
+        if(!hasReply && status!=="replied" && status!=="closed") filtered.push(d);
       });
-      // Build table from filtered
       if(filtered.length===0){
         el.innerHTML=`<div style="background:#f8fafc;border:1px dashed #e2e8f0;padding:20px;text-align:center;border-radius:8px"><div style="font-size:18px">✅</div><div style="font-weight:700;margin-top:4px;font-size:12px">No NEW tickets - All caught up!</div></div>`;
         return;
@@ -170,7 +171,7 @@ window.loadSupport=async(filter)=>{
       let html="<div class='table-wrap'><table><tr><th>User</th><th>Message</th><th>Status</th><th>Action</th></tr>";
       filtered.forEach(d=>{
         const t=d.data();
-        html+=`<tr style="background:#fffbeb"><td style="font-weight:800">${t.username||t.email||''} <span class=badge-new>NEW</span></td><td style="font-size:11px">${(t.message||'').substring(0,55)}</td><td>${t.status||'open'}</td><td><button class="btn btn-edit" onclick="openSupport('${d.id}')">View</button></td></tr>`;
+        html+=`<tr style="background:#fffbeb"><td style="font-weight:800">${t.username||t.email||''} <span class=badge-new>NEW</span></td><td style="font-size:11px">${(t.message||'').substring(0,55)}</td><td>${t.status||'pending'}</td><td><button class="btn btn-edit" onclick="openSupport('${d.id}')">View</button></td></tr>`;
       });
       html+="</table></div>";
       el.innerHTML=html;
@@ -185,21 +186,38 @@ window.loadSupport=async(filter)=>{
     let html="<div class='table-wrap'><table><tr><th>User</th><th>Message</th><th>Status</th><th>Action</th></tr>";
     snap.forEach(d=>{
       const t=d.data();
-      const hasReply=!!(t.reply||t.repliedAt);
-      const isNew=!hasReply && (t.status||"open")!=="closed";
-      html+=`<tr style="${isNew?'background:#fffbeb':''}"><td style="font-weight:800">${t.username||t.email||''} ${isNew?'<span class=badge-new>NEW</span>':''}</td><td style="font-size:11px">${(t.message||'').substring(0,55)}</td><td>${t.status||'open'}</td><td><button class="btn btn-edit" onclick="openSupport('${d.id}')">View</button></td></tr>`;
+      const hasReply=!!(t.reply||t.adminReply||t.repliedAt);
+      const isNew=!hasReply && (t.status||"pending")!=="replied";
+      html+=`<tr style="${isNew?'background:#fffbeb':''}"><td style="font-weight:800">${t.username||t.email||''} ${isNew?'<span class=badge-new>NEW</span>':''}</td><td style="font-size:11px">${(t.message||'').substring(0,55)}</td><td>${t.status||'pending'}</td><td><button class="btn btn-edit" onclick="openSupport('${d.id}')">View</button></td></tr>`;
     });
     html+="</table></div>";
     el.innerHTML=html;
-  }catch(e){
-    el.innerHTML='Error: '+e.message;
-  }
+  }catch(e){el.innerHTML='Error: '+e.message;}
 }
 
-window.openSupport=async(id)=>{currentTicketId=id;try{const snap=await getDoc(doc(db,"supportTickets",id));const t=snap.data();document.getElementById('sUser').innerText=t.username||'User';document.getElementById('sEmail').innerText=(t.email||'')+' | '+(t.uid||'')+' | '+id;document.getElementById('sMessage').innerText=t.message||'';document.getElementById('sReplyInput').value='';document.getElementById('supportModal').classList.remove('hidden');}catch(e){showToast(e.message,"#ef4444");}}
+window.openSupport=async(id)=>{currentTicketId=id;try{const snap=await getDoc(doc(db,"supportTickets",id));const t=snap.data();document.getElementById('sUser').innerText=t.username||'User';document.getElementById('sEmail').innerText=(t.email||'')+' | '+(t.uid||'')+' | '+id;document.getElementById('sMessage').innerText=t.message||'';document.getElementById('sReplyInput').value=(t.adminReply||t.reply||'');document.getElementById('supportModal').classList.remove('hidden');}catch(e){showToast(e.message,"#ef4444");}}
 window.closeSupportModal=()=>document.getElementById('supportModal').classList.add('hidden');
-window.sendReply=async()=>{const reply=document.getElementById('sReplyInput').value.trim();if(!reply){showToast("Write reply","#ef4444");return;}try{await updateDoc(doc(db,"supportTickets",currentTicketId),{reply,status:"closed",repliedAt:new Date(),repliedBy:SUPER_ADMIN_EMAIL});await addDoc(collection(db,"adminLogs"),{action:"reply_ticket_closed",by:SUPER_ADMIN_EMAIL,target:currentTicketId,at:serverTimestamp()});showToast("✅ Replied & Closed - NEW removed");closeSupportModal();loadSupport('new');loadDashboard();}catch(e){showToast(e.message,"#ef4444");}}
-window.sendReplyKeepOpen=async()=>{const reply=document.getElementById('sReplyInput').value.trim();if(!reply){showToast("Write reply","#ef4444");return;}try{await updateDoc(doc(db,"supportTickets",currentTicketId),{lastReply:reply,reply,updatedAt:new Date(),repliedBy:SUPER_ADMIN_EMAIL,status:"closed"});await addDoc(collection(db,"adminLogs"),{action:"reply_keep",by:SUPER_ADMIN_EMAIL,target:currentTicketId,at:serverTimestamp()});showToast("✅ Reply sent - NEW removed");closeSupportModal();loadSupport('new');loadDashboard();}catch(e){showToast(e.message,"#ef4444");}}
+
+// FIXED REPLY - writes both fields so user app sees it
+window.sendReply=async()=>{
+  const reply=document.getElementById('sReplyInput').value.trim();
+  if(!reply){showToast("Write reply","#ef4444");return;}
+  try{
+    await updateDoc(doc(db,"supportTickets",currentTicketId),{
+      reply:reply,
+      adminReply:reply,
+      status:"replied",
+      repliedAt:new Date(),
+      repliedBy:SUPER_ADMIN_EMAIL
+    });
+    await addDoc(collection(db,"adminLogs"),{action:"reply_ticket",by:SUPER_ADMIN_EMAIL,target:currentTicketId,at:serverTimestamp()});
+    showToast("✅ Replied - User will see it now");
+    closeSupportModal();
+    loadSupport('new');
+    loadDashboard();
+  }catch(e){showToast(e.message,"#ef4444");}
+}
+
 window.loadFraud=async()=>{const el=document.getElementById('fraudList');el.innerHTML='Scanning...';try{const snap=await getDocs(query(collection(db,"users"),limit(200)));let map={};let fraud=[];snap.forEach(d=>{const u=d.data();const key=u.deviceId||u.ip||'';if(key){if(!map[key])map[key]=[];map[key].push(u.username);}});for(let k in map){if(map[k].length>1)fraud.push(`${k}: ${map[k].join(', ')}`);}if(fraud.length===0)el.innerHTML='<div style="background:#dcfce7;color:#166534;padding:10px;border-radius:6px;font-weight:700;font-size:12px">✅ No duplicate device/IP found</div>';else{let html='<div style="background:#fee2e2;padding:10px;border-radius:6px;font-size:12px"><b>Possible fraud:</b><br>';fraud.forEach(f=>html+=f+'<br>');html+='</div>';el.innerHTML=html;}}catch(e){el.innerHTML=e.message;}}
 window.loadFlagged=async()=>{const el=document.getElementById('flaggedList');el.innerHTML='Scanning...';try{const snap=await getDocs(query(collection(db,"users"),where("isFlagged","==",true),limit(100)));if(snap.empty){el.innerHTML='No flagged accounts';return;}let html="<div class='table-wrap'><table><tr><th>Username</th><th>Email</th><th>Reason</th></tr>";snap.forEach(d=>{const u=d.data();html+=`<tr><td>${u.username}</td><td>${u.email}</td><td>${u.flagReason||''}</td></tr>`;});html+="</table></div>";el.innerHTML=html;}catch(e){el.innerHTML=e.message;}}
 window.loadLogs=async()=>{const el=document.getElementById('logsList');el.innerHTML='Loading logs...';try{const snap=await getDocs(query(collection(db,"adminLogs"),orderBy("at","desc"),limit(80)));if(snap.empty){el.innerHTML='No logs yet';return;}let html="<div class='table-wrap'><table><tr><th>Time</th><th>Action</th><th>By</th><th>Target</th></tr>";snap.forEach(d=>{const l=d.data();html+=`<tr><td style="font-size:11px">${l.at?new Date(l.at.seconds*1000).toLocaleString():''}</td><td style="font-weight:700;font-size:11px">${l.action||''}</td><td style="font-size:11px">${l.by||''}</td><td style="font-size:11px">${l.target||''}</td></tr>`;});html+="</table></div>";el.innerHTML=html;}catch(e){el.innerHTML='Error: '+e.message;}}
