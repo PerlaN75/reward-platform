@@ -37,11 +37,6 @@
     .profile-details{background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:14px;padding:14px;margin:14px 0}
     .profile-row{display:flex;gap:8px;margin:10px 0;font-size:13px;color:#6b7280}
     .profile-row b{color:#111827;min-width:82px}
-    .profile-stats{display:flex;gap:8px}
-    .stat-box{flex:1;border-radius:12px;padding:12px 6px;text-align:center;border:2px solid #f1f5f9}
-    .stat-points{background:linear-gradient(180deg,#fffbeb,#fef3c7);border-color:#fde68a}
-    .stat-refs{background:linear-gradient(180deg,#f0fdf4,#dcfce7);border-color:#bbf7d0}
-    .stat-level{background:linear-gradient(180deg,#eff6ff,#dbeafe);border-color:#bfdbfe}
     .confirm-overlay{display:none;position:fixed;z-index:10000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center}
     .confirm-box{background:#fff;border-radius:16px;padding:20px;width:85%;max-width:320px;text-align:center}
     .confirm-actions{display:flex;gap:10px;margin-top:14px}
@@ -110,11 +105,6 @@
       <div class="profile-row">📅 <b>Registered:</b> <span id="pDate">...</span></div>
       <div class="profile-row">🆔 <b>User ID:</b> <span id="pId">...</span></div>
     </div>
-    <div class="profile-stats">
-      <div class="stat-box stat-points"><p id="pPoints" style="font-weight:900">-- 🪙</p><p style="font-size:10px;color:#6b7280">Coins</p></div>
-      <div class="stat-box stat-refs"><p id="pRefs" style="font-weight:900">0</p><p style="font-size:10px;color:#6b7280">Referrals</p></div>
-      <div class="stat-box stat-level"><p id="pLevel" style="font-weight:900">1</p><p style="font-size:10px;color:#6b7280">Level</p></div>
-    </div>
   </div>
 </div>
 
@@ -179,7 +169,6 @@
       document.getElementById('pBalCard').textContent = coins + ' coins';
       document.getElementById('pUsdtCard').textContent = Number(usdt).toFixed(4) + ' USDT';
       document.getElementById('pUsdSmall').textContent = '≈ $' + usdFromCoins + ' from coins';
-      document.getElementById('pPoints').textContent = coins + ' 🪙';
       if(c.username){ document.getElementById('pUsername').innerText=c.username; document.getElementById('avatarLetter').innerText=c.username.charAt(0).toUpperCase(); }
       if(c.email) document.getElementById('pEmail').innerText=c.email;
       document.getElementById('hBal').textContent = coins + ' coins';
@@ -211,12 +200,9 @@ async function loadProfile(){
     document.getElementById('pBalCard').innerText = coins+' coins';
     document.getElementById('pUsdtCard').innerText = Number(usdt).toFixed(4)+' USDT';
     document.getElementById('pUsdSmall').innerText = '≈ $'+usd+' from coins';
-    document.getElementById('pPoints').innerText = coins+' 🪙';
     document.getElementById('pUsername').innerText = d.username||u.email.split('@')[0];
     document.getElementById('avatarLetter').innerText = (d.username||'I').charAt(0).toUpperCase();
     document.getElementById('pEmail').innerText = d.email||u.email;
-    document.getElementById('pRefs').innerText = d.referralCount??d.referrals??0;
-    document.getElementById('pLevel').innerText = d.level||Math.floor(coins/100)+1;
     let reg="Unknown"; if(d.createdAt&&d.createdAt.toDate) reg=d.createdAt.toDate().toLocaleDateString(); else if(u.metadata.creationTime) reg=new Date(u.metadata.creationTime).toLocaleDateString();
     document.getElementById('pDate').innerText=reg;
     document.getElementById('pId').innerText=u.uid.substring(0,8).toUpperCase();
