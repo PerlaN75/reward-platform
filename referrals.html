@@ -5,12 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',Arial,sans-serif;-webkit-tap-highlight-color:transparent}
-    body{background:#f3f4f6;min-height:100vh;padding:14px 14px 90px 14px;color:#111827}
-    .container{max-width:500px;margin:0 auto}
-    .header{display:flex;align-items:center;gap:10px;margin:14px 0 18px 0}
-    .header h2{font-size:16px!important;font-weight:800!important;flex:1}
-    .back-btn{width:45px;height:30px;border-radius:10px;background:#fff;border:2px solid #e5e7eb;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#111827;font-weight:900;font-size:20px}
-    .card{background:#fff;border:2px solid #e5e7eb;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 6px 20px rgba(0,0,0,0.05)}
+    body{background:#f3f4f6;min-height:100vh;padding:0 0 90px 0;color:#111827}
+    .container{max-width:500px;margin:0 auto;padding:14px 14px 0 14px}
+    /* TOP BAR LIKE DAILY CHECKIN */
+    .top-bar{background:#ffffff;height:62px;display:flex;align-items:center;gap:10px;padding:0 14px;position:sticky;top:0;z-index:100;border-bottom:2px solid #f1f5f9}
+    .back-btn-checkin{width:45px;height:30px;border-radius:10px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:20px;cursor:pointer;box-shadow:0 2px 0 #fca5a5;flex-shrink:0}
+    .back-btn-checkin:active{transform:translateY(1px);box-shadow:0 1px 0 #fca5a5}
+    .top-title{font-size:16px!important;font-weight:800!important;display:flex;align-items:center;gap:6px}
+    .card{background:#fff;border:2px solid #e5e7eb;border-radius:18px;padding:16px;margin:14px 0;box-shadow:0 6px 20px rgba(0,0,0,0.05)}
     .label{font-size:12px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:6px}
     .link-box{background:#f9fafb;border:1.5px dashed #cbd5e1;border-radius:10px;padding:11px;font-size:12px;word-break:break-all;margin-bottom:12px;font-weight:600;color:#0f172a}
     .badge{text-align:center;font-size:11px;font-weight:800;background:#eff6ff;color:#1d4ed8;padding:7px;border-radius:10px;border:1px solid #dbeafe;margin-bottom:12px}
@@ -24,9 +26,12 @@
   </style>
 </head>
 <body>
+<div class="top-bar">
+  <a href="home.html" class="back-btn-checkin">‹</a>
+  <div class="top-title">💰 Refer & Earn</div>
+</div>
+
 <div class="container">
-  <div class="header"><a href="home.html" class="back-btn">‹</a><h2>💰 Refer & Earn</h2></div>
-  
   <div class="card">
     <div class="label">🔗 Your Referral Link</div>
     <div class="link-box" id="referralLink">Loading...</div>
@@ -95,12 +100,10 @@ auth.onAuthStateChanged(user=>{
     myUsername=data.username||myUsername;
     myLink=`https://reward-platform-rw-2e13d.web.app/reg.html?ref=${encodeURIComponent(myUsername)}`;
     document.getElementById('referralLink').innerText=myLink;
-    
-    // CLEAN QUERY - 5 coins
     db.collection("users").where("referredBy","==",myUsername)
       .onSnapshot(s=>render(s), e=>{
         document.getElementById('err').innerText=e.message;
-        document.getElementById('referralsList').innerHTML=`<div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:8px;padding:10px;font-size:11px;color:#991b1b">Permission error: ${e.message}<br>Publish new Firestore Rules</div>`;
+        document.getElementById('referralsList').innerHTML=`<div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:8px;padding:10px;font-size:11px;color:#991b1b">Permission error: ${e.message}<br>Publish new Firestore Rules v2.2</div>`;
       });
   });
 });
