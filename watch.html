@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Watch Ads & Earn - 30s NO BLACK</title>
+<title>Watch Ads & Earn</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="monetag" content="b671b8351bfc48ed0161f6bd0b6a5340">
 <script>
 (function(vsrn){
 var d=document,s=d.createElement('script'),l=d.currentScript||d.scripts[d.scripts.length-1];
@@ -21,43 +20,31 @@ s.settings=tkg||{}; s.src="//quarrelsomebitter.com/b/XgVps.d_GflP0IY/W/cF/JeXma9
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:#f8fafc;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:12px 12px 100px 12px}
+body{background:#f8fafc;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:12px 12px 120px 12px}
 .header{display:flex;align-items:center;gap:10px;margin:14px 0 10px;width:100%;max-width:480px}
 .back{width:40px;height:28px;background:#fff;border:2px solid #ef4444;color:#991b1b;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;cursor:pointer}
 .main-card{width:100%;max-width:480px;background:#fff;border-radius:22px;padding:12px;box-shadow:0 10px 30px rgba(0,0,0,0.08);border:1px solid #e2e8f0}
 .balance-box{background:linear-gradient(135deg,#2f3e1a,#1a2a0a);border:2px solid #fbbf24;border-radius:16px;padding:12px;text-align:center;color:#fff}
-.btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;padding:14px;font-weight:900;font-size:15px;cursor:pointer;margin-top:12px;box-shadow:0 3px 0 #d97706}
-.btn:disabled{background:#e5e7eb;color:#9ca3af;box-shadow:none}
-.timer-tiny{margin-top:8px;background:#111827;border-radius:8px;padding:6px 10px;display:flex;align-items:center;gap:8px;border:1px solid #1f2937}
-.timer-tiny .t{color:#fbbf24;font-weight:800;font-size:11px;white-space:nowrap}
-.progress{flex:1;height:6px;background:#1f2937;border-radius:99px;overflow:hidden}.progress-bar{height:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);width:0%;transition:width .3s}
-.bubble{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#000;padding:12px 20px;border-radius:999px;font-weight:900;z-index:10000;display:none}
+.btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;padding:14px;font-weight:900;font-size:15px;cursor:pointer;margin-top:12px}
+.btn:disabled{background:#e5e7eb;color:#9ca3af}
+.timer-tiny{margin-top:8px;background:#111827;border-radius:8px;padding:6px 10px;display:flex;align-items:center;gap:8px}
+.timer-tiny .t{color:#fbbf24;font-weight:800;font-size:11px}
+.progress{flex:1;height:6px;background:#1f2937;border-radius:99px;overflow:hidden}.progress-bar{height:100%;background:#fbbf24;width:0%;transition:width .3s}
 </style>
 </head>
 <body>
-<div id="bubble" class="bubble"></div>
-<div class="header"><div class="back" onclick="location.href='./home.html'">‹</div><h2 style="font-size:18px">📺 Watch Ads & Earn</h2></div>
+<div class="header"><div class="back" onclick="location.href='./home.html'">‹</div><h2>📺 Watch Ads & Earn</h2></div>
 <div class="main-card">
 <div class="balance-box">
-<div style="color:#ccc;font-size:10px">YOUR BALANCE</div>
-<div style="margin-top:4px"><span style="font-size:20px;color:#fbbf24;font-weight:bold" id="bal">-- 🪙</span> <span style="font-size:12px;opacity:0.8" id="today">0/20</span></div>
-<div style="font-size:11px;color:#facc15;margin-top:4px" id="vt">Ready • 5 🪙 each • 30s</div>
+<div style="font-size:10px;color:#ccc">YOUR BALANCE</div>
+<div style="margin-top:4px"><span style="font-size:20px;color:#fbbf24;font-weight:bold" id="bal">-- 🪙</span> <span style="font-size:12px" id="today">0/20</span></div>
+<div style="font-size:11px;color:#facc15;margin-top:4px" id="vt">Ready</div>
 </div>
 
-<!-- BLACK BOX REMOVED - VIDEO ADS WILL BE HERE NATURALLY IN MIDDLE -->
-<div style="min-height:350px;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:12px;text-align:center;padding:20px" id="adPlace">
-HillTop video ads will appear here in the middle.<br>Large, attractive, visible!
-</div>
+<div style="height:400px"></div>
 
 <button class="btn" id="btn">▶ Start Watching (30s)</button>
-
-<div class="timer-tiny" id="timerBox">
-<div class="t" id="timerText">Idle</div>
-<div class="progress"><div class="progress-bar" id="pbar"></div></div>
-<div class="t" id="timerCount">0/30s</div>
-</div>
-
-<div style="font-size:9px;color:#94a3b8;text-align:center;margin-top:6px">20/day rewarded • After that 0 coins</div>
+<div class="timer-tiny"><div class="t" id="timerText">Idle</div><div class="progress"><div class="progress-bar" id="pbar"></div></div><div class="t" id="timerCount">0/30s</div></div>
 </div>
 <script>
 const REQUIRED_SEC=30, REWARD=5, DAILY_LIMIT=20;
@@ -65,36 +52,32 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore();
 let bal=0,today=0,currentUser=null,timer=null,sec=0,watching=false;
-const btn=document.getElementById('btn'),pbar=document.getElementById('pbar'),balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),vtEl=document.getElementById('vt'),timerText=document.getElementById('timerText'),timerCount=document.getElementById('timerCount'),bubble=document.getElementById('bubble'),adPlace=document.getElementById('adPlace');
-function showBubble(t){bubble.textContent=t; bubble.style.display='block'; setTimeout(()=>bubble.style.display='none',2200);}
-function updateUI(){balEl.textContent=bal+' 🪙'; todayEl.textContent=Math.min(today,DAILY_LIMIT)+'/'+DAILY_LIMIT+' today'; if(today>=DAILY_LIMIT){vtEl.textContent='🎉 20/20 bonus';} else {vtEl.textContent=(DAILY_LIMIT-today)+' left • '+REWARD+' 🪙 • 30s';}}
+const btn=document.getElementById('btn'),pbar=document.getElementById('pbar'),balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),vtEl=document.getElementById('vt'),timerText=document.getElementById('timerText'),timerCount=document.getElementById('timerCount');
+function updateUI(){balEl.textContent=bal+' 🪙'; todayEl.textContent=Math.min(today,DAILY_LIMIT)+'/'+DAILY_LIMIT+' today'; vtEl.textContent=today>=DAILY_LIMIT?'20/20 bonus':(DAILY_LIMIT-today)+' left • '+REWARD+' 🪙 • 30s';}
 auth.onAuthStateChanged(u=>{
  if(!u){location.href='./index.html';return;} currentUser=u;
  db.collection('users').doc(u.uid).onSnapshot(async s=>{
-  if(s.exists){const d=s.data(); bal=d.balance??d.coins??0; let c=d.todayCount??0; const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null; const ts=new Date().toDateString(), ls=last?last.toDateString():null; if(last && ts!==ls && c!==0){c=0; try{await db.collection('users').doc(u.uid).set({todayCount:0,today:0,lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});}catch(e){}} today=c; updateUI();}
+  if(s.exists){const d=s.data(); bal=d.balance??d.coins??0; let c=d.todayCount??0; const last=d.lastWatchDate?d.lastWatchDate.toDate?d.lastWatchDate.toDate():new Date(d.lastWatchDate):null; const ts=new Date().toDateString(), ls=last?last.toDateString():null; if(last && ts!==ls && c!==0){c=0; await db.collection('users').doc(u.uid).set({todayCount:0,today:0,lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});} today=c; updateUI();}
  });
 });
 btn.onclick=()=>{
- if(watching) return; watching=true; sec=0; pbar.style.width='0%'; adPlace.innerHTML='<div style="color:#f59e0b;font-weight:900;font-size:13px">📢 Watching Ad...<br><span style="color:#111827;font-size:11px">Video ad below is playing!</span></div>'; timerText.textContent='WATCHING'; btn.disabled=true;
+ if(watching) return; watching=true; sec=0; pbar.style.width='0%'; timerText.textContent='WATCHING'; btn.disabled=true;
  clearInterval(timer);
  timer=setInterval(()=>{
    if(document.hidden){timerText.textContent='Stay!'; return;}
    sec++; pbar.style.width=(sec/REQUIRED_SEC*100)+'%'; timerCount.textContent=sec+'/'+REQUIRED_SEC+'s'; btn.textContent='Watching '+sec+'/'+REQUIRED_SEC+'s...';
    if(sec>=REQUIRED_SEC){
      clearInterval(timer); watching=false; pbar.style.width='100%'; timerText.textContent='DONE';
-     if(today>=DAILY_LIMIT){adPlace.innerHTML='<div style="color:#22c55e;font-weight:900">✅ Bonus Done!<br><span style="color:#111827;font-size:10px">0 coins</span></div>'; btn.disabled=false; btn.textContent='Watch Bonus (0 🪙)'; timerCount.textContent='Bonus';}
-     else {adPlace.innerHTML='<div style="color:#22c55e;font-weight:900">✅ 30s Done!<br><span style="color:#111827;font-size:11px">Claim '+REWARD+' 🪙!</span></div>'; btn.disabled=false; btn.textContent='🎉 Claim '+REWARD+' 🪙!'; btn.onclick=claim; timerCount.textContent='Claim!';}
+     if(today>=DAILY_LIMIT){btn.disabled=false; btn.textContent='Bonus (0 🪙)'; timerCount.textContent='Bonus';}
+     else {btn.disabled=false; btn.textContent='🎉 Claim '+REWARD+' 🪙!'; btn.onclick=claim; timerCount.textContent='Claim!';}
    }
  },1000);
 };
 async function claim(){
  if(!currentUser || today>=DAILY_LIMIT) return; btn.disabled=true; btn.textContent='Saving...';
- try{
-  await db.collection('users').doc(currentUser.uid).set({balance:firebase.firestore.FieldValue.increment(REWARD),coins:firebase.firestore.FieldValue.increment(REWARD),points:firebase.firestore.FieldValue.increment(REWARD),todayCount:firebase.firestore.FieldValue.increment(1),today:0,lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
-  await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Watch Ad',type:'watch',coins:REWARD,points:REWARD,desc:'Ad '+(today+1)+'/20 - 30s',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-  showBubble('+'+REWARD+' 🪙!');
- }catch(e){btn.textContent='Failed'; btn.disabled=false; return;}
- pbar.style.width='0%'; timerText.textContent='Ready'; timerCount.textContent='0/30s'; adPlace.innerHTML='<div style="color:#22c55e;font-weight:900">Ready for next!</div>'; btn.textContent='▶ Next Ad (30s)'; btn.disabled=false; btn.onclick=()=>location.reload(); setTimeout(()=>location.reload(),700);
+ await db.collection('users').doc(currentUser.uid).set({balance:firebase.firestore.FieldValue.increment(REWARD),coins:firebase.firestore.FieldValue.increment(REWARD),todayCount:firebase.firestore.FieldValue.increment(1),lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+ await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Watch Ad',type:'watch',coins:REWARD,desc:'Ad '+(today+1)+'/20 - 30s',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+ location.reload();
 }
 </script>
 </body>
