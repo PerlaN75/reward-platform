@@ -11,7 +11,7 @@
 body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;display:flex;justify-content:center;padding:12px 10px 80px 10px;box-sizing:border-box;min-height:100vh}
 .card{background:#ffffff;border:2px solid #e5e7eb;border-radius:22px;padding:16px 14px 18px 14px;width:100%;max-width:380px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.06);margin:10px auto 30px}
 .header-row{display:flex;align-items:center;gap:10px;margin:6px 0 12px 0}
-.back{width:43px;height:29px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5;flex-shrink:0}
+.back{width:42px;height:38px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5;flex-shrink:0}
 .badge{border:1.5px solid #22c55e;border-radius:20px;padding:6px 12px;display:inline-block;margin:8px 0;color:#166534;background:#f0fdf4;font-weight:bold;font-size:13px}
 .bar{height:7px;background:#e5e7eb;border-radius:10px;margin:10px 0;overflow:hidden}
 .fill{height:100%;background:#22c55e;width:0%;transition:0.3s}
@@ -46,6 +46,7 @@ body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;disp
 .ad-gate{background:#f9fafb;border:1px dashed #22c55e;border-radius:10px;padding:8px;margin:10px 0;text-align:center}
 .article-box{background:#ffffff;border:1px solid #e5e7eb;border-radius:10px;padding:12px;margin:10px 0;text-align:left;font-size:13px;line-height:1.6;color:#374151;max-height:280px;overflow-y:auto}
 .bonus-btn{width:100%;padding:14px;background:linear-gradient(90deg,#bbf7d0,#22c55e);color:#000;border:none;border-radius:12px;font-weight:900;font-size:15px;cursor:pointer;margin:10px 0;box-shadow:0 3px 0 #15803d;display:none}
+.bonus-btn.claimed{background:#e5e7eb !important;color:#9ca3af !important;border:2px solid #e5e7eb !important;box-shadow:none !important}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#ffffff;border:2px solid #e5e7eb;color:#111827;padding:12px 18px;border-radius:12px;font-weight:bold;z-index:9999;display:none;max-width:90%;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.1)}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -120,9 +121,7 @@ function adSetHTML(index){
     + '<div style="background:#ffffff;border:1.5px solid #e5e7eb;border-radius:12px;padding:8px;margin:6px 0;min-height:100px;display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center">'
     + '<div id="hilltop'+n+'" style="width:100%;display:flex;justify-content:center;min-height:60px"></div>'
     + '<div id="midBanner'+n+'" style="display:flex;justify-content:center;width:100%"></div>'
-    + '</div>'
-    + '<div style="font-size:9px;color:#9ca3af;text-align:center;margin-top:4px">Hilltop • Adsterra • Monetag - Support us by viewing</div>'
-    + '</div>';
+    + '</div></div>';
 }
 
 function render(){
@@ -144,7 +143,21 @@ function render(){
   loadMidBanners();
   loadHilltopForSets();
   startAdSetTimers();
-  const bonusBtn=document.getElementById('bonusBtn');if(done.length>=10&&!bonusClaimed)bonusBtn.style.display='block';else if(!bonusClaimed)bonusBtn.style.display='none';if(bonusClaimed){bonusBtn.innerText='Bonus Claimed ✓';bonusBtn.disabled=true;bonusBtn.style.display='block';}
+  const bonusBtn=document.getElementById('bonusBtn');
+  if(bonusClaimed){
+    bonusBtn.innerText='Bonus Claimed ✓';
+    bonusBtn.disabled=true;
+    bonusBtn.classList.add('claimed');
+    bonusBtn.style.display='block';
+  }else if(done.length>=10){
+    bonusBtn.classList.remove('claimed');
+    bonusBtn.style.display='block';
+    bonusBtn.innerText='🎁 Claim Bonus 5 Coins - 12s';
+    bonusBtn.disabled=false;
+  }else{
+    bonusBtn.classList.remove('claimed');
+    bonusBtn.style.display='none';
+  }
 }
 function startAdSetTimers(){ for(let i=1;i<=5;i++){ let el=document.getElementById('adTimer'+i); if(!el) continue; let t=12; setInterval(()=>{ t--; if(t<=0) t=12; if(el) el.innerText=t+'s'; },1000); } }
 
