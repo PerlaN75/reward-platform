@@ -29,11 +29,11 @@ l.parentNode.insertBefore(s, l);
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
 body{background:#f7f7fb;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:10px 14px}
 .header{display:flex;align-items:center;gap:10px;margin:10px 0;width:100%;max-width:500px}
-/* BACK IDENTICAL TO DAILY CHECKIN - FIXED */
+/* BACK LIGHT PINK LIKE DAILY CHECKIN */
 .back{
   width:48px;
   height:36px;
-  background:#ffffff;
+  background:#ffe4e6;
   border:2px solid #f9a8a8;
   color:#991b1b;
   border-radius:12px;
@@ -81,82 +81,11 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.firestore();
 let bal=0,today=0,currentUser=null,timer=null,adWindowOpened=false,isOwnerMode=false;
 const ov=document.getElementById('ov'),btn=document.getElementById('btn'),pbar=document.getElementById('pbar'),balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),vtEl=document.getElementById('vt');
-function updateUI(){ 
-  let d=Math.min(today,20); 
-  balEl.textContent=bal+' 🪙 coins'; 
-  todayEl.textContent=d+'/20'; 
-  if(today>=20){
-    isOwnerMode=true;
-    vtEl.textContent='🎉 20/20 rewarded done!';
-    btn.textContent='Continue watching freely';
-  } else {
-    isOwnerMode=false;
-    vtEl.textContent=today>0 ? `${today}/20 done` : 'Ready to earn';
-    btn.textContent='Start & Earn';
-  }
-}
-auth.onAuthStateChanged(u=>{
-  if(!u){location.href='./index.html';return;} currentUser=u; 
-  db.collection('users').doc(u.uid).onSnapshot(async s=>{ 
-    if(s.exists){ 
-      const data=s.data(); 
-      bal=data.balance ?? data.coins ?? 0; 
-      let serverCount = data.todayCount ?? 0;
-      const last=data.lastWatchDate?data.lastWatchDate.toDate?data.lastWatchDate.toDate():new Date(data.lastWatchDate):null; 
-      if(last && new Date().toDateString() !== last.toDateString() && serverCount !== 0){
-        serverCount=0;
-        try{ await db.collection('users').doc(u.uid).set({todayCount:0, today:0, lastWatchDate: firebase.firestore.FieldValue.serverTimestamp()},{merge:true}); }catch(e){}
-      }
-      today = serverCount;
-      updateUI(); 
-    } 
-  });
-});
-function doAd(){ 
-  adWindowOpened=false; 
-  const win=window.open(DIRECT_LINK,'_blank'); 
-  if(!win || win.closed || typeof win.closed=='undefined'){ btn.textContent=isOwnerMode?'Continue watching freely':'Start & Earn'; btn.disabled=false; return; } 
-  adWindowOpened=true; btn.disabled=true; 
-  ov.innerHTML='<div style="color:#fff;font-weight:800">Verifying ad... 3s</div>'; 
-  pbar.style.width='0%'; 
-  let ad=3; let adInt=setInterval(()=>{ ad--; ov.innerHTML=`<div style="color:#fff;font-weight:800">📢 Ad check ${ad}s...</div>`; if(ad<=0){clearInterval(adInt); startTimer();} },1000); 
-}
-function startTimer(){
-  ov.innerHTML='<div style="color:#fbbf24;font-weight:800">💰 Earning... Stay in to make Money</div>';
-  let sec=0; 
-  btn.textContent=`💰 ${sec}/${REQUIRED_WATCH_SEC}s`; 
-  clearInterval(timer); 
-  timer=setInterval(()=>{
-    sec++; 
-    pbar.style.width=(sec/REQUIRED_WATCH_SEC*100)+'%'; 
-    btn.textContent=`💰 ${sec}/${REQUIRED_WATCH_SEC}s`; 
-    if(sec>=REQUIRED_WATCH_SEC){ 
-      clearInterval(timer); timer=null; 
-      pbar.style.width='100%';
-      if(isOwnerMode){
-        ov.innerHTML='<div style="color:#fff;font-weight:800">✅ Your time your Earn!</div>';
-        btn.textContent='Continue watching freely'; btn.disabled=false; 
-        btn.onclick=()=>{ adWindowOpened=false; pbar.style.width='0%'; ov.innerHTML='<div style="color:#fff;font-weight:800">Watch 20 sec to earn 5 🪙</div>'; btn.textContent='Continue watching freely'; btn.onclick=doAd; };
-      } else {
-        ov.innerHTML='<div style="color:#fff;font-weight:800">✅ 20s Done! Tap to claim</div>';
-        btn.textContent='🎉 Claim 5 🪙!'; btn.disabled=false; btn.onclick=claim; 
-      }
-    } 
-  },1000);
-}
-async function claim(){
-  if(!currentUser || !adWindowOpened) return;
-  if(isOwnerMode){
-    adWindowOpened=false; pbar.style.width='0%'; ov.innerHTML='<div style="color:#fff;font-weight:800">Watch 20 sec to earn 5 🪙</div>'; btn.textContent='Continue watching freely'; btn.onclick=doAd; return;
-  }
-  btn.disabled=true; btn.textContent='Saving...'; 
-  try{ 
-    await db.collection('users').doc(currentUser.uid).set({ balance: firebase.firestore.FieldValue.increment(5), coins: firebase.firestore.FieldValue.increment(5), todayCount: firebase.firestore.FieldValue.increment(1), lastWatchDate: firebase.firestore.FieldValue.serverTimestamp() },{merge:true}); 
-    await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({ action:'Watch & Earn',type:'watch',coins:5, timestamp:firebase.firestore.FieldValue.serverTimestamp() }); 
-    showBubble(`+5 🪙!`); 
-  }catch(e){ btn.disabled=false; btn.textContent='Try Again'; return; }
-  adWindowOpened=false; pbar.style.width='0%'; ov.innerHTML='<div style="color:#fff;font-weight:800">Watch 20 sec to earn 5 🪙</div>'; updateUI(); btn.disabled=false; btn.onclick=doAd;
-}
+function updateUI(){ let d=Math.min(today,20); balEl.textContent=bal+' 🪙 coins'; todayEl.textContent=d+'/20'; if(today>=20){isOwnerMode=true;vtEl.textContent='🎉 20/20 rewarded done!';btn.textContent='Continue watching freely';}else{isOwnerMode=false;vtEl.textContent=today>0?`${today}/20 done`:'Ready to earn';btn.textContent='Start & Earn';}}
+auth.onAuthStateChanged(u=>{if(!u){location.href='./index.html';return;}currentUser=u;db.collection('users').doc(u.uid).onSnapshot(async s=>{if(s.exists){const data=s.data();bal=data.balance??data.coins??0;let serverCount=data.todayCount??0;const last=data.lastWatchDate?data.lastWatchDate.toDate?data.lastWatchDate.toDate():new Date(data.lastWatchDate):null;if(last&&new Date().toDateString()!==last.toDateString()&&serverCount!==0){serverCount=0;try{await db.collection('users').doc(u.uid).set({todayCount:0,today:0,lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});}catch(e){}}today=serverCount;updateUI();}})});
+function doAd(){adWindowOpened=false;const win=window.open(DIRECT_LINK,'_blank');if(!win||win.closed||typeof win.closed=='undefined'){btn.textContent=isOwnerMode?'Continue watching freely':'Start & Earn';btn.disabled=false;return;}adWindowOpened=true;btn.disabled=true;ov.innerHTML='<div style="color:#fff;font-weight:800">Verifying ad... 3s</div>';pbar.style.width='0%';let ad=3;let adInt=setInterval(()=>{ad--;ov.innerHTML=`<div style="color:#fff;font-weight:800">📢 Ad check ${ad}s...</div>`;if(ad<=0){clearInterval(adInt);startTimer();}},1000);}
+function startTimer(){ov.innerHTML='<div style="color:#fbbf24;font-weight:800">💰 Earning... Stay in to make Money</div>';let sec=0;btn.textContent=`💰 ${sec}/${REQUIRED_WATCH_SEC}s`;clearInterval(timer);timer=setInterval(()=>{sec++;pbar.style.width=(sec/REQUIRED_WATCH_SEC*100)+'%';btn.textContent=`💰 ${sec}/${REQUIRED_WATCH_SEC}s`;if(sec>=REQUIRED_WATCH_SEC){clearInterval(timer);timer=null;pbar.style.width='100%';if(isOwnerMode){ov.innerHTML='<div style="color:#fff;font-weight:800">✅ Your time your Earn!</div>';btn.textContent='Continue watching freely';btn.disabled=false;btn.onclick=()=>{adWindowOpened=false;pbar.style.width='0%';ov.innerHTML='<div style="color:#fff;font-weight:800">Watch 20 sec to earn 5 🪙</div>';btn.textContent='Continue watching freely';btn.onclick=doAd;};}else{ov.innerHTML='<div style="color:#fff;font-weight:800">✅ 20s Done! Tap to claim</div>';btn.textContent='🎉 Claim 5 🪙!';btn.disabled=false;btn.onclick=claim;}}},1000);}
+async function claim(){if(!currentUser||!adWindowOpened)return;if(isOwnerMode){adWindowOpened=false;pbar.style.width='0%';ov.innerHTML='<div style="color:#fff;font-weight:800">Watch 20 sec to earn 5 🪙</div>';btn.textContent='Continue watching freely';btn.onclick=doAd;return;}btn.disabled=true;btn.textContent='Saving...';try{await db.collection('users').doc(currentUser.uid).set({balance:firebase.firestore.FieldValue.increment(5),coins:firebase.firestore.FieldValue.increment(5),todayCount:firebase.firestore.FieldValue.increment(1),lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Watch & Earn',type:'watch',coins:5,timestamp:firebase.firestore.FieldValue.serverTimestamp()});showBubble(`+5 🪙!`);}catch(e){btn.disabled=false;btn.textContent='Try Again';return;}adWindowOpened=false;pbar.style.width='0%';ov.innerHTML='<div style="color:#fff;font-weight:800">Watch 20 sec to earn 5 🪙</div>';updateUI();btn.disabled=false;btn.onclick=doAd;}
 btn.onclick=doAd;
 </script>
 </body>
