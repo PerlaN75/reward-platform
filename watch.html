@@ -29,7 +29,7 @@ l.parentNode.insertBefore(s, l);
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
 body{background:#f7f7fb;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:10px 14px}
 .header{display:flex;align-items:center;gap:10px;margin:10px 0;width:100%;max-width:500px}
-/* BACK LIGHT PINK LIKE DAILY CHECKIN */
+/* BACK - LIGHT PINK + LITTLE SHADOW LIKE DAILY CHECKIN */
 .back{
   width:45px;
   height:30px;
@@ -43,10 +43,10 @@ body{background:#f7f7fb;min-height:100vh;display:flex;flex-direction:column;alig
   font-size:20px;
   font-weight:900;
   cursor:pointer;
-  box-shadow:0 2px 4px rgba(0,0,0,0.06);
+  box-shadow:0 3px 8px rgba(249,168,168,0.35), 0 1px 3px rgba(0,0,0,0.08);
   flex-shrink:0;
 }
-.back:active{transform:scale(0.96);box-shadow:0 1px 0 #fca5a5}
+.back:active{transform:scale(0.96);box-shadow:0 1px 2px rgba(249,168,168,0.4)}
 .main-card{width:100%;max-width:500px;background:#fff;border:1px solid #eef2f7;border-radius:20px;padding:10px;box-shadow:0 4px 20px rgba(0,0,0,0.05)}
 .balance-box{background:#2f3e1a;border:2px solid #fbbf24;border-radius:16px;padding:10px;text-align:center;color:#fff}
 .video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #111827;width:100%;margin-top:10px}
@@ -66,22 +66,20 @@ body{background:#f7f7fb;min-height:100vh;display:flex;flex-direction:column;alig
 <div style="font-size:11px;color:#facc15;margin-top:3px" id="vt">Ready</div>
 </div>
 <div class="video-box">
-<div class="player" id="ov">
-<div style="color:#fff;font-weight:800;font-size:14px">Watch 20 sec to earn 5 🪙</div>
-</div>
+<div class="player" id="ov"><div style="color:#fff;font-weight:800;font-size:14px">Watch 20 sec to earn 5 🪙</div></div>
 <div class="progress"><div class="progress-bar" id="pbar"></div></div>
 <div style="padding:8px;background:#000"><button class="btn" id="btn">Start & Earn</button></div>
 </div>
 </div>
 <script>
 const DIRECT_LINK="https://omg10.com/4/11905870";
-const REQUIRED_WATCH_SEC = 20;
-function showBubble(t){const b=document.getElementById('bubble'); b.textContent=t; b.style.display='block'; setTimeout(()=>b.style.display='none',2000);}
+const REQUIRED_WATCH_SEC=20;
+function showBubble(t){const b=document.getElementById('bubble');b.textContent=t;b.style.display='block';setTimeout(()=>b.style.display='none',2000);}
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.firestore();
 let bal=0,today=0,currentUser=null,timer=null,adWindowOpened=false,isOwnerMode=false;
 const ov=document.getElementById('ov'),btn=document.getElementById('btn'),pbar=document.getElementById('pbar'),balEl=document.getElementById('bal'),todayEl=document.getElementById('today'),vtEl=document.getElementById('vt');
-function updateUI(){ let d=Math.min(today,20); balEl.textContent=bal+' 🪙 coins'; todayEl.textContent=d+'/20'; if(today>=20){isOwnerMode=true;vtEl.textContent='🎉 20/20 rewarded done!';btn.textContent='Continue watching freely';}else{isOwnerMode=false;vtEl.textContent=today>0?`${today}/20 done`:'Ready to earn';btn.textContent='Start & Earn';}}
+function updateUI(){let d=Math.min(today,20);balEl.textContent=bal+' 🪙 coins';todayEl.textContent=d+'/20';if(today>=20){isOwnerMode=true;vtEl.textContent='🎉 20/20 rewarded done!';btn.textContent='Continue watching freely';}else{isOwnerMode=false;vtEl.textContent=today>0?`${today}/20 done`:'Ready to earn';btn.textContent='Start & Earn';}}
 auth.onAuthStateChanged(u=>{if(!u){location.href='./index.html';return;}currentUser=u;db.collection('users').doc(u.uid).onSnapshot(async s=>{if(s.exists){const data=s.data();bal=data.balance??data.coins??0;let serverCount=data.todayCount??0;const last=data.lastWatchDate?data.lastWatchDate.toDate?data.lastWatchDate.toDate():new Date(data.lastWatchDate):null;if(last&&new Date().toDateString()!==last.toDateString()&&serverCount!==0){serverCount=0;try{await db.collection('users').doc(u.uid).set({todayCount:0,today:0,lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});}catch(e){}}today=serverCount;updateUI();}})});
 function doAd(){adWindowOpened=false;const win=window.open(DIRECT_LINK,'_blank');if(!win||win.closed||typeof win.closed=='undefined'){btn.textContent=isOwnerMode?'Continue watching freely':'Start & Earn';btn.disabled=false;return;}adWindowOpened=true;btn.disabled=true;ov.innerHTML='<div style="color:#fff;font-weight:800">Verifying ad... 3s</div>';pbar.style.width='0%';let ad=3;let adInt=setInterval(()=>{ad--;ov.innerHTML=`<div style="color:#fff;font-weight:800">📢 Ad check ${ad}s...</div>`;if(ad<=0){clearInterval(adInt);startTimer();}},1000);}
 function startTimer(){ov.innerHTML='<div style="color:#fbbf24;font-weight:800">💰 Earning... Stay in to make Money</div>';let sec=0;btn.textContent=`💰 ${sec}/${REQUIRED_WATCH_SEC}s`;clearInterval(timer);timer=setInterval(()=>{sec++;pbar.style.width=(sec/REQUIRED_WATCH_SEC*100)+'%';btn.textContent=`💰 ${sec}/${REQUIRED_WATCH_SEC}s`;if(sec>=REQUIRED_WATCH_SEC){clearInterval(timer);timer=null;pbar.style.width='100%';if(isOwnerMode){ov.innerHTML='<div style="color:#fff;font-weight:800">✅ Your time your Earn!</div>';btn.textContent='Continue watching freely';btn.disabled=false;btn.onclick=()=>{adWindowOpened=false;pbar.style.width='0%';ov.innerHTML='<div style="color:#fff;font-weight:800">Watch 20 sec to earn 5 🪙</div>';btn.textContent='Continue watching freely';btn.onclick=doAd;};}else{ov.innerHTML='<div style="color:#fff;font-weight:800">✅ 20s Done! Tap to claim</div>';btn.textContent='🎉 Claim 5 🪙!';btn.disabled=false;btn.onclick=claim;}}},1000);}
