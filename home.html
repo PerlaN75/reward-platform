@@ -1,81 +1,59 @@
 <!DOCTYPE html>
-<html><head><title>Home - Rewards</title>
+<html>
+<head>
+<title>Daily Bonus - Coins</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="referrer" content="no-referrer-when-downgrade" />
-<style>*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;-webkit-tap-highlight-color:transparent}
-*:focus{outline:none}
-body{background:#ffffff !important;min-height:100vh;padding:16px 14px 100px 14px;color:#000;overflow-y:auto}
-.container{max-width:500px;margin:0 auto}
-.header{text-align:center;margin:50px 0 8px}
-.header h2{font-size:24px;color:#000}
-.header h2 span{color:#fbbf24}
-.balance-card{background:#2f3e1a;border:2px solid #fbbf24;border-radius:16px;padding:6px 8px;text-align:center;margin:0 auto 10px auto;width:88%;max-width:315px}
-.balance-row{display:flex;justify-content:space-between;align-items:center;margin-top:2px}
-.balance-side{flex:1;text-align:center;padding:2px 4px}
-.balance-divider{width:1px;height:38px;background:rgba(251,191,36,0.35)}
-.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 10px;margin-bottom:10px;justify-items:center;padding:0 10px}
-.menu-btn{background:linear-gradient(180deg,#fff,#e8e8e8);color:#000;border:none;border-radius:14px;padding:8px 4px;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 3px 0 #bbb;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:62px;width:88%;max-width:150px;margin:0 auto;position:relative;-webkit-tap-highlight-color:transparent;outline:none;user-select:none}
-.menu-btn:active{filter:brightness(0.95);transform:scale(0.98)}
-.menu-btn.emoji{font-size:22px;display:block;line-height:1}
-.logout-btn{width:70px;height:35px;margin:32px auto 30px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;color:#991b1b;border-radius:10px;font-size:22px;font-weight:900;cursor:pointer;box-shadow:0 2px 0 #fca5a5}
-.logout-btn:active{transform:scale(0.96);box-shadow:0 1px 0 #fca5a5}
-#customToast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:14px 22px;border-radius:12px;font-weight:bold;z-index:99999;display:none;max-width:90%;text-align:center}
-#maintenanceOverlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
+<script src="https://www.google.com/recaptcha/enterprise.js?render=6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial;-webkit-tap-highlight-color:transparent}
+*:focus{outline:none !important}
+body{background:#f3f4f6;min-height:100vh;display:flex;justify-content:center;padding:14px 10px 90px 10px;color:#111827}
+.card{width:100%;max-width:380px;background:#ffffff;border:2px solid #e5e7eb;border-radius:24px;padding:16px 14px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.06)}
+.top-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;text-align:left}
+.back-square{width:45px;height:30px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;flex-shrink:0}
+h1{color:#111827;font-size:22px;font-weight:900;flex:1}
+.sub{color:#6b7280;font-size:12px;margin-bottom:10px}
+.bonus-box{background:#f9fafb;border:2px dashed #f59e0b;border-radius:16px;padding:18px;margin:10px 0}
+.big{font-size:48px;margin-bottom:8px}
+.points{font-size:24px;color:#d97706;font-weight:900}
+.timer{font-size:13px;color:#6b7280;margin-top:10px;font-weight:600}
+.ad-hint{font-size:10px;color:#9ca3af;margin-top:6px;font-style:italic}
+.tip-box{background:#f0fdf4;border:1px solid #bbf7d0;border-left:4px solid #22c55e;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:13px;color:#166534;line-height:1.4;text-align:left}
+.btn{width:100%;background:#f59e0b;color:#000;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:15px;cursor:pointer;margin-top:14px;box-shadow:0 4px 0 #d97706}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #d97706}
+.btn:disabled{background:#9ca3af;color:#fff;cursor:not-allowed;box-shadow:none}
+.sponsored{font-size:9px;color:#9ca3af;font-weight:bold;text-align:center;margin:10px 0 4px;letter-spacing:0.5px}
+.ad-box{min-height:260px;display:flex;justify-content:center;align-items:center;background:#ffffff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden}
+.info{font-size:12px;color:#6b7280;margin-top:12px}
 </style>
-</head><body>
-<div id="maintenanceOverlay"><div style="max-width:400px;width:100%"><div style="font-size:40px">🛠️</div><h1 style="color:#fbbf24;font-size:34px;margin-bottom:20px">Under Maintenance</h1><div style="background:#1e2f15;border:2px solid #fbbf24;border-radius:15px;padding:20px"><p style="color:white;font-size:18px">Maintenance for 20 min.</p></div><button onclick="location.href='index.html'" style="background:white;color:black;border:none;padding:14px 28px;border-radius:12px;font-weight:bold;margin-top:20px">Back</button></div></div>
-<div id="customToast"></div>
-<div class="container">
-<div class="header"><h2><span style="color:#000 !important">Welcome, </span><span id="headerText" style="color:#fbbf24"></span> 👋</h2></div>
-<div class="balance-card">
-<div style="color:#ccc;font-size:11px;letter-spacing:0.5px">Your Balance</div>
-<div class="balance-row">
-  <div class="balance-side">
-    <div style="font-size:10px;color:#aaa;margin-bottom:1px">⭐ COINS</div>
-    <div id="balance" style="font-size:22px;color:#fbbf24;font-weight:bold;line-height:1.1">-- coins</div>
-    <div id="usdBalance" style="color:#888;font-size:10px;margin-top:1px">≈ $-- USD</div>
-  </div>
-  <div class="balance-divider"></div>
-  <div class="balance-side">
-    <div style="font-size:10px;color:#aaa;margin-bottom:1px">💵 USDT</div>
-    <div id="usdtBalanceDisplay" style="font-size:20px;color:#22c55e;font-weight:bold;line-height:1.1">-- USDT</div>
-    <div style="color:#6b8f5a;font-size:9px;margin-top:1px">Available to withdraw</div>
-  </div>
+</head>
+<body>
+<canvas id="confetti" style="position:fixed;inset:0;pointer-events:none;z-index:9999;display:none"></canvas>
+<div class="card">
+<div class="top-header"><div class="back-square" onclick="location.href='home.html'">‹</div><h1>🎁 Daily Bonus</h1></div>
+<div class="sub">Claim once every 24h - 3000 Coins = $1.5</div>
+<div class="tip-box">💡 <i>Claim daily bonus, but also check those offers - might be useful to You</i></div>
+<div class="bonus-box">
+<div class="big">🪙</div>
+<div class="points">+3 Coins</div>
+<div class="timer" id="timer">Checking...</div>
+<div class="ad-hint" id="adHint">⏳ Checking...</div>
 </div>
-</div>
-<script>
-(function(){
-  try{
-    var c = JSON.parse(localStorage.getItem('userData')||'{}');
-    if(c && (c.balance!=null || c.points!=null || c.username)){
-      var bal = c.balance ?? c.points ?? 0;
-      var usdt = c.usdtBalance ?? 0;
-      document.getElementById('balance').textContent = bal + ' coins';
-      document.getElementById('usdBalance').textContent = '≈ $' + (bal*0.0005).toFixed(4);
-      document.getElementById('usdtBalanceDisplay').textContent = Number(usdt).toFixed(4) + ' USDT';
-      if(c.username) document.getElementById('headerText').textContent = c.username;
-    }
-  }catch(e){}
-})();
-</script>
-<div class="menu-grid">
-<button class="menu-btn" onclick="location.href='./wallet.html'" style="border:2px solid #f59e0b; background: linear-gradient(180deg,#fffbeb,#fde68a);"><span class="emoji">💰</span>Wallet</button>
-<button class="menu-btn" onclick="location.href='./checkin.html'" style="border:2px solid #ef4444; background: linear-gradient(180deg,#fef2f2,#fecaca);"><span class="emoji">📅</span>Daily Checkin</button>
-<button class="menu-btn" onclick="location.href='./watch.html'" style="border:2px solid #3b82f6; background: linear-gradient(180deg,#eff6ff,#bfdbfe);"><span class="emoji">📺</span>Watch & Earn</button>
-<button class="menu-btn" onclick="location.href='./articles_earn.html'" style="border:2px solid #a855f7; background: linear-gradient(180deg,#f3e8ff,#d8b4fe);"><span class="emoji">📰</span>Articles Earn</button>
-<button class="menu-btn" onclick="location.href='./survey.html'" style="border:2px solid #22c55e; background: linear-gradient(180deg,#dcfce7,#bbf7d0);"><span class="emoji">📝</span>Surveys</button>
-<button class="menu-btn" onclick="location.href='./referrals.html'" style="border:2px solid #f97316; background: linear-gradient(180deg,#ffedd5,#fed7aa);"><span class="emoji">🤝</span>Refer & Earn</button>
-<button class="menu-btn" onclick="location.href='./bonus.html'" style="border:2px solid #eab308; background: linear-gradient(180deg,#fefce8,#fef08a);"><span class="emoji">🎁</span>Daily Bonus</button>
-<button class="menu-btn" onclick="location.href='./more.html'" style="border:2px solid #6366f1; background: linear-gradient(180deg,#eef2ff,#c7d2fe);"><span class="emoji">⚙️</span>More</button>
-<button class="menu-btn" onclick="location.href='./ads_earn.html'" style="border:2px solid #06b6d4; background: linear-gradient(180deg,#ecfeff,#a5f3fc);"><span class="emoji">📢</span>Ads Earn</button>
-<button class="menu-btn" onclick="location.href='./offers.html'" style="border:2px solid #d946ef; background: linear-gradient(180deg,#fdf4ff,#f5d0fe);"><span class="emoji">💎</span>Offers</button>
-</div>
+<button class="btn" id="claimBtn" disabled>Loading...</button>
+<div class="info" id="info">Daily reward - 1000 Coins = $0.5</div>
 
-<!-- HilltopAds Home Video / InPage Ad Space - NEW -->
-<div style="margin:18px auto 10px auto;max-width:360px;width:100%;">
-  <div style="font-size:9px;color:#9ca3af;text-align:center;letter-spacing:0.5px;font-weight:bold;margin-bottom:4px">SPONSORED - VIDEO</div>
-  <div style="background:#ffffff;border:2px solid #e5e7eb;border-radius:14px;padding:8px;min-height:90px;display:flex;justify-content:center;align-items:center;box-shadow:0 4px 12px rgba(0,0,0,0.05)">
-    <!-- HilltopAds InPage 7605349 EXACT CODE -->
+<div class="sponsored">SPONSORED - This helps us pay you</div>
+<div class="ad-box" id="adBottom"></div>
+
+<!-- HilltopAds InPage 7605349 - NEW, clean banner, no annoy -->
+<div style="margin-top:14px">
+  <div class="sponsored">SPONSORED - VIDEO</div>
+  <div style="background:#ffffff;border:2px solid #e5e7eb;border-radius:12px;padding:8px;min-height:90px;display:flex;justify-content:center;align-items:center">
     <script>
     (function(qbvy){
     var d = document,
@@ -91,38 +69,123 @@ body{background:#ffffff !important;min-height:100vh;padding:16px 14px 100px 14px
   </div>
 </div>
 
-<button class="logout-btn" onclick="logout()">‹</button>
+<div style="font-size:9px;color:#9ca3af;margin-top:10px">Protected + Min withdraw 3000 Coins = $1.5</div>
 </div>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
+function BLAST(){const c=document.getElementById('confetti');c.style.display='block';const ctx=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;let pieces=[];const colors=['#f59e0b','#22c55e','#ef4444','#fbbf24','#3b82f6'];for(let i=0;i<150;i++)pieces.push({x:c.width/2,y:c.height/3,vx:(Math.random()-0.5)*22,vy:(Math.random()-0.5)*22-8,r:Math.random()*9+4,color:colors[Math.floor(Math.random()*colors.length)],rot:Math.random()*360,vr:(Math.random()-0.5)*20});let f=0;(function anim(){ctx.clearRect(0,0,c.width,c.height);pieces.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.35;p.rot+=p.vr;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r);ctx.restore();});if(++f<220)requestAnimationFrame(anim);else c.style.display='none';})();}
+
+function loadAdsterra(){
+  var c=document.getElementById('adBottom'); if(!c) return;
+  c.innerHTML='';
+  var s1=document.createElement('script'); 
+  s1.innerHTML="atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};"; 
+  c.appendChild(s1);
+  var s2=document.createElement('script'); 
+  s2.src='https://www.highperformanceformat.com/bf10cacdbe9f50d0c5d66a94e0785f29/invoke.js'; 
+  c.appendChild(s2);
+}
+function canShowV(){var l=localStorage.getItem('v_last');return !l||Date.now()-parseInt(l)>30*60*1000}
+function loadV(){if(!canShowV())return; if(document.querySelector('script[data-zone="12083688"]'))return; var s=document.createElement('script');s.dataset.zone='12083688';s.src='https://n6wxm.com/vignette.min.js';document.body.appendChild(s);localStorage.setItem('v_last',Date.now())}
+function canShowP(){var l=localStorage.getItem('p_last');return !l||Date.now()-parseInt(l)>60*60*1000}
+function loadP(){if(!canShowP())return; if(document.querySelector('script[data-zone="12083693"]'))return; var s=document.createElement('script');s.dataset.zone='12083693';s.src='https://al5sm.com/tag.min.js';document.body.appendChild(s);localStorage.setItem('p_last',Date.now())}
+
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
-try { const appCheck = firebase.appCheck(); appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true); } catch(e) {}
+try{firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);}catch(e){}
 const auth=firebase.auth(),db=firebase.firestore();
-function showToast(m){const t=document.getElementById('customToast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);} window.alert=showToast;
-const POINT_RATE=0.0005;
-function loadData(d){
-  if(!d) return;
-  if(d.usdtBalance==null) d.usdtBalance=0;
-  if(d.balance==null) d.balance=d.points||0;
-  document.getElementById('headerText').innerText=d.username||'';
-  document.getElementById('balance').innerText=(d.balance ?? d.points ?? 0)+' coins';
-  document.getElementById('usdBalance').innerText=`≈ $${((d.balance ?? d.points ?? 0)*POINT_RATE).toFixed(4)}`;
-  document.getElementById('usdtBalanceDisplay').innerText=Number(d.usdtBalance||0).toFixed(4)+' USDT';
-  localStorage.setItem('userData', JSON.stringify(d));
-}
-db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maintenanceOverlay').style.display='flex';}else{document.getElementById('maintenanceOverlay').style.display='none';}});
-auth.onAuthStateChanged(u=>{
-  if(u){
-    db.collection('users').doc(u.uid).onSnapshot(doc=>{
-      if(doc.exists) loadData(doc.data());
-    });
-  }else{
-    location.href='./index.html';
+let currentUser=null,canClaim=false,waitTimer=null;
+const claimBtn=document.getElementById('claimBtn');
+const timerEl=document.getElementById('timer');
+const adHintEl=document.getElementById('adHint');
+const infoEl=document.getElementById('info');
+
+auth.onAuthStateChanged(async(u)=>{
+if(!u){location.href='./index.html';return;}
+currentUser=u;
+try{
+const snap=await db.collection('users').doc(u.uid).get();
+if(snap.exists){
+let lastTs = snap.data().lastBonusTimestamp;
+if(lastTs){
+  let lastMs = lastTs.toMillis ? lastTs.toMillis() : lastTs;
+  let diffHours = (Date.now() - lastMs) / (1000*60*60);
+  if(diffHours < 24){
+    let remain = Math.ceil(24 - diffHours);
+    timerEl.textContent=`✅ Claimed. Wait ${remain}h`;
+    adHintEl.style.display='none';
+    claimBtn.textContent=`Come back in ${remain}h`;
+    claimBtn.disabled=true;
+    infoEl.textContent=`Next bonus in ${remain} hours`;
+    loadAdsterra();
+    return;
   }
+}
+}
+}catch(e){console.log(e);}
+startWait();
 });
-window.logout=async function(){ await auth.signOut(); localStorage.clear(); location.href='./index.html'; }
-</script></body></html>
+
+function startWait(){
+let sec=10;
+canClaim=false;
+claimBtn.disabled=true;
+claimBtn.textContent=`Wait ${sec}s...`;
+timerEl.textContent=`Please wait ${sec} seconds`;
+adHintEl.textContent='⏳ Verifying...';
+adHintEl.style.display='block';
+clearInterval(waitTimer);
+loadAdsterra();
+waitTimer=setInterval(()=>{
+sec--;
+if(sec>0){
+claimBtn.textContent=`Wait ${sec}s...`;
+timerEl.textContent=`Please wait ${sec} seconds`;
+if(sec==5) loadV();
+}else{
+clearInterval(waitTimer);
+canClaim=true;
+claimBtn.disabled=false;
+claimBtn.textContent='🎉 Claim 3 Coins Free';
+timerEl.textContent='Ready to claim!';
+adHintEl.style.display='none';
+}
+},1000);
+}
+
+claimBtn.onclick=async()=>{
+if(!canClaim||!currentUser) return;
+claimBtn.disabled=true;
+claimBtn.textContent='Claiming...';
+try{
+const ref=db.collection('users').doc(currentUser.uid);
+await ref.set({
+balance: firebase.firestore.FieldValue.increment(3),
+coins: firebase.firestore.FieldValue.increment(3),
+points: firebase.firestore.FieldValue.increment(3),
+lastBonusTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+lastBonusDate: new Date().toDateString(),
+lastEarnAt: firebase.firestore.FieldValue.serverTimestamp()
+},{merge:true});
+timerEl.textContent='✅ Claimed! +3 🪙 added';
+claimBtn.textContent='✅ Claimed! Go Home';
+claimBtn.onclick=function(){ loadP(); location.href='./home.html'; };
+claimBtn.disabled=false;
+infoEl.textContent='Bonus added! Check home balance';
+adHintEl.style.display='none';
+BLAST();
+try{
+await ref.collection('earnHistory').add({
+action:'Daily Bonus',type:'bonus',coins:3,points:3,
+desc:'Daily Bonus +3',timestamp:firebase.firestore.FieldValue.serverTimestamp()
+});
+}catch(e2){}
+loadP();
+}catch(e){
+alert("Error: "+e.message);
+claimBtn.disabled=false;
+claimBtn.textContent='🎉 Try Again - Claim 3 Coins';
+}
+};
+</script>
+</body>
+</html>
