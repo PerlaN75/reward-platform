@@ -4,51 +4,43 @@
 <meta name="referrer" content="no-referrer-when-downgrade" />
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;-webkit-tap-highlight-color:transparent}
-body{background:linear-gradient(180deg,#f9d5c5 0%,#f5b9a0 50%,#e89a7a 100%) !important;min-height:100vh;color:#000;overflow-x:hidden;display:flex;justify-content:center}
-.wrap{width:100%;max-width:1000px;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:12px 10px 30px;gap:0}
-.top-bar{width:100%;height:52px;background:#fffaf3;border-radius:28px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;box-shadow:0 6px 14px rgba(0,0,0,0.08);flex-shrink:0}
-.back-rect{width:45px;height:30px;border:2px solid #ef7a7a;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#ef7a7a;font-weight:900;cursor:pointer;background:#fffaf3}
-.top-bar h2{font-size:18px;color:#8b4513;font-weight:800;flex:1;text-align:center}
+body{background:linear-gradient(180deg,#f9d5c5 0%,#f5b9a0 50%,#e89a7a 100%) !important;min-height:100vh;display:flex;justify-content:center;overflow-x:hidden}
+.wrap{width:100%;max-width:1100px;display:flex;flex-direction:column;align-items:center;padding:12px 8px 20px}
+.top-bar{width:100%;height:46px;background:#fffaf3;border-radius:28px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;box-shadow:0 5px 14px rgba(0,0,0,0.08)}
+.back-rect{width:45px;height:30px;border:2px solid #ef7a7a;border-radius:16px;display:flex;align-items:center;justify-content:center;color:#ef7a7a;font-weight:900;cursor:pointer;background:#fffaf3;font-size:14px}
+.top-bar h2{font-size:15px;color:#8b4513;font-weight:800;flex:1;text-align:center}
 .logo-box{width:45px;display:flex;justify-content:flex-end}
-.mid{width:100%;position:relative;display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:18px;flex:1}
-.side{width:25%;display:flex;flex-direction:column;gap:8px;z-index:3}
-.center{width:50%;position:relative;display:flex;flex-direction:column;align-items:center;z-index:2}
-.gold{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);width:140%;aspect-ratio:1;border-radius:50%;border:2px solid #f5c542;pointer-events:none}
-.gold::before{content:'';position:absolute;inset:12px;border:2px solid #f7d16a;border-radius:50%}
-.pill{width:100%;height:36px;border-radius:20px;display:flex;align-items:center;padding:0 8px;gap:6px;font-size:11px;font-weight:900;color:#000;cursor:pointer;box-shadow:0 2px 4px rgba(0,0,0,0.08);white-space:nowrap}
-.pill .em{font-size:15px}
-.w1{background:#ffec5c;border:2px solid #f5c200}
-.w2{background:#a9d6ff;border:2px solid #5aa8ff}
-.w3{background:#7dff9a;border:2px solid #22c55e}
-.w4{background:#ffeb4d;border:2px solid #f5c200}
-.w5{background:#7ef8ff;border:2px solid #06b6d4}
-.o1{background:#ff9aa2;border:2px solid #ef4444}
-.o2{background:#ff9ecf;border:2px solid #ec4899}
-.o3{background:#b07cff;border:2px solid #7c3aed}
-.o4{background:#ffb86a;border:2px solid #f97316}
-.o5{background:#b8b6ff;border:2px solid #8b5cf6}
-.pc{width:100%;max-width:320px;background:#123d25;border:6px solid #111;border-radius:12px 12px 5px 5px;padding:10px;text-align:center;position:relative}
-.pc::after{content:'📡';position:absolute;top:-26px;right:-6px;font-size:26px}
-.base{width:70px;height:14px;background:#c0c0c0;margin:0 auto;border-radius:0 0 6px 6px}
-.podium{width:100%;height:62px;background:#fffefc;border-radius:50% / 30%;box-shadow:0 10px 0 #f5d5c3;margin-top:2px}
-.kbd{width:88%;height:18px;background:linear-gradient(#e5e5e5,#b5b5b5);margin:5px auto 0;border-radius:4px}
-.bottom{margin-top:18px;background:#fffaf0;border-radius:22px;display:flex;align-items:center;justify-content:space-around;padding:0 14px;height:44px;box-shadow:0 6px 16px rgba(0,0,0,0.18);width:90%;max-width:400px}
-.bottom div{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:900;color:#000}
-.be{font-size:17px}
-#customToast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:14px 22px;border-radius:12px;font-weight:bold;z-index:99999;display:none;max-width:90%;text-align:center}
-#maintenanceOverlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
-@media(min-width:768px){ .top-bar h2{font-size:24px} .pill{height:42px;font-size:12px} .pc{max-width:400px} .bottom{height:50px} }
-</style>
-</head><body>
-<div id="maintenanceOverlay"><div style="max-width:400px;width:100%"><div style="font-size:40px">🛠️</div><h1 style="color:#fbbf24;font-size:34px;margin-bottom:20px">Under Maintenance</h1><div style="background:#1e2f15;border:2px solid #fbbf24;border-radius:15px;padding:20px"><p style="color:white;font-size:18px">Maintenance for 20 min.</p></div><button onclick="location.href='index.html'" style="background:white;color:black;border:none;padding:14px 28px;border-radius:12px;font-weight:bold;margin-top:20px">Back</button></div></div>
+.mid{width:100%;position:relative;display:flex;justify-content:space-between;align-items:flex-start;margin-top:14px;gap:4px}
+.side{width:29%;display:flex;flex-direction:column;gap:6px;z-index:3}
+.center{width:42%;position:relative;display:flex;flex-direction:column;align-items:center;z-index:2}
+.gold{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);width:165%;aspect-ratio:1;border-radius:50%;border:2px solid #f5c542;pointer-events:none}
+.gold::before{content:'';position:absolute;inset:11px;border:2px solid #f7d16a;border-radius:50%}
+.pill{width:100%;height:28px;border-radius:16px;display:flex;align-items:center;padding:0 6px;gap:4px;font-size:8.5px;font-weight:900;color:#000;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.08);letter-spacing:-0.1px;white-space:nowrap;overflow:hidden}
+.pill .em{font-size:11px;flex-shrink:0}
+.w1{background:#ffec5c;border:2px solid #f5c200}.w2{background:#a9d6ff;border:2px solid #5aa8ff}.w3{background:#7dff9a;border:2px solid #22c55e}.w4{background:#ffeb4d;border:2px solid #f5c200}.w5{background:#7ef8ff;border:2px solid #06b6d4}
+.o1{background:#ff9aa2;border:2px solid #ef4444}.o2{background:#ff9ecf;border:2px solid #ec4899}.o3{background:#b07cff;border:2px solid #7c3aed}.o4{background:#ffb86a;border:2px solid #f97316}.o5{background:#b8b6ff;border:2px solid #8b5cf6}
+.pc{width:100%;background:#123d25;border:4px solid #111;border-radius:9px 9px 4px 4px;padding:6px;text-align:center;position:relative}
+.pc::after{content:'📡';position:absolute;top:-16px;right:-4px;font-size:16px}
+.base{width:50px;height:9px;background:#c0c0c0;margin:0 auto;border-radius:0 0 4px 4px}
+.podium{width:100%;height:42px;background:#fffefc;border-radius:50% / 30%;box-shadow:0 7px 0 #f5d5c3;margin-top:1px}
+.kbd{width:88%;height:12px;background:linear-gradient(#e5e5e5,#b5b5b5);margin:4px auto 0;border-radius:3px}
+.bottom{margin-top:14px;background:#fffaf0;border-radius:18px;display:flex;justify-content:space-around;align-items:center;height:36px;box-shadow:0 5px 12px rgba(0,0,0,0.18);width:88%;max-width:340px}
+.bottom div{display:flex;align-items:center;gap:3px;font-size:9px;font-weight:900;color:#000}
+.be{font-size:13px}
+#customToast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:12px 18px;border-radius:10px;font-weight:bold;z-index:99999;display:none}
+#maintenanceOverlay{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
+@media(min-width:768px){
+  .top-bar h2{font-size:22px} .pill{height:36px;font-size:11px} .pill .em{font-size:14px} .pc{padding:10px} .bottom{height:44px} .bottom div{font-size:11px} .be{font-size:16px}
+}
+</style></head><body>
+<div id="maintenanceOverlay"><div style="max-width:400px;width:100%"><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px">Back</button></div></div>
 <div id="customToast"></div>
 <div class="wrap">
   <div class="top-bar">
     <div class="back-rect" onclick="location.href='./index.html'"><</div>
     <h2>Welcome <span id="headerText" style="color:#b45f2e">Ineza</span></h2>
-    <div class="logo-box"><img src="./logo.jpg" style="width:32px;height:32px;border-radius:50%;border:2px solid #fbbf24;object-fit:cover"></div>
+    <div class="logo-box"><img src="./logo.jpg" style="width:28px;height:28px;border-radius:50%;border:2px solid #fbbf24;object-fit:cover"></div>
   </div>
-
   <div class="mid">
     <div class="side">
       <div class="pill w1" onclick="location.href='./wallet.html'"><span class="em">💰</span>Wallet</div>
@@ -60,24 +52,14 @@ body{background:linear-gradient(180deg,#f9d5c5 0%,#f5b9a0 50%,#e89a7a 100%) !imp
     <div class="center">
       <div class="gold"></div>
       <div class="pc">
-        <div style="color:#d4e8a0;font-size:11px;margin-bottom:8px">Your Balance</div>
-        <div style="display:flex;justify-content:space-between;text-align:left;gap:8px">
-          <div style="flex:1">
-            <div style="font-size:9px;color:#c4d88a">⭐ COINS</div>
-            <div id="balance" style="font-size:15px;color:#ffe58a;font-weight:900;margin-top:4px">0 coins</div>
-            <div id="usdBalance" style="color:#a8d0a0;font-size:10px;margin-top:3px">= $0.0000</div>
-          </div>
-          <div style="width:1px;background:rgba(251,191,36,0.35)"></div>
-          <div style="flex:1">
-            <div style="font-size:9px;color:#a0d8b0">💎 USDT</div>
-            <div id="usdtBalanceDisplay" style="font-size:14px;color:#7eff9a;font-weight:900;margin-top:4px">0.7945 USDT</div>
-            <div style="color:#7abf8a;font-size:8px;margin-top:2px">Available to withdraw</div>
-          </div>
+        <div style="color:#d4e8a0;font-size:7.5px;margin-bottom:4px">Your Balance</div>
+        <div style="display:flex;gap:3px;text-align:left">
+          <div style="flex:1"><div style="font-size:6px;color:#c4d88a">⭐ COINS</div><div id="balance" style="font-size:9.5px;color:#ffe58a;font-weight:900">0 coins</div><div id="usdBalance" style="font-size:6.5px;color:#a8d0a0">= $0.0000</div></div>
+          <div style="width:1px;background:rgba(251,191,36,0.3)"></div>
+          <div style="flex:1"><div style="font-size:6px;color:#a0d8b0">💎 USDT</div><div id="usdtBalanceDisplay" style="font-size:9.5px;color:#7eff9a;font-weight:900">0.7945 USDT</div><div style="font-size:5px;color:#7abf8a">Available to withdraw</div></div>
         </div>
       </div>
-      <div class="base"></div>
-      <div class="podium"></div>
-      <div class="kbd"></div>
+      <div class="base"></div><div class="podium"></div><div class="kbd"></div>
     </div>
     <div class="side">
       <div class="pill o1" onclick="location.href='./offers.html'"><span class="em">💎</span>Offers</div>
@@ -87,58 +69,22 @@ body{background:linear-gradient(180deg,#f9d5c5 0%,#f5b9a0 50%,#e89a7a 100%) !imp
       <div class="pill o5" onclick="location.href='./more.html'"><span class="em">❄️</span>More</div>
     </div>
   </div>
-
   <div class="bottom">
-    <div><span class="be">🏠</span><b>Home</b></div>
-    <div><span class="be">📋</span><b>Tasks</b></div>
-    <div><span class="be">💰</span><b>Earn</b></div>
-    <div><span class="be">👤</span><b>Profile</b></div>
+    <div><span class="be">🏠</span><b>Home</b></div><div><span class="be">📋</span><b>Tasks</b></div><div><span class="be">💰</span><b>Earn</b></div><div><span class="be">👤</span><b>Profile</b></div>
   </div>
 </div>
 <script>
-(function(){
-  try{
-    var c = JSON.parse(localStorage.getItem('userData')||'{}');
-    if(c && (c.balance!=null || c.points!=null || c.username)){
-      var bal = c.balance ?? c.points ?? 0;
-      var usdt = c.usdtBalance ?? 0;
-      document.getElementById('balance').textContent = bal + ' coins';
-      document.getElementById('usdBalance').textContent = '= $' + (bal*0.0005).toFixed(4);
-      document.getElementById('usdtBalanceDisplay').textContent = Number(usdt).toFixed(4) + ' USDT';
-      if(c.username) document.getElementById('headerText').textContent = c.username;
-    }
-  }catch(e){}
-})();
+(function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}');if(c&&(c.balance!=null||c.points!=null||c.username)){var bal=c.balance??c.points??0;var usdt=c.usdtBalance??0;document.getElementById('balance').textContent=bal+' coins';document.getElementById('usdBalance').textContent='= $'+(bal*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').textContent=Number(usdt).toFixed(4)+' USDT';if(c.username)document.getElementById('headerText').textContent=c.username;}}catch(e){}})();
 </script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
-try { const appCheck = firebase.appCheck(); appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true); } catch(e) {}
+try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
 const auth=firebase.auth(),db=firebase.firestore();
-function showToast(m){const t=document.getElementById('customToast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);} window.alert=showToast;
+function showToast(m){const t=document.getElementById('customToast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}window.alert=showToast;
 const POINT_RATE=0.0005;
-function loadData(d){
-  if(!d) return;
-  if(d.usdtBalance==null) d.usdtBalance=0;
-  if(d.balance==null) d.balance=d.points||0;
-  document.getElementById('headerText').innerText=d.username||'';
-  document.getElementById('balance').innerText=(d.balance ?? d.points ?? 0)+' coins';
-  document.getElementById('usdBalance').innerText='= $'+((d.balance ?? d.points ?? 0)*POINT_RATE).toFixed(4);
-  document.getElementById('usdtBalanceDisplay').innerText=Number(d.usdtBalance||0).toFixed(4)+' USDT';
-  localStorage.setItem('userData', JSON.stringify(d));
-}
+function loadData(d){if(!d)return;if(d.usdtBalance==null)d.usdtBalance=0;if(d.balance==null)d.balance=d.points||0;document.getElementById('headerText').innerText=d.username||'';document.getElementById('balance').innerText=(d.balance??d.points??0)+' coins';document.getElementById('usdBalance').innerText='= $'+((d.balance??d.points??0)*POINT_RATE).toFixed(4);document.getElementById('usdtBalanceDisplay').innerText=Number(d.usdtBalance||0).toFixed(4)+' USDT';localStorage.setItem('userData',JSON.stringify(d));}
 db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maintenanceOverlay').style.display='flex';}else{document.getElementById('maintenanceOverlay').style.display='none';}});
-auth.onAuthStateChanged(u=>{
-  if(u){
-    db.collection('users').doc(u.uid).onSnapshot(doc=>{
-      if(doc.exists) loadData(doc.data());
-    });
-  }else{
-    location.href='./index.html';
-  }
-});
+auth.onAuthStateChanged(u=>{if(u){db.collection('users').doc(u.uid).onSnapshot(doc=>{if(doc.exists)loadData(doc.data());});}else{location.href='./index.html';}});
 </script></body></html>
