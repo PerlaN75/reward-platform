@@ -3,33 +3,62 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#e89a7a !important;min-height:100vh;display:flex;justify-content:center;overflow-x:hidden}
-.wrap{width:100%;max-width:480px;background:linear-gradient(180deg,#f9d5c5 0%,#f5b9a0 60%,#e89a7a 100%);display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;overflow:hidden}
-.top{width:94%;height:40px;background:#fffaf3;border-radius:22px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;box-shadow:0 3px 10px rgba(0,0,0,0.08);flex-shrink:0}
-.back{width:45px;height:30px;border:2px solid #ef7a7a;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#ef7a7a;font-weight:900;cursor:pointer;background:#fffaf3;font-size:12px}
-.top h2{font-size:12px;color:#7a3b1f;font-weight:800;flex:1;text-align:center}
-.logo{width:45px;display:flex;justify-content:flex-end}
-.stage{width:100%;position:relative;display:flex;align-items:flex-start;justify-content:space-between;margin-top:4px;min-height:260px;overflow:hidden;padding:0}
-.left{width:31%;display:flex;flex-direction:column;gap:5px;z-index:3;margin-left:-12px}
-.right{width:31%;display:flex;flex-direction:column;gap:5px;z-index:3;margin-right:-12px}
-.mid{width:46%;position:relative;display:flex;flex-direction:column;align-items:center;z-index:2;margin-top:0}
-.ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);width:140%;aspect-ratio:1;border-radius:50%;border:2px solid #f5c542;pointer-events:none}
-.ring::before{content:'';position:absolute;inset:8px;border:2px solid #f7d16a;border-radius:50%}
-.pill{width:100%;height:24px;border-radius:0 14px 14px 0;display:flex;align-items:center;padding:0 6px 0 18px;gap:3px;font-size:7px;font-weight:900;color:#000;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.1);white-space:nowrap}
-.right .pill{border-radius:14px 0 0 14px;padding:0 18px 0 6px;justify-content:flex-start}
-.y1{background:#ffe44a;border:2px solid #f5c200}.b1{background:#a9d6ff;border:2px solid #5aa8ff}.g1{background:#7dff8a;border:2px solid #22c55e}.y2{background:#ffeb4d;border:2px solid #f5c200}.c1{background:#7ef8ff;border:2px solid #06b6d4}
-.r1{background:#ff9aa2;border:2px solid #ef4444}.p1{background:#ff9ecf;border:2px solid #ec4899}.pu1{background:#b07cff;border:2px solid #7c3aed}.o1{background:#ffb86a;border:2px solid #f97316}.pu2{background:#b8b6ff;border:2px solid #8b5cf6}
-.monitor{width:100%;max-width:280px;background:#0f2e1f;border:4px solid #111;border-radius:8px 8px 5px 5px;overflow:hidden;position:relative;z-index:2}
-.mon-screen{background:#123d25;padding:8px 6px;text-align:center;position:relative}
-.mon-screen::after{content:'📡';position:absolute;top:-14px;right:-4px;font-size:14px}
-.stand{width:34px;height:16px;background:linear-gradient(#d0d0d0,#a0a0a0);margin:0 auto}
-.podium{width:110%;height:48px;background:#fffefc;border-radius:50% / 30%;box-shadow:0 5px 0 #f5d5c3;margin-top:-4px;margin-left:-5%;display:flex;justify-content:center;padding-top:6px}
-.kb{width:58%;height:12px;background:linear-gradient(#e5e5e5,#999);border-radius:2px;border:1px solid #777}
-.bottom-bar{width:82%;max-width:340px;height:32px;background:#fffaf0;border-radius:16px;display:flex;justify-content:space-around;align-items:center;margin-top:4px;box-shadow:0 4px 10px rgba(0,0,0,0.18)}
-.bottom-bar div{display:flex;align-items:center;gap:2px;font-size:7.5px;font-weight:900;color:#000}
-.ic{font-size:11px}
-#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:10px 16px;border-radius:10px;font-weight:bold;z-index:99999;display:none}
+body{background:#f1c5b0 !important;min-height:100vh;display:flex;justify-content:center;align-items:flex-start}
+.wrap{width:100%;max-width:900px;min-height:100vh;background:linear-gradient(180deg,#f9d8c5 0%,#f5bfae 45%,#e9a88f 100%);display:flex;flex-direction:column;justify-content:space-between;padding:12px 14px 18px}
+.top{width:100%;height:48px;background:#fdf6ee;border-radius:24px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+.back{width:90px;height:28px;border:1.5px solid #e58a8a;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#e86b6b;font-weight:900;background:#fffaf5;font-size:16px;cursor:pointer;flex-shrink:0}
+.top h2{font-size:18px;color:#7a3d25;font-weight:800;flex:1;text-align:center}
+.coinSpark{display:flex;align-items:center;gap:5px;font-size:9px;color:#8b7355;font-weight:700;flex-shrink:0;letter-spacing:0.8px}
+.coinSpark i{width:24px;height:24px;border:1.5px solid #d4b36a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px}
+.stage{width:100%;flex:1;display:flex;align-items:center;justify-content:space-between;position:relative;padding:20px 0}
+.left{width:18%;display:flex;flex-direction:column;gap:10px;z-index:3}
+.right{width:18%;display:flex;flex-direction:column;gap:10px;z-index:3}
+.center{width:58%;position:relative;display:flex;flex-direction:column;align-items:center;z-index:2}
+.ring1{position:absolute;top:50%;left:50%;transform:translate(-50%,-58%);width:88%;aspect-ratio:1;border-radius:50%;border:2px solid #e6b94d;pointer-events:none;opacity:0.9}
+.ring2{position:absolute;top:50%;left:50%;transform:translate(-50%,-58%);width:84%;aspect-ratio:1;border-radius:50%;border:2px solid #f0c75e;pointer-events:none;opacity:0.8}
+.pill{width:100%;height:38px;border-radius:20px;display:flex;align-items:center;padding:0 12px;gap:7px;font-size:11.5px;font-weight:800;color:#000;cursor:pointer;box-shadow:0 2px 0 rgba(0,0,0,0.05);white-space:nowrap}
+.pill span{font-size:15px;flex-shrink:0}
+.yel{background:#ffeb3b;border:1.5px solid #f5d000}
+.lblue{background:#a9d8ff;border:1.5px solid #7bbcff}
+.green{background:#7eff7e;border:1.5px solid #4ade4a}
+.yel2{background:#ffeb3b;border:1.5px solid #f5d000}
+.cyan{background:#7ef6ff;border:1.5px solid #3dd4e0}
+.pink{background:#ff9aa2;border:1.5px solid #ff7b85}
+.lpink{background:#ff9ec8;border:1.5px solid #ff7fb5}
+.purp{background:#b18cff;border:1.5px solid #9a6cff}
+.orange{background:#ffb86a;border:1.5px solid #ff9a3a}
+.lpurp{background:#b9b6ff;border:1.5px solid #9b99ff}
+.monitor{width:82%;max-width:420px;background:#111;border:5px solid #111;border-radius:12px;overflow:hidden;position:relative;box-shadow:0 10px 20px rgba(0,0,0,0.15)}
+.screen{background:#0f2e1f;padding:18px 16px 14px;text-align:center;position:relative}
+.screen::after{content:'📡';position:absolute;top:-26px;right:-8px;font-size:0;display:block;width:32px;height:38px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><g><ellipse cx="16" cy="8" rx="10" ry="6" fill="%23d0d0d0" stroke="%23999"/><path d="M16 8 L16 24" stroke="%23888" stroke-width="3"/><circle cx="24" cy="6" r="3" fill="%23aaa"/></g></svg>') no-repeat center/contain}
+.sat{position:absolute;top:-32px;right:18px;font-size:26px;z-index:4;filter:drop-shadow(0 2px 2px rgba(0,0,0,0.2))}
+.stand{width:100%;height:22px;background:linear-gradient(180deg,#e8e8e8,#c0c0c0);display:flex;justify-content:center}
+.stand2{width:56px;height:28px;background:linear-gradient(#d5d5d5,#a8a8a8);margin:0 auto;border-radius:0 0 4px 4px}
+.podium{width:100%;height:92px;background:#fffefc;border-radius:50% / 30%;box-shadow:0 10px 0 #f5d5c3, 0 20px 30px rgba(0,0,0,0.08);margin-top:-8px;display:flex;justify-content:center;align-items:flex-start;padding-top:14px;position:relative;z-index:1}
+.kb{width:62%;height:18px;background:linear-gradient(#4a4a4a,#2a2a2a);border-radius:3px;display:grid;grid-template-columns:repeat(20,1fr);gap:1px;padding:2px;box-shadow:inset 0 1px 0 #666}
+.kb div{height:3px;background:#888;border-radius:1px}
+.bottom{width:52%;max-width:420px;height:40px;background:#fdf6ee;border-radius:20px;display:flex;justify-content:space-around;align-items:center;margin:0 auto;box-shadow:0 6px 14px rgba(0,0,0,0.15)}
+.bottom div{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:900;color:#000}
+.ic{font-size:16px}
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:12px 18px;border-radius:10px;font-weight:bold;z-index:99999;display:none}
 #maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
+@media(max-width:700px){
+  .wrap{padding:8px 8px 12px;justify-content:space-between}
+  .top{height:36px;border-radius:18px;padding:0 10px}
+  .back{width:44px;height:26px;border-radius:12px;font-size:12px}
+  .top h2{font-size:13px}
+  .coinSpark{font-size:7px;gap:3px}.coinSpark i{width:18px;height:18px;font-size:10px}
+  .stage{padding:8px 0;min-height:320px}
+  .left,.right{width:23%;gap:6px}
+  .center{width:52%}
+  .pill{height:24px;font-size:7px;padding:0 6px;gap:3px;border-radius:12px}.pill span{font-size:10px}
+  .monitor{width:100%;border-radius:8px;border-width:3px}
+  .screen{padding:8px 6px}
+  .ring1,.ring2{width:118%}
+  .podium{height:52px;padding-top:8px}
+  .kb{height:12px}
+  .bottom{width:86%;height:32px;border-radius:14px}.bottom div{font-size:8px;gap:2px}.ic{font-size:11px}
+}
 </style></head><body>
 <div id="maint"><div style="max-width:400px;width:100%"><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px">Back</button></div></div>
 <div id="toast"></div>
@@ -37,41 +66,42 @@ body{background:#e89a7a !important;min-height:100vh;display:flex;justify-content
   <div class="top">
     <div class="back" onclick="location.href='./index.html'"><</div>
     <h2>Welcome <span id="headerText" style="color:#b45f2e">Ineza</span></h2>
-    <div class="logo"><img src="./logo.jpg" style="width:24px;height:24px;border-radius:50%;border:2px solid #fbbf24;object-fit:cover"></div>
+    <div class="coinSpark"><i>💎</i> COINSPARK</div>
   </div>
   <div class="stage">
     <div class="left">
-      <div class="pill y1" onclick="location.href='./wallet.html'"><span>💰</span><b>Wallet</b></div>
-      <div class="pill b1" onclick="location.href='./watch.html'"><span>📺</span><b>Watch & Earn</b></div>
-      <div class="pill g1" onclick="location.href='./survey.html'"><span>📝</span><b>Surveys</b></div>
-      <div class="pill y2" onclick="location.href='./bonus.html'"><span>🎁</span><b>Daily Bonus</b></div>
-      <div class="pill c1" onclick="location.href='./ads_earn.html'"><span>📢</span><b>Ads Earn</b></div>
+      <div class="pill yel" onclick="location.href='./wallet.html'"><span>💰</span><b>Wallet</b></div>
+      <div class="pill lblue" onclick="location.href='./watch.html'"><span>📺</span><b>Watch & Earn</b></div>
+      <div class="pill green" onclick="location.href='./survey.html'"><span>📝</span><b>Surveys</b></div>
+      <div class="pill yel2" onclick="location.href='./bonus.html'"><span>🎁</span><b>Daily Bonus</b></div>
+      <div class="pill cyan" onclick="location.href='./ads_earn.html'"><span>📢</span><b>Ads Earn</b></div>
     </div>
-    <div class="mid">
-      <div class="ring"></div>
+    <div class="center">
+      <div class="ring1"></div><div class="ring2"></div>
+      <div class="sat">📡</div>
       <div class="monitor">
-        <div class="mon-screen">
-          <div style="color:#d4e8a0;font-size:6px;margin-bottom:4px">Your Balance</div>
-          <div style="display:flex;gap:2px;text-align:left">
-            <div style="flex:1"><div style="font-size:5px;color:#c4d88a">⭐ COINS</div><div id="balance" style="font-size:8px;color:#ffe58a;font-weight:900">0 coins</div><div id="usdBalance" style="font-size:5px;color:#a8d0a0">= $0.0000</div></div>
-            <div style="width:1px;background:rgba(251,191,36,0.3)"></div>
-            <div style="flex:1"><div style="font-size:5px;color:#a0d8b0">💎 USDT</div><div id="usdtBalanceDisplay" style="font-size:8px;color:#7eff9a;font-weight:900">0.7945 USDT</div><div style="font-size:4px;color:#7abf8a">Available to withdraw</div></div>
+        <div class="screen">
+          <div style="color:#e8e8a0;font-size:11px;margin-bottom:12px">Your Balance</div>
+          <div style="display:flex;gap:8px;text-align:left">
+            <div style="flex:1"><div style="font-size:9px;color:#f0d060">⭐ COINS</div><div id="balance" style="font-size:14px;color:#ffe58a;font-weight:900;margin-top:4px">0 coins</div><div id="usdBalance" style="font-size:9px;color:#a8d0a0;margin-top:3px">= $0.0000</div></div>
+            <div style="width:1px;background:rgba(251,191,36,0.25)"></div>
+            <div style="flex:1"><div style="font-size:9px;color:#a0e0a0">💎 USDT</div><div id="usdtBalanceDisplay" style="font-size:14px;color:#7eff9a;font-weight:900;margin-top:4px">0.7945 USDT</div><div style="font-size:7px;color:#8ccf8c;margin-top:3px">Available to withdraw</div></div>
           </div>
         </div>
-        <div style="height:10px;background:#e8e8e8"></div>
+        <div class="stand"></div>
       </div>
-      <div class="stand"></div>
-      <div class="podium"><div class="kb"></div></div>
+      <div class="stand2"></div>
+      <div class="podium"><div class="kb"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
     </div>
     <div class="right">
-      <div class="pill r1" onclick="location.href='./offers.html'"><span>💎</span><b>Offers</b></div>
-      <div class="pill p1" onclick="location.href='./checkin.html'"><span>📅</span><b>Daily Checkin</b></div>
-      <div class="pill pu1" onclick="location.href='./articles_earn.html'"><span>📖</span><b>Articles Earn</b></div>
-      <div class="pill o1" onclick="location.href='./referrals.html'"><span>🤝</span><b>Refer & Earn</b></div>
-      <div class="pill pu2" onclick="location.href='./more.html'"><span>❄️</span><b>More</b></div>
+      <div class="pill pink" onclick="location.href='./offers.html'"><span>💎</span><b>Offers</b></div>
+      <div class="pill lpink" onclick="location.href='./checkin.html'"><span>📅</span><b>Daily Checkin</b></div>
+      <div class="pill purp" onclick="location.href='./articles_earn.html'"><span>📖</span><b>Articles Earn</b></div>
+      <div class="pill orange" onclick="location.href='./referrals.html'"><span>🤝</span><b>Refer & Earn</b></div>
+      <div class="pill lpurp" onclick="location.href='./more.html'"><span>❄️</span><b>More</b></div>
     </div>
   </div>
-  <div class="bottom-bar">
+  <div class="bottom">
     <div><span class="ic">🏠</span><b>Home</b></div><div><span class="ic">📋</span><b>Tasks</b></div><div><span class="ic">💰</span><b>Earn</b></div><div><span class="ic">👤</span><b>Profile</b></div>
   </div>
 </div>
