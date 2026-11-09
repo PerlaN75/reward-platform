@@ -3,20 +3,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#f1c5b0 !important;min-height:100vh;display:flex;justify-content:center;align-items:flex-start}
-.wrap{width:100%;max-width:900px;min-height:100vh;background:linear-gradient(180deg,#f9d8c5 0%,#f5bfae 45%,#e9a88f 100%);display:flex;flex-direction:column;justify-content:space-between;padding:12px 14px 18px}
-.top{width:100%;height:48px;background:#fdf6ee;border-radius:24px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+body{background:#f1c5b0 !important;min-height:100vh;display:flex;justify-content:center;overflow-x:hidden}
+.wrap{width:100%;max-width:900px;background:linear-gradient(180deg,#f9d8c5 0%,#f5bfae 45%,#e9a88f 100%);display:flex;flex-direction:column;align-items:center;padding:10px 10px 12px;gap:8px}
+.top{width:100%;height:48px;background:#fdf6ee;border-radius:24px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;box-shadow:0 4px 12px rgba(0,0,0,0.08);flex-shrink:0}
 .back{width:90px;height:28px;border:1.5px solid #e58a8a;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#e86b6b;font-weight:900;background:#fffaf5;font-size:16px;cursor:pointer;flex-shrink:0}
 .top h2{font-size:18px;color:#7a3d25;font-weight:800;flex:1;text-align:center}
 .coinSpark{display:flex;align-items:center;gap:5px;font-size:9px;color:#8b7355;font-weight:700;flex-shrink:0;letter-spacing:0.8px}
 .coinSpark i{width:24px;height:24px;border:1.5px solid #d4b36a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px}
-.stage{width:100%;flex:1;display:flex;align-items:center;justify-content:space-between;position:relative;padding:20px 0}
-.left{width:18%;display:flex;flex-direction:column;gap:10px;z-index:3}
-.right{width:18%;display:flex;flex-direction:column;gap:10px;z-index:3}
-.center{width:58%;position:relative;display:flex;flex-direction:column;align-items:center;z-index:2}
+.stage{width:100%;display:flex;align-items:center;justify-content:space-between;position:relative;padding:0;flex-shrink:0}
+.left{width:20%;display:flex;flex-direction:column;gap:6px;z-index:3}
+.right{width:20%;display:flex;flex-direction:column;gap:6px;z-index:3}
+.center{width:54%;position:relative;display:flex;flex-direction:column;align-items:center;z-index:2}
 .ring1{position:absolute;top:50%;left:50%;transform:translate(-50%,-58%);width:88%;aspect-ratio:1;border-radius:50%;border:2px solid #e6b94d;pointer-events:none;opacity:0.9}
 .ring2{position:absolute;top:50%;left:50%;transform:translate(-50%,-58%);width:84%;aspect-ratio:1;border-radius:50%;border:2px solid #f0c75e;pointer-events:none;opacity:0.8}
-.pill{width:100%;height:38px;border-radius:20px;display:flex;align-items:center;padding:0 12px;gap:7px;font-size:11.5px;font-weight:800;color:#000;cursor:pointer;box-shadow:0 2px 0 rgba(0,0,0,0.05);white-space:nowrap}
+/* BUTTONS SMALLER - TEXT SAME SIZE */
+.pill{width:100%;height:28px;border-radius:16px;display:flex;align-items:center;padding:0 8px;gap:4px;font-size:11.5px;font-weight:800;color:#000;cursor:pointer;white-space:nowrap;transform:scale(0.85);transform-origin:left}
+.right .pill{transform-origin:right}
 .pill span{font-size:15px;flex-shrink:0}
 .yel{background:#ffeb3b;border:1.5px solid #f5d000}
 .lblue{background:#a9d8ff;border:1.5px solid #7bbcff}
@@ -28,36 +30,33 @@ body{background:#f1c5b0 !important;min-height:100vh;display:flex;justify-content
 .purp{background:#b18cff;border:1.5px solid #9a6cff}
 .orange{background:#ffb86a;border:1.5px solid #ff9a3a}
 .lpurp{background:#b9b6ff;border:1.5px solid #9b99ff}
-.monitor{width:82%;max-width:420px;background:#111;border:5px solid #111;border-radius:12px;overflow:hidden;position:relative;box-shadow:0 10px 20px rgba(0,0,0,0.15)}
-.screen{background:#0f2e1f;padding:18px 16px 14px;text-align:center;position:relative}
-.screen::after{content:'📡';position:absolute;top:-26px;right:-8px;font-size:0;display:block;width:32px;height:38px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><g><ellipse cx="16" cy="8" rx="10" ry="6" fill="%23d0d0d0" stroke="%23999"/><path d="M16 8 L16 24" stroke="%23888" stroke-width="3"/><circle cx="24" cy="6" r="3" fill="%23aaa"/></g></svg>') no-repeat center/contain}
-.sat{position:absolute;top:-32px;right:18px;font-size:26px;z-index:4;filter:drop-shadow(0 2px 2px rgba(0,0,0,0.2))}
-.stand{width:100%;height:22px;background:linear-gradient(180deg,#e8e8e8,#c0c0c0);display:flex;justify-content:center}
-.stand2{width:56px;height:28px;background:linear-gradient(#d5d5d5,#a8a8a8);margin:0 auto;border-radius:0 0 4px 4px}
-.podium{width:100%;height:92px;background:#fffefc;border-radius:50% / 30%;box-shadow:0 10px 0 #f5d5c3, 0 20px 30px rgba(0,0,0,0.08);margin-top:-8px;display:flex;justify-content:center;align-items:flex-start;padding-top:14px;position:relative;z-index:1}
-.kb{width:62%;height:18px;background:linear-gradient(#4a4a4a,#2a2a2a);border-radius:3px;display:grid;grid-template-columns:repeat(20,1fr);gap:1px;padding:2px;box-shadow:inset 0 1px 0 #666}
-.kb div{height:3px;background:#888;border-radius:1px}
-.bottom{width:52%;max-width:420px;height:40px;background:#fdf6ee;border-radius:20px;display:flex;justify-content:space-around;align-items:center;margin:0 auto;box-shadow:0 6px 14px rgba(0,0,0,0.15)}
+/* COMPUTER SMALLER - TEXT SAME */
+.monitor{width:62%;max-width:320px;background:#111;border:4px solid #111;border-radius:10px;overflow:hidden;position:relative;box-shadow:0 8px 16px rgba(0,0,0,0.15);transform:scale(0.82)}
+.screen{background:#0f2e1f;padding:14px 12px 10px;text-align:center;position:relative}
+.sat{position:absolute;top:-26px;right:16px;font-size:20px;z-index:4}
+.stand{width:100%;height:18px;background:linear-gradient(180deg,#e8e8e8,#c0c0c0)}
+.stand2{width:44px;height:20px;background:linear-gradient(#d5d5d5,#a8a8a8);margin:0 auto;border-radius:0 0 3px 3px}
+.podium{width:90%;height:68px;background:#fffefc;border-radius:50% / 30%;box-shadow:0 8px 0 #f5d5c3;margin-top:-6px;display:flex;justify-content:center;align-items:flex-start;padding-top:10px;z-index:1;transform:scale(0.82);margin-top:-12px}
+.kb{width:60%;height:14px;background:#2a2a2a;border-radius:2px}
+.bottom{width:52%;max-width:420px;height:40px;background:#fdf6ee;border-radius:20px;display:flex;justify-content:space-around;align-items:center;box-shadow:0 6px 14px rgba(0,0,0,0.15);flex-shrink:0}
 .bottom div{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:900;color:#000}
 .ic{font-size:16px}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:12px 18px;border-radius:10px;font-weight:bold;z-index:99999;display:none}
 #maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
 @media(max-width:700px){
-  .wrap{padding:8px 8px 12px;justify-content:space-between}
-  .top{height:36px;border-radius:18px;padding:0 10px}
-  .back{width:44px;height:26px;border-radius:12px;font-size:12px}
+  .top{height:36px;border-radius:18px}
+  .back{width:44px;height:26px;font-size:12px}
   .top h2{font-size:13px}
-  .coinSpark{font-size:7px;gap:3px}.coinSpark i{width:18px;height:18px;font-size:10px}
-  .stage{padding:8px 0;min-height:320px}
-  .left,.right{width:23%;gap:6px}
-  .center{width:52%}
-  .pill{height:24px;font-size:7px;padding:0 6px;gap:3px;border-radius:12px}.pill span{font-size:10px}
-  .monitor{width:100%;border-radius:8px;border-width:3px}
+  .coinSpark{font-size:7px}
+  .left,.right{width:24%}
+  .center{width:50%}
+  .pill{height:22px;font-size:7px;transform:scale(0.88)}
+  .pill span{font-size:9px}
+  .monitor{width:100%}
   .screen{padding:8px 6px}
-  .ring1,.ring2{width:118%}
-  .podium{height:52px;padding-top:8px}
-  .kb{height:12px}
-  .bottom{width:86%;height:32px;border-radius:14px}.bottom div{font-size:8px;gap:2px}.ic{font-size:11px}
+  .ring1,.ring2{width:108%}
+  .podium{height:42px}
+  .bottom{width:86%;height:32px}.bottom div{font-size:8px}.ic{font-size:11px}
 }
 </style></head><body>
 <div id="maint"><div style="max-width:400px;width:100%"><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px">Back</button></div></div>
@@ -91,7 +90,7 @@ body{background:#f1c5b0 !important;min-height:100vh;display:flex;justify-content
         <div class="stand"></div>
       </div>
       <div class="stand2"></div>
-      <div class="podium"><div class="kb"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
+      <div class="podium"><div class="kb"></div></div>
     </div>
     <div class="right">
       <div class="pill pink" onclick="location.href='./offers.html'"><span>💎</span><b>Offers</b></div>
