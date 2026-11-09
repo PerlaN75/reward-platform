@@ -1,108 +1,55 @@
 <!DOCTYPE html>
 <html><head><title>Home - Rewards</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#a8d5a8;min-height:100vh;display:flex;justify-content:center;align-items:center;overflow-x:hidden}
-.wrap{width:100%;max-width:430px;min-height:100vh;position:relative;overflow:hidden;display:flex;flex-direction:column;background:linear-gradient(180deg,#2ec4a5 0%,#6ed5a8 25%,#c8e8a0 60%,#e8f5d0 75%,#2ec4a5 76%,#0a7a5a 100%);}
-/* Leaf shadows background - like image */
-.wrap::before{content:'';position:absolute;top:0;left:0;width:100%;height:76%;background:radial-gradient(ellipse at 10% 20%,rgba(0,60,20,0.18) 0%,transparent 40%),radial-gradient(ellipse at 90% 15%,rgba(0,60,20,0.15) 0%,transparent 35%),radial-gradient(ellipse at 5% 60%,rgba(0,60,20,0.12) 0%,transparent 30%);pointer-events:none;z-index:1}
-/* Light floor glow */
-.wrap::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:24%;background:radial-gradient(ellipse at center bottom,rgba(255,255,255,0.9) 0%,rgba(255,215,100,0.3) 40%,transparent 70%);pointer-events:none;z-index:1}
-/* Top bar */
-.top{margin:10px 12px 0;background:rgba(255,255,255,0.92);border-radius:20px;height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,0.12);flex-shrink:0;position:relative}
+body{background:#b8e0e0;display:flex;justify-content:center;align-items:center;min-height:100vh}
+.wrap{width:100%;max-width:430px;min-height:100vh;background:#c8e8e6 url('./bg.jpeg') no-repeat center top;background-size:100% 100%;position:relative;display:flex;flex-direction:column;overflow:hidden}
+.top{margin:10px 12px 0;background:rgba(255,255,255,0.96);border-radius:20px;height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,0.12);flex-shrink:0}
 .back{width:46px;height:26px;border:1.2px solid #e58a8a;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#e86b6b;font-weight:900;background:#fffaf5;font-size:14px;cursor:pointer}
-.top h2{font-size:14px;color:#2d5a3a;font-weight:800;flex:1;text-align:center}
-.logo{width:24px;height:24px;border-radius:50%;overflow:hidden;border:1.5px solid #d4a95a;background:#fff;flex-shrink:0}
+.top h2{font-size:14px;color:#4a8a85;font-weight:800;flex:1;text-align:center}
+.logo{width:24px;height:24px;border-radius:50%;overflow:hidden;border:1.5px solid #d4a95a;background:#fff}
 .logo img{width:100%;height:100%;object-fit:cover}
-/* Scene - vertical */
-.scene{flex:1;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding-top:8px}
-/* Triple gold arches - like image */
-.arch1{position:absolute;top:8%;left:50%;transform:translateX(-52%);width:66%;height:52%;border:2px solid #d4a95a;border-bottom:none;border-radius:50% 50% 0 0;z-index:2}
-.arch2{position:absolute;top:10%;left:50%;transform:translateX(-50%);width:58%;height:46%;border:2px solid #d4a95a;border-bottom:none;border-radius:50% 50% 0 0;z-index:2}
-.arch3{position:absolute;top:12%;left:50%;transform:translateX(-48%);width:50%;height:40%;border:2px solid #c89a3a;border-bottom:none;border-radius:50% 50% 0 0;z-index:2}
-/* Gold balls on arches */
-.dot{position:absolute;width:12px;height:12px;background:radial-gradient(circle at 30% 30%,#ffe58a,#d4a95a);border-radius:50%;box-shadow:0 2px 4px rgba(0,0,0,0.2);z-index:3}
-.d1{top:12%;left:78%;width:10px;height:10px}
-.d2{top:32%;left:32%;width:10px;height:10px}
-.d3{top:46%;left:84%;width:16px;height:16px}
-.d4{top:50%;left:10%;width:22px;height:22px}
-/* Gold half ring behind - like image */
-.goldHalf{position:absolute;top:36%;right:14%;width:42%;height:32%;border:10px solid transparent;border-top:10px solid #d4a95a;border-right:10px solid #d4a95a;border-radius:50%;transform:rotate(15deg);background:repeating-radial-gradient(circle at center,#d4a95a 0px,#e6c07a 2px,#d4a95a 4px);mask:radial-gradient(circle,transparent 62%,black 64%);-webkit-mask:radial-gradient(circle,transparent 62%,black 64%);z-index:2;opacity:0.95}
-/* Palm leaf dark - like image right side */
-.palm{position:absolute;top:38%;right:4%;width:42%;height:38%;z-index:4;pointer-events:none;transform:rotate(-10deg)}
-.palm::before{content:'🌿';font-size:110px;position:absolute;top:0;left:0;filter:brightness(0.2) sepia(1) hue-rotate(160deg) saturate(3);opacity:0.9}
-/* White podium - like image */
-.podium{position:absolute;left:50%;bottom:24%;transform:translateX(-50%);width:82%;height:12%;background:radial-gradient(ellipse at center top,#ffffff 0%,#f5f5f5 60%,#d5e8d5 100%);border-radius:50%;z-index:5;box-shadow:0 1px 0 #fff,0 12px 0 #e8f0e0,0 18px 25px rgba(0,0,0,0.18)}
-.monitor{position:absolute;top:20%;left:50%;transform:translateX(-50%);width:70%;background:#0f2e1f;border:4px solid #111;border-radius:12px;overflow:hidden;z-index:6;box-shadow:0 12px 24px rgba(0,0,0,0.25)}
-.screen{padding:12px 10px 10px;text-align:center;position:relative}
-.sat{position:absolute;top:-18px;right:6px;font-size:18px}
+.scene{flex:1;position:relative;z-index:2}
+.monitor{position:absolute;top:28%;left:50%;transform:translateX(-50%);width:78%;max-width:340px;background:#0f2e1f;border:4px solid #111;border-radius:12px;overflow:hidden;z-index:5;box-shadow:0 12px 28px rgba(0,0,0,0.25)}
+.screen{padding:14px 12px 10px;text-align:center;position:relative}
+.sat{position:absolute;top:-4px;right:8px;font-size:14px;background:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center}
 .stand{width:100%;height:12px;background:linear-gradient(#e8e8e8,#c0c0c0)}
-.stand2{width:40px;height:16px;background:linear-gradient(#d5d5d5,#a8a8a8);margin:0 auto;border-radius:0 0 4px 4px;position:relative;z-index:6}
-.pill{position:absolute;pointer-events:auto;height:26px;border-radius:14px;display:flex;align-items:center;padding:0 8px;gap:4px;font-size:7.5px;font-weight:800;color:#000;box-shadow:0 3px 8px rgba(0,0,0,0.18);cursor:pointer;white-space:nowrap;z-index:7;border:1px solid rgba(0,0,0,0.08)}
+.stand2{width:40px;height:16px;background:linear-gradient(#d5d5d5,#a8a8a8);margin:0 auto;border-radius:0 0 4px 4px}
+.pill{position:absolute;height:27px;border-radius:15px;display:flex;align-items:center;padding:0 10px;gap:4px;font-size:8px;font-weight:800;color:#000;box-shadow:0 3px 10px rgba(0,0,0,0.18);cursor:pointer;white-space:nowrap;z-index:6;border:1px solid rgba(255,255,255,0.9)}
 .p1{left:3%;top:18%;background:#ffeb3b}
-.p2{left:1%;top:25%;background:#a9d8ff}
-.p3{left:1%;top:32%;background:#7eff7e}
-.p4{left:3%;top:39%;background:#ffeb3b}
-.p5{left:5%;top:46%;background:#7ef6ff}
+.p2{left:1%;top:26%;background:#a9d8ff}
+.p3{left:1%;top:34%;background:#7eff7e}
+.p4{left:3%;top:42%;background:#ffeb3b}
+.p5{left:5%;top:50%;background:#7ef6ff}
 .p6{right:3%;top:18%;background:#ff9aa2}
-.p7{right:1%;top:25%;background:#ff9ec8}
-.p8{right:1%;top:32%;background:#b18cff}
-.p9{right:3%;top:39%;background:#ffb86a}
-.p10{right:5%;top:46%;background:#b9b6ff}
-.bottom{width:66%;height:34px;background:rgba(255,255,255,0.96);border-radius:18px;display:flex;justify-content:space-around;align-items:center;margin:10px auto 12px;box-shadow:0 4px 14px rgba(0,0,0,0.18);z-index:10;flex-shrink:0;position:relative}
-.bottom div{display:flex;align-items:center;gap:3px;font-size:7.5px;font-weight:900;color:#000}
-.ic{font-size:11px}
+.p7{right:1%;top:26%;background:#ff9ec8}
+.p8{right:1%;top:34%;background:#b18cff}
+.p9{right:3%;top:42%;background:#ffb86a}
+.p10{right:5%;top:50%;background:#b9b6ff}
+.bottom{width:66%;height:34px;background:rgba(255,255,255,0.98);border-radius:18px;display:flex;justify-content:space-around;align-items:center;margin:10px auto 14px;box-shadow:0 4px 14px rgba(0,0,0,0.18);z-index:10;flex-shrink:0}
+.bottom div{display:flex;align-items:center;gap:3px;font-size:7.5px;font-weight:900}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:12px 18px;border-radius:10px;font-weight:bold;z-index:99999;display:none}
 #maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
 </style></head><body>
-<div id="maint"><div style="max-width:400px;width:100%"><h1 style="color:#fbbf24;font-size:22px">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900;cursor:pointer">Back</button></div></div>
+<div id="maint"><div style="max-width:400px;width:100%"><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900">Back</button></div></div>
 <div id="toast"></div>
 <div class="wrap">
-  <div class="top">
-    <div class="back" onclick="location.href='./index.html'"><</div>
-    <h2>Welcome <span id="headerText" style="color:#2d5a3a">Ineza</span></h2>
-    <div class="logo"><img src="./logo.jpg" alt="logo"></div>
-  </div>
+  <div class="top"><div class="back" onclick="location.href='./index.html'"><</div><h2>Welcome <span id="headerText" style="color:#4a8a85">Ineza</span></h2><div class="logo"><img src="./logo.jpg"></div></div>
   <div class="scene">
-    <div class="arch1"></div><div class="arch2"></div><div class="arch3"></div>
-    <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div><div class="dot d4"></div>
-    <div class="goldHalf"></div><div class="palm"></div><div class="podium"></div>
-    <div class="monitor">
-      <div class="screen">
-        <div class="sat">📡</div>
-        <div style="color:#c8e8a0;font-size:11px;margin-bottom:8px">Your Balance</div>
-        <div style="display:flex;gap:8px;text-align:left">
-          <div style="flex:1"><div style="font-size:7px;color:#f0d060">⭐ COINS</div><div id="balance" style="font-size:12px;color:#ffe58a;font-weight:900;margin-top:3px">0 coins</div><div id="usdBalance" style="font-size:7px;color:#a8d0a0;margin-top:1px">= $0.0000</div></div>
-          <div style="width:1px;background:rgba(251,191,36,0.25)"></div>
-          <div style="flex:1"><div style="font-size:7px;color:#a0e0a0">💎 USDT</div><div id="usdtBalanceDisplay" style="font-size:12px;color:#7eff9a;font-weight:900;margin-top:3px">0.7945 USDT</div><div style="font-size:5px;color:#8ccf8c;margin-top:1px">Available to withdraw</div></div>
-        </div>
-      </div>
-      <div class="stand"></div>
-    </div>
-    <div class="stand2" style="position:absolute;top:40.5%;left:50%;transform:translateX(-50%);z-index:6"></div>
-    <div class="pill p1" onclick="location.href='./wallet.html'">💰 Wallet</div>
-    <div class="pill p2" onclick="location.href='./watch.html'">📺 Watch & Earn</div>
-    <div class="pill p3" onclick="location.href='./survey.html'">📋 Surveys</div>
-    <div class="pill p4" onclick="location.href='./bonus.html'">🎁 Daily Bonus</div>
-    <div class="pill p5" onclick="location.href='./ads_earn.html'">📢 Ads Earn</div>
-    <div class="pill p6" onclick="location.href='./offers.html'">💎 Offers</div>
-    <div class="pill p7" onclick="location.href='./checkin.html'">📅 Daily Checkin</div>
-    <div class="pill p8" onclick="location.href='./articles_earn.html'">📖 Articles Earn</div>
-    <div class="pill p9" onclick="location.href='./referrals.html'">🤝 Refer & Earn</div>
-    <div class="pill p10" onclick="location.href='./more.html'">❄️ More</div>
+    <div class="monitor"><div class="screen"><div class="sat">📡</div><div style="color:#c8e8a0;font-size:11px;margin-bottom:8px">Your Balance</div><div style="display:flex;gap:8px;text-align:left"><div style="flex:1"><div style="font-size:7px;color:#f0d060">⭐ COINS</div><div id="balance" style="font-size:13px;color:#ffe58a;font-weight:900;margin-top:3px">0 coins</div><div id="usdBalance" style="font-size:7px;color:#a8d0a0">= $0.0000</div></div><div style="width:1px;background:rgba(251,191,36,0.25)"></div><div style="flex:1"><div style="font-size:7px;color:#a0e0a0">💎 USDT</div><div id="usdtBalanceDisplay" style="font-size:13px;color:#7eff9a;font-weight:900;margin-top:3px">0.7945 USDT</div><div style="font-size:5px;color:#8ccf8c">Available to withdraw</div></div></div></div><div class="stand"></div></div>
+    <div class="stand2" style="position:absolute;top:48%;left:50%;transform:translateX(-50%);z-index:5"></div>
+    <div class="pill p1" onclick="location.href='./wallet.html'">💰 Wallet</div><div class="pill p2" onclick="location.href='./watch.html'">📺 Watch & Earn</div><div class="pill p3" onclick="location.href='./survey.html'">📋 Surveys</div><div class="pill p4" onclick="location.href='./bonus.html'">🎁 Daily Bonus</div><div class="pill p5" onclick="location.href='./ads_earn.html'">📢 Ads Earn</div>
+    <div class="pill p6" onclick="location.href='./offers.html'">💎 Offers</div><div class="pill p7" onclick="location.href='./checkin.html'">📅 Daily Checkin</div><div class="pill p8" onclick="location.href='./articles_earn.html'">📖 Articles Earn</div><div class="pill p9" onclick="location.href='./referrals.html'">🤝 Refer & Earn</div><div class="pill p10" onclick="location.href='./more.html'">❄️ More</div>
   </div>
-  <div class="bottom">
-    <div><span class="ic">🏠</span><b>Home</b></div><div><span class="ic">📋</span><b>Tasks</b></div><div><span class="ic">💰</span><b>Earn</b></div><div><span class="ic">👤</span><b>Profile</b></div>
-  </div>
+  <div class="bottom"><div>🏠 Home</div><div>📋 Tasks</div><div>💰 Earn</div><div>👤 Profile</div></div>
 </div>
 <script>
 (function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}');if(c&&(c.balance!=null||c.points!=null||c.username)){var bal=c.balance??c.points??0;var usdt=c.usdtBalance??0;document.getElementById('balance').textContent=bal+' coins';document.getElementById('usdBalance').textContent='= $'+(bal*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').textContent=Number(usdt).toFixed(4)+' USDT';if(c.username)document.getElementById('headerText').textContent=c.username;}}catch(e){}})();
 </script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
-const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
-firebase.initializeApp(firebaseConfig);
+const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};firebase.initializeApp(firebaseConfig);
 try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
 const auth=firebase.auth(),db=firebase.firestore();
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}window.alert=showToast;
