@@ -1,74 +1,81 @@
 <!DOCTYPE html>
 <html><head><title>Home - Rewards</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-<meta name="referrer" content="no-referrer-when-downgrade" />
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;-webkit-tap-highlight-color:transparent}
-html,body{height:100%}
-body{background:#f7bca3 !important;min-height:100vh;width:100%;display:flex;justify-content:center;align-items:center;overflow-x:hidden}
-.wrap{width:100%;max-width:480px;min-height:100vh;background:linear-gradient(180deg,#f9d5c5 0%,#f5b9a0 60%,#e89a7a 100%);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:14px 8px;gap:10px}
-.top-bar{width:100%;height:38px;background:#fffaf3;border-radius:22px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;box-shadow:0 3px 10px rgba(0,0,0,0.08)}
-.back-rect{width:45px;height:30px;border:1.5px solid #ef7a7a;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#ef7a7a;font-weight:900;cursor:pointer;background:#fffaf3;font-size:12px;flex-shrink:0}
-.top-bar h2{font-size:13px;color:#8b4513;font-weight:800;flex:1;text-align:center}
-.logo-box{width:45px;display:flex;justify-content:flex-end;flex-shrink:0}
-.mid{width:100%;position:relative;display:flex;justify-content:space-between;align-items:flex-start;gap:3px}
-.side{width:27%;display:flex;flex-direction:column;gap:5px;z-index:3}
-.center{width:46%;position:relative;display:flex;flex-direction:column;align-items:center;z-index:2}
-.gold{position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);width:148%;aspect-ratio:1;border-radius:50%;border:1.5px solid #f5c542;pointer-events:none}
-.gold::before{content:'';position:absolute;inset:9px;border:1.5px solid #f7d16a;border-radius:50%}
-.pill{width:100%;height:24px;border-radius:14px;display:flex;align-items:center;padding:0 5px;gap:3px;font-size:7px;font-weight:800;color:#000;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.08);white-space:nowrap;overflow:hidden;letter-spacing:-0.2px}
-.pill .em{font-size:9px;flex-shrink:0}
-.w1{background:#ffec5c;border:1.5px solid #f5c200}.w2{background:#a9d6ff;border:1.5px solid #5aa8ff}.w3{background:#7dff9a;border:1.5px solid #22c55e}.w4{background:#ffeb4d;border:1.5px solid #f5c200}.w5{background:#7ef8ff;border:1.5px solid #06b6d4}
-.o1{background:#ff9aa2;border:1.5px solid #ef4444}.o2{background:#ff9ecf;border:1.5px solid #ec4899}.o3{background:#b07cff;border:1.5px solid #7c3aed}.o4{background:#ffb86a;border:1.5px solid #f97316}.o5{background:#b8b6ff;border:1.5px solid #8b5cf6}
-.pc{width:100%;background:#123d25;border:3px solid #111;border-radius:7px 7px 3px 3px;padding:5px;text-align:center;position:relative}
-.pc::after{content:'📡';position:absolute;top:-12px;right:-2px;font-size:12px}
-.base{width:44px;height:8px;background:#c0c0c0;margin:0 auto;border-radius:0 0 4px 4px}
-.podium{width:120%;height:44px;background:#fffefc;border-radius:50% / 30%;box-shadow:0 5px 0 #f5d5c3;margin-top:1px;margin-left:-10%}
-.kbd{width:86%;height:10px;background:linear-gradient(#e5e5e5,#b5b5b5);margin:4px auto 0;border-radius:2px}
-.bottom{margin-top:8px;background:#fffaf0;border-radius:16px;display:flex;justify-content:space-around;align-items:center;height:32px;box-shadow:0 4px 10px rgba(0,0,0,0.18);width:84%;max-width:320px}
-.bottom div{display:flex;align-items:center;gap:2px;font-size:8px;font-weight:900;color:#000}
-.be{font-size:11px}
-#customToast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:10px 16px;border-radius:10px;font-weight:bold;z-index:99999;display:none;font-size:12px}
-#maintenanceOverlay{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#000 !important;min-height:100vh;display:flex;justify-content:center;align-items:center}
+.main-wrap{width:100%;max-width:1000px;background:linear-gradient(180deg,#f9d5c5 0%,#f5b9a0 60%,#e89a7a 100%);min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:12px 10px}
+.top{width:100%;height:46px;background:#fffaf3;border-radius:28px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;box-shadow:0 5px 15px rgba(0,0,0,0.1)}
+.back{width:45px;height:30px;border:2px solid #ef7a7a;border-radius:16px;display:flex;align-items:center;justify-content:center;color:#ef7a7a;font-weight:900;cursor:pointer;background:#fffaf3}
+.top h2{font-size:15px;color:#7a3b1f;font-weight:800;flex:1;text-align:center}
+.logo{width:45px;display:flex;justify-content:flex-end}
+.stage{width:100%;position:relative;display:flex;align-items:center;justify-content:space-between;margin-top:14px;min-height:320px}
+.left,.right{width:22%;display:flex;flex-direction:column;gap:8px;z-index:3}
+.mid{width:56%;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2}
+.ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);width:88%;aspect-ratio:1;border-radius:50%;border:2px solid #f5c542;pointer-events:none}
+.ring::before{content:'';position:absolute;inset:10px;border:2px solid #f7d16a;border-radius:50%}
+.pill{width:100%;height:30px;border-radius:18px;display:flex;align-items:center;padding:0 8px;gap:5px;font-size:9px;font-weight:900;color:#000;cursor:pointer;box-shadow:0 2px 4px rgba(0,0,0,0.1);white-space:nowrap}
+.pill b{font-weight:900}
+.y1{background:#ffe44a;border:2px solid #f5c200}.b1{background:#a9d6ff;border:2px solid #5aa8ff}.g1{background:#7dff8a;border:2px solid #22c55e}.y2{background:#ffeb4d;border:2px solid #f5c200}.c1{background:#7ef8ff;border:2px solid #06b6d4}
+.r1{background:#ff9aa2;border:2px solid #ef4444}.p1{background:#ff9ecf;border:2px solid #ec4899}.pu1{background:#b07cff;border:2px solid #7c3aed}.o1{background:#ffb86a;border:2px solid #f97316}.pu2{background:#b8b6ff;border:2px solid #8b5cf6}
+.monitor{width:72%;max-width:320px;background:#0f2e1f;border:5px solid #111;border-radius:10px 10px 6px 6px;padding:0;overflow:hidden;position:relative;z-index:2}
+.mon-top{height:10px;background:#111}
+.mon-screen{background:#123d25;padding:12px 10px;text-align:center;position:relative}
+.mon-screen::after{content:'📡';position:absolute;top:-22px;right:-10px;font-size:22px}
+.stand{width:40px;height:22px;background:linear-gradient(#d0d0d0,#a0a0a0);margin:0 auto}
+.podium{width:92%;height:78px;background:#fffefc;border-radius:50% / 30%;box-shadow:0 8px 0 #f5d5c3;margin-top:-8px;position:relative;z-index:1;display:flex;justify-content:center;align-items:flex-start;padding-top:8px}
+.kb{width:62%;height:16px;background:linear-gradient(#e5e5e5,#999);border-radius:3px;border:1px solid #777}
+.bottom-bar{width:54%;max-width:420px;height:38px;background:#fffaf0;border-radius:18px;display:flex;justify-content:space-around;align-items:center;margin:16px auto 0;box-shadow:0 5px 14px rgba(0,0,0,0.18);z-index:3}
+.bottom-bar div{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:900;color:#000}
+.ic{font-size:14px}
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:12px 18px;border-radius:10px;font-weight:bold;z-index:99999;display:none}
+#maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
+@media(max-width:600px){
+  .left,.right{width:26%} .mid{width:48%} .monitor{width:95%} .pill{height:26px;font-size:7.5px;padding:0 5px} .pill .em{font-size:9px} .top h2{font-size:13px} .bottom-bar{width:86%;height:34px} .bottom-bar div{font-size:8.5px} .podium{height:58px}
+}
 </style></head><body>
-<div id="maintenanceOverlay"><div style="max-width:400px;width:100%"><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px">Back</button></div></div>
-<div id="customToast"></div>
-<div class="wrap">
-  <div class="top-bar">
-    <div class="back-rect" onclick="location.href='./index.html'"><</div>
+<div id="maint"><div style="max-width:400px;width:100%"><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px">Back</button></div></div>
+<div id="toast"></div>
+<div class="main-wrap">
+  <div class="top">
+    <div class="back" onclick="location.href='./index.html'"><</div>
     <h2>Welcome <span id="headerText" style="color:#b45f2e">Ineza</span></h2>
-    <div class="logo-box"><img src="./logo.jpg" style="width:24px;height:24px;border-radius:50%;border:1.5px solid #fbbf24;object-fit:cover"></div>
+    <div class="logo"><img src="./logo.jpg" style="width:28px;height:28px;border-radius:50%;border:2px solid #fbbf24;object-fit:cover"></div>
   </div>
-  <div class="mid">
-    <div class="side">
-      <div class="pill w1" onclick="location.href='./wallet.html'"><span class="em">💰</span>Wallet</div>
-      <div class="pill w2" onclick="location.href='./watch.html'"><span class="em">📺</span>Watch & Earn</div>
-      <div class="pill w3" onclick="location.href='./survey.html'"><span class="em">📝</span>Surveys</div>
-      <div class="pill w4" onclick="location.href='./bonus.html'"><span class="em">🎁</span>Daily Bonus</div>
-      <div class="pill w5" onclick="location.href='./ads_earn.html'"><span class="em">📢</span>Ads Earn</div>
+  <div class="stage">
+    <div class="left">
+      <div class="pill y1" onclick="location.href='./wallet.html'"><span class="em">💰</span><b>Wallet</b></div>
+      <div class="pill b1" onclick="location.href='./watch.html'"><span class="em">📺</span><b>Watch & Earn</b></div>
+      <div class="pill g1" onclick="location.href='./survey.html'"><span class="em">📝</span><b>Surveys</b></div>
+      <div class="pill y2" onclick="location.href='./bonus.html'"><span class="em">🎁</span><b>Daily Bonus</b></div>
+      <div class="pill c1" onclick="location.href='./ads_earn.html'"><span class="em">📢</span><b>Ads Earn</b></div>
     </div>
-    <div class="center">
-      <div class="gold"></div>
-      <div class="pc">
-        <div style="color:#d4e8a0;font-size:6px;margin-bottom:3px">Your Balance</div>
-        <div style="display:flex;gap:2px;text-align:left">
-          <div style="flex:1"><div style="font-size:5px;color:#c4d88a">⭐ COINS</div><div id="balance" style="font-size:8px;color:#ffe58a;font-weight:900">0 coins</div><div id="usdBalance" style="font-size:5px;color:#a8d0a0">= $0.0000</div></div>
-          <div style="width:1px;background:rgba(251,191,36,0.3)"></div>
-          <div style="flex:1"><div style="font-size:5px;color:#a0d8b0">💎 USDT</div><div id="usdtBalanceDisplay" style="font-size:8px;color:#7eff9a;font-weight:900">0.7945 USDT</div><div style="font-size:4px;color:#7abf8a">Available to withdraw</div></div>
+    <div class="mid">
+      <div class="ring"></div>
+      <div class="monitor">
+        <div class="mon-screen">
+          <div style="color:#d4e8a0;font-size:9px;margin-bottom:10px">Your Balance</div>
+          <div style="display:flex;gap:6px;text-align:left">
+            <div style="flex:1"><div style="font-size:7px;color:#c4d88a">⭐ COINS</div><div id="balance" style="font-size:11px;color:#ffe58a;font-weight:900;margin-top:3px">0 coins</div><div id="usdBalance" style="font-size:7px;color:#a8d0a0;margin-top:2px">= $0.0000</div></div>
+            <div style="width:1px;background:rgba(251,191,36,0.3)"></div>
+            <div style="flex:1"><div style="font-size:7px;color:#a0d8b0">💎 USDT</div><div id="usdtBalanceDisplay" style="font-size:11px;color:#7eff9a;font-weight:900;margin-top:3px">0.7945 USDT</div><div style="font-size:5px;color:#7abf8a;margin-top:2px">Available to withdraw</div></div>
+          </div>
         </div>
+        <div style="height:14px;background:#e8e8e8"></div>
       </div>
-      <div class="base"></div><div class="podium"></div><div class="kbd"></div>
+      <div class="stand"></div>
+      <div class="podium"><div class="kb"></div></div>
     </div>
-    <div class="side">
-      <div class="pill o1" onclick="location.href='./offers.html'"><span class="em">💎</span>Offers</div>
-      <div class="pill o2" onclick="location.href='./checkin.html'"><span class="em">📅</span>Daily Checkin</div>
-      <div class="pill o3" onclick="location.href='./articles_earn.html'"><span class="em">📖</span>Articles Earn</div>
-      <div class="pill o4" onclick="location.href='./referrals.html'"><span class="em">🤝</span>Refer & Earn</div>
-      <div class="pill o5" onclick="location.href='./more.html'"><span class="em">❄️</span>More</div>
+    <div class="right">
+      <div class="pill r1" onclick="location.href='./offers.html'"><span class="em">💎</span><b>Offers</b></div>
+      <div class="pill p1" onclick="location.href='./checkin.html'"><span class="em">📅</span><b>Daily Checkin</b></div>
+      <div class="pill pu1" onclick="location.href='./articles_earn.html'"><span class="em">📖</span><b>Articles Earn</b></div>
+      <div class="pill o1" onclick="location.href='./referrals.html'"><span class="em">🤝</span><b>Refer & Earn</b></div>
+      <div class="pill pu2" onclick="location.href='./more.html'"><span class="em">❄️</span><b>More</b></div>
     </div>
   </div>
-  <div class="bottom">
-    <div><span class="be">🏠</span><b>Home</b></div><div><span class="be">📋</span><b>Tasks</b></div><div><span class="be">💰</span><b>Earn</b></div><div><span class="be">👤</span><b>Profile</b></div>
+  <div class="bottom-bar">
+    <div><span class="ic">🏠</span><b>Home</b></div><div><span class="ic">📋</span><b>Tasks</b></div><div><span class="ic">💰</span><b>Earn</b></div><div><span class="ic">👤</span><b>Profile</b></div>
   </div>
 </div>
 <script>
@@ -80,9 +87,9 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 firebase.initializeApp(firebaseConfig);
 try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
 const auth=firebase.auth(),db=firebase.firestore();
-function showToast(m){const t=document.getElementById('customToast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}window.alert=showToast;
+function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}window.alert=showToast;
 const POINT_RATE=0.0005;
 function loadData(d){if(!d)return;if(d.usdtBalance==null)d.usdtBalance=0;if(d.balance==null)d.balance=d.points||0;document.getElementById('headerText').innerText=d.username||'';document.getElementById('balance').innerText=(d.balance??d.points??0)+' coins';document.getElementById('usdBalance').innerText='= $'+((d.balance??d.points??0)*POINT_RATE).toFixed(4);document.getElementById('usdtBalanceDisplay').innerText=Number(d.usdtBalance||0).toFixed(4)+' USDT';localStorage.setItem('userData',JSON.stringify(d));}
-db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maintenanceOverlay').style.display='flex';}else{document.getElementById('maintenanceOverlay').style.display='none';}});
+db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maint').style.display='flex';}else{document.getElementById('maint').style.display='none';}});
 auth.onAuthStateChanged(u=>{if(u){db.collection('users').doc(u.uid).onSnapshot(doc=>{if(doc.exists)loadData(doc.data());});}else{location.href='./index.html';}});
 </script></body></html>
