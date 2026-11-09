@@ -1,47 +1,95 @@
 <!DOCTYPE html>
 <html><head><title>Home - Rewards</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=1280, initial-scale=0.35, maximum-scale=5.0, user-scalable=yes">
 <meta name="referrer" content="no-referrer-when-downgrade" />
-<style>*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;-webkit-tap-highlight-color:transparent}
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;-webkit-tap-highlight-color:transparent}
 *:focus{outline:none}
-body{background:#ffffff !important;min-height:100vh;padding:16px 14px 100px 14px;color:#000;overflow-y:auto}
-.container{max-width:500px;margin:0 auto}
-.header{text-align:center;margin:50px 0 8px}
-.header h2{font-size:24px;color:#000}
-.header h2 span{color:#fbbf24}
-.balance-card{background:#2f3e1a;border:2px solid #fbbf24;border-radius:16px;padding:6px 8px;text-align:center;margin:0 auto 10px auto;width:88%;max-width:315px}
-.balance-row{display:flex;justify-content:space-between;align-items:center;margin-top:2px}
-.balance-side{flex:1;text-align:center;padding:2px 4px}
-.balance-divider{width:1px;height:38px;background:rgba(251,191,36,0.35)}
-.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 10px;margin-bottom:10px;justify-items:center;padding:0 10px}
-.menu-btn{background:linear-gradient(180deg,#fff,#e8e8e8);color:#000;border:none;border-radius:14px;padding:8px 4px;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 3px 0 #bbb;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:62px;width:88%;max-width:150px;margin:0 auto;position:relative;-webkit-tap-highlight-color:transparent;outline:none;user-select:none}
-.menu-btn:active{filter:brightness(0.95);transform:scale(0.98)}
-.menu-btn.emoji{font-size:22px;display:block;line-height:1}
-.logout-btn{width:70px;height:35px;margin:32px auto 30px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;color:#991b1b;border-radius:10px;font-size:22px;font-weight:900;cursor:pointer;box-shadow:0 2px 0 #fca5a5}
-.logout-btn:active{transform:scale(0.96);box-shadow:0 1px 0 #fca5a5}
+body{background:linear-gradient(180deg,#f9d5c5 0%,#f5b9a0 60%,#e89a7a 100%) !important;min-height:100vh;color:#000;overflow-x:auto;overflow-y:hidden}
+.h-wrapper{width:1280px;height:720px;position:relative;margin:0 auto;overflow:hidden}
+.top-bar{position:absolute;top:14px;left:20px;right:20px;height:62px;background:#fffaf3;border-radius:30px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;box-shadow:0 6px 18px rgba(0,0,0,0.08);z-index:10}
+.back-rect{width:110px;height:38px;border:2px solid #ef7a7a;border-radius:20px;display:flex;align-items:center;justify-content:flex-start;padding-left:18px;font-size:22px;color:#ef7a7a;font-weight:900;cursor:pointer;background:#fffaf3}
+.top-bar h2{font-size:28px;color:#8b4513;font-weight:800}
+.top-bar .logo{display:flex;align-items:center;gap:8px;font-size:12px;color:#8b4513;font-weight:700;letter-spacing:1px}
+.gold-circles{position:absolute;top:50%;left:50%;transform:translate(-50%,-45%);width:780px;height:780px;border-radius:50%;border:2px solid #f5c542;z-index:1}
+.gold-circles::before{content:'';position:absolute;top:18px;left:18px;right:18px;bottom:18px;border:2px solid #f7d16a;border-radius:50%}
+.podium{position:absolute;bottom:95px;left:50%;transform:translateX(-50%);width:680px;height:120px;background:#fffefc;border-radius:50% / 30%;box-shadow:0 18px 0 #f5d5c3, 0 10px 30px rgba(0,0,0,0.1);z-index:2}
+.computer-wrap{position:absolute;bottom:165px;left:50%;transform:translateX(-50%);z-index:3;width:420px}
+.computer-screen{width:420px;height:240px;background:#123d25;border:8px solid #111;border-radius:14px 14px 6px 6px;padding:12px;text-align:center;position:relative}
+.computer-screen::after{content:'📡';position:absolute;top:-48px;right:-10px;font-size:42px}
+.screen-base{width:120px;height:30px;background:#c0c0c0;margin:0 auto;border-radius:0 0 8px 8px}
+.keyboard{width:360px;height:32px;background:linear-gradient(#e5e5e5,#b5b5b5);margin:8px auto 0;border-radius:6px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 0 #999}
+.kbd-lines{width:90%;height:18px;background:repeating-linear-gradient(90deg,#333 0 14px,#777 14px 16px)}
+.side-pill{position:absolute;width:175px;height:46px;border-radius:22px;display:flex;align-items:center;padding:0 12px;gap:8px;font-size:15px;font-weight:900;color:#000;cursor:pointer;z-index:4;box-shadow:0 2px 6px rgba(0,0,0,0.08)}
+.side-pill:active{transform:scale(0.97)}
+.side-pill .emoji{font-size:22px}
+.left-1{left:28px;top:150px;background:#ffec5c;border:2px solid #f5c200}
+.left-2{left:28px;top:212px;background:#a9d6ff;border:2px solid #5aa8ff}
+.left-3{left:28px;top:274px;background:#7dff9a;border:2px solid #22c55e}
+.left-4{left:28px;top:336px;background:#ffeb4d;border:2px solid #f5c200}
+.left-5{left:28px;top:398px;background:#7ef8ff;border:2px solid #06b6d4}
+.right-1{right:28px;top:150px;background:#ff9aa2;border:2px solid #ef4444}
+.right-2{right:28px;top:212px;background:#ff9ecf;border:2px solid #ec4899}
+.right-3{right:28px;top:274px;background:#b07cff;border:2px solid #7c3aed}
+.right-4{right:28px;top:336px;background:#ffb86a;border:2px solid #f97316}
+.right-5{right:28px;top:398px;background:#b8b6ff;border:2px solid #8b5cf6}
+.bottom-nav{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);width:520px;height:52px;background:#fffaf0;border-radius:26px;display:flex;align-items:center;justify-content:space-around;padding:0 18px;box-shadow:0 6px 18px rgba(0,0,0,0.12);z-index:10}
+.bottom-nav div{display:flex;align-items:center;gap:6px;font-size:16px;font-weight:900;color:#000;cursor:pointer}
+.bottom-nav .b-emoji{font-size:22px}
 #customToast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:14px 22px;border-radius:12px;font-weight:bold;z-index:99999;display:none;max-width:90%;text-align:center}
 #maintenanceOverlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
+.bal-title{color:#d4e8a0;font-size:16px;margin-bottom:12px}
+.bal-row{display:flex;justify-content:space-between;text-align:left}
+.bal-side{flex:1}
+.bal-divider{width:1px;background:rgba(251,191,36,0.35);margin:0 10px}
 </style>
 </head><body>
 <div id="maintenanceOverlay"><div style="max-width:400px;width:100%"><div style="font-size:40px">🛠️</div><h1 style="color:#fbbf24;font-size:34px;margin-bottom:20px">Under Maintenance</h1><div style="background:#1e2f15;border:2px solid #fbbf24;border-radius:15px;padding:20px"><p style="color:white;font-size:18px">Maintenance for 20 min.</p></div><button onclick="location.href='index.html'" style="background:white;color:black;border:none;padding:14px 28px;border-radius:12px;font-weight:bold;margin-top:20px">Back</button></div></div>
 <div id="customToast"></div>
-<div class="container">
-<div class="header"><h2><span style="color:#000 !important">Welcome, </span><span id="headerText" style="color:#fbbf24"></span> 👋</h2></div>
-<div class="balance-card">
-<div style="color:#ccc;font-size:11px;letter-spacing:0.5px">Your Balance</div>
-<div class="balance-row">
-  <div class="balance-side">
-    <div style="font-size:10px;color:#aaa;margin-bottom:1px">⭐ COINS</div>
-    <div id="balance" style="font-size:22px;color:#fbbf24;font-weight:bold;line-height:1.1">-- coins</div>
-    <div id="usdBalance" style="color:#888;font-size:10px;margin-top:1px">≈ $-- USD</div>
+<div class="h-wrapper">
+  <div class="top-bar">
+    <div class="back-rect" onclick="location.href='./index.html'"><</div>
+    <h2>Welcome, <span id="headerText" style="color:#b45f2e"></span></h2>
+    <div class="logo"><img src="./logo.jpg" style="width:38px;height:38px;border-radius:50%;border:2px solid #fbbf24;object-fit:cover"><span style="margin-left:8px">COINSPARK</span></div>
   </div>
-  <div class="balance-divider"></div>
-  <div class="balance-side">
-    <div style="font-size:10px;color:#aaa;margin-bottom:1px">💵 USDT</div>
-    <div id="usdtBalanceDisplay" style="font-size:20px;color:#22c55e;font-weight:bold;line-height:1.1">-- USDT</div>
-    <div style="color:#6b8f5a;font-size:9px;margin-top:1px">Available to withdraw</div>
+  <div class="gold-circles"></div>
+  <div class="podium"></div>
+  <div class="side-pill left-1" onclick="location.href='./wallet.html'"><span class="emoji">💰</span>Wallet</div>
+  <div class="side-pill left-2" onclick="location.href='./watch.html'"><span class="emoji">📺</span>Watch & Earn</div>
+  <div class="side-pill left-3" onclick="location.href='./survey.html'"><span class="emoji">📝</span>Surveys</div>
+  <div class="side-pill left-4" onclick="location.href='./bonus.html'"><span class="emoji">🎁</span>Daily Bonus</div>
+  <div class="side-pill left-5" onclick="location.href='./ads_earn.html'"><span class="emoji">📢</span>Ads Earn</div>
+  <div class="side-pill right-1" onclick="location.href='./offers.html'"><span class="emoji">💎</span>Offers</div>
+  <div class="side-pill right-2" onclick="location.href='./checkin.html'"><span class="emoji">📅</span>Daily Checkin</div>
+  <div class="side-pill right-3" onclick="location.href='./articles_earn.html'"><span class="emoji">📖</span>Articles Earn</div>
+  <div class="side-pill right-4" onclick="location.href='./referrals.html'"><span class="emoji">🤝</span>Refer & Earn</div>
+  <div class="side-pill right-5" onclick="location.href='./more.html'"><span class="emoji">❄️</span>More</div>
+  <div class="computer-wrap">
+    <div class="computer-screen">
+      <div class="bal-title">Your Balance</div>
+      <div class="bal-row">
+        <div class="bal-side">
+          <div style="font-size:11px;color:#c4d88a">⭐ COINS</div>
+          <div id="balance" style="font-size:24px;color:#ffe58a;font-weight:900;margin-top:6px">-- coins</div>
+          <div id="usdBalance" style="color:#a8d0a0;font-size:13px;margin-top:4px">≈ $-- USD</div>
+        </div>
+        <div class="bal-divider"></div>
+        <div class="bal-side">
+          <div style="font-size:11px;color:#a0d8b0">💎 USDT</div>
+          <div id="usdtBalanceDisplay" style="font-size:22px;color:#7eff9a;font-weight:900;margin-top:6px">-- USDT</div>
+          <div style="color:#7abf8a;font-size:11px;margin-top:4px">Available to withdraw</div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-base"></div>
+    <div class="keyboard"><div class="kbd-lines"></div></div>
   </div>
-</div>
+  <div class="bottom-nav">
+    <div><span class="b-emoji">🏠</span><b>Home</b></div>
+    <div><span class="b-emoji">📋</span><b>Tasks</b></div>
+    <div><span class="b-emoji">💰</span><b>Earn</b></div>
+    <div><span class="b-emoji">👤</span><b>Profile</b></div>
+  </div>
 </div>
 <script>
 (function(){
@@ -58,40 +106,6 @@ body{background:#ffffff !important;min-height:100vh;padding:16px 14px 100px 14px
   }catch(e){}
 })();
 </script>
-<div class="menu-grid">
-<button class="menu-btn" onclick="location.href='./wallet.html'" style="border:2px solid #f59e0b; background: linear-gradient(180deg,#fffbeb,#fde68a);"><span class="emoji">💰</span>Wallet</button>
-<button class="menu-btn" onclick="location.href='./checkin.html'" style="border:2px solid #ef4444; background: linear-gradient(180deg,#fef2f2,#fecaca);"><span class="emoji">📅</span>Daily Checkin</button>
-<button class="menu-btn" onclick="location.href='./watch.html'" style="border:2px solid #3b82f6; background: linear-gradient(180deg,#eff6ff,#bfdbfe);"><span class="emoji">📺</span>Watch & Earn</button>
-<button class="menu-btn" onclick="location.href='./articles_earn.html'" style="border:2px solid #a855f7; background: linear-gradient(180deg,#f3e8ff,#d8b4fe);"><span class="emoji">📰</span>Articles Earn</button>
-<button class="menu-btn" onclick="location.href='./survey.html'" style="border:2px solid #22c55e; background: linear-gradient(180deg,#dcfce7,#bbf7d0);"><span class="emoji">📝</span>Surveys</button>
-<button class="menu-btn" onclick="location.href='./referrals.html'" style="border:2px solid #f97316; background: linear-gradient(180deg,#ffedd5,#fed7aa);"><span class="emoji">🤝</span>Refer & Earn</button>
-<button class="menu-btn" onclick="location.href='./bonus.html'" style="border:2px solid #eab308; background: linear-gradient(180deg,#fefce8,#fef08a);"><span class="emoji">🎁</span>Daily Bonus</button>
-<button class="menu-btn" onclick="location.href='./more.html'" style="border:2px solid #6366f1; background: linear-gradient(180deg,#eef2ff,#c7d2fe);"><span class="emoji">⚙️</span>More</button>
-<button class="menu-btn" onclick="location.href='./ads_earn.html'" style="border:2px solid #06b6d4; background: linear-gradient(180deg,#ecfeff,#a5f3fc);"><span class="emoji">📢</span>Ads Earn</button>
-<button class="menu-btn" onclick="location.href='./offers.html'" style="border:2px solid #d946ef; background: linear-gradient(180deg,#fdf4ff,#f5d0fe);"><span class="emoji">💎</span>Offers</button>
-</div>
-
-<!-- HilltopAds InPage 7605349 - Clean video/banner space, no annoy -->
-<div style="margin:18px auto 10px auto;max-width:360px;width:100%;">
-  <div style="font-size:9px;color:#9ca3af;text-align:center;letter-spacing:0.5px;font-weight:bold;margin-bottom:4px">SPONSORED - VIDEO</div>
-  <div style="background:#ffffff;border:2px solid #e5e7eb;border-radius:14px;padding:8px;min-height:90px;display:flex;justify-content:center;align-items:center;box-shadow:0 4px 12px rgba(0,0,0,0.05)">
-    <script>
-    (function(qbvy){
-    var d = document,
-        s = d.createElement('script'),
-        l = d.currentScript || d.scripts[d.scripts.length - 1];
-    s.settings = qbvy || {};
-    s.src = "//quarrelsomebitter.com/bAXiVIs.dCGZlp0pY/Wxcq/XeWmI9puCZnUNlEkaPmT-cB2jMODvUOz/N/DCk/t/N/zEY/wwNGTbMk1UMWwM";
-    s.async = true;
-    s.referrerPolicy = 'no-referrer-when-downgrade';
-    l.parentNode.insertBefore(s, l);
-    })({})
-    </script>
-  </div>
-</div>
-
-<button class="logout-btn" onclick="logout()">‹</button>
-</div>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -123,5 +137,4 @@ auth.onAuthStateChanged(u=>{
     location.href='./index.html';
   }
 });
-window.logout=async function(){ await auth.signOut(); localStorage.clear(); location.href='./index.html'; }
 </script></body></html>
