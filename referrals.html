@@ -1,99 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Refer & Earn</title>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Refer & Earn</title>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif}
-body{background:#f5f5f7;min-height:100vh}
-.header{position:sticky;top:0;z-index:10;background:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #eee}
-.back{width:36px;height:36px;border-radius:10px;border:1.5px solid #ff3b30;display:flex;align-items:center;justify-content:center;color:#ff3b30;text-decoration:none;font-weight:bold}
-.card{background:#fff;border-radius:16px;margin:16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);border:1px solid #f0f0f0}
-.label{font-weight:700;font-size:14px;margin-bottom:10px}
-.linkBox{border:1.5px dashed #d0d0d0;border-radius:10px;padding:12px;font-size:13px;word-break:break-all;background:#fafafa;min-height:44px}
-.info{background:#eef6ff;color:#3b82f6;border-radius:20px;padding:8px 12px;font-size:12px;font-weight:600;text-align:center;margin:12px 0}
-.btns{display:flex;gap:12px}
-.btn{flex:1;padding:12px;border-radius:12px;border:none;font-weight:700;color:#fff;cursor:pointer}
-.btn-copy{background:#2563eb}.btn-wa{background:#22c55e}
-.sponsored{font-size:10px;letter-spacing:1px;color:#999;text-align:center;margin:18px 0 8px;font-weight:700}
-.adSafe{background:#fff;border:1px dashed #ddd;border-radius:12px;min-height:70px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin:8px 16px;padding:4px}
-.adSafe.medium{min-height:270px}
-.refItem{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1px solid #f0f0f0;border-radius:12px;margin-bottom:10px;background:#fff}
-#gate{position:fixed;inset:0;background:rgba(255,255,255,0.98);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
-.gateCard{background:#fff;border-radius:20px;padding:20px;width:100%;max-width:380px;box-shadow:0 20px 40px rgba(0,0,0,0.15);text-align:center;border:1px solid #eee}
-.count{font-size:48px;font-weight:900;color:#2563eb;margin:10px 0}
-.progress{height:6px;background:#eee;border-radius:10px;overflow:hidden;margin:12px 0}
-.bar{height:100%;background:#2563eb;width:100%;transition:width 1s linear}
-iframe{border:0}
-</style>
-</head>
-<body>
-
-<div id="gate">
-  <div class="gateCard">
-    <div style="font-size:19px;font-weight:800">⏳ Unlocking</div>
-    <div style="font-size:12px;color:#666;margin-top:6px">Wait <span id="cnt">5</span>s - keeps platform free</div>
-    <div class="count" id="countBig">5</div>
-    <div class="progress"><div class="bar" id="bar"></div></div>
-    <div class="sponsored">SAFE ADS - NO REDIRECT</div>
-    <div class="adSafe">
-      <iframe width="468" height="60" scrolling="no" sandbox="allow-scripts allow-same-origin"
-      src="https://www.highperformanceformat.com/22/fe25c5bd01f4bc5e60243e36cd83277c"></iframe>
-    </div>
-    <div class="adSafe medium">
-      <iframe width="300" height="250" scrolling="no" sandbox="allow-scripts allow-same-origin"
-      src="https://www.highperformanceformat.com/22/bf10cacdbe9f50d0c5d66a94e0785f29"></iframe>
-    </div>
-  </div>
-</div>
-
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif}body{background:#f5f5f7} .header{position:sticky;top:0;z-index:10;background:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #eee} .back{width:36px;height:36px;border-radius:10px;border:1.5px solid #ff3b30;display:flex;align-items:center;justify-content:center;color:#ff3b30;text-decoration:none;font-weight:bold} .card{background:#fff;border-radius:16px;margin:16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);border:1px solid #f0f0f0} .label{font-weight:700;font-size:14px;margin-bottom:10px} .linkBox{border:1.5px dashed #d0d0d0;border-radius:10px;padding:12px;font-size:13px;word-break:break-all;background:#fafafa;min-height:44px} .info{background:#eef6ff;color:#3b82f6;border-radius:20px;padding:8px 12px;font-size:12px;font-weight:600;text-align:center;margin:12px 0} .btns{display:flex;gap:12px} .btn{flex:1;padding:12px;border-radius:12px;border:none;font-weight:700;color:#fff;cursor:pointer} .btn-copy{background:#2563eb}.btn-wa{background:#22c55e} .sponsored{font-size:10px;letter-spacing:1px;color:#999;text-align:center;margin:18px 0 8px;font-weight:700} .adSafe{background:#fff;border:1px dashed #ddd;border-radius:12px;min-height:70px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin:8px 16px} .adSafe.medium{min-height:270px} .refItem{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1px solid #f0f0f0;border-radius:12px;margin-bottom:10px;background:#fff} #gate{position:fixed;inset:0;background:rgba(255,255,255,0.98);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px} .gateCard{background:#fff;border-radius:20px;padding:20px;width:100%;max-width:380px;box-shadow:0 20px 40px rgba(0,0,0,0.15);text-align:center;border:1px solid #eee} .count{font-size:48px;font-weight:900;color:#2563eb;margin:10px 0} .progress{height:6px;background:#eee;border-radius:10px;overflow:hidden;margin:12px 0} .bar{height:100%;background:#2563eb;width:100%;transition:width 1s linear} iframe{border:0}</style>
+</head><body>
+<div id="gate"><div class="gateCard"><div style="font-size:19px;font-weight:800">⏳ Unlocking</div><div style="font-size:12px;color:#666;margin-top:6px">Wait <span id="cnt">5</span>s - keeps platform free</div><div class="count" id="countBig">5</div><div class="progress"><div class="bar" id="bar"></div></div><div class="sponsored">AD - SUPPORT US</div>
+<div class="adSafe"><iframe sandbox="allow-scripts allow-popups" srcdoc="<html><body style='margin:0'><script>atOptions={key:'fe25c5bd01f4bc5e60243e36cd83277c',format:'iframe',height:60,width:468,params:{}};</script><script src='https://www.highperformancecpmgate.com/22/fe25c5bd01f4bc5e60243e36cd83277c/invoke.js'></script></body></html>" width="468" height="60"></iframe></div>
+<div class="adSafe medium"><iframe sandbox="allow-scripts allow-popups" srcdoc="<html><body style='margin:0'><script>atOptions={key:'bf10cacdbe9f50d0c5d66a94e0785f29',format:'iframe',height:250,width:300,params:{}};</script><script src='https://www.highperformancecpmgate.com/22/bf10cacdbe9f50d0c5d66a94e0785f29/invoke.js'></script></body></html>" width="300" height="250"></iframe></div>
+</div></div>
 <div class="header"><a class="back" href="home.html">‹</a><div style="font-weight:800">💰 Refer & Earn</div></div>
-
-<div class="card">
-  <div class="label">🔗 Your Referral Link</div>
-  <div class="linkBox" id="link">Loading...</div>
-  <div class="info">💎 5 coins per referral • Max 10/day</div>
-  <div class="btns"><button class="btn btn-copy" onclick="copy()">Copy</button><button class="btn btn-wa" onclick="shareWA()">WhatsApp</button></div>
-</div>
-
-<div class="sponsored">SAFE AD - EARNS PER VIEW</div>
-<div class="adSafe"><iframe width="468" height="60" scrolling="no" sandbox="allow-scripts allow-same-origin" src="https://www.highperformanceformat.com/22/fe25c5bd01f4bc5e60243e36cd83277c"></iframe></div>
-
+<div class="card"><div class="label">🔗 Your Referral Link</div><div class="linkBox" id="link">Loading...</div><div class="info">💎 5 coins per referral • Max 10/day</div><div class="btns"><button class="btn btn-copy" onclick="copy()">Copy</button><button class="btn btn-wa" onclick="shareWA()">WhatsApp</button></div></div>
+<div class="sponsored">AD - EARNS PER VIEW</div>
+<div class="adSafe"><iframe sandbox="allow-scripts allow-popups" srcdoc="<html><body style='margin:0'><script>atOptions={key:'fe25c5bd01f4bc5e60243e36cd83277c',format:'iframe',height:60,width:468,params:{}};</script><script src='https://www.highperformancecpmgate.com/22/fe25c5bd01f4bc5e60243e36cd83277c/invoke.js'></script></body></html>" width="468" height="60"></iframe></div>
 <div class="card"><div class="label">👥 Your Referrals</div><div id="list"><div style="text-align:center;color:#999;padding:20px;font-size:13px">Loading...</div></div></div>
-
-<div class="sponsored">SAFE AD</div>
-<div class="adSafe medium"><iframe width="300" height="250" scrolling="no" sandbox="allow-scripts allow-same-origin" src="https://www.highperformanceformat.com/22/bf10cacdbe9f50d0c5d66a94e0785f29"></iframe></div>
-
+<div class="sponsored">AD</div>
+<div class="adSafe medium"><iframe sandbox="allow-scripts allow-popups" srcdoc="<html><body style='margin:0'><script>atOptions={key:'bf10cacdbe9f50d0c5d66a94e0785f29',format:'iframe',height:250,width:300,params:{}};</script><script src='https://www.highperformancecpmgate.com/22/bf10cacdbe9f50d0c5d66a94e0785f29/invoke.js'></script></body></html>" width="300" height="250"></iframe></div>
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth();const db=firebase.firestore();
-let refLink="";let username="";
-function startGate(){
- let c=5;const cnt=document.getElementById('cnt');const big=document.getElementById('countBig');const bar=document.getElementById('bar');const gate=document.getElementById('gate');
- bar.style.width='100%';
- const iv=setInterval(()=>{c--;if(cnt)cnt.textContent=c;if(big)big.textContent=c;if(bar)bar.style.width=(c/5*100)+'%';if(c<=0){clearInterval(iv);gate.style.display='none';sessionStorage.setItem('refGateDone','1');}},1000);
-}
+const auth=firebase.auth();const db=firebase.firestore();let refLink="";let username="";
+function startGate(){let c=5;const cnt=document.getElementById('cnt');const big=document.getElementById('countBig');const bar=document.getElementById('bar');const gate=document.getElementById('gate');bar.style.width='100%';const iv=setInterval(()=>{c--;if(cnt)cnt.textContent=c;if(big)big.textContent=c;if(bar)bar.style.width=(c/5*100)+'%';if(c<=0){clearInterval(iv);gate.style.display='none';sessionStorage.setItem('refGateDone','1');}},1000);}
 if(sessionStorage.getItem('refGateDone')==='1') document.getElementById('gate').style.display='none'; else startGate();
-auth.onAuthStateChanged(async(user)=>{
- if(!user){location.href='log.html';return;}
- const doc=await db.collection('users').doc(user.uid).get();if(!doc.exists) return;
- const data=doc.data();username=data.username||user.uid.slice(0,6);refLink=`https://reward-platform-rw-2e13d.web.app/reg.html?ref=${username}`;
- document.getElementById('link').textContent=refLink;loadReferrals(username);
-});
-async function loadReferrals(uname){
- try{
-  const snap=await db.collection('users').where('referredBy','==',uname).get();const list=document.getElementById('list');
-  if(snap.empty){list.innerHTML='<div style="text-align:center;color:#999;padding:20px;font-size:13px">No referrals yet</div>';return;}
-  let html='';snap.forEach(d=>{const u=d.data();const name=u.username||'User';const date=u.createdAt?new Date(u.createdAt.toDate?u.createdAt.toDate():u.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}):'';html+=`<div class="refItem"><div><div style="font-weight:700">${name}</div><div style="font-size:11px;color:#999">${date}</div></div><div style="color:#16a34a;font-weight:700">+5 🪙</div></div>`;});list.innerHTML=html;
- }catch(e){document.getElementById('list').innerHTML='<div style="color:red;padding:10px;font-size:12px">'+e.message+'</div>';}
-}
+auth.onAuthStateChanged(async(user)=>{if(!user){location.href='log.html';return;}const doc=await db.collection('users').doc(user.uid).get();if(!doc.exists) return;const data=doc.data();username=data.username||user.uid.slice(0,6);refLink=`https://reward-platform-rw-2e13d.web.app/reg.html?ref=${username}`;document.getElementById('link').textContent=refLink;loadReferrals(username);});
+async function loadReferrals(uname){try{const snap=await db.collection('users').where('referredBy','==',uname).get();const list=document.getElementById('list');if(snap.empty){list.innerHTML='<div style="text-align:center;color:#999;padding:20px;font-size:13px">No referrals yet</div>';return;}let html='';snap.forEach(d=>{const u=d.data();const name=u.username||'User';const date=u.createdAt?new Date(u.createdAt.toDate?u.createdAt.toDate():u.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}):'';html+=`<div class="refItem"><div><div style="font-weight:700">${name}</div><div style="font-size:11px;color:#999">${date}</div></div><div style="color:#16a34a;font-weight:700">+5 🪙</div></div>`;});list.innerHTML=html;}catch(e){document.getElementById('list').innerHTML='<div style="color:red;padding:10px;font-size:12px">'+e.message+'</div>';}}
 function copy(){if(!refLink)return;navigator.clipboard.writeText(refLink).then(()=>alert('Copied!'));}
 function shareWA(){if(!refLink)return;const t=encodeURIComponent(`Join and earn! ${refLink}`);window.open(`https://wa.me/?text=${t}`,'_blank');}
-</script>
-</body>
-</html>
+</script></body></html>
