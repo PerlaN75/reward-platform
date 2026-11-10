@@ -21,11 +21,12 @@ body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;disp
 .btn{padding:8px 14px;border-radius:20px;border:none;font-weight:bold;font-size:12px;cursor:pointer;min-width:68px}
 .btn.start{background:linear-gradient(180deg,#dcfce7,#bbf7d0);color:#000;border:2px solid #22c55e;box-shadow:0 2px 0 #86efac}
 .btn.done{background:#e5e7eb;color:#9ca3af;border:2px solid #e5e7eb}
+.btn.wait{background:#fef3c7;color:#92400e;border:2px solid #fbbf24;cursor:not-allowed}
 #countText{font-size:12px;color:#111827;margin:6px 0;font-weight:900}
 .tip-text{font-size:11px;color:#1d4ed8;margin:8px 0 4px 0;font-weight:900;line-height:1.3}
 .sponsored{font-size:9px;color:#9ca3af;margin:8px 0 2px 0;letter-spacing:0.5px;font-weight:bold}
 .modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.65);justify-content:center;align-items:center;padding:8px;box-sizing:border-box}
-.modal-content{background:#ffffff;border:2px solid #e5e7eb;border-radius:14px;padding:14px 12px;width:92%;max-width:320px;text-align:center;box-shadow:0 12px 32px rgba(0,0,0,0.12);max-height:95vh;overflow-y:auto}
+.modal-content{background:#ffffff;border:2px solid #e5e7eb;border-radius:14px;padding:14px 12px;width:92%;max-width:320px;text-align:center;box-shadow:0 12px 32px rgba(0,0,0,0.12)}
 .timer{font-size:32px;color:#f59e0b;font-weight:bold;margin:6px 0}
 .bonus-btn{width:100%;padding:14px;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;font-weight:900;font-size:15px;cursor:pointer;margin:10px 0;box-shadow:0 3px 0 #d97706;display:none}
 .bonus-btn:disabled{background:#e5e7eb;color:#9ca3af;box-shadow:none;cursor:not-allowed}
@@ -45,58 +46,35 @@ body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;disp
 <div id="countText">0/10 done - Resets midnight</div>
 <div class="tip-text">Complete tasks to earn coins</div>
 
-<!-- SAFE AD PLACEMENT - OUTSIDE TIMER, NOT FORCED -->
 <div class="sponsored">SPONSORED - SUPPORT US</div>
 <div id="topBanner" style="margin:6px auto;display:flex;justify-content:center;min-height:60px"></div>
-
 <div id="list" style="margin-top:10px"></div>
-
 <div id="midBannerWrap"><div class="sponsored">SPONSORED</div><div id="midBanner" style="margin:6px auto;display:flex;justify-content:center;min-height:250px"></div></div>
 
 <button id="bonusBtn" class="bonus-btn" onclick="startBonus()">🎁 Claim Bonus 5 Coins - 12s</button>
 <div style="font-size:12px;color:#111827;margin-top:16px;font-weight:900;line-height:1.4">3000 Coins = $1.5 • Bonus 5 coins for completing all 10 tasks</div>
 </div>
 
-<!-- CLEAN MODAL - NO ADS INSIDE - SAFE FROM BAN -->
 <div id="timerModal" class="modal"><div class="modal-content">
 <div style="font-size:26px">⏳</div><h3 id="modalTitle">Processing...</h3><p id="modalDesc">Please wait...</p>
 <div class="timer" id="timerNum">12</div>
-<div id="distractPhase" style="font-size:11px;color:#f59e0b;font-weight:bold;margin:6px 0">✨ Task in progress...</div>
-<div style="font-size:10px;color:#6b7280;margin-top:8px">Keep this page open to complete</div>
+<div id="distractPhase" style="font-size:11px;color:#f59e0b;font-weight:bold;margin:6px 0">✨ Keep this page open</div>
+<div style="font-size:10px;color:#6b7280;margin-top:8px">Don't switch apps or reward will cancel</div>
 </div></div>
 
 <script>
-// SAFE BANNER LOADING - OUTSIDE REWARD LOGIC
 function injectBanner(id,key,w,h){
-  const c=document.getElementById(id);
-  if(!c) return;
-  c.innerHTML='';
-  const at=document.createElement('script');
-  at.innerHTML=`atOptions={'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}};`;
-  c.appendChild(at);
-  const s=document.createElement('script');
-  s.src=`https://www.highperformanceformat.com/${key}/invoke.js`;
-  // fallback for Adsterra domain
-  s.onerror=()=>{
-    const s2=document.createElement('script');
-    s2.src=`https://bicea.org/22/${key}`;
-    c.appendChild(s2);
-  };
-  c.appendChild(s);
+  const c=document.getElementById(id); if(!c) return; c.innerHTML='';
+  const at=document.createElement('script'); at.innerHTML=`atOptions={'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}};`; c.appendChild(at);
+  const s=document.createElement('script'); s.src=`https://www.highperformanceformat.com/${key}/invoke.js`; c.appendChild(s);
 }
 function loadAllBanners(){
   injectBanner('topBanner','fe25c5bd01f4bc5e60243e36cd83277c',60,468);
   injectBanner('midBanner','bf10cacdbe9f50d0c5d66a94e0785f29',250,300);
 }
 loadAllBanners();
-// Auto-refresh every 35s for extra impressions = extra profit, no extra work
-setInterval(()=>{ 
-  if(document.getElementById('timerModal').style.display!=='flex'){
-    loadAllBanners();
-  }
-},35000);
+setInterval(()=>{ if(document.getElementById('timerModal').style.display!=='flex'){ loadAllBanners(); } },35000);
 
-// Monetag Vignette/Pop SAFE - AFTER reward, with cooldown, NOT inside timer
 function canShowVignette(){const last=localStorage.getItem('vignette_last');return !last || (Date.now()-parseInt(last))>180000;}
 function canShowPop(){const last=localStorage.getItem('pop_last');return !last || (Date.now()-parseInt(last))>180000;}
 function loadVignetteSafe(){if(!canShowVignette())return;var s=document.createElement('script');s.dataset.zone='12083688';s.src='https://n6wxm.com/vignette.min.js';document.body.appendChild(s);localStorage.setItem('vignette_last',Date.now().toString());}
@@ -107,10 +85,10 @@ firebase.initializeApp(firebaseConfig);
 try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
 const auth=firebase.auth(),db=firebase.firestore();
 const tasksConfig=[{id:0,reward:1,sec:8,tier:'easy',label:'🟢 Easy - 8s',emoji:'⚡'},{id:1,reward:1,sec:8,tier:'easy',label:'🟢 Easy - 8s',emoji:'⚡'},{id:2,reward:1,sec:8,tier:'easy',label:'🟢 Easy - 8s',emoji:'⚡'},{id:3,reward:2,sec:12,tier:'standard',label:'🟡 Standard - 12s',emoji:'📢'},{id:4,reward:2,sec:12,tier:'standard',label:'🟡 Standard - 12s',emoji:'📢'},{id:5,reward:2,sec:12,tier:'standard',label:'🟡 Standard - 12s',emoji:'📢'},{id:6,reward:2,sec:12,tier:'standard',label:'🟡 Standard - 12s',emoji:'📢'},{id:7,reward:3,sec:15,tier:'premium',label:'🔴 Premium - 15s',emoji:'💎'},{id:8,reward:3,sec:15,tier:'premium',label:'🔴 Premium - 15s',emoji:'💎'},{id:9,reward:3,sec:15,tier:'premium',label:'🔴 Premium - 15s',emoji:'💎'}];
-const BONUS_REWARD=5,BONUS_SEC=12,EARN_COOLDOWN=15;
+const BONUS_REWARD=5,BONUS_SEC=12,COOLDOWN_AFTER_CLAIM=10;
 function getToday(){return new Date().toISOString().split('T')[0];}
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
-let done=[],total=0,cur=0,sec=12,tmr=null,currentUser=null,userData={},lastEarnTime=0,bonusClaimed=false,isClaiming=false;
+let done=[],total=0,cur=0,sec=12,tmr=null,currentUser=null,userData={},bonusClaimed=false,isClaiming=false,nextAllowedTime=0,visibilityViolated=false;
 
 function saveLocal(){
   try{
@@ -122,24 +100,11 @@ function saveLocal(){
 }
 function loadLocalStrict(){
   try{
-    const today=getToday();
-    const savedDate=localStorage.getItem('adsEarn_date');
-    if(savedDate!==today){
-      done=[]; total=0; bonusClaimed=false;
-      localStorage.removeItem('adsEarn_done');
-      localStorage.removeItem('adsEarn_total');
-      localStorage.removeItem('adsEarn_bonus');
-      localStorage.setItem('adsEarn_date',today);
-      return;
-    }
-    const parsed=JSON.parse(localStorage.getItem('adsEarn_done')||'[]');
-    done=[...new Set(parsed)].filter(x=>x>=0 && x<=9);
-    total=parseInt(localStorage.getItem('adsEarn_total')||'0')||0;
-    bonusClaimed=localStorage.getItem('adsEarn_bonus')===today;
-    let realTotal=0;
-    done.forEach(id=>{ const cfg=tasksConfig.find(t=>t.id===id); if(cfg) realTotal+=cfg.reward; });
-    if(bonusClaimed) realTotal+=BONUS_REWARD;
-    if(total>realTotal+2) total=realTotal;
+    const today=getToday(); const savedDate=localStorage.getItem('adsEarn_date');
+    if(savedDate!==today){ done=[]; total=0; bonusClaimed=false; localStorage.removeItem('adsEarn_done'); localStorage.removeItem('adsEarn_total'); localStorage.removeItem('adsEarn_bonus'); localStorage.setItem('adsEarn_date',today); return; }
+    const parsed=JSON.parse(localStorage.getItem('adsEarn_done')||'[]'); done=[...new Set(parsed)].filter(x=>x>=0 && x<=9);
+    total=parseInt(localStorage.getItem('adsEarn_total')||'0')||0; bonusClaimed=localStorage.getItem('adsEarn_bonus')===today;
+    let realTotal=0; done.forEach(id=>{ const cfg=tasksConfig.find(t=>t.id===id); if(cfg) realTotal+=cfg.reward; }); if(bonusClaimed) realTotal+=BONUS_REWARD; if(total>realTotal+2) total=realTotal;
   }catch(e){ done=[]; total=0; bonusClaimed=false; }
 }
 loadLocalStrict();
@@ -148,142 +113,122 @@ function render(){
   document.getElementById('totalPtsBadge').innerText=`Total Today: ${total} 🪙 Coins`;
   document.getElementById('countText').innerText=`${done.length}/10 done - Resets midnight`;
   document.getElementById('progBar').style.width=(done.length*10)+'%';
+  const nowSec=Date.now()/1000; const remaining=Math.max(0, Math.ceil(nextAllowedTime - nowSec));
   let html=''; tasksConfig.forEach(cfg=>{
     let isDone=done.includes(cfg.id);
-    html+=`<div class="task ${cfg.tier}"><div style="font-size:20px">${cfg.emoji}</div><div style="flex:1;font-size:13px;text-align:left;color:#111827"><b>Task ${cfg.id+1} ${cfg.label}</b><br><span style="color:#d97706;font-size:11px;font-weight:700">+${cfg.reward} 🪙</span></div><button class="btn ${isDone?'done':'start'}" onclick="startAd(${cfg.id})" ${isDone?'disabled':''}>${isDone?'Done ✓':'Start'}</button></div>`;
+    let btnClass=isDone?'done':(remaining>0?'wait':'start');
+    let btnText=isDone?'Done ✓':(remaining>0?`Wait ${remaining}s`:'Start');
+    let disabled=isDone || remaining>0;
+    html+=`<div class="task ${cfg.tier}"><div style="font-size:20px">${cfg.emoji}</div><div style="flex:1;font-size:13px;text-align:left;color:#111827"><b>Task ${cfg.id+1} ${cfg.label}</b><br><span style="color:#d97706;font-size:11px;font-weight:700">+${cfg.reward} 🪙</span></div><button class="btn ${btnClass}" onclick="startAd(${cfg.id})" ${disabled?'disabled':''}>${btnText}</button></div>`;
   });
   document.getElementById('list').innerHTML=html;
   const bonusBtn=document.getElementById('bonusBtn');
-  if(bonusClaimed){
-    bonusBtn.innerText='Bonus Claimed ✓ - 5 Coins';
-    bonusBtn.disabled=true;
-    bonusBtn.style.display='block';
-    bonusBtn.style.opacity='0.6';
-  } else if(done.length>=10){
-    bonusBtn.style.display='block';
-    bonusBtn.disabled=false;
-    bonusBtn.style.opacity='1';
-    bonusBtn.innerText='🎁 Claim Bonus 5 Coins - 12s';
-  } else {
-    bonusBtn.style.display='none';
-  }
+  if(bonusClaimed){ bonusBtn.innerText='Bonus Claimed ✓ - 5 Coins'; bonusBtn.disabled=true; bonusBtn.style.display='block'; bonusBtn.style.opacity='0.6'; }
+  else if(done.length>=10){ 
+    if(remaining>0){ bonusBtn.innerText=`Wait ${remaining}s for bonus`; bonusBtn.disabled=true; } 
+    else { bonusBtn.innerText='🎁 Claim Bonus 5 Coins - 12s'; bonusBtn.disabled=false; }
+    bonusBtn.style.display='block'; bonusBtn.style.opacity=remaining>0?'0.6':'1'; 
+  } else { bonusBtn.style.display='none'; }
+  if(remaining>0){ setTimeout(render,1000); }
 }
 
 function startAd(i){
   if(done.includes(i)){ showToast('Already done today'); return; }
   if(isClaiming) return;
-  const now=Date.now()/1000;
-  if(now-lastEarnTime<EARN_COOLDOWN){showToast(`Wait ${Math.ceil(EARN_COOLDOWN-(now-lastEarnTime))}s`);return;}
-  let cfg=tasksConfig[i]; cur=i; sec=cfg.sec;
+  const nowSec=Date.now()/1000; if(nowSec<nextAllowedTime){ showToast(`Wait ${Math.ceil(nextAllowedTime-nowSec)}s for next task - ads loading`); return; }
+  let cfg=tasksConfig[i]; cur=i; sec=cfg.sec; visibilityViolated=false;
   document.getElementById('timerNum').innerText=sec;
   document.getElementById('modalTitle').innerText=`Task ${i+1} ${cfg.label}`;
   document.getElementById('modalDesc').innerText='Completing your task...';
-  document.getElementById('distractPhase').innerText=`✨ Task - ${cfg.tier}`;
+  document.getElementById('distractPhase').innerText='✨ Keep this page open';
   document.getElementById('timerModal').style.display='flex';
-  tmr=setInterval(async()=>{sec--;document.getElementById('timerNum').innerText=sec;if(sec<=0){clearInterval(tmr);document.getElementById('timerModal').style.display='none';await claimAd();}},1000);
+  tmr=setInterval(async()=>{
+    if(document.hidden){ visibilityViolated=true; document.getElementById('distractPhase').innerText='⚠️ You left page - reward will cancel'; return; }
+    sec--; document.getElementById('timerNum').innerText=sec;
+    if(sec<=0){
+      clearInterval(tmr);
+      if(visibilityViolated){ document.getElementById('timerModal').style.display='none'; showToast('❌ Reward canceled - you switched app'); return; }
+      document.getElementById('timerModal').style.display='none'; await claimAd();
+    }
+  },1000);
 }
 
 function startBonus(){
-  if(bonusClaimed){ showToast('Bonus already claimed today'); return; }
+  if(bonusClaimed){ showToast('Bonus already claimed'); return; }
   if(done.length<10){ showToast(`Complete ${10-done.length} more tasks`); return; }
   if(isClaiming) return;
-  const now=Date.now()/1000;
-  if(now-lastEarnTime<EARN_COOLDOWN){showToast(`Wait ${Math.ceil(EARN_COOLDOWN-(now-lastEarnTime))}s`);return;}
-  sec=BONUS_SEC;
+  const nowSec=Date.now()/1000; if(nowSec<nextAllowedTime){ showToast(`Wait ${Math.ceil(nextAllowedTime-nowSec)}s`); return; }
+  sec=BONUS_SEC; visibilityViolated=false;
   document.getElementById('timerNum').innerText=sec;
   document.getElementById('modalTitle').innerText='🎁 Bonus 5 Coins';
   document.getElementById('modalDesc').innerText='Processing bonus...';
-  document.getElementById('distractPhase').innerText='✨ Bonus processing...';
+  document.getElementById('distractPhase').innerText='✨ Keep open';
   document.getElementById('timerModal').style.display='flex';
-  tmr=setInterval(async()=>{sec--;document.getElementById('timerNum').innerText=sec;if(sec<=0){clearInterval(tmr);document.getElementById('timerModal').style.display='none';await claimBonus();}},1000);
+  tmr=setInterval(async()=>{
+    if(document.hidden){ visibilityViolated=true; document.getElementById('distractPhase').innerText='⚠️ You left page - reward will cancel'; return; }
+    sec--; document.getElementById('timerNum').innerText=sec;
+    if(sec<=0){
+      clearInterval(tmr);
+      if(visibilityViolated){ document.getElementById('timerModal').style.display='none'; showToast('❌ Bonus canceled - keep page open'); return; }
+      document.getElementById('timerModal').style.display='none'; await claimBonus();
+    }
+  },1000);
 }
 
 async function claimAd(){
   if(isClaiming) return; isClaiming=true;
   if(done.includes(cur)){isClaiming=false; return showToast('Already claimed');}
-  let cfg=tasksConfig[cur];
-  if(done.length>=10){ isClaiming=false; return; }
-  done=[...new Set([...done, cur])];
-  total+=cfg.reward;
-  saveLocal();
-  render();
+  let cfg=tasksConfig[cur]; if(done.length>=10){ isClaiming=false; return; }
+  done=[...new Set([...done, cur])]; total+=cfg.reward; saveLocal();
+  nextAllowedTime=Date.now()/1000+COOLDOWN_AFTER_CLAIM; render();
   try{
     await db.collection('users').doc(currentUser.uid).set({
       balance: firebase.firestore.FieldValue.increment(cfg.reward),
       coins: firebase.firestore.FieldValue.increment(cfg.reward),
       points: firebase.firestore.FieldValue.increment(cfg.reward),
       lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),
-      adsEarn_date: getToday(),
-      adsEarn_done: done,
-      adsEarn_total: total
+      adsEarn_date: getToday(), adsEarn_done: done, adsEarn_total: total
     },{merge:true});
-    lastEarnTime=Date.now()/1000;
-    showToast(`✓ +${cfg.reward} 🪙 added! ${done.length}/10`);
-    // Monetag safe trigger AFTER reward, not during
+    showToast(`✓ +${cfg.reward} 🪙 added! Next in ${COOLDOWN_AFTER_CLAIM}s`);
+    loadAllBanners(); // FORCE new impression for you = profit
     if(cfg.tier==='premium') loadPopSafe(); else loadVignetteSafe();
-  }catch(e){
-    showToast("Error: "+e.message);
-    done=done.filter(x=>x!==cur); total-=cfg.reward; saveLocal(); render();
-  }
+  }catch(e){ showToast("Error: "+e.message); done=done.filter(x=>x!==cur); total-=cfg.reward; saveLocal(); render(); }
   isClaiming=false;
 }
 
 async function claimBonus(){
   if(isClaiming) return; isClaiming=true;
   if(bonusClaimed){isClaiming=false; return showToast('Bonus already claimed');}
-  if(done.length<10){isClaiming=false; return showToast(`Need ${10-done.length} more tasks`);}
-  bonusClaimed=true;
-  total+=BONUS_REWARD;
-  saveLocal();
-  render();
+  if(done.length<10){isClaiming=false; return showToast(`Need ${10-done.length} more`);}
+  bonusClaimed=true; total+=BONUS_REWARD; saveLocal();
+  nextAllowedTime=Date.now()/1000+COOLDOWN_AFTER_CLAIM; render();
   try{
     await db.collection('users').doc(currentUser.uid).set({
       balance: firebase.firestore.FieldValue.increment(BONUS_REWARD),
       coins: firebase.firestore.FieldValue.increment(BONUS_REWARD),
       points: firebase.firestore.FieldValue.increment(BONUS_REWARD),
       lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),
-      adsEarn_bonus: getToday(),
-      adsEarn_date: getToday(),
-      adsEarn_done: done,
-      adsEarn_total: total
+      adsEarn_bonus: getToday(), adsEarn_date: getToday(), adsEarn_done: done, adsEarn_total: total
     },{merge:true});
-    lastEarnTime=Date.now()/1000;
     showToast(`🎁 Bonus +${BONUS_REWARD} 🪙 added!`);
-    loadPopSafe();
+    loadAllBanners(); loadPopSafe();
   }catch(e){ showToast(e.message); bonusClaimed=false; total-=BONUS_REWARD; saveLocal(); render(); }
   isClaiming=false;
 }
 
 auth.onAuthStateChanged(async u=>{
-  if(!u){location.href='./index.html';return;}
-  currentUser=u;
+  if(!u){location.href='./index.html';return;} currentUser=u;
   try{
     const doc=await db.collection('users').doc(u.uid).get();
     if(doc.exists){
-      userData=doc.data();
-      const today=getToday();
-      const fbDate=userData.adsEarn_date||'';
-      if(fbDate!==today && fbDate!==''){
-        done=[]; total=0; bonusClaimed=false;
-        saveLocal();
-        await db.collection('users').doc(u.uid).set({
-          adsEarn_date: today,
-          adsEarn_done: [],
-          adsEarn_total: 0,
-          adsEarn_bonus: firebase.firestore.FieldValue.delete()
-        },{merge:true});
+      userData=doc.data(); const today=getToday(); const fbDate=userData.adsEarn_date||'';
+      if(fbDate!==today && fbDate!==''){ done=[]; total=0; bonusClaimed=false; saveLocal();
+        await db.collection('users').doc(u.uid).set({adsEarn_date:today,adsEarn_done:[],adsEarn_total:0,adsEarn_bonus:firebase.firestore.FieldValue.delete()},{merge:true});
       } else if(fbDate===today){
-        const fbDone=userData.adsEarn_done||[];
-        done=[...new Set(fbDone)].filter(x=>x>=0 && x<=9);
-        total=userData.adsEarn_total||0;
-        bonusClaimed=(userData.adsEarn_bonus===today);
-        let realTotal=0;
-        done.forEach(id=>{ const c=tasksConfig.find(t=>t.id===id); if(c) realTotal+=c.reward; });
-        if(bonusClaimed) realTotal+=BONUS_REWARD;
-        if(total!==realTotal && total<50) total=realTotal;
-        saveLocal();
+        const fbDone=userData.adsEarn_done||[]; done=[...new Set(fbDone)].filter(x=>x>=0 && x<=9);
+        total=userData.adsEarn_total||0; bonusClaimed=(userData.adsEarn_bonus===today);
+        let realTotal=0; done.forEach(id=>{ const c=tasksConfig.find(t=>t.id===id); if(c) realTotal+=c.reward; }); if(bonusClaimed) realTotal+=BONUS_REWARD; if(total!==realTotal && total<50) total=realTotal; saveLocal();
       }
-      if(userData.lastEarnAt && userData.lastEarnAt.toMillis) lastEarnTime=userData.lastEarnAt.toMillis()/1000;
     }
   }catch(e){}
   render();
