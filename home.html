@@ -1,4 +1,4 @@
-<!DOCTYPE html><html><head><title>Home</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html><html><head><title>Home</title><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
 body{background:#8ecff0;display:flex;justify-content:center;min-height:100vh}
@@ -7,26 +7,49 @@ body{background:#8ecff0;display:flex;justify-content:center;min-height:100vh}
   background-color:#bfe6f7;
   background-image:url('./bg.jpg');
   background-repeat:no-repeat;
-  background-size:100% auto; /* KEEP ORIGINAL SIZE - NO WIDEN */
-  background-position:center bottom; /* podiums stay at bottom as original */
+  background-size:100% auto;
+  background-position:center bottom;
   position:relative;display:flex;flex-direction:column;overflow:hidden
 }
-.top{margin:8px 12px 0;background:rgba(255,255,255,0.98);border-radius:22px;height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;z-index:20;box-shadow:0 6px 14px rgba(0,0,0,0.15);flex-shrink:0}
+.top{
+  margin:calc(6px + env(safe-area-inset-top,0px)) 12px 0;
+  background:rgba(255,255,255,0.98);border-radius:22px;height:50px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 14px;
+  z-index:20;box-shadow:0 6px 14px rgba(0,0,0,0.15);flex-shrink:0
+}
 .back{width:44px;height:26px;border:1.2px solid #e58a8a;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#e86b6b;font-weight:900;background:#fffaf5;font-size:14px;cursor:pointer}
 .top h2{font-size:18px;color:#0a5a7a;font-weight:900;flex:1;text-align:center}
 #headerText{font-size:19px;color:#0a7a5a!important;font-weight:900}
 .logo{width:26px;height:26px;border-radius:50%;overflow:hidden;border:1.5px solid #d4a95a;background:#fff}
 .logo img{width:100%;height:100%;object-fit:cover}
-.scene{flex:1;position:relative;z-index:2;overflow:hidden}
-.monitor{position:absolute;top:20%;left:50%;transform:translateX(-50%);width:64%;max-width:270px;background:#0f2e1f;border:3px solid #111;border-radius:10px;overflow:hidden;z-index:5;box-shadow:0 10px 20px rgba(0,0,0,0.3)}
+.scene{flex:1;position:relative;z-index:2;overflow:hidden;min-height:0}
+.monitor{position:absolute;top:12%;left:50%;transform:translateX(-50%);width:64%;max-width:270px;background:#0f2e1f;border:3px solid #111;border-radius:10px;overflow:hidden;z-index:5;box-shadow:0 10px 20px rgba(0,0,0,0.3)}
 .screen{padding:10px 8px 8px;text-align:center}
 .stand{width:100%;height:8px;background:linear-gradient(#e8e8e8,#c0c0c0)}
-.stand2{width:32px;height:12px;background:linear-gradient(#d5d5d5,#a8a8a8);margin:0 auto;border-radius:0 0 4px 4px}
-.pill{position:absolute;height:26px;border-radius:14px;display:flex;align-items:center;padding:0 9px;gap:4px;font-size:7.5px;font-weight:800;color:#000;box-shadow:0 3px 8px rgba(0,0,0,0.2);cursor:pointer;white-space:nowrap;z-index:6;border:1px solid rgba(255,255,255,0.9)}
-.p1{left:3%;top:18%;background:#ffeb3b}.p2{left:1%;top:27%;background:#a9d8ff}.p3{left:1%;top:36%;background:#7eff7e}.p4{left:3%;top:45%;background:#ffeb3b}.p5{left:4%;top:54%;background:#7ef6ff}
-.p6{right:3%;top:18%;background:#ff9aa2}.p7{right:1%;top:27%;background:#ff9ec8}.p8{right:1%;top:36%;background:#b18cff}.p9{right:3%;top:45%;background:#ffb86a}.p10{right:5%;top:54%;background:#b9b6ff}
-.bottom{width:62%;height:32px;background:rgba(255,255,255,0.98);border-radius:16px;display:flex;justify-content:space-around;align-items:center;margin:8px auto 10px;box-shadow:0 4px 12px rgba(0,0,0,0.2);z-index:10;flex-shrink:0}
-.bottom div{display:flex;align-items:center;gap:3px;font-size:7px;font-weight:900}
+.stand2{width:32px;height:12px;background:linear-gradient(#d5d5d5,#a8a8a8);margin:0 auto;border-radius:0 0 4px 4px;position:absolute;top:29%;left:50%;transform:translateX(-50%);z-index:5}
+
+/* RIGHT SIDE TEXTS - NO PADDING, TEXT + EMOJI, CLICKABLE */
+.right-stack{
+  position:absolute;right:2%;top:32%;width:48%;
+  display:flex;flex-direction:column;gap:8px;
+  align-items:flex-end;z-index:10
+}
+.r-item{
+  display:flex;align-items:center;gap:4px;
+  font-size:8.5px;font-weight:800;color:#000;
+  cursor:pointer;white-space:nowrap;
+  line-height:1;text-shadow:0 1px 2px rgba(255,255,255,0.9);
+  padding:0; /* NO PADDING */
+  background:transparent;
+}
+.r-item span:last-child{font-size:10px}
+.r-item:hover{transform:translateX(-2px)}
+
+/* keep colored dots for visibility without pill */
+.r-watch{color:#0a4a7a}.r-surv{color:#0a5a1a}.r-bonus{color:#6a4a00}.r-ads{color:#004a4a}.r-check{color:#6a0a4a}.r-art{color:#3a0a6a}.r-ref{color:#5a3a00}
+
+.bottom{width:92%;height:36px;background:rgba(255,255,255,0.98);border-radius:18px;display:flex;justify-content:space-around;align-items:center;margin:6px auto calc(8px + env(safe-area-inset-bottom,0px));box-shadow:0 4px 12px rgba(0,0,0,0.2);z-index:20;flex-shrink:0}
+.bottom div{display:flex;align-items:center;gap:3px;font-size:8px;font-weight:900;cursor:pointer}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:10px 14px;border-radius:10px;font-weight:bold;z-index:99999;display:none}
 #maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
 </style></head><body>
@@ -36,11 +59,25 @@ body{background:#8ecff0;display:flex;justify-content:center;min-height:100vh}
 <div class="top"><div class="back" onclick="location.href='./index.html'"><</div><h2>Welcome <span id="headerText">Ineza</span></h2><div class="logo"><img src="./logo.jpg"></div></div>
 <div class="scene">
 <div class="monitor"><div class="screen"><div style="color:#c8e8a0;font-size:10px;margin-bottom:6px">Your Balance</div><div style="display:flex;gap:6px;text-align:left"><div style="flex:1"><div style="font-size:6px;color:#f0d060">⭐ COINS</div><div id="balance" style="font-size:11px;color:#ffe58a;font-weight:900;margin-top:2px">0 coins</div><div id="usdBalance" style="font-size:6px;color:#a8d0a0">= $0.0000</div></div><div style="width:1px;background:rgba(251,191,36,0.25)"></div><div style="flex:1"><div style="font-size:6px;color:#a0e0a0">💎 USDT</div><div id="usdtBalanceDisplay" style="font-size:11px;color:#7eff9a;font-weight:900;margin-top:2px">0.7945 USDT</div></div></div></div><div class="stand"></div></div>
-<div class="stand2" style="position:absolute;top:35%;left:50%;transform:translateX(-50%);z-index:5"></div>
-<div class="pill p1" onclick="location.href='./wallet.html'">💰 Wallet</div><div class="pill p2" onclick="location.href='./watch.html'">📺 Watch & Earn</div><div class="pill p3" onclick="location.href='./survey.html'">📋 Surveys</div><div class="pill p4" onclick="location.href='./bonus.html'">🎁 Daily Bonus</div><div class="pill p5" onclick="location.href='./ads_earn.html'">📢 Ads Earn</div>
-<div class="pill p6" onclick="location.href='./offers.html'">💎 Offers</div><div class="pill p7" onclick="location.href='./checkin.html'">📅 Daily Checkin</div><div class="pill p8" onclick="location.href='./articles_earn.html'">📖 Articles Earn</div><div class="pill p9" onclick="location.href='./referrals.html'">🤝 Refer & Earn</div><div class="pill p10" onclick="location.href='./more.html'">❄️ More</div>
+<div class="stand2"></div>
+
+<div class="right-stack">
+<div class="r-item r-watch" onclick="location.href='./watch.html'"><span>Watch & Earn</span><span>📺</span></div>
+<div class="r-item r-surv" onclick="location.href='./survey.html'"><span>Surveys</span><span>📋</span></div>
+<div class="r-item r-bonus" onclick="location.href='./bonus.html'"><span>Daily Bonus</span><span>🎁</span></div>
+<div class="r-item r-ads" onclick="location.href='./ads_earn.html'"><span>Ads Earn</span><span>📢</span></div>
+<div class="r-item r-check" onclick="location.href='./checkin.html'"><span>Daily Checkin</span><span>📅</span></div>
+<div class="r-item r-art" onclick="location.href='./articles_earn.html'"><span>Articles Earn</span><span>📖</span></div>
+<div class="r-item r-ref" onclick="location.href='./referrals.html'"><span>Refer & Earn</span><span>🤝</span></div>
 </div>
-<div class="bottom"><div>🏠 Home</div><div>📋 Tasks</div><div>💰 Earn</div><div>👤 Profile</div></div>
+
+</div>
+<div class="bottom">
+<div onclick="location.href='./home.html'">🏠 Home</div>
+<div onclick="location.href='./wallet.html'">💰 Wallet</div>
+<div onclick="location.href='./more.html'">⚙️ More</div>
+<div onclick="location.href='./offers.html'">💎 Offers</div>
+</div>
 </div>
 <script>
 (function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}');if(c&&(c.balance!=null||c.points!=null||c.username)){var bal=c.balance??c.points??0;var usdt=c.usdtBalance??0;document.getElementById('balance').textContent=bal+' coins';document.getElementById('usdBalance').textContent='= $'+(bal*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').textContent=Number(usdt).toFixed(4)+' USDT';if(c.username)document.getElementById('headerText').textContent=c.username;}}catch(e){}})();
