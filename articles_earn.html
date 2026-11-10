@@ -18,16 +18,12 @@ body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;disp
 #countText{font-size:12px;color:#111827;margin:6px 0;font-weight:900}
 .tip-text{font-size:11px;color:#1d4ed8;margin:8px 0 8px 0;font-weight:900;line-height:1.3;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px}
 .article-card{background:#ffffff;border:1.5px solid #e5e7eb;border-radius:14px;padding:12px;margin:10px 0;text-align:left;box-shadow:0 2px 8px rgba(0,0,0,0.03)}
-.article-card.easy{border-left:4px solid #22c55e} 
-.article-card.standard{border-left:4px solid #f59e0b} 
-.article-card.premium{border-left:4px solid #8b5cf6;background:linear-gradient(180deg,#faf5ff,#ffffff)}
+.article-card.easy{border-left:4px solid #22c55e} .article-card.standard{border-left:4px solid #f59e0b} .article-card.premium{border-left:4px solid #8b5cf6;background:linear-gradient(180deg,#faf5ff,#ffffff)}
 .article-top{display:flex;gap:10px;align-items:flex-start}
 .article-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
 .article-info{flex:1}
 .category{font-size:8px;font-weight:900;letter-spacing:0.8px;padding:3px 6px;border-radius:4px;display:inline-block;margin-bottom:4px}
-.easy .category{background:#dcfce7;color:#166534}
-.standard .category{background:#fef3c7;color:#92400e}
-.premium .category{background:#ede9fe;color:#6b21a8}
+.easy .category{background:#dcfce7;color:#166534} .standard .category{background:#fef3c7;color:#92400e} .premium .category{background:#ede9fe;color:#6b21a8}
 .article-title{font-size:13.5px;font-weight:900;color:#111827;line-height:1.25;margin:0}
 .article-desc{font-size:11px;color:#6b7280;line-height:1.4;margin:4px 0 0 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .article-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
@@ -35,15 +31,13 @@ body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;disp
 .btn{padding:8px 16px;border-radius:20px;border:none;font-weight:900;font-size:12px;cursor:pointer;min-width:72px}
 .btn.start{background:linear-gradient(180deg,#dcfce7,#bbf7d0);color:#000;border:2px solid #22c55e;box-shadow:0 2px 0 #86efac}
 .btn.done{background:#e5e7eb;color:#9ca3af;border:2px solid #e5e7eb}
+.btn.wait{background:#fef3c7;color:#92400e;border:2px solid #fbbf24;cursor:not-allowed}
 .sponsored{font-size:9px;color:#9ca3af;margin:10px 0 4px 0;letter-spacing:0.5px;font-weight:bold;text-align:center}
 .ad-set{background:#ffffff;border:2px solid #fef3c7;border-radius:16px;padding:10px;margin:14px 0;box-shadow:0 4px 12px rgba(251,191,36,0.12)}
-.ad-set-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .ad-set-label{font-size:9px;color:#d97706;font-weight:900;letter-spacing:0.5px}
-.ad-set-timer{font-size:9px;color:#22c55e;font-weight:900;background:#f0fdf4;padding:2px 6px;border-radius:10px;border:1px solid #bbf7d0}
 .modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.65);justify-content:center;align-items:center;padding:8px;box-sizing:border-box}
 .modal-content{background:#ffffff;border:2px solid #e5e7eb;border-radius:14px;padding:14px 12px;width:92%;max-width:340px;text-align:center;box-shadow:0 12px 32px rgba(0,0,0,0.12);max-height:95vh;overflow-y:auto}
 .timer{font-size:32px;color:#22c55e;font-weight:bold;margin:6px 0}
-.ad-gate{background:#f9fafb;border:1px dashed #22c55e;border-radius:10px;padding:8px;margin:10px 0;text-align:center}
 .article-box{background:#ffffff;border:1px solid #e5e7eb;border-radius:10px;padding:12px;margin:10px 0;text-align:left;font-size:13px;line-height:1.6;color:#374151;max-height:280px;overflow-y:auto}
 .bonus-btn{width:100%;padding:14px;background:linear-gradient(90deg,#bbf7d0,#22c55e);color:#000;border:none;border-radius:12px;font-weight:900;font-size:15px;cursor:pointer;margin:10px 0;box-shadow:0 3px 0 #15803d;display:none}
 .bonus-btn.claimed{background:#e5e7eb !important;color:#9ca3af !important;border:2px solid #e5e7eb !important;box-shadow:none !important}
@@ -62,35 +56,48 @@ body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;disp
 <div class="bar"><div class="fill" id="progBar"></div></div>
 <div id="countText">0/10 done - Resets midnight</div>
 <div class="tip-text">💡 Learn Crypto, Finance & Tech - Earn while reading! Sponsored ads support us.</div>
+
 <div class="sponsored">SPONSORED - SUPPORT US</div>
-<div id="topBanner" style="margin:6px auto;display:flex;justify-content:center"></div>
+<div id="topBanner" style="margin:6px auto;display:flex;justify-content:center;min-height:60px"></div>
+
 <div id="list" style="margin-top:10px"></div>
+
 <button id="bonusBtn" class="bonus-btn" onclick="startBonus()">🎁 Claim Bonus 5 Coins - 12s</button>
 <div style="font-size:12px;color:#111827;margin-top:16px;font-weight:900;line-height:1.4">3000 Coins = $1.5 • Bonus 5 coins for completing all 10</div>
 </div>
 
+<!-- CLEAN MODAL - NO ADS INSIDE = SAFE -->
 <div id="timerModal" class="modal"><div class="modal-content">
 <div style="font-size:26px">📰</div><h3 id="modalTitle">Reading...</h3><p id="modalDesc">Loading...</p>
 <div class="timer" id="timerNum">12</div>
-<div id="distractPhase" style="font-size:11px;color:#22c55e;font-weight:bold;margin:6px 0">🎁 Loading...</div>
+<div id="distractPhase" style="font-size:11px;color:#22c55e;font-weight:bold;margin:6px 0">📖 Keep page open</div>
 <div id="articleBox" class="article-box"></div>
-<div id="adGateInside" class="ad-gate" style="display:none">
-<div style="font-size:11px;color:#15803d;font-weight:bold;margin-bottom:6px">🔒 Verifying - Keep open</div>
-<div style="margin:6px auto;display:flex;justify-content:center"><script>atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script><script src="https://bicea.org/22/fe25c5bd01f4bc5e60243e36cd83277c"></script></div>
-<div style="margin:6px auto;display:flex;justify-content:center"><script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script><script src="https://bicea.org/22/bf10cacdbe9f50d0c5d66a94e0785f29"></script></div>
-</div><div class="ad-hint" id="adHint">⏳ Verifying...</div>
+<div style="font-size:10px;color:#6b7280;margin-top:8px">Don't switch apps or reward will cancel</div>
 </div></div>
 
 <script>
-function canShowVignette(){const last=localStorage.getItem('vignette_last');return !last || (Date.now()-parseInt(last))>900000;}
-function canShowPop(){const last=localStorage.getItem('pop_last');return !last || (Date.now()-parseInt(last))>1800000;}
-function loadVignette(){if(!canShowVignette())return false;var s=document.createElement('script');s.dataset.zone='12083688';s.src='https://n6wxm.com/vignette.min.js';document.body.appendChild(s);localStorage.setItem('vignette_last',Date.now().toString());return true;}
-function loadPop(){if(!canShowPop())return false;var s=document.createElement('script');s.dataset.zone='12083693';s.src='https://al5sm.com/tag.min.js';document.body.appendChild(s);localStorage.setItem('pop_last',Date.now().toString());return true;}
-function injectBanner(id,key,w,h){if(document.getElementById('timerModal').style.display==='flex')return;const c=document.getElementById(id);if(!c)return;c.innerHTML='';const at=document.createElement('script');at.innerHTML="atOptions={'key':'"+key+"','format':'iframe','height':"+h+",'width':"+w+",'params':{}};";c.appendChild(at);const s=document.createElement('script');s.src="https://bicea.org/22/"+key;c.appendChild(s);}
-function loadTopBanner(){injectBanner('topBanner','fe25c5bd01f4bc5e60243e36cd83277c',60,468);}
-function loadMidBanners(){for(let i=1;i<=5;i++){ if(i%2==1) injectBanner('midBanner'+i,'bf10cacdbe9f50d0c5d66a94e0785f29',250,300); else injectBanner('midBanner'+i,'fe25c5bd01f4bc5e60243e36cd83277c',60,468); }}
-function loadHilltopForSets(){ for(let i=1;i<=5;i++){ const container=document.getElementById('hilltop'+i); if(!container) continue; if(container.dataset.loaded) continue; container.innerHTML=''; const s=document.createElement('script'); s.src="//quarrelsomebitter.com/bAXiVIs.dCGZlp0pY/Wxcq/XeWmI9puCZnUNlEkaPmT-cB2jMODvUOz/N/DCk/t/N/zEY/wwNGTbMk1UMWwM"; s.async=true; s.referrerPolicy='no-referrer-when-downgrade'; container.appendChild(s); container.dataset.loaded="1"; } }
-loadTopBanner(); setInterval(()=>{if(document.getElementById('timerModal').style.display!=='flex'){loadTopBanner(); loadMidBanners(); loadHilltopForSets();}},30000);
+// SAFE BANNERS - OUTSIDE TIMER, NO FORCED VIEW
+function injectBanner(id,key,w,h){
+  const c=document.getElementById(id); if(!c) return; c.innerHTML='';
+  const at=document.createElement('script'); at.innerHTML=`atOptions={'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}};`; c.appendChild(at);
+  const s=document.createElement('script'); s.src=`https://www.highperformanceformat.com/${key}/invoke.js`; c.appendChild(s);
+}
+function loadAllBanners(){
+  injectBanner('topBanner','fe25c5bd01f4bc5e60243e36cd83277c',60,468);
+  for(let i=1;i<=5;i++){
+    if(document.getElementById('midBanner'+i)){
+      if(i%2==1) injectBanner('midBanner'+i,'bf10cacdbe9f50d0c5d66a94e0785f29',250,300);
+      else injectBanner('midBanner'+i,'fe25c5bd01f4bc5e60243e36cd83277c',60,468);
+    }
+  }
+}
+loadAllBanners();
+setInterval(()=>{ if(document.getElementById('timerModal').style.display!=='flex'){ loadAllBanners(); } },35000);
+
+function canShowVignette(){const last=localStorage.getItem('vignette_last');return !last || (Date.now()-parseInt(last))>180000;}
+function canShowPop(){const last=localStorage.getItem('pop_last');return !last || (Date.now()-parseInt(last))>180000;}
+function loadVignetteSafe(){if(!canShowVignette())return false;var s=document.createElement('script');s.dataset.zone='12083688';s.src='https://n6wxm.com/vignette.min.js';document.body.appendChild(s);localStorage.setItem('vignette_last',Date.now().toString());return true;}
+function loadPopSafe(){if(!canShowPop())return false;var s=document.createElement('script');s.dataset.zone='12083693';s.src='https://al5sm.com/tag.min.js';document.body.appendChild(s);localStorage.setItem('pop_last',Date.now().toString());return true;}
 
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig); try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
@@ -109,63 +116,149 @@ const articles=[
 {title:"How Saving $1.5 Daily Can Change Your Life in 1 Year",cat:"FINANCE",icon:"🐷",excerpt:"Small daily savings from tasks = big yearly money - the compound effect explained.",text:"Many think $1.5 is too small to matter, but let's calculate. If you do 10 tasks daily on Reward Platform RW, you earn 3000 coins = $1.5. In 30 days, that's $45 = about 60,000 RWF. In 1 year, that's $540 = 720,000 RWF. That's enough to buy a good smartphone, or pay for 6 months internet, or start small business like selling airtime. How to achieve? Skip one soda per day = save 500 RWF. Cook at home twice a week instead of eating out = save 5000 RWF weekly. Do tasks every evening for 20 minutes while watching TV. The secret is habit, not amount. Put your USDT savings in Binance Earn with 5% APY and it grows more. Small habits daily lead to big results yearly. Start today, not tomorrow, and track your balance in app."}
 ];
 const tasksConfig=articles.map((a,i)=>({id:i,reward:i<3?1:i<7?2:3,sec:i<3?8:i<7?12:15,tier:i<3?'easy':i<7?'standard':'premium',label:i<3?'8s Read':i<7?'12s Read':'15s Read',title:a.title,cat:a.cat,icon:a.icon,text:a.text,excerpt:a.excerpt}));
-const BONUS_REWARD=5,BONUS_SEC=12,EARN_COOLDOWN=15;
+const BONUS_REWARD=5,BONUS_SEC=12,COOLDOWN_AFTER=10;
 function getToday(){return new Date().toISOString().split('T')[0];}
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
-let done=[],total=0,cur=0,sec=12,tmr=null,currentUser=null,userData={},lastEarnTime=0,bonusClaimed=false;
+let done=[],total=0,cur=0,sec=12,tmr=null,currentUser=null,userData={},bonusClaimed=false,isClaiming=false,nextAllowed=0,visViolated=false;
+
+function saveLocal(){
+  try{
+    localStorage.setItem('articlesEarn_done',JSON.stringify(done));
+    localStorage.setItem('articlesEarn_total',total.toString());
+    localStorage.setItem('articlesEarn_date',getToday());
+    if(bonusClaimed) localStorage.setItem('articlesEarn_bonus',getToday());
+  }catch(e){}
+}
+function loadLocalStrict(){
+  try{
+    const today=getToday(); const saved=localStorage.getItem('articlesEarn_date');
+    if(saved!==today){ done=[]; total=0; bonusClaimed=false; localStorage.removeItem('articlesEarn_done'); localStorage.removeItem('articlesEarn_total'); localStorage.removeItem('articlesEarn_bonus'); localStorage.setItem('articlesEarn_date',today); return; }
+    const parsed=JSON.parse(localStorage.getItem('articlesEarn_done')||'[]'); done=[...new Set(parsed)].filter(x=>x>=0&&x<=9);
+    total=parseInt(localStorage.getItem('articlesEarn_total')||'0')||0; bonusClaimed=localStorage.getItem('articlesEarn_bonus')===today;
+    let real=0; done.forEach(id=>{const c=tasksConfig.find(t=>t.id===id); if(c) real+=c.reward}); if(bonusClaimed) real+=BONUS_REWARD; if(total>real+2) total=real;
+  }catch(e){done=[]; total=0; bonusClaimed=false;}
+}
+loadLocalStrict();
 
 function adSetHTML(index){
-  const n = index+1;
-  return '<div class="ad-set" id="adSet'+n+'">'
-    + '<div class="ad-set-header"><span class="ad-set-label">📢 SPONSORED SET '+n+' • 10-12s VIEW</span><span class="ad-set-timer" id="adTimer'+n+'">12s</span></div>'
-    + '<div style="background:#ffffff;border:1.5px solid #e5e7eb;border-radius:12px;padding:8px;margin:6px 0;min-height:100px;display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center">'
-    + '<div id="hilltop'+n+'" style="width:100%;display:flex;justify-content:center;min-height:60px"></div>'
-    + '<div id="midBanner'+n+'" style="display:flex;justify-content:center;width:100%"></div>'
-    + '</div></div>';
+  const n=index+1;
+  return '<div class="ad-set"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span class="ad-set-label">📢 SPONSORED SET '+n+'</span><span style="font-size:9px;color:#22c55e;font-weight:900" id="adTimer'+n+'">Ads</span></div><div style="background:#ffffff;border:1.5px solid #e5e7eb;border-radius:12px;padding:8px;min-height:80px;display:flex;justify-content:center;align-items:center"><div id="midBanner'+n+'" style="display:flex;justify-content:center;width:100%"></div></div></div>';
 }
 
 function render(){
   document.getElementById('totalPtsBadge').innerText="Total Today: "+total+" 🪙 Coins";
   document.getElementById('countText').innerText=done.length+"/10 done - Resets midnight";
   document.getElementById('progBar').style.width=(done.length*10)+'%';
-  let html=''; 
-  tasksConfig.forEach((cfg, idx)=>{
+  const nowSec=Date.now()/1000; const rem=Math.max(0,Math.ceil(nextAllowed-nowSec));
+  let html=''; tasksConfig.forEach((cfg,idx)=>{
     let isDone=done.includes(cfg.id);
-    html+='<div class="article-card '+cfg.tier+'">'
-            + '<div class="article-top"><div class="article-icon">'+cfg.icon+'</div>'
-            + '<div class="article-info"><span class="category">'+cfg.cat+' • '+cfg.label+'</span>'
-            + '<div class="article-title">'+cfg.title+'</div><div class="article-desc">'+cfg.excerpt+'</div></div></div>'
-            + '<div class="article-bottom"><div class="read-meta">⏱ '+cfg.sec+'s • +'+cfg.reward+' 🪙</div>'
-            + '<button class="btn '+(isDone?'done':'start')+'" onclick="startAd('+cfg.id+')" '+(isDone?'disabled':'')+'>'+(isDone?'Done ✓':'Read')+'</button></div></div>';
+    let btnCls=isDone?'done':(rem>0?'wait':'start');
+    let btnTxt=isDone?'Done ✓':(rem>0?`Wait ${rem}s`:'Read');
+    let dis=isDone||rem>0;
+    html+='<div class="article-card '+cfg.tier+'"><div class="article-top"><div class="article-icon">'+cfg.icon+'</div><div class="article-info"><span class="category">'+cfg.cat+' • '+cfg.label+'</span><div class="article-title">'+cfg.title+'</div><div class="article-desc">'+cfg.excerpt+'</div></div></div><div class="article-bottom"><div class="read-meta">⏱ '+cfg.sec+'s • +'+cfg.reward+' 🪙</div><button class="btn '+btnCls+'" onclick="startAd('+cfg.id+')" '+(dis?'disabled':'')+'>'+btnTxt+'</button></div></div>';
     if((idx+1)%2===0 && idx!==9){ html+=adSetHTML((idx+1)/2); }
   });
   document.getElementById('list').innerHTML=html;
-  loadMidBanners();
-  loadHilltopForSets();
-  startAdSetTimers();
+  loadAllBanners();
   const bonusBtn=document.getElementById('bonusBtn');
-  if(bonusClaimed){
-    bonusBtn.innerText='Bonus Claimed ✓';
-    bonusBtn.disabled=true;
-    bonusBtn.classList.add('claimed');
-    bonusBtn.style.display='block';
-  }else if(done.length>=10){
-    bonusBtn.classList.remove('claimed');
-    bonusBtn.style.display='block';
-    bonusBtn.innerText='🎁 Claim Bonus 5 Coins - 12s';
-    bonusBtn.disabled=false;
-  }else{
-    bonusBtn.classList.remove('claimed');
-    bonusBtn.style.display='none';
-  }
+  if(bonusClaimed){ bonusBtn.innerText='Bonus Claimed ✓'; bonusBtn.disabled=true; bonusBtn.classList.add('claimed'); bonusBtn.style.display='block'; }
+  else if(done.length>=10){ 
+    if(rem>0){ bonusBtn.innerText=`Wait ${rem}s for bonus`; bonusBtn.disabled=true; }
+    else { bonusBtn.innerText='🎁 Claim Bonus 5 Coins - 12s'; bonusBtn.disabled=false; bonusBtn.classList.remove('claimed'); }
+    bonusBtn.style.display='block'; bonusBtn.style.opacity=rem>0?'0.6':'1';
+  } else { bonusBtn.style.display='none'; }
+  if(rem>0) setTimeout(render,1000);
 }
-function startAdSetTimers(){ for(let i=1;i<=5;i++){ let el=document.getElementById('adTimer'+i); if(!el) continue; let t=12; setInterval(()=>{ t--; if(t<=0) t=12; if(el) el.innerText=t+'s'; },1000); } }
 
-function startAd(i){if(done.includes(i))return;if(document.getElementById('timerModal').style.display==='flex')return;const now=Date.now()/1000;if(now-lastEarnTime<EARN_COOLDOWN){showToast("Wait "+Math.ceil(EARN_COOLDOWN-(now-lastEarnTime))+"s");return;}let cfg=tasksConfig[i];cur=i;sec=cfg.sec;document.getElementById('timerNum').innerText=sec;document.getElementById('modalTitle').innerText=cfg.title;document.getElementById('modalDesc').innerText='Reading...';document.getElementById('articleBox').innerText=cfg.text;document.getElementById('adHint').innerText='Loading...';document.getElementById('distractPhase').style.display='block';document.getElementById('distractPhase').innerText="📖 "+cfg.cat+" Article - "+cfg.tier;document.getElementById('adGateInside').style.display='none';document.getElementById('timerModal').style.display='flex';if(cfg.tier!=='easy')loadVignette();setTimeout(()=>{document.getElementById('distractPhase').style.display='none';document.getElementById('adGateInside').style.display='block';document.getElementById('modalTitle').innerText="Reading: "+cfg.title;document.getElementById('modalDesc').innerText="Keep open "+cfg.sec+"s to earn";document.getElementById('adHint').innerText="🔒 Verifying "+cfg.sec+"s...";tmr=setInterval(async()=>{sec--;document.getElementById('timerNum').innerText=sec;if(sec<=0){clearInterval(tmr);document.getElementById('timerModal').style.display='none';await claimAd();}},1000);},cfg.tier==='easy'?800:2500);}
-function startBonus(){if(bonusClaimed)return;if(done.length<10)return showToast('Complete 10 articles first');if(document.getElementById('timerModal').style.display==='flex')return;const now=Date.now()/1000;if(now-lastEarnTime<EARN_COOLDOWN){showToast("Wait "+Math.ceil(EARN_COOLDOWN-(now-lastEarnTime))+"s");return;}sec=BONUS_SEC;document.getElementById('timerNum').innerText=sec;document.getElementById('modalTitle').innerText='🎁 Bonus 5 Coins';document.getElementById('articleBox').innerText='Bonus article: Thank you for reading 10 crypto & finance articles! You learned about Bitcoin, USDT, blockchain safety. Keep learning daily.';document.getElementById('modalDesc').innerText='Final reading...';document.getElementById('adHint').innerText='Loading bonus...';document.getElementById('distractPhase').style.display='block';document.getElementById('distractPhase').innerText='🎁 Bonus Article';document.getElementById('adGateInside').style.display='none';document.getElementById('timerModal').style.display='flex';loadVignette();setTimeout(()=>{document.getElementById('distractPhase').style.display='none';document.getElementById('adGateInside').style.display='block';document.getElementById('modalTitle').innerText='Bonus Verifying...';document.getElementById('modalDesc').innerText='Keep open 12s';document.getElementById('adHint').innerText='🔒 Verifying bonus...';tmr=setInterval(async()=>{sec--;document.getElementById('timerNum').innerText=sec;if(sec<=0){clearInterval(tmr);document.getElementById('timerModal').style.display='none';await claimBonus();}},1000);},2500);}
-async function claimAd(){if(done.includes(cur)) return;let cfg=tasksConfig[cur];if(cfg.tier==='premium') loadPop();done.push(cur); total+=cfg.reward; render();localStorage.setItem('articlesEarn_done',JSON.stringify(done));localStorage.setItem('articlesEarn_total',total);localStorage.setItem('articlesEarn_date',getToday());if(currentUser){try{await db.collection('users').doc(currentUser.uid).update({balance: firebase.firestore.FieldValue.increment(cfg.reward),coins: firebase.firestore.FieldValue.increment(cfg.reward),points: firebase.firestore.FieldValue.increment(cfg.reward),lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),articlesEarn_date: getToday(),articlesEarn_done: done,articlesEarn_total: total});await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Articles Earn',coins:cfg.reward,points:cfg.reward,desc:cfg.title+" +"+cfg.reward+" coins",timestamp:firebase.firestore.FieldValue.serverTimestamp()});const doc=await db.collection('users').doc(currentUser.uid).get();if(doc.exists){ userData=doc.data(); localStorage.setItem('userData',JSON.stringify(userData)); }lastEarnTime=Date.now()/1000;showToast("✓ +"+cfg.reward+" 🪙 added!");}catch(e){ showToast(e.message); }}}
-async function claimBonus(){if(bonusClaimed) return;loadPop(); bonusClaimed=true; total+=BONUS_REWARD; render();localStorage.setItem('articlesEarn_bonus',getToday());localStorage.setItem('articlesEarn_total',total);if(currentUser){try{await db.collection('users').doc(currentUser.uid).update({balance: firebase.firestore.FieldValue.increment(BONUS_REWARD),coins: firebase.firestore.FieldValue.increment(BONUS_REWARD),points: firebase.firestore.FieldValue.increment(BONUS_REWARD),lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),articlesEarn_bonus: getToday(),articlesEarn_total: total});await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Articles Earn Bonus',coins:BONUS_REWARD,points:BONUS_REWARD,desc:"Bonus +"+BONUS_REWARD+" coins for 10 articles",timestamp:firebase.firestore.FieldValue.serverTimestamp()});const doc=await db.collection('users').doc(currentUser.uid).get();if(doc.exists){ userData=doc.data(); localStorage.setItem('userData',JSON.stringify(userData)); }lastEarnTime=Date.now()/1000;showToast("🎁 Bonus +"+BONUS_REWARD+" 🪙 added!");}catch(e){ showToast(e.message); }}}
-auth.onAuthStateChanged(async u=>{if(!u){location.href='./index.html';return;}currentUser=u;const doc=await db.collection('users').doc(u.uid).get();if(doc.exists){userData=doc.data(); localStorage.setItem('userData',JSON.stringify(userData));if(userData.lastEarnAt&&userData.lastEarnAt.toMillis){ lastEarnTime=userData.lastEarnAt.toMillis()/1000; }const today=getToday(); const fbDate=userData.articlesEarn_date||'';if(fbDate===today){done=userData.articlesEarn_done||[]; total=userData.articlesEarn_total||0;bonusClaimed=(userData.articlesEarn_bonus===today);}else{done=[]; total=0; bonusClaimed=false;await db.collection('users').doc(u.uid).update({articlesEarn_date:today,articlesEarn_done:[],articlesEarn_total:0,articlesEarn_bonus:''});}}render();});
+function startAd(i){
+  if(done.includes(i)) return; if(isClaiming) return;
+  const nowSec=Date.now()/1000; if(nowSec<nextAllowed){ showToast("Wait "+Math.ceil(nextAllowed-nowSec)+"s - ads loading"); return; }
+  let cfg=tasksConfig[i]; cur=i; sec=cfg.sec; visViolated=false;
+  document.getElementById('timerNum').innerText=sec;
+  document.getElementById('modalTitle').innerText=cfg.title;
+  document.getElementById('modalDesc').innerText='Reading article...';
+  document.getElementById('articleBox').innerText=cfg.text;
+  document.getElementById('distractPhase').innerText="📖 "+cfg.cat+" • Keep page open";
+  document.getElementById('timerModal').style.display='flex';
+  tmr=setInterval(async()=>{
+    if(document.hidden){ visViolated=true; document.getElementById('distractPhase').innerText='⚠️ You left page - reward will cancel'; return; }
+    sec--; document.getElementById('timerNum').innerText=sec;
+    if(sec<=0){ clearInterval(tmr); if(visViolated){ document.getElementById('timerModal').style.display='none'; showToast('❌ Canceled - keep page open'); return; } document.getElementById('timerModal').style.display='none'; await claimAd(); }
+  },1000);
+}
+
+function startBonus(){
+  if(bonusClaimed) return; if(done.length<10) return showToast('Complete 10 first');
+  if(isClaiming) return; const nowSec=Date.now()/1000; if(nowSec<nextAllowed){ showToast("Wait "+Math.ceil(nextAllowed-nowSec)+"s"); return; }
+  sec=BONUS_SEC; visViolated=false;
+  document.getElementById('timerNum').innerText=sec;
+  document.getElementById('modalTitle').innerText='🎁 Bonus 5 Coins';
+  document.getElementById('articleBox').innerText='Bonus: Thank you for reading 10 articles! Keep learning daily.';
+  document.getElementById('modalDesc').innerText='Final reading...';
+  document.getElementById('distractPhase').innerText='🎁 Bonus • Keep open';
+  document.getElementById('timerModal').style.display='flex';
+  tmr=setInterval(async()=>{
+    if(document.hidden){ visViolated=true; document.getElementById('distractPhase').innerText='⚠️ You left page - bonus will cancel'; return; }
+    sec--; document.getElementById('timerNum').innerText=sec;
+    if(sec<=0){ clearInterval(tmr); if(visViolated){ document.getElementById('timerModal').style.display='none'; showToast('❌ Bonus canceled'); return; } document.getElementById('timerModal').style.display='none'; await claimBonus(); }
+  },1000);
+}
+
+async function claimAd(){
+  if(isClaiming) return; isClaiming=true;
+  if(done.includes(cur)){isClaiming=false; return;}
+  let cfg=tasksConfig[cur]; if(done.length>=10){isClaiming=false; return;}
+  done=[...new Set([...done,cur])]; total+=cfg.reward; saveLocal();
+  nextAllowed=Date.now()/1000+COOLDOWN_AFTER; render();
+  try{
+    await db.collection('users').doc(currentUser.uid).set({
+      balance: firebase.firestore.FieldValue.increment(cfg.reward),
+      coins: firebase.firestore.FieldValue.increment(cfg.reward),
+      points: firebase.firestore.FieldValue.increment(cfg.reward),
+      lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),
+      articlesEarn_date: getToday(), articlesEarn_done: done, articlesEarn_total: total
+    },{merge:true});
+    showToast("✓ +"+cfg.reward+" 🪙 added! Next in "+COOLDOWN_AFTER+"s");
+    loadAllBanners(); // profit
+    if(cfg.tier!=='easy') loadVignetteSafe(); if(cfg.tier==='premium') loadPopSafe();
+  }catch(e){ showToast(e.message); done=done.filter(x=>x!==cur); total-=cfg.reward; saveLocal(); render(); }
+  isClaiming=false;
+}
+
+async function claimBonus(){
+  if(isClaiming) return; isClaiming=true;
+  if(bonusClaimed){isClaiming=false; return;}
+  bonusClaimed=true; total+=BONUS_REWARD; saveLocal();
+  nextAllowed=Date.now()/1000+COOLDOWN_AFTER; render();
+  try{
+    await db.collection('users').doc(currentUser.uid).set({
+      balance: firebase.firestore.FieldValue.increment(BONUS_REWARD),
+      coins: firebase.firestore.FieldValue.increment(BONUS_REWARD),
+      points: firebase.firestore.FieldValue.increment(BONUS_REWARD),
+      lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),
+      articlesEarn_bonus: getToday(), articlesEarn_date: getToday(), articlesEarn_done: done, articlesEarn_total: total
+    },{merge:true});
+    showToast("🎁 Bonus +"+BONUS_REWARD+" 🪙 added!"); loadAllBanners(); loadPopSafe();
+  }catch(e){ showToast(e.message); bonusClaimed=false; total-=BONUS_REWARD; saveLocal(); render(); }
+  isClaiming=false;
+}
+
+auth.onAuthStateChanged(async u=>{
+  if(!u){location.href='./index.html';return;} currentUser=u;
+  try{
+    const doc=await db.collection('users').doc(u.uid).get();
+    if(doc.exists){
+      userData=doc.data(); const today=getToday(); const fbDate=userData.articlesEarn_date||'';
+      if(fbDate!==today && fbDate!==''){ done=[]; total=0; bonusClaimed=false; saveLocal();
+        await db.collection('users').doc(u.uid).set({articlesEarn_date:today,articlesEarn_done:[],articlesEarn_total:0,articlesEarn_bonus:firebase.firestore.FieldValue.delete()},{merge:true});
+      } else if(fbDate===today){
+        const fbDone=userData.articlesEarn_done||[]; done=[...new Set(fbDone)].filter(x=>x>=0&&x<=9); total=userData.articlesEarn_total||0; bonusClaimed=(userData.articlesEarn_bonus===today);
+        let real=0; done.forEach(id=>{const c=tasksConfig.find(t=>t.id===id); if(c) real+=c.reward}); if(bonusClaimed) real+=BONUS_REWARD; if(total!==real && total<50) total=real; saveLocal();
+      }
+    }
+  }catch(e){}
+  render();
+});
 render();
 </script>
 </body>
