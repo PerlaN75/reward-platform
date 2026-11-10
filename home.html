@@ -11,51 +11,48 @@ body{background:#8ecff0;display:flex;justify-content:center;min-height:100vh}
   background-position:center bottom;
   position:relative;display:flex;flex-direction:column;overflow:hidden
 }
-/* WELCOME FIXED - NOW VISIBLE */
 .top{
   position:relative;
-  margin:14px 12px 0 12px;
-  background:#ffffff;border-radius:22px;height:54px;
-  display:flex;align-items:center;justify-content:space-between;padding:0 14px;
+  margin:12px 12px 0 12px;
+  background:#ffffff;border-radius:22px;height:52px;
+  display:flex;align-items:center;justify-content:center;padding:0 14px;
   z-index:30;box-shadow:0 6px 14px rgba(0,0,0,0.18);flex-shrink:0
 }
-.back{width:44px;height:28px;border:1.2px solid #e58a8a;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#e86b6b;font-weight:900;background:#fffaf5;font-size:14px;cursor:pointer}
-.top h2{font-size:19px;color:#0a5a7a;font-weight:900;flex:1;text-align:center;letter-spacing:0.2px}
+.top h2{font-size:19px;color:#0a5a7a;font-weight:900;flex:1;text-align:center}
 #headerText{font-size:20px;color:#0a7a5a!important;font-weight:900}
-.logo{width:28px;height:28px;border-radius:50%;overflow:hidden;border:1.5px solid #d4a95a;background:#fff}
+.logo{width:28px;height:28px;border-radius:50%;overflow:hidden;border:1.5px solid #d4a95a;background:#fff;position:absolute;right:12px}
 .logo img{width:100%;height:100%;object-fit:cover}
 .scene{flex:1;position:relative;z-index:2;overflow:hidden;min-height:0}
-/* BALANCE REDUCED SIZE */
+/* BALANCE - MOVED AS YOU SHOWED: SMALLER, TOP LEFT-CENTER */
 .monitor{
-  position:absolute;top:8%;left:50%;transform:translateX(-50%);
-  width:54%;max-width:230px;
+  position:absolute;top:10%;left:16%; /* moved as marked */
+  width:48%;max-width:210px;
   background:#0f2e1f;border:2px solid #111;border-radius:10px;overflow:hidden;z-index:5;
   box-shadow:0 6px 14px rgba(0,0,0,0.3)
 }
-.screen{padding:8px 6px 6px;text-align:center}
-.stand{width:100%;height:6px;background:linear-gradient(#e8e8e8,#c0c0c0)}
-.stand2{width:28px;height:10px;background:linear-gradient(#d5d5d5,#a8a8a8);margin:0 auto;border-radius:0 0 4px 4px;position:absolute;top:22%;left:50%;transform:translateX(-50%);z-index:5}
+.screen{padding:7px 6px 5px;text-align:center}
+.stand{width:100%;height:5px;background:linear-gradient(#e8e8e8,#c0c0c0)}
+.stand2{width:24px;height:8px;background:linear-gradient(#d5d5d5,#a8a8a8);margin:0 auto;border-radius:0 0 4px 4px;position:absolute;top:23.5%;left:27%;transform:translateX(-50%);z-index:5}
 
-/* RIGHT TEXTS - BIGGER + TINY WHITE STROKE SHADOW + NO PADDING */
+/* RIGHT TEXTS - SEPARATED UP + BIGGER + WHITE STROKE */
 .right-stack{
-  position:absolute;right:3%;top:30%;width:52%;
-  display:flex;flex-direction:column;gap:10px;
+  position:absolute;right:3%;top:32%;bottom:22%;
+  width:54%;
+  display:flex;flex-direction:column;
+  justify-content:space-between; /* separate up to space you marked */
   align-items:flex-end;z-index:10
 }
 .r-item{
-  display:flex;align-items:center;gap:5px;
-  font-size:11.5px;font-weight:900;color:#1a1a1a;
+  display:flex;align-items:center;gap:6px;
+  font-size:13.5px;font-weight:900;color:#1a1a1a;
   cursor:pointer;white-space:nowrap;line-height:1;
-  padding:0; /* NO PADDING */
-  /* TINY WHITE STROKE SHADOW */
+  padding:0;
   text-shadow:
    -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff,
-    0 0 3px rgba(255,255,255,0.9), 0 1px 2px rgba(255,255,255,1);
+    0 0 4px rgba(255,255,255,1), 0 1px 3px #fff;
   background:transparent;
 }
-.r-item span:last-child{font-size:12px;filter:drop-shadow(0 0 2px #fff)}
-.r-item:hover{transform:translateX(-2px)}
-
+.r-item span:last-child{font-size:14px;filter:drop-shadow(0 0 2px #fff)}
 .bottom{width:94%;height:38px;background:rgba(255,255,255,0.98);border-radius:18px;display:flex;justify-content:space-around;align-items:center;margin:6px auto 10px;box-shadow:0 4px 12px rgba(0,0,0,0.25);z-index:20;flex-shrink:0}
 .bottom div{display:flex;align-items:center;gap:4px;font-size:9px;font-weight:900;cursor:pointer}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:10px 14px;border-radius:10px;font-weight:bold;z-index:99999;display:none}
@@ -64,9 +61,9 @@ body{background:#8ecff0;display:flex;justify-content:center;min-height:100vh}
 <div id="maint"><div><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900">Back</button></div></div>
 <div id="toast"></div>
 <div class="wrap">
-<div class="top"><div class="back" onclick="location.href='./index.html'"><</div><h2>Welcome <span id="headerText">Ineza</span></h2><div class="logo"><img src="./logo.jpg"></div></div>
+<div class="top"><h2>Welcome <span id="headerText">Ineza</span></h2><div class="logo"><img src="./logo.jpg"></div></div>
 <div class="scene">
-<div class="monitor"><div class="screen"><div style="color:#c8e8a0;font-size:9px;margin-bottom:4px">Your Balance</div><div style="display:flex;gap:4px;text-align:left"><div style="flex:1"><div style="font-size:5.5px;color:#f0d060">⭐ COINS</div><div id="balance" style="font-size:10px;color:#ffe58a;font-weight:900;margin-top:1px">0 coins</div><div id="usdBalance" style="font-size:5px;color:#a8d0a0">= $0.0000</div></div><div style="width:1px;background:rgba(251,191,36,0.25)"></div><div style="flex:1"><div style="font-size:5.5px;color:#a0e0a0">💎 USDT</div><div id="usdtBalanceDisplay" style="font-size:10px;color:#7eff9a;font-weight:900;margin-top:1px">0.7945 USDT</div></div></div></div><div class="stand"></div></div>
+<div class="monitor"><div class="screen"><div style="color:#c8e8a0;font-size:8px;margin-bottom:3px">Your Balance</div><div style="display:flex;gap:3px;text-align:left"><div style="flex:1"><div style="font-size:5px;color:#f0d060">⭐ COINS</div><div id="balance" style="font-size:9px;color:#ffe58a;font-weight:900;margin-top:1px">0 coins</div><div id="usdBalance" style="font-size:4.5px;color:#a8d0a0">= $0.0000</div></div><div style="width:1px;background:rgba(251,191,36,0.25)"></div><div style="flex:1"><div style="font-size:5px;color:#a0e0a0">💎 USDT</div><div id="usdtBalanceDisplay" style="font-size:9px;color:#7eff9a;font-weight:900;margin-top:1px">0.7945 USDT</div></div></div></div><div class="stand"></div></div>
 <div class="stand2"></div>
 
 <div class="right-stack">
@@ -75,13 +72,13 @@ body{background:#8ecff0;display:flex;justify-content:center;min-height:100vh}
 <div class="r-item" style="color:#6a4a00" onclick="location.href='./bonus.html'"><span>Daily Bonus</span><span>🎁</span></div>
 <div class="r-item" style="color:#0a4a4a" onclick="location.href='./ads_earn.html'"><span>Ads Earn</span><span>📢</span></div>
 <div class="r-item" style="color:#6a0a3a" onclick="location.href='./checkin.html'"><span>Daily Checkin</span><span>📅</span></div>
-<div class="r-item" style="color:#3a0a5a" onclick="location.href='./articles_earn.html'"><span>Articles Earn</span><span>📄</span></div>
+<div class="r-item" style="color:#3a0a5a" onclick="location.href='./articles_earn.html'"><span>Articles Earn</span><span>📖</span></div>
 <div class="r-item" style="color:#5a3a00" onclick="location.href='./referrals.html'"><span>Refer & Earn</span><span>🤝</span></div>
 </div>
 
 </div>
 <div class="bottom">
-<div onclick="location.href='./home.html'">🏠 Home</div>
+<div onclick="location.href='./index.html'">🏠 Home</div>
 <div onclick="location.href='./wallet.html'">💰 Wallet</div>
 <div onclick="location.href='./more.html'">❄️ More</div>
 <div onclick="location.href='./offers.html'">💎 Offers</div>
