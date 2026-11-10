@@ -9,7 +9,7 @@
 <style>
 *{ -webkit-tap-highlight-color:transparent } *:focus{outline:none !important}
 body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;display:flex;justify-content:center;padding:12px 10px 80px 10px;box-sizing:border-box;min-height:100vh}
-.card{background:#ffffff;border:2px solid #e5e7eb;border-radius:22px;padding:16px 14px 18px 14px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.06);margin:10px auto 30px}
+.card{background:#ffffff;border:2px solid #e5e7eb;border-radius:22px;padding:16px 14px 18px 14px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.06);margin:10px auto 30px;position:relative;overflow:hidden}
 .header-row{display:flex;align-items:center;gap:10px;margin:6px 0 12px 0}
 .header-row h2{margin:0;color:#111827;font-size:22px;font-weight:900;text-align:left;flex:1}
 .back-btn-checkin{width:45px;height:30px;border-radius:12px;background:linear-gradient(180deg,#fff5f5,#fecaca);border:2px solid #f87171;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5;flex-shrink:0}
@@ -31,6 +31,8 @@ body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;disp
 .bonus-btn{width:100%;padding:14px;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;font-weight:900;font-size:15px;cursor:pointer;margin:10px 0;box-shadow:0 3px 0 #d97706;display:none}
 .bonus-btn:disabled{background:#e5e7eb;color:#9ca3af;box-shadow:none;cursor:not-allowed}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#ffffff;border:2px solid #e5e7eb;color:#111827;padding:12px 18px;border-radius:12px;font-weight:bold;z-index:9999;display:none;max-width:90%;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.1)}
+#entryGate{position:absolute;inset:0;background:#ffffff;z-index:90;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:18px 14px;text-align:center;overflow-y:auto}
+#gateTimer{font-size:30px;font-weight:900;color:#f59e0b;margin:8px 0}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
@@ -40,6 +42,17 @@ body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;disp
 <body>
 <div id="toast"></div>
 <div class="card">
+<div id="entryGate">
+  <div style="font-size:32px">⏳</div>
+  <h3 style="margin:8px 0 4px;font-size:15px;color:#111827">Loading tasks...</h3>
+  <p style="font-size:11px;color:#6b7280;margin:0 0 12px">Sponsored ads help keep coins free</p>
+  <div id="gateTopBanner" style="width:100%;min-height:60px;display:flex;justify-content:center;margin:8px 0"></div>
+  <div id="gateTimer">5</div>
+  <div style="font-size:10px;color:#9ca3af;margin-bottom:8px">Please wait to enter — no coins needed</div>
+  <div id="gateMidBanner" style="width:100%;min-height:250px;display:flex;justify-content:center;margin:8px 0"></div>
+  <div style="font-size:9px;color:#9ca3af;margin-top:10px">Ads support free rewards • You earn nothing for waiting, we earn impressions</div>
+</div>
+
 <div class="header-row"><a href="home.html" class="back-btn-checkin">‹</a><h2>📢 Ads Earn</h2></div>
 <div class="badge" id="totalPtsBadge">Total Today: 0 🪙 Coins</div>
 <div class="bar"><div class="fill" id="progBar"></div></div>
@@ -70,10 +83,25 @@ function injectBanner(id,key,w,h){
 }
 function loadAllBanners(){
   injectBanner('topBanner','fe25c5bd01f4bc5e60243e36cd83277c',60,468);
+  injectBanner('gateTopBanner','fe25c5bd01f4bc5e60243e36cd83277c',60,468);
   injectBanner('midBanner','bf10cacdbe9f50d0c5d66a94e0785f29',250,300);
+  injectBanner('gateMidBanner','bf10cacdbe9f50d0c5d66a94e0785f29',250,300);
 }
 loadAllBanners();
-setInterval(()=>{ if(document.getElementById('timerModal').style.display!=='flex'){ loadAllBanners(); } },35000);
+setInterval(()=>{ if(document.getElementById('timerModal').style.display!=='flex' && document.getElementById('entryGate').style.display==='none'){ loadAllBanners(); } },35000);
+
+let gateSec=5;
+const gateTimerEl=document.getElementById('gateTimer');
+const gateEl=document.getElementById('entryGate');
+const gateInt=setInterval(()=>{
+  gateSec--;
+  if(gateTimerEl) gateTimerEl.innerText=gateSec;
+  if(gateSec<=0){
+    clearInterval(gateInt);
+    if(gateEl) gateEl.style.display='none';
+    loadAllBanners();
+  }
+},1000);
 
 function canShowVignette(){const last=localStorage.getItem('vignette_last');return !last || (Date.now()-parseInt(last))>180000;}
 function canShowPop(){const last=localStorage.getItem('pop_last');return !last || (Date.now()-parseInt(last))>180000;}
@@ -190,7 +218,7 @@ async function claimAd(){
       adsEarn_date: getToday(), adsEarn_done: done, adsEarn_total: total
     },{merge:true});
     showToast(`✓ +${cfg.reward} 🪙 added! Next in ${COOLDOWN_AFTER_CLAIM}s`);
-    loadAllBanners(); // FORCE new impression for you = profit
+    loadAllBanners();
     if(cfg.tier==='premium') loadPopSafe(); else loadVignetteSafe();
   }catch(e){ showToast("Error: "+e.message); done=done.filter(x=>x!==cur); total-=cfg.reward; saveLocal(); render(); }
   isClaiming=false;
