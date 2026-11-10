@@ -1,186 +1,109 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Refer & Earn - Reward Platform RW</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="referrer" content="no-referrer-when-downgrade" />
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',Arial,sans-serif;-webkit-tap-highlight-color:transparent}
-    body{background:#f3f4f6;min-height:100vh;padding:0 0 90px 0;color:#111827}
-    .container{max-width:500px;margin:0 auto;padding:14px 14px 0 14px;position:relative}
-    .top-bar{background:#ffffff;height:62px;display:flex;align-items:center;gap:10px;padding:0 14px;position:sticky;top:0;z-index:100;border-bottom:2px solid #f1f5f9}
-    .back-btn-checkin{width:45px;height:30px;border-radius:10px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:20px;cursor:pointer;box-shadow:0 2px 0 #fca5a5;flex-shrink:0}
-    .top-title{font-size:16px!important;font-weight:800!important;display:flex;align-items:center;gap:6px}
-    .card{background:#fff;border:2px solid #e5e7eb;border-radius:18px;padding:16px;margin:14px 0;box-shadow:0 6px 20px rgba(0,0,0,0.05);position:relative;overflow:hidden}
-    .label{font-size:12px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:6px}
-    .link-box{background:#f9fafb;border:1.5px dashed #cbd5e1;border-radius:10px;padding:11px;font-size:12px;word-break:break-all;margin-bottom:12px;font-weight:600;color:#0f172a}
-    .badge{text-align:center;font-size:11px;font-weight:800;background:#eff6ff;color:#1d4ed8;padding:7px;border-radius:10px;border:1px solid #dbeafe;margin-bottom:12px}
-    .btn-row{display:flex;gap:8px}
-    .btn{padding:12px;border:none;border-radius:10px;font-weight:800;font-size:13px;cursor:pointer;flex:1}
-    .btn-copy{background:#2563eb;color:#fff}
-    .btn-wa{background:#22c55e;color:#fff}
-    .referral-item{display:flex;justify-content:space-between;align-items:center;background:#f9fafb;border:1.5px solid #e5e7eb;padding:11px 12px;border-radius:10px;margin-bottom:8px}
-    .empty{text-align:center;color:#9ca3af;padding:20px 0;font-size:12.5px;line-height:1.5}
-    .toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;z-index:9999;font-size:12px}
-    .sponsored{font-size:9px;color:#9ca3af;font-weight:bold;text-align:center;margin:10px 0 4px;letter-spacing:0.5px}
-    #entryGate{position:absolute;inset:0;background:#ffffff;z-index:90;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:18px 14px;text-align:center;overflow-y:auto}
-    #gateTimer{font-size:30px;font-weight:900;color:#22c55e;margin:8px 0}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Refer & Earn</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif}
+body{background:#f5f5f7;min-height:100vh}
+.header{position:sticky;top:0;z-index:10;background:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #eee}
+.back{width:36px;height:36px;border-radius:10px;border:1.5px solid #ff3b30;display:flex;align-items:center;justify-content:center;color:#ff3b30;text-decoration:none;font-weight:bold}
+.card{background:#fff;border-radius:16px;margin:16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);border:1px solid #f0f0f0}
+.label{font-weight:700;font-size:14px;display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.linkBox{border:1.5px dashed #d0d0d0;border-radius:10px;padding:12px;font-size:13px;word-break:break-all;background:#fafafa;color:#333;min-height:44px}
+.info{background:#eef6ff;color:#3b82f6;border-radius:20px;padding:8px 12px;font-size:12px;font-weight:600;text-align:center;margin:12px 0}
+.btns{display:flex;gap:12px}
+.btn{flex:1;padding:12px;border-radius:12px;border:none;font-weight:700;color:#fff;cursor:pointer}
+.btn-copy{background:#2563eb}
+.btn-wa{background:#22c55e}
+.sponsored{font-size:10px;letter-spacing:1px;color:#999;text-align:center;margin:18px 0 8px;font-weight:700}
+.adBox{background:#fff;border:1px solid #eee;border-radius:12px;min-height:70px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin:8px 16px}
+.adBox.medium{min-height:270px}
+.refItem{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1px solid #f0f0f0;border-radius:12px;margin-bottom:10px;background:#fff}
+.refName{font-weight:700;font-size:14px}
+.refDate{font-size:11px;color:#999}
+.refReward{color:#16a34a;font-weight:700;font-size:13px}
+#gate{position:fixed;inset:0;background:rgba(255,255,255,0.97);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.gateCard{background:#fff;border-radius:20px;padding:20px;width:100%;max-width:380px;box-shadow:0 20px 40px rgba(0,0,0,0.15);text-align:center;border:1px solid #eee}
+.count{font-size:48px;font-weight:900;color:#2563eb;margin:10px 0}
+.progress{height:6px;background:#eee;border-radius:10px;overflow:hidden;margin:12px 0}
+.bar{height:100%;background:#2563eb;width:100%;transition:width 1s linear}
+</style>
 </head>
 <body>
-<div class="top-bar">
-  <a href="home.html" class="back-btn-checkin">‹</a>
-  <div class="top-title">💰 Refer & Earn</div>
-</div>
-
-<div class="container">
-  <div class="card">
-    <div id="entryGate">
-      <div style="font-size:32px">⏳</div>
-      <h3 style="margin:8px 0 4px;font-size:15px;color:#111827">Loading invite rewards...</h3>
-      <p style="font-size:11px;color:#22c55e;font-weight:700;margin:0 0 12px">👥 Invite friends • Earn together</p>
-      <div id="gateTopBanner" style="width:100%;min-height:60px;display:flex;justify-content:center;margin:8px 0"></div>
-      <div id="gateTimer">5</div>
-      <div style="font-size:11px;color:#111827;font-weight:800;margin-bottom:8px">🚀 Unlocking your referral link...</div>
-      <div id="gateMidBanner" style="width:100%;min-height:250px;display:flex;justify-content:center;margin:8px 0"></div>
-      <div style="font-size:10px;color:#6b7280;margin-top:10px;font-weight:600">💡 Tip: 10% bonus when friends join!</div>
+<div id="gate">
+  <div class="gateCard">
+    <div style="font-size:20px">⏳ Unlocking Referrals</div>
+    <div style="font-size:12px;color:#666;margin-top:6px">Wait <span id="cnt">5</span>s - Sponsors keep rewards free</div>
+    <div class="count" id="countBig">5</div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="sponsored">SPONSORED</div>
+    <div style="display:flex;justify-content:center;min-height:70px">
+      <script>atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script>
+      <script src="https://bicea.org/22/fe25c5bd01f4bc5e60243e36cd83277c"></script>
     </div>
-
-    <div class="label">🔗 Your Referral Link</div>
-    <div class="link-box" id="referralLink">Loading...</div>
-    <div class="badge" id="countBadge">💎 5 coins per referral • Max 10/day • 0 referrals</div>
-    <div class="btn-row">
-      <button class="btn btn-copy" onclick="copyLink()">Copy</button>
-      <button class="btn btn-wa" onclick="shareWhatsApp()">WhatsApp</button>
+    <div style="height:12px"></div>
+    <div style="display:flex;justify-content:center;min-height:260px">
+      <script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script>
+      <script src="https://bicea.org/22/bf10cacdbe9f50d0c5d66a94e0785f29"></script>
     </div>
-  </div>
-
-  <div class="sponsored">SPONSORED - SHARE TO EARN MORE</div>
-  <div id="topBanner" style="margin:6px auto;display:flex;justify-content:center;min-height:60px"></div>
-
-  <div class="card">
-    <div class="label">👥 Your Referrals</div>
-    <div id="referralsList"><div class="empty">Loading referrals...</div></div>
-    <div id="err" style="font-size:10px;color:#ef4444;margin-top:6px"></div>
-  </div>
-
-  <div class="sponsored">SPONSORED</div>
-  <div id="midBanner" style="margin:6px auto;display:flex;justify-content:center;min-height:250px"></div>
-
-  <div class="card" style="background:#f0fdf4;border-color:#bbf7d0">
-    <div style="font-size:11px;font-weight:900;color:#166534">💡 How it works - Attractive bonus for you:</div>
-    <div style="font-size:11px;color:#374151;margin-top:6px;line-height:1.5;text-align:left">
-      ✨ Share your personal link<br>
-      ✨ Friend signs up with your username<br>
-      ✨ You earn 5 coins instantly per friend<br>
-      ✨ Max 10 per day = 50 coins = extra earning!
-    </div>
+    <div style="font-size:11px;color:#999;margin-top:12px">Closes automatically</div>
   </div>
 </div>
 
+<div class="header"><a class="back" href="home.html">‹</a><div style="font-weight:800">💰 Refer & Earn</div></div>
+
+<div class="card">
+  <div class="label">🔗 Your Referral Link</div>
+  <div class="linkBox" id="link">Loading...</div>
+  <div class="info">💎 5 coins per referral • Max 10/day • 5 referrals</div>
+  <div class="btns"><button class="btn btn-copy" onclick="copy()">Copy</button><button class="btn btn-wa" onclick="shareWA()">WhatsApp</button></div>
+</div>
+
+<div class="sponsored">SPONSORED - SHARE TO EARN MORE</div>
+<div class="adBox">
+<script>atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script>
+<script src="https://bicea.org/22/fe25c5bd01f4bc5e60243e36cd83277c"></script>
+</div>
+
+<div class="card"><div class="label">👥 Your Referrals</div><div id="list"><div style="text-align:center;color:#999;padding:20px;font-size:13px">Loading...</div></div></div>
+
+<div class="sponsored">SPONSORED</div>
+<div class="adBox medium">
+<script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script>
+<script src="https://bicea.org/22/bf10cacdbe9f50d0c5d66a94e0785f29"></script>
+</div>
+
 <script>
-(function(){
-  try{
-    var c=JSON.parse(localStorage.getItem('userData')||'{}');
-    var uname=c.username||localStorage.getItem('username')||'';
-    if(uname){
-      var link=`https://reward-platform-rw-2e13d.web.app/reg.html?ref=${encodeURIComponent(uname)}`;
-      document.getElementById('referralLink').innerText=link;
-      window._uname=uname; window._link=link;
-    }
-  }catch(e){}
-})();
-</script>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script>
-function injectBanner(id,key,w,h){
-  const c=document.getElementById(id); if(!c) return; c.innerHTML='';
-  const at=document.createElement('script'); at.innerHTML=`atOptions={'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}};`; c.appendChild(at);
-  const s=document.createElement('script'); s.src=`https://www.highperformanceformat.com/${key}/invoke.js`; c.appendChild(s);
+const firebaseConfig={apiKey:"AIzaSyD6mI4aX5g6b3Q5h7K9l0mN1oP2qR3sT4",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();const db=firebase.firestore();
+let refLink="";let username="";
+function startGate(){
+ let c=5;const cnt=document.getElementById('cnt');const big=document.getElementById('countBig');const bar=document.getElementById('bar');const gate=document.getElementById('gate');
+ bar.style.width='100%';
+ const iv=setInterval(()=>{c--;if(cnt)cnt.textContent=c;if(big)big.textContent=c;if(bar)bar.style.width=(c/5*100)+'%';if(c<=0){clearInterval(iv);gate.style.display='none';sessionStorage.setItem('refGateDone','1');}},1000);
 }
-function loadAllBanners(){
-  injectBanner('topBanner','fe25c5bd01f4bc5e60243e36cd83277c',60,468);
-  injectBanner('gateTopBanner','fe25c5bd01f4bc5e60243e36cd83277c',60,468);
-  injectBanner('midBanner','bf10cacdbe9f50d0c5d66a94e0785f29',250,300);
-  injectBanner('gateMidBanner','bf10cacdbe9f50d0c5d66a94e0785f29',250,300);
-}
-loadAllBanners();
-setInterval(()=>{ loadAllBanners(); },35000);
-
-let gateSec=5;
-const gateTimerEl=document.getElementById('gateTimer');
-const gateEl=document.getElementById('entryGate');
-const gateInt=setInterval(()=>{
-  gateSec--;
-  if(gateTimerEl) gateTimerEl.innerText=gateSec;
-  if(gateSec<=0){
-    clearInterval(gateInt);
-    if(gateEl) gateEl.style.display='none';
-    loadAllBanners();
-    setTimeout(()=>{loadAllBanners();},12000);
-    setTimeout(()=>{loadAllBanners();},28000);
-  }
-},1000);
-
-const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
-firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth(), db=firebase.firestore();
-let myUsername=window._uname||"", myLink=window._link||"";
-
-function render(snap){
-  const list=document.getElementById('referralsList');
-  const badge=document.getElementById('countBadge');
-  badge.innerText=`💎 5 coins per referral • Max 10/day • ${snap.size} referrals`;
-  if(snap.empty){
-    list.innerHTML='<div class="empty">No referrals yet<br>Share your link to earn 5 coins each!</div>';
-    return;
-  }
-  let html='';
-  snap.forEach(doc=>{
-    const d=doc.data();
-    const joined=d.createdAt ? d.createdAt.toDate().toLocaleDateString('en-GB',{day:'2-digit',month:'short'}) : 'Recently';
-    html+=`<div class="referral-item">
-      <div><div style="font-weight:800;font-size:13px">${d.username||'User'}</div><div style="font-size:11px;color:#9ca3af">${joined}</div></div>
-      <span style="color:#16a34a;font-weight:800;font-size:13px">+5 🪙</span>
-    </div>`;
-  });
-  list.innerHTML=html;
-}
-
-auth.onAuthStateChanged(user=>{
-  if(!user){ location.replace('./index.html'); return; }
-  db.collection("users").doc(user.uid).onSnapshot(doc=>{
-    if(!doc.exists) return;
-    const data=doc.data();
-    myUsername=data.username||myUsername;
-    myLink=`https://reward-platform-rw-2e13d.web.app/reg.html?ref=${encodeURIComponent(myUsername)}`;
-    document.getElementById('referralLink').innerText=myLink;
-    db.collection("users").where("referredBy","==",myUsername)
-      .onSnapshot(s=>render(s), e=>{
-        document.getElementById('err').innerText=e.message;
-        document.getElementById('referralsList').innerHTML=`<div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:8px;padding:10px;font-size:11px;color:#991b1b">Permission error: ${e.message}<br>Publish new Firestore Rules v2.2</div>`;
-      });
-  });
+if(sessionStorage.getItem('refGateDone')==='1') document.getElementById('gate').style.display='none'; else startGate();
+auth.onAuthStateChanged(async(user)=>{
+ if(!user){location.href='login.html';return;}
+ const doc=await db.collection('users').doc(user.uid).get();if(!doc.exists) return;
+ const data=doc.data();username=data.username||user.uid.slice(0,6);refLink=`https://reward-platform-rw-2e13d.web.app/reg.html?ref=${username}`;
+ document.getElementById('link').textContent=refLink;loadReferrals(username);
 });
-
-function copyLink(){
-  const l=myLink||document.getElementById('referralLink').innerText;
-  if(!l||l==='Loading...')return;
-  navigator.clipboard.writeText(l).then(()=>toast("✅ Copied")).catch(()=>{
-    const ta=document.createElement('textarea'); ta.value=l; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); toast("✅ Copied");
-  });
-  loadAllBanners();
+async function loadReferrals(uname){
+ try{
+  const snap=await db.collection('users').where('referredBy','==',uname).get();const list=document.getElementById('list');
+  if(snap.empty){list.innerHTML='<div style="text-align:center;color:#999;padding:20px;font-size:13px">No referrals yet<br>Share your link</div>';return;}
+  let html='';snap.forEach(d=>{const u=d.data();const name=u.username||'User';const date=u.createdAt?new Date(u.createdAt.toDate?u.createdAt.toDate():u.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}):'';html+=`<div class="refItem"><div><div class="refName">${name}</div><div class="refDate">${date}</div></div><div class="refReward">+5 🪙</div></div>`;});list.innerHTML=html;
+ }catch(e){document.getElementById('list').innerHTML='<div style="color:red;padding:10px;font-size:12px">'+e.message+'</div>';}
 }
-function shareWhatsApp(){
-  const l=myLink||document.getElementById('referralLink').innerText;
-  if(!l||l==='Loading...')return;
-  window.open(`https://wa.me/?text=${encodeURIComponent(`Earn with me! 💰\n${l}`)}`,'_blank');
-  loadAllBanners();
-}
-function toast(m){const t=document.createElement('div');t.className='toast';t.innerText=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2000)}
+function copy(){if(!refLink)return;navigator.clipboard.writeText(refLink).then(()=>alert('Copied!'));}
+function shareWA(){if(!refLink)return;const t=encodeURIComponent(`Join and earn with me! ${refLink}`);window.open(`https://wa.me/?text=${t}`,'_blank');}
 </script>
 </body>
 </html>
