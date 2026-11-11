@@ -3,96 +3,98 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="referrer" content="no-referrer-when-downgrade" />
 <title>Surveys - Reward Platform RW</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-
-<!-- HilltopAds InPage 7605349 -->
-<script>
-(function(qbvy){
-var d = document,
-    s = d.createElement('script'),
-    l = d.currentScript || d.scripts[d.scripts.length - 1];
-s.settings = qbvy || {};
-s.src = "//quarrelsomebitter.com/bAXiVIs.dCGZlp0pY/Wxcq/XeWmI9puCZnUNlEkaPmT-cB2jMODvUOz/N/DCk/t/N/zEY/wwNGTbMk1UMWwM";
-s.async = true;
-s.referrerPolicy = 'no-referrer-when-downgrade';
-l.parentNode.insertBefore(s, l);
-})({})
-</script>
-
 <style>
 .back-btn-checkin{width:45px;height:30px;border-radius:10px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5;flex-shrink:0}
-.back-btn-checkin:active{transform:scale(0.92)}
-.sponsored{font-size:9px;color:#9ca3af;letter-spacing:0.5px;font-weight:bold;text-align:center;margin:8px 0 4px 0}
+#adGate{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px}
+.gate-box{background:#fff;border:3px solid #111827;border-radius:20px;padding:22px;text-align:center;max-width:360px;width:100%;box-shadow:6px 6px 0 #111827}
+.gate-title{font-weight:900;font-size:17px}.gate-sub{font-size:12px;color:#6b7280;margin:8px 0 14px}
+.gate-btn{width:100%;height:48px;border-radius:12px;border:2px solid #111827;font-weight:900;font-size:14px;cursor:pointer}
+.gate-btn.watch{background:#facc15;box-shadow:3px 3px 0 #111827}.gate-btn.continue{background:#dcfce7;display:none;margin-top:10px}
+#gateTimer{font-size:13px;font-weight:900;color:#ea580c;margin-top:10px}
 </style>
 </head>
-<body class="bg-white">
-<div class="bg-blue-600 p-3 flex items-center justify-between sticky top-0 z-20">
+<body class="bg-[#f8fafc]">
+<div class="bg-blue-600 p-3 flex items-center justify-between sticky top-0 z-20 shadow">
   <a href="home.html" class="back-btn-checkin">‹</a>
-  <div class="bg-white rounded-full px-4 py-1.5 text-sm font-bold">📋 CPX Surveys</div>
-  <i class="fa fa-bell text-white"></i>
+  <div class="bg-white rounded-full px-4 py-1.5 text-sm font-black">📋 CPX Surveys</div>
+  <div style="width:45px"></div>
 </div>
 
 <div class="p-3 max-w-2xl mx-auto">
-
-  <div class="sponsored">SPONSORED - SUPPORT US</div>
-  <div style="display:flex;justify-content:center;margin:6px 0">
-  <script>atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':60,'width':468,'params':{}};</script>
-  <script src="https://bicea.org/22/fe25c5bd01f4bc5e60243e36cd83277c"></script>
-  </div>
-
-  <div class="mt-2 bg-white rounded-xl shadow overflow-hidden border border-gray-100">
-    <div class="bg-blue-600 p-3 flex items-center justify-between text-white font-bold tracking-wide">
-      <span><i class="fa fa-circle-notch text-green-300 mr-2"></i>CPX RESEARCH LIVE</span>
-      <span class="bg-white text-blue-600 text-[10px] px-2 py-1 rounded-full">App 37033</span>
+  <div class="mt-2 bg-white rounded-2xl shadow-sm overflow-hidden border-2 border-gray-100">
+    <div class="bg-blue-600 p-3 flex items-center justify-between text-white font-black text-sm">
+      <span><i class="fa fa-circle-notch text-green-300 mr-2 animate-pulse"></i>CPX RESEARCH LIVE</span>
+      <span class="bg-white text-blue-600 text-[10px] px-2.5 py-1 rounded-full font-black">App 37033</span>
     </div>
-    
     <div class="p-2">
       <div class="border border-gray-100 rounded-xl p-2 bg-white min-h-[600px]">
-        <div id="cpx-loading" class="p-8 text-center">
+        <div id="cpx-loading" class="p-10 text-center">
           <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto animate-pulse"><i class="fa fa-circle-notch text-2xl text-green-600"></i></div>
-          <h3 class="font-bold">CPX Research Live</h3>
-          <p class="text-gray-500 text-sm mt-2">Active - Surveys for Rwanda<br>Loading your personal surveys...</p>
+          <h3 class="font-black text-gray-800">CPX Research Live</h3>
+          <p class="text-gray-500 text-sm mt-2">Active - Surveys for Rwanda<br>Loading after ad...</p>
         </div>
         <div id="cpx-iframe-holder" class="w-full hidden"></div>
       </div>
     </div>
-
   </div>
+  <div class="text-center text-[10px] text-gray-400 mt-4" id="userEmail">loading...</div>
+</div>
 
-  <div class="sponsored" style="margin-top:14px">SPONSORED</div>
-  <div style="display:flex;justify-content:center;margin:6px 0">
-  <script>atOptions={'key':'bf10cacdbe9f50d0c5d66a94e0785f29','format':'iframe','height':250,'width':300,'params':{}};</script>
-  <script src="https://bicea.org/22/bf10cacdbe9f50d0c5d66a94e0785f29"></script>
+<div id="adGate">
+  <div class="gate-box">
+    <div class="gate-title">🔓 Unlock Surveys</div>
+    <div class="gate-sub">Wait for ad 8s to unlock CPX Surveys. Support us!</div>
+    <button id="watchAdBtn" class="gate-btn watch">▶️ Wait for Ad (8s)</button>
+    <div id="gateTimer"></div>
+    <button id="continueBtn" class="gate-btn continue">✅ Continue to Surveys</button>
   </div>
-
-  <div class="text-center text-xs text-gray-400 mt-3" id="userEmail">loading...</div>
 </div>
 
 <script>
+function loadMonetagTag(zone, src){const s=document.createElement('script');s.dataset.zone=zone;s.src=src;document.body.appendChild(s);}
 const firebaseConfig = {
   apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
   authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
   projectId: "reward-platform-rw-2e13d"
 };
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-
+let cpxUrlReady = '';
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
     document.getElementById('userEmail').innerText = user.email;
     const uid = encodeURIComponent(user.uid);
-    const cpxUrl = `https://offers.cpx-research.com/index.php?app_id=37033&ext_user_id=${uid}&subid_1=&subid_2=`;
-    document.getElementById('cpx-iframe-holder').innerHTML = `<iframe src="${cpxUrl}" class="w-full h-[700px] border-0 rounded-xl" allow="fullscreen"></iframe>`;
+    cpxUrlReady = `https://offers.cpx-research.com/index.php?app_id=37033&ext_user_id=${uid}&subid_1=&subid_2=`;
+  } else { window.location.href = 'index.html'; }
+});
+document.getElementById('watchAdBtn').onclick=function(){
+  this.innerText='⏳ Please wait...';this.disabled=true;
+  loadMonetagTag('12211617','https://n6wxm.com/vignette.min.js');
+  let sec=8;
+  const timerEl=document.getElementById('gateTimer');
+  timerEl.innerText='⏳ Wait '+sec+'s...';
+  const interval=setInterval(()=>{
+    sec--;
+    if(sec>0){timerEl.innerText='⏳ Wait '+sec+'s...';}
+    else{clearInterval(interval);
+      document.getElementById('watchAdBtn').style.display='none';
+      timerEl.innerText='✅ Unlocked!';
+      document.getElementById('continueBtn').style.display='block';
+    }
+  },1000);
+};
+document.getElementById('continueBtn').onclick=function(){
+  document.getElementById('adGate').style.display='none';
+  if(cpxUrlReady){
+    document.getElementById('cpx-iframe-holder').innerHTML = `<iframe src="${cpxUrlReady}" class="w-full h-[750px] border-0 rounded-xl" loading="lazy" allow="fullscreen"></iframe>`;
     document.getElementById('cpx-iframe-holder').classList.remove('hidden');
     document.getElementById('cpx-loading').classList.add('hidden');
-  } else {
-    window.location.href = 'index.html';
   }
-});
+};
 </script>
 </body>
 </html>
