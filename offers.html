@@ -1,13 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Offers - Ad Gate</title>
+<title>Offers - Final Monetag Gate</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="monetag" content="b671b8351bfc48ed0161f6bd0b6a5340">
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<!-- YOUR MONETAG TAGS - START -->
+<script>
+(function(s){s.dataset.zone='12211617',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))
+</script>
+<script>
+(function(s){s.dataset.zone='12211613',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))
+</script>
+<!-- YOUR MONETAG TAGS - END -->
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
 body{background:#f5f5f5;min-height:100vh}
@@ -17,16 +27,12 @@ body{background:#f5f5f5;min-height:100vh}
 .container{max-width:500px;margin:0 auto;padding:14px 14px 90px}
 .balance-card{background:#12230a;border:2px solid #fbbf24;border-radius:18px;padding:14px;display:flex;justify-content:space-around;text-align:center;color:#fff}
 .balance-card b{color:#fbbf24;font-size:18px}.usdt{color:#22f59b;font-weight:900;font-size:18px}
-.promo-box{background:#fffbeb;border:2px solid #111827;border-radius:14px;padding:12px;box-shadow:3px 3px 0 #111827;margin:10px 0}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-.card{background:#fff;border:2px solid #e5e7eb;border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.06);position:relative}
-.card.free{border-color:#22c55e;animation:pulseGreen 2s infinite}.card.coins{border-color:#111827}
-@keyframes pulseGreen{0%{box-shadow:0 0 0 0 rgba(34,197,94,0.4)}70%{box-shadow:0 0 0 8px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.card{background:#fff;border:2px solid #e5e7eb;border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;position:relative}
+.card.free{border-color:#22c55e}.card.coins{border-color:#111827}
 .emoji{font-size:28px;margin-bottom:6px}.name{font-weight:900;font-size:12px}.sub{font-size:10px;color:#6b7280}
-.badge{display:inline-block;margin-top:6px;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:900}
-.badge.free{background:#dcfce7;border-color:#86efac;color:#166534;border:1.5px solid #86efac}
-.badge.coins{background:#fef08a;border:1.5px solid #facc15;color:#854d0e;box-shadow:1px 1px 0 #111827}
-.hot-tag{position:absolute;top:-7px;left:8px;background:#ef4444;color:#fff;font-size:8px;font-weight:900;padding:2px 6px;border-radius:999px;border:1.5px solid #111827}
+.badge{display:inline-block;margin-top:6px;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:900;border:1.5px solid}
+.badge.free{background:#dcfce7;color:#166534;border-color:#86efac}.badge.coins{background:#fef08a;color:#854d0e;border-color:#facc15}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#111827;color:#facc15;padding:12px 20px;border-radius:99px;font-weight:900;z-index:9999;display:none;border:2px solid #facc15}
 .bnb-timer{font-size:10px;font-weight:900;color:#ea580c;background:#fff7ed;border:1px dashed #fb923c;border-radius:999px;padding:3px 8px;margin-top:7px;display:inline-block}
 .bnb-timer.ready{color:#166534;background:#dcfce7;border-color:#86efac}
@@ -39,23 +45,12 @@ body{background:#f5f5f5;min-height:100vh}
 </head>
 <body>
 <div id="toast"></div>
-<div class="top-bar">
-<a href="home.html" class="back-btn">‹</a>
-<div class="center-pill">💎 Offers</div>
-<div style="width:42px"></div>
-</div>
+<div class="top-bar"><a href="home.html" class="back-btn">‹</a><div class="center-pill">💎 Offers</div><div style="width:42px"></div></div>
 <div class="container">
 <div class="balance-card">
 <div><b id="balCoins">0 coins</b><div style="font-size:10px;color:#9ca3af">≈ $<span id="balUsd">0</span></div></div>
 <div style="width:1px;background:#2a3a1a"></div>
 <div><div class="usdt" id="balUsdt">0 USDT</div><div style="font-size:10px;color:#9ca3af">Withdrawable</div></div>
-</div>
-<div class="promo-box">
-<div style="font-weight:900;font-size:12px">🔥 Extra Earning Hub</div>
-<div style="font-size:11px;color:#44403c;margin-top:6px;line-height:1.5">
-💧 <b>BNB Faucet:</b> Claim FREE BNB hourly → swap to USDT<br>
-✈️ <b>Telegram:</b> Daily bonus codes & proofs
-</div>
 </div>
 <div class="grid" id="grid"></div>
 </div>
@@ -63,10 +58,10 @@ body{background:#f5f5f5;min-height:100vh}
 <div id="adGate">
   <div class="gate-box">
     <div class="gate-title">🔓 Unlock Offer</div>
-    <div class="gate-sub">Watch a short ad to unlock this offer and earn coins. 100% free.</div>
-    <button id="watchAdBtn" class="gate-btn watch">▶️ Watch Ad (15s)</button>
+    <div class="gate-sub">Watch a short ad to unlock and earn coins. Free for you.</div>
+    <button id="watchAdBtn" class="gate-btn watch">▶️ Watch Ad to Unlock</button>
     <button id="continueBtn" class="gate-btn continue">✅ Continue to Offer</button>
-    <div style="font-size:10px;color:#9ca3af;margin-top:10px">Rewarded Ad • Monetag</div>
+    <div style="font-size:10px;color:#9ca3af;margin-top:10px">Ad by Monetag • Vignette + Popunder</div>
   </div>
 </div>
 
@@ -78,21 +73,19 @@ try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1
 const auth=firebase.auth(), db=firebase.firestore();
 let cachedUser=null;
 const OFFERS=[
-  {id:'bnb_faucet', emoji:'💧', name:'BNB Faucet', sub:'Claim FREE BNB hourly', coins:0, link:'https://bnbpick.io/?ref=SilasN75', type:'free', hot:'HOT'},
-  {id:'telegram_join', emoji:'✈️', name:'Telegram', sub:'Daily bonus codes', coins:0, link:'https://t.me/formrw_earning', type:'free', hot:'NEW'},
-  {id:'play_game', emoji:'🎮', name:'Play Game', sub:'Play 2 min • Earn', coins:25, link:'https://t.me/formrw_earning', type:'coins'},
-  {id:'install_app', emoji:'📲', name:'Install App', sub:'Install + open • Earn', coins:20, link:'https://t.me/formrw_earning', type:'coins'},
+  {id:'bnb_faucet', emoji:'💧', name:'BNB Faucet', sub:'FREE BNB hourly', coins:0, link:'https://bnbpick.io/?ref=SilasN75', type:'free'},
+  {id:'telegram_join', emoji:'✈️', name:'Telegram', sub:'Daily bonus', coins:0, link:'https://t.me/formrw_earning', type:'free'},
+  {id:'play_game', emoji:'🎮', name:'Play Game', sub:'Play 2 min', coins:25, link:'https://t.me/formrw_earning', type:'coins'},
+  {id:'install_app', emoji:'📲', name:'Install App', sub:'Install + open', coins:20, link:'https://t.me/formrw_earning', type:'coins'},
 ];
 function renderInstant(){
-  const grid=document.getElementById('grid');
-  grid.innerHTML='';
+  const grid=document.getElementById('grid');grid.innerHTML='';
   OFFERS.forEach(o=>{
     const isFree=o.coins===0;
-    const badgeClass=isFree?'free':'coins';
-    const badgeText=isFree?'FREE LINK • OPEN NOW':' +'+o.coins+' 🪙';
-    const hot=o.hot?'<div class="hot-tag">🔥 '+o.hot+'</div>':'';
-    const timerHtml=o.id==='bnb_faucet'?'<div id="bnbTimer" class="bnb-timer"></div>':'';
-    grid.innerHTML+='<div class="card '+(isFree?'free':'coins')+'" onclick="clickOffer(\''+o.id+'\')">'+hot+'<div class="emoji">'+o.emoji+'</div><div class="name">'+o.name+'</div><div class="sub">'+o.sub+'</div><div class="badge '+badgeClass+'">'+badgeText+'</div>'+timerHtml+'</div>';
+    const badge=isFree?'FREE LINK':' +'+o.coins+' 🪙';
+    const cls=isFree?'free':'coins';
+    const timer=o.id==='bnb_faucet'?'<div id="bnbTimer" class="bnb-timer"></div>':'';
+    grid.innerHTML+='<div class="card '+cls+'" onclick="clickOffer(\''+o.id+'\')"><div class="emoji">'+o.emoji+'</div><div class="name">'+o.name+'</div><div class="sub">'+o.sub+'</div><div class="badge '+cls+'">'+badge+'</div>'+timer+'</div>';
   });
   startBnbTimer();
 }
@@ -100,25 +93,22 @@ let pendingOffer=null;
 function clickOffer(id){
   const o=OFFERS.find(x=>x.id===id);
   if(!cachedUser||!o) return;
-  if(o.type==='free'){
-    if(o.id==='bnb_faucet'){localStorage.setItem('bnb_last_claim',Date.now().toString());startBnbTimer();}
-    window.open(o.link,'_blank');showToast('Opened!');return;
-  }
+  if(o.type==='free'){localStorage.setItem('bnb_last_claim',Date.now().toString());window.open(o.link,'_blank');showToast('Opened!');return;}
   pendingOffer=o;
   document.getElementById('adGate').style.display='flex';
   document.getElementById('watchAdBtn').style.display='block';
   document.getElementById('continueBtn').style.display='none';
-  document.getElementById('watchAdBtn').innerText='▶️ Watch Ad (15s)';
+  document.getElementById('watchAdBtn').innerText='▶️ Watch Ad to Unlock';
 }
 document.getElementById('watchAdBtn').onclick=function(){
-  this.innerText='⏳ Watching ad...';
-  // Here Monetag will show ad if you add its Rewarded tag
-  setTimeout(unlockGate,5000);
+  this.innerText='⏳ Showing ad...';
+  // This click will naturally trigger your Monetag Popunder 12211613
+  setTimeout(unlockGate,6000);
 };
 function unlockGate(){
   document.getElementById('watchAdBtn').style.display='none';
   document.getElementById('continueBtn').style.display='block';
-  showToast('Ad watched! Click Continue');
+  showToast('Ad watched! Now continue');
 }
 document.getElementById('continueBtn').onclick=function(){
   document.getElementById('adGate').style.display='none';
@@ -134,29 +124,25 @@ function startBnbTimer(){
   if(timerInterval) clearInterval(timerInterval);
   function update(){
     const diff=3600000-(Date.now()-last);
-    if(diff<=0){el.innerText='✅ Ready to claim again!';el.className='bnb-timer ready';clearInterval(timerInterval);return;}
+    if(diff<=0){el.innerText='✅ Ready again!';el.className='bnb-timer ready';clearInterval(timerInterval);return;}
     const m=Math.floor(diff/60000);const s=Math.floor((diff%60000)/1000);
     el.innerText='⏳ Next: '+m+'m '+s+'s';el.className='bnb-timer';
   }
   update();timerInterval=setInterval(update,1000);
 }
 async function doCoinsOffer(o){
-  const user=auth.currentUser||cachedUser;const uid=user.uid;
+  const uid=(auth.currentUser||cachedUser).uid;
   const today=new Date().toISOString().split('T')[0];
-  const claimKey='claimed_'+uid+'_'+o.id+'_'+today;
-  if(localStorage.getItem(claimKey)){showToast('Already claimed today');window.open(o.link,'_blank');return;}
+  const key='claimed_'+uid+'_'+o.id+'_'+today;
+  if(localStorage.getItem(key)){showToast('Already claimed today');window.open(o.link,'_blank');return;}
   window.open(o.link,'_blank');
   try{
-    const subid=uid+'_'+o.id+'_'+Date.now();
-    const clickRef=db.collection('users').doc(uid).collection('offerClicks').doc(subid);
     await db.runTransaction(async t=>{
       const snap=await t.get(db.collection('users').doc(uid));
       if(!snap.exists) throw "no user";
-      t.set(clickRef,{offerId:o.id, coins:o.coins, status:'completed', createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-      t.set(db.collection('users').doc(uid),{balance:firebase.firestore.FieldValue.increment(o.coins),coins:firebase.firestore.FieldValue.increment(o.coins),points:firebase.firestore.FieldValue.increment(o.coins),lastEarnAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
-      t.set(db.collection('users').doc(uid).collection('earnHistory').doc(),{action:'Offers - '+o.id, desc:o.name+' +'+o.coins, coins:o.coins, points:o.coins, timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+      t.set(db.collection('users').doc(uid),{balance:firebase.firestore.FieldValue.increment(o.coins),coins:firebase.firestore.FieldValue.increment(o.coins),points:firebase.firestore.FieldValue.increment(o.coins)},{merge:true});
     });
-    localStorage.setItem(claimKey,'1');loadBalance();showToast('✓ +'+o.coins+' 🪙 from '+o.name+'!');
+    localStorage.setItem(key,'1');loadBalance();showToast('✓ +'+o.coins+' coins!');
   }catch(e){showToast(e.message);}
 }
 function loadBalance(){
