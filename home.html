@@ -1,1 +1,105 @@
+<!DOCTYPE html><html><head><title>Home</title><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent!important}
+html,body{-webkit-tap-highlight-color:transparent}
+button,a,div{-webkit-tap-highlight-color:transparent!important}
+button:focus,a:focus,div:focus{outline:none!important}
+button::-moz-focus-inner{border:0}
+body{background:#8ecff0;display:flex;justify-content:center;min-height:100vh}
+.wrap{
+  width:100%;max-width:430px;height:100dvh;height:100svh;
+  background-color:#bfe6f7;
+  background-image:url('./bg.jpg');
+  background-repeat:no-repeat;
+  background-size:100% auto;
+  background-position:center bottom;
+  position:relative;display:flex;flex-direction:column;overflow:hidden
+}
+.top{position:relative;margin:8px 0 0 0;width:100%;background:#ffffff;border-radius:0 0 20px 20px;height:56px;display:flex;align-items:center;justify-content:center;padding:0 14px;z-index:30;box-shadow:0 6px 14px rgba(0,0,0,0.18);flex-shrink:0}
+.top h2{font-size:19px;color:#0a5a7a;font-weight:900;flex:1;text-align:center}
+#headerText{font-size:20px;color:#0a7a5a!important;font-weight:900}
+.logo{width:28px;height:28px;border-radius:50%;overflow:hidden;border:1.5px solid #d4a95a;background:#fff;position:absolute;right:14px}
+.logo img{width:100%;height:100%;object-fit:cover}
+.scene{flex:1;position:relative;z-index:2;overflow:hidden;min-height:0}
+.monitor{
+  position:absolute;left:4%;top:42%;width:40%;max-width:170px;height:128px;
+  background:#0f2e1f;border:2px solid #111;border-radius:14px;overflow:hidden;z-index:5;
+  box-shadow:0 8px 16px rgba(0,0,0,0.3);display:flex;flex-direction:column
+}
+.screen{flex:1;padding:6px 6px 8px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:6px;position:relative}
+.antenna{position:absolute;top:-2px;right:8px;font-size:10px;animation:blink 1.2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.right-stack{
+  position:absolute;right:3%;top:18%;
+  width:60%;display:flex;flex-direction:column;gap:9px;align-items:flex-end;z-index:10
+}
+.r-item{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  font-size:12.5px;font-weight:900;color:#000;cursor:pointer;white-space:nowrap;
+  height:42px;min-width:145px;padding:0 14px;border-radius:18px;
+  border:none;outline:none;box-shadow:0 4px 10px rgba(0,0,0,0.15);
+  -webkit-tap-highlight-color:transparent!important;user-select:none;
+  touch-action:manipulation;
+}
+.r-item:focus,.r-item:active{outline:none!important;box-shadow:0 4px 10px rgba(0,0,0,0.15)!important}
+.r-item:active{transform:scale(0.98);filter:brightness(0.97)}
+.r1{background:#e3f2fd}.r2{background:#e8f5e9}.r3{background:#fff8e1}.r4{background:#e0f7fa}.r5{background:#fce4ec}.r6{background:#f3e5f5}.r7{background:#fff3e0}
 
+.bottom{width:80%;height:44px;background:rgba(255,255,255,0.98);border-radius:18px;display:flex;justify-content:space-around;align-items:center;margin:6px auto 10px;box-shadow:0 4px 12px rgba(0,0,0,0.25);z-index:20;flex-shrink:0}
+.bottom button{
+  background:none;border:none;outline:none;display:flex;align-items:center;gap:4px;
+  font-size:12.5px;font-weight:900;cursor:pointer;padding:6px 8px;border-radius:10px;
+  -webkit-tap-highlight-color:transparent!important;user-select:none;touch-action:manipulation
+}
+.bottom button:focus,.bottom button:active{outline:none!important;background:none!important;box-shadow:none!important}
+.bottom button:active{transform:scale(0.96);opacity:0.8}
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:10px 14px;border-radius:10px;font-weight:bold;z-index:99999;display:none}
+#maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
+</style></head><body>
+<div id="maint"><div><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900">Back</button></div></div>
+<div id="toast"></div>
+<div class="wrap">
+<div class="top"><h2>Welcome <span id="headerText">Ineza</span></h2><div class="logo"><img src="./logo.jpg"></div></div>
+<div class="scene">
+<div class="monitor"><div class="screen">
+<div class="antenna">📡</div>
+<div style="color:#c8e8a0;font-size:9px;margin-top:4px">Your Balance</div>
+<div style="display:flex;flex-direction:column;gap:7px;align-items:center;width:100%">
+<div style="text-align:center"><div style="font-size:7px;color:#f0d060">⭐ COINS</div><div id="balance" style="font-size:15px;color:#ffe58a;font-weight:900;line-height:1.1">0 coins</div><div id="usdBalance" style="font-size:7px;color:#a8d0a0">= $0.0000</div></div>
+<div style="width:80%;height:1px;background:rgba(251,191,36,0.25)"></div>
+<div style="text-align:center"><div style="font-size:7px;color:#a0e0a0">💎 USDT</div><div id="usdtBalanceDisplay" style="font-size:15px;color:#7eff9a;font-weight:900;line-height:1.1">0.7945 USDT</div></div>
+</div>
+</div></div>
+
+<div class="right-stack">
+<button class="r-item r1" onclick="location.href='./watch.html'" type="button"><span>Watch & Earn</span><span>📺</span></button>
+<button class="r-item r2" onclick="location.href='./survey.html'" type="button"><span>Surveys</span><span>📋</span></button>
+<button class="r-item r3" onclick="location.href='./bonus.html'" type="button"><span>Daily Bonus</span><span>🎁</span></button>
+<button class="r-item r4" onclick="location.href='./ads_earn.html'" type="button"><span>Ads Earn</span><span>📢</span></button>
+<button class="r-item r5" onclick="location.href='./checkin.html'" type="button"><span>Daily Checkin</span><span>📅</span></button>
+<button class="r-item r6" onclick="location.href='./articles_earn.html'" type="button"><span>Articles Earn</span><span>📖</span></button>
+<button class="r-item r7" onclick="location.href='./referrals.html'" type="button"><span>Refer & Earn</span><span>🤝</span></button>
+</div>
+
+</div>
+<div class="bottom">
+<button onclick="location.href='./index.html'" type="button">🏠 <span>Home</span></button>
+<button onclick="location.href='./wallet.html'" type="button">💰 <span>Wallet</span></button>
+<button onclick="location.href='./more.html'" type="button">❄️ <span>More</span></button>
+<button onclick="location.href='./offers.html'" type="button">💎 <span>Offers</span></button>
+</div>
+</div>
+<script>
+(function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}');if(c&&(c.balance!=null||c.points!=null||c.username)){var bal=c.balance??c.points??0;var usdt=c.usdtBalance??0;document.getElementById('balance').textContent=bal+' coins';document.getElementById('usdBalance').textContent='= $'+(bal*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').textContent=Number(usdt).toFixed(4)+' USDT';if(c.username)document.getElementById('headerText').textContent=c.username;}}catch(e){}})();
+</script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script>
+const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};firebase.initializeApp(firebaseConfig);
+try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
+const auth=firebase.auth(),db=firebase.firestore();
+function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}window.alert=showToast;
+const POINT_RATE=0.0005;
+function loadData(d){if(!d)return;if(d.usdtBalance==null)d.usdtBalance=0;if(d.balance==null)d.balance=d.points||0;document.getElementById('headerText').innerText=d.username||'';document.getElementById('balance').innerText=(d.balance??d.points??0)+' coins';document.getElementById('usdBalance').innerText='= $'+((d.balance??d.points??0)*POINT_RATE).toFixed(4);document.getElementById('usdtBalanceDisplay').innerText=Number(d.usdtBalance||0).toFixed(4)+' USDT';localStorage.setItem('userData',JSON.stringify(d));}
+db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maint').style.display='flex';}else{document.getElementById('maint').style.display='none';}});
+auth.onAuthStateChanged(u=>{if(u){db.collection('users').doc(u.uid).onSnapshot(doc=>{if(doc.exists)loadData(doc.data());});}else{location.href='./index.html';}});
+</script></body></html>
