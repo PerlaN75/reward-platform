@@ -12,10 +12,10 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
 body{background:#f3f4f6;min-height:100vh;display:flex;justify-content:center;padding:14px 10px 90px;color:#111827}
-.card{width:100%;max-width:380px;background:#fff;border:2px solid #e5e7eb;border-radius:24px;padding:16px 14px;text-align:center;position:relative;overflow:hidden;min-height:700px}
-#entryGate{position:absolute;inset:0;background:#fff;z-index:90;border-radius:24px;display:flex;flex-direction:column;align-items:center;padding:14px 14px;text-align:center;overflow-y:auto}
-#gateTimer{font-size:42px;font-weight:900;color:#f59e0b;margin:6px 0 8px;position:sticky;top:0;background:#fff;z-index:5;padding:4px 12px;border-radius:20px;border:2px solid #f59e0b}
-.sponsored{font-size:8px;color:#8a8e94;font-weight:800;text-align:center;margin:8px 0 2px;letter-spacing:0.8px;text-transform:uppercase}
+.card{width:100%;max-width:380px;background:#fff;border:2px solid #e5e7eb;border-radius:24px;padding:16px 14px;text-align:center;position:relative;overflow:hidden;min-height:620px}
+#entryGate{position:absolute;inset:0;background:#fff;z-index:90;border-radius:24px;display:flex;flex-direction:column;align-items:center;padding:20px 14px;text-align:center;overflow-y:auto}
+#gateTimer{font-size:48px;font-weight:900;color:#f59e0b;margin:8px 0;line-height:1}
+.sponsored{font-size:8px;color:#8a8e94;font-weight:800;text-align:center;margin:8px 0 3px;letter-spacing:0.8px;text-transform:uppercase}
 .ad-box{min-height:250px;display:flex;justify-content:center;align-items:center;background:#fff;border:1px solid #e5e7eb;border-radius:12px;width:100%;overflow:hidden}
 .bonus-box{background:#f9fafb;border:2px dashed #f59e0b;border-radius:16px;padding:18px;margin:10px 0}
 .btn{width:100%;background:#f59e0b;color:#000;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:15px;cursor:pointer;margin-top:14px;box-shadow:0 4px 0 #d97706}
@@ -27,10 +27,15 @@ body{background:#f3f4f6;min-height:100vh;display:flex;justify-content:center;pad
 <body>
 <div class="card">
 <div id="entryGate">
-  <div style="font-size:26px">⏳</div><h3 style="margin:4px 0 2px">Loading daily bonus...</h3>
+  <div style="font-size:28px">⏳</div>
+  <h3 style="margin:6px 0 2px;font-size:16px;font-weight:900">Loading daily bonus...</h3>
   <div id="gateTimer">7</div>
-  <div style="width:100%"><div class="sponsored">ADVERTISEMENT</div><div id="gateTopBanner" style="width:100%;min-height:250px;display:flex;justify-content:center;background:#fff;border:1px solid #eee;border-radius:10px;overflow:hidden"></div></div>
-  <div style="width:100%;margin-top:10px"><div class="sponsored">ADVERTISEMENT</div><div id="gateMidBanner" style="width:100%;min-height:90px;display:flex;justify-content:center;background:#fff;border:1px solid #eee;border-radius:10px;overflow:hidden"></div></div>
+  <div style="font-size:11px;color:#6b7280;font-weight:700;margin-bottom:12px">Preparing your reward</div>
+  <div style="width:100%">
+    <div class="sponsored">ADVERTISEMENT</div>
+    <div id="gateTopBanner" style="width:100%;min-height:280px;display:flex;justify-content:center;align-items:center;background:#fff;border:1px solid #eee;border-radius:12px;overflow:hidden"></div>
+  </div>
+  <div style="font-size:10px;color:#9ca3af;margin-top:12px">Please wait a moment</div>
 </div>
 
 <div class="top-header"><div class="back-square" onclick="location.href='home.html'">‹</div><h1 style="font-size:22px;font-weight:900;flex:1">🎁 Daily Bonus</h1></div>
@@ -39,8 +44,8 @@ body{background:#f3f4f6;min-height:100vh;display:flex;justify-content:center;pad
 <button class="btn" id="claimBtn" disabled>Loading...</button>
 <div id="info" style="font-size:12px;color:#6b7280;margin-top:12px">Daily reward</div>
 
-<div style="width:100%;margin-top:14px"><div class="sponsored">ADVERTISEMENT</div><div id="topBanner" style="width:100%;min-height:250px;display:flex;justify-content:center;background:#fff;border:1px solid #eee;border-radius:10px;overflow:hidden"></div></div>
-<div style="width:100%;margin-top:10px"><div class="sponsored">ADVERTISEMENT</div><div id="adBottom" class="ad-box"></div></div>
+<div style="width:100%;margin-top:14px"><div class="sponsored">ADVERTISEMENT</div><div id="topBanner" style="width:100%;min-height:260px;display:flex;justify-content:center;background:#fff;border:1px solid #eee;border-radius:12px;overflow:hidden"></div></div>
+<div style="width:100%;margin-top:10px"><div class="sponsored">ADVERTISEMENT</div><div id="adBottom" style="width:100%;min-height:60px;display:flex;justify-content:center;background:#fff;border:1px solid #eee;border-radius:12px;overflow:hidden"></div></div>
 </div>
 
 <script>
@@ -49,15 +54,11 @@ function injectBanner(id,key,w,h){
   const s1=document.createElement('script'); s1.text=`atOptions={'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}};`; c.appendChild(s1);
   const s2=document.createElement('script'); s2.src=`https://www.highperformanceformat.com/${key}/invoke.js`; s2.async=true; c.appendChild(s2);
 }
-// GATE uses 2 keys only once each, MAIN uses same 2 keys but AFTER gate is gone
 function loadGateAds(){
   injectBanner('gateTopBanner','bf10cacdbe9f50d0c5d66a94e0785f29',300,250);
-  injectBanner('gateMidBanner','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
 }
 function loadMainAds(){
-  // Clear gate first to avoid duplicate key conflict
   document.getElementById('gateTopBanner').innerHTML='';
-  document.getElementById('gateMidBanner').innerHTML='';
   injectBanner('topBanner','bf10cacdbe9f50d0c5d66a94e0785f29',300,250);
   injectBanner('adBottom','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
 }
@@ -76,7 +77,7 @@ const gateInt=setInterval(()=>{ gateSec--; if(gateTimerEl) gateTimerEl.innerText
 
 function initAfterGate(){
   loadMainAds();
-  setInterval(loadMainAds,25000);
+  setInterval(loadMainAds,30000);
   auth.onAuthStateChanged(async(u)=>{
     if(!u){location.href='./index.html';return;}
     currentUser=u;
