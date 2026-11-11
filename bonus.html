@@ -9,74 +9,31 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
-body{background:#f3f4f6;min-height:100vh;display:flex;justify-content:center;padding:14px 10px 90px;color:#111827}
-.card{width:100%;max-width:380px;background:#fff;border:2px solid #e5e7eb;border-radius:24px;padding:16px 14px;text-align:center;position:relative;overflow:hidden;min-height:600px}
-#entryGate{position:absolute;inset:0;background:#fff;z-index:90;border-radius:24px;display:flex;flex-direction:column;align-items:center;padding:18px 14px;text-align:center;overflow-y:auto}
-#gateTimer{font-size:42px;font-weight:900;color:#f59e0b;margin:10px 0}
-.sponsored{font-size:9px;color:#9ca3af;font-weight:bold;text-align:center;margin:10px 0 4px;letter-spacing:1px}
-.ad-box{min-height:260px;display:flex;justify-content:center;align-items:center;background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;width:100%}
-.bonus-box{background:#f9fafb;border:2px dashed #f59e0b;border-radius:16px;padding:18px;margin:10px 0}
-.btn{width:100%;background:#f59e0b;color:#000;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:15px;cursor:pointer;margin-top:14px;box-shadow:0 4px 0 #d97706}
-.btn:disabled{background:#9ca3af;color:#fff;box-shadow:none}
-.top-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;text-align:left}
-.back-square{width:45px;height:30px;background:#ffe4e6;border:2px solid #ef4444;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer}
-</style>
+<style>/* same style as before */*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}body{background:#f3f4f6;min-height:100vh;display:flex;justify-content:center;padding:14px 10px 90px;color:#111827}.card{width:100%;max-width:380px;background:#fff;border:2px solid #e5e7eb;border-radius:24px;padding:16px 14px;text-align:center;position:relative;overflow:hidden;min-height:600px}#entryGate{position:absolute;inset:0;background:#fff;z-index:90;border-radius:24px;display:flex;flex-direction:column;align-items:center;padding:18px 14px;text-align:center;overflow-y:auto}#gateTimer{font-size:42px;font-weight:900;color:#f59e0b;margin:10px 0}.sponsored{font-size:9px;color:#9ca3af;font-weight:bold;text-align:center;margin:10px 0 4px;letter-spacing:1px}.ad-box{min-height:260px;display:flex;justify-content:center;align-items:center;background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;width:100%}.bonus-box{background:#f9fafb;border:2px dashed #f59e0b;border-radius:16px;padding:18px;margin:10px 0}.btn{width:100%;background:#f59e0b;color:#000;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:15px;cursor:pointer;margin-top:14px;box-shadow:0 4px 0 #d97706}.btn:disabled{background:#9ca3af;color:#fff;box-shadow:none}.top-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;text-align:left}.back-square{width:45px;height:30px;background:#ffe4e6;border:2px solid #ef4444;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer}</style>
 </head>
 <body>
 <div class="card">
 <div id="entryGate">
-  <div style="font-size:32px">⏳</div>
-  <h3 style="margin:8px 0">Loading daily bonus...</h3>
-  <div style="width:100%">
-    <div class="sponsored">ADVERTISEMENT</div>
-    <div id="gateTopBanner" style="width:100%;min-height:70px;display:flex;justify-content:center;background:#fff;border:1px solid #eee;border-radius:10px"></div>
-  </div>
-  <div id="gateTimer">7</div>
-  <div style="font-size:11px;font-weight:800;margin-bottom:8px">🚀 Preparing your bonus...</div>
-  <div style="width:100%">
-    <div class="sponsored">ADVERTISEMENT</div>
-    <div id="gateMidBanner" style="width:100%;min-height:280px;display:flex;justify-content:center;background:#fff;border:1px solid #eee;border-radius:10px"></div>
-  </div>
+  <div style="font-size:32px">⏳</div><h3 style="margin:8px 0">Loading daily bonus...</h3>
+  <div style="width:100%"><div class="sponsored">ADVERTISEMENT</div><div id="gateTopBanner" style="width:100%;min-height:70px;display:flex;justify-content:center;background:#fff;border:1px solid #eee;border-radius:10px"></div></div>
+  <div id="gateTimer">7</div><div style="font-size:11px;font-weight:800;margin-bottom:8px">🚀 Preparing your bonus...</div>
+  <div style="width:100%"><div class="sponsored">ADVERTISEMENT</div><div id="gateMidBanner" style="width:100%;min-height:280px;display:flex;justify-content:center;background:#fff;border:1px solid #eee;border-radius:10px"></div></div>
 </div>
 
 <div class="top-header"><div class="back-square" onclick="location.href='home.html'">‹</div><h1 style="font-size:22px;font-weight:900;flex:1">🎁 Daily Bonus</h1></div>
 <div style="font-size:12px;color:#6b7280;margin-bottom:10px">Claim once every 24h - 3000 Coins = $1.5</div>
-<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-left:4px solid #22c55e;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:13px;color:#166534;text-align:left">💡 ✨ Daily bonus for you + special offers curated just for you!</div>
-
-<div class="bonus-box">
-<div style="font-size:48px">🪙</div>
-<div style="font-size:24px;color:#d97706;font-weight:900">+3 Coins</div>
-<div id="timer" style="font-size:13px;color:#6b7280;margin-top:10px;font-weight:600">Checking...</div>
-<div id="adHint" style="font-size:10px;color:#9ca3af;margin-top:6px;font-style:italic">⏳ Checking...</div>
-</div>
+<div class="bonus-box"><div style="font-size:48px">🪙</div><div style="font-size:24px;color:#d97706;font-weight:900">+3 Coins</div><div id="timer" style="font-size:13px;color:#6b7280;margin-top:10px;font-weight:600">Checking...</div><div id="adHint" style="font-size:10px;color:#9ca3af;margin-top:6px;font-style:italic">⏳ Checking...</div></div>
 <button class="btn" id="claimBtn" disabled>Loading...</button>
 <div id="info" style="font-size:12px;color:#6b7280;margin-top:12px">Daily reward - 1000 Coins = $0.5</div>
-
-<div class="sponsored">ADVERTISEMENT</div>
-<div id="topBanner" style="margin:6px auto;display:flex;justify-content:center;min-height:60px;background:#fff;border:1px solid #eee;border-radius:10px"></div>
-<div class="ad-box" id="adBottom"></div>
-
-<div style="margin-top:14px">
-  <div class="sponsored">ADVERTISEMENT</div>
-  <div style="background:#fff;border:2px solid #e5e7eb;border-radius:12px;padding:8px;min-height:90px;display:flex;justify-content:center;align-items:center">
-    <script>(function(qbvy){var d=document,s=d.createElement('script'),l=d.currentScript||d.scripts[d.scripts.length-1];s.settings=qbvy||{};s.src="//quarrelsomebitter.com/bAXiVIs.dCGZlp0Y/Wxcq/XeWmI9puCZnUNlEkaPmT-cB2j/B2jMODvUOz/N/DCk/t/N/zEY/wwNGTbMk1UMWwM";s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({})</script>
-  </div>
-</div>
+<div class="sponsored">ADVERTISEMENT</div><div id="topBanner" style="margin:6px auto;display:flex;justify-content:center;min-height:60px;background:#fff;border:1px solid #eee;border-radius:10px"></div><div class="ad-box" id="adBottom"></div>
+<div style="margin-top:14px"><div class="sponsored">ADVERTISEMENT</div><div style="background:#fff;border:2px solid #e5e7eb;border-radius:12px;padding:8px;min-height:90px;display:flex;justify-content:center;align-items:center"><script>(function(qbvy){var d=document,s=d.createElement('script'),l=d.currentScript||d.scripts[d.scripts.length-1];s.settings=qbvy||{};s.src="//quarrelsomebitter.com/bAXiVIs.dCGZlp0Y/Wxcq/XeWmI9puCZnUNlEkaPmT-cB2j/B2jMODvUOz/N/DCk/t/N/zEY/wwNGTbMk1UMWwM";s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({})</script></div></div>
 </div>
 
 <script>
 function injectBanner(id,key,w,h){
-  const c=document.getElementById(id); if(!c) return;
-  c.innerHTML = '';
-  const at = document.createElement('div');
-  at.innerHTML = `<script>atOptions={'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}}<\/script><script src="https://www.highperformanceformat.com/${key}/invoke.js"><\/script>`;
-  // create properly
-  const s1=document.createElement('script'); s1.text=`atOptions={'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}};`;
-  c.appendChild(s1);
-  const s2=document.createElement('script'); s2.src=`https://www.highperformanceformat.com/${key}/invoke.js`; s2.async=true;
-  c.appendChild(s2);
+  const c=document.getElementById(id); if(!c) return; c.innerHTML='';
+  const s1=document.createElement('script'); s1.text=`atOptions={'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}};`; c.appendChild(s1);
+  const s2=document.createElement('script'); s2.src=`https://www.highperformanceformat.com/${key}/invoke.js`; s2.async=true; c.appendChild(s2);
 }
 function loadAll(){
   injectBanner('adBottom','bf10cacdbe9f50d0c5d66a94e0785f29',250,300);
@@ -88,21 +45,16 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 firebase.initializeApp(firebaseConfig);
 try{firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true);}catch(e){}
 const auth=firebase.auth(),db=firebase.firestore();
-let currentUser=null,canClaim=false;
+let currentUser=null,canClaim=false,hasClaimedToday=false;
 const claimBtn=document.getElementById('claimBtn');
 const timerEl=document.getElementById('timer');
 const adHintEl=document.getElementById('adHint');
 const infoEl=document.getElementById('info');
-let gateSec=7;
-const gateTimerEl=document.getElementById('gateTimer');
-const gateEl=document.getElementById('entryGate');
+let gateSec=7; const gateTimerEl=document.getElementById('gateTimer'); const gateEl=document.getElementById('entryGate');
 loadAll();
-const gateInt=setInterval(()=>{
-  gateSec--; if(gateTimerEl) gateTimerEl.innerText=gateSec;
-  if(gateSec<=0){ clearInterval(gateInt); if(gateEl) gateEl.style.display='none'; initAfterGate(); }
-},1000);
+const gateInt=setInterval(()=>{ gateSec--; if(gateTimerEl) gateTimerEl.innerText=gateSec; if(gateSec<=0){ clearInterval(gateInt); if(gateEl) gateEl.style.display='none'; initAfterGate(); } },1000);
+
 function initAfterGate(){
-  setTimeout(()=>{ if(!canClaim) startWait(); },500);
   auth.onAuthStateChanged(async(u)=>{
     if(!u){location.href='./index.html';return;}
     currentUser=u;
@@ -111,24 +63,44 @@ function initAfterGate(){
       if(snap.exists && snap.data().lastBonusTimestamp){
         let last=snap.data().lastBonusTimestamp; let lastMs=last.toMillis?last.toMillis():last;
         let diff=(Date.now()-lastMs)/(1000*60*60);
-        if(diff<24){ let remain=Math.ceil(24-diff); timerEl.textContent=`✅ Claimed. Wait ${remain}h`; adHintEl.style.display='none'; claimBtn.textContent=`Come back in ${remain}h`; claimBtn.disabled=true; infoEl.textContent=`Next bonus in ${remain} hours`; return; }
+        if(diff<24){
+          hasClaimedToday=true;
+          let remain=Math.ceil(24-diff);
+          timerEl.textContent=`✅ Claimed. Wait ${remain}h`;
+          adHintEl.style.display='none';
+          claimBtn.textContent=`Come back in ${remain}h`;
+          claimBtn.disabled=true;
+          infoEl.textContent=`Next bonus in ${remain} hours`;
+          return;
+        }
       }
-    }catch(e){}
+    }catch(e){ console.log(e); }
     startWait();
   });
 }
+
 function startWait(){
-let sec=10; canClaim=false; claimBtn.disabled=true; claimBtn.textContent=`Wait ${sec}s...`; timerEl.textContent=`Please wait ${sec} seconds`; adHintEl.textContent='✨ Verifying your daily gift...'; adHintEl.style.display='block'; loadAll();
-let int=setInterval(()=>{ sec--; if(sec>0){ claimBtn.textContent=`Wait ${sec}s...`; timerEl.textContent=`Please wait ${sec} seconds`; }else{ clearInterval(int); canClaim=true; claimBtn.disabled=false; claimBtn.textContent='🎉 Claim 3 Coins Free'; timerEl.textContent='Ready to claim!'; adHintEl.style.display='none'; } },1000);
+ if(hasClaimedToday) return;
+ let sec=5; // <-- 5 sec helps earn (was 10)
+ canClaim=false; claimBtn.disabled=true; claimBtn.textContent=`Wait ${sec}s...`; timerEl.textContent=`Please wait ${sec} seconds`; adHintEl.textContent='✨ Verifying your daily gift...'; adHintEl.style.display='block'; loadAll();
+ let int=setInterval(()=>{ sec--; if(sec>0){ claimBtn.textContent=`Wait ${sec}s...`; timerEl.textContent=`Please wait ${sec} seconds`; }else{ clearInterval(int); canClaim=true; claimBtn.disabled=false; claimBtn.textContent='🎉 Claim 3 Coins Free'; timerEl.textContent='Ready to claim!'; adHintEl.style.display='none'; } },1000);
 }
+
 claimBtn.onclick=async()=>{
-if(!canClaim||!currentUser) return; claimBtn.disabled=true; claimBtn.textContent='Claiming...';
-try{
-const ref=db.collection('users').doc(currentUser.uid);
-await ref.set({balance:firebase.firestore.FieldValue.increment(3),coins:firebase.firestore.FieldValue.increment(3),points:firebase.firestore.FieldValue.increment(3),lastBonusTimestamp:firebase.firestore.FieldValue.serverTimestamp(),lastBonusDate:new Date().toDateString()},{merge:true});
-timerEl.textContent='✅ Claimed! +3 🪙 added'; claimBtn.textContent='✅ Claimed! Go Home'; claimBtn.onclick=()=>location.href='./home.html'; claimBtn.disabled=false; infoEl.textContent='Bonus added! Check home balance';
-try{await ref.collection('earnHistory').add({action:'Daily Bonus',coins:3,points:3,timestamp:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){}
-}catch(e){ alert("Error: "+e.message); claimBtn.disabled=false; claimBtn.textContent='🎉 Try Again'; }
+ if(hasClaimedToday || !canClaim || !currentUser) return;
+ canClaim=false; hasClaimedToday=true; claimBtn.disabled=true; claimBtn.textContent='Claiming...';
+ try{
+  const ref=db.collection('users').doc(currentUser.uid);
+  // Double-check before write
+  const snap=await ref.get();
+  if(snap.exists && snap.data().lastBonusTimestamp){
+    let last=snap.data().lastBonusTimestamp; let lastMs=last.toMillis?last.toMillis():last;
+    if((Date.now()-lastMs)/(1000*60*60) < 24){ timerEl.textContent='Already claimed today'; claimBtn.textContent='Come back tomorrow'; return; }
+  }
+  await ref.set({balance:firebase.firestore.FieldValue.increment(3),coins:firebase.firestore.FieldValue.increment(3),points:firebase.firestore.FieldValue.increment(3),lastBonusTimestamp:firebase.firestore.FieldValue.serverTimestamp(),lastBonusDate:new Date().toDateString()},{merge:true});
+  timerEl.textContent='✅ Claimed! +3 🪙 added'; claimBtn.textContent='✅ Claimed! Go Home'; claimBtn.onclick=()=>location.href='./home.html'; claimBtn.disabled=false; infoEl.textContent='Bonus added! Come back in 24h';
+  try{await ref.collection('earnHistory').add({action:'Daily Bonus',coins:3,points:3,timestamp:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){}
+ }catch(e){ hasClaimedToday=false; canClaim=true; alert("Error: "+e.message); claimBtn.disabled=false; claimBtn.textContent='🎉 Try Again'; }
 };
 </script>
 </body>
