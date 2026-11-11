@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Offers - Final 8s No Coins</title>
+<title>Offers - Final 8s No Coins - Silent BNB</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="monetag" content="b671b8351bfc48ed0161f6bd0b6a5340">
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -70,14 +70,11 @@ let pendingOffer=null;
 function clickOffer(id){
   const o=OFFERS.find(x=>x.id===id);if(!cachedUser||!o) return;
   
-  // 1. BNB + Telegram = 12083688 ONLY, NO GATE
   if(o.type==='free'){
-    showToast('Opening... (Ad may show)');
     window.open(o.link,'_blank');
     return;
   }
 
-  // 2 & 3. Play Game & Install App = WITH 8sec GATE, NO COINS
   pendingOffer=o;
   document.getElementById('adGate').style.display='flex';
   document.getElementById('watchAdBtn').style.display='block';
