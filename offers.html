@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Offers - Final 8s No Coins - Silent BNB</title>
+<title>Offers - Final Fixed</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="monetag" content="b671b8351bfc48ed0161f6bd0b6a5340">
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -9,7 +9,7 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
-<!-- ONLY for BNB + Telegram - NO GATE -->
+<!-- BNB + Telegram = 12083688 ONLY -->
 <script>(function(s){s.dataset.zone='12083688',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
 <style>
@@ -56,8 +56,8 @@ let cachedUser=null;
 const OFFERS=[
   {id:'bnb_faucet', emoji:'💧', name:'BNB Faucet', sub:'FREE BNB hourly', link:'https://bnbpick.io/?ref=SilasN75', type:'free'},
   {id:'telegram_join', emoji:'✈️', name:'Telegram', sub:'Daily bonus', link:'https://t.me/formrw_earning', type:'free'},
-  {id:'play_game', emoji:'🎮', name:'Play Game', sub:'Games upload soon', link:'https://t.me/formrw_earning', type:'play'},
-  {id:'install_app', emoji:'📲', name:'Install App', sub:'Apps available soon', link:'https://t.me/formrw_earning', type:'install'},
+  {id:'play_game', emoji:'🎮', name:'Play Game', sub:'Games upload soon', link:'', type:'play'},
+  {id:'install_app', emoji:'📲', name:'Install App', sub:'Apps available soon', link:'', type:'install'},
 ];
 function renderInstant(){
   const grid=document.getElementById('grid');grid.innerHTML='';
@@ -80,16 +80,17 @@ function clickOffer(id){
   document.getElementById('watchAdBtn').style.display='block';
   document.getElementById('continueBtn').style.display='none';
   document.getElementById('watchAdBtn').disabled=false;
+  document.getElementById('gateTimer').innerText='';
   
   if(o.type==='play'){
     document.getElementById('gateTitle').innerText='🔓 Unlock Play Game';
-    document.getElementById('gateSub').innerText='Watch ad 8s to unlock. Games upload soon!';
+    document.getElementById('gateSub').innerText='Watch ad 8s to unlock';
     document.getElementById('watchAdBtn').innerText='▶️ Watch Ad (8s)';
     loadMonetagTag('12211617','https://n6wxm.com/vignette.min.js');
     loadMonetagTag('12211613','https://al5sm.com/tag.min.js');
   }else if(o.type==='install'){
     document.getElementById('gateTitle').innerText='🔓 Unlock Install App';
-    document.getElementById('gateSub').innerText='Watch ad 8s to unlock. Apps available soon!';
+    document.getElementById('gateSub').innerText='Watch ad 8s to unlock';
     document.getElementById('watchAdBtn').innerText='▶️ Watch Ad (8s)';
     loadMonetagTag('12083693','https://al5sm.com/tag.min.js');
   }
@@ -115,11 +116,10 @@ document.getElementById('continueBtn').onclick=function(){
   document.getElementById('adGate').style.display='none';
   if(!pendingOffer) return;
   const o=pendingOffer;
-  window.open(o.link,'_blank');
   if(o.type==='play'){
-    showToast('🎮 Games upload soon! No coins now, coins after real play verified.');
+    showToast('🎮 Games upload soon!');
   }else{
-    showToast('📲 Apps available soon! No coins now, coins after real install verified.');
+    showToast('📲 Apps available soon!');
   }
   pendingOffer=null;
 };
