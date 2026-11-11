@@ -3,20 +3,6 @@
 <head>
 <title>Watch Ads & Earn</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="referrer" content="no-referrer-when-downgrade" />
-<script>
-(function(ixhg){
-var d = document,
-    s = d.createElement('script'),
-    l = d.currentScript || d.scripts[d.scripts.length - 1];
-s.settings = ixhg || {};
-s.src = "//quarrelsomebitter.com/bSXIV.sTd-GBlP0MYvWWcH/Fe_mP9iusZ/UGlzkcPNT/cA2pMDDcUe0gMaTSM/tjNwzPY-wZNsTCQSxoN/wZ";
-s.async = true;
-s.referrerPolicy = 'no-referrer-when-downgrade';
-l.parentNode.insertBefore(s, l);
-})({})
-</script>
-<script>(function(s){s.dataset.zone='12211613',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 <script>(function(s){s.dataset.zone='12211617',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -51,7 +37,7 @@ body{background:#f7f7fb;min-height:100vh;display:flex;flex-direction:column;alig
 </div>
 </div>
 <script>
-const DIRECT_LINK="https://omg10.com/4/11905870";
+const DIRECT_LINK="REPLACE_WITH_VIDEOS_LATER";
 const REQUIRED_WATCH_SEC=20;
 function showBubble(t){const b=document.getElementById('bubble');b.textContent=t;b.style.display='block';setTimeout(()=>b.style.display='none',2000);}
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
@@ -69,49 +55,25 @@ auth.onAuthStateChanged(u=>{
     let serverCount=data.todayCount??0;
     const lastRaw=data.lastWatchDate;
     const last=lastRaw? (lastRaw.toDate? lastRaw.toDate(): new Date(lastRaw)) : null;
-    // DAILY RESET - new day => set to 0 (compatible with secure rules)
     if(last && new Date().toDateString()!==last.toDateString() && serverCount!==0 && !resetDone){
-      resetDone=true;
-      serverCount=0;
-      try{
-        await db.collection('users').doc(u.uid).update({
-          todayCount:0,
-          lastWatchDate: firebase.firestore.FieldValue.serverTimestamp(),
-          lastEarnAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      }catch(e){ console.log("reset failed", e); }
-      today=0;
-      updateUI();
-      return;
+      resetDone=true;serverCount=0;
+      try{await db.collection('users').doc(u.uid).update({todayCount:0,lastWatchDate: firebase.firestore.FieldValue.serverTimestamp(),lastEarnAt: firebase.firestore.FieldValue.serverTimestamp()});}catch(e){}
+      today=0;updateUI();return;
     }
-    today=serverCount;
-    updateUI();
+    today=serverCount;updateUI();
   });
 });
-function doAd(){adWindowOpened=false;const win=window.open(DIRECT_LINK,'_blank');if(!win||win.closed||typeof win.closed=='undefined'){btn.textContent=isOwnerMode?'Continue watching freely':'Start & Earn';btn.disabled=false;return;}adWindowOpened=true;btn.disabled=true;ov.innerHTML='<div style="color:#fff;font-weight:800">Verifying ad... 3s</div>';pbar.style.width='0%';let ad=3;let adInt=setInterval(()=>{ad--;ov.innerHTML='<div style="color:#fff;font-weight:800">📢 Ad check '+ad+'s...</div>';if(ad<=0){clearInterval(adInt);startTimer();}},1000);}
-function startTimer(){ov.innerHTML='<div style="color:#fbbf24;font-weight:800">💰 Earning... Stay 20s</div>';let sec=0;btn.textContent='💰 '+sec+'/'+REQUIRED_WATCH_SEC+'s';clearInterval(timer);timer=setInterval(()=>{sec++;pbar.style.width=(sec/REQUIRED_WATCH_SEC*100)+'%';btn.textContent='💰 '+sec+'/'+REQUIRED_WATCH_SEC+'s';if(sec>=REQUIRED_WATCH_SEC){clearInterval(timer);timer=null;pbar.style.width='100%';if(isOwnerMode){ov.innerHTML='<div style="color:#fff;font-weight:800">✅ Free watch</div>';btn.textContent='Continue watching freely';btn.disabled=false;btn.onclick=()=>{adWindowOpened=false;pbar.style.width='0%';ov.innerHTML='<div style="color:#fff;font-weight:800">Watch 20 sec to earn 5 🪙</div>';btn.textContent='Continue watching freely';btn.onclick=doAd;};}else{ov.innerHTML='<div style="color:#fff;font-weight:800">✅ 20s Done! Tap to claim</div>';btn.textContent='🎉 Claim 5 🪙!';btn.disabled=false;btn.onclick=claim;}}},1000);}
+function doAd(){btn.disabled=true;ov.innerHTML='<div style="color:#fff;font-weight:800">▶️ Video placeholder - will be replaced</div>';pbar.style.width='0%';startTimer();}
+function startTimer(){ov.innerHTML='<div style="color:#fbbf24;font-weight:800">💰 Earning... Stay 20s</div>';let sec=0;btn.textContent='💰 '+sec+'/'+REQUIRED_WATCH_SEC+'s';clearInterval(timer);timer=setInterval(()=>{sec++;pbar.style.width=(sec/REQUIRED_WATCH_SEC*100)+'%';btn.textContent='💰 '+sec+'/'+REQUIRED_WATCH_SEC+'s';if(sec>=REQUIRED_WATCH_SEC){clearInterval(timer);timer=null;pbar.style.width='100%';ov.innerHTML='<div style="color:#fff;font-weight:800">✅ 20s Done! Tap to claim</div>';btn.textContent='🎉 Claim 5 🪙!';btn.disabled=false;btn.onclick=claim;}},1000);}
 async function claim(){
-  if(!currentUser||!adWindowOpened)return;
-  if(isOwnerMode){adWindowOpened=false;pbar.style.width='0%';ov.innerHTML='<div style="color:#fff;font-weight:800">Watch 20 sec to earn 5 🪙</div>';btn.textContent='Continue watching freely';btn.onclick=doAd;return;}
+  if(!currentUser)return;
   btn.disabled=true;btn.textContent='Saving...';
   try{
-    await db.collection('users').doc(currentUser.uid).update({
-      balance: firebase.firestore.FieldValue.increment(5),
-      coins: firebase.firestore.FieldValue.increment(5),
-      todayCount: firebase.firestore.FieldValue.increment(1),
-      lastWatchDate: firebase.firestore.FieldValue.serverTimestamp(),
-      lastEarnAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    await db.collection('users').doc(currentUser.uid).update({balance: firebase.firestore.FieldValue.increment(5),coins: firebase.firestore.FieldValue.increment(5),todayCount: firebase.firestore.FieldValue.increment(1),lastWatchDate: firebase.firestore.FieldValue.serverTimestamp(),lastEarnAt: firebase.firestore.FieldValue.serverTimestamp()});
     await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Watch & Earn',type:'watch',coins:5,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
     showBubble('+5 🪙!');
-  }catch(e){
-    console.log(e);
-    btn.disabled=false;
-    btn.textContent='Try again in 15s';
-    setTimeout(()=>{btn.textContent='🎉 Claim 5 🪙!';},3000);
-    return;
-  }
-  adWindowOpened=false;pbar.style.width='0%';ov.innerHTML='<div style="color:#fff;font-weight:800">Watch 20 sec to earn 5 🪙</div>';btn.disabled=false;btn.onclick=doAd;
+  }catch(e){btn.disabled=false;btn.textContent='Try again';return;}
+  pbar.style.width='0%';ov.innerHTML='<div style="color:#fff;font-weight:800">Watch 20 sec to earn 5 🪙</div>';btn.disabled=false;btn.onclick=doAd;
 }
 btn.onclick=doAd;
 </script>
