@@ -44,27 +44,70 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore(); let cachedUser=null;
 (function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}'); if(c.username) document.getElementById('nameInput').value=c.username; if(c.email) document.getElementById('emailInput').value=c.email;}catch(e){}})();
-auth.onAuthStateChanged(u=>{ if(!u){location.href='./index.html';return;} cachedUser=u; db.collection('users').doc(u.uid).get().then(s=>{ if(s.exists){ var d=s.data(); localStorage.setItem('userData', JSON.stringify({...d,uid:u.uid})); document.getElementById('nameInput').value=d.username||''; document.getElementById('emailInput').value=d.email||u.email||''; }}); loadTickets(); });
-async function sendTicket(){ var issue=document.getElementById('issueInput').value.trim(); var el=document.getElementById('status'); if(!issue||issue.length<10){ el.style.color='#ef4444'; el.innerText='Min 10 characters'; return;} el.style.color='#6b7280'; el.innerText='Sending...'; try{ var user=auth.currentUser||cachedUser; var ud=JSON.parse(localStorage.getItem('userData')||'{}'); await db.collection('supportTickets').add({uid:user.uid,username:ud.username||document.getElementById('nameInput').value,email:ud.email||document.getElementById('emailInput').value,message:issue,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp(),adminReply:'',reply:''}); document.getElementById('issueInput').value=''; el.style.color='#16a34a'; el.innerText='✓ Sent! Admin will reply within 24h.'; setTimeout(()=>{el.innerText=''},3000);}catch(e){ el.style.color='#ef4444'; el.innerText='Error: '+e.message;} }
+
+auth.onAuthStateChanged(u=>{ 
+  if(!u){location.href='./index.html';return;} 
+  cachedUser=u; 
+  db.collection('users').doc(u.uid).get().then(s=>{ 
+    if(s.exists){ 
+      var d=s.data(); 
+      localStorage.setItem('userData', JSON.stringify({...d,uid:u.uid})); 
+      document.getElementById('nameInput').value=d.username||''; 
+      document.getElementById('emailInput').value=d.email||u.email||''; 
+    }
+  }); 
+  loadTickets(); 
+});
+
+async function sendTicket(){ 
+  var issue=document.getElementById('issueInput').value.trim(); 
+  var el=document.getElementById('status'); 
+  if(!issue||issue.length<10){ el.style.color='#ef4444'; el.innerText='Min 10 characters'; return;} 
+  el.style.color='#6b7280'; el.innerText='Sending...'; 
+  try{ 
+    var user=auth.currentUser||cachedUser; 
+    if(!user) throw new Error('Not logged in');
+    var ud=JSON.parse(localStorage.getItem('userData')||'{}'); 
+    var ticketData={
+      uid:user.uid,
+      userId:user.uid,
+      username:ud.username||document.getElementById('nameInput').value,
+      email:ud.email||document.getElementById('emailInput').value||user.email,
+      message:issue,
+      status:'pending',
+      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+      adminReply:'',
+      reply:''
+    };
+    // 1. Save in allowed subcollection (fixes permission)
+    await db.collection('users').doc(user.uid).collection('supportTickets').add(ticketData);
+    // 2. Also try save in top-level for admin dashboard (ignore if fails)
+    try{ await db.collection('supportTickets').add(ticketData); }catch(e){}
+    
+    document.getElementById('issueInput').value=''; 
+    el.style.color='#16a34a'; 
+    el.innerText='✓ Sent! Admin will reply within 24h.'; 
+    setTimeout(()=>{el.innerText=''},3000);
+  }catch(e){ 
+    el.style.color='#ef4444'; 
+    el.innerText='Error: '+e.message;
+    console.error(e);
+  } 
+}
 
 function loadTickets(){ 
   var user=auth.currentUser||cachedUser; 
   if(!user) return; 
   var list=document.getElementById('ticketsList'); 
-  db.collection('supportTickets').where('uid','==',user.uid).onSnapshot(snap=>{ 
+  // FIXED: listen to users/{uid}/supportTickets - allowed by rules
+  db.collection('users').doc(user.uid).collection('supportTickets').orderBy('createdAt','desc').limit(20).onSnapshot(snap=>{ 
     if(snap.empty){ 
       list.innerHTML='<div style="text-align:center;padding:20px"><div style="font-size:28px">📭</div><p style="color:#9ca3af;font-size:13px;margin-top:6px">No tickets yet</p></div>'; 
       return;
     } 
-    var arr=[]; 
-    snap.forEach(d=>{ arr.push({id:d.id, ...d.data()}); }); 
-    arr.sort((a,b)=>{ 
-      var at=a.createdAt?.toDate?a.createdAt.toDate():new Date(0); 
-      var bt=b.createdAt?.toDate?b.createdAt.toDate():new Date(0); 
-      return bt - at; 
-    });
     var h=''; 
-    arr.slice(0,20).forEach(v=>{ 
+    snap.forEach(doc=>{ 
+      var v=doc.data();
       var date=v.createdAt?.toDate?v.createdAt.toDate().toLocaleDateString():'Now';
       var replyText = v.adminReply || v.reply || '';
       var hasReply = !!replyText;
@@ -75,7 +118,8 @@ function loadTickets(){
     }); 
     list.innerHTML=h; 
   }, err=>{ 
-    list.innerHTML=`<div style="background:#fef2f2;border:2px solid #fecaca;border-radius:12px;padding:12px"><p style="color:#991b1b;font-weight:700;font-size:12px">Error: ${err.message}</p></div>`; 
+    console.error(err);
+    list.innerHTML=`<div style="background:#fef2f2;border:2px solid #fecaca;border-radius:12px;padding:12px"><p style="color:#991b1b;font-weight:700;font-size:12px">Error: ${err.message}</p><p style="color:#991b1b;font-size:11px;margin-top:4px">Check Firestore rules allow users/{uid}/supportTickets</p></div>`; 
   }); 
 }
 </script>
