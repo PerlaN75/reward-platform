@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Offers - Final Monetag Gate</title>
+<title>Offers - 4 Tags Optimized</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="monetag" content="b671b8351bfc48ed0161f6bd0b6a5340">
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -9,18 +9,12 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
-<!-- YOUR MONETAG TAGS - START -->
-<script>
-(function(s){s.dataset.zone='12211617',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))
-</script>
-<script>
-(function(s){s.dataset.zone='12211613',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))
-</script>
-<!-- YOUR MONETAG TAGS - END -->
+<!-- TAG 1: BNB + Telegram - Light Vignette (FREE) -->
+<script>(function(s){s.dataset.zone='12083688',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#f5f5f5;min-height:100vh}
+body{background:#f5f5f5}
 .top-bar{background:#fff;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:2px solid #f1f5f9;position:sticky;top:0;z-index:10}
 .back-btn{width:45px;height:30px;border-radius:10px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;display:flex;align-items:center;justify-content:center;color:#991b1b;font-weight:900;font-size:22px;text-decoration:none}
 .center-pill{background:#f8fafc;border:2px solid #e5e7eb;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px}
@@ -30,17 +24,16 @@ body{background:#f5f5f5;min-height:100vh}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
 .card{background:#fff;border:2px solid #e5e7eb;border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;position:relative}
 .card.free{border-color:#22c55e}.card.coins{border-color:#111827}
-.emoji{font-size:28px;margin-bottom:6px}.name{font-weight:900;font-size:12px}.sub{font-size:10px;color:#6b7280}
+.emoji{font-size:28px}.name{font-weight:900;font-size:12px}.sub{font-size:10px;color:#6b7280}
 .badge{display:inline-block;margin-top:6px;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:900;border:1.5px solid}
 .badge.free{background:#dcfce7;color:#166534;border-color:#86efac}.badge.coins{background:#fef08a;color:#854d0e;border-color:#facc15}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#111827;color:#facc15;padding:12px 20px;border-radius:99px;font-weight:900;z-index:9999;display:none;border:2px solid #facc15}
-.bnb-timer{font-size:10px;font-weight:900;color:#ea580c;background:#fff7ed;border:1px dashed #fb923c;border-radius:999px;padding:3px 8px;margin-top:7px;display:inline-block}
-.bnb-timer.ready{color:#166534;background:#dcfce7;border-color:#86efac}
 #adGate{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}
 .gate-box{background:#fff;border:3px solid #111827;border-radius:20px;padding:20px;text-align:center;max-width:340px;width:100%;box-shadow:6px 6px 0 #111827}
 .gate-title{font-weight:900;font-size:16px}.gate-sub{font-size:12px;color:#6b7280;margin:8px 0 14px}
 .gate-btn{width:100%;height:48px;border-radius:12px;border:2px solid #111827;font-weight:900;font-size:14px;cursor:pointer}
 .gate-btn.watch{background:#facc15;box-shadow:3px 3px 0 #111827}.gate-btn.continue{background:#dcfce7;display:none;margin-top:10px}
+#gateTimer{font-size:12px;font-weight:900;color:#ea580c;margin-top:8px}
 </style>
 </head>
 <body>
@@ -57,11 +50,11 @@ body{background:#f5f5f5;min-height:100vh}
 
 <div id="adGate">
   <div class="gate-box">
-    <div class="gate-title">🔓 Unlock Offer</div>
-    <div class="gate-sub">Watch a short ad to unlock and earn coins. Free for you.</div>
-    <button id="watchAdBtn" class="gate-btn watch">▶️ Watch Ad to Unlock</button>
-    <button id="continueBtn" class="gate-btn continue">✅ Continue to Offer</button>
-    <div style="font-size:10px;color:#9ca3af;margin-top:10px">Ad by Monetag • Vignette + Popunder</div>
+    <div id="gateTitle" class="gate-title">🔓 Unlock Offer</div>
+    <div id="gateSub" class="gate-sub">Watch ad for 8 seconds, then get coins.</div>
+    <button id="watchAdBtn" class="gate-btn watch">▶️ Watch Ad (8s)</button>
+    <div id="gateTimer"></div>
+    <button id="continueBtn" class="gate-btn continue">✅ Continue</button>
   </div>
 </div>
 
@@ -69,67 +62,77 @@ body{background:#f5f5f5;min-height:100vh}
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
-try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
+try{firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
 const auth=firebase.auth(), db=firebase.firestore();
 let cachedUser=null;
 const OFFERS=[
   {id:'bnb_faucet', emoji:'💧', name:'BNB Faucet', sub:'FREE BNB hourly', coins:0, link:'https://bnbpick.io/?ref=SilasN75', type:'free'},
   {id:'telegram_join', emoji:'✈️', name:'Telegram', sub:'Daily bonus', coins:0, link:'https://t.me/formrw_earning', type:'free'},
-  {id:'play_game', emoji:'🎮', name:'Play Game', sub:'Play 2 min', coins:25, link:'https://t.me/formrw_earning', type:'coins'},
-  {id:'install_app', emoji:'📲', name:'Install App', sub:'Install + open', coins:20, link:'https://t.me/formrw_earning', type:'coins'},
+  {id:'play_game', emoji:'🎮', name:'Play Game', sub:'Play 2 min • +25', coins:25, link:'https://t.me/formrw_earning', type:'coins'},
+  {id:'install_app', emoji:'📲', name:'Install App', sub:'Install + open • +20', coins:20, link:'https://t.me/formrw_earning', type:'coins'},
 ];
+
+function loadMonetagTag(zone, src){
+  const s=document.createElement('script');
+  s.dataset.zone=zone; s.src=src;
+  document.body.appendChild(s);
+  console.log('Loaded tag', zone);
+}
+
 function renderInstant(){
   const grid=document.getElementById('grid');grid.innerHTML='';
   OFFERS.forEach(o=>{
-    const isFree=o.coins===0;
-    const badge=isFree?'FREE LINK':' +'+o.coins+' 🪙';
-    const cls=isFree?'free':'coins';
-    const timer=o.id==='bnb_faucet'?'<div id="bnbTimer" class="bnb-timer"></div>':'';
-    grid.innerHTML+='<div class="card '+cls+'" onclick="clickOffer(\''+o.id+'\')"><div class="emoji">'+o.emoji+'</div><div class="name">'+o.name+'</div><div class="sub">'+o.sub+'</div><div class="badge '+cls+'">'+badge+'</div>'+timer+'</div>';
+    const isFree=o.coins===0;const badge=isFree?'FREE LINK':' +'+o.coins+' 🪙';const cls=isFree?'free':'coins';
+    grid.innerHTML+='<div class="card '+cls+'" onclick="clickOffer(\''+o.id+'\')"><div class="emoji">'+o.emoji+'</div><div class="name">'+o.name+'</div><div class="sub">'+o.sub+'</div><div class="badge '+cls+'">'+badge+'</div></div>';
   });
-  startBnbTimer();
 }
 let pendingOffer=null;
 function clickOffer(id){
-  const o=OFFERS.find(x=>x.id===id);
-  if(!cachedUser||!o) return;
-  if(o.type==='free'){localStorage.setItem('bnb_last_claim',Date.now().toString());window.open(o.link,'_blank');showToast('Opened!');return;}
+  const o=OFFERS.find(x=>x.id===id);if(!cachedUser||!o) return;
+  if(o.type==='free'){
+    // BNB + Telegram: Already have 12083688 vignette loaded globally
+    showToast('Opening... (Ad may show, you earn)');
+    window.open(o.link,'_blank');return;
+  }
   pendingOffer=o;
   document.getElementById('adGate').style.display='flex';
   document.getElementById('watchAdBtn').style.display='block';
   document.getElementById('continueBtn').style.display='none';
-  document.getElementById('watchAdBtn').innerText='▶️ Watch Ad to Unlock';
+  document.getElementById('gateTimer').innerText='';
+  document.getElementById('watchAdBtn').innerText='▶️ Watch Ad (8s)';
+  document.getElementById('gateTitle').innerText='🔓 Unlock '+o.name;
+  document.getElementById('gateSub').innerText='Watch ad 8s to unlock '+o.name+' and earn +'+o.coins+' coins';
+  document.getElementById('watchAdBtn').disabled=false;
+
+  // Load specific tags ONLY when coins offer clicked (no loss, no double load)
+  if(o.id==='play_game'){
+    loadMonetagTag('12211617','https://n6wxm.com/vignette.min.js');
+    loadMonetagTag('12211613','https://al5sm.com/tag.min.js');
+  }else if(o.id==='install_app'){
+    loadMonetagTag('12083693','https://al5sm.com/tag.min.js');
+  }
 }
 document.getElementById('watchAdBtn').onclick=function(){
-  this.innerText='⏳ Showing ad...';
-  // This click will naturally trigger your Monetag Popunder 12211613
-  setTimeout(unlockGate,6000);
+  this.innerText='⏳ Please wait...';this.disabled=true;
+  let sec=8;
+  const timerEl=document.getElementById('gateTimer');
+  timerEl.innerText='⏳ Wait '+sec+'s... (ad may show, you earn even if closed)';
+  const interval=setInterval(()=>{
+    sec--;
+    if(sec>0){timerEl.innerText='⏳ Wait '+sec+'s...';}
+    else{clearInterval(interval);unlockGate();}
+  },1000);
 };
 function unlockGate(){
   document.getElementById('watchAdBtn').style.display='none';
+  document.getElementById('gateTimer').innerText='✅ Unlocked! You earned for us, now get your coins';
   document.getElementById('continueBtn').style.display='block';
-  showToast('Ad watched! Now continue');
 }
 document.getElementById('continueBtn').onclick=function(){
   document.getElementById('adGate').style.display='none';
   if(pendingOffer) doCoinsOffer(pendingOffer);
   pendingOffer=null;
 };
-let timerInterval=null;
-function startBnbTimer(){
-  const el=document.getElementById('bnbTimer');if(!el) return;
-  const last=parseInt(localStorage.getItem('bnb_last_claim')||'0');
-  if(!last){el.style.display='none';return;}
-  el.style.display='inline-block';
-  if(timerInterval) clearInterval(timerInterval);
-  function update(){
-    const diff=3600000-(Date.now()-last);
-    if(diff<=0){el.innerText='✅ Ready again!';el.className='bnb-timer ready';clearInterval(timerInterval);return;}
-    const m=Math.floor(diff/60000);const s=Math.floor((diff%60000)/1000);
-    el.innerText='⏳ Next: '+m+'m '+s+'s';el.className='bnb-timer';
-  }
-  update();timerInterval=setInterval(update,1000);
-}
 async function doCoinsOffer(o){
   const uid=(auth.currentUser||cachedUser).uid;
   const today=new Date().toISOString().split('T')[0];
