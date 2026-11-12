@@ -1,32 +1,43 @@
 <!DOCTYPE html>
-<html><head><title>Wallet</title>
+<html><head><title>Wallet - Purple</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer-when-downgrade" />
 <style>*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{background:#ffffff;min-height:100vh;padding:16px 14px 100px 14px;color:#000}
-.header{display:flex;align-items:center;gap:12px;margin:20px 0 10px}
-.back{width:45px;height:30px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;color:#991b1b;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;cursor:pointer;box-shadow:0 2px 0 #fca5a5}
-.back:active{transform:scale(0.96)}
-.card{background:#2f3e1a;border:2px solid #fbbf24;border-radius:16px;padding:14px;text-align:center;margin:10px 0}
-.tabs{display:flex;justify-content:center;gap:10px;margin:12px 0}
-.tab{padding:10px 18px;border-radius:10px;border:none;font-weight:bold;cursor:pointer}
-.tab.active{background:#fbbf24;color:#000}
-.tab.inactive{background:#e5e7eb;color:#000}
-.input-box{width:100%;padding:14px;margin:8px 0;background:#000;border:2px solid #444;border-radius:12px;color:#fff}
-.result{background:#000;padding:12px;border-radius:12px;border:1px dashed #fbbf24;text-align:center;margin:8px 0;color:#fbbf24;font-weight:bold}
-.action-btn{width:100%;padding:16px;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer;margin-top:8px}
-#customToast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:14px 22px;border-radius:12px;font-weight:bold;z-index:99999;display:none;text-align:center}
-.note{font-size:11px;color:#888;text-align:center;margin-top:6px}
+body{background:#f5f3ff;min-height:100vh;padding:0 0 100px 0;color:#111827}
+.top-bar{background:#6d28d9;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;box-shadow:0 4px 12px rgba(109,40,217,0.3)}
+.back-btn{width:45px;height:30px;border-radius:10px;background:#ffffff;border:2px solid #fecaca;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5}
+.center-pill{background:#ffffff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%);box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.container{max-width:500px;margin:0 auto;padding:14px}
+.card{background:linear-gradient(180deg,#1a2e0a,#12230a);border:2px solid #fbbf24;border-radius:18px;padding:14px;text-align:center;margin:10px 0;box-shadow:0 8px 24px rgba(251,191,36,0.18)}
+.tabs{display:flex;justify-content:center;gap:10px;margin:14px 0}
+.tab{padding:10px 18px;border-radius:999px;border:2px solid #ede9fe;font-weight:900;cursor:pointer;font-size:13px}
+.tab.active{background:#6d28d9;color:#fff;border-color:#6d28d9;box-shadow:0 3px 0 #4c1d95}
+.tab.inactive{background:#ffffff;color:#4c1d95}
+.input-box{width:100%;padding:14px;margin:8px 0;background:#ffffff;border:2px solid #ede9fe;border-radius:12px;color:#111827;font-weight:700;font-size:14px}
+.input-box:focus{border-color:#a78bfa;outline:none}
+.result{background:#f5f3ff;padding:12px;border-radius:12px;border:2px dashed #a78bfa;text-align:center;margin:8px 0;color:#4c1d95;font-weight:900;font-size:13px}
+.action-btn{width:100%;padding:14px;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:2px solid #f59e0b;border-radius:12px;font-weight:900;font-size:14px;cursor:pointer;margin-top:8px;box-shadow:0 3px 0 #d97706}
+.action-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #d97706}
+#customToast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#ffffff;border:2px solid #ede9fe;color:#4c1d95;padding:14px 20px;border-radius:14px;font-weight:900;z-index:99999;display:none;text-align:center;box-shadow:0 8px 24px rgba(109,40,217,0.15);max-width:90%;font-size:13px}
+.note{font-size:11px;color:#6b7280;text-align:center;margin-top:6px;font-weight:700}
+/* AD GATE */
+#adGate{position:fixed;inset:0;background:rgba(76,29,149,0.55);backdrop-filter:blur(3px);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}
+.gate-box{background:#ffffff;border:2px solid #ede9fe;border-radius:20px;padding:22px;text-align:center;max-width:360px;width:100%;box-shadow:0 12px 32px rgba(109,40,217,0.2)}
+.gate-title{font-weight:900;font-size:16px;color:#4c1d95}.gate-sub{font-size:12px;color:#6b7280;margin:8px 0 14px}
+.gate-btn{width:100%;height:48px;border-radius:12px;border:2px solid #ede9fe;font-weight:900;font-size:14px;cursor:pointer}
+.gate-btn.watch{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 3px 0 #d97706;border-color:#f59e0b}.gate-btn.continue{background:linear-gradient(180deg,#dcfce7,#bbf7d0);color:#166534;border-color:#22c55e;display:none;margin-top:10px}
+#gateTimer{font-size:12px;font-weight:900;color:#ea580c;margin-top:8px}
 </style>
 </head><body>
 <div id="customToast"></div>
-<div style="max-width:500px;margin:0 auto">
-<div class="header"><div class="back" onclick="location.href='./home.html'">‹</div><h2>💰 Wallet</h2></div>
+<div class="top-bar"><a href="home.html" class="back-btn">‹</a><div class="center-pill">💰 Wallet</div><div style="width:45px"></div></div>
+<div class="container">
 <div class="card">
-<div style="color:#ccc;font-size:11px">Your Balance</div>
+<div style="color:#d1d5db;font-size:11px;font-weight:800">Your Balance</div>
 <div style="display:flex;justify-content:space-around;margin-top:8px">
-<div><div style="font-size:11px;color:#aaa">⭐ COINS</div><div id="coinBal" style="font-size:22px;color:#fbbf24;font-weight:bold">-- coins</div><div id="usdEq" style="font-size:10px;color:#888">≈ $--</div></div>
-<div style="width:1px;background:rgba(251,191,36,0.35)"></div>
-<div><div style="font-size:11px;color:#aaa">💵 USDT</div><div id="usdtBal" style="font-size:22px;color:#22c55e;font-weight:bold">-- USDT</div><div style="font-size:9px;color:#6b8f5a">Available</div></div>
+<div><div style="font-size:10px;color:#9ca3af;font-weight:800">⭐ COINS</div><div id="coinBal" style="font-size:20px;color:#fbbf24;font-weight:900">-- coins</div><div id="usdEq" style="font-size:10px;color:#9ca3af">≈ $--</div></div>
+<div style="width:1px;background:rgba(251,191,36,0.25)"></div>
+<div><div style="font-size:10px;color:#9ca3af;font-weight:800">💵 USDT</div><div id="usdtBal" style="font-size:20px;color:#22f59b;font-weight:900">-- USDT</div><div style="font-size:9px;color:#6b8f5a">Available</div></div>
 </div>
 </div>
 <div class="tabs">
@@ -37,7 +48,7 @@ body{background:#ffffff;min-height:100vh;padding:16px 14px 100px 14px;color:#000
 <input type="number" id="convertAmount" class="input-box" placeholder="Enter coins amount" oninput="calcConvert()">
 <div id="convertResult" class="result">You will receive: 0.0000 USDT</div>
 <div class="note">Rate: 1 coin = $0.0005 USDT • 3000 coins = $1.5 • No minimum</div>
-<button class="action-btn" onclick="convertPoints()">Convert to USDT</button>
+<button class="action-btn" onclick="startConvertGate()">Convert to USDT</button>
 </div>
 <div id="withdrawTab" style="display:none">
 <select id="payMethod" class="input-box"><option value="binance">Binance Pay - 0 Fee</option><option value="okx">OKX Pay - 0 Fee</option></select>
@@ -45,98 +56,97 @@ body{background:#ffffff;min-height:100vh;padding:16px 14px 100px 14px;color:#000
 <input id="walletAddress" class="input-box" placeholder="Pay ID / Email / UID">
 <input id="withdrawAmount" class="input-box" type="number" step="0.01" placeholder="Amount USDT - Min $1.5">
 <div id="withdrawNote" class="note">Available: -- USDT • Min $1.5</div>
-<button class="action-btn" onclick="requestWithdraw()">Request Withdraw</button>
+<button class="action-btn" onclick="startWithdrawGate()">Request Withdraw</button>
 </div>
 </div>
+
+<div id="adGate"><div class="gate-box"><div id="gateTitle" class="gate-title"></div><div id="gateSub" class="gate-sub"></div><button id="watchAdBtn" class="gate-btn watch"></button><div id="gateTimer"></div><button id="continueBtn" class="gate-btn continue">✅ Continue</button></div></div>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
+function loadMonetagTag(zone, src){const s=document.createElement('script');s.dataset.zone=zone;s.src=src;document.body.appendChild(s);}
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
-function showToast(m){const t=document.getElementById('customToast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3500);}
+function showToast(m){const t=document.getElementById('customToast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',4000);}
 const POINT_RATE=0.0005,MIN_WITHDRAW=1.5;
-let currentUser=null,userData={};
+let currentUser=null,userData={},pendingAction=null;
 function loadData(d){
-  if(!d) return;
-  userData=d;
-  if(d.usdtBalance==null) d.usdtBalance=0;
-  if(d.balance==null) d.balance=d.coins||d.points||0;
-  if(d.coins==null) d.coins=d.balance||0;
+  if(!d) return; userData=d;
+  if(d.usdtBalance==null) d.usdtBalance=0; if(d.balance==null) d.balance=d.coins||d.points||0; if(d.coins==null) d.coins=d.balance||0;
   document.getElementById('coinBal').innerText=(d.balance||0)+' coins';
   document.getElementById('usdEq').innerText=`≈ $${((d.balance||0)*POINT_RATE).toFixed(4)}`;
   document.getElementById('usdtBal').innerText=Number(d.usdtBalance||0).toFixed(4)+' USDT';
   document.getElementById('withdrawNote').innerText=`Available: ${Number(d.usdtBalance||0).toFixed(4)} USDT • Min $1.5`;
   localStorage.setItem('userData', JSON.stringify(d));
 }
-function calcConvert(){
-  const pts=parseFloat(document.getElementById('convertAmount').value)||0;
-  document.getElementById('convertResult').innerText=`You will receive: ${(pts*POINT_RATE).toFixed(4)} USDT`;
+function calcConvert(){const pts=parseFloat(document.getElementById('convertAmount').value)||0;document.getElementById('convertResult').innerText=`You will receive: ${(pts*POINT_RATE).toFixed(4)} USDT`;}
+function switchTab(t){document.getElementById('convertTab').style.display=t==='convert'?'block':'none';document.getElementById('withdrawTab').style.display=t==='withdraw'?'block':'none';document.getElementById('tab1').className=t==='convert'?'tab active':'tab inactive';document.getElementById('tab2').className=t==='withdraw'?'tab active':'tab inactive';}
+
+function openGate(title, sub, action){
+  pendingAction=action;
+  document.getElementById('adGate').style.display='flex';
+  document.getElementById('gateTitle').innerText=title;
+  document.getElementById('gateSub').innerText=sub;
+  document.getElementById('watchAdBtn').innerText='▶️ Watch Ad (10s)';
+  document.getElementById('watchAdBtn').style.display='block';
+  document.getElementById('watchAdBtn').disabled=false;
+  document.getElementById('continueBtn').style.display='none';
+  document.getElementById('gateTimer').innerText='';
+  loadMonetagTag('12211617','https://n6wxm.com/vignette.min.js');
+  loadMonetagTag('12211613','https://al5sm.com/tag.min.js');
 }
-function switchTab(t){
-  document.getElementById('convertTab').style.display=t==='convert'?'block':'none';
-  document.getElementById('withdrawTab').style.display=t==='withdraw'?'block':'none';
-  document.getElementById('tab1').className=t==='convert'?'tab active':'tab inactive';
-  document.getElementById('tab2').className=t==='withdraw'?'tab active':'tab inactive';
+function startConvertGate(){
+  const pts=parseFloat(document.getElementById('convertAmount').value);
+  if(!pts||pts<=0) return showToast('Enter coins amount');
+  openGate('🔓 Unlock Convert','Wait 10s - ads loading to convert to USDT','convert');
 }
+function startWithdrawGate(){
+  const usdtAmount=parseFloat(document.getElementById('withdrawAmount').value);
+  const payId=document.getElementById('walletAddress').value.trim();
+  if(!payId) return showToast('Enter Pay ID / Email');
+  if(!usdtAmount||usdtAmount<MIN_WITHDRAW) return showToast('Min $1.5');
+  openGate('🔓 Unlock Withdraw','Wait 10s - ads loading to request withdrawal','withdraw');
+}
+document.getElementById('watchAdBtn').onclick=function(){
+  this.innerText='⏳ Please wait...';this.disabled=true;
+  let sec=10;const timerEl=document.getElementById('gateTimer');timerEl.innerText='⏳ Wait '+sec+'s... - ads loading';
+  const interval=setInterval(()=>{sec--;if(sec>0){timerEl.innerText='⏳ Wait '+sec+'s... - ads loading';}else{clearInterval(interval);document.getElementById('watchAdBtn').style.display='none';timerEl.innerText='✅ Unlocked!';document.getElementById('continueBtn').style.display='block';}},1000);
+};
+document.getElementById('continueBtn').onclick=function(){
+  document.getElementById('adGate').style.display='none';
+  if(pendingAction==='convert') convertPoints();
+  if(pendingAction==='withdraw') requestWithdraw();
+  pendingAction=null;
+};
+
 async function convertPoints(){
   const pts=parseFloat(document.getElementById('convertAmount').value);
   if(!pts||pts<=0) return showToast('Enter coins amount');
   if(!currentUser) return showToast('Not logged in');
-  const usdt = pts * POINT_RATE;
-  showToast('Converting...');
+  const usdt = pts * POINT_RATE; showToast('Converting...');
   try{
     const userRef=db.collection('users').doc(currentUser.uid);
-    await db.runTransaction(async (tx)=>{
-      const snap=await tx.get(userRef);
-      if(!snap.exists) throw "No user";
-      const data=snap.data();
-      const bal=data.balance ?? data.coins ?? 0;
-      if(bal < pts) throw `Not enough coins. You have ${bal}`;
-      tx.update(userRef,{
-        balance: firebase.firestore.FieldValue.increment(-pts),
-        coins: firebase.firestore.FieldValue.increment(-pts),
-        points: firebase.firestore.FieldValue.increment(-pts),
-        usdtBalance: firebase.firestore.FieldValue.increment(usdt),
-        lastConvertAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-    });
+    await db.runTransaction(async (tx)=>{const snap=await tx.get(userRef);if(!snap.exists) throw "No user";const data=snap.data();const bal=data.balance ?? data.coins ?? 0;if(bal < pts) throw `Not enough coins. You have ${bal}`;tx.update(userRef,{balance: firebase.firestore.FieldValue.increment(-pts),coins: firebase.firestore.FieldValue.increment(-pts),points: firebase.firestore.FieldValue.increment(-pts),usdtBalance: firebase.firestore.FieldValue.increment(usdt),lastConvertAt: firebase.firestore.FieldValue.serverTimestamp()});});
     await userRef.collection('convertHistory').add({points:pts,coins:pts,usdt:usdt,rate:POINT_RATE,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
     await userRef.collection('earnHistory').add({action:'Converted to USDT',coins:-pts,desc:`${pts} coins → ${usdt.toFixed(4)} USDT`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-    showToast(`✓ ${pts} → ${usdt.toFixed(4)} USDT added!`);
-    document.getElementById('convertAmount').value=''; calcConvert();
-  }catch(e){console.error(e);showToast('Failed: '+(e.message||e));}
+    showToast(`✓ ${pts} → ${usdt.toFixed(4)} USDT added!`);document.getElementById('convertAmount').value=''; calcConvert();
+  }catch(e){showToast('Failed: '+(e.message||e));}
 }
 async function requestWithdraw(){
   const usdtAmount=parseFloat(document.getElementById('withdrawAmount').value);
   const payId=document.getElementById('walletAddress').value.trim();
   const method=document.getElementById('payMethod').value;
-  if(!payId) return showToast('Enter Pay ID / Email');
-  if(!usdtAmount||usdtAmount<MIN_WITHDRAW) return showToast('Min $1.5');
-  if(!currentUser) return showToast('Not logged in');
-  const realUsdt=userData.usdtBalance||0;
-  if(usdtAmount>realUsdt) return showToast(`Not enough USDT. You have ${realUsdt.toFixed(4)} - Convert first`);
-  showToast('Requesting...');
+  if(!payId) return showToast('Enter Pay ID / Email');if(!usdtAmount||usdtAmount<MIN_WITHDRAW) return showToast('Min $1.5');if(!currentUser) return showToast('Not logged in');
+  const realUsdt=userData.usdtBalance||0;if(usdtAmount>realUsdt) return showToast(`Not enough USDT. You have ${realUsdt.toFixed(4)} - Convert first`);showToast('Requesting...');
   try{
     const userRef=db.collection('users').doc(currentUser.uid);
-    await db.runTransaction(async (tx)=>{
-      const snap=await tx.get(userRef);
-      const data=snap.data();
-      if((data.usdtBalance||0) < usdtAmount) throw "Not enough USDT";
-      tx.update(userRef,{usdtBalance: firebase.firestore.FieldValue.increment(-usdtAmount)});
-    });
-    await db.collection('withdrawals').add({
-      uid:currentUser.uid,userId:currentUser.uid,username:userData.username||'',email:userData.email||currentUser.email||'',
-      method:method,crypto:'USDT',payId:payId,amount:usdtAmount,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp()
-    });
-    showToast(`Withdraw ${usdtAmount.toFixed(2)} USDT requested!`);
-    document.getElementById('withdrawAmount').value='';document.getElementById('walletAddress').value='';
-  }catch(e){
-    console.error(e);
-    try{await db.collection('users').doc(currentUser.uid).update({usdtBalance: firebase.firestore.FieldValue.increment(usdtAmount)});}catch(_){}
-    showToast('Failed: '+(e.message||e));
-  }
+    await db.runTransaction(async (tx)=>{const snap=await tx.get(userRef);const data=snap.data();if((data.usdtBalance||0) < usdtAmount) throw "Not enough USDT";tx.update(userRef,{usdtBalance: firebase.firestore.FieldValue.increment(-usdtAmount)});});
+    await db.collection('withdrawals').add({uid:currentUser.uid,userId:currentUser.uid,username:userData.username||'',email:userData.email||currentUser.email||'',method:method,crypto:'USDT',payId:payId,amount:usdtAmount,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    showToast(`Withdraw ${usdtAmount.toFixed(2)} USDT requested!`);document.getElementById('withdrawAmount').value='';document.getElementById('walletAddress').value='';
+  }catch(e){try{await db.collection('users').doc(currentUser.uid).update({usdtBalance: firebase.firestore.FieldValue.increment(usdtAmount)});}catch(_){}showToast('Failed: '+(e.message||e));}
 }
 auth.onAuthStateChanged(u=>{if(u){currentUser=u;db.collection('users').doc(u.uid).onSnapshot(doc=>{if(doc.exists) loadData(doc.data());});}else{location.href='./index.html';}});
 </script></body></html>
