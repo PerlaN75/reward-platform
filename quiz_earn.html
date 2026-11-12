@@ -8,16 +8,17 @@
 <script src="https://www.google.com/recaptcha/enterprise.js?render=6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1"></script>
 <style>
 *{ -webkit-tap-highlight-color:transparent } *:focus{outline:none !important}
-body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;display:flex;justify-content:center;padding:12px 10px 80px 10px;box-sizing:border-box;min-height:100vh}
-.card{background:#ffffff;border:2px solid #e5e7eb;border-radius:22px;padding:16px 14px 18px 14px;width:100%;max-width:380px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.06);margin:10px auto 30px;position:relative;overflow:hidden}
-.header-row{display:flex;align-items:center;gap:10px;margin:6px 0 12px 0}
-.back{width:41px;height:26px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5;flex-shrink:0}
+body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+.top-bar{background:#6d28d9;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;width:100%;box-shadow:0 4px 12px rgba(109,40,217,0.3)}
+.back{width:45px;height:30px;background:#ffffff;border:2px solid #fecaca;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5;flex-shrink:0}
+.center-pill{background:#ffffff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%);box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.card{background:#ffffff;border:2px solid #ede9fe;border-radius:22px;padding:16px 14px 18px 14px;width:100%;max-width:380px;text-align:center;box-shadow:0 8px 30px rgba(109,40,217,0.08);margin:14px auto 30px;position:relative;overflow:hidden}
 .badge{border:1.5px solid #8b5cf6;border-radius:20px;padding:6px 12px;display:inline-block;margin:8px 0;color:#5b21b6;background:#f5f3ff;font-weight:bold;font-size:13px}
-.bar{height:7px;background:#e5e7eb;border-radius:10px;margin:10px 0;overflow:hidden}
+.bar{height:7px;background:#ede9fe;border-radius:10px;margin:10px 0;overflow:hidden}
 .fill{height:100%;background:#8b5cf6;width:0%;transition:0.3s}
-#countText{font-size:12px;color:#111827;margin:6px 0;font-weight:900}
-.tip-text{font-size:11px;color:#1d4ed8;margin:8px 0 8px 0;font-weight:900;line-height:1.3;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px}
-.quiz-card{background:#ffffff;border:1.5px solid #e5e7eb;border-radius:14px;padding:12px;margin:10px 0;text-align:left;box-shadow:0 2px 8px rgba(0,0,0,0.03)}
+#countText{font-size:12px;color:#4c1d95;margin:6px 0;font-weight:900}
+.tip-text{font-size:11px;color:#6d28d9;margin:8px 0 8px 0;font-weight:900;line-height:1.3;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px}
+.quiz-card{background:#ffffff;border:1.5px solid #ede9fe;border-radius:14px;padding:12px;margin:10px 0;text-align:left;box-shadow:0 2px 8px rgba(0,0,0,0.03)}
 .quiz-card.easy{border-left:4px solid #22c55e} .quiz-card.standard{border-left:4px solid #f59e0b} .quiz-card.premium{border-left:4px solid #8b5cf6;background:linear-gradient(180deg,#faf5ff,#ffffff)}
 .quiz-title{font-size:13.5px;font-weight:900;color:#111827;line-height:1.3;margin:0}
 .quiz-meta{font-size:10px;color:#9ca3af;font-weight:700;margin-top:4px}
@@ -25,21 +26,21 @@ body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;disp
 .btn.start{background:linear-gradient(180deg,#ede9fe,#c4b5fd);color:#000;border:2px solid #8b5cf6;box-shadow:0 2px 0 #a78bfa}
 .btn.done{background:#e5e7eb;color:#9ca3af;border:2px solid #e5e7eb}
 .btn.wait{background:#fef3c7;color:#92400e;border:2px solid #fbbf24;cursor:not-allowed}
-.ad-label{font-size:8px;color:#9ca3af;margin:10px 0 4px 0;letter-spacing:0.8px;font-weight:800;text-align:center;text-transform:uppercase}
+.ad-label{font-size:8px;color:#8b5cf6;margin:10px 0 4px 0;letter-spacing:0.8px;font-weight:900;text-align:center;text-transform:uppercase}
 .ad-set{background:#ffffff;border:2px solid #ede9fe;border-radius:16px;padding:10px;margin:14px 0;box-shadow:0 4px 12px rgba(139,92,246,0.12)}
-.modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.65);justify-content:center;align-items:center;padding:8px;box-sizing:border-box}
-.modal-content{background:#ffffff;border:2px solid #e5e7eb;border-radius:14px;padding:14px 12px;width:94%;max-width:360px;text-align:center;box-shadow:0 12px 32px rgba(0,0,0,0.12);max-height:95vh;overflow-y:auto}
+.modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(76,29,149,0.45);backdrop-filter:blur(2px);justify-content:center;align-items:center;padding:8px;box-sizing:border-box}
+.modal-content{background:#ffffff;border:2px solid #ede9fe;border-radius:14px;padding:14px 12px;width:94%;max-width:360px;text-align:center;box-shadow:0 12px 32px rgba(109,40,217,0.15);max-height:95vh;overflow-y:auto}
 .timer{font-size:28px;color:#8b5cf6;font-weight:bold;margin:6px 0}
-.opt{width:100%;text-align:left;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:10px;margin:6px 0;background:#f9fafb;font-size:12.5px;font-weight:700;cursor:pointer}
+.opt{width:100%;text-align:left;padding:10px 12px;border:1.5px solid #ede9fe;border-radius:10px;margin:6px 0;background:#f9fafb;font-size:12.5px;font-weight:700;cursor:pointer}
 .opt:hover{border-color:#8b5cf6;background:#f5f3ff}
 .opt.correct{background:#dcfce7;border-color:#22c55e}
 .opt.wrong{background:#fee2e2;border-color:#ef4444}
 .bonus-btn{width:100%;padding:14px;background:linear-gradient(90deg,#c4b5fd,#8b5cf6);color:#fff;border:none;border-radius:12px;font-weight:900;font-size:15px;cursor:pointer;margin:10px 0;box-shadow:0 3px 0 #6d28d9;display:none}
 .bonus-btn.claimed{background:#e5e7eb !important;color:#9ca3af !important;box-shadow:none !important}
-#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#ffffff;border:2px solid #e5e7eb;color:#111827;padding:12px 18px;border-radius:12px;font-weight:bold;z-index:9999;display:none;max-width:90%;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.1)}
-#entryGate{position:absolute;inset:0;background:#ffffff;z-index:90;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:18px 14px;text-align:center;overflow-y:auto}
-#gateTimer{font-size:36px;font-weight:900;color:#8b5cf6;margin:10px 0}
-.ad-box{display:flex;justify-content:center;align-items:center;background:#fff;border:1px solid #eee;border-radius:12px;width:100%;overflow:hidden;min-height:70px}
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#ffffff;border:2px solid #ede9fe;color:#111827;padding:12px 18px;border-radius:12px;font-weight:bold;z-index:9999;display:none;max-width:90%;text-align:center;box-shadow:0 8px 24px rgba(109,40,217,0.15)}
+#entryGate{position:absolute;inset:0;background:linear-gradient(180deg,#ffffff,#f5f3ff);z-index:90;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:18px 14px;text-align:center;overflow-y:auto;border:2px solid #ede9fe}
+#gateTimer{width:64px;height:64px;border-radius:50%;background:linear-gradient(180deg,#ffffff,#ede9fe);border:3px solid #a78bfa;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#8b5cf6;margin:10px auto;box-shadow:0 3px 10px rgba(109,40,217,0.12)}
+.ad-box{display:flex;justify-content:center;align-items:center;background:#fff;border:2px solid #ede9fe;border-radius:12px;width:100%;overflow:hidden;min-height:70px}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
@@ -47,17 +48,22 @@ body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;disp
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
+<div class="top-bar">
+  <div class="back" onclick="location.href='home.html'">‹</div>
+  <div class="center-pill">🧠 Quiz Earn</div>
+  <div style="width:45px"></div>
+</div>
+
 <div id="toast"></div>
 <div class="card">
 <div id="entryGate">
   <div style="font-size:32px">🧠</div>
-  <h3 style="margin:8px 0 4px;font-size:15px;color:#111827">Loading quiz...</h3>
+  <h3 style="margin:8px 0 4px;font-size:15px;color:#4c1d95">Loading quiz...</h3>
   <div style="width:100%"><div class="ad-label">ADVERTISEMENT</div><div id="gateTopBanner" class="ad-box"></div></div>
   <div id="gateTimer">5</div>
   <div style="width:100%"><div class="ad-label">ADVERTISEMENT</div><div id="gateMidBanner" class="ad-box" style="min-height:260px"></div></div>
 </div>
 
-<div class="header-row"><div class="back" onclick="location.href='home.html'">‹</div><h2>🧠 Quiz Earn</h2></div>
 <div class="badge" id="totalPtsBadge">Total Today: 0 🪙 Coins</div>
 <div class="bar"><div class="fill" id="progBar"></div></div>
 <div id="countText">0/10 done - Resets midnight</div>
@@ -81,35 +87,62 @@ body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;disp
 <div id="group4"></div>
 
 <button id="bonusBtn" class="bonus-btn" onclick="startBonus()">Claim Bonus 2 Coins - 12s</button>
-<div style="font-size:12px;color:#111827;margin-top:16px;font-weight:900;line-height:1.4">3000 Coins = $1.5 • Bonus 2 coins for completing all 10 quizzes</div>
+<div style="font-size:12px;color:#4c1d95;margin-top:16px;font-weight:900;line-height:1.4">3000 Coins = $1.5 • Bonus 2 coins for completing all 10 quizzes</div>
 </div>
 
 <div id="timerModal" class="modal"><div class="modal-content"><div style="font-size:26px">🧠</div><h3 id="modalTitle">Quiz</h3><div class="timer" id="timerNum">12</div><div id="quizQ" style="font-size:13.5px;font-weight:900;text-align:left;margin:10px 0;line-height:1.3"></div><div id="quizOpts"></div><div id="distractPhase" style="font-size:11px;color:#8b5cf6;font-weight:bold;margin:8px 0">Choose correct answer</div></div></div>
 
 <script>
+// ADSTERRA ONLY - PROFITABLE FOR QUIZ (high dwell = high CPM) + ANTI-SPAM
 function injectBanner(id,key,w,h){
   const c=document.getElementById(id); if(!c) return;
   c.innerHTML='';
   const s1=document.createElement('script'); s1.text=`atOptions={'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}};`; c.appendChild(s1);
   const s2=document.createElement('script'); s2.src=`https://www.highperformanceformat.com/${key}/invoke.js`; s2.async=true; c.appendChild(s2);
 }
-function loadGateBanners(){
-  injectBanner('gateTopBanner','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
-  setTimeout(()=>injectBanner('gateMidBanner','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),900);
+
+function canLoadGateAd(){
+  try{
+    const key='quiz_gate_times';
+    let times=JSON.parse(localStorage.getItem(key)||'[]');
+    const now=Date.now();
+    times=times.filter(t=> now - t < 60*1000);
+    if(times.length >= 3) return false;
+    times.push(now);
+    localStorage.setItem(key, JSON.stringify(times));
+    return true;
+  }catch(e){ return true; }
 }
+
+function loadGateBanners(){
+  if(!canLoadGateAd()){
+    document.getElementById('gateTopBanner').innerHTML='<div style="font-size:10px;color:#9ca3af;padding:12px;text-align:center">Loading...</div>';
+    document.getElementById('gateMidBanner').innerHTML='<div style="font-size:10px;color:#9ca3af;padding:20px;text-align:center">Please wait a moment</div>';
+    return;
+  }
+  injectBanner('gateTopBanner','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
+  setTimeout(()=>injectBanner('gateMidBanner','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),800);
+}
+
 function loadMainBanners(){
   const gate=document.getElementById('entryGate');
-  if(gate) gate.style.display='none';
+  if(gate) gate.remove();
   injectBanner('topBanner','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
   setTimeout(()=>injectBanner('midBanner1','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),800);
   setTimeout(()=>injectBanner('midBanner2','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),2000);
   setTimeout(()=>injectBanner('midBanner3','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),3200);
   setTimeout(()=>injectBanner('midBanner4','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),4400);
 }
+
+function refreshBannersAfterClaim(){
+  setTimeout(()=>{
+    injectBanner('midBanner1','bf10cacdbe9f50d0c5d66a94e0785f29',300,250);
+    injectBanner('midBanner2','bf10cacdbe9f50d0c5d66a94e0785f29',300,250);
+  },600);
+}
+
 loadGateBanners();
 let gateSec=5;const gateTimerEl=document.getElementById('gateTimer');const gateInt=setInterval(()=>{gateSec--; if(gateTimerEl) gateTimerEl.innerText=gateSec; if(gateSec<=0){ clearInterval(gateInt); loadMainBanners(); }},1000);
-
-function canShowVignette(){const last=localStorage.getItem('vignette_last_q');return !last || (Date.now()-parseInt(last))>180000;}function canShowPop(){const last=localStorage.getItem('pop_last_q');return !last || (Date.now()-parseInt(last))>180000;}function loadVignetteSafe(){if(!canShowVignette())return false;var s=document.createElement('script');s.dataset.zone='12083688';s.src='https://n6wxm.com/vignette.min.js';document.body.appendChild(s);localStorage.setItem('vignette_last_q',Date.now().toString());return true;}function loadPopSafe(){if(!canShowPop())return false;var s=document.createElement('script');s.dataset.zone='12083693';s.src='https://al5sm.com/tag.min.js';document.body.appendChild(s);localStorage.setItem('pop_last_q',Date.now().toString());return true;}
 
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};firebase.initializeApp(firebaseConfig);try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}const auth=firebase.auth(),db=firebase.firestore();
 
@@ -126,7 +159,6 @@ const quizzes=[
 {q:"Saving $1.5 daily for 30 days = ?",opts:["$45","$5","$500"],ans:0}
 ];
 
-// 15 COINS TOTAL: easy 1, standard 1, premium 2, bonus 2
 const tasksConfig=quizzes.map((qq,i)=>({id:i,reward:i<3?1:i<7?1:2,sec:i<3?10:i<7?12:15,tier:i<3?'easy':i<7?'standard':'premium',label:i<3?'10s':i<7?'12s':'15s',q:qq.q,opts:qq.opts,ans:qq.ans}));
 const BONUS_REWARD=2,BONUS_SEC=12,COOLDOWN_AFTER=10;
 function getToday(){return new Date().toISOString().split('T')[0];}
@@ -193,8 +225,8 @@ function checkAns(idx){
 
 function startBonus(){if(bonusClaimed) return; if(done.length<10) return showToast('Complete 10 first');if(isClaiming) return; const nowSec=Date.now()/1000; if(nowSec<nextAllowed){ showToast("Wait "+Math.ceil(nextAllowed-nowSec)+"s"); return; }sec=BONUS_SEC; visViolated=false;document.getElementById('timerNum').innerText=sec;document.getElementById('modalTitle').innerText='🎁 Bonus 2 Coins';document.getElementById('quizQ').innerText='Bonus: What is 3000 coins worth?';document.getElementById('quizOpts').innerHTML='<button class="opt" onclick="claimBonus()">$1.5 - Click to claim</button>';document.getElementById('distractPhase').innerText='Bonus • Keep open';document.getElementById('timerModal').style.display='flex';tmr=setInterval(()=>{if(document.hidden){ visViolated=true; }sec--; document.getElementById('timerNum').innerText=sec;if(sec<=0){ clearInterval(tmr); document.getElementById('timerModal').style.display='none'; }},1000);}
 
-async function claimAd(){if(isClaiming) return; isClaiming=true;if(done.includes(cur)){isClaiming=false; return;}let cfg=tasksConfig[cur]; if(done.length>=10){isClaiming=false; return;}done=[...new Set([...done,cur])]; total+=cfg.reward; saveLocal();nextAllowed=Date.now()/1000+COOLDOWN_AFTER; render();try{await db.collection('users').doc(currentUser.uid).set({balance: firebase.firestore.FieldValue.increment(cfg.reward),coins: firebase.firestore.FieldValue.increment(cfg.reward),points: firebase.firestore.FieldValue.increment(cfg.reward),lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),quizEarn_date: getToday(), quizEarn_done: done, quizEarn_total: total},{merge:true});showToast("✓ +"+cfg.reward+" 🪙 added!");if(cfg.tier!=='easy') loadVignetteSafe(); if(cfg.tier==='premium') loadPopSafe();}catch(e){ showToast(e.message); done=done.filter(x=>x!==cur); total-=cfg.reward; saveLocal(); render(); }isClaiming=false; answered=false;}
-async function claimBonus(){if(isClaiming) return; isClaiming=true;if(bonusClaimed){isClaiming=false; return;}bonusClaimed=true; total+=BONUS_REWARD; saveLocal();nextAllowed=Date.now()/1000+COOLDOWN_AFTER; render();try{await db.collection('users').doc(currentUser.uid).set({balance: firebase.firestore.FieldValue.increment(BONUS_REWARD),coins: firebase.firestore.FieldValue.increment(BONUS_REWARD),points: firebase.firestore.FieldValue.increment(BONUS_REWARD),lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),quizEarn_bonus: getToday(), quizEarn_date: getToday(), quizEarn_done: done, quizEarn_total: total},{merge:true});document.getElementById('timerModal').style.display='none';showToast("🎁 Bonus +"+BONUS_REWARD+" 🪙 added!"); loadPopSafe();}catch(e){ showToast(e.message); bonusClaimed=false; total-=BONUS_REWARD; saveLocal(); render(); }isClaiming=false;}
+async function claimAd(){if(isClaiming) return; isClaiming=true;if(done.includes(cur)){isClaiming=false; return;}let cfg=tasksConfig[cur]; if(done.length>=10){isClaiming=false; return;}done=[...new Set([...done,cur])]; total+=cfg.reward; saveLocal();nextAllowed=Date.now()/1000+COOLDOWN_AFTER; render();try{await db.collection('users').doc(currentUser.uid).set({balance: firebase.firestore.FieldValue.increment(cfg.reward),coins: firebase.firestore.FieldValue.increment(cfg.reward),points: firebase.firestore.FieldValue.increment(cfg.reward),lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),quizEarn_date: getToday(), quizEarn_done: done, quizEarn_total: total},{merge:true});showToast("✓ +"+cfg.reward+" 🪙 added!");refreshBannersAfterClaim();}catch(e){ showToast(e.message); done=done.filter(x=>x!==cur); total-=cfg.reward; saveLocal(); render(); }isClaiming=false; answered=false;}
+async function claimBonus(){if(isClaiming) return; isClaiming=true;if(bonusClaimed){isClaiming=false; return;}bonusClaimed=true; total+=BONUS_REWARD; saveLocal();nextAllowed=Date.now()/1000+COOLDOWN_AFTER; render();try{await db.collection('users').doc(currentUser.uid).set({balance: firebase.firestore.FieldValue.increment(BONUS_REWARD),coins: firebase.firestore.FieldValue.increment(BONUS_REWARD),points: firebase.firestore.FieldValue.increment(BONUS_REWARD),lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),quizEarn_bonus: getToday(), quizEarn_date: getToday(), quizEarn_done: done, quizEarn_total: total},{merge:true});document.getElementById('timerModal').style.display='none';showToast("🎁 Bonus +"+BONUS_REWARD+" 🪙 added!");refreshBannersAfterClaim();}catch(e){ showToast(e.message); bonusClaimed=false; total-=BONUS_REWARD; saveLocal(); render(); }isClaiming=false;}
 auth.onAuthStateChanged(async u=>{if(!u){location.href='./index.html';return;} currentUser=u;try{const doc=await db.collection('users').doc(u.uid).get();if(doc.exists){userData=doc.data(); const today=getToday(); const fbDate=userData.quizEarn_date||'';if(fbDate!==today && fbDate!==''){ done=[]; total=0; bonusClaimed=false; saveLocal();await db.collection('users').doc(u.uid).set({quizEarn_date:today,quizEarn_done:[],quizEarn_total:0,quizEarn_bonus:firebase.firestore.FieldValue.delete()},{merge:true});} else if(fbDate===today){const fbDone=userData.quizEarn_done||[]; done=[...new Set(fbDone)].filter(x=>x>=0&&x<=9); total=userData.quizEarn_total||0; bonusClaimed=(userData.quizEarn_bonus===today);let real=0; done.forEach(id=>{const c=tasksConfig.find(t=>t.id===id); if(c) real+=c.reward}); if(bonusClaimed) real+=BONUS_REWARD; if(total!==real && total<50) total=real; saveLocal();}}}catch(e){}render();});render();
 </script>
 </body>
