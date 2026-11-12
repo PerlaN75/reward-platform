@@ -73,8 +73,8 @@
     <div id="moreGate">
       <div style="font-size:28px">⚙️</div>
       <div style="font-weight:900;font-size:14px;margin-top:8px;color:#4c1d95">Preparing menu...</div>
-      <div id="moreTimerBox">5</div>
-      <div style="font-size:11px;color:#8b5cf6;font-weight:600">Please wait</div>
+      <div id="moreTimerBox">10</div>
+      <div style="font-size:11px;color:#8b5cf6;font-weight:600">Please wait 10s - ads loading</div>
       <div style="width:100%;margin-top:14px">
         <div class="ad-label">ADVERTISEMENT</div>
         <div id="gateBanner" class="ad-box"></div>
@@ -101,22 +101,19 @@
 <div id="confirmModal" class="confirm-overlay" onclick="this.style.display='none'"><div class="confirm-box" onclick="event.stopPropagation()"><h4>Clear history?</h4><div class="confirm-actions"><button class="c-cancel" onclick="document.getElementById('confirmModal').style.display='none'">Cancel</button><button class="c-ok" onclick="permanentClearHistory()">Yes, Clear</button></div></div></div>
 
 <script>
-// MONETAG ONLY - PROFITABLE
+// MONETAG ONLY - 10 SEC GATE
 function triggerMonetagZone(zoneId, src){
   const s=document.createElement('script');
   s.dataset.zone=zoneId;
   s.src=src;
   document.body.appendChild(s);
-  // Remove after 5s to avoid duplicate
   setTimeout(()=>{ try{s.remove()}catch(e){} },5000);
 }
-
 let lastAdTime = 0;
 function showModalAd(){
   const now = Date.now();
-  if(now - lastAdTime < 120*1000) return; // 2 min cooldown for profit, not spam
+  if(now - lastAdTime < 120*1000) return;
   lastAdTime = now;
-  // Alternate between your 2 Vignette zones
   const useFirst = Math.random() > 0.5;
   if(useFirst){
     (function(s){s.dataset.zone='12211617',s.src='https://n6wxm.com/vignette.min.js'})(document.body.appendChild(document.createElement('script')));
@@ -124,25 +121,21 @@ function showModalAd(){
     (function(s){s.dataset.zone='12083688',s.src='https://n6wxm.com/vignette.min.js'})(document.body.appendChild(document.createElement('script')));
   }
 }
-
 function initMoreGate(){
   const gate=document.getElementById('moreGate');
   const outer=document.getElementById('outerAdWrap');
   const timerBox=document.getElementById('moreTimerBox');
   outer.style.display='none';
   gate.classList.add('show');
-
-  // GATE AD - In-Page 12211613 - it floats, not in box, so box stays hidden until needed
+  // GATE - Monetag In-Page 12211613
   (function(s){s.dataset.zone='12211613',s.src='https://al5sm.com/tag.min.js'})(document.body.appendChild(document.createElement('script')));
-
-  let sec=5; timerBox.innerText=sec;
+  let sec=10; timerBox.innerText=sec;
   const int=setInterval(()=>{
     sec--; timerBox.innerText=sec;
     if(sec<=0){
       clearInterval(int);
       gate.classList.remove('show');
       outer.style.display='block';
-      // AFTER GATE - second In-Page 12083693
       setTimeout(()=>{
         (function(s){s.dataset.zone='12083693',s.src='https://al5sm.com/tag.min.js'})(document.body.appendChild(document.createElement('script')));
       }, 600);
@@ -150,8 +143,6 @@ function initMoreGate(){
   },1000);
 }
 initMoreGate();
-
-// Hide empty ad boxes - only show if ad actually injects content
 function checkAdBoxes(){
   ['gateBanner','mainBanner'].forEach(id=>{
     const el=document.getElementById(id);
@@ -175,14 +166,13 @@ if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 try{ firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true); }catch(e){}
 const auth=firebase.auth(), db=firebase.firestore(); let cachedUser=null, allData=[];
 function openModal(id){
-  showModalAd(); // PROFIT: ad on open
+  showModalAd();
   document.getElementById(id).style.display='flex';
   if(id==='profileModal') loadProfile();
   if(id==='historyModal') loadHistory();
   if(id==='notifModal') loadNotifs();
 }
 function closeModal(id){
-  // PROFIT: ad on close (different zone, cooldown protected)
   setTimeout(showModalAd, 300);
   document.getElementById(id).style.display='none';
 }
