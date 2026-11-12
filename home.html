@@ -1,10 +1,10 @@
 <!DOCTYPE html><html><head><title>Home</title><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent!important}
-html,body{height:100%;overflow:hidden!important;overscroll-behavior:none;-webkit-tap-highlight-color:transparent;position:fixed;width:100%}
+html{overscroll-behavior:none;height:100%}
+body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;height:100%;overscroll-behavior-y:auto;-webkit-tap-highlight-color:transparent}
 button,a,div{-webkit-tap-highlight-color:transparent!important}
 button:focus,a:focus,div:focus{outline:none!important}
-body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 .wrap{
   width:100%;max-width:430px;height:100dvh;height:100svh;
   background-color:#bfe6f7;
@@ -12,7 +12,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
   background-repeat:no-repeat;
   background-size:100% auto;
   background-position:center bottom;
-  position:relative;display:flex;flex-direction:column;overflow:hidden!important;overscroll-behavior:none
+  position:relative;display:flex;flex-direction:column;overflow:hidden;overscroll-behavior:contain
 }
 .top{position:relative;margin:0;width:100%;background:#ffffff;border-radius:0 0 20px 20px;height:54px;min-height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;z-index:50;box-shadow:0 6px 14px rgba(0,0,0,0.18);flex-shrink:0;flex-grow:0}
 .top h2{font-size:18px;color:#0a5a7a;font-weight:900;flex:1;text-align:center;white-space:nowrap;overflow:hidden}
@@ -21,8 +21,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 .home-btn span.emoji{font-size:18px}
 .home-btn span.txt{font-size:12px;color:#111827;font-weight:900}
 .logo{width:28px;height:28px;min-width:28px;border-radius:50%;overflow:hidden;border:1.5px solid #d4a95a;background:#fff;flex-shrink:0}
-.scene{flex:1;position:relative;z-index:2;overflow:hidden!important;min-height:0;touch-action:none}
-/* BALANCE - podium light side 3D */
+.scene{flex:1;position:relative;z-index:2;overflow:hidden;min-height:0}
 .monitor{
   position:absolute;left:4%;top:30%;width:44%;max-width:190px;height:172px;
   background:linear-gradient(135deg, #ffffff 0%, #FFF8F0 18%, #FFE9E3 100%);
@@ -43,7 +42,6 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
   position:absolute;right:3%;top:78px;
   width:60%;display:flex;flex-direction:column;gap:10px;align-items:flex-end;z-index:10
 }
-/* 3D BUTTONS */
 .r-item{
   display:flex;align-items:center;justify-content:center;gap:6px;
   font-size:12px;font-weight:900;color:#111827;cursor:pointer;white-space:nowrap;
@@ -76,12 +74,14 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
   -webkit-tap-highlight-color:transparent!important;user-select:none;touch-action:manipulation
 }
 .bottom button:active{transform:scale(0.94);opacity:0.8}
+#pullText{position:absolute;top:56px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:900;color:#6d28d9;background:rgba(255,255,255,0.9);padding:4px 10px;border-radius:999px;display:none;z-index:60}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:10px 14px;border-radius:10px;font-weight:bold;z-index:99999;display:none}
 #maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
 </style></head><body>
 <div id="maint"><div><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900">Back</button></div></div>
 <div id="toast"></div>
-<div class="wrap">
+<div class="wrap" id="wrap">
+<div id="pullText">↓ Pull to refresh</div>
 <div class="top">
   <button class="home-btn" onclick="location.href='./index.html'"><span class="emoji">🏠</span><span class="txt">Home</span></button>
   <h2>Welcome <span id="headerText">Ineza</span></h2>
@@ -118,6 +118,26 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 </div>
 <script>
 (function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}');if(c&&(c.balance!=null||c.points!=null||c.username)){var bal=c.balance??c.points??0;var usdt=c.usdtBalance??0;document.getElementById('balance').textContent=bal+' coins';document.getElementById('usdBalance').textContent='= $'+(bal*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').textContent=Number(usdt).toFixed(4)+' USDT';if(c.username)document.getElementById('headerText').textContent=c.username;}}catch(e){}})();
+// PULL TO REFRESH - title stays fixed
+let startY=0, pulling=false;
+const wrap=document.getElementById('wrap'), pullText=document.getElementById('pullText');
+wrap.addEventListener('touchstart', e=>{startY=e.touches[0].clientY;pulling=true;}, {passive:true});
+wrap.addEventListener('touchmove', e=>{
+  if(!pulling) return;
+  const diff=e.touches[0].clientY-startY;
+  if(diff>20 && diff<160){
+    pullText.style.display='block';
+    pullText.textContent= diff>80 ? '↻ Release to refresh' : '↓ Pull to refresh';
+    wrap.style.transform=`translateY(${Math.min(diff*0.35,45)}px)`;
+  }
+}, {passive:true});
+wrap.addEventListener('touchend', e=>{
+  const diff=e.changedTouches[0].clientY-startY;
+  wrap.style.transform='translateY(0)';
+  pullText.style.display='none';
+  pulling=false;
+  if(diff>90){ location.reload(); }
+});
 </script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
