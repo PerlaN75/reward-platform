@@ -11,22 +11,16 @@
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
     body{background:#ffffff;min-height:100vh;color:#111827}
-    body.dark{background:#0f172a;color:#fff}
-    body.dark .card{background:#1e293b;border-color:#334155}
-    body.dark .menu-list a{color:#fff}
-    body.dark .modal-box{background:#1e293b;color:#fff}
     .top-bar{background:#ffffff;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;border-bottom:2px solid #f1f5f9;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
     .back-btn-checkin{width:45px;height:30px;border-radius:10px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5}
     .center-pill{background:#f8fafc;border:2px solid #e5e7eb;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#111827;position:absolute;left:50%;transform:translateX(-50%)}
     .container{max-width:500px;margin:0 auto;padding:16px 14px 90px 14px}
-    .card{background:#ffffff;border:2px solid #f1f5f9;border-radius:20px;padding:8px;box-shadow:0 8px 30px rgba(0,0,0,0.06);position:relative;overflow:hidden}
+    .card{background:#ffffff;border:2px solid #f1f5f9;border-radius:20px;padding:8px;box-shadow:0 8px 30px rgba(0,0,0,0.06);position:relative;overflow:hidden;min-height:340px}
     .menu-list a{display:flex;align-items:center;justify-content:space-between;width:100%;padding:19px 16px;color:#111827;text-decoration:none;font-size:15px;font-weight:800;border-radius:14px;cursor:pointer}
     .menu-list a:not(:last-child){border-bottom:1px solid #f8fafc}
     .arrow{color:#9ca3af;font-size:20px}
-    .sub-info-hidden{display:none !important}
     .ad-label{font-size:9px;color:#9ca3af;text-align:center;letter-spacing:0.5px;font-weight:bold;margin:16px 0 4px 0}
-    .ad-box{background:#ffffff;border:2px solid #f1f5f9;border-radius:16px;padding:8px;min-height:90px;display:flex;justify-content:center;align-items:center}
-    /* MORE GATE - DIFFERENT DESIGN */
+    .ad-box{background:#ffffff;border:2px solid #f1f5f9;border-radius:16px;padding:8px;min-height:90px;display:flex;justify-content:center;align-items:center;overflow:hidden}
     #moreGate{position:absolute;inset:0;background:#ffffff;z-index:20;border-radius:20px;display:none;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center}
     #moreGate.show{display:flex}
     #moreTimerBox{width:64px;height:64px;border-radius:50%;background:linear-gradient(180deg,#f8fafc,#e2e8f0);border:2px solid #e5e7eb;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#f59e0b;margin:10px auto;box-shadow:0 3px 10px rgba(0,0,0,0.06)}
@@ -74,10 +68,9 @@
 </div>
 <div class="container">
   <div class="card" id="mainCard">
-    <!-- GATE DIFFERENT DESIGN - 5 sec EVERY TIME -->
     <div id="moreGate">
       <div style="font-size:20px">⚙️</div>
-      <div style="font-weight:900;font-size:12px;margin-top:6px;letter-spacing:0.3px">Preparing menu...</div>
+      <div style="font-weight:900;font-size:12px;margin-top:6px">Preparing menu...</div>
       <div id="moreTimerBox">5</div>
       <div style="font-size:10px;color:#9ca3af">Please wait</div>
       <div style="width:100%;margin-top:12px">
@@ -85,7 +78,6 @@
         <div id="gateBanner" class="ad-box"></div>
       </div>
     </div>
-
     <div class="menu-list">
       <a onclick="openModal('notifModal')"><div>🔔 Notifications</div><span class="arrow">›</span></a>
       <a onclick="openModal('profileModal')"><div>👤 Profile</div><span class="arrow">›</span></a>
@@ -94,266 +86,93 @@
       <a href="help.html"><div>💬 Help/Support</div><span class="arrow">›</span></a>
     </div>
   </div>
-
-  <div class="ad-label">ADVERTISEMENT</div>
-  <div id="mainBanner" class="ad-box"></div>
-
-  <div class="sub-info-hidden">Balance updates automatically</div>
-</div>
-
-<div id="notifModal" class="modal" onclick="closeModal('notifModal')">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <span class="close" onclick="closeModal('notifModal')">×</span>
-    <h3 style="text-align:center;font-size:15px;font-weight:900">🔔 Notifications</h3>
-    <div id="notifList" style="margin-top:12px">Loading...</div>
+  <div id="outerAdWrap" style="display:none">
+    <div class="ad-label">ADVERTISEMENT</div>
+    <div id="mainBanner" class="ad-box"></div>
   </div>
 </div>
 
-<div id="profileModal" class="modal" onclick="closeModal('profileModal')">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <span class="close" onclick="closeModal('profileModal')">×</span>
-    <div class="profile-header">
-      <div id="avatarLetter" class="avatar-letter">I</div>
-      <h3 id="pUsername" class="profile-name">--</h3>
-      <p style="color:#22c55e;font-weight:900;font-size:12px;margin-top:4px">✓ Verified</p>
-    </div>
-    <div class="balance-card-pro">
-      <div style="font-size:11px;color:#9ca3af;letter-spacing:0.5px;font-weight:700">YOUR BALANCE</div>
-      <div id="pBalCard" class="coin-val">-- coins</div>
-      <div id="pUsdtCard" class="usdt-val">-- USDT</div>
-      <div id="pUsdSmall" class="usd-small">≈ $-- from coins</div>
-    </div>
-    <div class="profile-details">
-      <div class="profile-row">📧 <b>Email:</b> <span id="pEmail">...</span></div>
-      <div class="profile-row">📅 <b>Registered:</b> <span id="pDate">...</span></div>
-      <div class="profile-row">🆔 <b>User ID:</b> <span id="pId">...</span></div>
-    </div>
-  </div>
-</div>
-
-<div id="historyModal" class="modal" onclick="closeModal('historyModal')">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <span class="close" onclick="closeModal('historyModal')">×</span>
-    <h3 style="text-align:center;font-size:15px;font-weight:900">📜 History - Coins 🪙</h3>
-    <div class="balance-card-pro" style="margin-top:12px">
-      <div class="balance-split">
-        <div><div style="font-size:10px;color:#9ca3af;font-weight:700">COINS</div><div id="hBal" style="color:#d97706;font-weight:900;font-size:16px">--</div><div id="hUsd" style="font-size:10px;color:#9ca3af">≈ $--</div></div>
-        <div class="balance-divider"></div>
-        <div><div style="font-size:10px;color:#9ca3af;font-weight:700">USDT</div><div id="hUsdt" style="color:#16a34a;font-weight:900;font-size:16px">-- USDT</div><div style="font-size:10px;color:#16a34a">Withdrawable</div></div>
-      </div>
-    </div>
-    <p id="countText" style="text-align:center;color:#9ca3af;font-size:11px;margin:6px 0"></p>
-    <div class="top-actions">
-      <button class="btn btn-refresh" onclick="loadHistory()">Refresh</button>
-      <button class="btn btn-clear" onclick="document.getElementById('confirmModal').style.display='flex'">Clear</button>
-    </div>
-    <div id="historyList" style="margin-top:12px;max-height:50vh;overflow-y:auto;color:#6b7280;text-align:center">Loading...</div>
-  </div>
-</div>
-
-<div id="settingsModal" class="modal" onclick="closeModal('settingsModal')">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <span class="close" onclick="closeModal('settingsModal')">×</span>
-    <h3 style="text-align:center;margin-bottom:14px;font-weight:900">⚙️ Settings</h3>
-    <div style="margin:16px 0">
-      <span class="set-label">Language</span>
-      <div class="lang-option active" id="lang-en" onclick="setLang('en',this)"><span>English 🇺🇸 - Default</span><span>✓</span></div>
-    </div>
-    <div style="margin:16px 0">
-      <span class="set-label">Appearance - Mode</span>
-      <div class="mode-box">
-        <div class="mode-btn active" id="modeLight" onclick="setMode('light')">☀️ Light</div>
-        <div class="mode-btn" id="modeDark" onclick="setMode('dark')">🌙 Dark</div>
-      </div>
-    </div>
-    <button onclick="saveSettings()" class="save-close-btn">Save & Close</button>
-  </div>
-</div>
-
-<div id="confirmModal" class="confirm-overlay" onclick="this.style.display='none'">
-  <div class="confirm-box" onclick="event.stopPropagation()">
-    <h4>Clear history?</h4>
-    <p style="font-size:12px;color:#6b7280;margin-top:6px">This will hide your recent activities from this list.</p>
-    <div class="confirm-actions">
-      <button class="c-cancel" onclick="document.getElementById('confirmModal').style.display='none'">Cancel</button>
-      <button class="c-ok" onclick="permanentClearHistory()">Yes, Clear</button>
-    </div>
-  </div>
-</div>
+<div id="notifModal" class="modal" onclick="closeModal('notifModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('notifModal')">×</span><h3 style="text-align:center;font-size:15px;font-weight:900">🔔 Notifications</h3><div id="notifList" style="margin-top:12px">Loading...</div></div></div>
+<div id="profileModal" class="modal" onclick="closeModal('profileModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('profileModal')">×</span><div class="profile-header"><div id="avatarLetter" class="avatar-letter">I</div><h3 id="pUsername" class="profile-name">--</h3><p style="color:#22c55e;font-weight:900;font-size:12px;margin-top:4px">✓ Verified</p></div><div class="balance-card-pro"><div style="font-size:11px;color:#9ca3af;font-weight:700">YOUR BALANCE</div><div id="pBalCard" class="coin-val">-- coins</div><div id="pUsdtCard" class="usdt-val">-- USDT</div><div id="pUsdSmall" class="usd-small">≈ $--</div></div><div class="profile-details"><div class="profile-row">📧 <b>Email:</b> <span id="pEmail">...</span></div><div class="profile-row">📅 <b>Registered:</b> <span id="pDate">...</span></div><div class="profile-row">🆔 <b>User ID:</b> <span id="pId">...</span></div></div></div></div>
+<div id="historyModal" class="modal" onclick="closeModal('historyModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('historyModal')">×</span><h3 style="text-align:center;font-size:15px;font-weight:900">📜 History</h3><div class="balance-card-pro" style="margin-top:12px"><div class="balance-split"><div><div style="font-size:10px;color:#9ca3af;font-weight:700">COINS</div><div id="hBal" style="color:#d97706;font-weight:900;font-size:16px">--</div><div id="hUsd" style="font-size:10px;color:#9ca3af">≈ $--</div></div><div class="balance-divider"></div><div><div style="font-size:10px;color:#9ca3af;font-weight:700">USDT</div><div id="hUsdt" style="color:#16a34a;font-weight:900;font-size:16px">-- USDT</div></div></div></div><div class="top-actions"><button class="btn btn-refresh" onclick="loadHistory()">Refresh</button><button class="btn btn-clear" onclick="document.getElementById('confirmModal').style.display='flex'">Clear</button></div><div id="historyList" style="margin-top:12px;max-height:50vh;overflow-y:auto;color:#6b7280;text-align:center">Loading...</div></div></div>
+<div id="settingsModal" class="modal" onclick="closeModal('settingsModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('settingsModal')">×</span><h3 style="text-align:center;margin-bottom:14px;font-weight:900">⚙️ Settings</h3><div style="margin:16px 0"><span class="set-label">Language</span><div class="lang-option active" id="lang-en" onclick="setLang('en',this)"><span>English 🇺🇸 - Default</span><span>✓</span></div></div><div style="margin:16px 0"><span class="set-label">Appearance - Mode</span><div class="mode-box"><div class="mode-btn active" id="modeLight" onclick="setMode('light')">☀️ Light</div><div class="mode-btn" id="modeDark" onclick="setMode('dark')">🌙 Dark</div></div></div><button onclick="saveSettings()" class="save-close-btn">Save & Close</button></div></div>
+<div id="confirmModal" class="confirm-overlay" onclick="this.style.display='none'"><div class="confirm-box" onclick="event.stopPropagation()"><h4>Clear history?</h4><div class="confirm-actions"><button class="c-cancel" onclick="document.getElementById('confirmModal').style.display='none'">Cancel</button><button class="c-ok" onclick="permanentClearHistory()">Yes, Clear</button></div></div></div>
 
 <script>
-// ADSTERRA - DIFFERENT WAY FROM OTHER PAGES
-function injectBanner(id,key,w,h){
-  const c=document.getElementById(id); if(!c) return;
-  c.innerHTML='';
-  const s1=document.createElement('script'); s1.text=`atOptions={'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}};`; c.appendChild(s1);
-  const s2=document.createElement('script'); s2.src=`https://www.highperformanceformat.com/${key}/invoke.js`; s2.async=true; c.appendChild(s2);
+// PROFITABLE MONETAG SETUP FOR MORE.HTML
+// No Adsterra here - to avoid $0.09 stall
+
+function injectMonetagInPage(containerId, zoneId, srcDomain){
+  const c = document.getElementById(containerId);
+  if(!c) return;
+  c.innerHTML = '';
+  const s = document.createElement('script');
+  s.dataset.zone = zoneId;
+  s.src = srcDomain;
+  c.appendChild(s);
 }
+
+function injectMonetagVignette(zoneId){
+  // Vignette is interstitial, load once per 15 min
+  const last = localStorage.getItem('mtg_vig_'+zoneId);
+  if(last && Date.now() - parseInt(last) < 15*60*1000) return; // 15 min cooldown
+  const s = document.createElement('script');
+  (function(s){s.dataset.zone=zoneId, s.src='https://n6wxm.com/vignette.min.js'})(s);
+  document.body.appendChild(s);
+  localStorage.setItem('mtg_vig_'+zoneId, Date.now().toString());
+}
+
 function initMoreGate(){
   const gate=document.getElementById('moreGate');
+  const outer=document.getElementById('outerAdWrap');
   const timerBox=document.getElementById('moreTimerBox');
+  outer.style.display='none';
   gate.classList.add('show');
-  injectBanner('gateBanner','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
-  let sec=5;
-  timerBox.innerText=sec;
+
+  // GATE: Monetag In-Page Push 12211613 - shown during 5s
+  injectMonetagInPage('gateBanner', '12211613', 'https://al5sm.com/tag.min.js');
+
+  let sec=5; timerBox.innerText=sec;
   const int=setInterval(()=>{
     sec--; timerBox.innerText=sec;
     if(sec<=0){
       clearInterval(int);
       gate.classList.remove('show');
-      injectBanner('mainBanner','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
+      outer.style.display='block';
+      
+      // AFTER GATE: Monetag second In-Page 12083693
+      setTimeout(()=>{
+        injectMonetagInPage('mainBanner', '12083693', 'https://al5sm.com/tag.min.js');
+      }, 400);
+
+      // BONUS Vignette for extra profit - once per 15 min
+      setTimeout(()=>{
+        injectMonetagVignette('12211617');
+      }, 1200);
     }
   },1000);
 }
-// Show gate every time
 initMoreGate();
 </script>
 
 <script>
-(function(){
-  try{
-    var c=JSON.parse(localStorage.getItem('userData')||'{}');
-    if(c){
-      var coins = c.balance ?? c.points ?? c.coins ?? 0;
-      var usdt = c.usdtBalance ?? 0;
-      var usdFromCoins = (coins * 0.0005).toFixed(4);
-      document.getElementById('pBalCard').textContent = coins + ' coins';
-      document.getElementById('pUsdtCard').textContent = Number(usdt).toFixed(4) + ' USDT';
-      document.getElementById('pUsdSmall').textContent = '≈ $' + usdFromCoins + ' from coins';
-      if(c.username){ document.getElementById('pUsername').innerText=c.username; document.getElementById('avatarLetter').innerText=c.username.charAt(0).toUpperCase(); }
-      if(c.email) document.getElementById('pEmail').innerText=c.email;
-      document.getElementById('hBal').textContent = coins + ' coins';
-      document.getElementById('hUsd').textContent = '≈ $' + usdFromCoins;
-      document.getElementById('hUsdt').textContent = Number(usdt).toFixed(4) + ' USDT';
-    }
-  }catch(e){}
-})();
+(function(){ try{ var c=JSON.parse(localStorage.getItem('userData')||'{}'); if(c){ var coins=c.balance??c.points??c.coins??0; var usdt=c.usdtBalance??0; document.getElementById('pBalCard').textContent=coins+' coins'; document.getElementById('pUsdtCard').textContent=Number(usdt).toFixed(4)+' USDT'; document.getElementById('pUsdSmall').textContent='≈ $'+(coins*0.0005).toFixed(4)+' from coins'; if(c.username){ document.getElementById('pUsername').innerText=c.username; document.getElementById('avatarLetter').innerText=c.username.charAt(0).toUpperCase(); } if(c.email) document.getElementById('pEmail').innerText=c.email; document.getElementById('hBal').textContent=coins+' coins'; document.getElementById('hUsd').textContent='≈ $'+(coins*0.0005).toFixed(4); document.getElementById('hUsdt').textContent=Number(usdt).toFixed(4)+' USDT'; } }catch(e){} })();
 </script>
-
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 try{ firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true); }catch(e){}
-const auth=firebase.auth(), db=firebase.firestore();
-let cachedUser=null, allData=[];
+const auth=firebase.auth(), db=firebase.firestore(); let cachedUser=null, allData=[];
 function openModal(id){ document.getElementById(id).style.display='flex'; if(id==='profileModal') loadProfile(); if(id==='historyModal') loadHistory(); if(id==='notifModal') loadNotifs(); }
 function closeModal(id){ document.getElementById(id).style.display='none'; }
-function getRealCoins(d){ return d.balance ?? d.coins ?? d.points ?? 0; }
-function getRealUsdt(d){ return d.usdtBalance ?? 0; }
-
-async function loadProfile(){
-  const u=auth.currentUser||cachedUser; if(!u) return;
-  db.collection('users').doc(u.uid).onSnapshot(snap=>{
-    if(!snap.exists) return;
-    const d=snap.data();
-    localStorage.setItem('userData', JSON.stringify({...d, uid:u.uid, email: d.email||u.email}));
-    const coins = getRealCoins(d); const usdt = getRealUsdt(d); const usd = (coins*0.0005).toFixed(4);
-    document.getElementById('pBalCard').innerText = coins+' coins';
-    document.getElementById('pUsdtCard').innerText = Number(usdt).toFixed(4)+' USDT';
-    document.getElementById('pUsdSmall').innerText = '≈ $'+usd+' from coins';
-    document.getElementById('pUsername').innerText = d.username||u.email.split('@')[0];
-    document.getElementById('avatarLetter').innerText = (d.username||'I').charAt(0).toUpperCase();
-    document.getElementById('pEmail').innerText = d.email||u.email;
-    let reg="Unknown"; if(d.createdAt&&d.createdAt.toDate) reg=d.createdAt.toDate().toLocaleDateString(); else if(u.metadata.creationTime) reg=new Date(u.metadata.creationTime).toLocaleDateString();
-    document.getElementById('pDate').innerText=reg;
-    document.getElementById('pId').innerText=u.uid.substring(0,8).toUpperCase();
-    document.getElementById('hBal').innerText=coins+' coins';
-    document.getElementById('hUsd').innerText='≈ $'+usd;
-    document.getElementById('hUsdt').innerText=Number(usdt).toFixed(4)+' USDT';
-  });
-}
-
-async function loadNotifs(){
-  const el=document.getElementById('notifList'); el.innerHTML='Loading...';
-  try{
-    const snap=await db.collection('notifications').orderBy('createdAt','desc').limit(20).get();
-    if(snap.empty){ el.innerHTML='<p style="text-align:center;color:#9ca3af;padding:20px">No notifications</p>'; return; }
-    let html=''; snap.forEach(d=>{ const n=d.data(); html+=`<div style="background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px;margin-bottom:8px"><div style="font-size:12px;font-weight:600">${n.message}</div><div style="font-size:10px;color:#9ca3af;margin-top:4px">${n.createdAt?new Date(n.createdAt.seconds*1000).toLocaleString():''}</div></div>`; });
-    el.innerHTML=html;
-  }catch(e){ el.innerHTML='Error: '+e.message; }
-}
-
+function getRealCoins(d){ return d.balance ?? d.coins ?? d.points ?? 0; } function getRealUsdt(d){ return d.usdtBalance ?? 0; }
+async function loadProfile(){ const u=auth.currentUser||cachedUser; if(!u) return; db.collection('users').doc(u.uid).onSnapshot(snap=>{ if(!snap.exists) return; const d=snap.data(); localStorage.setItem('userData', JSON.stringify({...d, uid:u.uid, email: d.email||u.email})); const coins=getRealCoins(d); const usdt=getRealUsdt(d); const usd=(coins*0.0005).toFixed(4); document.getElementById('pBalCard').innerText=coins+' coins'; document.getElementById('pUsdtCard').innerText=Number(usdt).toFixed(4)+' USDT'; document.getElementById('pUsdSmall').innerText='≈ $'+usd+' from coins'; document.getElementById('pUsername').innerText=d.username||u.email.split('@')[0]; document.getElementById('avatarLetter').innerText=(d.username||'I').charAt(0).toUpperCase(); document.getElementById('pEmail').innerText=d.email||u.email; let reg="Unknown"; if(d.createdAt&&d.createdAt.toDate) reg=d.createdAt.toDate().toLocaleDateString(); else if(u.metadata.creationTime) reg=new Date(u.metadata.creationTime).toLocaleDateString(); document.getElementById('pDate').innerText=reg; document.getElementById('pId').innerText=u.uid.substring(0,8).toUpperCase(); document.getElementById('hBal').innerText=coins+' coins'; document.getElementById('hUsd').innerText='≈ $'+usd; document.getElementById('hUsdt').innerText=Number(usdt).toFixed(4)+' USDT'; }); }
+async function loadNotifs(){ const el=document.getElementById('notifList'); el.innerHTML='Loading...'; try{ const snap=await db.collection('notifications').orderBy('createdAt','desc').limit(20).get(); if(snap.empty){ el.innerHTML='<p style="text-align:center;color:#9ca3af;padding:20px">No notifications</p>'; return; } let html=''; snap.forEach(d=>{ const n=d.data(); html+=`<div style="background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px;margin-bottom:8px"><div style="font-size:12px;font-weight:600">${n.message}</div><div style="font-size:10px;color:#9ca3af;margin-top:4px">${n.createdAt?new Date(n.createdAt.seconds*1000).toLocaleString():''}</div></div>`; }); el.innerHTML=html; }catch(e){ el.innerHTML='Error: '+e.message; } }
 function getHiddenIds(){ try{ return JSON.parse(localStorage.getItem('hiddenHistoryIds')||'[]'); }catch(e){ return []; } }
-function addHiddenIds(newIds){
-  const cur = new Set(getHiddenIds());
-  newIds.forEach(id=>cur.add(id));
-  const arr = [...cur];
-  localStorage.setItem('hiddenHistoryIds', JSON.stringify(arr));
-  const u = auth.currentUser||cachedUser;
-  if(u){
-    db.collection('users').doc(u.uid).set({ hiddenHistoryIds: arr, historyClearedAt: firebase.firestore.FieldValue.serverTimestamp() },{merge:true});
-  }
-}
-
-async function loadHistory(){
-  const user=auth.currentUser||cachedUser; if(!user) return;
-  document.getElementById('historyList').innerHTML='<p>Loading...</p>'; allData=[];
-  try{
-    const userDoc = await db.collection('users').doc(user.uid).get();
-    if(userDoc.exists && userDoc.data().hiddenHistoryIds){
-      localStorage.setItem('hiddenHistoryIds', JSON.stringify(userDoc.data().hiddenHistoryIds));
-    }
-  }catch(e){}
-  const hiddenIds = new Set(getHiddenIds());
-  try{
-    db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(100).onSnapshot(snap=>{
-      allData=[];
-      snap.forEach(d=>{
-        if(hiddenIds.has(d.id)) return;
-        const v=d.data(); if(v.hidden === true) return;
-        const date=v.timestamp?.toDate?v.timestamp.toDate():new Date();
-        allData.push({id:d.id, title:v.action||'Earn',desc:v.desc||'',points:v.coins ?? v.points ?? 0,date:date});
-      });
-      render(allData.slice(0,20));
-    });
-  }catch(e){
-    db.collection('users').doc(user.uid).collection('earnHistory').onSnapshot(snap=>{
-      allData=[];
-      snap.forEach(d=>{
-        if(hiddenIds.has(d.id)) return;
-        const v=d.data(); if(v.hidden === true) return;
-        const date=v.timestamp?.toDate?v.timestamp.toDate():new Date();
-        allData.push({id:d.id, title:v.action||'Earn',desc:v.desc||'',points:v.coins ?? v.points ?? 0,date:date});
-      });
-      allData.sort((a,b)=>b.date - a.date);
-      render(allData.slice(0,20));
-    });
-  }
-}
-
-function render(data){
-  const list=document.getElementById('historyList');
-  if(data.length===0){
-    list.innerHTML='<p style="padding:20px">No history ✅</p>';
-    return;
-  }
-  list.innerHTML=''; 
-  data.forEach(i=>{
-    list.innerHTML+=`<div class="item"><div><div style="font-weight:bold;font-size:13px">${i.title}</div><div style="font-size:11px;color:#9ca3af">${i.desc} - ${i.date.toLocaleDateString()}</div></div><div style="color:#22c55e;font-weight:900">+${i.points} 🪙</div></div>`;
-  });
-}
-
-async function permanentClearHistory(){
-  document.getElementById('confirmModal').style.display='none';
-  const listEl=document.getElementById('historyList');
-  const idsToHide = allData.slice(0,20).map(x=>x.id);
-  if(idsToHide.length===0){ listEl.innerHTML='<p style="padding:20px">No history to clear</p>'; return; }
-  listEl.innerHTML=`<p style="padding:20px;text-align:center">Clearing...</p>`;
-  addHiddenIds(idsToHide);
-  const user=auth.currentUser||cachedUser;
-  if(user){
-    try{
-      const batch = db.batch();
-      idsToHide.forEach(id=>{
-        const ref = db.collection('users').doc(user.uid).collection('earnHistory').doc(id);
-        batch.set(ref, {hidden:true, hiddenAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge:true});
-      });
-      await batch.commit();
-    }catch(e){}
-  }
-  render([]);
-}
-
+function addHiddenIds(newIds){ const cur=new Set(getHiddenIds()); newIds.forEach(id=>cur.add(id)); const arr=[...cur]; localStorage.setItem('hiddenHistoryIds', JSON.stringify(arr)); const u=auth.currentUser||cachedUser; if(u){ db.collection('users').doc(u.uid).set({ hiddenHistoryIds: arr, historyClearedAt: firebase.firestore.FieldValue.serverTimestamp() },{merge:true}); } }
+async function loadHistory(){ const user=auth.currentUser||cachedUser; if(!user) return; document.getElementById('historyList').innerHTML='<p>Loading...</p>'; allData=[]; try{ const userDoc=await db.collection('users').doc(user.uid).get(); if(userDoc.exists && userDoc.data().hiddenHistoryIds){ localStorage.setItem('hiddenHistoryIds', JSON.stringify(userDoc.data().hiddenHistoryIds)); } }catch(e){} const hiddenIds=new Set(getHiddenIds()); try{ db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(100).onSnapshot(snap=>{ allData=[]; snap.forEach(d=>{ if(hiddenIds.has(d.id)) return; const v=d.data(); if(v.hidden===true) return; const date=v.timestamp?.toDate?v.timestamp.toDate():new Date(); allData.push({id:d.id, title:v.action||'Earn',desc:v.desc||'',points:v.coins ?? v.points ?? 0,date:date}); }); render(allData.slice(0,20)); }); }catch(e){ db.collection('users').doc(user.uid).collection('earnHistory').onSnapshot(snap=>{ allData=[]; snap.forEach(d=>{ if(hiddenIds.has(d.id)) return; const v=d.data(); if(v.hidden===true) return; const date=v.timestamp?.toDate?v.timestamp.toDate():new Date(); allData.push({id:d.id, title:v.action||'Earn',desc:v.desc||'',points:v.coins ?? v.points ?? 0,date:date}); }); allData.sort((a,b)=>b.date - a.date); render(allData.slice(0,20)); }); } }
+function render(data){ const list=document.getElementById('historyList'); if(data.length===0){ list.innerHTML='<p style="padding:20px">No history ✅</p>'; return; } list.innerHTML=''; data.forEach(i=>{ list.innerHTML+=`<div class="item"><div><div style="font-weight:bold;font-size:13px">${i.title}</div><div style="font-size:11px;color:#9ca3af">${i.desc} - ${i.date.toLocaleDateString()}</div></div><div style="color:#22c55e;font-weight:900">+${i.points} 🪙</div></div>`; }); }
+async function permanentClearHistory(){ document.getElementById('confirmModal').style.display='none'; const listEl=document.getElementById('historyList'); const idsToHide=allData.slice(0,20).map(x=>x.id); if(idsToHide.length===0){ listEl.innerHTML='<p style="padding:20px">No history to clear</p>'; return; } listEl.innerHTML=`<p style="padding:20px;text-align:center">Clearing...</p>`; addHiddenIds(idsToHide); const user=auth.currentUser||cachedUser; if(user){ try{ const batch=db.batch(); idsToHide.forEach(id=>{ const ref=db.collection('users').doc(user.uid).collection('earnHistory').doc(id); batch.set(ref, {hidden:true, hiddenAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge:true}); }); await batch.commit(); }catch(e){} } render([]); }
 function setLang(code, el){ localStorage.setItem('app_lang', code); localStorage.setItem('appLang', code); document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active')); el.classList.add('active'); }
 function setMode(mode){ localStorage.setItem('app_mode', mode); document.getElementById('modeLight').classList.toggle('active', mode==='light'); document.getElementById('modeDark').classList.toggle('active', mode==='dark'); if(mode==='dark') document.body.classList.add('dark'); else document.body.classList.remove('dark'); }
 function saveSettings(){ closeModal('settingsModal'); }
