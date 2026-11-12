@@ -10,32 +10,34 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-    body{background:#ffffff;min-height:100vh;color:#111827}
-    .top-bar{background:#ffffff;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;border-bottom:2px solid #f1f5f9;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
-    .back-btn-checkin{width:45px;height:30px;border-radius:10px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5}
-    .center-pill{background:#f8fafc;border:2px solid #e5e7eb;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#111827;position:absolute;left:50%;transform:translateX(-50%)}
+    body{background:#f5f3ff;min-height:100vh;color:#111827}
+    .top-bar{background:#6d28d9;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;box-shadow:0 4px 12px rgba(109,40,217,0.3)}
+    .back-btn-checkin{width:45px;height:30px;border-radius:10px;background:#ffffff;border:2px solid #fecaca;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5}
+    .center-pill{background:#ffffff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%);box-shadow:0 2px 8px rgba(0,0,0,0.08)}
     .container{max-width:500px;margin:0 auto;padding:16px 14px 90px 14px}
-    .card{background:#ffffff;border:2px solid #f1f5f9;border-radius:20px;padding:8px;box-shadow:0 8px 30px rgba(0,0,0,0.06);position:relative;overflow:hidden;min-height:340px}
-    .menu-list a{display:flex;align-items:center;justify-content:space-between;width:100%;padding:19px 16px;color:#111827;text-decoration:none;font-size:15px;font-weight:800;border-radius:14px;cursor:pointer}
-    .menu-list a:not(:last-child){border-bottom:1px solid #f8fafc}
-    .arrow{color:#9ca3af;font-size:20px}
-    .ad-label{font-size:9px;color:#9ca3af;text-align:center;letter-spacing:0.5px;font-weight:bold;margin:16px 0 4px 0}
-    .ad-box{background:#ffffff;border:2px solid #f1f5f9;border-radius:16px;padding:8px;min-height:90px;display:flex;justify-content:center;align-items:center;overflow:hidden}
-    #moreGate{position:absolute;inset:0;background:#ffffff;z-index:20;border-radius:20px;display:none;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center}
+    .card{background:#ffffff;border:2px solid #ede9fe;border-radius:20px;padding:8px;box-shadow:0 8px 30px rgba(109,40,217,0.08);position:relative;overflow:hidden;min-height:340px}
+    .menu-list a{display:flex;align-items:center;justify-content:space-between;width:100%;padding:19px 16px;color:#111827;text-decoration:none;font-size:15px;font-weight:800;border-radius:14px;cursor:pointer;transition:0.2s}
+    .menu-list a:active{background:#f5f3ff}
+    .menu-list a:not(:last-child){border-bottom:1px solid #f5f3ff}
+    .arrow{color:#a78bfa;font-size:20px}
+    .ad-label{font-size:9px;color:#8b5cf6;text-align:center;letter-spacing:0.8px;font-weight:900;margin:18px 0 6px 0}
+    .ad-box{min-height:0;display:flex;justify-content:center;align-items:center;overflow:hidden;transition:0.3s}
+    .ad-box.has-ad{background:#ffffff;border:2px solid #ede9fe;border-radius:16px;padding:8px;min-height:90px;box-shadow:0 4px 15px rgba(0,0,0,0.04)}
+    #moreGate{position:absolute;inset:0;background:linear-gradient(180deg,#ffffff,#f5f3ff);z-index:20;border-radius:20px;display:none;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center;border:2px solid #ede9fe}
     #moreGate.show{display:flex}
-    #moreTimerBox{width:64px;height:64px;border-radius:50%;background:linear-gradient(180deg,#f8fafc,#e2e8f0);border:2px solid #e5e7eb;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#f59e0b;margin:10px auto;box-shadow:0 3px 10px rgba(0,0,0,0.06)}
-    .modal{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.55);justify-content:center;align-items:center;padding:15px}
-    .modal-box{background:#ffffff;width:100%;max-width:420px;border-radius:20px;padding:20px;max-height:85vh;overflow-y:auto;color:#111827;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.2);border:2px solid #f1f5f9}
-    .close{position:absolute;top:12px;right:15px;font-size:22px;font-weight:bold;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#f3f4f6;border-radius:50%;color:#111827}
+    #moreTimerBox{width:72px;height:72px;border-radius:50%;background:linear-gradient(180deg,#ffffff,#ede9fe);border:3px solid #a78bfa;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:#f59e0b;margin:12px auto;box-shadow:0 4px 15px rgba(109,40,217,0.15)}
+    .modal{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(76,29,149,0.45);backdrop-filter:blur(2px);justify-content:center;align-items:center;padding:15px}
+    .modal-box{background:#ffffff;width:100%;max-width:420px;border-radius:20px;padding:20px;max-height:85vh;overflow-y:auto;color:#111827;position:relative;box-shadow:0 20px 60px rgba(109,40,217,0.25);border:2px solid #ede9fe}
+    .close{position:absolute;top:12px;right:15px;font-size:22px;font-weight:bold;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#f5f3ff;border-radius:50%;color:#6d28d9}
     .top-actions{display:flex;gap:10px;margin:12px 0}
     .btn{flex:1;padding:12px;border:none;border-radius:12px;font-weight:800;cursor:pointer;font-size:13px}
     .btn-refresh{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 3px 0 #d97706}
     .btn-clear{background:#111827;color:#fff;box-shadow:0 3px 0 #000}
-    .item{background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    .item{background:#f9fafb;border:1.5px solid #ede9fe;border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
     .profile-header{text-align:center}
-    .avatar-letter{width:78px;height:78px;background:linear-gradient(180deg,#eff6ff,#dbeafe);border:3px solid #bfdbfe;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:#2563eb;margin:8px auto}
+    .avatar-letter{width:78px;height:78px;background:linear-gradient(180deg,#ede9fe,#ddd6fe);border:3px solid #a78bfa;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:#6d28d9;margin:8px auto}
     .profile-name{font-size:18px;font-weight:900;color:#111827}
-    .profile-details{background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:14px;padding:14px;margin:14px 0}
+    .profile-details{background:#f9fafb;border:1.5px solid #ede9fe;border-radius:14px;padding:14px;margin:14px 0}
     .profile-row{display:flex;gap:8px;margin:10px 0;font-size:13px;color:#6b7280}
     .profile-row b{color:#111827;min-width:82px}
     .confirm-overlay{display:none;position:fixed;z-index:10000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center}
@@ -45,10 +47,10 @@
     .c-cancel{background:#f3f4f6;color:#111827}
     .c-ok{background:#ef4444;color:#fff}
     .set-label{font-size:13px;font-weight:800;color:#111827;margin-bottom:8px;display:block}
-    .lang-option{display:flex;justify-content:space-between;align-items:center;padding:14px;border:2px solid #e5e7eb;border-radius:12px;margin-bottom:8px;cursor:pointer;background:#fff}
+    .lang-option{display:flex;justify-content:space-between;align-items:center;padding:14px;border:2px solid #ede9fe;border-radius:12px;margin-bottom:8px;cursor:pointer;background:#fff}
     .lang-option.active{border-color:#fbbf24;background:#fffbeb;color:#92400e;font-weight:800}
     .mode-box{display:flex;gap:10px;justify-content:center}
-    .mode-btn{flex:1;max-width:110px;padding:12px;border-radius:12px;border:2px solid #e5e7eb;background:#fff;cursor:pointer;text-align:center;font-weight:800;font-size:13px}
+    .mode-btn{flex:1;max-width:110px;padding:12px;border-radius:12px;border:2px solid #ede9fe;background:#fff;cursor:pointer;text-align:center;font-weight:800;font-size:13px}
     .mode-btn.active{border-color:#fbbf24;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000}
     .save-close-btn{width:65%!important;margin:18px auto 0 auto!important;display:block!important;background:linear-gradient(90deg,#fbbf24,#f59e0b)!important;color:#000!important;border:none!important;padding:12px!important;border-radius:12px!important;font-weight:800!important;cursor:pointer!important;box-shadow:0 3px 0 #d97706}
     .balance-card-pro{background:#ffffff;border:2px solid #fbbf24;border-radius:16px;padding:14px;text-align:center;box-shadow:0 4px 20px rgba(251,191,36,0.15);margin-bottom:12px}
@@ -69,11 +71,11 @@
 <div class="container">
   <div class="card" id="mainCard">
     <div id="moreGate">
-      <div style="font-size:20px">⚙️</div>
-      <div style="font-weight:900;font-size:12px;margin-top:6px">Preparing menu...</div>
+      <div style="font-size:28px">⚙️</div>
+      <div style="font-weight:900;font-size:14px;margin-top:8px;color:#4c1d95">Preparing menu...</div>
       <div id="moreTimerBox">5</div>
-      <div style="font-size:10px;color:#9ca3af">Please wait</div>
-      <div style="width:100%;margin-top:12px">
+      <div style="font-size:11px;color:#8b5cf6;font-weight:600">Please wait</div>
+      <div style="width:100%;margin-top:14px">
         <div class="ad-label">ADVERTISEMENT</div>
         <div id="gateBanner" class="ad-box"></div>
       </div>
@@ -99,27 +101,28 @@
 <div id="confirmModal" class="confirm-overlay" onclick="this.style.display='none'"><div class="confirm-box" onclick="event.stopPropagation()"><h4>Clear history?</h4><div class="confirm-actions"><button class="c-cancel" onclick="document.getElementById('confirmModal').style.display='none'">Cancel</button><button class="c-ok" onclick="permanentClearHistory()">Yes, Clear</button></div></div></div>
 
 <script>
-// PROFITABLE MONETAG SETUP FOR MORE.HTML
-// No Adsterra here - to avoid $0.09 stall
-
-function injectMonetagInPage(containerId, zoneId, srcDomain){
-  const c = document.getElementById(containerId);
-  if(!c) return;
-  c.innerHTML = '';
-  const s = document.createElement('script');
-  s.dataset.zone = zoneId;
-  s.src = srcDomain;
-  c.appendChild(s);
+// MONETAG ONLY - PROFITABLE
+function triggerMonetagZone(zoneId, src){
+  const s=document.createElement('script');
+  s.dataset.zone=zoneId;
+  s.src=src;
+  document.body.appendChild(s);
+  // Remove after 5s to avoid duplicate
+  setTimeout(()=>{ try{s.remove()}catch(e){} },5000);
 }
 
-function injectMonetagVignette(zoneId){
-  // Vignette is interstitial, load once per 15 min
-  const last = localStorage.getItem('mtg_vig_'+zoneId);
-  if(last && Date.now() - parseInt(last) < 15*60*1000) return; // 15 min cooldown
-  const s = document.createElement('script');
-  (function(s){s.dataset.zone=zoneId, s.src='https://n6wxm.com/vignette.min.js'})(s);
-  document.body.appendChild(s);
-  localStorage.setItem('mtg_vig_'+zoneId, Date.now().toString());
+let lastAdTime = 0;
+function showModalAd(){
+  const now = Date.now();
+  if(now - lastAdTime < 120*1000) return; // 2 min cooldown for profit, not spam
+  lastAdTime = now;
+  // Alternate between your 2 Vignette zones
+  const useFirst = Math.random() > 0.5;
+  if(useFirst){
+    (function(s){s.dataset.zone='12211617',s.src='https://n6wxm.com/vignette.min.js'})(document.body.appendChild(document.createElement('script')));
+  } else {
+    (function(s){s.dataset.zone='12083688',s.src='https://n6wxm.com/vignette.min.js'})(document.body.appendChild(document.createElement('script')));
+  }
 }
 
 function initMoreGate(){
@@ -129,8 +132,8 @@ function initMoreGate(){
   outer.style.display='none';
   gate.classList.add('show');
 
-  // GATE: Monetag In-Page Push 12211613 - shown during 5s
-  injectMonetagInPage('gateBanner', '12211613', 'https://al5sm.com/tag.min.js');
+  // GATE AD - In-Page 12211613 - it floats, not in box, so box stays hidden until needed
+  (function(s){s.dataset.zone='12211613',s.src='https://al5sm.com/tag.min.js'})(document.body.appendChild(document.createElement('script')));
 
   let sec=5; timerBox.innerText=sec;
   const int=setInterval(()=>{
@@ -139,20 +142,28 @@ function initMoreGate(){
       clearInterval(int);
       gate.classList.remove('show');
       outer.style.display='block';
-      
-      // AFTER GATE: Monetag second In-Page 12083693
+      // AFTER GATE - second In-Page 12083693
       setTimeout(()=>{
-        injectMonetagInPage('mainBanner', '12083693', 'https://al5sm.com/tag.min.js');
-      }, 400);
-
-      // BONUS Vignette for extra profit - once per 15 min
-      setTimeout(()=>{
-        injectMonetagVignette('12211617');
-      }, 1200);
+        (function(s){s.dataset.zone='12083693',s.src='https://al5sm.com/tag.min.js'})(document.body.appendChild(document.createElement('script')));
+      }, 600);
     }
   },1000);
 }
 initMoreGate();
+
+// Hide empty ad boxes - only show if ad actually injects content
+function checkAdBoxes(){
+  ['gateBanner','mainBanner'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    if(el.children.length>0 || el.innerHTML.length>20){
+      el.classList.add('has-ad');
+    } else {
+      el.classList.remove('has-ad');
+    }
+  });
+}
+setInterval(checkAdBoxes, 1500);
 </script>
 
 <script>
@@ -163,11 +174,21 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 try{ firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true); }catch(e){}
 const auth=firebase.auth(), db=firebase.firestore(); let cachedUser=null, allData=[];
-function openModal(id){ document.getElementById(id).style.display='flex'; if(id==='profileModal') loadProfile(); if(id==='historyModal') loadHistory(); if(id==='notifModal') loadNotifs(); }
-function closeModal(id){ document.getElementById(id).style.display='none'; }
+function openModal(id){
+  showModalAd(); // PROFIT: ad on open
+  document.getElementById(id).style.display='flex';
+  if(id==='profileModal') loadProfile();
+  if(id==='historyModal') loadHistory();
+  if(id==='notifModal') loadNotifs();
+}
+function closeModal(id){
+  // PROFIT: ad on close (different zone, cooldown protected)
+  setTimeout(showModalAd, 300);
+  document.getElementById(id).style.display='none';
+}
 function getRealCoins(d){ return d.balance ?? d.coins ?? d.points ?? 0; } function getRealUsdt(d){ return d.usdtBalance ?? 0; }
 async function loadProfile(){ const u=auth.currentUser||cachedUser; if(!u) return; db.collection('users').doc(u.uid).onSnapshot(snap=>{ if(!snap.exists) return; const d=snap.data(); localStorage.setItem('userData', JSON.stringify({...d, uid:u.uid, email: d.email||u.email})); const coins=getRealCoins(d); const usdt=getRealUsdt(d); const usd=(coins*0.0005).toFixed(4); document.getElementById('pBalCard').innerText=coins+' coins'; document.getElementById('pUsdtCard').innerText=Number(usdt).toFixed(4)+' USDT'; document.getElementById('pUsdSmall').innerText='≈ $'+usd+' from coins'; document.getElementById('pUsername').innerText=d.username||u.email.split('@')[0]; document.getElementById('avatarLetter').innerText=(d.username||'I').charAt(0).toUpperCase(); document.getElementById('pEmail').innerText=d.email||u.email; let reg="Unknown"; if(d.createdAt&&d.createdAt.toDate) reg=d.createdAt.toDate().toLocaleDateString(); else if(u.metadata.creationTime) reg=new Date(u.metadata.creationTime).toLocaleDateString(); document.getElementById('pDate').innerText=reg; document.getElementById('pId').innerText=u.uid.substring(0,8).toUpperCase(); document.getElementById('hBal').innerText=coins+' coins'; document.getElementById('hUsd').innerText='≈ $'+usd; document.getElementById('hUsdt').innerText=Number(usdt).toFixed(4)+' USDT'; }); }
-async function loadNotifs(){ const el=document.getElementById('notifList'); el.innerHTML='Loading...'; try{ const snap=await db.collection('notifications').orderBy('createdAt','desc').limit(20).get(); if(snap.empty){ el.innerHTML='<p style="text-align:center;color:#9ca3af;padding:20px">No notifications</p>'; return; } let html=''; snap.forEach(d=>{ const n=d.data(); html+=`<div style="background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px;margin-bottom:8px"><div style="font-size:12px;font-weight:600">${n.message}</div><div style="font-size:10px;color:#9ca3af;margin-top:4px">${n.createdAt?new Date(n.createdAt.seconds*1000).toLocaleString():''}</div></div>`; }); el.innerHTML=html; }catch(e){ el.innerHTML='Error: '+e.message; } }
+async function loadNotifs(){ const el=document.getElementById('notifList'); el.innerHTML='Loading...'; try{ const snap=await db.collection('notifications').orderBy('createdAt','desc').limit(20).get(); if(snap.empty){ el.innerHTML='<p style="text-align:center;color:#9ca3af;padding:20px">No notifications</p>'; return; } let html=''; snap.forEach(d=>{ const n=d.data(); html+=`<div style="background:#f9fafb;border:1.5px solid #ede9fe;border-radius:10px;padding:10px;margin-bottom:8px"><div style="font-size:12px;font-weight:600">${n.message}</div><div style="font-size:10px;color:#9ca3af;margin-top:4px">${n.createdAt?new Date(n.createdAt.seconds*1000).toLocaleString():''}</div></div>`; }); el.innerHTML=html; }catch(e){ el.innerHTML='Error: '+e.message; } }
 function getHiddenIds(){ try{ return JSON.parse(localStorage.getItem('hiddenHistoryIds')||'[]'); }catch(e){ return []; } }
 function addHiddenIds(newIds){ const cur=new Set(getHiddenIds()); newIds.forEach(id=>cur.add(id)); const arr=[...cur]; localStorage.setItem('hiddenHistoryIds', JSON.stringify(arr)); const u=auth.currentUser||cachedUser; if(u){ db.collection('users').doc(u.uid).set({ hiddenHistoryIds: arr, historyClearedAt: firebase.firestore.FieldValue.serverTimestamp() },{merge:true}); } }
 async function loadHistory(){ const user=auth.currentUser||cachedUser; if(!user) return; document.getElementById('historyList').innerHTML='<p>Loading...</p>'; allData=[]; try{ const userDoc=await db.collection('users').doc(user.uid).get(); if(userDoc.exists && userDoc.data().hiddenHistoryIds){ localStorage.setItem('hiddenHistoryIds', JSON.stringify(userDoc.data().hiddenHistoryIds)); } }catch(e){} const hiddenIds=new Set(getHiddenIds()); try{ db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(100).onSnapshot(snap=>{ allData=[]; snap.forEach(d=>{ if(hiddenIds.has(d.id)) return; const v=d.data(); if(v.hidden===true) return; const date=v.timestamp?.toDate?v.timestamp.toDate():new Date(); allData.push({id:d.id, title:v.action||'Earn',desc:v.desc||'',points:v.coins ?? v.points ?? 0,date:date}); }); render(allData.slice(0,20)); }); }catch(e){ db.collection('users').doc(user.uid).collection('earnHistory').onSnapshot(snap=>{ allData=[]; snap.forEach(d=>{ if(hiddenIds.has(d.id)) return; const v=d.data(); if(v.hidden===true) return; const date=v.timestamp?.toDate?v.timestamp.toDate():new Date(); allData.push({id:d.id, title:v.action||'Earn',desc:v.desc||'',points:v.coins ?? v.points ?? 0,date:date}); }); allData.sort((a,b)=>b.date - a.date); render(allData.slice(0,20)); }); } }
