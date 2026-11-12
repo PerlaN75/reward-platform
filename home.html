@@ -2,42 +2,46 @@
 <html>
 <head>
 <title>Home</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-html{height:100%;overscroll-behavior-y:auto;-webkit-overflow-scrolling:touch}
-body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;overscroll-behavior-y:auto}
+html,body{height:100%;overflow:hidden!important;overscroll-behavior-y:auto!important}
+body{background:#6d28d9;display:flex;justify-content:center}
 .wrap{
-  width:100%;max-width:430px;min-height:100dvh;
+  width:100%;max-width:430px;height:100dvh;height:100svh;
   background-color:#bfe6f7;
   background-image:url('./bg.jpg');
   background-repeat:no-repeat;
   background-size:100% auto;
   background-position:center bottom;
   position:relative;display:flex;flex-direction:column;
+  overflow:hidden!important;
 }
+/* HEADER - FIXED, NEVER HIDES */
 .top{
-  position:sticky;top:0;
-  width:100%;background:#ffffff;border-radius:0 0 20px 20px;height:54px;
+  position:relative;flex-shrink:0;flex-grow:0;
+  width:100%;background:#ffffff;border-radius:0 0 20px 20px;height:54px;min-height:54px;
   display:flex;align-items:center;justify-content:space-between;
   padding:0 10px;z-index:50;
-  box-shadow:0 6px 14px rgba(0,0,0,0.18);flex-shrink:0
+  box-shadow:0 6px 14px rgba(0,0,0,0.18)
 }
 .top h2{font-size:18px;color:#0a5a7a;font-weight:900;flex:1;text-align:center}
 #headerText{color:#6d28d9!important;font-size:19px}
 .home-btn{display:flex;align-items:center;gap:4px;background:none;border:none;font-weight:900;cursor:pointer;color:#111827}
 .home-btn span.emoji{font-size:18px} .home-btn span.txt{font-size:12px}
 .logo{width:28px;height:28px;border-radius:50%;overflow:hidden;border:1.5px solid #d4a95a;background:#fff}
-.scene{flex:1;position:relative;min-height:540px}
+
+/* SCENE - NO SCROLL, FIXED HEIGHT */
+.scene{flex:1;position:relative;overflow:hidden;min-height:0}
 .monitor{
-  position:absolute;left:4%;top:30%;width:44%;max-width:190px;height:172px;
+  position:absolute;left:4%;top:28%;width:44%;max-width:190px;height:172px;
   background:linear-gradient(135deg,#ffffff 0%,#FFF8F0 18%,#FFE9E3 100%);
   border:2px solid #fecaca;border-left:3.5px solid #fff;border-radius:18px;z-index:5;
   box-shadow:inset 5px 0 10px rgba(255,255,255,0.95),0 10px 22px rgba(0,0,0,0.20),0 3px 0 #fca5a5;
   display:flex;flex-direction:column
 }
 .screen{flex:1;padding:12px 8px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:8px}
-.right-stack{position:absolute;right:3%;top:78px;width:60%;display:flex;flex-direction:column;gap:10px;align-items:flex-end;z-index:10}
+.right-stack{position:absolute;right:3%;top:76px;width:60%;display:flex;flex-direction:column;gap:10px;align-items:flex-end;z-index:10}
 .r-item{
   display:flex;align-items:center;justify-content:center;gap:6px;
   font-size:12px;font-weight:900;color:#111827;white-space:nowrap;
@@ -54,7 +58,16 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;ove
 .r5{background:linear-gradient(135deg,#fff 0%,#fce4ec 100%)}
 .r6{background:linear-gradient(135deg,#fff 0%,#f3e5f5 100%)}
 .r7{background:linear-gradient(135deg,#fff 0%,#fff3e0 100%)}
-.bottom{width:84%;height:48px;background:rgba(255,255,255,0.98);border-radius:20px;display:flex;justify-content:space-around;align-items:center;margin:6px auto 8px;box-shadow:0 6px 14px rgba(0,0,0,0.22),0 3px 0 rgba(0,0,0,0.08);z-index:20;flex-shrink:0;border:2px solid #fff;border-left:3px solid #fff}
+
+/* BOTTOM - FIXED, NEVER HIDES */
+.bottom{
+  flex-shrink:0;flex-grow:0;
+  width:84%;height:48px;min-height:48px;
+  background:rgba(255,255,255,0.98);border-radius:20px;
+  display:flex;justify-content:space-around;align-items:center;
+  margin:6px auto 10px;box-shadow:0 6px 14px rgba(0,0,0,0.22),0 3px 0 rgba(0,0,0,0.08);
+  z-index:20;border:2px solid #fff;border-left:3px solid #fff
+}
 .bottom button{background:none;border:none;display:flex;align-items:center;gap:4px;font-size:12px;font-weight:900;cursor:pointer;padding:6px}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:10px 14px;border-radius:10px;font-weight:bold;z-index:99999;display:none}
 #maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
