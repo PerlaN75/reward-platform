@@ -71,28 +71,51 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 </div>
 <div id="timerModal" class="modal"><div class="modal-content"><div style="font-size:26px">⏳</div><h3 id="modalTitle">Processing...</h3><p id="modalDesc">Please wait...</p><div class="timer" id="timerNum">12</div><div id="distractPhase" style="font-size:11px;color:#6b7280;font-weight:600;margin:6px 0">Please keep this window open</div></div></div>
 <script>
-// ADSTERRA ONLY - PROFITABLE
+// ADSTERRA ONLY - WITH ANTI-SPAM PROTECTION FOR CHILD ABUSE
 function injectBanner(id,key,w,h){
   const c=document.getElementById(id); if(!c) return; c.innerHTML='';
   const s1=document.createElement('script'); s1.text=`atOptions={'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}};`; c.appendChild(s1);
   const s2=document.createElement('script'); s2.src=`https://www.highperformanceformat.com/${key}/invoke.js`; s2.async=true; c.appendChild(s2);
 }
+
+// PROTECTION: max 3 gate ads per 1 minute per device
+function canLoadAdsterraGate(){
+  try{
+    const key='adsterra_gate_times';
+    let times=JSON.parse(localStorage.getItem(key)||'[]');
+    const now=Date.now();
+    times=times.filter(t=> now - t < 60*1000);
+    if(times.length >= 3) return false;
+    times.push(now);
+    localStorage.setItem(key, JSON.stringify(times));
+    return true;
+  }catch(e){ return true; }
+}
+
 function loadGateBanners(){
+  if(!canLoadAdsterraGate()){
+    document.getElementById('gateTopBanner').innerHTML='<div style="font-size:10px;color:#9ca3af;padding:12px;text-align:center">Loading...</div>';
+    document.getElementById('gateMidBanner').innerHTML='<div style="font-size:10px;color:#9ca3af;padding:20px;text-align:center">Please wait a moment<br>Ads will return shortly</div>';
+    return;
+  }
   injectBanner('gateTopBanner','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
   setTimeout(()=>{ injectBanner('gateMidBanner','bf10cacdbe9f50d0c5d66a94e0785f29',300,250); },800);
 }
+
 function loadMainBanners(){
   const gate=document.getElementById('entryGate');
   if(gate) gate.remove();
   injectBanner('topBanner','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
   setTimeout(()=>{ injectBanner('midBanner','bf10cacdbe9f50d0c5d66a94e0785f29',300,250); },600);
 }
+
 function refreshBannersAfterClaim(){
   setTimeout(()=>{
     injectBanner('topBanner','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
     injectBanner('midBanner','bf10cacdbe9f50d0c5d66a94e0785f29',300,250);
   }, 500);
 }
+
 loadGateBanners();
 let gateSec=5;
 const gateTimerEl=document.getElementById('gateTimer');
