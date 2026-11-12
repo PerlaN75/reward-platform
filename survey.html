@@ -3,38 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer-when-downgrade" />
 <title>Surveys - Reward Platform RW</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <style>
-.back-btn-checkin{width:45px;height:30px;border-radius:10px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5;flex-shrink:0}
-#adGate{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px}
-.gate-box{background:#fff;border:3px solid #111827;border-radius:20px;padding:22px;text-align:center;max-width:360px;width:100%;box-shadow:6px 6px 0 #111827}
-.gate-title{font-weight:900;font-size:17px}.gate-sub{font-size:12px;color:#6b7280;margin:8px 0 14px}
-.gate-btn{width:100%;height:48px;border-radius:12px;border:2px solid #111827;font-weight:900;font-size:14px;cursor:pointer}
-.gate-btn.watch{background:#facc15;box-shadow:3px 3px 0 #111827}.gate-btn.continue{background:#dcfce7;display:none;margin-top:10px}
+.top-bar{background:#6d28d9;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:20;box-shadow:0 4px 12px rgba(109,40,217,0.3)}
+.back-btn-checkin{width:45px;height:30px;border-radius:10px;background:#ffffff;border:2px solid #fecaca;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5;flex-shrink:0}
+.center-pill{background:#ffffff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%);box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+#adGate{position:fixed;inset:0;background:rgba(76,29,149,0.55);backdrop-filter:blur(3px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px}
+.gate-box{background:#ffffff;border:2px solid #ede9fe;border-radius:20px;padding:22px;text-align:center;max-width:360px;width:100%;box-shadow:0 12px 32px rgba(109,40,217,0.2)}
+.gate-title{font-weight:900;font-size:17px;color:#4c1d95}.gate-sub{font-size:12px;color:#6b7280;margin:8px 0 14px}
+.gate-btn{width:100%;height:48px;border-radius:12px;border:2px solid #ede9fe;font-weight:900;font-size:14px;cursor:pointer}
+.gate-btn.watch{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 3px 0 #d97706;border-color:#f59e0b}.gate-btn.continue{background:linear-gradient(180deg,#dcfce7,#bbf7d0);color:#166534;border-color:#22c55e;display:none;margin-top:10px}
 #gateTimer{font-size:13px;font-weight:900;color:#ea580c;margin-top:10px}
 </style>
 </head>
-<body class="bg-[#f8fafc]">
-<div class="bg-blue-600 p-3 flex items-center justify-between sticky top-0 z-20 shadow">
+<body class="bg-[#f5f3ff]">
+<div class="top-bar">
   <a href="home.html" class="back-btn-checkin">‹</a>
-  <div class="bg-white rounded-full px-4 py-1.5 text-sm font-black">📋 CPX Surveys</div>
+  <div class="center-pill">📋 CPX Surveys</div>
   <div style="width:45px"></div>
 </div>
 
 <div class="p-3 max-w-2xl mx-auto">
-  <div class="mt-2 bg-white rounded-2xl shadow-sm overflow-hidden border-2 border-gray-100">
-    <div class="bg-blue-600 p-3 flex items-center justify-between text-white font-black text-sm">
+  <div class="mt-2 bg-white rounded-2xl shadow-sm overflow-hidden border-2 border-[#ede9fe]">
+    <div class="bg-[#6d28d9] p-3 flex items-center justify-between text-white font-black text-sm">
       <span><i class="fa fa-circle-notch text-green-300 mr-2 animate-pulse"></i>CPX RESEARCH LIVE</span>
-      <span class="bg-white text-blue-600 text-[10px] px-2.5 py-1 rounded-full font-black">App 37033</span>
+      <span class="bg-white text-[#6d28d9] text-[10px] px-2.5 py-1 rounded-full font-black">App 37033</span>
     </div>
     <div class="p-2">
-      <div class="border border-gray-100 rounded-xl p-2 bg-white min-h-[600px]">
+      <div class="border border-[#ede9fe] rounded-xl p-2 bg-white min-h-[600px]">
         <div id="cpx-loading" class="p-10 text-center">
-          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto animate-pulse"><i class="fa fa-circle-notch text-2xl text-green-600"></i></div>
+          <div class="w-16 h-16 bg-[#f5f3ff] rounded-full flex items-center justify-center mb-4 mx-auto animate-pulse"><i class="fa fa-circle-notch text-2xl text-[#6d28d9]"></i></div>
           <h3 class="font-black text-gray-800">CPX Research Live</h3>
           <p class="text-gray-500 text-sm mt-2">Active - Surveys for Rwanda<br>Loading after ad...</p>
         </div>
@@ -48,8 +51,8 @@
 <div id="adGate">
   <div class="gate-box">
     <div class="gate-title">🔓 Unlock Surveys</div>
-    <div class="gate-sub">Wait for ad 8s to unlock CPX Surveys.</div>
-    <button id="watchAdBtn" class="gate-btn watch">▶️ Wait for Ad (8s)</button>
+    <div class="gate-sub">Please wait 10s - ads loading to unlock CPX Surveys.</div>
+    <button id="watchAdBtn" class="gate-btn watch">▶️ Wait 10s for Ad</button>
     <div id="gateTimer"></div>
     <button id="continueBtn" class="gate-btn continue">✅ Continue to Surveys</button>
   </div>
@@ -74,12 +77,13 @@ firebase.auth().onAuthStateChanged(user => {
 document.getElementById('watchAdBtn').onclick=function(){
   this.innerText='⏳ Please wait...';this.disabled=true;
   loadMonetagTag('12211617','https://n6wxm.com/vignette.min.js');
-  let sec=8;
+  loadMonetagTag('12211613','https://al5sm.com/tag.min.js');
+  let sec=10;
   const timerEl=document.getElementById('gateTimer');
-  timerEl.innerText='⏳ Wait '+sec+'s...';
+  timerEl.innerText='⏳ Wait '+sec+'s... - ads loading';
   const interval=setInterval(()=>{
     sec--;
-    if(sec>0){timerEl.innerText='⏳ Wait '+sec+'s...';}
+    if(sec>0){timerEl.innerText='⏳ Wait '+sec+'s... - ads loading';}
     else{clearInterval(interval);
       document.getElementById('watchAdBtn').style.display='none';
       timerEl.innerText='✅ Unlocked!';
