@@ -1,12 +1,12 @@
 <!DOCTYPE html><html><head><title>Home</title><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent!important}
-html,body{-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;height:100dvh;overflow:hidden!important;overscroll-behavior:none!important;touch-action:none;background:#6d28d9;-webkit-tap-highlight-color:transparent}
 button,a,div{-webkit-tap-highlight-color:transparent!important}
 button:focus,a:focus,div:focus{outline:none!important}
-body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
+body{display:flex;justify-content:center}
 .wrap{
-  width:100%;max-width:430px;height:100dvh;height:100svh;
+  width:100%;max-width:430px;height:100%;height:100dvh;
   background-color:#bfe6f7;
   background-image:url('./bg.jpg');
   background-repeat:no-repeat;
@@ -22,7 +22,6 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 .home-btn span.txt{font-size:13px;color:#111827;font-weight:900}
 .logo{width:28px;height:28px;border-radius:50%;overflow:hidden;border:1.5px solid #d4a95a;background:#fff}
 .scene{flex:1;position:relative;z-index:2;overflow:hidden;min-height:0}
-/* BALANCE - same as podium with beautiful light side */
 .monitor{
   position:absolute;left:4%;top:32%;width:44%;max-width:190px;height:172px;
   background:linear-gradient(135deg, #ffffff 0%, #FFF8F0 18%, #FFE9E3 100%);
@@ -62,9 +61,15 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 .bottom button:active{transform:scale(0.96);opacity:0.8}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:10px 14px;border-radius:10px;font-weight:bold;z-index:99999;display:none}
 #maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
+#refreshIndicator{position:fixed;top:8px;left:50%;width:38px;height:38px;margin-left:-19px;border-radius:50%;background:#fff;box-shadow:0 2px 9px rgba(0,0,0,0.22);display:flex;align-items:center;justify-content:center;z-index:1000000;opacity:0;visibility:hidden;pointer-events:none}
+#refreshIndicator.visible{opacity:1;visibility:visible}
+.refresh-spinner{width:23px;height:23px;border:3px solid #dbeafe;border-top-color:#2563eb;border-right-color:#2563eb;border-radius:50%}
+#refreshIndicator.loading .refresh-spinner{animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style></head><body>
 <div id="maint"><div><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900">Back</button></div></div>
 <div id="toast"></div>
+<div id="refreshIndicator"><div class="refresh-spinner"></div></div>
 <div class="wrap">
 <div class="top">
   <button class="home-btn" onclick="location.href='./index.html'"><span class="emoji">🏠</span><span class="txt">Home</span></button>
@@ -81,7 +86,6 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 <div style="text-align:center"><div style="font-size:10.5px;color:#0e7490;font-weight:900">💎 USDT</div><div id="usdtBalanceDisplay" style="font-size:20px;color:#059669;font-weight:900;line-height:1.1">0.8815 USDT</div></div>
 </div>
 </div></div>
-
 <div class="right-stack">
 <button class="r-item r1" onclick="location.href='./watch.html'" type="button"><span>Watch & Earn</span><span>📺</span></button>
 <button class="r-item r2" onclick="location.href='./survey.html'" type="button"><span>Surveys</span><span>📋</span></button>
@@ -91,7 +95,6 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 <button class="r-item r6" onclick="location.href='./articles_earn.html'" type="button"><span>Articles Earn</span><span>📖</span></button>
 <button class="r-item r7" onclick="location.href='./referrals.html'" type="button"><span>Refer & Earn</span><span>🤝</span></button>
 </div>
-
 </div>
 <div class="bottom">
 <button onclick="location.href='./quiz_earn.html'" type="button">🧠 <span>Quiz</span></button>
@@ -113,4 +116,28 @@ const POINT_RATE=0.0005;
 function loadData(d){if(!d)return;if(d.usdtBalance==null)d.usdtBalance=0;if(d.balance==null)d.balance=d.points||0;document.getElementById('headerText').innerText=d.username||'';document.getElementById('balance').innerText=(d.balance??d.points??0)+' coins';document.getElementById('usdBalance').innerText='= $'+((d.balance??d.points??0)*POINT_RATE).toFixed(4);document.getElementById('usdtBalanceDisplay').innerText=Number(d.usdtBalance||0).toFixed(4)+' USDT';localStorage.setItem('userData',JSON.stringify(d));}
 db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maint').style.display='flex';}else{document.getElementById('maint').style.display='none';}});
 auth.onAuthStateChanged(u=>{if(u){db.collection('users').doc(u.uid).onSnapshot(doc=>{if(doc.exists)loadData(doc.data());});}else{location.href='./index.html';}});
-</script></body></html>
+</script>
+<script>
+(function(){
+  const ind=document.getElementById('refreshIndicator');
+  let sy=0,sx=0,cy=0,track=false,refresh=false;
+  document.addEventListener('touchstart',e=>{
+    if(refresh||e.touches.length!==1)return;
+    if(e.touches[0].clientY>90){track=false;return;}
+    sy=e.touches[0].clientY;sx=e.touches[0].clientX;cy=sy;track=true;
+  },{passive:true});
+  document.addEventListener('touchmove',e=>{
+    if(!track||refresh||e.touches.length!==1)return;
+    cy=e.touches[0].clientY;
+    const dy=cy-sy, dx=Math.abs(e.touches[0].clientX-sx);
+    if(dy>0&&dy>dx){e.preventDefault();if(dy>10){ind.classList.add('visible');ind.querySelector('.refresh-spinner').style.transform='rotate('+(dy*4)+'deg)';}}
+  },{passive:false});
+  document.addEventListener('touchend',()=>{
+    if(!track||refresh)return;
+    const d=cy-sy;track=false;
+    if(d>=70){refresh=true;ind.classList.add('visible');ind.classList.add('loading');setTimeout(()=>location.reload(),350);}
+    else{ind.classList.remove('visible');ind.classList.remove('loading');ind.querySelector('.refresh-spinner').style.transform='';}
+  },{passive:true});
+})();
+</script>
+</body></html>
