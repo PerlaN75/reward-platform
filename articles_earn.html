@@ -53,7 +53,6 @@ body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;disp
 <body>
 <div id="toast"></div>
 <div class="card">
-
 <div id="entryGate">
   <div style="font-size:32px">⏳</div>
   <h3 style="margin:8px 0 4px;font-size:15px;color:#111827">Loading articles...</h3>
@@ -103,14 +102,19 @@ function loadGateBanners(){
   setTimeout(()=>injectBanner('gateMidBanner','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),900);
 }
 function loadMainBanners(){
-  // HIDE gate, not remove
   const gate=document.getElementById('entryGate');
   if(gate) gate.style.display='none';
   injectBanner('topBanner','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
   setTimeout(()=>injectBanner('midBanner1','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),800);
-  setTimeout(()=>injectBanner('midBanner2','fe25c5bd01f4bc5e60243e36cd83277c',320,50),2000);
+  setTimeout(()=>injectBanner('midBanner2','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),2000);
   setTimeout(()=>injectBanner('midBanner3','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),3200);
-  setTimeout(()=>injectBanner('midBanner4','fe25c5bd01f4bc5e60243e36cd83277c',320,50),4400);
+  setTimeout(()=>injectBanner('midBanner4','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),4400);
+  setTimeout(()=>{
+    const last=document.getElementById('midBanner4');
+    if(last && last.innerHTML.length < 150){
+      injectBanner('midBanner4','bf10cacdbe9f50d0c5d66a94e0785f29',300,250);
+    }
+  },7000);
 }
 loadGateBanners();
 let gateSec=5;const gateTimerEl=document.getElementById('gateTimer');const gateInt=setInterval(()=>{gateSec--; if(gateTimerEl) gateTimerEl.innerText=gateSec; if(gateSec<=0){ clearInterval(gateInt); loadMainBanners(); }},1000);
@@ -138,7 +142,6 @@ function render(){
   document.getElementById('countText').innerText=done.length+"/10 done - Resets midnight";
   document.getElementById('progBar').style.width=(done.length*10)+'%';
   const nowSec=Date.now()/1000; const rem=Math.max(0,Math.ceil(nextAllowed-nowSec));
-  // Groups: 0-1, 2-3, 4-5, 6-9 (last group has 4 articles, no ad after)
   const groups=[ [0,1], [2,3], [4,5], [6,7,8,9] ];
   groups.forEach((g,i)=>{
     let html='';
