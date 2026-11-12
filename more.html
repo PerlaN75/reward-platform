@@ -19,11 +19,17 @@
     .back-btn-checkin{width:45px;height:30px;border-radius:10px;background:linear-gradient(180deg,#fef2f2,#ffe4e6);border:2px solid #ef4444;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5}
     .center-pill{background:#f8fafc;border:2px solid #e5e7eb;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#111827;position:absolute;left:50%;transform:translateX(-50%)}
     .container{max-width:500px;margin:0 auto;padding:16px 14px 90px 14px}
-    .card{background:#ffffff;border:2px solid #f1f5f9;border-radius:20px;padding:8px;box-shadow:0 8px 30px rgba(0,0,0,0.06)}
+    .card{background:#ffffff;border:2px solid #f1f5f9;border-radius:20px;padding:8px;box-shadow:0 8px 30px rgba(0,0,0,0.06);position:relative;overflow:hidden}
     .menu-list a{display:flex;align-items:center;justify-content:space-between;width:100%;padding:19px 16px;color:#111827;text-decoration:none;font-size:15px;font-weight:800;border-radius:14px;cursor:pointer}
     .menu-list a:not(:last-child){border-bottom:1px solid #f8fafc}
     .arrow{color:#9ca3af;font-size:20px}
     .sub-info{text-align:center;font-size:11px;color:#9ca3af;margin-top:14px}
+    .ad-label{font-size:9px;color:#9ca3af;text-align:center;letter-spacing:0.5px;font-weight:bold;margin:16px 0 4px 0}
+    .ad-box{background:#ffffff;border:2px solid #f1f5f9;border-radius:16px;padding:8px;min-height:90px;display:flex;justify-content:center;align-items:center}
+    /* DIFFERENT GATE - more.html style */
+    #moreGate{position:absolute;inset:0;background:rgba(255,255,255,0.96);z-index:20;border-radius:20px;display:none;flex-direction:column;align-items:center;justify-content:center;padding:14px;text-align:center}
+    #moreGate.show{display:flex}
+    #moreTimer{font-size:32px;font-weight:900;color:#f59e0b;margin:6px 0}
     .modal{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.55);justify-content:center;align-items:center;padding:15px}
     .modal-box{background:#ffffff;width:100%;max-width:420px;border-radius:20px;padding:20px;max-height:85vh;overflow-y:auto;color:#111827;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.2);border:2px solid #f1f5f9}
     .close{position:absolute;top:12px;right:15px;font-size:22px;font-weight:bold;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#f3f4f6;border-radius:50%;color:#111827}
@@ -67,7 +73,18 @@
   <div style="width:45px"></div>
 </div>
 <div class="container">
-  <div class="card">
+  <div class="card" id="mainCard">
+    <!-- DIFFERENT GATE: 3s, centered, only once per 30min -->
+    <div id="moreGate">
+      <div style="font-size:22px">⚙️</div>
+      <div style="font-weight:900;font-size:13px;margin:4px 0">Loading menu...</div>
+      <div id="moreTimer">3</div>
+      <div style="width:100%">
+        <div class="ad-label">ADVERTISEMENT</div>
+        <div id="gateBanner" class="ad-box" style="min-height:90px"></div>
+      </div>
+    </div>
+
     <div class="menu-list">
       <a onclick="openModal('notifModal')"><div>🔔 Notifications</div><span class="arrow">›</span></a>
       <a onclick="openModal('profileModal')"><div>👤 Profile</div><span class="arrow">›</span></a>
@@ -77,26 +94,10 @@
     </div>
   </div>
 
-  <!-- HilltopAds InPage 7605349 - Clean, not annoying -->
-  <div style="margin:16px auto 0 auto;max-width:500px;width:100%;">
-    <div style="font-size:9px;color:#9ca3af;text-align:center;letter-spacing:0.5px;font-weight:bold;margin-bottom:4px">SPONSORED - VIDEO</div>
-    <div style="background:#ffffff;border:2px solid #f1f5f9;border-radius:16px;padding:8px;min-height:90px;display:flex;justify-content:center;align-items:center;box-shadow:0 4px 12px rgba(0,0,0,0.04)">
-      <script>
-      (function(qbvy){
-      var d = document,
-          s = d.createElement('script'),
-          l = d.currentScript || d.scripts[d.scripts.length - 1];
-      s.settings = qbvy || {};
-      s.src = "//quarrelsomebitter.com/bAXiVIs.dCGZlp0pY/Wxcq/XeWmI9puCZnUNlEkaPmT-cB2jMODvUOz/N/DCk/t/N/zEY/wwNGTbMk1UMWwM";
-      s.async = true;
-      s.referrerPolicy = 'no-referrer-when-downgrade';
-      l.parentNode.insertBefore(s, l);
-      })({})
-      </script>
-    </div>
-  </div>
+  <div class="ad-label">ADVERTISEMENT</div>
+  <div id="mainBanner" class="ad-box"></div>
 
-  <div class="sub-info">1000 Coins = $0.5 • Min 3000 Coins = $1.5</div>
+  <div class="sub-info">Balance updates automatically</div>
 </div>
 
 <div id="notifModal" class="modal" onclick="closeModal('notifModal')">
@@ -178,6 +179,42 @@
     </div>
   </div>
 </div>
+
+<script>
+// ADSTERRA SAFE INJECT - DIFFERENT FROM EARN PAGES
+function injectBanner(id,key,w,h){
+  const c=document.getElementById(id); if(!c) return;
+  c.innerHTML='';
+  const s1=document.createElement('script'); s1.text=`atOptions={'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}};`; c.appendChild(s1);
+  const s2=document.createElement('script'); s2.src=`https://www.highperformanceformat.com/${key}/invoke.js`; s2.async=true; c.appendChild(s2);
+}
+function shouldShowGate(){
+  const last=localStorage.getItem('moreGate_last');
+  if(!last) return true;
+  return (Date.now()-parseInt(last)) > 30*60*1000; // 30 min
+}
+function initMoreGate(){
+  const gate=document.getElementById('moreGate');
+  if(!shouldShowGate()){
+    injectBanner('mainBanner','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
+    return;
+  }
+  gate.classList.add('show');
+  injectBanner('gateBanner','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
+  let sec=3;
+  const timerEl=document.getElementById('moreTimer');
+  const int=setInterval(()=>{
+    sec--; if(timerEl) timerEl.innerText=sec;
+    if(sec<=0){
+      clearInterval(int);
+      gate.classList.remove('show');
+      localStorage.setItem('moreGate_last', Date.now().toString());
+      injectBanner('mainBanner','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
+    }
+  },1000);
+}
+initMoreGate();
+</script>
 
 <script>
 (function(){
