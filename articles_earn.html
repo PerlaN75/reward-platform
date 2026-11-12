@@ -34,7 +34,6 @@ body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;disp
 .btn.wait{background:#fef3c7;color:#92400e;border:2px solid #fbbf24;cursor:not-allowed}
 .ad-label{font-size:8px;color:#9ca3af;margin:10px 0 4px 0;letter-spacing:0.8px;font-weight:800;text-align:center;text-transform:uppercase}
 .ad-set{background:#ffffff;border:2px solid #fef3c7;border-radius:16px;padding:10px;margin:14px 0;box-shadow:0 4px 12px rgba(251,191,36,0.12)}
-.ad-set-label{font-size:8px;color:#9ca3af;font-weight:800;letter-spacing:0.8px;text-transform:uppercase}
 .modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.65);justify-content:center;align-items:center;padding:8px;box-sizing:border-box}
 .modal-content{background:#ffffff;border:2px solid #e5e7eb;border-radius:14px;padding:14px 12px;width:92%;max-width:340px;text-align:center;box-shadow:0 12px 32px rgba(0,0,0,0.12);max-height:95vh;overflow-y:auto}
 .timer{font-size:32px;color:#22c55e;font-weight:bold;margin:6px 0}
@@ -54,6 +53,7 @@ body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;disp
 <body>
 <div id="toast"></div>
 <div class="card">
+
 <div id="entryGate">
   <div style="font-size:32px">⏳</div>
   <h3 style="margin:8px 0 4px;font-size:15px;color:#111827">Loading articles...</h3>
@@ -67,23 +67,23 @@ body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif;disp
 <div class="bar"><div class="fill" id="progBar"></div></div>
 <div id="countText">0/10 done - Resets midnight</div>
 <div class="tip-text">Learn Crypto, Finance & Tech - Earn while reading!</div>
+
 <div class="ad-label">ADVERTISEMENT</div>
 <div id="topBanner" class="ad-box"></div>
 
-<div id="list"></div>
+<div id="group0"></div>
+<div class="ad-set"><div class="ad-label">ADVERTISEMENT</div><div id="midBanner1" class="ad-box"></div></div>
 
-<!-- STATIC AD SETS - never deleted by render() -->
-<div id="adSets" style="display:none">
-  <div class="ad-set"><div class="ad-set-label">ADVERTISEMENT</div><div class="ad-box"><div id="midBanner1" style="width:100%;display:flex;justify-content:center"></div></div></div>
-  <div id="extraList1"></div>
-  <div class="ad-set"><div class="ad-set-label">ADVERTISEMENT</div><div class="ad-box"><div id="midBanner2" style="width:100%;display:flex;justify-content:center"></div></div></div>
-  <div id="extraList2"></div>
-  <div class="ad-set"><div class="ad-set-label">ADVERTISEMENT</div><div class="ad-box"><div id="midBanner3" style="width:100%;display:flex;justify-content:center"></div></div></div>
-  <div id="extraList3"></div>
-  <div class="ad-set"><div class="ad-set-label">ADVERTISEMENT</div><div class="ad-box"><div id="midBanner4" style="width:100%;display:flex;justify-content:center"></div></div></div>
-  <div id="extraList4"></div>
-  <div class="ad-set"><div class="ad-set-label">ADVERTISEMENT</div><div class="ad-box"><div id="midBanner5" style="width:100%;display:flex;justify-content:center"></div></div></div>
-</div>
+<div id="group1"></div>
+<div class="ad-set"><div class="ad-label">ADVERTISEMENT</div><div id="midBanner2" class="ad-box"></div></div>
+
+<div id="group2"></div>
+<div class="ad-set"><div class="ad-label">ADVERTISEMENT</div><div id="midBanner3" class="ad-box"></div></div>
+
+<div id="group3"></div>
+<div class="ad-set"><div class="ad-label">ADVERTISEMENT</div><div id="midBanner4" class="ad-box"></div></div>
+
+<div id="group4"></div>
 
 <button id="bonusBtn" class="bonus-btn" onclick="startBonus()">Claim Bonus 5 Coins - 12s</button>
 <div style="font-size:12px;color:#111827;margin-top:16px;font-weight:900;line-height:1.4">3000 Coins = $1.5 • Bonus 5 coins for completing all 10</div>
@@ -100,17 +100,17 @@ function injectBanner(id,key,w,h){
 }
 function loadGateBanners(){
   injectBanner('gateTopBanner','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
-  setTimeout(()=>injectBanner('gateMidBanner','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),800);
+  setTimeout(()=>injectBanner('gateMidBanner','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),900);
 }
 function loadMainBanners(){
-  const gate=document.getElementById('entryGate'); if(gate) gate.remove();
-  document.getElementById('adSets').style.display='block';
+  // HIDE gate, not remove
+  const gate=document.getElementById('entryGate');
+  if(gate) gate.style.display='none';
   injectBanner('topBanner','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
-  setTimeout(()=>injectBanner('midBanner1','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),600);
-  setTimeout(()=>injectBanner('midBanner2','fe25c5bd01f4bc5e60243e36cd83277c',320,50),1800);
-  setTimeout(()=>injectBanner('midBanner3','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),3000);
-  setTimeout(()=>injectBanner('midBanner4','fe25c5bd01f4bc5e60243e36cd83277c',320,50),4200);
-  setTimeout(()=>injectBanner('midBanner5','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),5400);
+  setTimeout(()=>injectBanner('midBanner1','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),800);
+  setTimeout(()=>injectBanner('midBanner2','fe25c5bd01f4bc5e60243e36cd83277c',320,50),2000);
+  setTimeout(()=>injectBanner('midBanner3','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),3200);
+  setTimeout(()=>injectBanner('midBanner4','fe25c5bd01f4bc5e60243e36cd83277c',320,50),4400);
 }
 loadGateBanners();
 let gateSec=5;const gateTimerEl=document.getElementById('gateTimer');const gateInt=setInterval(()=>{gateSec--; if(gateTimerEl) gateTimerEl.innerText=gateSec; if(gateSec<=0){ clearInterval(gateInt); loadMainBanners(); }},1000);
@@ -127,33 +127,27 @@ let done=[],total=0,cur=0,sec=12,tmr=null,currentUser=null,userData={},bonusClai
 function saveLocal(){try{localStorage.setItem('articlesEarn_done',JSON.stringify(done));localStorage.setItem('articlesEarn_total',total.toString());localStorage.setItem('articlesEarn_date',getToday());if(bonusClaimed) localStorage.setItem('articlesEarn_bonus',getToday());}catch(e){}}
 function loadLocalStrict(){try{const today=getToday(); const saved=localStorage.getItem('articlesEarn_date');if(saved!==today){ done=[]; total=0; bonusClaimed=false; localStorage.removeItem('articlesEarn_done'); localStorage.removeItem('articlesEarn_total'); localStorage.removeItem('articlesEarn_bonus'); localStorage.setItem('articlesEarn_date',today); return; }const parsed=JSON.parse(localStorage.getItem('articlesEarn_done')||'[]'); done=[...new Set(parsed)].filter(x=>x>=0&&x<=9);total=parseInt(localStorage.getItem('articlesEarn_total')||'0')||0; bonusClaimed=localStorage.getItem('articlesEarn_bonus')===today;let real=0; done.forEach(id=>{const c=tasksConfig.find(t=>t.id===id); if(c) real+=c.reward}); if(bonusClaimed) real+=BONUS_REWARD; if(total>real+2) total=real;}catch(e){done=[]; total=0; bonusClaimed=false;}}
 loadLocalStrict();
+function articleHTML(cfg,isDone,rem){
+  let btnCls=isDone?'done':(rem>0?'wait':'start');
+  let btnTxt=isDone?'Done ✓':(rem>0?`Wait ${rem}s`:'Read');
+  let dis=isDone||rem>0;
+  return `<div class="article-card ${cfg.tier}"><div class="article-top"><div class="article-icon">${cfg.icon}</div><div class="article-info"><span class="category">${cfg.cat} • ${cfg.label}</span><div class="article-title">${cfg.title}</div><div class="article-desc">${cfg.excerpt}</div></div></div><div class="article-bottom"><div class="read-meta">⏱ ${cfg.sec}s • +${cfg.reward} 🪙</div><button class="btn ${btnCls}" onclick="startAd(${cfg.id})" ${dis?'disabled':''}>${btnTxt}</button></div></div>`;
+}
 function render(){
   document.getElementById('totalPtsBadge').innerText="Total Today: "+total+" 🪙 Coins";
   document.getElementById('countText').innerText=done.length+"/10 done - Resets midnight";
   document.getElementById('progBar').style.width=(done.length*10)+'%';
   const nowSec=Date.now()/1000; const rem=Math.max(0,Math.ceil(nextAllowed-nowSec));
-  let html=''; 
-  tasksConfig.forEach((cfg,idx)=>{
-    if(idx===2){ html+=document.getElementById('adSets').innerHTML.match(/<div class="ad-set">[\s\S]*?midBanner1[\s\S]*?<\/div><\/div>/)[0]; }
-    if(idx===4){ const m=document.getElementById('adSets').innerHTML.match(/midBanner2[\s\S]*?midBanner3/); }
+  // Groups: 0-1, 2-3, 4-5, 6-9 (last group has 4 articles, no ad after)
+  const groups=[ [0,1], [2,3], [4,5], [6,7,8,9] ];
+  groups.forEach((g,i)=>{
+    let html='';
+    g.forEach(id=>{
+      const cfg=tasksConfig[id];
+      html+=articleHTML(cfg,done.includes(id),rem);
+    });
+    document.getElementById('group'+i).innerHTML=html;
   });
-  // Build article list + inject static ad sets at fixed positions without destroying them
-  let fullHTML='';
-  tasksConfig.forEach((cfg,idx)=>{
-    let isDone=done.includes(cfg.id);
-    let btnCls=isDone?'done':(rem>0?'wait':'start');
-    let btnTxt=isDone?'Done ✓':(rem>0?`Wait ${rem}s`:'Read');
-    let dis=isDone||rem>0;
-    fullHTML+=`<div class="article-card ${cfg.tier}"><div class="article-top"><div class="article-icon">${cfg.icon}</div><div class="article-info"><span class="category">${cfg.cat} • ${cfg.label}</span><div class="article-title">${cfg.title}</div><div class="article-desc">${cfg.excerpt}</div></div></div><div class="article-bottom"><div class="read-meta">⏱ ${cfg.sec}s • +${cfg.reward} 🪙</div><button class="btn ${btnCls}" onclick="startAd(${cfg.id})" ${dis?'disabled':''}>${btnTxt}</button></div></div>`;
-    if(idx===1) fullHTML+=`<div class="ad-set"><div class="ad-set-label">ADVERTISEMENT</div><div class="ad-box"><div id="midBanner1" style="width:100%;display:flex;justify-content:center"></div></div></div>`;
-    if(idx===3) fullHTML+=`<div class="ad-set"><div class="ad-set-label">ADVERTISEMENT</div><div class="ad-box"><div id="midBanner2" style="width:100%;display:flex;justify-content:center"></div></div></div>`;
-    if(idx===5) fullHTML+=`<div class="ad-set"><div class="ad-set-label">ADVERTISEMENT</div><div class="ad-box"><div id="midBanner3" style="width:100%;display:flex;justify-content:center"></div></div></div>`;
-    if(idx===7) fullHTML+=`<div class="ad-set"><div class="ad-set-label">ADVERTISEMENT</div><div class="ad-box"><div id="midBanner4" style="width:100%;display:flex;justify-content:center"></div></div></div>`;
-    if(idx===8) fullHTML+=`<div class="ad-set"><div class="ad-set-label">ADVERTISEMENT</div><div class="ad-box"><div id="midBanner5" style="width:100%;display:flex;justify-content:center"></div></div></div>`;
-  });
-  document.getElementById('list').innerHTML=fullHTML;
-  // Re-load banners after render so they stay
-  setTimeout(()=>{ if(document.getElementById('midBanner1')) loadMainBanners(); },100);
   const bonusBtn=document.getElementById('bonusBtn');
   if(bonusClaimed){ bonusBtn.innerText='Bonus Claimed ✓'; bonusBtn.disabled=true; bonusBtn.classList.add('claimed'); bonusBtn.style.display='block'; }
   else if(done.length>=10){
