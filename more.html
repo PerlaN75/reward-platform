@@ -23,13 +23,13 @@
     .menu-list a{display:flex;align-items:center;justify-content:space-between;width:100%;padding:19px 16px;color:#111827;text-decoration:none;font-size:15px;font-weight:800;border-radius:14px;cursor:pointer}
     .menu-list a:not(:last-child){border-bottom:1px solid #f8fafc}
     .arrow{color:#9ca3af;font-size:20px}
-    .sub-info{text-align:center;font-size:11px;color:#9ca3af;margin-top:14px}
+    .sub-info-hidden{display:none !important}
     .ad-label{font-size:9px;color:#9ca3af;text-align:center;letter-spacing:0.5px;font-weight:bold;margin:16px 0 4px 0}
     .ad-box{background:#ffffff;border:2px solid #f1f5f9;border-radius:16px;padding:8px;min-height:90px;display:flex;justify-content:center;align-items:center}
-    /* DIFFERENT GATE - more.html style */
-    #moreGate{position:absolute;inset:0;background:rgba(255,255,255,0.96);z-index:20;border-radius:20px;display:none;flex-direction:column;align-items:center;justify-content:center;padding:14px;text-align:center}
+    /* MORE GATE - DIFFERENT DESIGN */
+    #moreGate{position:absolute;inset:0;background:#ffffff;z-index:20;border-radius:20px;display:none;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center}
     #moreGate.show{display:flex}
-    #moreTimer{font-size:32px;font-weight:900;color:#f59e0b;margin:6px 0}
+    #moreTimerBox{width:64px;height:64px;border-radius:50%;background:linear-gradient(180deg,#f8fafc,#e2e8f0);border:2px solid #e5e7eb;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#f59e0b;margin:10px auto;box-shadow:0 3px 10px rgba(0,0,0,0.06)}
     .modal{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.55);justify-content:center;align-items:center;padding:15px}
     .modal-box{background:#ffffff;width:100%;max-width:420px;border-radius:20px;padding:20px;max-height:85vh;overflow-y:auto;color:#111827;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.2);border:2px solid #f1f5f9}
     .close{position:absolute;top:12px;right:15px;font-size:22px;font-weight:bold;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#f3f4f6;border-radius:50%;color:#111827}
@@ -74,14 +74,15 @@
 </div>
 <div class="container">
   <div class="card" id="mainCard">
-    <!-- DIFFERENT GATE: 3s, centered, only once per 30min -->
+    <!-- GATE DIFFERENT DESIGN - 5 sec EVERY TIME -->
     <div id="moreGate">
-      <div style="font-size:22px">⚙️</div>
-      <div style="font-weight:900;font-size:13px;margin:4px 0">Loading menu...</div>
-      <div id="moreTimer">3</div>
-      <div style="width:100%">
+      <div style="font-size:20px">⚙️</div>
+      <div style="font-weight:900;font-size:12px;margin-top:6px;letter-spacing:0.3px">Preparing menu...</div>
+      <div id="moreTimerBox">5</div>
+      <div style="font-size:10px;color:#9ca3af">Please wait</div>
+      <div style="width:100%;margin-top:12px">
         <div class="ad-label">ADVERTISEMENT</div>
-        <div id="gateBanner" class="ad-box" style="min-height:90px"></div>
+        <div id="gateBanner" class="ad-box"></div>
       </div>
     </div>
 
@@ -97,7 +98,7 @@
   <div class="ad-label">ADVERTISEMENT</div>
   <div id="mainBanner" class="ad-box"></div>
 
-  <div class="sub-info">Balance updates automatically</div>
+  <div class="sub-info-hidden">Balance updates automatically</div>
 </div>
 
 <div id="notifModal" class="modal" onclick="closeModal('notifModal')">
@@ -181,38 +182,30 @@
 </div>
 
 <script>
-// ADSTERRA SAFE INJECT - DIFFERENT FROM EARN PAGES
+// ADSTERRA - DIFFERENT WAY FROM OTHER PAGES
 function injectBanner(id,key,w,h){
   const c=document.getElementById(id); if(!c) return;
   c.innerHTML='';
   const s1=document.createElement('script'); s1.text=`atOptions={'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}};`; c.appendChild(s1);
   const s2=document.createElement('script'); s2.src=`https://www.highperformanceformat.com/${key}/invoke.js`; s2.async=true; c.appendChild(s2);
 }
-function shouldShowGate(){
-  const last=localStorage.getItem('moreGate_last');
-  if(!last) return true;
-  return (Date.now()-parseInt(last)) > 30*60*1000; // 30 min
-}
 function initMoreGate(){
   const gate=document.getElementById('moreGate');
-  if(!shouldShowGate()){
-    injectBanner('mainBanner','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
-    return;
-  }
+  const timerBox=document.getElementById('moreTimerBox');
   gate.classList.add('show');
   injectBanner('gateBanner','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
-  let sec=3;
-  const timerEl=document.getElementById('moreTimer');
+  let sec=5;
+  timerBox.innerText=sec;
   const int=setInterval(()=>{
-    sec--; if(timerEl) timerEl.innerText=sec;
+    sec--; timerBox.innerText=sec;
     if(sec<=0){
       clearInterval(int);
       gate.classList.remove('show');
-      localStorage.setItem('moreGate_last', Date.now().toString());
       injectBanner('mainBanner','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
     }
   },1000);
 }
+// Show gate every time
 initMoreGate();
 </script>
 
