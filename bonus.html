@@ -10,30 +10,36 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
-body{background:#f3f4f6;min-height:100vh;display:flex;justify-content:center;padding:14px 10px 90px;color:#111827}
-.card{width:100%;max-width:380px;background:#fff;border:2px solid #e5e7eb;border-radius:24px;padding:16px 14px;text-align:center;position:relative;overflow:hidden;min-height:680px}
-#entryGate{position:absolute;inset:0;background:#fff;z-index:90;border-radius:24px;display:flex;flex-direction:column;align-items:center;padding:20px 14px;text-align:center;overflow-y:auto}
-#gateTimer{font-size:48px;font-weight:900;color:#f59e0b;margin:8px 0}
-.sponsored{font-size:8px;color:#8a8e94;font-weight:800;text-align:center;margin:8px 0 3px;letter-spacing:0.8px;text-transform:uppercase}
-.ad-box{min-height:260px;display:flex;justify-content:center;align-items:center;background:#fff;border:1px solid #e5e7eb;border-radius:12px;width:100%;overflow:hidden}
-.bonus-box{background:#f9fafb;border:2px dashed #f59e0b;border-radius:16px;padding:18px;margin:10px 0}
-.btn{width:100%;background:#f59e0b;color:#000;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:15px;cursor:pointer;margin-top:14px;box-shadow:0 4px 0 #d97706}
-.btn:disabled{background:#9ca3af;color:#fff;box-shadow:none}
-.top-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;text-align:left}
-.back-square{width:45px;height:30px;background:#ffe4e6;border:2px solid #ef4444;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial;-webkit-tap-highlight-color:transparent} *:focus{outline:none !important}
+body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;align-items:center;color:#111827}
+.top-bar{background:#6d28d9;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;width:100%;box-shadow:0 4px 12px rgba(109,40,217,0.3)}
+.back-square{width:45px;height:30px;background:#ffffff;border:2px solid #fecaca;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5}
+.center-pill{background:#ffffff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%);box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.card{width:100%;max-width:380px;background:#fff;border:2px solid #ede9fe;border-radius:24px;padding:16px 14px;text-align:center;position:relative;overflow:hidden;min-height:680px;margin:14px 10px 90px;box-shadow:0 8px 30px rgba(109,40,217,0.08)}
+#entryGate{position:absolute;inset:0;background:linear-gradient(180deg,#ffffff,#f5f3ff);z-index:90;border-radius:24px;display:flex;flex-direction:column;align-items:center;padding:20px 14px;text-align:center;overflow-y:auto;border:2px solid #ede9fe}
+#gateTimer{width:64px;height:64px;border-radius:50%;background:linear-gradient(180deg,#ffffff,#ede9fe);border:3px solid #a78bfa;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#f59e0b;margin:8px auto;box-shadow:0 3px 10px rgba(109,40,217,0.12)}
+.sponsored{font-size:8px;color:#8b5cf6;font-weight:900;text-align:center;margin:8px 0 3px;letter-spacing:0.8px;text-transform:uppercase}
+.ad-box{min-height:260px;display:flex;justify-content:center;align-items:center;background:#fff;border:2px solid #ede9fe;border-radius:12px;width:100%;overflow:hidden}
+.bonus-box{background:#fffbeb;border:2px dashed #f59e0b;border-radius:16px;padding:18px;margin:10px 0}
+.btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;padding:14px;font-weight:900;font-size:15px;cursor:pointer;margin-top:14px;box-shadow:0 4px 0 #d97706}
+.btn:disabled{background:#e5e7eb;color:#9ca3af;box-shadow:none}
 </style>
 </head>
 <body>
-<div class="card">
-<div id="entryGate">
-  <div style="font-size:28px">⏳</div><h3 style="margin:6px 0 2px;font-size:16px;font-weight:900">Loading daily bonus...</h3>
-  <div id="gateTimer">7</div>
-  <div style="width:100%"><div class="sponsored">ADVERTISEMENT</div><div id="gateTopBanner" style="width:100%;min-height:280px;display:flex;justify-content:center;background:#fff;border:1px solid #eee;border-radius:12px;overflow:hidden"></div></div>
+<div class="top-bar">
+  <div class="back-square" onclick="location.href='home.html'">‹</div>
+  <div class="center-pill">🎁 Daily Bonus</div>
+  <div style="width:45px"></div>
 </div>
 
-<div class="top-header"><div class="back-square" onclick="location.href='home.html'">‹</div><h1 style="font-size:22px;font-weight:900;flex:1">🎁 Daily Bonus</h1></div>
-<div style="font-size:12px;color:#6b7280;margin-bottom:10px">Claim once every 24h - 3000 Coins = $1.5</div>
+<div class="card">
+<div id="entryGate">
+  <div style="font-size:28px">🎁</div><h3 style="margin:6px 0 2px;font-size:16px;font-weight:900;color:#4c1d95">Loading daily bonus...</h3>
+  <div id="gateTimer">7</div>
+  <div style="width:100%"><div class="sponsored">ADVERTISEMENT</div><div id="gateTopBanner" style="width:100%;min-height:280px;display:flex;justify-content:center;background:#fff;border:2px solid #ede9fe;border-radius:12px;overflow:hidden"></div></div>
+</div>
+
+<div style="font-size:12px;color:#8b5cf6;margin-bottom:10px;font-weight:700">Claim once every 24h - 3000 Coins = $1.5</div>
 <div class="bonus-box"><div style="font-size:48px">🪙</div><div style="font-size:24px;color:#d97706;font-weight:900">+3 Coins</div><div id="timer" style="font-size:13px;color:#6b7280;margin-top:10px;font-weight:600">Checking...</div></div>
 <button class="btn" id="claimBtn" disabled>Loading...</button>
 <div id="info" style="font-size:12px;color:#6b7280;margin-top:12px">Daily reward</div>
@@ -42,9 +48,9 @@ body{background:#f3f4f6;min-height:100vh;display:flex;justify-content:center;pad
 </div>
 
 <script>
+// ADSTERRA ONLY - WITH ANTI-SPAM PROTECTION
 function injectBanner(id,key,w,h){
   const c=document.getElementById(id); if(!c) return;
-  // FULL clear to avoid duplicate atOptions conflict
   c.innerHTML='';
   const s1=document.createElement('script');
   s1.text=`atOptions={'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}};`;
@@ -54,20 +60,36 @@ function injectBanner(id,key,w,h){
   s2.async=true;
   c.appendChild(s2);
 }
+
+// PROTECTION: max 3 gate ads per 1 min (child spamming gate)
+function canLoadGateAd(){
+  try{
+    const key='bonus_gate_times';
+    let times=JSON.parse(localStorage.getItem(key)||'[]');
+    const now=Date.now();
+    times=times.filter(t=> now - t < 60*1000);
+    if(times.length >= 3) return false;
+    times.push(now);
+    localStorage.setItem(key, JSON.stringify(times));
+    return true;
+  }catch(e){ return true; }
+}
+
 function loadGateAds(){
+  if(!canLoadGateAd()){
+    document.getElementById('gateTopBanner').innerHTML='<div style="font-size:10px;color:#9ca3af;padding:20px;text-align:center">Please wait a moment<br>Ads will return shortly</div>';
+    return;
+  }
   injectBanner('gateTopBanner','bf10cacdbe9f50d0c5d66a94e0785f29',300,250);
 }
+
 function loadMainAds(){
-  // IMPORTANT: remove gate from DOM, not just innerHTML
   const gate=document.getElementById('entryGate');
   if(gate) gate.remove();
-  // Load top first
   injectBanner('topBanner','bf10cacdbe9f50d0c5d66a94e0785f29',300,250);
-  // Load bottom 2.5 sec later with DIFFERENT key to avoid blank
   setTimeout(()=>{
     injectBanner('adBottom','fe25c5bd01f4bc5e60243e36cd83277c',320,50);
-  },2500);
-  // Fallback: if top still blank after 4 sec, reload with other key
+  },2000);
   setTimeout(()=>{
     const top=document.getElementById('topBanner');
     if(top && top.innerHTML.length < 300){
@@ -94,7 +116,7 @@ function initAfterGate(){
       if(snap.exists && snap.data().lastBonusTimestamp){
         let last=snap.data().lastBonusTimestamp; let lastMs=last.toMillis?last.toMillis():last;
         let diff=(Date.now()-lastMs)/(1000*60*60);
-        if(diff<24){ hasClaimedToday=true; let remain=Math.ceil(24-diff); timerEl.textContent=`✅ Claimed. Wait ${remain}h`; claimBtn.textContent=`Come back in ${remain}h`; claimBtn.disabled=true; infoEl.textContent=`Next bonus in ${remain} hours`; loadMainAds(); return; }
+        if(diff<24){ hasClaimedToday=true; let remain=Math.ceil(24-diff); timerEl.textContent=`✅ Claimed. Wait ${remain}h`; claimBtn.textContent=`Come back in ${remain}h`; claimBtn.disabled=true; infoEl.textContent=`Next bonus in ${remain} hours`; return; }
       }
     }catch(e){}
     startWait();
