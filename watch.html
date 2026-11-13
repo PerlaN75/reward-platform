@@ -5,11 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <title>Watch & Earn</title>
-
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
 body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:10px 14px;color:#111827}
@@ -34,44 +32,32 @@ video{display:block;width:100%;max-height:65vh;background:#000}
 .video-title{color:#fff;font-size:13px;font-weight:800;text-align:center;padding:8px 6px 0;background:#000}
 .bubble{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#000;padding:10px 18px;border-radius:999px;font-weight:900;z-index:10000;display:none;max-width:90%;text-align:center}
 #rewardCircle{
- position:absolute;
- left:50%; top:50%;
+ position:absolute; left:50%; top:50%;
  transform:translate(-50%,-50%) scale(0);
  background:radial-gradient(circle at 30% 30%, #fef3c7, #fbbf24 60%, #f59e0b);
  color:#000;
- width:110px; height:110px;
+ width:100px; height:100px;
  border-radius:50%;
  border:3px solid #fff;
  display:none;
  flex-direction:column;
  align-items:center;
  justify-content:center;
- text-align:center;
  font-weight:900;
  z-index:50;
  cursor:pointer;
  box-shadow:0 0 0 6px rgba(251,191,36,.3), 0 8px 24px rgba(0,0,0,.5);
- animation:popIn .4s ease forwards, float 2s ease-in-out infinite 0.4s;
+ animation:popIn .4s ease forwards;
 }
 #rewardCircle.show{display:flex}
 @keyframes popIn{to{transform:translate(-50%,-50%) scale(1)}}
-@keyframes float{0%,100%{transform:translate(-50%,-50%) scale(1) translateY(0)} 50%{transform:translate(-50%,-50%) scale(1) translateY(-6px)}}
-.reward-plus{font-size:26px;line-height:1}
-.reward-coins{font-size:14px;letter-spacing:1px}
-.reward-tap{font-size:9px;background:#000;color:#fbbf24;padding:2px 6px;border-radius:999px;margin-top:4px}
-/* BURST */
 .burst-particle{
- position:absolute;
- left:50%; top:50%;
- width:20px; height:20px;
- pointer-events:none;
- z-index:100;
- display:flex; align-items:center; justify-content:center;
- font-size:16px;
+ position:absolute; left:50%; top:50%; pointer-events:none; z-index:100;
+ font-size:18px; font-weight:900;
 }
 @keyframes burstFly{
  0%{transform:translate(-50%,-50%) scale(1); opacity:1}
- 100%{transform:translate(var(--x), var(--y)) scale(0.3) rotate(720deg); opacity:0}
+ 100%{transform:translate(var(--x), var(--y)) scale(0) rotate(360deg); opacity:0}
 }
 </style>
 </head>
@@ -86,19 +72,16 @@ video{display:block;width:100%;max-height:65vh;background:#000}
 <section class="balance-box">
 <div style="color:#d1d5db;font-size:11px">Your Balance</div>
 <div class="balance-value" id="bal">-- 🪙</div>
-<div style="font-size:12px;color:#e5e7eb;margin-top:3px">
-Today's progress: <strong id="today">0/10</strong>
-</div>
-<div class="status" id="status">Checking your account...</div>
+<div style="font-size:12px;color:#e5e7eb;margin-top:3px">Today's progress: <strong id="today">0/10</strong></div>
+<div class="status" id="status">Checking...</div>
 </section>
 <section class="video-box">
 <div class="video-title" id="videoTitle">Video 1 of 10</div>
 <div class="player" id="player">
-<div class="placeholder">Your videos are ready.<br>Press Start to begin watching.</div>
+<div class="placeholder">Your videos are ready.<br>Press Start to begin.</div>
 <div id="rewardCircle">
- <div class="reward-plus">+2</div>
- <div class="reward-coins">COINS</div>
- <div class="reward-tap">Tap to collect</div>
+ <div style="font-size:28px;line-height:1">+2</div>
+ <div style="font-size:13px;letter-spacing:1px">COINS</div>
 </div>
 </div>
 <div class="progress"><div class="progress-bar" id="pbar"></div></div>
@@ -107,7 +90,7 @@ Today's progress: <strong id="today">0/10</strong>
 <button class="btn secondary-btn" id="nextBtn" hidden>Next video</button>
 </div>
 </section>
-<p class="small-note" id="watchNote">Watch 20s to unlock +2 COINS. Tap the floating circle — it will BURST! Max 10/day.</p>
+<p class="small-note">Watch 20s, tap +2 COINS when it appears. Video keeps playing. Collect once per video/day.</p>
 </main>
 <script>
 (() => {
@@ -129,160 +112,125 @@ const COINS_PER_VIDEO=2;
 const DAILY_LIMIT=10;
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth();
-const db=firebase.firestore();
+const auth=firebase.auth(); const db=firebase.firestore();
 const el=id=>document.getElementById(id);
-const balanceEl=el("bal");
-const todayEl=el("today");
-const statusEl=el("status");
-const playerEl=el("player");
-const titleEl=el("videoTitle");
-const progressEl=el("pbar");
-const startBtn=el("startBtn");
-const nextBtn=el("nextBtn");
-const rewardCircle=el("rewardCircle");
-let currentUser=null;
-let balance=0;
-let todayCount=0;
-let watchedVideoIds=[];
-let currentVideoIndex=-1;
-let videoElement=null;
-let watchedSeconds=0;
-let lastVideoTime=null;
-let watchInterval=null;
-let canClaim=false;
-let isSaving=false;
-let unsubscribeUser=null;
-let dayResetInProgress=false;
-function showBubble(message){const b=el("bubble"); b.textContent=message; b.style.display="block"; clearTimeout(showBubble.timeout); showBubble.timeout=setTimeout(()=>b.style.display="none",2400);}
-function localDayKey(date=new Date()){const y=date.getFullYear(); const m=String(date.getMonth()+1).padStart(2,"0"); const d=String(date.getDate()).padStart(2,"0"); return `${y}-${m}-${d}`;}
+const balanceEl=el("bal"); const todayEl=el("today"); const statusEl=el("status");
+const playerEl=el("player"); const titleEl=el("videoTitle"); const progressEl=el("pbar");
+const startBtn=el("startBtn"); const nextBtn=el("nextBtn"); const rewardCircle=el("rewardCircle");
+let currentUser=null; let balance=0; let todayCount=0; let watchedVideoIds=[];
+let currentVideoIndex=-1; let videoElement=null; let watchedSeconds=0;
+let lastVideoTime=null; let watchInterval=null; let canClaim=false; let isSaving=false;
+let unsubscribeUser=null; let dayResetInProgress=false;
+function showBubble(m){const b=el("bubble"); b.textContent=m; b.style.display="block"; clearTimeout(showBubble.timeout); showBubble.timeout=setTimeout(()=>b.style.display="none",2400);}
+function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
 function getAvailableVideos(){return VIDEOS.filter(v=>!watchedVideoIds.includes(v.id));}
 function showReward(){if(todayCount>=DAILY_LIMIT) return; if(watchedVideoIds.includes(VIDEOS[currentVideoIndex]?.id)) return; rewardCircle.classList.add("show"); canClaim=true;}
 function hideReward(){rewardCircle.classList.remove("show"); canClaim=false;}
 function updateUI(){
-balanceEl.textContent=`${balance} 🪙 coins`;
-todayEl.textContent=`${Math.min(todayCount,DAILY_LIMIT)}/${DAILY_LIMIT}`;
-if(todayCount>=DAILY_LIMIT||watchedVideoIds.length>=DAILY_LIMIT){
-statusEl.textContent="🎉 Daily limit reached. Come back tomorrow!"; startBtn.textContent="Daily limit reached"; startBtn.disabled=true; nextBtn.hidden=true; hideReward(); return;
-}
-statusEl.textContent=`${todayCount}/10 videos rewarded • 2 coins per video`;
-if(videoElement&&!videoElement.paused){startBtn.textContent=`Watching: ${Math.floor(watchedSeconds)}/20s`; startBtn.disabled=true;}
-else if(videoElement){startBtn.textContent="Resume video"; startBtn.disabled=false;}
-else{startBtn.textContent="Start watching"; startBtn.disabled=false;}
+ balanceEl.textContent=`${balance} 🪙 coins`;
+ todayEl.textContent=`${Math.min(todayCount,DAILY_LIMIT)}/${DAILY_LIMIT}`;
+ if(todayCount>=DAILY_LIMIT){statusEl.textContent="Daily limit reached"; startBtn.textContent="Daily limit reached"; startBtn.disabled=true; hideReward(); return;}
+ statusEl.textContent=`${todayCount}/10 videos • 2 coins each`;
+ if(videoElement&&!videoElement.paused){startBtn.textContent=`Watching: ${Math.floor(watchedSeconds)}/20s`; startBtn.disabled=true;}
+ else if(videoElement){startBtn.textContent="Resume video"; startBtn.disabled=false;}
+ else{startBtn.textContent="Start watching"; startBtn.disabled=false;}
 }
 function stopWatchCounter(){if(watchInterval)clearInterval(watchInterval); watchInterval=null; lastVideoTime=null;}
 function resetVideoSession(){stopWatchCounter(); hideReward(); if(videoElement){videoElement.pause(); videoElement.removeAttribute("src"); videoElement.load();} videoElement=null; watchedSeconds=0; progressEl.style.width="0%";}
 function chooseNextVideo(){
-const next=getAvailableVideos()[0];
-if(!next){playerEl.innerHTML='<div class="placeholder">🎉 Completed all rewards today.</div>'; playerEl.appendChild(rewardCircle); titleEl.textContent="Daily rewards completed"; startBtn.disabled=true; startBtn.textContent="Come back tomorrow"; nextBtn.hidden=true; return;}
-currentVideoIndex=VIDEOS.findIndex(v=>v.id===next.id);
-titleEl.textContent=`${next.title} • ${todayCount+1} of 10`;
-playerEl.innerHTML='<div class="placeholder">Press Start to load video.</div>'; playerEl.appendChild(rewardCircle);
-startBtn.textContent="Start watching"; startBtn.disabled=false; nextBtn.hidden=true; watchedSeconds=0; progressEl.style.width="0%"; updateUI();
+ const next=getAvailableVideos()[0];
+ if(!next){playerEl.innerHTML='<div class="placeholder">🎉 Done for today.</div>'; playerEl.appendChild(rewardCircle); titleEl.textContent="Completed"; startBtn.disabled=true; startBtn.textContent="Come back tomorrow"; nextBtn.hidden=true; return;}
+ currentVideoIndex=VIDEOS.findIndex(v=>v.id===next.id);
+ titleEl.textContent=`${next.title} • ${todayCount+1} of 10`;
+ playerEl.innerHTML='<div class="placeholder">Press Start to load.</div>'; playerEl.appendChild(rewardCircle);
+ startBtn.textContent="Start watching"; startBtn.disabled=false; nextBtn.hidden=true; watchedSeconds=0; progressEl.style.width="0%"; updateUI();
 }
 function createVideoElement(video){
-resetVideoSession();
-const v=document.createElement("video"); v.src=video.url; v.controls=true; v.playsInline=true; v.preload="metadata";
-v.addEventListener("error",()=>{stopWatchCounter(); playerEl.innerHTML='<div class="placeholder">Could not load video.</div>'; playerEl.appendChild(rewardCircle); startBtn.disabled=false; startBtn.textContent="Retry video"; showBubble("Video error.");});
-v.addEventListener("play",()=>{if(!canClaim)startWatchCounter(); updateUI();});
-v.addEventListener("pause",()=>{stopWatchCounter(); updateUI();});
-v.addEventListener("ended",()=>{stopWatchCounter(); updateUI();});
-playerEl.innerHTML=""; playerEl.appendChild(v); playerEl.appendChild(rewardCircle); videoElement=v; return v;
+ resetVideoSession();
+ const v=document.createElement("video"); v.src=video.url; v.controls=true; v.playsInline=true; v.preload="metadata";
+ v.addEventListener("error",()=>{stopWatchCounter(); playerEl.innerHTML='<div class="placeholder">Load failed.</div>'; playerEl.appendChild(rewardCircle); startBtn.textContent="Retry";});
+ v.addEventListener("play",()=>{if(!canClaim)startWatchCounter(); updateUI();});
+ v.addEventListener("pause",()=>{stopWatchCounter(); updateUI();});
+ v.addEventListener("ended",()=>{stopWatchCounter(); updateUI();});
+ playerEl.innerHTML=""; playerEl.appendChild(v); playerEl.appendChild(rewardCircle); videoElement=v; return v;
 }
 function startWatchCounter(){
-stopWatchCounter(); if(!videoElement||canClaim)return; lastVideoTime=videoElement.currentTime;
-watchInterval=setInterval(()=>{
-if(!videoElement||videoElement.paused||videoElement.ended||videoElement.seeking||videoElement.readyState<2){lastVideoTime=videoElement?videoElement.currentTime:null; return;}
-const currentTime=videoElement.currentTime;
-if(lastVideoTime!==null){const delta=currentTime-lastVideoTime; if(delta>0&&delta<=1.5){watchedSeconds=Math.min(20,watchedSeconds+delta);}}
-lastVideoTime=currentTime;
-const percent=Math.min(100,(watchedSeconds/20)*100); progressEl.style.width=`${percent}%`;
-if(watchedSeconds>=REQUIRED_WATCH_SECONDS){stopWatchCounter(); showReward(); showBubble("Tap +2 COINS!"); startBtn.textContent="Collect your reward!"; startBtn.disabled=false;}
-else{startBtn.textContent=`Watching: ${Math.floor(watchedSeconds)}/20s`; startBtn.disabled=true;}
-},500);
+ stopWatchCounter(); if(!videoElement||canClaim)return; lastVideoTime=videoElement.currentTime;
+ watchInterval=setInterval(()=>{
+  if(!videoElement||videoElement.paused||videoElement.ended||videoElement.seeking||videoElement.readyState<2){lastVideoTime=videoElement?videoElement.currentTime:null; return;}
+  const ct=videoElement.currentTime; if(lastVideoTime!==null){const d=ct-lastVideoTime; if(d>0&&d<=1.5)watchedSeconds=Math.min(20,watchedSeconds+d);} lastVideoTime=ct;
+  progressEl.style.width=`${Math.min(100,(watchedSeconds/20)*100)}%`;
+  if(watchedSeconds>=REQUIRED_WATCH_SECONDS){stopWatchCounter(); showReward(); showBubble("Reward unlocked!");}
+ },500);
 }
 async function startOrResumeVideo(){
-if(!currentUser)return;
-if(videoElement){try{await videoElement.play();}catch(e){showBubble("Tap play on video.");} return;}
-if(todayCount>=DAILY_LIMIT)return;
-const video=getAvailableVideos()[0]; if(!video){updateUI();return;}
-const v=createVideoElement(video); try{await v.play();}catch(e){showBubble("Tap play to begin.");}
+ if(!currentUser)return;
+ if(videoElement){try{await videoElement.play();}catch(e){} return;}
+ if(todayCount>=DAILY_LIMIT)return;
+ const video=getAvailableVideos()[0]; if(!video)return;
+ const v=createVideoElement(video); try{await v.play();}catch(e){}
 }
 function createBurst(){
- for(let i=0;i<18;i++){
-  const p=document.createElement("div");
-  p.className="burst-particle";
-  const emojis=["🪙","✨","💛","🪙","💥"];
-  p.textContent=emojis[i%emojis.length];
-  const angle=(i/18)*360 + Math.random()*20;
-  const distance=70 + Math.random()*110;
-  const x=Math.cos(angle*Math.PI/180)*distance;
-  const y=Math.sin(angle*Math.PI/180)*distance;
-  p.style.setProperty('--x', x+'px');
-  p.style.setProperty('--y', y+'px');
-  p.style.animation=`burstFly 0.9s cubic-bezier(.17,.67,.54,1.2) ${i*0.02}s forwards`;
-  playerEl.appendChild(p);
-  setTimeout(()=>p.remove(), 1000);
+ for(let i=0;i<12;i++){
+  const p=document.createElement("div"); p.className="burst-particle"; p.textContent="+2";
+  const angle=(i/12)*360; const dist=60+Math.random()*90;
+  const x=Math.cos(angle*Math.PI/180)*dist; const y=Math.sin(angle*Math.PI/180)*dist;
+  p.style.setProperty('--x', x+'px'); p.style.setProperty('--y', y+'px');
+  p.style.animation=`burstFly 0.8s ease-out ${i*0.02}s forwards`;
+  playerEl.appendChild(p); setTimeout(()=>p.remove(), 900);
  }
- rewardCircle.style.transition="transform 0.15s";
- rewardCircle.style.transform="translate(-50%,-50%) scale(1.5)";
- setTimeout(()=>{rewardCircle.style.transform="translate(-50%,-50%) scale(0)";}, 180);
+ // burst animation but keep video playing
+ rewardCircle.style.transform="translate(-50%,-50%) scale(1.4)";
+ setTimeout(()=>{rewardCircle.style.transform="translate(-50%,-50%) scale(0)"; setTimeout(()=>{hideReward(); rewardCircle.style.transform="translate(-50%,-50%) scale(0)";}, 200);}, 150);
 }
 async function claimReward(){
-if(!currentUser||!canClaim||isSaving)return;
-if(todayCount>=DAILY_LIMIT){showBubble("Limit reached."); return;}
-const video=VIDEOS[currentVideoIndex];
-if(!video||watchedVideoIds.includes(video.id)){showBubble("Already rewarded."); hideReward(); return;}
-isSaving=true;
-const userRef=db.collection("users").doc(currentUser.uid);
-const todayKey=localDayKey();
-try{
-await db.runTransaction(async transaction=>{
-const snap=await transaction.get(userRef);
-if(!snap.exists)throw new Error("Account not found.");
-const data=snap.data()||{};
-const savedDay=data.watchDay||todayKey;
-let count=Number(data.todayCount||0);
-let ids=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds.slice():[];
-if(savedDay!==todayKey){count=0; ids=[];}
-if(count>=DAILY_LIMIT||ids.length>=DAILY_LIMIT)throw new Error("Limit reached.");
-if(ids.includes(video.id))throw new Error("Already rewarded.");
-const oldBalance=Number(data.balance??data.coins??0);
-const oldCoins=Number(data.coins??data.balance??0);
-transaction.update(userRef,{balance:oldBalance+COINS_PER_VIDEO, coins:oldCoins+COINS_PER_VIDEO, todayCount:count+1, watchedVideoIds:ids.concat(video.id), watchDay:todayKey, lastWatchDate:firebase.firestore.FieldValue.serverTimestamp(), lastEarnAt:firebase.firestore.FieldValue.serverTimestamp()});
-});
-showBubble("💥 +2 coins! BOOM!");
-setTimeout(()=>{hideReward(); rewardCircle.style.transform="translate(-50%,-50%) scale(0)"; rewardCircle.style.transition=""; resetVideoSession();}, 600);
-}catch(error){console.error(error); showBubble(error.message||"Save failed."); rewardCircle.style.transform="translate(-50%,-50%) scale(1)";}finally{isSaving=false;}
+ if(!currentUser||!canClaim||isSaving)return;
+ if(todayCount>=DAILY_LIMIT)return;
+ const video=VIDEOS[currentVideoIndex]; if(!video||watchedVideoIds.includes(video.id)){hideReward(); return;}
+ isSaving=true;
+ const userRef=db.collection("users").doc(currentUser.uid); const todayKey=localDayKey();
+ try{
+  await db.runTransaction(async t=>{
+   const snap=await t.get(userRef); if(!snap.exists)throw new Error("No account");
+   const data=snap.data()||{}; const savedDay=data.watchDay||todayKey;
+   let count=Number(data.todayCount||0); let ids=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds.slice():[];
+   if(savedDay!==todayKey){count=0; ids=[];}
+   if(count>=DAILY_LIMIT||ids.includes(video.id))throw new Error("Limit");
+   const oldBal=Number(data.balance??data.coins??0); const oldCoins=Number(data.coins??data.balance??0);
+   t.update(userRef,{balance:oldBal+COINS_PER_VIDEO, coins:oldCoins+COINS_PER_VIDEO, todayCount:count+1, watchedVideoIds:ids.concat(video.id), watchDay:todayKey, lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()});
+  });
+  showBubble("+2 coins added! 💥");
+  // IMPORTANT: video continues playing
+  if(videoElement){ try{ videoElement.play(); }catch(e){} }
+ }catch(e){console.error(e); showBubble("Already collected");}finally{isSaving=false;}
 }
 async function refreshDailyProgressIfNeeded(data){
-const todayKey=localDayKey(); if(data.watchDay===todayKey||dayResetInProgress)return; dayResetInProgress=true;
-const userRef=db.collection("users").doc(currentUser.uid);
-try{
-await db.runTransaction(async transaction=>{
-const snap=await transaction.get(userRef); if(!snap.exists)return; const latest=snap.data()||{}; if(latest.watchDay===todayKey)return;
-let preserveToday=false; if(!latest.watchDay&&latest.lastWatchDate){const previousDate=latest.lastWatchDate.toDate?latest.lastWatchDate.toDate():new Date(latest.lastWatchDate); preserveToday=!Number.isNaN(previousDate.getTime())&&localDayKey(previousDate)===todayKey;}
-transaction.update(userRef,{todayCount:preserveToday?Number(latest.todayCount||0):0, watchedVideoIds:Array.isArray(latest.watchedVideoIds)?latest.watchedVideoIds:[], watchDay:todayKey});
-});
-}catch(e){console.error(e);}finally{dayResetInProgress=false;}
+ const todayKey=localDayKey(); if(data.watchDay===todayKey||dayResetInProgress)return; dayResetInProgress=true;
+ const userRef=db.collection("users").doc(currentUser.uid);
+ try{
+  await db.runTransaction(async t=>{
+   const snap=await t.get(userRef); if(!snap.exists)return; const latest=snap.data()||{}; if(latest.watchDay===todayKey)return;
+   let preserve=false; if(!latest.watchDay&&latest.lastWatchDate){const prev=latest.lastWatchDate.toDate?latest.lastWatchDate.toDate():new Date(latest.lastWatchDate); preserve=!isNaN(prev.getTime())&&localDayKey(prev)===todayKey;}
+   t.update(userRef,{todayCount:preserve?Number(latest.todayCount||0):0, watchedVideoIds:[], watchDay:todayKey});
+  });
+ }catch(e){}finally{dayResetInProgress=false;}
 }
-rewardCircle.addEventListener("click", ()=>{createBurst(); setTimeout(claimReward, 260);});
-startBtn.addEventListener("click",startOrResumeVideo);
-nextBtn.addEventListener("click",()=>{if(videoElement&&!videoElement.paused)videoElement.pause(); resetVideoSession(); chooseNextVideo();});
+rewardCircle.addEventListener("click", ()=>{createBurst(); setTimeout(claimReward, 200);});
+startBtn.addEventListener("click", startOrResumeVideo);
+nextBtn.addEventListener("click", ()=>{if(videoElement&&!videoElement.paused)videoElement.pause(); resetVideoSession(); chooseNextVideo();});
 auth.onAuthStateChanged(user=>{
-if(!user){location.href="./index.html"; return;}
-currentUser=user; statusEl.textContent="Loading..."; startBtn.disabled=true;
-if(unsubscribeUser)unsubscribeUser();
-unsubscribeUser=db.collection("users").doc(user.uid).onSnapshot(async snapshot=>{
-if(!snapshot.exists){statusEl.textContent="Account not found."; return;}
-const data=snapshot.data()||{}; await refreshDailyProgressIfNeeded(data); if(data.watchDay!==localDayKey())return;
-balance=Number(data.balance??data.coins??0); todayCount=Number(data.todayCount||0); watchedVideoIds=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds:[];
-if(!data.watchDay){db.collection("users").doc(user.uid).update({watchDay:localDayKey(), watchedVideoIds:watchedVideoIds}).catch(()=>{});}
-updateUI(); if(!videoElement&&todayCount<DAILY_LIMIT){chooseNextVideo();}
-},()=>{statusEl.textContent="Could not load account.";});
+ if(!user){location.href="./index.html"; return;}
+ currentUser=user; statusEl.textContent="Loading..."; startBtn.disabled=true;
+ if(unsubscribeUser)unsubscribeUser();
+ unsubscribeUser=db.collection("users").doc(user.uid).onSnapshot(async snap=>{
+  if(!snap.exists){statusEl.textContent="No account"; return;}
+  const data=snap.data()||{}; await refreshDailyProgressIfNeeded(data); if(data.watchDay!==localDayKey())return;
+  balance=Number(data.balance??data.coins??0); todayCount=Number(data.todayCount||0); watchedVideoIds=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds:[];
+  updateUI(); if(!videoElement&&todayCount<DAILY_LIMIT){chooseNextVideo();}
+ });
 });
-document.addEventListener("visibilitychange",()=>{if(document.hidden&&videoElement&&!videoElement.paused){videoElement.pause();}});
-window.addEventListener("beforeunload",stopWatchCounter);
+document.addEventListener("visibilitychange",()=>{if(document.hidden&&videoElement&&!videoElement.paused)videoElement.pause();});
+window.addEventListener("beforeunload", stopWatchCounter);
 })();
 </script>
 </body>
