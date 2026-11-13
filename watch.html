@@ -19,10 +19,9 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
 .balance-value{margin-top:2px;color:#fbbf24;font-size:20px;font-weight:900}
 .status{font-size:11px;color:#facc15;margin-top:4px}
 .video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #111827;width:100%;margin-top:10px;position:relative}
-.player{background:#000;width:100%;min-height:180px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.player{background:#000;width:100%;min-height:280px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 video{display:block;width:100%;max-height:65vh;background:#000}
-.placeholder{color:#fff;text-align:center;padding:28px 14px;line-height:1.6;font-weight:800}
-.progress{display:none}
+.placeholder{color:#fff;text-align:center;padding:28px 14px;line-height:1.6;font-weight:800;font-size:18px}
 .controls{padding:9px;background:#000;display:flex;flex-direction:column;align-items:center}
 .btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:0;border-radius:12px;padding:12px;font-weight:900;font-size:14px;cursor:pointer;margin-top:8px}
 .btn:disabled{opacity:.55;cursor:not-allowed}
@@ -62,7 +61,7 @@ video{display:block;width:100%;max-height:65vh;background:#000}
 <div class="status" id="status">Checking...</div>
 </section>
 <section class="video-box">
-<div class="video-title" id="videoTitle">Video 1 of 10</div>
+<div class="video-title" id="videoTitle" style="display:none"></div>
 <div class="player" id="player">
 <div class="placeholder">Your videos are ready.<br>Press Start to begin.</div>
 <div id="rewardCircle">
@@ -70,12 +69,12 @@ video{display:block;width:100%;max-height:65vh;background:#000}
  <div style="font-size:10px;letter-spacing:1px">COINS</div>
 </div>
 </div>
-<div class="controls">
+<div class="controls" id="controls">
 <button class="btn" id="startBtn" disabled>Loading account...</button>
 <button class="btn secondary-btn" id="nextBtn">Next video</button>
 </div>
 </section>
-<p class="small-note">Watch 20s to unlock 2 coins. Tap the circle.</p>
+<p class="small-note" id="note">Watch 20s to unlock 2 coins. Tap the circle.</p>
 </main>
 <script>
 (() => {
@@ -102,6 +101,7 @@ const el=id=>document.getElementById(id);
 const balanceEl=el("bal"); const todayEl=el("today"); const statusEl=el("status");
 const playerEl=el("player"); const titleEl=el("videoTitle");
 const startBtn=el("startBtn"); const nextBtn=el("nextBtn"); const rewardCircle=el("rewardCircle");
+const controlsEl=el("controls"); const noteEl=el("note");
 let currentUser=null; let balance=0; let todayCount=0; let watchedVideoIds=[];
 let currentVideoIndex=-1; let videoElement=null; let watchedSeconds=0;
 let lastVideoTime=null; let watchInterval=null; let canClaim=false; let isSaving=false;
@@ -111,24 +111,44 @@ function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMont
 function getAvailableVideos(){return VIDEOS.filter(v=>!watchedVideoIds.includes(v.id));}
 function showReward(){if(todayCount>=DAILY_LIMIT) return; if(watchedVideoIds.includes(VIDEOS[currentVideoIndex]?.id)) return; rewardCircle.classList.add("show"); canClaim=true;}
 function hideReward(){rewardCircle.classList.remove("show"); canClaim=false;}
+function showSeeYouSoon(){
+  titleEl.style.display="none";
+  playerEl.innerHTML='<div class="placeholder">See you soon</div>';
+  playerEl.appendChild(rewardCircle);
+  controlsEl.style.display="none";
+  noteEl.style.display="none";
+}
 function updateUI(){
  balanceEl.textContent=`${balance} 🪙 coins`;
  todayEl.textContent=`${Math.min(todayCount,DAILY_LIMIT)}/${DAILY_LIMIT}`;
- if(todayCount>=DAILY_LIMIT){statusEl.textContent="🎉 Daily limit reached!"; startBtn.textContent="Daily limit reached"; startBtn.disabled=true; hideReward(); return;}
+ if(todayCount>=DAILY_LIMIT || watchedVideoIds.length>=DAILY_LIMIT){
+   statusEl.textContent="🎉 Daily limit reached!";
+   showSeeYouSoon();
+   return;
+ }
  statusEl.textContent=`${todayCount}/10 videos rewarded`;
- if(!videoElement){startBtn.hidden=false; startBtn.textContent="Start watching"; startBtn.disabled=false;}
- else if(videoElement.paused){startBtn.hidden=false; startBtn.textContent="Resume video"; startBtn.disabled=false;}
- else{startBtn.hidden=true;}
+ controlsEl.style.display="flex";
+ noteEl.style.display="block";
+ titleEl.style.display="block";
+ if(!videoElement){startBtn.hidden=false; startBtn.textContent="Start watching"; startBtn.disabled=false; nextBtn.hidden=false;}
+ else if(videoElement.paused){startBtn.hidden=false; startBtn.textContent="Resume video"; startBtn.disabled=false; nextBtn.hidden=false;}
+ else{startBtn.hidden=true; nextBtn.hidden=false;}
 }
 function stopWatchCounter(){if(watchInterval)clearInterval(watchInterval); watchInterval=null; lastVideoTime=null;}
 function resetVideoSession(){stopWatchCounter(); hideReward(); if(videoElement){videoElement.pause(); videoElement.removeAttribute("src"); videoElement.load();} videoElement=null; watchedSeconds=0;}
 function chooseNextVideo(){
  const next=getAvailableVideos()[0];
- if(!next){playerEl.innerHTML='<div class="placeholder">🎉 Done for today.</div>'; playerEl.appendChild(rewardCircle); titleEl.textContent="Completed"; startBtn.disabled=true; startBtn.textContent="Come back tomorrow"; return;}
+ if(!next || todayCount>=DAILY_LIMIT){
+   showSeeYouSoon();
+   return;
+ }
  currentVideoIndex=VIDEOS.findIndex(v=>v.id===next.id);
+ titleEl.style.display="block";
  titleEl.textContent=`${next.title} • ${todayCount+1} of 10`;
  playerEl.innerHTML='<div class="placeholder">Press Start to load.</div>'; playerEl.appendChild(rewardCircle);
- startBtn.hidden=false; startBtn.textContent="Start watching"; startBtn.disabled=false;
+ controlsEl.style.display="flex";
+ noteEl.style.display="block";
+ startBtn.hidden=false; startBtn.textContent="Start watching"; startBtn.disabled=false; nextBtn.hidden=false;
  watchedSeconds=0; updateUI();
 }
 function createVideoElement(video){
@@ -159,8 +179,8 @@ function startWatchCounter(){
 async function startOrResumeVideo(){
  if(!currentUser)return;
  if(videoElement){try{await videoElement.play();}catch(e){} return;}
- if(todayCount>=DAILY_LIMIT)return;
- const video=getAvailableVideos()[0]; if(!video)return;
+ if(todayCount>=DAILY_LIMIT){showSeeYouSoon(); return;}
+ const video=getAvailableVideos()[0]; if(!video){showSeeYouSoon(); return;}
  const v=createVideoElement(video); try{await v.play();}catch(e){}
 }
 function createBurst(){
@@ -216,7 +236,9 @@ auth.onAuthStateChanged(user=>{
   if(!snap.exists){statusEl.textContent="No account"; return;}
   const data=snap.data()||{}; await refreshDailyProgressIfNeeded(data); if(data.watchDay!==localDayKey())return;
   balance=Number(data.balance??data.coins??0); todayCount=Number(data.todayCount||0); watchedVideoIds=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds:[];
-  updateUI(); if(!videoElement&&todayCount<DAILY_LIMIT){chooseNextVideo();}
+  updateUI(); 
+  if(todayCount>=DAILY_LIMIT || watchedVideoIds.length>=DAILY_LIMIT){showSeeYouSoon();}
+  else if(!videoElement){chooseNextVideo();}
  });
 });
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&videoElement&&!videoElement.paused)videoElement.pause();});
