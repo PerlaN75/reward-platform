@@ -85,11 +85,15 @@ const VIDEOS = [
 {id:"video3",title:"Video 3",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video%203.mp4"},
 {id:"video4",title:"Video 4",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video%204.mp4"},
 {id:"video5",title:"Video 5",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video%205.mp4"},
+{id:"video6",title:"Video 6",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video%206.mp4"},
 {id:"video7",title:"Video 7",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video%207.mp4"},
 {id:"video8",title:"Video 8",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video%208.mp4"},
 {id:"video9",title:"Video 9",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video%209.mp4"},
 {id:"video11",title:"Video 11",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video11.mp4"},
-{id:"video13",title:"Video 13",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video13.mp4"}
+{id:"video12",title:"Video 12",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video12.mp4"},
+{id:"video13",title:"Video 13",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video13.mp4"},
+{id:"video16",title:"Video 16",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video16.mp4"},
+{id:"video19",title:"Video 19",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video19.mp4"}
 ];
 const REQUIRED_WATCH_SECONDS=20;
 const COINS_PER_VIDEO=2;
@@ -106,9 +110,35 @@ let currentUser=null; let balance=0; let todayCount=0; let watchedVideoIds=[];
 let currentVideoIndex=-1; let videoElement=null; let watchedSeconds=0;
 let lastVideoTime=null; let watchInterval=null; let canClaim=false; let isSaving=false;
 let unsubscribeUser=null; let dayResetInProgress=false;
+let shuffledVideos=[];
+
 function showBubble(m){const b=el("bubble"); b.textContent=m; b.style.display="block"; clearTimeout(showBubble.timeout); showBubble.timeout=setTimeout(()=>b.style.display="none",2400);}
 function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
-function getAvailableVideos(){return VIDEOS.filter(v=>!watchedVideoIds.includes(v.id));}
+
+// DAILY SHUFFLE - different order each day per user
+function hashCode(str){let h=0; for(let i=0;i<str.length;i++){h=(h<<5)-h+str.charCodeAt(i); h|=0;} return h;}
+function seededRandom(seed){let x=Math.sin(seed)*10000; return x-Math.floor(x);}
+function shuffleWithSeed(array, seedStr){
+  let arr=array.slice();
+  let seed=hashCode(seedStr);
+  for(let i=arr.length-1;i>0;i--){
+    seed++;
+    const r=Math.floor(seededRandom(seed)* (i+1));
+    [arr[i],arr[r]]=[arr[r],arr[i]];
+  }
+  return arr;
+}
+function buildShuffledList(){
+  if(!currentUser) return VIDEOS.slice();
+  const day=localDayKey();
+  const seedStr=day+"_"+currentUser.uid;
+  shuffledVideos=shuffleWithSeed(VIDEOS, seedStr);
+  return shuffledVideos;
+}
+function getAvailableVideos(){
+  const list=shuffledVideos.length?shuffledVideos:VIDEOS;
+  return list.filter(v=>!watchedVideoIds.includes(v.id));
+}
 function showReward(){if(todayCount>=DAILY_LIMIT) return; if(watchedVideoIds.includes(VIDEOS[currentVideoIndex]?.id)) return; rewardCircle.classList.add("show"); canClaim=true;}
 function hideReward(){rewardCircle.classList.remove("show"); canClaim=false;}
 function showSeeYouSoon(){
@@ -230,11 +260,13 @@ startBtn.addEventListener("click", startOrResumeVideo);
 nextBtn.addEventListener("click", ()=>{if(videoElement&&!videoElement.paused)videoElement.pause(); resetVideoSession(); chooseNextVideo();});
 auth.onAuthStateChanged(user=>{
  if(!user){location.href="./index.html"; return;}
- currentUser=user; statusEl.textContent="Loading..."; startBtn.disabled=true;
+ currentUser=user; 
+ buildShuffledList();
+ statusEl.textContent="Loading..."; startBtn.disabled=true;
  if(unsubscribeUser)unsubscribeUser();
  unsubscribeUser=db.collection("users").doc(user.uid).onSnapshot(async snap=>{
   if(!snap.exists){statusEl.textContent="No account"; return;}
-  const data=snap.data()||{}; await refreshDailyProgressIfNeeded(data); if(data.watchDay!==localDayKey())return;
+  const data=snap.data()||{}; await refreshDailyProgressIfNeeded(data); if(data.watchDay!==localDayKey()){buildShuffledList(); return;}
   balance=Number(data.balance??data.coins??0); todayCount=Number(data.todayCount||0); watchedVideoIds=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds:[];
   updateUI(); 
   if(todayCount>=DAILY_LIMIT || watchedVideoIds.length>=DAILY_LIMIT){showSeeYouSoon();}
