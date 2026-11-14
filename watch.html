@@ -1,87 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="referrer" content="no-referrer-when-downgrade">
-<title>Watch & Earn</title>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Watch & Earn</title>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:10px 14px;color:#111827}
-.top-bar{background:#6d28d9;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;width:100%;max-width:500px;border-radius:0 0 16px 16px}
-.back-btn{width:45px;height:30px;border-radius:10px;background:#fff;border:2px solid #fecaca;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px}
-.center-pill{background:#fff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap}
-.main-card{width:100%;max-width:500px;background:#fff;border:2px solid #ede9fe;border-radius:20px;padding:10px;margin-top:14px;box-shadow:0 8px 30px rgba(109,40,217,.08)}
-.balance-box{background:linear-gradient(180deg,#1a2e0a,#12230a);border:2px solid #fbbf24;border-radius:16px;padding:10px;text-align:center;color:#fff}
-.balance-value{margin-top:2px;color:#fbbf24;font-size:20px;font-weight:900}
-.status{font-size:11px;color:#facc15;margin-top:4px}
-.video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #111827;width:100%;margin-top:10px;position:relative}
-.player{background:#000;width:100%;min-height:280px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-video{display:block;width:100%;max-height:65vh;background:#000}
-.placeholder{color:#fff;text-align:center;padding:28px 14px;line-height:1.6;font-weight:800;font-size:18px}
-.controls{padding:9px;background:#000;display:flex;flex-direction:column;align-items:center}
-.btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:0;border-radius:12px;padding:12px;font-weight:900;font-size:14px;cursor:pointer;margin-top:8px}
-.btn:disabled{opacity:.55;cursor:not-allowed}
-.secondary-btn{background:#ede9fe;color:#4c1d95}
-#nextBtn{width:60% !important; margin-left:auto; margin-right:auto;}
-.small-note{color:#6b7280;font-size:11px;line-height:1.5;text-align:center;margin:10px 4px 2px}
-.video-title{color:#fff;font-size:13px;font-weight:800;text-align:center;padding:8px 6px 0;background:#000}
-.bubble{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#000;padding:10px 18px;border-radius:999px;font-weight:900;z-index:10000;display:none;max-width:90%;text-align:center}
-#rewardCircle{
- position:absolute; left:50%; top:50%;
- transform:translate(-50%,-50%) scale(0);
- background:radial-gradient(circle at 30% 30%, #fef3c7, #fbbf24 60%, #f59e0b);
- color:#000; width:72px; height:72px; border-radius:50%; border:2px solid #fff;
- display:none; flex-direction:column; align-items:center; justify-content:center;
- font-weight:900; z-index:50; cursor:pointer;
- box-shadow:0 0 0 4px rgba(251,191,36,.3), 0 6px 18px rgba(0,0,0,.5);
- animation:popIn .4s ease forwards;
-}
-#rewardCircle.show{display:flex}
-@keyframes popIn{to{transform:translate(-50%,-50%) scale(1)}}
-.burst-particle{position:absolute; left:50%; top:50%; pointer-events:none; z-index:100; font-size:14px; font-weight:900;}
-@keyframes burstFly{0%{transform:translate(-50%,-50%) scale(1); opacity:1} 100%{transform:translate(var(--x), var(--y)) scale(0) rotate(360deg); opacity:0}}
-.lock-box{background:#fef3c7;border:2px solid #fbbf24;border-radius:14px;padding:14px;text-align:center;margin-top:10px}
-</style>
-</head>
-<body>
+<style>*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:10px 14px;color:#111827}.top-bar{background:#6d28d9;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;width:100%;max-width:500px;border-radius:0 0 16px 16px}.back-btn{width:45px;height:30px;border-radius:10px;background:#fff;border:2px solid #fecaca;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px}.center-pill{background:#fff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%)}.main-card{width:100%;max-width:500px;background:#fff;border:2px solid #ede9fe;border-radius:20px;padding:10px;margin-top:14px}.balance-box{background:linear-gradient(180deg,#1a2e0a,#12230a);border:2px solid #fbbf24;border-radius:16px;padding:10px;text-align:center;color:#fff}.balance-value{margin-top:2px;color:#fbbf24;font-size:20px;font-weight:900}.status{font-size:11px;color:#facc15;margin-top:4px}.video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #111827;width:100%;margin-top:10px;position:relative}.player{background:#000;width:100%;min-height:280px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}video{display:block;width:100%;max-height:65vh;background:#000}.placeholder{color:#fff;text-align:center;padding:28px 14px;line-height:1.6;font-weight:800;font-size:18px}.controls{padding:9px;background:#000;display:flex;flex-direction:column;align-items:center}.btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:0;border-radius:12px;padding:12px;font-weight:900;font-size:14px;cursor:pointer;margin-top:8px}.btn:disabled{opacity:.55}.secondary-btn{background:#ede9fe;color:#4c1d95}#nextBtn{width:60%!important;margin:auto}.small-note{color:#6b7280;font-size:11px;text-align:center;margin:10px 4px 2px}.video-title{color:#fff;font-size:13px;font-weight:800;text-align:center;padding:8px 6px 0;background:#000}.bubble{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#000;padding:10px 18px;border-radius:999px;font-weight:900;z-index:10000;display:none}.lock-box{background:#fef3c7;border:2px solid #fbbf24;border-radius:14px;padding:14px;text-align:center;margin-top:10px}#rewardCircle{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(0);background:radial-gradient(circle at 30% 30%, #fef3c7, #fbbf24 60%, #f59e0b);color:#000;width:72px;height:72px;border-radius:50%;border:2px solid #fff;display:none;flex-direction:column;align-items:center;justify-content:center;font-weight:900;z-index:50;cursor:pointer}#rewardCircle.show{display:flex;animation:popIn .4s forwards}@keyframes popIn{to{transform:translate(-50%,-50%) scale(1)}}.burst-particle{position:absolute;left:50%;top:50%;pointer-events:none;z-index:100;font-size:14px;font-weight:900}@keyframes burstFly{0%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(var(--x), var(--y)) scale(0);opacity:0}}</style></head><body>
 <div id="bubble" class="bubble"></div>
-<div class="top-bar">
-<a href="home.html" class="back-btn">‹</a>
-<div class="center-pill">📺 Watch & Earn</div>
-<div style="width:45px"></div>
-</div>
-<main class="main-card">
-<section class="balance-box">
-<div style="color:#d1d5db;font-size:11px">Your Balance</div>
-<div class="balance-value" id="bal">-- 🪙</div>
-<div style="font-size:12px;color:#e5e7eb;margin-top:3px">Today's progress: <strong id="today">0/10</strong></div>
-<div class="status" id="status">Checking...</div>
-</section>
-<div id="lockPanel" class="lock-box" style="display:none">
-<div style="font-size:15px;font-weight:900;color:#92400e">🔒 Watch is locked</div>
-<div id="lockMsg" style="font-size:13px;margin-top:6px;font-weight:800;color:#111827">Opens in --</div>
-<div style="font-size:11px;color:#6b7280;margin-top:6px">Quiz is now open</div>
-</div>
-<section class="video-box" id="videoBox">
-<div class="video-title" id="videoTitle" style="display:none"></div>
-<div class="player" id="player">
-<div class="placeholder">Your videos are ready.<br>Press Start to begin.</div>
-<div id="rewardCircle">
- <div style="font-size:20px;line-height:1">+2</div>
- <div style="font-size:10px;letter-spacing:1px">COINS</div>
-</div>
-</div>
-<div class="controls" id="controls">
-<button class="btn" id="startBtn" disabled>Loading account...</button>
-<button class="btn secondary-btn" id="nextBtn">Next video</button>
-</div>
-</section>
-<p class="small-note" id="note">Watch 35s to unlock 2 coins.</p>
-</main>
+<div class="top-bar"><a href="home.html" class="back-btn">‹</a><div class="center-pill">📺 Watch & Earn</div><div style="width:45px"></div></div>
+<main class="main-card"><section class="balance-box"><div style="color:#d1d5db;font-size:11px">Your Balance</div><div class="balance-value" id="bal">-- 🪙</div><div style="font-size:12px;color:#e5e7eb;margin-top:3px">Today's progress: <strong id="today">0/10</strong></div><div class="status" id="status">Checking...</div></section>
+<div id="lockPanel" class="lock-box" style="display:none"><div style="font-size:15px;font-weight:900;color:#92400e">🔒 Watch is locked</div><div id="lockMsg" style="font-size:13px;margin-top:6px;font-weight:800">Opens in --</div><div style="font-size:11px;color:#6b7280;margin-top:6px">Quiz is Live now</div></div>
+<section class="video-box" id="videoBox"><div class="video-title" id="videoTitle" style="display:none"></div><div class="player" id="player"><div class="placeholder">Your videos are ready.<br>Press Start to begin.</div><div id="rewardCircle"><div style="font-size:20px">+2</div><div style="font-size:10px">COINS</div></div></div><div class="controls" id="controls"><button class="btn" id="startBtn" disabled>Loading account...</button><button class="btn secondary-btn" id="nextBtn">Next video</button></div></section><p class="small-note">Watch 35s to unlock 2 coins.</p></main>
 <script>
 (() => {
 "use strict";
@@ -101,219 +28,65 @@ const VIDEOS = [
 {id:"video16",title:"Video 16",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video16.mp4"},
 {id:"video19",title:"Video 19",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video19.mp4"}
 ];
-const REQUIRED_WATCH_SECONDS=35;
-const COINS_PER_VIDEO=2;
-const DAILY_LIMIT=10;
-const WINDOW_MS = 30*60*1000;
-const DAY_MS = 24*60*60*1000;
+const REQUIRED_WATCH_SECONDS=35,COINS_PER_VIDEO=2,DAILY_LIMIT=10,WINDOW_MS=30*60*1000,DAY_MS=24*60*60*1000;
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth(); const db=firebase.firestore();
+const auth=firebase.auth(),db=firebase.firestore();
 const el=id=>document.getElementById(id);
-const balanceEl=el("bal"); const todayEl=el("today"); const statusEl=el("status");
-const playerEl=el("player"); const titleEl=el("videoTitle");
-const startBtn=el("startBtn"); const nextBtn=el("nextBtn"); const rewardCircle=el("rewardCircle");
-const controlsEl=el("controls"); const noteEl=el("note");
-const videoBoxEl=el("videoBox"); const lockPanelEl=el("lockPanel"); const lockMsgEl=el("lockMsg");
-let currentUser=null; let balance=0; let todayCount=0; let watchedVideoIds=[];
-let currentVideoIndex=-1; let videoElement=null; let watchedSeconds=0;
-let lastVideoTime=null; let watchInterval=null; let canClaim=false; let isSaving=false;
-let unsubscribeUser=null; let dayResetInProgress=false;
-let shuffledVideos=[];
-let chainLockTimer=null;
-function showBubble(m){const b=el("bubble"); b.textContent=m; b.style.display="block"; clearTimeout(showBubble.timeout); showBubble.timeout=setTimeout(()=>b.style.display="none",2400);}
+const balanceEl=el("bal"),todayEl=el("today"),statusEl=el("status"),playerEl=el("player"),titleEl=el("videoTitle"),startBtn=el("startBtn"),nextBtn=el("nextBtn"),rewardCircle=el("rewardCircle"),controlsEl=el("controls"),videoBoxEl=el("videoBox"),lockPanelEl=el("lockPanel"),lockMsgEl=el("lockMsg");
+let currentUser=null,balance=0,todayCount=0,watchedVideoIds=[],currentVideoIndex=-1,videoElement=null,watchedSeconds=0,lastVideoTime=null,watchInterval=null,canClaim=false,isSaving=false,unsubscribeUser=null,dayResetInProgress=false,shuffledVideos=[],chainLockTimer=null;
+function showBubble(m){const b=el("bubble");b.textContent=m;b.style.display="block";clearTimeout(showBubble.timeout);showBubble.timeout=setTimeout(()=>b.style.display="none",2400);}
 function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
-function hashCode(str){let h=0; for(let i=0;i<str.length;i++){h=(h<<5)-h+str.charCodeAt(i); h|=0;} return h;}
-function seededRandom(seed){let x=Math.sin(seed)*10000; return x-Math.floor(x);}
-function shuffleWithSeed(array, seedStr){
-  let arr=array.slice(); let seed=hashCode(seedStr);
-  for(let i=arr.length-1;i>0;i--){ seed++; const r=Math.floor(seededRandom(seed)* (i+1)); [arr[i],arr[r]]=[arr[r],arr[i]]; }
-  return arr;
-}
-function buildShuffledList(){ if(!currentUser) return VIDEOS.slice(); const day=localDayKey(); const seedStr=day+"_"+currentUser.uid; shuffledVideos=shuffleWithSeed(VIDEOS, seedStr); return shuffledVideos; }
-function getAvailableVideos(){ const list=shuffledVideos.length?shuffledVideos:VIDEOS; return list.filter(v=>!watchedVideoIds.includes(v.id)); }
-function getChain(){ try{ return JSON.parse(localStorage.getItem('chain_v2')||'{}'); }catch(e){ return {}; } }
-function saveChain(c){ localStorage.setItem('chain_v2', JSON.stringify(c)); }
-function formatRemaining(ms){ if(ms<=0) return "0m"; const h=Math.floor(ms/3600000); const m=Math.floor((ms%3600000)/60000); const s=Math.floor((ms%60000)/1000); if(h>0) return `${h}h ${m}m`; if(m>0) return `${m}m ${s}s`; return `${s}s`; }
-function requestNotif(){ if("Notification" in window && Notification.permission==="default"){ Notification.requestPermission(); } }
-function pushNotif(title, body){ try{ if("Notification" in window && Notification.permission==="granted"){ new Notification(title,{body}); } }catch(e){} }
-function checkWatchLocked(){
-  const c=getChain(); const now=Date.now();
-  const nextAvail = c.watch_nextAvail ? Number(c.watch_nextAvail) : 0;
-  if(nextAvail && now < nextAvail){
-    lockPanelEl.style.display="block"; videoBoxEl.style.display="none"; noteEl.style.display="none";
-    const update = () => {
-      const now2=Date.now(); const diff = nextAvail - now2;
-      if(diff<=0){ clearInterval(chainLockTimer); lockPanelEl.style.display="none"; videoBoxEl.style.display="block"; noteEl.style.display="block"; updateUI(); return; }
-      lockMsgEl.textContent=`Opens in ${formatRemaining(diff)} • ${new Date(nextAvail).toLocaleTimeString()}`;
-    };
-    update(); if(chainLockTimer) clearInterval(chainLockTimer); chainLockTimer=setInterval(update,1000);
-    return true;
-  } else {
-    lockPanelEl.style.display="none"; videoBoxEl.style.display="block";
-    if(chainLockTimer) clearInterval(chainLockTimer);
-    return false;
-  }
-}
+function hashCode(str){let h=0;for(let i=0;i<str.length;i++){h=(h<<5)-h+str.charCodeAt(i);h|=0;}return h;}function seededRandom(seed){let x=Math.sin(seed)*10000;return x-Math.floor(x);}
+function shuffleWithSeed(array,seedStr){let arr=array.slice();let seed=hashCode(seedStr);for(let i=arr.length-1;i>0;i--){seed++;const r=Math.floor(seededRandom(seed)*(i+1));[arr[i],arr[r]]=[arr[r],arr[i]];}return arr;}
+function buildShuffledList(){if(!currentUser)return VIDEOS.slice();const day=localDayKey();shuffledVideos=shuffleWithSeed(VIDEOS,day+"_"+currentUser.uid);return shuffledVideos;}
+function getAvailableVideos(){const list=shuffledVideos.length?shuffledVideos:VIDEOS;return list.filter(v=>!watchedVideoIds.includes(v.id));}
+function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}');}catch(e){return {};}}function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c));}
+function formatRemaining(ms){if(ms<=0)return"0m";const h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);if(h>0)return `${h}h ${m}m`;if(m>0)return `${m}m ${s}s`;return `${s}s`;}
+function requestNotif(){if("Notification" in window&&Notification.permission==="default")Notification.requestPermission();}
+function pushNotif(t,b){try{if("Notification" in window&&Notification.permission==="granted")new Notification(t,{body:b});}catch(e){}}
 function onWatchFinishedChain(){
-  const now=Date.now();
-  const c=getChain();
-  if(c.watch_finishedToday === localDayKey()) return;
-  c.watch_finish = now;
-  c.watch_nextAvail = now + DAY_MS;
-  c.watch_finishedToday = localDayKey();
-  c.quiz_open = now; // immediate, no 30 min delay
-  c.quiz_expiry = now + WINDOW_MS;
-  c.quiz_nextAvail = now + DAY_MS;
-  c.quiz_doneToday = false;
-  c.quiz_skippedToday = null;
-  c.quiz_warned10 = false;
-  // clear watch live so it locks
-  c.watch_open = null;
-  c.watch_expiry = null;
+  const now=Date.now(),c=getChain();
+  if(c.watch_finishedToday===localDayKey())return;
+  c.watch_finish=now;c.watch_nextAvail=now+DAY_MS;c.watch_finishedToday=localDayKey();
+  c.quiz_open=now;c.quiz_expiry=now+WINDOW_MS;c.quiz_nextAvail=now+DAY_MS;c.quiz_doneToday=false;
+  c.watch_open=null;c.watch_expiry=null; // IMPORTANT: clear Live so it locks
   saveChain(c);
-  if(currentUser){
-    db.collection("users").doc(currentUser.uid).set({
-      chain: { watch_finish: now, watch_nextAvail: c.watch_nextAvail, quiz_open: c.quiz_open, quiz_expiry: c.quiz_expiry, updated: firebase.firestore.FieldValue.serverTimestamp() }
-    }, {merge:true});
-  }
-  showBubble("Watch done! Quiz is Live now");
-  pushNotif("Watch Completed", "Quiz is Live now - 30 min window");
+  if(currentUser)db.collection("users").doc(currentUser.uid).set({chain:{watch_finish:now,watch_nextAvail:c.watch_nextAvail,quiz_open:c.quiz_open,quiz_expiry:c.quiz_expiry,updated:firebase.firestore.FieldValue.serverTimestamp()}},{merge:true});
+  showBubble(c.watch_finishedToday?"Watch done! Quiz Live now":"");
+  pushNotif("Watch Closed","Quiz is Live now");
 }
-function showReward(){if(todayCount>=DAILY_LIMIT) return; if(watchedVideoIds.includes(VIDEOS[currentVideoIndex]?.id)) return; rewardCircle.classList.add("show"); canClaim=true;}
-function hideReward(){rewardCircle.classList.remove("show"); canClaim=false;}
-function showSeeYouSoon(){
-  titleEl.style.display="none";
-  playerEl.innerHTML='<div class="placeholder">See you soon<br><small style="font-size:12px">Quiz is Live now</small></div>';
-  playerEl.appendChild(rewardCircle);
-  controlsEl.style.display="none"; noteEl.style.display="none";
-  if(todayCount>=DAILY_LIMIT || watchedVideoIds.length>=DAILY_LIMIT){
+function checkWatchLocked(){
+  const c=getChain(),now=Date.now(),nextAvail=c.watch_nextAvail?Number(c.watch_nextAvail):0;
+  if(nextAvail&&now<nextAvail){
+    lockPanelEl.style.display="block";videoBoxEl.style.display="none";
+    const update=()=>{const diff=nextAvail-Date.now();if(diff<=0){clearInterval(chainLockTimer);lockPanelEl.style.display="none";videoBoxEl.style.display="block";updateUI();return;}lockMsgEl.textContent=`Opens in ${formatRemaining(diff)}`;};
+    update();if(chainLockTimer)clearInterval(chainLockTimer);chainLockTimer=setInterval(update,1000);return true;
+  }
+  // RULE: If 6/10 and 30min over -> lock Watch 24h -> open Quiz
+  if(c.watch_open&&c.watch_expiry&&now>=c.watch_expiry&&!c.watch_finishedToday){
     onWatchFinishedChain();
+    lockPanelEl.style.display="block";videoBoxEl.style.display="none";lockMsgEl.textContent=`Watch closed - Quiz Live now`;return true;
   }
+  lockPanelEl.style.display="none";videoBoxEl.style.display="block";if(chainLockTimer)clearInterval(chainLockTimer);return false;
 }
-function updateUI(){
- if(checkWatchLocked()) return;
- balanceEl.textContent=`${balance} 🪙 coins`;
- todayEl.textContent=`${Math.min(todayCount,DAILY_LIMIT)}/${DAILY_LIMIT}`;
- if(todayCount>=DAILY_LIMIT || watchedVideoIds.length>=DAILY_LIMIT){
-   statusEl.textContent="🎉 Daily limit reached! Quiz is Live";
-   showSeeYouSoon();
-   return;
- }
- statusEl.textContent=`Watched ${Math.floor(watchedSeconds)}/${REQUIRED_WATCH_SECONDS}s • ${todayCount}/10 rewarded`;
- controlsEl.style.display="flex"; noteEl.style.display="block"; titleEl.style.display="block";
- if(!videoElement){startBtn.hidden=false; startBtn.textContent="Start watching"; startBtn.disabled=false; nextBtn.hidden=false;}
- else if(videoElement.paused){startBtn.hidden=false; startBtn.textContent="Resume video"; startBtn.disabled=false; nextBtn.hidden=false;}
- else{startBtn.hidden=true; nextBtn.hidden=false;}
-}
-function stopWatchCounter(){if(watchInterval)clearInterval(watchInterval); watchInterval=null; lastVideoTime=null;}
-function resetVideoSession(){stopWatchCounter(); hideReward(); if(videoElement){videoElement.pause(); videoElement.removeAttribute("src"); videoElement.load();} videoElement=null; watchedSeconds=0;}
-function chooseNextVideo(){
- const next=getAvailableVideos()[0];
- if(!next || todayCount>=DAILY_LIMIT){ showSeeYouSoon(); return; }
- currentVideoIndex=VIDEOS.findIndex(v=>v.id===next.id);
- titleEl.style.display="block"; titleEl.textContent=`${next.title} • ${todayCount+1} of 10 • ${REQUIRED_WATCH_SECONDS}s`;
- playerEl.innerHTML='<div class="placeholder">Press Start to load.</div>'; playerEl.appendChild(rewardCircle);
- controlsEl.style.display="flex"; noteEl.style.display="block";
- startBtn.hidden=false; startBtn.textContent="Start watching"; startBtn.disabled=false; nextBtn.hidden=false;
- watchedSeconds=0; updateUI();
-}
-function createVideoElement(video){
- resetVideoSession();
- const v=document.createElement("video"); v.src=video.url; v.controls=true; v.playsInline=true; v.preload="metadata"; v.loop=false;
- v.addEventListener("error",()=>{stopWatchCounter(); playerEl.innerHTML='<div class="placeholder">Load failed.</div>'; playerEl.appendChild(rewardCircle); startBtn.hidden=false; startBtn.textContent="Retry";});
- v.addEventListener("play",()=>{if(!canClaim)startWatchCounter(); updateUI();});
- v.addEventListener("pause",()=>{stopWatchCounter(); updateUI();});
- v.addEventListener("ended",()=>{
-  if(todayCount < DAILY_LIMIT){
-   v.currentTime=0;
-   v.play().catch(()=>{});
-  }
- });
- playerEl.innerHTML=""; playerEl.appendChild(v); playerEl.appendChild(rewardCircle); videoElement=v; return v;
-}
-function startWatchCounter(){
- stopWatchCounter(); if(!videoElement||canClaim)return; lastVideoTime=videoElement.currentTime;
- watchInterval=setInterval(()=>{
-  if(!videoElement||videoElement.paused||videoElement.ended||videoElement.seeking||videoElement.readyState<2){lastVideoTime=videoElement?videoElement.currentTime:null; return;}
-  const ct=videoElement.currentTime; if(lastVideoTime!==null){const d=ct-lastVideoTime; if(d>0&&d<=1.5)watchedSeconds=Math.min(REQUIRED_WATCH_SECONDS,watchedSeconds+d);} lastVideoTime=ct;
-  statusEl.textContent=`Watched ${Math.floor(watchedSeconds)}/${REQUIRED_WATCH_SECONDS}s • ${todayCount}/10`;
-  if(watchedSeconds>=REQUIRED_WATCH_SECONDS){
-    stopWatchCounter();
-    showReward();
-  }
- },500);
-}
-async function startOrResumeVideo(){
- if(!currentUser)return; if(checkWatchLocked()) return;
- if(videoElement){try{await videoElement.play();}catch(e){} return;}
- if(todayCount>=DAILY_LIMIT){showSeeYouSoon(); return;}
- const video=getAvailableVideos()[0]; if(!video){showSeeYouSoon(); return;}
- const v=createVideoElement(video); try{await v.play();}catch(e){}
-}
-function createBurst(){
- for(let i=0;i<10;i++){
-  const p=document.createElement("div"); p.className="burst-particle"; p.textContent="+2";
-  const angle=(i/10)*360; const dist=50+Math.random()*70;
-  const x=Math.cos(angle*Math.PI/180)*dist; const y=Math.sin(angle*Math.PI/180)*dist;
-  p.style.setProperty('--x', x+'px'); p.style.setProperty('--y', y+'px');
-  p.style.animation=`burstFly 0.7s ease-out ${i*0.02}s forwards`;
-  playerEl.appendChild(p); setTimeout(()=>p.remove(), 800);
- }
- rewardCircle.style.transform="translate(-50%,-50%) scale(1.3)";
- setTimeout(()=>{rewardCircle.style.transform="translate(-50%,-50%) scale(0)"; setTimeout(()=>{hideReward(); rewardCircle.style.transform="";}, 200);}, 120);
-}
-async function claimReward(){
- if(!currentUser||!canClaim||isSaving)return;
- const video=VIDEOS[currentVideoIndex]; if(!video||watchedVideoIds.includes(video.id)){hideReward(); return;}
- isSaving=true;
- const userRef=db.collection("users").doc(currentUser.uid); const todayKey=localDayKey();
- try{
-  await db.runTransaction(async t=>{
-   const snap=await t.get(userRef); if(!snap.exists)throw new Error("No account");
-   const data=snap.data()||{}; const savedDay=data.watchDay||todayKey;
-   let count=Number(data.todayCount||0); let ids=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds.slice():[];
-   if(savedDay!==todayKey){count=0; ids=[];}
-   if(count>=DAILY_LIMIT||ids.includes(video.id))throw new Error("Limit");
-   const oldBal=Number(data.balance??data.coins??0); const oldCoins=Number(data.coins??data.balance??0);
-   t.update(userRef,{balance:oldBal+COINS_PER_VIDEO, coins:oldCoins+COINS_PER_VIDEO, todayCount:count+1, watchedVideoIds:ids.concat(video.id), watchDay:todayKey, lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()});
-  });
-  showBubble("+2 coins added!");
- }catch(e){showBubble("Already collected");}finally{isSaving=false;}
-}
-async function refreshDailyProgressIfNeeded(data){
- const todayKey=localDayKey(); if(data.watchDay===todayKey||dayResetInProgress)return; dayResetInProgress=true;
- const userRef=db.collection("users").doc(currentUser.uid);
- try{
-  await db.runTransaction(async t=>{
-   const snap=await t.get(userRef); if(!snap.exists)return; const latest=snap.data()||{}; if(latest.watchDay===todayKey)return;
-   let preserve=false; if(!latest.watchDay&&latest.lastWatchDate){const prev=latest.lastWatchDate.toDate?latest.lastWatchDate.toDate():new Date(latest.lastWatchDate); preserve=!isNaN(prev.getTime())&&localDayKey(prev)===todayKey;}
-   t.update(userRef,{todayCount:preserve?Number(latest.todayCount||0):0, watchedVideoIds:[], watchDay:todayKey});
-  });
- }catch(e){}finally{dayResetInProgress=false;}
-}
-rewardCircle.addEventListener("click", ()=>{createBurst(); setTimeout(claimReward, 180);});
-startBtn.addEventListener("click", startOrResumeVideo);
-nextBtn.addEventListener("click", ()=>{if(videoElement&&!videoElement.paused)videoElement.pause(); resetVideoSession(); chooseNextVideo();});
-auth.onAuthStateChanged(user=>{
- if(!user){location.href="./index.html"; return;}
- currentUser=user; buildShuffledList(); requestNotif();
- statusEl.textContent="Loading..."; startBtn.disabled=true;
- if(unsubscribeUser)unsubscribeUser();
- unsubscribeUser=db.collection("users").doc(user.uid).onSnapshot(async snap=>{
-  if(!snap.exists){statusEl.textContent="No account"; return;}
-  const data=snap.data()||{}; await refreshDailyProgressIfNeeded(data); if(data.watchDay!==localDayKey()){buildShuffledList(); return;}
-  balance=Number(data.balance??data.coins??0); todayCount=Number(data.todayCount||0); watchedVideoIds=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds:[];
-  if(data.chain){ const local=getChain(); let changed=false; for(let k in data.chain){ if(data.chain[k] && !local[k]){ local[k]=data.chain[k]; changed=true; } } if(changed) saveChain(local); }
-  checkWatchLocked();
-  updateUI(); 
-  if(todayCount>=DAILY_LIMIT || watchedVideoIds.length>=DAILY_LIMIT){showSeeYouSoon();}
-  else if(!videoElement){chooseNextVideo();}
- });
-});
+function showReward(){if(todayCount>=DAILY_LIMIT)return;if(watchedVideoIds.includes(VIDEOS[currentVideoIndex]?.id))return;rewardCircle.classList.add("show");canClaim=true;}
+function hideReward(){rewardCircle.classList.remove("show");canClaim=false;}
+function showSeeYouSoon(){titleEl.style.display="none";playerEl.innerHTML='<div class="placeholder">See you soon<br><small>Quiz Live now</small></div>';playerEl.appendChild(rewardCircle);controlsEl.style.display="none";if(todayCount>=DAILY_LIMIT||watchedVideoIds.length>=DAILY_LIMIT)onWatchFinishedChain();}
+function updateUI(){if(checkWatchLocked())return;balanceEl.textContent=`${balance} 🪙 coins`;todayEl.textContent=`${Math.min(todayCount,DAILY_LIMIT)}/${DAILY_LIMIT}`;if(todayCount>=DAILY_LIMIT||watchedVideoIds.length>=DAILY_LIMIT){statusEl.textContent="🎉 Limit reached! Quiz Live";showSeeYouSoon();return;}statusEl.textContent=`Watched ${Math.floor(watchedSeconds)}/${REQUIRED_WATCH_SECONDS}s • ${todayCount}/10`;controlsEl.style.display="flex";titleEl.style.display="block";if(!videoElement){startBtn.hidden=false;startBtn.textContent="Start watching";startBtn.disabled=false;nextBtn.hidden=false;}else if(videoElement.paused){startBtn.hidden=false;startBtn.textContent="Resume video";}else{startBtn.hidden=true;}}
+function stopWatchCounter(){if(watchInterval)clearInterval(watchInterval);watchInterval=null;lastVideoTime=null;}
+function resetVideoSession(){stopWatchCounter();hideReward();if(videoElement){videoElement.pause();videoElement.removeAttribute("src");videoElement.load();}videoElement=null;watchedSeconds=0;}
+function chooseNextVideo(){const next=getAvailableVideos()[0];if(!next||todayCount>=DAILY_LIMIT){showSeeYouSoon();return;}currentVideoIndex=VIDEOS.findIndex(v=>v.id===next.id);titleEl.style.display="block";titleEl.textContent=`${next.title} • ${todayCount+1} of 10 • ${REQUIRED_WATCH_SECONDS}s`;playerEl.innerHTML='<div class="placeholder">Press Start to load.</div>';playerEl.appendChild(rewardCircle);controlsEl.style.display="flex";startBtn.hidden=false;startBtn.textContent="Start watching";watchedSeconds=0;updateUI();}
+function createVideoElement(video){resetVideoSession();const v=document.createElement("video");v.src=video.url;v.controls=true;v.playsInline=true;v.preload="metadata";v.addEventListener("play",()=>{if(!canClaim)startWatchCounter();updateUI();});v.addEventListener("pause",()=>{stopWatchCounter();updateUI();});v.addEventListener("ended",()=>{if(todayCount<DAILY_LIMIT){v.currentTime=0;v.play().catch(()=>{});}});playerEl.innerHTML="";playerEl.appendChild(v);playerEl.appendChild(rewardCircle);videoElement=v;return v;}
+function startWatchCounter(){stopWatchCounter();if(!videoElement||canClaim)return;lastVideoTime=videoElement.currentTime;watchInterval=setInterval(()=>{if(!videoElement||videoElement.paused||videoElement.ended||videoElement.seeking||videoElement.readyState<2){lastVideoTime=videoElement?videoElement.currentTime:null;return;}const ct=videoElement.currentTime;if(lastVideoTime!==null){const d=ct-lastVideoTime;if(d>0&&d<=1.5)watchedSeconds=Math.min(REQUIRED_WATCH_SECONDS,watchedSeconds+d);}lastVideoTime=ct;statusEl.textContent=`Watched ${Math.floor(watchedSeconds)}/${REQUIRED_WATCH_SECONDS}s • ${todayCount}/10`;if(watchedSeconds>=REQUIRED_WATCH_SECONDS){stopWatchCounter();showReward();}},500);}
+async function startOrResumeVideo(){if(!currentUser)return;if(checkWatchLocked())return;if(videoElement){try{await videoElement.play();}catch(e){}return;}if(todayCount>=DAILY_LIMIT){showSeeYouSoon();return;}const video=getAvailableVideos()[0];if(!video){showSeeYouSoon();return;}const v=createVideoElement(video);try{await v.play();}catch(e){}}
+function createBurst(){for(let i=0;i<10;i++){const p=document.createElement("div");p.className="burst-particle";p.textContent="+2";const angle=(i/10)*360,dist=50+Math.random()*70,x=Math.cos(angle*Math.PI/180)*dist,y=Math.sin(angle*Math.PI/180)*dist;p.style.setProperty('--x',x+'px');p.style.setProperty('--y',y+'px');p.style.animation=`burstFly 0.7s ease-out ${i*0.02}s forwards`;playerEl.appendChild(p);setTimeout(()=>p.remove(),800);}rewardCircle.style.transform="translate(-50%,-50%) scale(1.3)";setTimeout(()=>{rewardCircle.style.transform="translate(-50%,-50%) scale(0)";setTimeout(()=>{hideReward();rewardCircle.style.transform="";},200);},120);}
+async function claimReward(){if(!currentUser||!canClaim||isSaving)return;const video=VIDEOS[currentVideoIndex];if(!video||watchedVideoIds.includes(video.id)){hideReward();return;}isSaving=true;const userRef=db.collection("users").doc(currentUser.uid),todayKey=localDayKey();try{await db.runTransaction(async t=>{const snap=await t.get(userRef);if(!snap.exists)throw new Error("No account");const data=snap.data()||{},savedDay=data.watchDay||todayKey;let count=Number(data.todayCount||0),ids=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds.slice():[];if(savedDay!==todayKey){count=0;ids=[];}if(count>=DAILY_LIMIT||ids.includes(video.id))throw new Error("Limit");const oldBal=Number(data.balance??data.coins??0);t.update(userRef,{balance:oldBal+COINS_PER_VIDEO,coins:oldBal+COINS_PER_VIDEO,todayCount:count+1,watchedVideoIds:ids.concat(video.id),watchDay:todayKey,lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()});});showBubble("+2 coins added!");}catch(e){showBubble("Already collected");}finally{isSaving=false;}}
+async function refreshDailyProgressIfNeeded(data){const todayKey=localDayKey();if(data.watchDay===todayKey||dayResetInProgress)return;dayResetInProgress=true;const userRef=db.collection("users").doc(currentUser.uid);try{await db.runTransaction(async t=>{const snap=await t.get(userRef);if(!snap.exists)return;const latest=snap.data()||{};if(latest.watchDay===todayKey)return;let preserve=false;if(!latest.watchDay&&latest.lastWatchDate){const prev=latest.lastWatchDate.toDate?latest.lastWatchDate.toDate():new Date(latest.lastWatchDate);preserve=!isNaN(prev.getTime())&&localDayKey(prev)===todayKey;}t.update(userRef,{todayCount:preserve?Number(latest.todayCount||0):0,watchedVideoIds:[],watchDay:todayKey});});}catch(e){}finally{dayResetInProgress=false;}}
+rewardCircle.addEventListener("click",()=>{createBurst();setTimeout(claimReward,180);});
+startBtn.addEventListener("click",startOrResumeVideo);
+nextBtn.addEventListener("click",()=>{if(videoElement&&!videoElement.paused)videoElement.pause();resetVideoSession();chooseNextVideo();});
+auth.onAuthStateChanged(user=>{if(!user){location.href="./index.html";return;}currentUser=user;buildShuffledList();requestNotif();statusEl.textContent="Loading...";startBtn.disabled=true;if(unsubscribeUser)unsubscribeUser();unsubscribeUser=db.collection("users").doc(user.uid).onSnapshot(async snap=>{if(!snap.exists){statusEl.textContent="No account";return;}const data=snap.data()||{};await refreshDailyProgressIfNeeded(data);if(data.watchDay!==localDayKey()){buildShuffledList();return;}balance=Number(data.balance??data.coins??0);todayCount=Number(data.todayCount||0);watchedVideoIds=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds:[];if(data.chain){const local=getChain();let changed=false;for(let k in data.chain){if(data.chain[k]&&!local[k]){local[k]=data.chain[k];changed=true;}}if(changed)saveChain(local);}checkWatchLocked();updateUI();if(todayCount>=DAILY_LIMIT||watchedVideoIds.length>=DAILY_LIMIT){showSeeYouSoon();}else if(!videoElement){chooseNextVideo();}});});
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&videoElement&&!videoElement.paused)videoElement.pause();});
-window.addEventListener("beforeunload", stopWatchCounter);
 })();
-</script>
-</body>
-</html>
+</script></body></html>
