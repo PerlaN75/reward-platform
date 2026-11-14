@@ -14,19 +14,17 @@ body{background:#f5f3ff;min-height:100vh;padding:0 0 100px 0;color:#111827}
 .tab.active{background:#6d28d9;color:#fff;border-color:#6d28d9;box-shadow:0 3px 0 #4c1d95}
 .tab.inactive{background:#ffffff;color:#4c1d95}
 .input-box{width:100%;padding:14px;margin:8px 0;background:#ffffff;border:2px solid #ede9fe;border-radius:12px;color:#111827;font-weight:700;font-size:14px}
-.input-box:focus{border-color:#a78bfa;outline:none}
 .result{background:#f5f3ff;padding:12px;border-radius:12px;border:2px dashed #a78bfa;text-align:center;margin:8px 0;color:#4c1d95;font-weight:900;font-size:13px}
 .action-btn{width:100%;padding:14px;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:2px solid #f59e0b;border-radius:12px;font-weight:900;font-size:14px;cursor:pointer;margin-top:8px;box-shadow:0 3px 0 #d97706}
-.action-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #d97706}
 #customToast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#ffffff;border:2px solid #ede9fe;color:#4c1d95;padding:14px 20px;border-radius:14px;font-weight:900;z-index:99999;display:none;text-align:center;box-shadow:0 8px 24px rgba(109,40,217,0.15);max-width:90%;font-size:13px}
 .note{font-size:11px;color:#6b7280;text-align:center;margin-top:6px;font-weight:700}
-/* AD GATE */
 #adGate{position:fixed;inset:0;background:rgba(76,29,149,0.55);backdrop-filter:blur(3px);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}
 .gate-box{background:#ffffff;border:2px solid #ede9fe;border-radius:20px;padding:22px;text-align:center;max-width:360px;width:100%;box-shadow:0 12px 32px rgba(109,40,217,0.2)}
 .gate-title{font-weight:900;font-size:16px;color:#4c1d95}.gate-sub{font-size:12px;color:#6b7280;margin:8px 0 14px}
 .gate-btn{width:100%;height:48px;border-radius:12px;border:2px solid #ede9fe;font-weight:900;font-size:14px;cursor:pointer}
-.gate-btn.watch{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 3px 0 #d97706;border-color:#f59e0b}.gate-btn.continue{background:linear-gradient(180deg,#dcfce7,#bbf7d0);color:#166534;border-color:#22c55e;display:none;margin-top:10px}
-#gateTimer{font-size:12px;font-weight:900;color:#ea580c;margin-top:8px}
+.gate-btn.wait{background:#f3f4f6;color:#6b7280;cursor:not-allowed}
+.gate-btn.continue{background:linear-gradient(180deg,#dcfce7,#bbf7d0);color:#166534;border-color:#22c55e;display:none;margin-top:10px}
+#gateTimer{font-size:13px;font-weight:900;color:#4c1d95;margin-top:10px}
 </style>
 </head><body>
 <div id="customToast"></div>
@@ -47,7 +45,7 @@ body{background:#f5f3ff;min-height:100vh;padding:0 0 100px 0;color:#111827}
 <div id="convertTab">
 <input type="number" id="convertAmount" class="input-box" placeholder="Enter coins amount" oninput="calcConvert()">
 <div id="convertResult" class="result">You will receive: 0.0000 USDT</div>
-<div class="note">Rate: 1 coin = $0.0005 USDT • 3000 coins = $1.5 • No minimum</div>
+<div class="note">Rate: 1 coin = $0.0005 USDT • No minimum</div>
 <button class="action-btn" onclick="startConvertGate()">Convert to USDT</button>
 </div>
 <div id="withdrawTab" style="display:none">
@@ -60,22 +58,38 @@ body{background:#f5f3ff;min-height:100vh;padding:0 0 100px 0;color:#111827}
 </div>
 </div>
 
-<div id="adGate"><div class="gate-box"><div id="gateTitle" class="gate-title"></div><div id="gateSub" class="gate-sub"></div><button id="watchAdBtn" class="gate-btn watch"></button><div id="gateTimer"></div><button id="continueBtn" class="gate-btn continue">✅ Continue</button></div></div>
+<!-- SAFE AD GATE - NO CLICK REQUIRED -->
+<div id="adGate"><div class="gate-box"><div id="gateTitle" class="gate-title"></div><div id="gateSub" class="gate-sub"></div><button id="waitBtn" class="gate-btn wait" disabled>⏳ Please wait 10s...</button><div id="gateTimer">Ads loading, please wait...</div><button id="continueBtn" class="gate-btn continue">✅ Continue</button><div style="font-size:10px;color:#9ca3af;margin-top:8px">Ad supports the platform - you don't need to click it</div></div></div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
-function loadMonetagTag(zone, src){const s=document.createElement('script');s.dataset.zone=zone;s.src=src;document.body.appendChild(s);}
+// === SAFE MONETAG LOADING ===
+// Load once per page, not on every click
+(function(){
+  const s1=document.createElement('script');
+  s1.dataset.zone='12211617'; // vignette
+  s1.src='https://n6wxm.com/vignette.min.js';
+  s1.async=true;
+  document.body.appendChild(s1);
+  const s2=document.createElement('script');
+  s2.dataset.zone='12211613'; // tag / in-page
+  s2.src='https://al5sm.com/tag.min.js';
+  s2.async=true;
+  document.body.appendChild(s2);
+})();
+
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
 function showToast(m){const t=document.getElementById('customToast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',4000);}
 const POINT_RATE=0.0005,MIN_WITHDRAW=1.5;
-let currentUser=null,userData={},pendingAction=null;
+let currentUser=null,userData={},pendingAction=null,gateTimerInt=null;
+
 function loadData(d){
   if(!d) return; userData=d;
-  if(d.usdtBalance==null) d.usdtBalance=0; if(d.balance==null) d.balance=d.coins||d.points||0; if(d.coins==null) d.coins=d.balance||0;
+  if(d.usdtBalance==null) d.usdtBalance=0; if(d.balance==null) d.balance=d.coins||d.points||0;
   document.getElementById('coinBal').innerText=(d.balance||0)+' coins';
   document.getElementById('usdEq').innerText=`≈ $${((d.balance||0)*POINT_RATE).toFixed(4)}`;
   document.getElementById('usdtBal').innerText=Number(d.usdtBalance||0).toFixed(4)+' USDT';
@@ -85,38 +99,51 @@ function loadData(d){
 function calcConvert(){const pts=parseFloat(document.getElementById('convertAmount').value)||0;document.getElementById('convertResult').innerText=`You will receive: ${(pts*POINT_RATE).toFixed(4)} USDT`;}
 function switchTab(t){document.getElementById('convertTab').style.display=t==='convert'?'block':'none';document.getElementById('withdrawTab').style.display=t==='withdraw'?'block':'none';document.getElementById('tab1').className=t==='convert'?'tab active':'tab inactive';document.getElementById('tab2').className=t==='withdraw'?'tab active':'tab inactive';}
 
-function openGate(title, sub, action){
+function openSafeGate(title, sub, action){
   pendingAction=action;
   document.getElementById('adGate').style.display='flex';
   document.getElementById('gateTitle').innerText=title;
   document.getElementById('gateSub').innerText=sub;
-  document.getElementById('watchAdBtn').innerText='▶️ Watch Ad (10s)';
-  document.getElementById('watchAdBtn').style.display='block';
-  document.getElementById('watchAdBtn').disabled=false;
-  document.getElementById('continueBtn').style.display='none';
-  document.getElementById('gateTimer').innerText='';
-  loadMonetagTag('12211617','https://n6wxm.com/vignette.min.js');
-  loadMonetagTag('12211613','https://al5sm.com/tag.min.js');
+  const waitBtn=document.getElementById('waitBtn');
+  const contBtn=document.getElementById('continueBtn');
+  waitBtn.style.display='block'; waitBtn.disabled=true; waitBtn.innerText='⏳ Please wait 10s...';
+  contBtn.style.display='none';
+  const timerEl=document.getElementById('gateTimer');
+  let sec=10;
+  timerEl.innerText=`Ads loading... ${sec}s`;
+  clearInterval(gateTimerInt);
+  gateTimerInt=setInterval(()=>{
+    sec--;
+    if(sec>0){
+      timerEl.innerText=`Ads loading... ${sec}s`;
+      waitBtn.innerText=`⏳ Please wait ${sec}s...`;
+    } else {
+      clearInterval(gateTimerInt);
+      waitBtn.style.display='none';
+      timerEl.innerText='✅ Ready to continue';
+      contBtn.style.display='block';
+      // Trigger vignette here if available (safe, user initiated wait)
+      try{ if(window.__monetag_vignette) window.__monetag_vignette(); }catch(e){}
+    }
+  },1000);
 }
 function startConvertGate(){
   const pts=parseFloat(document.getElementById('convertAmount').value);
   if(!pts||pts<=0) return showToast('Enter coins amount');
-  openGate('🔓 Unlock Convert','Wait 10s - ads loading to convert to USDT','convert');
+  if(pts > (userData.balance||0)) return showToast('Not enough coins');
+  openSafeGate('🔓 Converting...','Please wait 10s while we prepare your conversion','convert');
 }
 function startWithdrawGate(){
   const usdtAmount=parseFloat(document.getElementById('withdrawAmount').value);
   const payId=document.getElementById('walletAddress').value.trim();
-  if(!payId) return showToast('Enter Pay ID / Email');
+  if(!payId) return showToast('Enter Pay ID'); 
   if(!usdtAmount||usdtAmount<MIN_WITHDRAW) return showToast('Min $1.5');
-  openGate('🔓 Unlock Withdraw','Wait 10s - ads loading to request withdrawal','withdraw');
+  if(usdtAmount > (userData.usdtBalance||0)) return showToast('Not enough USDT');
+  openSafeGate('🔓 Processing Withdraw','Please wait 10s while we verify your request','withdraw');
 }
-document.getElementById('watchAdBtn').onclick=function(){
-  this.innerText='⏳ Please wait...';this.disabled=true;
-  let sec=10;const timerEl=document.getElementById('gateTimer');timerEl.innerText='⏳ Wait '+sec+'s... - ads loading';
-  const interval=setInterval(()=>{sec--;if(sec>0){timerEl.innerText='⏳ Wait '+sec+'s... - ads loading';}else{clearInterval(interval);document.getElementById('watchAdBtn').style.display='none';timerEl.innerText='✅ Unlocked!';document.getElementById('continueBtn').style.display='block';}},1000);
-};
 document.getElementById('continueBtn').onclick=function(){
   document.getElementById('adGate').style.display='none';
+  clearInterval(gateTimerInt);
   if(pendingAction==='convert') convertPoints();
   if(pendingAction==='withdraw') requestWithdraw();
   pendingAction=null;
@@ -124,27 +151,22 @@ document.getElementById('continueBtn').onclick=function(){
 
 async function convertPoints(){
   const pts=parseFloat(document.getElementById('convertAmount').value);
-  if(!pts||pts<=0) return showToast('Enter coins amount');
-  if(!currentUser) return showToast('Not logged in');
-  const usdt = pts * POINT_RATE; showToast('Converting...');
+  if(!pts) return; const usdt = pts * POINT_RATE; showToast('Converting...');
   try{
     const userRef=db.collection('users').doc(currentUser.uid);
-    await db.runTransaction(async (tx)=>{const snap=await tx.get(userRef);if(!snap.exists) throw "No user";const data=snap.data();const bal=data.balance ?? data.coins ?? 0;if(bal < pts) throw `Not enough coins. You have ${bal}`;tx.update(userRef,{balance: firebase.firestore.FieldValue.increment(-pts),coins: firebase.firestore.FieldValue.increment(-pts),points: firebase.firestore.FieldValue.increment(-pts),usdtBalance: firebase.firestore.FieldValue.increment(usdt),lastConvertAt: firebase.firestore.FieldValue.serverTimestamp()});});
-    await userRef.collection('convertHistory').add({points:pts,coins:pts,usdt:usdt,rate:POINT_RATE,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-    await userRef.collection('earnHistory').add({action:'Converted to USDT',coins:-pts,desc:`${pts} coins → ${usdt.toFixed(4)} USDT`,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-    showToast(`✓ ${pts} → ${usdt.toFixed(4)} USDT added!`);document.getElementById('convertAmount').value=''; calcConvert();
+    await db.runTransaction(async (tx)=>{const snap=await tx.get(userRef);if(!snap.exists) throw "No user";const data=snap.data();const bal=data.balance ?? data.coins ?? 0;if(bal < pts) throw `Not enough coins`;tx.update(userRef,{balance: firebase.firestore.FieldValue.increment(-pts),coins: firebase.firestore.FieldValue.increment(-pts),points: firebase.firestore.FieldValue.increment(-pts),usdtBalance: firebase.firestore.FieldValue.increment(usdt),lastConvertAt: firebase.firestore.FieldValue.serverTimestamp()});});
+    showToast(`✓ ${pts} → ${usdt.toFixed(4)} USDT`);document.getElementById('convertAmount').value=''; calcConvert();
   }catch(e){showToast('Failed: '+(e.message||e));}
 }
 async function requestWithdraw(){
   const usdtAmount=parseFloat(document.getElementById('withdrawAmount').value);
   const payId=document.getElementById('walletAddress').value.trim();
   const method=document.getElementById('payMethod').value;
-  if(!payId) return showToast('Enter Pay ID / Email');if(!usdtAmount||usdtAmount<MIN_WITHDRAW) return showToast('Min $1.5');if(!currentUser) return showToast('Not logged in');
-  const realUsdt=userData.usdtBalance||0;if(usdtAmount>realUsdt) return showToast(`Not enough USDT. You have ${realUsdt.toFixed(4)} - Convert first`);showToast('Requesting...');
+  if(!payId||!usdtAmount) return; showToast('Requesting...');
   try{
     const userRef=db.collection('users').doc(currentUser.uid);
-    await db.runTransaction(async (tx)=>{const snap=await tx.get(userRef);const data=snap.data();if((data.usdtBalance||0) < usdtAmount) throw "Not enough USDT";tx.update(userRef,{usdtBalance: firebase.firestore.FieldValue.increment(-usdtAmount)});});
-    await db.collection('withdrawals').add({uid:currentUser.uid,userId:currentUser.uid,username:userData.username||'',email:userData.email||currentUser.email||'',method:method,crypto:'USDT',payId:payId,amount:usdtAmount,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    await db.runTransaction(async (tx)=>{const snap=await tx.get(userRef);if((snap.data().usdtBalance||0) < usdtAmount) throw "Not enough USDT";tx.update(userRef,{usdtBalance: firebase.firestore.FieldValue.increment(-usdtAmount)});});
+    await db.collection('withdrawals').add({uid:currentUser.uid,username:userData.username||'',email:userData.email||currentUser.email||'',method:method,crypto:'USDT',payId:payId,amount:usdtAmount,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp()});
     showToast(`Withdraw ${usdtAmount.toFixed(2)} USDT requested!`);document.getElementById('withdrawAmount').value='';document.getElementById('walletAddress').value='';
   }catch(e){try{await db.collection('users').doc(currentUser.uid).update({usdtBalance: firebase.firestore.FieldValue.increment(usdtAmount)});}catch(_){}showToast('Failed: '+(e.message||e));}
 }
