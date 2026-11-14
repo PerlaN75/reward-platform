@@ -56,7 +56,6 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 </div>
 </div>
 <script>
-(function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}');if(c&&(c.balance!=null||c.points!=null||c.username)){var bal=c.balance??c.points??0;var usdt=c.usdtBalance??0;document.getElementById('balance').textContent=bal+' coins';document.getElementById('usdBalance').textContent='= $'+(bal*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').textContent=Number(usdt).toFixed(4)+' USDT';if(c.username)document.getElementById('headerText').textContent=c.username;}}catch(e){}})();
 const WINDOW=30*60*1000, DAY=24*60*60*1000;
 function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}')}catch(e){return {}}}
 function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c))}
@@ -79,21 +78,50 @@ function setBtnState(btn, state, countdownText){
     const b=document.createElement('span'); b.className='badge padlock'; b.textContent='🔒 '+countdownText; btn.appendChild(b);
   }
 }
+function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
+
 function evaluateChain(){
-  const c=getChain(); const now=Date.now();
+  const c=getChain(); const now=Date.now(); let changed=false;
+
+  // 1. If Watch Live expired -> LOCK Watch, OPEN Quiz
+  if(c.watch_open && now >= c.watch_expiry && !c.watch_nextAvail){
+    c.watch_nextAvail = now + DAY;
+    c.watch_finishedToday = localDayKey();
+    if(!c.quiz_open || c.quiz_open < c.watch_open){
+      c.quiz_open = now;
+      c.quiz_expiry = now + WINDOW;
+    }
+    changed=true;
+  }
+
+  // 2. If Watch was finished by count (from watch.html), ensure Quiz is open
+  if(c.watch_finishedToday && !c.quiz_open){
+    c.quiz_open = now; c.quiz_expiry = now + WINDOW; changed=true;
+  }
+
+  // 3. If Quiz window expired -> OPEN Articles
   if(c.quiz_open && c.quiz_expiry && now > c.quiz_expiry && !c.quiz_doneToday && c.quiz_finishedToday!==localDayKey()){
     if(!c.articles_open || c.articles_open < c.quiz_expiry){
       c.articles_open = c.quiz_expiry; c.articles_expiry = c.articles_open + WINDOW;
-      c.quiz_nextAvail = c.quiz_open + DAY; c.quiz_skippedToday = localDayKey(); saveChain(c);
+      c.quiz_nextAvail = c.quiz_open + DAY; c.quiz_skippedToday = localDayKey(); changed=true;
     }
   }
+
+  if(changed) saveChain(c);
+
+  // RENDER WATCH
   if(c.watch_nextAvail && now < c.watch_nextAvail){
     setBtnState(btnWatch,'locked','');
   } else if(c.watch_open && now < c.watch_expiry && !c.watch_finishedToday){
     setBtnState(btnWatch,'live', fmtShort(c.watch_expiry-now));
+  } else if(c.watch_finishedToday && c.watch_nextAvail && now < c.watch_nextAvail){
+    setBtnState(btnWatch,'locked','');
   } else {
+    // No lock, no live -> Open (first time)
     setBtnState(btnWatch,'open','');
   }
+
+  // RENDER QUIZ
   if(!c.quiz_open){
     setBtnState(btnQuiz,'locked','');
   } else if(now < c.quiz_open){
@@ -103,6 +131,8 @@ function evaluateChain(){
   } else {
     setBtnState(btnQuiz,'locked','');
   }
+
+  // RENDER ARTICLES
   if(!c.articles_open){
     setBtnState(btnArticles,'locked','');
   } else if(now < c.articles_open){
@@ -113,10 +143,10 @@ function evaluateChain(){
     setBtnState(btnArticles,'locked','');
   }
 }
-function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
+
 window.goWatch=()=>{
   const c=getChain(); const now=Date.now();
-  if(c.watch_nextAvail && now < c.watch_nextAvail){showToast('Watch locked'); return;}
+  if(c.watch_nextAvail && now < c.watch_nextAvail){showToast('Watch locked - Quiz is next'); return;}
   if(!c.watch_open || now > c.watch_expiry){
     c.watch_open = now; c.watch_expiry = now + WINDOW; saveChain(c);
   }
@@ -126,15 +156,17 @@ window.goQuiz=()=>{
   const c=getChain(); const now=Date.now();
   if(!c.quiz_open){showToast("Finish Watch first"); return;}
   if(now < c.quiz_open){showToast(`Quiz in ${fmtShort(c.quiz_open-now)}`); return;}
-  if(now > c.quiz_expiry){showToast("Expired"); return;}
+  if(now > c.quiz_expiry){showToast("Expired - Articles open"); return;}
   location.href='./quiz_earn.html';
 };
 window.goArticles=()=>{
   const c=getChain(); const now=Date.now();
   if(!c.articles_open){showToast("Finish previous tasks"); return;}
   if(now < c.articles_open){showToast(`Articles in ${fmtShort(c.articles_open-now)}`); return;}
+  if(now > c.articles_expiry){showToast("Expired"); return;}
   location.href='./articles_earn.html';
 };
+
 setInterval(evaluateChain,1000); evaluateChain();
 </script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
