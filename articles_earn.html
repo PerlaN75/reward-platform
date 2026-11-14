@@ -2,196 +2,228 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="referrer" content="no-referrer-when-downgrade" />
-<title>Articles Earn - Coins</title>
-<script src="https://www.google.com/recaptcha/enterprise.js?render=6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1"></script>
-<script data-cfasync="false" src="https://bicea.org/14/d77b1388ce099539f64c8509ea58804e"></script>
-<style>
-*{ -webkit-tap-highlight-color:transparent } *:focus{outline:none !important}
-body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh}
-.top-bar{
-  background:#6d28d9;
-  height:62px;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 14px 0 calc(20px + env(safe-area-inset-left,0px));
-  padding-top:env(safe-area-inset-top,0px);
-  height:calc(62px + env(safe-area-inset-top,0px));
-  position:sticky;top:0;z-index:100;width:100%;
-  box-shadow:0 4px 12px rgba(109,40,217,0.3)
-}
-.back{
-  width:45px;height:28px;background:#ffffff;border:2px solid #fecaca;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;color:#991b1b;font-weight:900;
-  font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5;flex-shrink:0;
-  margin-left:10px;
-}
-.center-pill{background:#ffffff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%);box-shadow:0 2px 8px rgba(0,0,0,0.08)}
-.card{background:#ffffff;border:2px solid #ede9fe;border-radius:22px;padding:16px 14px 18px 14px;width:100%;max-width:380px;text-align:center;box-shadow:0 8px 30px rgba(109,40,217,0.08);margin:14px auto 30px;position:relative;overflow:hidden}
-.badge{border:1.5px solid #22c55e;border-radius:20px;padding:6px 12px;display:inline-block;margin:8px 0;color:#166534;background:#f0fdf4;font-weight:bold;font-size:13px}
-.bar{height:7px;background:#ede9fe;border-radius:10px;margin:10px 0;overflow:hidden}
-.fill{height:100%;background:#22c55e;width:0%;transition:0.3s}
-#countText{font-size:12px;color:#4c1d95;margin:6px 0;font-weight:900}
-.tip-text{font-size:11px;color:#6d28d9;margin:8px 0 8px 0;font-weight:900;line-height:1.3;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px}
-.article-card{background:#ffffff;border:1.5px solid #ede9fe;border-radius:14px;padding:12px;margin:10px 0;text-align:left;box-shadow:0 2px 8px rgba(0,0,0,0.03)}
-.article-card.easy{border-left:4px solid #22c55e} .article-card.standard{border-left:4px solid #f59e0b} .article-card.premium{border-left:4px solid #8b5cf6;background:linear-gradient(180deg,#faf5ff,#ffffff)}
-.article-top{display:flex;gap:10px;align-items:flex-start}
-.article-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
-.article-info{flex:1}
-.category{font-size:8px;font-weight:900;letter-spacing:0.8px;padding:3px 6px;border-radius:4px;display:inline-block;margin-bottom:4px}
-.easy .category{background:#dcfce7;color:#166534} .standard .category{background:#fef3c7;color:#92400e} .premium .category{background:#ede9fe;color:#6b21a8}
-.article-title{font-size:13.5px;font-weight:900;color:#111827;line-height:1.25;margin:0}
-.article-desc{font-size:11px;color:#6b7280;line-height:1.4;margin:4px 0 0 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.article-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
-.read-meta{font-size:10px;color:#9ca3af;font-weight:600}
-.btn{padding:8px 16px;border-radius:20px;border:none;font-weight:900;font-size:12px;cursor:pointer;min-width:72px}
-.btn.start{background:linear-gradient(180deg,#dcfce7,#bbf7d0);color:#000;border:2px solid #22c55e;box-shadow:0 2px 0 #86efac}
-.btn.done{background:#e5e7eb;color:#9ca3af;border:2px solid #e5e7eb}
-.btn.wait{background:#fef3c7;color:#92400e;border:2px solid #fbbf24;cursor:not-allowed}
-.ad-label{font-size:8px;color:#8b5cf6;margin:10px 0 4px 0;letter-spacing:0.8px;font-weight:900;text-align:center;text-transform:uppercase}
-.ad-set{background:#ffffff;border:2px solid #fef3c7;border-radius:16px;padding:10px;margin:14px 0;box-shadow:0 4px 12px rgba(251,191,36,0.12)}
-.modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(76,29,149,0.45);backdrop-filter:blur(2px);justify-content:center;align-items:center;padding:8px;box-sizing:border-box}
-.modal-content{background:#ffffff;border:2px solid #ede9fe;border-radius:14px;padding:14px 12px;width:92%;max-width:340px;text-align:center;box-shadow:0 12px 32px rgba(109,40,217,0.15);max-height:95vh;overflow-y:auto}
-.timer{font-size:32px;color:#22c55e;font-weight:bold;margin:6px 0}
-.article-box{background:#ffffff;border:1px solid #ede9fe;border-radius:10px;padding:12px;margin:10px 0;text-align:left;font-size:13px;line-height:1.6;color:#374151;max-height:280px;overflow-y:auto}
-.bonus-btn{width:100%;padding:14px;background:linear-gradient(90deg,#bbf7d0,#22c55e);color:#000;border:none;border-radius:12px;font-weight:900;font-size:15px;cursor:pointer;margin:10px 0;box-shadow:0 3px 0 #15803d;display:none}
-.bonus-btn.claimed{background:#e5e7eb !important;color:#9ca3af !important;border:2px solid #e5e7eb !important;box-shadow:none !important}
-#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#ffffff;border:2px solid #ede9fe;color:#111827;padding:12px 18px;border-radius:12px;font-weight:bold;z-index:9999;display:none;max-width:90%;text-align:center;box-shadow:0 8px 24px rgba(109,40,217,0.15)}
-#entryGate{position:absolute;inset:0;background:linear-gradient(180deg,#ffffff,#f5f3ff);z-index:90;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:18px 14px;text-align:center;overflow-y:auto;border:2px solid #ede9fe}
-#gateTimer{width:64px;height:64px;border-radius:50%;background:linear-gradient(180deg,#ffffff,#ede9fe);border:3px solid #a78bfa;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#22c55e;margin:10px auto;box-shadow:0 3px 10px rgba(109,40,217,0.12)}
-.ad-box{display:flex;justify-content:center;align-items:center;background:#fff;border:2px solid #ede9fe;border-radius:12px;width:100%;overflow:hidden;min-height:70px}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer-when-downgrade">
+<title>Articles & Earn</title>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:10px 14px;color:#111827}
+.top-bar{background:#6d28d9;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;width:100%;max-width:500px;border-radius:0 0 16px 16px}
+.back-btn{width:45px;height:30px;border-radius:10px;background:#fff;border:2px solid #fecaca;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px}
+.center-pill{background:#fff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%)}
+.main-card{width:100%;max-width:500px;background:#fff;border:2px solid #ede9fe;border-radius:20px;padding:12px;margin-top:14px}
+.balance-box{background:linear-gradient(180deg,#1a2e0a,#12230a);border:2px solid #fbbf24;border-radius:16px;padding:10px;text-align:center;color:#fff}
+.balance-value{color:#fbbf24;font-size:20px;font-weight:900}
+.status{font-size:11px;color:#facc15;margin-top:4px}
+.article-box{border:2px solid #ede9fe;border-radius:16px;padding:14px;margin-top:12px;background:#fff}
+.article-title{font-weight:900;font-size:15px;color:#111827}
+.article-text{font-size:13px;color:#374151;margin-top:8px;line-height:1.6;max-height:300px;overflow:auto}
+.btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:0;border-radius:12px;padding:12px;font-weight:900;font-size:14px;cursor:pointer;margin-top:10px}
+.btn:disabled{opacity:.5}
+.lock-box{background:#fef3c7;border:2px solid #fbbf24;border-radius:14px;padding:14px;text-align:center;margin-top:10px}
+.bubble{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#000;padding:10px 18px;border-radius:999px;font-weight:900;z-index:10000;display:none}
+</style>
 </head>
 <body>
-<div class="top-bar">
-  <div class="back" onclick="location.href='home.html'">‹</div>
-  <div class="center-pill">📰 Articles Earn</div>
-  <div style="width:45px"></div>
+<div id="bubble" class="bubble"></div>
+<div class="top-bar"><a href="home.html" class="back-btn">‹</a><div class="center-pill">📰 Articles & Earn</div><div style="width:45px"></div></div>
+<main class="main-card">
+<section class="balance-box">
+<div style="color:#d1d5db;font-size:11px">Your Balance</div>
+<div class="balance-value" id="bal">-- 🪙</div>
+<div style="font-size:12px;color:#e5e7eb;margin-top:3px">Articles today: <strong id="today">0/5</strong></div>
+<div class="status" id="status">Checking...</div>
+</section>
+
+<div id="lockPanel" class="lock-box" style="display:none">
+<div style="font-size:15px;font-weight:900;color:#92400e">🔒 Articles locked</div>
+<div id="lockMsg" style="font-size:13px;margin-top:6px;font-weight:800">Opens after Quiz</div>
 </div>
-<div id="toast"></div>
-<div class="card">
-<div id="entryGate">
-  <div style="font-size:32px">⏳</div>
-  <h3 style="margin:8px 0 4px;font-size:15px;color:#4c1d95">Loading articles...</h3>
-  <div id="gateTimer">10</div>
-  <div style="font-size:11px;color:#8b5cf6;font-weight:700;margin-bottom:12px">Please wait 10s - ads loading</div>
-  <div style="width:100%">
-    <div class="ad-label">ADVERTISEMENT</div>
-    <div id="container-23e1e60b5d9d8473949f8c3ca250759b" class="ad-box" style="min-height:120px"></div>
-    <script async="async" data-cfasync="false" src="https://bicea.org/21/23e1e60b5d9d8473949f8c3ca250759b"></script>
-    <div style="height:12px"></div>
-    <div class="ad-label">ADVERTISEMENT</div>
-    <div id="gateMidBanner" class="ad-box" style="min-height:260px"></div>
-  </div>
-</div>
-<div class="badge" id="totalPtsBadge">Total Today: 0 🪙 Coins</div>
-<div class="bar"><div class="fill" id="progBar"></div></div>
-<div id="countText">0/10 done - Resets midnight</div>
-<div class="tip-text">Learn Crypto, Finance & Tech - Earn while reading!</div>
-<div class="ad-label">ADVERTISEMENT</div>
-<div id="topBanner" class="ad-box"></div>
-<div id="group0"></div>
-<div class="ad-set"><div class="ad-label">ADVERTISEMENT</div><div id="midBanner1" class="ad-box"></div></div>
-<div id="group1"></div>
-<div class="ad-set"><div class="ad-label">ADVERTISEMENT</div><div id="midBanner2" class="ad-box"></div></div>
-<div id="group2"></div>
-<div class="ad-set"><div class="ad-label">ADVERTISEMENT</div><div id="midBanner3" class="ad-box"></div></div>
-<div id="group3"></div>
-<div class="ad-set"><div class="ad-label">ADVERTISEMENT</div><div id="midBanner4" class="ad-box"></div></div>
-<div id="group4"></div>
-<button id="bonusBtn" class="bonus-btn" onclick="startBonus()">Claim Bonus 4 Coins - 12s</button>
-<div style="font-size:12px;color:#4c1d95;margin-top:16px;font-weight:900;line-height:1.4">3000 Coins = $1.5 • Bonus 4 coins for completing all 10</div>
-</div>
-<div id="timerModal" class="modal"><div class="modal-content"><div style="font-size:26px">📰</div><h3 id="modalTitle">Reading...</h3><p id="modalDesc">Loading...</p><div class="timer" id="timerNum">12</div><div id="distractPhase" style="font-size:11px;color:#22c55e;font-weight:bold;margin:6px 0">Keep page open</div><div id="articleBox" class="article-box"></div></div></div>
+
+<section id="contentBox">
+<div id="articlesList"></div>
+</section>
+</main>
+
 <script>
-function injectBanner(id,key,w,h){
-  const c=document.getElementById(id); if(!c) return;
-  c.innerHTML='';
-  const s1=document.createElement('script'); s1.text=`atOptions={'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}};`; c.appendChild(s1);
-  const s2=document.createElement('script'); s2.src=`https://bicea.org/22/${key}`; s2.async=true; c.appendChild(s2);
-  setTimeout(()=>{
-    const has=c.querySelector('iframe');
-    if(!has){
-      if(h==250){
-        const fb1=document.createElement('script'); fb1.innerHTML=`atOptions={'key':'fe25c5bd01f4bc5e60243e36cd83277c','format':'iframe','height':50,'width':320,'params':{}};`;
-        c.innerHTML=''; c.appendChild(fb1);
-        const fb2=document.createElement('script'); fb2.src=`https://bicea.org/22/fe25c5bd01f4bc5e60243e36cd83277c`; c.appendChild(fb2);
-        setTimeout(()=>{ if(!c.querySelector('iframe')){ const adSet=c.closest('.ad-set'); if(adSet) adSet.style.display='none'; }},3500);
-      }else{
-        const adSet=c.closest('.ad-set'); 
-        if(adSet) adSet.style.display='none'; else { c.style.display='none'; const l=c.previousElementSibling; if(l&&l.classList.contains('ad-label')) l.style.display='none'; }
-      }
+(() => {
+"use strict";
+const ARTICLES = [
+{id:"a1",title:"How to Save Money Daily",text:"Saving money starts with small habits. Track your expenses, set a daily limit, and avoid impulse buying. Even 500 RWF a day becomes 15,000 RWF a month. Consistency is the key to financial freedom.",reward:2},
+{id:"a2",title:"Benefits of Reading",text:"Reading improves focus, vocabulary, and mental health. Just 10 minutes a day can reduce stress by 60%. Make reading part of your daily routine.",reward:2},
+{id:"a3",title:"Healthy Living Tips",text:"Drink 2L water, walk 30 minutes, sleep 7-8 hours. Small healthy choices compound over time into a strong body and clear mind.",reward:2},
+{id:"a4",title:"How to Stay Focused",text:"Remove distractions, set a timer for 25 minutes, work, then take 5 min break. This Pomodoro technique boosts productivity.",reward:2},
+{id:"a5",title:"Why Learn New Skills",text:"The world changes fast. Learning a new skill every month keeps you relevant and opens new income opportunities.",reward:2}
+];
+const DAILY_LIMIT=5, WINDOW_MS=30*60*1000, DAY_MS=24*60*60*1000;
+const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(), db=firebase.firestore();
+const el=id=>document.getElementById(id);
+const balEl=el("bal"), todayEl=el("today"), statusEl=el("status"), lockPanel=el("lockPanel"), lockMsg=el("lockMsg"), listEl=el("articlesList"), contentBox=el("contentBox");
+let currentUser=null, balance=0, todayCount=0, readIds=[], unsubscribe=null, timer=null;
+
+function showBubble(m){const b=el("bubble");b.textContent=m;b.style.display="block";clearTimeout(showBubble.t);showBubble.t=setTimeout(()=>b.style.display="none",2200);}
+function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
+function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}');}catch(e){return {};}}
+function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c));}
+function formatRemaining(ms){if(ms<=0)return"0m";const h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);if(h>0)return `${h}h ${m}m`;if(m>0)return `${m}m ${s}s`;return `${s}s`;}
+
+// ADS REMOVED - will reset later
+// const ADS_BLOCK = ``;
+
+function checkArticlesState(){
+  const c=getChain(), now=Date.now();
+  // not yet unlocked? Watch or Quiz still active
+  if(!c.articles_open && !c.quiz_skippedToday && !c.quiz_doneToday){
+    // if quiz still live, articles locked
+    if(c.quiz_open && c.quiz_expiry && now < c.quiz_expiry){
+      lockPanel.style.display="block"; contentBox.style.display="none";
+      lockMsg.textContent=`Opens after Quiz - ${formatRemaining(c.quiz_expiry - now)}`;
+      return true; // locked
     }
-  },4000);
+    if(!c.quiz_open){
+      lockPanel.style.display="block"; contentBox.style.display="none";
+      lockMsg.textContent=`Complete Watch & Quiz first`;
+      return true;
+    }
+  }
+  // Articles live window
+  if(c.articles_open && c.articles_expiry){
+    const diff = c.articles_expiry - now;
+    if(diff > 0){
+      lockPanel.style.display="none"; contentBox.style.display="block";
+      statusEl.textContent=`Live ${formatRemaining(diff)} • ${todayCount}/${DAILY_LIMIT}`;
+      if(timer) clearInterval(timer);
+      timer=setInterval(()=>{
+        const d=c.articles_expiry - Date.now();
+        if(d<=0){clearInterval(timer); onArticlesExpired(); checkArticlesState();}
+        else statusEl.textContent=`Live ${formatRemaining(d)} • ${todayCount}/${DAILY_LIMIT}`;
+      },1000);
+      return false; // open
+    } else {
+      onArticlesExpired();
+      return true;
+    }
+  }
+  // 24h lock
+  if(c.articles_nextAvail && now < c.articles_nextAvail){
+    lockPanel.style.display="block"; contentBox.style.display="none";
+    const diff=c.articles_nextAvail - now;
+    lockMsg.textContent=`Opens in ${formatRemaining(diff)}`;
+    if(timer) clearInterval(timer);
+    timer=setInterval(()=>{const d=c.articles_nextAvail - Date.now(); if(d<=0){clearInterval(timer); lockPanel.style.display="none"; contentBox.style.display="block";} else lockMsg.textContent=`Opens in ${formatRemaining(d)}`;},1000);
+    return true;
+  }
+  // first time open logic - if quiz done/skipped, open articles
+  if((c.quiz_doneToday || c.quiz_skippedToday) && !c.articles_open){
+    openArticlesNow();
+    return false;
+  }
+  return false;
 }
-function loadGateBanners(){
-  injectBanner('gateMidBanner','bf10cacdbe9f50d0c5d66a94e0785f29',300,250);
+
+function openArticlesNow(){
+  const now=Date.now(), c=getChain();
+  if(c.articles_open) return;
+  c.articles_open=now;
+  c.articles_expiry=now+WINDOW_MS;
+  c.articles_nextAvail=now+DAY_MS;
+  c.articles_doneToday=false;
+  saveChain(c);
+  if(currentUser) db.collection("users").doc(currentUser.uid).set({chain:{articles_open:now,articles_expiry:c.articles_expiry,updated:firebase.firestore.FieldValue.serverTimestamp()}},{merge:true});
 }
-function loadMainBanners(){
-  const gate=document.getElementById('entryGate');
-  if(gate) gate.remove();
-  injectBanner('topBanner','fe25c5bd01f4bc5e60243e36cd83277c',468,60);
-  setTimeout(()=>injectBanner('midBanner1','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),800);
-  setTimeout(()=>injectBanner('midBanner2','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),2000);
-  setTimeout(()=>injectBanner('midBanner3','bf10cacdbe9f50d0c5d66a94e0785f29',300,250),3200);
-  setTimeout(()=>injectBanner('midBanner4','fe25c5bd01f4bc5e60243e36cd83277c',468,60),4400);
+
+function onArticlesExpired(){
+  const now=Date.now(), c=getChain();
+  if(c.articles_doneToday) return;
+  c.articles_open=null;
+  c.articles_expiry=null;
+  c.articles_nextAvail=now+DAY_MS;
+  c.articles_doneToday=true;
+  c.watch_nextAvail=now+DAY_MS;
+  c.quiz_nextAvail=now+DAY_MS;
+  c.watch_finishedToday=localDayKey();
+  saveChain(c);
+  lockPanel.style.display="block"; contentBox.style.display="none";
+  lockMsg.textContent=`Closed - Opens tomorrow`;
+  showBubble("Articles closed for today");
 }
-function refreshBannersAfterClaim(){
-  setTimeout(()=>{
-    injectBanner('midBanner1','bf10cacdbe9f50d0c5d66a94e0785f29',300,250);
-    injectBanner('midBanner2','bf10cacdbe9f50d0c5d66a94e0785f29',300,250);
-  },600);
-}
-loadGateBanners();
-let gateSec=10;const gateTimerEl=document.getElementById('gateTimer');const gateInt=setInterval(()=>{gateSec--; if(gateTimerEl) gateTimerEl.innerText=gateSec; if(gateSec<=0){ clearInterval(gateInt); loadMainBanners(); }},1000);
-const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};firebase.initializeApp(firebaseConfig);try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}const auth=firebase.auth(),db=firebase.firestore();
-const articles=[{title:"What is Bitcoin? Complete Beginner Guide 2026",cat:"CRYPTO",icon:"₿",excerpt:"Learn how Bitcoin started and why people call it digital gold for long term.",text:"Bitcoin was created in 2009 by Satoshi Nakamoto as the first decentralized cryptocurrency. Unlike Rwandan Francs controlled by central bank, Bitcoin works on blockchain - a public ledger that no single company controls. The main idea is peer-to-peer money without banks. People call it digital gold because supply is limited to 21 million coins, so it cannot be printed like paper money. In Rwanda, many young people learn Bitcoin first to understand how crypto works before they start earning USDT. Bitcoin price is volatile, it can go up 10% or down 10% in a day, so experts advise to learn and hold small amounts, never invest what you cannot afford to lose. You can store it in Trust Wallet or Binance and secure with seed phrase."},{title:"USDT Explained: Why $1 Always Equals 1 USDT",cat:"CRYPTO",icon:"💵",excerpt:"Understand why USDT is stable and used for payments, not like volatile Bitcoin.",text:"USDT (Tether) is called a stablecoin because its value is pegged to US Dollar, 1 USDT is always around $1. It was created to solve Bitcoin volatility problem. While Bitcoin can drop 20% in a week, USDT stays stable, so platforms like Reward Platform RW prefer to pay in USDT because users know exactly what they get. There are two main networks to send USDT: TRC20 (Tron network) with fee around $1, and BEP20 (BNB Smart Chain) with fee only $0.20, which is much cheaper for $1.5 withdrawals. In Rwanda, most users prefer BEP20 because it saves fees. Always double-check address: TRC20 addresses start with T, BEP20 start with 0x. Sending to wrong network means losing money forever."},{title:"How Blockchain Works - Explained Like You Are 12",cat:"TECH",icon:"⛓️",excerpt:"A shared notebook everyone can see but no one can erase - that's blockchain.",text:"Imagine a notebook in a classroom where every student can write, everyone can see all pages, but no one can erase old writing with tippex. Each page in notebook is a block, and pages are linked together with glue - that's a chain, so blockchain. When you send 1 USDT to a friend, the transaction is written in notebook and thousands of computers worldwide verify it. No bank in middle, no MTN needing to approve. This makes it transparent: you can see transaction on blockchain explorer. It also makes it secure: to cheat you would need to change all copies of notebook in all computers at same time, which is impossible. This technology is used for Bitcoin, Ethereum, and many reward platforms use it for payments."},{title:"5 Real Ways to Earn Money Online in Rwanda in 2026",cat:"FINANCE",icon:"💡",excerpt:"From freelancing to small tasks, discover legit online income that works in Kigali.",text:"Many Rwandans search how to earn online without scam. Here are 5 legit methods that work in 2026. 1) Freelance writing on Upwork or Fiverr - write articles in English or Kinyarwanda for $5. 2) Selling photos on Shutterstock if you have phone camera. 3) Small tasks and surveys like Reward Platform RW - 10 tasks daily = 3000 coins = $1.5 = 45$ per month extra, enough for internet and airtime. 4) Tutoring students online via WhatsApp video teaching math or English. 5) Crypto rewards and referrals - invite friends and earn 10% of their earnings. The key is consistency: doing small tasks every day for 30 days is better than searching big money once. Never pay to start earning, real platforms are free like ours."},{title:"How to Keep Your Crypto Wallet Safe - Never Lose Funds",cat:"SECURITY",icon:"🔒",excerpt:"Your 12-word seed phrase is your bank key - learn how to protect it forever.",text:"Security is most important in crypto. Your wallet has a 12-word seed phrase, example: apple banana... This phrase is your master key. If someone gets it, they can steal all your USDT. Rules: 1) Write it on paper, never screenshot or save in phone notes or Google Drive. 2) Never share with anyone, even if they say they are Binance support - real support never asks seed. 3) Enable 2FA (two-factor) with Google Authenticator, not SMS. 4) Use anti-phishing code in Binance so you know real emails. 5) Don't click random Telegram links promising double your crypto - they are all scams. In Rwanda we saw many lose money on fake investment groups. Real rewards platform like Reward Platform RW never asks for your seed, never asks for deposit. Keep wallet locked and safe."},{title:"Binance Guide for Rwandans - How to Cash Out USDT",cat:"CRYPTO",icon:"🟡",excerpt:"Discover how to receive, hold, and cash out USDT using Binance P2P safely.",text:"Binance is the biggest crypto exchange in world with over 150 million users. Rwandans use it daily to receive USDT from reward platforms. How to use: First create account with email, verify KYC with national ID or passport. Then go to Wallet > Deposit > USDT > Choose BEP20 network and copy address - give this address to platform for withdrawal. Once you receive USDT, you can use P2P to sell for RWF: Go to P2P, sell USDT, choose buyer with high rating, they send you MoMo, you release USDT. Or use Binance Pay with 0 fee to send to friend. Always check buyer rating, never release before receiving MoMo confirmation. Enable all security: email, phone, authenticator. Binance has learning academy to teach you more about crypto for free."},{title:"MTN MoMo vs Crypto: Which is Better for You?",cat:"FINANCE",icon:"📱",excerpt:"Local mobile money vs global crypto - pros, cons, and why smart people use both.",text:"MTN MoMo is very popular in Rwanda, controlled by MTN, works in RWF, instant for local payments like buying airtime, paying at market, sending to family. It needs only phone and is accepted everywhere. Crypto like USDT is global, works across borders, you can receive from any country, value in dollars so protects from local currency inflation. MoMo fees are small but exist for sending, crypto fees depend on network (BEP20 $0.2). Smart people in Kigali use both: MoMo for daily life like buying bread, and USDT for saving dollars online from reward apps. For example, earn $1.5 daily on Reward Platform RW in USDT, keep it in Binance, and when need RWF, sell via P2P to MoMo. This way you have both local convenience and global saving."},{title:"Inflation Explained: Why Things Become Expensive Every Year",cat:"FINANCE",icon:"📈",excerpt:"Why 1000 RWF bread becomes 1200 RWF next year and how saving in USDT helps.",text:"Inflation means price of things go up over time. In Rwanda, bread that cost 1000 RWF in 2023 now costs 1300 RWF in 2026, that's inflation about 10% per year. It happens because government prints more money, or transport cost increases, or demand high. For normal people, this means your 100,000 RWF salary buys less things next year. How to protect? One way is saving part in stable currency like USDT which is tied to US Dollar, which usually stronger than RWF. If you earn 3000 coins = $1.5 daily and keep in USDT, your purchasing power stays better than keeping all in RWF in pocket. Also learning to budget, tracking spending, avoiding unnecessary loans helps beat inflation. Small saving daily of $1.5 = 60,000 RWF per month can help emergency fund."},{title:"AI in 2026: How Artificial Intelligence Changes Jobs in Rwanda",cat:"TECH",icon:"🤖",excerpt:"AI is everywhere now...",text:"AI in 2026 is everywhere: ChatGPT writes essays, Canva AI creates posters, Google AI translates Kinyarwanda to English instantly. Many fear AI will take jobs, but truth is people who know how to use AI will replace those who don't know. For Rwandans, AI is opportunity: You can use ChatGPT to help with school homework, create business ideas, write CV, translate. You can use AI image tools to create logos for small businesses and sell for 5000 RWF. You can use AI voice to create videos. The key is to learn prompting: how to ask AI correctly. Free tools: ChatGPT, Gemini, Microsoft Copilot. Don't fear, learn 30 minutes daily, it will make you more productive than before. Future jobs will be AI + human together."},{title:"How Saving $1.5 Daily Can Change Your Life in 1 Year",cat:"FINANCE",icon:"🐷",excerpt:"Small daily savings from tasks = big yearly money - the compound effect explained.",text:"Many think $1.5 is too small to matter, but let's calculate. If you do 10 tasks daily on Reward Platform RW, you earn 3000 coins = $1.5. In 30 days, that's $45 = about 60,000 RWF. In 1 year, that's $540 = 720,000 RWF. That's enough to buy a good smartphone, or pay for 6 months internet, or start small business like selling airtime. How to achieve? Skip one soda per day = save 500 RWF. Cook at home twice a week instead of eating out = save 5000 RWF weekly. Do tasks every evening for 20 minutes while watching TV. The secret is habit, not amount. Put your USDT savings in Binance Earn with 5% APY and it grows more. Small habits daily lead to big results yearly. Start today, not tomorrow, and track your balance in app."}];
-const tasksConfig=articles.map((a,i)=>({id:i,reward:i<3?1:i<7?1:2,sec:i<3?8:i<7?12:15,tier:i<3?'easy':i<7?'standard':'premium',label:i<3?'8s Read':i<7?'12s Read':'15s Read',title:a.title,cat:a.cat,icon:a.icon,text:a.text,excerpt:a.excerpt}));
-const BONUS_REWARD=4,BONUS_SEC=12,COOLDOWN_AFTER=10;
-function getToday(){return new Date().toISOString().split('T')[0];}
-function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
-let done=[],total=0,cur=0,sec=12,tmr=null,currentUser=null,userData={},bonusClaimed=false,isClaiming=false,nextAllowed=0,visViolated=false;
-function saveLocal(){try{localStorage.setItem('articlesEarn_done',JSON.stringify(done));localStorage.setItem('articlesEarn_total',total.toString());localStorage.setItem('articlesEarn_date',getToday());if(bonusClaimed) localStorage.setItem('articlesEarn_bonus',getToday());}catch(e){}}
-function loadLocalStrict(){try{const today=getToday(); const saved=localStorage.getItem('articlesEarn_date');if(saved!==today){ done=[]; total=0; bonusClaimed=false; localStorage.removeItem('articlesEarn_done'); localStorage.removeItem('articlesEarn_total'); localStorage.removeItem('articlesEarn_bonus'); localStorage.setItem('articlesEarn_date',today); return; }const parsed=JSON.parse(localStorage.getItem('articlesEarn_done')||'[]'); done=[...new Set(parsed)].filter(x=>x>=0&&x<=9);total=parseInt(localStorage.getItem('articlesEarn_total')||'0')||0; bonusClaimed=localStorage.getItem('articlesEarn_bonus')===today;let real=0; done.forEach(id=>{const c=tasksConfig.find(t=>t.id===id); if(c) real+=c.reward}); if(bonusClaimed) real+=BONUS_REWARD; if(total>real+2) total=real;}catch(e){done=[]; total=0; bonusClaimed=false;}}
-loadLocalStrict();
-function articleHTML(cfg,isDone,rem){
-  let btnCls=isDone?'done':(rem>0?'wait':'start');
-  let btnTxt=isDone?'Done ✓':(rem>0?`Wait ${rem}s`:'Read');
-  let dis=isDone||rem>0;
-  return `<div class="article-card ${cfg.tier}"><div class="article-top"><div class="article-icon">${cfg.icon}</div><div class="article-info"><span class="category">${cfg.cat} • ${cfg.label}</span><div class="article-title">${cfg.title}</div><div class="article-desc">${cfg.excerpt}</div></div></div><div class="article-bottom"><div class="read-meta">⏱ ${cfg.sec}s • +${cfg.reward} 🪙</div><button class="btn ${btnCls}" onclick="startAd(${cfg.id})" ${dis?'disabled':''}>${btnTxt}</button></div></div>`;
-}
-function render(){
-  document.getElementById('totalPtsBadge').innerText="Total Today: "+total+" 🪙 Coins";
-  document.getElementById('countText').innerText=done.length+"/10 done - Resets midnight";
-  document.getElementById('progBar').style.width=(done.length*10)+'%';
-  const nowSec=Date.now()/1000; const rem=Math.max(0,Math.ceil(nextAllowed-nowSec));
-  const groups=[ [0,1], [2,3], [4,5], [6,7,8,9] ];
-  groups.forEach((g,i)=>{
-    let html='';
-    g.forEach(id=>{
-      const cfg=tasksConfig[id];
-      html+=articleHTML(cfg,done.includes(id),rem);
-    });
-    document.getElementById('group'+i).innerHTML=html;
+
+function renderArticles(){
+  listEl.innerHTML="";
+  const available=ARTICLES.filter(a=>!readIds.includes(a.id));
+  if(available.length===0 || todayCount>=DAILY_LIMIT){
+    listEl.innerHTML=`<div class="article-box"><div class="article-title">🎉 All done for today</div><div class="article-text">Come back tomorrow for new articles.</div></div>`;
+    return;
+  }
+  available.forEach(a=>{
+    const div=document.createElement("div");
+    div.className="article-box";
+    div.innerHTML=`<div class="article-title">${a.title}</div><div class="article-text">${a.text}</div><button class="btn" data-id="${a.id}">Read & Earn +${a.reward}</button>`;
+    listEl.appendChild(div);
   });
-  const bonusBtn=document.getElementById('bonusBtn');
-  if(bonusClaimed){ bonusBtn.innerText='Bonus Claimed ✓'; bonusBtn.disabled=true; bonusBtn.classList.add('claimed'); bonusBtn.style.display='block'; }
-  else if(done.length>=10){
-    if(rem>0){ bonusBtn.innerText=`Wait ${rem}s for bonus`; bonusBtn.disabled=true; }
-    else { bonusBtn.innerText='🎁 Claim Bonus 4 Coins - 12s'; bonusBtn.disabled=false; bonusBtn.classList.remove('claimed'); }
-    bonusBtn.style.display='block'; bonusBtn.style.opacity=rem>0?'0.6':'1';
-  } else { bonusBtn.style.display='none'; }
-  if(rem>0) setTimeout(render,1000);
+  listEl.querySelectorAll("button").forEach(btn=>{
+    btn.addEventListener("click",()=>claimArticle(btn.dataset.id, btn));
+  });
 }
-function startAd(i){if(done.includes(i)) return; if(isClaiming) return;const nowSec=Date.now()/1000; if(nowSec<nextAllowed){ showToast("Wait "+Math.ceil(nextAllowed-nowSec)+"s"); return; }let cfg=tasksConfig[i]; cur=i; sec=cfg.sec; visViolated=false;document.getElementById('timerNum').innerText=sec;document.getElementById('modalTitle').innerText=cfg.title;document.getElementById('modalDesc').innerText='Reading article...';document.getElementById('articleBox').innerText=cfg.text;document.getElementById('distractPhase').innerText=cfg.cat+" • Keep page open";document.getElementById('timerModal').style.display='flex';tmr=setInterval(async()=>{if(document.hidden){ visViolated=true; document.getElementById('distractPhase').innerText='You left page - reward will cancel'; return; }sec--; document.getElementById('timerNum').innerText=sec;if(sec<=0){ clearInterval(tmr); if(visViolated){ document.getElementById('timerModal').style.display='none'; showToast('Canceled - keep page open'); return; } document.getElementById('timerModal').style.display='none'; await claimAd(); }},1000);}
-function startBonus(){if(bonusClaimed) return; if(done.length<10) return showToast('Complete 10 first');if(isClaiming) return; const nowSec=Date.now()/1000; if(nowSec<nextAllowed){ showToast("Wait "+Math.ceil(nextAllowed-nowSec)+"s"); return; }sec=BONUS_SEC; visViolated=false;document.getElementById('timerNum').innerText=sec;document.getElementById('modalTitle').innerText='🎁 Bonus 4 Coins';document.getElementById('articleBox').innerText='Bonus: Thank you for reading 10 articles! Keep learning daily.';document.getElementById('modalDesc').innerText='Final reading...';document.getElementById('distractPhase').innerText='Bonus • Keep open';document.getElementById('timerModal').style.display='flex';tmr=setInterval(async()=>{if(document.hidden){ visViolated=true; document.getElementById('distractPhase').innerText='You left page - bonus will cancel'; return; }sec--; document.getElementById('timerNum').innerText=sec;if(sec<=0){ clearInterval(tmr); if(visViolated){ document.getElementById('timerModal').style.display='none'; showToast('Bonus canceled'); return; } document.getElementById('timerModal').style.display='none'; await claimBonus(); }},1000);}
-async function claimAd(){if(isClaiming) return; isClaiming=true;if(done.includes(cur)){isClaiming=false; return;}let cfg=tasksConfig[cur]; if(done.length>=10){isClaiming=false; return;}done=[...new Set([...done,cur])]; total+=cfg.reward; saveLocal();nextAllowed=Date.now()/1000+COOLDOWN_AFTER; render();try{await db.collection('users').doc(currentUser.uid).set({balance: firebase.firestore.FieldValue.increment(cfg.reward),coins: firebase.firestore.FieldValue.increment(cfg.reward),points: firebase.firestore.FieldValue.increment(cfg.reward),lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),articlesEarn_date: getToday(), articlesEarn_done: done, articlesEarn_total: total},{merge:true});showToast("✓ +"+cfg.reward+" 🪙 added!");refreshBannersAfterClaim();}catch(e){ showToast(e.message); done=done.filter(x=>x!==cur); total-=cfg.reward; saveLocal(); render(); }isClaiming=false;}
-async function claimBonus(){if(isClaiming) return; isClaiming=true;if(bonusClaimed){isClaiming=false; return;}bonusClaimed=true; total+=BONUS_REWARD; saveLocal();nextAllowed=Date.now()/1000+COOLDOWN_AFTER; render();try{await db.collection('users').doc(currentUser.uid).set({balance: firebase.firestore.FieldValue.increment(BONUS_REWARD),coins: firebase.firestore.FieldValue.increment(BONUS_REWARD),points: firebase.firestore.FieldValue.increment(BONUS_REWARD),lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),articlesEarn_bonus: getToday(), articlesEarn_date: getToday(), articlesEarn_done: done, articlesEarn_total: total},{merge:true});showToast("🎁 Bonus +"+BONUS_REWARD+" 🪙 added!");refreshBannersAfterClaim();}catch(e){ showToast(e.message); bonusClaimed=false; total-=BONUS_REWARD; saveLocal(); render(); }isClaiming=false;}
-auth.onAuthStateChanged(async u=>{if(!u){location.href='./index.html';return;} currentUser=u;try{const doc=await db.collection('users').doc(u.uid).get();if(doc.exists){userData=doc.data(); const today=getToday(); const fbDate=userData.articlesEarn_date||'';if(fbDate!==today && fbDate!==''){ done=[]; total=0; bonusClaimed=false; saveLocal();await db.collection('users').doc(u.uid).set({articlesEarn_date:today,articlesEarn_done:[],articlesEarn_total:0,articlesEarn_bonus:firebase.firestore.FieldValue.delete()},{merge:true});} else if(fbDate===today){const fbDone=userData.articlesEarn_done||[]; done=[...new Set(fbDone)].filter(x=>x>=0&&x<=9); total=userData.articlesEarn_total||0; bonusClaimed=(userData.articlesEarn_bonus===today);let real=0; done.forEach(id=>{const c=tasksConfig.find(t=>t.id===id); if(c) real+=c.reward}); if(bonusClaimed) real+=BONUS_REWARD; if(total!==real && total<50) total=real; saveLocal();}}}catch(e){}render();});render();
+
+async function claimArticle(id, btnEl){
+  if(!currentUser) return;
+  const article=ARTICLES.find(a=>a.id===id);
+  if(!article || readIds.includes(id)) return;
+  if(btnEl) btnEl.disabled=true;
+  const userRef=db.collection("users").doc(currentUser.uid), todayKey=localDayKey();
+  try{
+    await db.runTransaction(async t=>{
+      const snap=await t.get(userRef); if(!snap.exists) throw new Error("No account");
+      const data=snap.data()||{}, savedDay=data.articleDay||todayKey;
+      let count=Number(data.articleCount||0), ids=Array.isArray(data.articleIds)?data.articleIds.slice():[];
+      if(savedDay!==todayKey){count=0;ids=[];}
+      if(count>=DAILY_LIMIT||ids.includes(id)) throw new Error("Done");
+      const oldBal=Number(data.balance??data.coins??0);
+      t.update(userRef,{balance:oldBal+article.reward,coins:oldBal+article.reward,articleCount:count+1,articleIds:ids.concat(id),articleDay:todayKey,lastArticleDate:firebase.firestore.FieldValue.serverTimestamp()});
+    });
+    showBubble(`+${article.reward} coins`);
+  }catch(e){showBubble("Already collected"); if(btnEl) btnEl.disabled=false;}
+}
+
+async function refreshDailyIfNeeded(data){
+  const todayKey=localDayKey();
+  if(data.articleDay===todayKey) return;
+  const userRef=db.collection("users").doc(currentUser.uid);
+  try{
+    await db.runTransaction(async t=>{
+      const snap=await t.get(userRef); if(!snap.exists) return;
+      const latest=snap.data()||{}; if(latest.articleDay===todayKey) return;
+      t.update(userRef,{articleCount:0,articleIds:[],articleDay:todayKey});
+    });
+  }catch(e){}
+}
+
+auth.onAuthStateChanged(user=>{
+  if(!user){location.href="./index.html";return;}
+  currentUser=user;
+  if(unsubscribe) unsubscribe();
+  unsubscribe=db.collection("users").doc(user.uid).onSnapshot(async snap=>{
+    if(!snap.exists){statusEl.textContent="No account";return;}
+    const data=snap.data()||{};
+    if(data.articleDay!==localDayKey()) await refreshDailyIfNeeded(data);
+    balance=Number(data.balance??data.coins??0);
+    todayCount=Number(data.articleCount||0);
+    readIds=Array.isArray(data.articleIds)?data.articleIds:[];
+    if(data.chain){const local=getChain();let ch=false;for(let k in data.chain){if(data.chain[k]&&!local[k]){local[k]=data.chain[k];ch=true;}} if(ch) saveChain(local);}
+    balEl.textContent=`${balance} 🪙 coins`;
+    todayEl.textContent=`${Math.min(todayCount,DAILY_LIMIT)}/${DAILY_LIMIT}`;
+    if(!checkArticlesState()){
+      renderArticles();
+    }
+  });
+});
+})();
 </script>
 </body>
 </html>
