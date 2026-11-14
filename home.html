@@ -1,180 +1,198 @@
-<!DOCTYPE html><html><head><title>Home</title><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home - Reward Platform</title>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent!important}
-body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
-.wrap{width:100%;max-width:430px;height:100dvh;height:100svh;background-color:#bfe6f7;background-image:url('./bg.jpg');background-repeat:no-repeat;background-size:100% auto;background-position:center bottom;position:relative;display:flex;flex-direction:column;overflow:hidden}
-.top{position:relative;width:100%;background:#ffffff;border-radius:0 0 20px 20px;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;z-index:30;box-shadow:0 6px 14px rgba(0,0,0,0.18);flex-shrink:0}
-.top h2{font-size:19px;color:#0a5a7a;font-weight:900;flex:1;text-align:center}
-#headerText{font-size:20px;color:#6d28d9!important;font-weight:900}
-.home-btn{display:flex;align-items:center;gap:4px;cursor:pointer;font-weight:900;font-size:13px;color:#111827;background:none;border:none;padding:4px 6px}
-.logo{width:28px;height:28px;border-radius:50%;overflow:hidden;border:1.5px solid #d4a95a;background:#fff}
-.scene{flex:1;position:relative;z-index:2;overflow:hidden;min-height:0}
-.monitor{position:absolute;left:4%;top:32%;width:44%;max-width:190px;height:172px;background:linear-gradient(135deg, #ffffff 0%, #FFF8F0 18%, #FFE9E3 100%);border:2px solid #fecaca;border-left:3.5px solid #ffffff;border-radius:18px;overflow:hidden;z-index:5;box-shadow:inset 5px 0 10px rgba(255,255,255,0.95),0 10px 22px rgba(0,0,0,0.20),0 3px 0 #fca5a5;display:flex;flex-direction:column}
-.screen{flex:1;padding:12px 8px 10px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:8px}
-.right-stack{position:absolute;right:3%;top:108px;width:60%;display:flex;flex-direction:column;gap:14px;align-items:flex-end;z-index:10}
-.r-item{display:flex;align-items:center;justify-content:space-between;gap:7px;font-size:13.5px;font-weight:900;color:#000;cursor:pointer;white-space:nowrap;height:46px;min-width:160px;padding:0 16px;border-radius:18px;border:none;outline:none;box-shadow:0 5px 12px rgba(0,0,0,0.16);position:relative}
-.r-item.open{box-shadow:0 0 0 2.5px #22c55e, 0 5px 12px rgba(0,0,0,0.16)}
-.r1{background:#e3f2fd}.r2{background:#e8f5e9}.r3{background:#fff8e1}.r6{background:#f3e5f5}.r7{background:#fff3e0}
-.badge{font-size:11px;font-weight:900;padding:3px 8px;border-radius:10px;color:#fff;margin-left:6px;white-space:nowrap}
-.badge.padlock{background:#111827;padding:4px 9px;font-size:13px}
-.badge.green{background:#16a34a}.badge.live{background:#16a34a}
-.bottom{width:82%;height:46px;background:rgba(255,255,255,0.98);border-radius:18px;display:flex;justify-content:space-around;align-items:center;margin:6px auto 10px;box-shadow:0 4px 12px rgba(0,0,0,0.25);z-index:20;flex-shrink:0;border:2px solid #fff}
-.bottom button{background:none;border:none;outline:none;display:flex;align-items:center;gap:4px;font-size:12.5px;font-weight:900;cursor:pointer;padding:6px 8px;border-radius:10px;position:relative}
-#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:10px 14px;border-radius:10px;font-weight:bold;z-index:99999;display:none;max-width:90%;text-align:center}
-#maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
-</style></head><body>
-<div id="maint"><div><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900">Back</button></div></div>
-<div id="toast"></div>
-<div class="wrap">
-<div class="top">
-  <button class="home-btn" onclick="location.href='./index.html'">🏠 Home</button>
-  <h2>Welcome <span id="headerText">Ineza</span></h2>
-  <div class="logo"><img src="./logo.jpg"></div>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#cfeaff;min-height:100vh;display:flex;flex-direction:column}
+.top-bar{background:#fff;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-radius:0 0 18px 18px;box-shadow:0 4px 12px rgba(0,0,0,.08);position:sticky;top:0;z-index:100}
+.welcome{font-weight:900;font-size:18px;color:#0e7490}
+.welcome span{color:#6d28d9}
+.content{flex:1;display:flex;justify-content:space-between;align-items:center;padding:18px 12px;gap:12px}
+.balance-card{background:linear-gradient(180deg,#fffaf0,#ffe9e9);border:2px solid #fecaca;border-radius:18px;padding:18px 14px;min-width:140px;max-width:165px;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,.1)}
+.balance-card .label{font-size:11px;font-weight:900;color:#7c3aed}
+.coins{font-weight:900;font-size:18px;margin-top:6px}
+.usdt{font-weight:900;color:#059669;margin-top:10px;font-size:18px}
+.right-stack{display:flex;flex-direction:column;gap:10px;align-items:flex-end;width:60%}
+.earn-btn{background:#fff;border-radius:999px;padding:10px 14px;font-weight:900;font-size:13px;border:2px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;max-width:220px;cursor:pointer;text-decoration:none;color:#111827;box-shadow:0 4px 10px rgba(0,0,0,.06);position:relative}
+.earn-btn.locked{opacity:.95}
+.badge-lock{background:#111827;color:#fbbf24;border-radius:999px;padding:3px 8px;font-size:12px}
+.badge-live{background:#22c55e;color:#fff;border-radius:999px;padding:3px 8px;font-size:11px;animation:pulse 1.2s infinite}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+.bottom-image{height:180px;background:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') center/cover;border-top:2px solid #fff}
+.bottom-nav{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:#fff;border-radius:999px;padding:8px 16px;display:flex;gap:14px;box-shadow:0 8px 20px rgba(0,0,0,.15);z-index:100}
+.nav-item{font-weight:900;font-size:12px;display:flex;align-items:center;gap:4px;text-decoration:none;color:#111827}
+.timer-small{font-size:10px;color:#6b7280;font-weight:800;margin-left:4px}
+</style>
+</head>
+<body>
+<div class="top-bar">
+<div style="font-weight:900">🏠 Home</div>
+<div class="welcome">Welcome <span id="userName">Ineza</span></div>
+<div style="width:28px;height:28px;border-radius:50%;background:#ddd"></div>
 </div>
-<div class="scene">
-<div class="monitor"><div class="screen">
-<div style="color:#6d28d9;font-size:11.5px;font-weight:900">Your Balance</div>
-<div style="display:flex;flex-direction:column;gap:10px;align-items:center;width:100%;margin-top:6px">
-<div style="text-align:center"><div style="font-size:10.5px;color:#92400e;font-weight:900">⭐ COINS</div><div id="balance" style="font-size:20px;color:#111827;font-weight:900">0 coins</div><div id="usdBalance" style="font-size:10.5px;color:#6b7280;font-weight:800">= $0.0000</div></div>
-<div style="width:78%;height:1.5px;background:linear-gradient(90deg, transparent, rgba(251,191,36,0.35), transparent)"></div>
-<div style="text-align:center"><div style="font-size:10.5px;color:#0e7490;font-weight:900">💎 USDT</div><div id="usdtBalanceDisplay" style="font-size:20px;color:#059669;font-weight:900">0.8815 USDT</div></div>
+
+<div class="content">
+<div class="balance-card">
+<div class="label">Your Balance</div>
+<div style="margin-top:6px;font-size:11px;font-weight:900;color:#b45309">⭐ COINS</div>
+<div class="coins" id="coinBal">112 coins</div>
+<div style="font-size:10px;color:#6b7280">= $0.0560</div>
+<div style="margin-top:8px;font-size:11px;font-weight:900;color:#0e7490">💎 USDT</div>
+<div class="usdt" id="usdtBal">0.8815 USDT</div>
 </div>
-</div></div>
-<div class="right-stack">
-<button class="r-item r1" id="btnWatch" onclick="goWatch()" type="button">Watch & Earn 📺</button>
-<button class="r-item r2" onclick="location.href='./survey.html'" type="button">Surveys 📋</button>
-<button class="r-item r3" onclick="location.href='./bonus.html'" type="button">Daily Bonus 🎁</button>
-<button class="r-item r6" id="btnArticles" onclick="goArticles()" type="button">Articles Earn 📖</button>
-<button class="r-item r7" onclick="location.href='./referrals.html'" type="button">Refer & Earn 🤝</button>
-</div>
-</div>
-<div class="bottom">
-<button id="btnQuiz" onclick="goQuiz()" type="button">🧠 Quiz</button>
-<button onclick="location.href='./wallet.html'" type="button">💰 Wallet</button>
-<button onclick="location.href='./more.html'" type="button">❄️ More</button>
-<button onclick="location.href='./offers.html'" type="button">💎 Offers</button>
+
+<div class="right-stack" id="rightStack">
+<!-- ORDER YOU ASKED: Watch, Articles, Quiz, Daily Bonus, Survey, Refer -->
+<a class="earn-btn" id="btnWatch" href="watch.html">Watch & Earn 📺 <span id="watchBadge"></span></a>
+<a class="earn-btn" id="btnArticles" href="articles_earn.html">Articles Earn 📖 <span id="articlesBadge"></span></a>
+<a class="earn-btn" id="btnQuiz" href="quiz_earn.html">Quiz 🧠 <span id="quizBadge"></span></a>
+<a class="earn-btn" href="daily_bonus.html">Daily Bonus 🎁</a>
+<a class="earn-btn" href="surveys.html">Surveys 📋</a>
+<a class="earn-btn" href="refer.html">Refer & Earn 🤝</a>
 </div>
 </div>
+
+<div class="bottom-image"></div>
+
+<div class="bottom-nav">
+<a class="nav-item" href="wallet.html">💰 Wallet</a>
+<a class="nav-item" href="more.html">❄️ More</a>
+<a class="nav-item" href="offers.html">💎 Offers</a>
+</div>
+
 <script>
-const WINDOW=30*60*1000, DAY=24*60*60*1000;
-function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}')}catch(e){return {}}}
-function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c))}
-function fmtShort(ms){if(ms<=0) return "0m"; const m=Math.floor(ms/60000); const s=Math.floor((ms%60000)/1000); if(m>=60){const h=Math.floor(m/60); const mm=m%60; return h+"h "+mm+"m";} if(m>0) return m+"m "+s+"s"; return s+"s";}
-function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
-window.alert=showToast;
-const btnWatch=document.getElementById('btnWatch'), btnQuiz=document.getElementById('btnQuiz'), btnArticles=document.getElementById('btnArticles');
-function setBtnState(btn, state, countdownText){
-  let old=btn.querySelector('.badge'); if(old) old.remove();
-  btn.classList.remove('open');
-  if(state==='locked'){
-    const b=document.createElement('span'); b.className='badge padlock'; b.textContent='🔒'; btn.appendChild(b);
-  } else if(state==='open'){
-    btn.classList.add('open');
-    const b=document.createElement('span'); b.className='badge green'; b.textContent='Open'; btn.appendChild(b);
-  } else if(state==='live'){
-    btn.classList.add('open');
-    const b=document.createElement('span'); b.className='badge live'; b.textContent='Live '+countdownText; btn.appendChild(b);
-  } else if(state==='soon'){
-    const b=document.createElement('span'); b.className='badge padlock'; b.textContent='🔒 '+countdownText; btn.appendChild(b);
-  }
-}
-function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
+(() => {
+const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(), db=firebase.firestore();
+function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}');}catch(e){return {};}}
+function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c));}
+function formatRemaining(ms){if(ms<=0)return"0m";const h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000);if(h>0)return `${h}h ${m}m`;return `${m}m`;}
 
 function evaluateChain(){
-  const c=getChain(); const now=Date.now(); let changed=false;
+  const c=getChain(), now=Date.now();
+  const wBadge=document.getElementById('watchBadge'), qBadge=document.getElementById('quizBadge'), aBadge=document.getElementById('articlesBadge');
+  const btnWatch=document.getElementById('btnWatch'), btnQuiz=document.getElementById('btnQuiz'), btnArticles=document.getElementById('btnArticles');
+  
+  // Reset
+  [wBadge,qBadge,aBadge].forEach(b=>{if(b) b.innerHTML="";});
+  [btnWatch,btnQuiz,btnArticles].forEach(b=>{if(b) b.classList.remove('locked');});
 
-  // 1. If Watch Live expired -> LOCK Watch, OPEN Quiz
-  if(c.watch_open && now >= c.watch_expiry && !c.watch_nextAvail){
-    c.watch_nextAvail = now + DAY;
-    c.watch_finishedToday = localDayKey();
-    if(!c.quiz_open || c.quiz_open < c.watch_open){
-      c.quiz_open = now;
-      c.quiz_expiry = now + WINDOW;
-    }
-    changed=true;
-  }
-
-  // 2. If Watch was finished by count (from watch.html), ensure Quiz is open
-  if(c.watch_finishedToday && !c.quiz_open){
-    c.quiz_open = now; c.quiz_expiry = now + WINDOW; changed=true;
-  }
-
-  // 3. If Quiz window expired -> OPEN Articles
-  if(c.quiz_open && c.quiz_expiry && now > c.quiz_expiry && !c.quiz_doneToday && c.quiz_finishedToday!==localDayKey()){
-    if(!c.articles_open || c.articles_open < c.quiz_expiry){
-      c.articles_open = c.quiz_expiry; c.articles_expiry = c.articles_open + WINDOW;
-      c.quiz_nextAvail = c.quiz_open + DAY; c.quiz_skippedToday = localDayKey(); changed=true;
-    }
-  }
-
-  if(changed) saveChain(c);
-
-  // RENDER WATCH
+  // Watch logic
   if(c.watch_nextAvail && now < c.watch_nextAvail){
-    setBtnState(btnWatch,'locked','');
-  } else if(c.watch_open && now < c.watch_expiry && !c.watch_finishedToday){
-    setBtnState(btnWatch,'live', fmtShort(c.watch_expiry-now));
-  } else if(c.watch_finishedToday && c.watch_nextAvail && now < c.watch_nextAvail){
-    setBtnState(btnWatch,'locked','');
-  } else {
-    // No lock, no live -> Open (first time)
-    setBtnState(btnWatch,'open','');
+    wBadge.innerHTML=`<span class="badge-lock">🔒 ${formatRemaining(c.watch_nextAvail-now)}</span>`;
+    btnWatch.classList.add('locked');
+  } else if(c.watch_open && c.watch_expiry && now < c.watch_expiry){
+    wBadge.innerHTML=`<span class="badge-live">Live ${formatRemaining(c.watch_expiry-now)}</span>`;
+  } else if(!c.watch_finishedToday){
+    wBadge.innerHTML=`<span class="badge-live" style="background:#fbbf24;color:#000">Open</span>`;
   }
 
-  // RENDER QUIZ
-  if(!c.quiz_open){
-    setBtnState(btnQuiz,'locked','');
-  } else if(now < c.quiz_open){
-    setBtnState(btnQuiz,'soon', fmtShort(c.quiz_open-now));
-  } else if(now >= c.quiz_open && now <= c.quiz_expiry && !c.quiz_doneToday){
-    setBtnState(btnQuiz,'live', fmtShort(c.quiz_expiry-now));
+  // Quiz logic - opens immediately after Watch finishes (even 6/10)
+  if(c.quiz_open && c.quiz_expiry && now < c.quiz_expiry && !c.quiz_doneToday && !c.quiz_skippedToday){
+    qBadge.innerHTML=`<span class="badge-live">Live ${formatRemaining(c.quiz_expiry-now)}</span>`;
+  } else if((c.quiz_doneToday || (c.quiz_nextAvail && now < c.quiz_nextAvail))){
+    const diff=c.quiz_nextAvail-now;
+    if(diff>0){
+      qBadge.innerHTML=`<span class="badge-lock">🔒 ${formatRemaining(diff)}</span>`;
+      btnQuiz.classList.add('locked');
+    }
+  } else if(c.watch_finishedToday && !c.quiz_open){
+    // Watch done but quiz not yet opened - should be open
+    qBadge.innerHTML=`<span class="badge-live">Live</span>`;
   } else {
-    setBtnState(btnQuiz,'locked','');
+    qBadge.innerHTML=`<span class="badge-lock">🔒</span>`;
+    if(!c.watch_finishedToday) btnQuiz.classList.add('locked');
   }
 
-  // RENDER ARTICLES
-  if(!c.articles_open){
-    setBtnState(btnArticles,'locked','');
-  } else if(now < c.articles_open){
-    setBtnState(btnArticles,'soon', fmtShort(c.articles_open-now));
-  } else if(now >= c.articles_open && now <= c.articles_expiry && !c.articles_doneToday){
-    setBtnState(btnArticles,'live', fmtShort(c.articles_expiry-now));
+  // Articles logic
+  if(c.articles_open && c.articles_expiry && now < c.articles_expiry && !c.articles_doneToday){
+    aBadge.innerHTML=`<span class="badge-live">Live ${formatRemaining(c.articles_expiry-now)}</span>`;
+  } else if(c.articles_nextAvail && now < c.articles_nextAvail){
+    aBadge.innerHTML=`<span class="badge-lock">🔒 ${formatRemaining(c.articles_nextAvail-now)}</span>`;
+    btnArticles.classList.add('locked');
+  } else if(c.quiz_doneToday || c.quiz_skippedToday){
+    aBadge.innerHTML=`<span class="badge-live" style="background:#fbbf24;color:#000">Open</span>`;
   } else {
-    setBtnState(btnArticles,'locked','');
+    aBadge.innerHTML=`<span class="badge-lock">🔒</span>`;
+    btnArticles.classList.add('locked');
   }
 }
 
-window.goWatch=()=>{
-  const c=getChain(); const now=Date.now();
-  if(c.watch_nextAvail && now < c.watch_nextAvail){showToast('Watch locked - Quiz is next'); return;}
-  if(!c.watch_open || now > c.watch_expiry){
-    c.watch_open = now; c.watch_expiry = now + WINDOW; saveChain(c);
+function goWatch(e){
+  const c=getChain(), now=Date.now();
+  if(c.watch_nextAvail && now < c.watch_nextAvail){ e.preventDefault(); alert(`Watch locked for ${formatRemaining(c.watch_nextAvail-now)}`); return; }
+  if(!c.watch_open || now >= c.watch_expiry){
+    const now2=Date.now();
+    c.watch_open=now2;
+    c.watch_expiry=now2+30*60*1000;
+    c.watch_finishedToday=null;
+    saveChain(c);
   }
-  location.href='./watch.html';
-};
-window.goQuiz=()=>{
-  const c=getChain(); const now=Date.now();
-  if(!c.quiz_open){showToast("Finish Watch first"); return;}
-  if(now < c.quiz_open){showToast(`Quiz in ${fmtShort(c.quiz_open-now)}`); return;}
-  if(now > c.quiz_expiry){showToast("Expired - Articles open"); return;}
-  location.href='./quiz_earn.html';
-};
-window.goArticles=()=>{
-  const c=getChain(); const now=Date.now();
-  if(!c.articles_open){showToast("Finish previous tasks"); return;}
-  if(now < c.articles_open){showToast(`Articles in ${fmtShort(c.articles_open-now)}`); return;}
-  if(now > c.articles_expiry){showToast("Expired"); return;}
-  location.href='./articles_earn.html';
-};
+}
+function goQuiz(e){
+  const c=getChain(), now=Date.now();
+  if(!c.watch_finishedToday && !(c.watch_open && now >= c.watch_expiry)){ // allow if watch expired
+    // if watch not finished and not expired, block
+    if(!c.watch_finishedToday && c.watch_nextAvail && now < c.watch_nextAvail){
+      // watch already finished and locked, so allow quiz
+    } else if(!c.watch_finishedToday){
+      const ch=getChain();
+      if(!ch.watch_finishedToday && ch.watch_open && now < ch.watch_expiry && !ch.watch_nextAvail){
+        // still in watch live
+        e.preventDefault(); alert("Finish Watch first (even 6/10 counts)"); return;
+      }
+    }
+  }
+  if(c.quiz_nextAvail && now < c.quiz_nextAvail && c.quiz_doneToday){
+    e.preventDefault(); alert(`Quiz locked`); return;
+  }
+  if(c.quiz_open && now >= c.quiz_expiry){
+    // expired, open articles
+    const now2=Date.now();
+    c.quiz_skippedToday=localStorage.getItem('chain_v2')?JSON.parse(localStorage.getItem('chain_v2')).quiz_open:null;
+    c.articles_open=now2;
+    c.articles_expiry=now2+30*60*1000;
+    c.articles_nextAvail=now2+24*60*60*1000;
+    saveChain(c);
+  }
+}
 
-setInterval(evaluateChain,1000); evaluateChain();
+document.getElementById('btnWatch').addEventListener('click', goWatch);
+document.getElementById('btnQuiz').addEventListener('click', goQuiz);
+document.getElementById('btnArticles').addEventListener('click', (e)=>{
+  const c=getChain(), now=Date.now();
+  if(c.articles_nextAvail && now < c.articles_nextAvail && c.articles_doneToday){
+    e.preventDefault(); alert("Articles locked"); return;
+  }
+  if(!c.quiz_doneToday && !c.quiz_skippedToday){
+    const cc=getChain();
+    if(cc.quiz_open && cc.quiz_expiry && now < cc.quiz_expiry){ e.preventDefault(); alert("Finish Quiz first"); return; }
+    if(!cc.quiz_doneToday && !cc.quiz_skippedToday && !cc.watch_finishedToday){ e.preventDefault(); alert("Complete Watch & Quiz first"); return; }
+  }
+});
+
+auth.onAuthStateChanged(user=>{
+  if(!user){location.href="./index.html";return;}
+  db.collection("users").doc(user.uid).onSnapshot(snap=>{
+    if(!snap.exists) return;
+    const data=snap.data()||{};
+    document.getElementById('coinBal').textContent=`${data.balance||0} coins`;
+    document.getElementById('usdtBal').textContent=`${((data.balance||0)*0.0005).toFixed(4)} USDT`;
+    document.getElementById('userName').textContent=data.name||"Ineza";
+    if(data.chain){const local=getChain();let ch=false;for(let k in data.chain){if(data.chain[k]&&!local[k]){local[k]=data.chain[k];ch=true;}} if(ch) saveChain(local);}
+    evaluateChain();
+  });
+});
+setInterval(evaluateChain,1000);
+evaluateChain();
+})();
 </script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script>
-const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};firebase.initializeApp(firebaseConfig);
-try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
-const auth=firebase.auth(),db=firebase.firestore();
-function loadData(d){if(!d)return;document.getElementById('headerText').innerText=d.username||'';document.getElementById('balance').innerText=(d.balance??d.points??0)+' coins';document.getElementById('usdBalance').innerText='= $'+((d.balance??d.points??0)*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').innerText=Number(d.usdtBalance||0).toFixed(4)+' USDT';localStorage.setItem('userData',JSON.stringify(d)); if(d.chain){ const local=getChain(); for(let k in d.chain){ if(d.chain[k]) local[k]=d.chain[k]; } saveChain(local); evaluateChain(); }}
-db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maint').style.display='flex';}else{document.getElementById('maint').style.display='none';}});
-auth.onAuthStateChanged(u=>{if(u){db.collection('users').doc(u.uid).onSnapshot(doc=>{if(doc.exists)loadData(doc.data());});}else{location.href='./index.html';}});
-</script></body></html>
+</body>
+</html>
