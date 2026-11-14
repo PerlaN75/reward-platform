@@ -28,3 +28,188 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
   border:2px solid #fecaca;
   border-left:3.5px solid #ffffff;
   border-radius:18px;overflow:hidden;z-index:5;
+  box-shadow: 
+    inset 5px 0 10px rgba(255,255,255,0.95),
+    inset -3px -3px 8px rgba(251,191,36,0.12),
+    0 10px 22px rgba(0,0,0,0.20),
+    0 3px 0 #fca5a5;
+  display:flex;flex-direction:column
+}
+.screen{flex:1;padding:12px 8px 10px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:8px;position:relative}
+.right-stack{
+  position:absolute;right:3%;top:108px;
+  width:60%;display:flex;flex-direction:column;gap:14px;align-items:flex-end;z-index:10
+}
+.r-item{
+  display:flex;align-items:center;justify-content:space-between;gap:7px;
+  font-size:13.5px;font-weight:900;color:#000;cursor:pointer;white-space:nowrap;
+  height:46px;min-width:160px;padding:0 16px;border-radius:18px;
+  border:none;outline:none;box-shadow:0 5px 12px rgba(0,0,0,0.16);
+  -webkit-tap-highlight-color:transparent!important;user-select:none;
+  touch-action:manipulation;position:relative
+}
+.r-item:active{transform:scale(0.98);filter:brightness(0.97)}
+.r-item.locked{opacity:0.55;filter:grayscale(0.3);pointer-events:none}
+.r-item.open{box-shadow:0 0 0 2px #22c55e, 0 5px 12px rgba(0,0,0,0.16)}
+.r1{background:#e3f2fd}.r2{background:#e8f5e9}.r3{background:#fff8e1}.r6{background:#f3e5f5}.r7{background:#fff3e0}
+.badge{font-size:10px;font-weight:900;padding:2px 6px;border-radius:8px;background:#111827;color:#fff;margin-left:6px;white-space:nowrap}
+.badge.green{background:#16a34a}.badge.orange{background:#f59e0b;color:#000}.badge.red{background:#dc2626}
+.bottom{width:82%;height:46px;background:rgba(255,255,255,0.98);border-radius:18px;display:flex;justify-content:space-around;align-items:center;margin:6px auto 10px;box-shadow:0 4px 12px rgba(0,0,0,0.25);z-index:20;flex-shrink:0;border:2px solid #fff;border-left:3px solid #fff}
+.bottom button{
+  background:none;border:none;outline:none;display:flex;align-items:center;gap:4px;
+  font-size:12.5px;font-weight:900;cursor:pointer;padding:6px 8px;border-radius:10px;
+  -webkit-tap-highlight-color:transparent!important;user-select:none;touch-action:manipulation;position:relative
+}
+.bottom button.locked{opacity:0.45;pointer-events:none}
+.bottom button.open{box-shadow:0 0 0 2px #22c55e inset}
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:10px 14px;border-radius:10px;font-weight:bold;z-index:99999;display:none;max-width:90%;text-align:center}
+#maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
+#chainStatus{position:absolute;bottom:58px;left:50%;transform:translateX(-50%);width:88%;background:rgba(255,255,255,0.96);border-radius:12px;padding:8px 10px;font-size:11px;font-weight:800;color:#111827;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,0.2);z-index:15;display:none;border:2px solid #fbbf24}
+</style></head><body>
+<div id="maint"><div><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900">Back</button></div></div>
+<div id="toast"></div>
+<div class="wrap">
+<div class="top">
+  <button class="home-btn" onclick="location.href='./index.html'"><span class="emoji">🏠</span><span class="txt">Home</span></button>
+  <h2>Welcome <span id="headerText">Ineza</span></h2>
+  <div class="logo"><img src="./logo.jpg"></div>
+</div>
+<div class="scene">
+<div class="monitor"><div class="screen">
+<div style="color:#6d28d9;font-size:11.5px;margin-top:2px;font-weight:900;letter-spacing:0.3px">Your Balance</div>
+<div style="display:flex;flex-direction:column;gap:10px;align-items:center;width:100%;margin-top:6px">
+<div style="text-align:center"><div style="font-size:10.5px;color:#92400e;font-weight:900;letter-spacing:0.5px">⭐ COINS</div><div id="balance" style="font-size:20px;color:#111827;font-weight:900;line-height:1.1">0 coins</div><div id="usdBalance" style="font-size:10.5px;color:#6b7280;font-weight:800">= $0.0000</div></div>
+<div style="width:78%;height:1.5px;background:linear-gradient(90deg, transparent, rgba(251,191,36,0.35), transparent)"></div>
+<div style="text-align:center"><div style="font-size:10.5px;color:#0e7490;font-weight:900">💎 USDT</div><div id="usdtBalanceDisplay" style="font-size:20px;color:#059669;font-weight:900;line-height:1.1">0.8815 USDT</div></div>
+</div>
+</div></div>
+
+<div class="right-stack">
+<button class="r-item r1" id="btnWatch" onclick="goWatch()" type="button"><span>Watch & Earn</span><span>📺</span></button>
+<button class="r-item r2" onclick="location.href='./survey.html'" type="button"><span>Surveys</span><span>📋</span></button>
+<button class="r-item r3" onclick="location.href='./bonus.html'" type="button"><span>Daily Bonus</span><span>🎁</span></button>
+<button class="r-item r6" id="btnArticles" onclick="goArticles()" type="button"><span>Articles Earn</span><span>📖</span></button>
+<button class="r-item r7" onclick="location.href='./referrals.html'" type="button"><span>Refer & Earn</span><span>🤝</span></button>
+</div>
+<div id="chainStatus"></div>
+</div>
+<div class="bottom">
+<button id="btnQuiz" onclick="goQuiz()" type="button">🧠 <span>Quiz</span></button>
+<button onclick="location.href='./wallet.html'" type="button">💰 <span>Wallet</span></button>
+<button onclick="location.href='./more.html'" type="button">❄️ <span>More</span></button>
+<button onclick="location.href='./offers.html'" type="button">💎 <span>Offers</span></button>
+</div>
+</div>
+<script>
+(function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}');if(c&&(c.balance!=null||c.points!=null||c.username)){var bal=c.balance??c.points??0;var usdt=c.usdtBalance??0;document.getElementById('balance').textContent=bal+' coins';document.getElementById('usdBalance').textContent='= $'+(bal*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').textContent=Number(usdt).toFixed(4)+' USDT';if(c.username)document.getElementById('headerText').textContent=c.username;}}catch(e){}})();
+
+// ===== CHAIN SYSTEM Watch -> Quiz -> Articles =====
+const STAGGER=30*60*1000, WINDOW=30*60*1000, DAY=24*60*60*1000;
+function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}')}catch(e){return {}}}
+function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c))}
+function fmt(ms){if(ms<=0) return "0s"; const h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000), s=Math.floor((ms%60000)/1000); if(h>0) return h+"h "+m+"m"; if(m>0) return m+"m "+s+"s"; return s+"s";}
+function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3500);}
+window.alert=showToast;
+function pushNotif(title, body){try{if("Notification" in window && Notification.permission==="granted"){new Notification(title,{body})}}catch(e){}}
+function requestNotif(){if("Notification" in window && Notification.permission==="default"){Notification.requestPermission()}}
+requestNotif();
+
+const btnWatch=document.getElementById('btnWatch'), btnQuiz=document.getElementById('btnQuiz'), btnArticles=document.getElementById('btnArticles'), chainStatus=document.getElementById('chainStatus');
+
+function setBtnState(btn, state, text){
+  btn.classList.remove('locked','open');
+  let badge=btn.querySelector('.badge'); if(badge) badge.remove();
+  if(state==='locked'){btn.classList.add('locked'); const b=document.createElement('span'); b.className='badge red'; b.textContent=text; btn.appendChild(b);}
+  else if(state==='open'){btn.classList.add('open'); const b=document.createElement('span'); b.className='badge green'; b.textContent=text; btn.appendChild(b);}
+  else if(state==='soon'){const b=document.createElement('span'); b.className='badge orange'; b.textContent=text; btn.appendChild(b);}
+}
+
+function evaluateChain(){
+  const c=getChain(); const now=Date.now();
+  // Auto skip logic
+  // If quiz was open and expired and not done today, skip to articles
+  if(c.quiz_open && c.quiz_expiry && now > c.quiz_expiry && !c.quiz_doneToday && c.quiz_finishedToday!==localDayKey()){
+    if(!c.articles_open || c.articles_open < c.quiz_expiry){
+      c.articles_open = c.quiz_expiry; // open instantly at expiry
+      c.articles_expiry = c.articles_open + WINDOW;
+      c.quiz_nextAvail = c.quiz_open + DAY;
+      c.quiz_skippedToday = localDayKey();
+      saveChain(c);
+      showToast("Quiz missed - Articles are open now!");
+      pushNotif("Quiz Missed", "Articles are open now! 30 min window.");
+    }
+  }
+  if(c.articles_open && c.articles_expiry && now > c.articles_expiry && !c.articles_doneToday && c.articles_finishedToday!==localDayKey()){
+    c.articles_nextAvail = c.articles_open + DAY;
+    c.articles_skippedToday = localDayKey();
+    saveChain(c);
+  }
+
+  // Watch state
+  if(c.watch_nextAvail && now < c.watch_nextAvail){
+    setBtnState(btnWatch,'locked', fmt(c.watch_nextAvail-now));
+    chainStatus.style.display='block';
+    chainStatus.textContent=`Watch locked - opens in ${fmt(c.watch_nextAvail-now)}`;
+  } else {
+    setBtnState(btnWatch,'open','OPEN');
+  }
+
+  // Quiz state
+  if(!c.quiz_open){
+    setBtnState(btnQuiz,'locked','-');
+  } else if(now < c.quiz_open){
+    setBtnState(btnQuiz,'soon', 'in '+fmt(c.quiz_open-now));
+    chainStatus.style.display='block';
+    chainStatus.textContent=`Quiz opens in ${fmt(c.quiz_open-now)} - Watch done`;
+  } else if(now >= c.quiz_open && now <= c.quiz_expiry && !c.quiz_doneToday){
+    const left=c.quiz_expiry-now;
+    setBtnState(btnQuiz,'open', fmt(left)+' left');
+    chainStatus.style.display='block';
+    chainStatus.innerHTML=`🔥 Quiz OPEN - ${fmt(left)} left! <span style="color:#dc2626">Tap now!</span>`;
+    if(left < 10*60*1000 && !c.quiz_warned10){ c.quiz_warned10=true; saveChain(c); showToast("Quiz expires in 10 min!"); pushNotif("Quiz expiring", "10 min left to complete Quiz"); }
+  } else if(c.quiz_doneToday || (c.quiz_open && now > c.quiz_expiry)){
+    setBtnState(btnQuiz,'locked', c.quiz_doneToday?'Done':'Missed');
+  }
+
+  // Articles state
+  if(!c.articles_open){
+    setBtnState(btnArticles,'locked','-');
+  } else if(now < c.articles_open){
+    setBtnState(btnArticles,'soon','in '+fmt(c.articles_open-now));
+    if(chainStatus.textContent==='') { chainStatus.style.display='block'; chainStatus.textContent=`Articles opens in ${fmt(c.articles_open-now)}`; }
+  } else if(now >= c.articles_open && now <= c.articles_expiry && !c.articles_doneToday){
+    const left=c.articles_expiry-now;
+    setBtnState(btnArticles,'open', fmt(left)+' left');
+    chainStatus.style.display='block';
+    chainStatus.innerHTML=`🔥 Articles OPEN - ${fmt(left)} left!`;
+    if(left < 10*60*1000 && !c.articles_warned10){ c.articles_warned10=true; saveChain(c); showToast("Articles expires in 10 min!"); pushNotif("Articles expiring", "10 min left"); }
+  } else if(c.articles_doneToday || (c.articles_open && now > c.articles_expiry)){
+    setBtnState(btnArticles,'locked', c.articles_doneToday?'Done':'Missed');
+  }
+
+  // If all done
+  const allDone = (c.watch_nextAvail && now < c.watch_nextAvail) && (c.quiz_doneToday || c.quiz_skippedToday===localDayKey()) && (c.articles_doneToday || c.articles_skippedToday===localDayKey());
+  if(allDone){
+    chainStatus.style.display='block';
+    chainStatus.textContent=`✅ All heavy tasks done today. Come back tomorrow!`;
+  }
+}
+
+function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
+
+window.goWatch=()=>{const c=getChain(); const now=Date.now(); if(c.watch_nextAvail && now < c.watch_nextAvail){showToast(`Watch locked - opens in ${fmt(c.watch_nextAvail-now)}`); return;} location.href='./watch.html';};
+window.goQuiz=()=>{const c=getChain(); const now=Date.now(); if(!c.quiz_open){showToast("Finish Watch first to unlock Quiz"); return;} if(now < c.quiz_open){showToast(`Quiz opens in ${fmt(c.quiz_open-now)}`); return;} if(now > c.quiz_expiry && !c.quiz_doneToday){showToast("Quiz window expired - Articles are open now"); location.href='./articles_earn.html'; return;} if(c.quiz_nextAvail && now < c.quiz_nextAvail && c.quiz_skippedToday===localDayKey()){showToast("Quiz missed today - comes back tomorrow"); return;} location.href='./quiz_earn.html';};
+window.goArticles=()=>{const c=getChain(); const now=Date.now(); if(!c.articles_open){showToast("Finish Watch & Quiz first"); return;} if(now < c.articles_open){showToast(`Articles opens in ${fmt(c.articles_open-now)}`); return;} if(now > c.articles_expiry && !c.articles_doneToday){showToast("Articles window expired"); return;} location.href='./articles_earn.html';};
+
+setInterval(evaluateChain,1000); evaluateChain();
+</script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script>
+const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};firebase.initializeApp(firebaseConfig);
+try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
+const auth=firebase.auth(),db=firebase.firestore();
+const POINT_RATE=0.0005;
+function loadData(d){if(!d)return;if(d.usdtBalance==null)d.usdtBalance=0;if(d.balance==null)d.balance=d.points||0;document.getElementById('headerText').innerText=d.username||'';document.getElementById('balance').innerText=(d.balance??d.points??0)+' coins';document.getElementById('usdBalance').innerText='= $'+((d.balance??d.points??0)*POINT_RATE).toFixed(4);document.getElementById('usdtBalanceDisplay').innerText=Number(d.usdtBalance||0).toFixed(4)+' USDT';localStorage.setItem('userData',JSON.stringify(d)); if(d.chain){ const local=getChain(); const merged={...local, ...{watch_nextAvail:d.chain.watch_nextAvail, quiz_open:d.chain.quiz_open, quiz_expiry:d.chain.quiz_expiry, articles_open:d.chain.articles_open, articles_expiry:d.chain.articles_expiry}}; for(let k in merged){ if(merged[k]) local[k]=merged[k]; } saveChain(local); evaluateChain(); }}
+db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maint').style.display='flex';}else{document.getElementById('maint').style.display='none';}});
+auth.onAuthStateChanged(u=>{if(u){db.collection('users').doc(u.uid).onSnapshot(doc=>{if(doc.exists)loadData(doc.data());});}else{location.href='./index.html';}});
+</script></body></html>
