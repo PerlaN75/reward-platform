@@ -44,6 +44,7 @@ video{display:block;width:100%;max-height:65vh;background:#000}
 @keyframes popIn{to{transform:translate(-50%,-50%) scale(1)}}
 .burst-particle{position:absolute; left:50%; top:50%; pointer-events:none; z-index:100; font-size:14px; font-weight:900;}
 @keyframes burstFly{0%{transform:translate(-50%,-50%) scale(1); opacity:1} 100%{transform:translate(var(--x), var(--y)) scale(0) rotate(360deg); opacity:0}}
+.lock-box{background:#fef3c7;border:2px solid #fbbf24;border-radius:14px;padding:14px;text-align:center;margin-top:10px}
 </style>
 </head>
 <body>
@@ -60,7 +61,12 @@ video{display:block;width:100%;max-height:65vh;background:#000}
 <div style="font-size:12px;color:#e5e7eb;margin-top:3px">Today's progress: <strong id="today">0/10</strong></div>
 <div class="status" id="status">Checking...</div>
 </section>
-<section class="video-box">
+<div id="lockPanel" class="lock-box" style="display:none">
+<div style="font-size:15px;font-weight:900;color:#92400e">🔒 Watch is locked</div>
+<div id="lockMsg" style="font-size:13px;margin-top:6px;font-weight:800;color:#111827">Opens in --</div>
+<div style="font-size:11px;color:#6b7280;margin-top:6px">Next: Quiz opens 30 min after Watch</div>
+</div>
+<section class="video-box" id="videoBox">
 <div class="video-title" id="videoTitle" style="display:none"></div>
 <div class="player" id="player">
 <div class="placeholder">Your videos are ready.<br>Press Start to begin.</div>
@@ -74,7 +80,7 @@ video{display:block;width:100%;max-height:65vh;background:#000}
 <button class="btn secondary-btn" id="nextBtn">Next video</button>
 </div>
 </section>
-<p class="small-note" id="note">Watch 20s to unlock 2 coins. Tap the circle.</p>
+<p class="small-note" id="note">Watch 35s to unlock 2 coins. Video loops until Next.</p>
 </main>
 <script>
 (() => {
@@ -95,9 +101,12 @@ const VIDEOS = [
 {id:"video16",title:"Video 16",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video16.mp4"},
 {id:"video19",title:"Video 19",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video19.mp4"}
 ];
-const REQUIRED_WATCH_SECONDS=20;
+const REQUIRED_WATCH_SECONDS=35;
 const COINS_PER_VIDEO=2;
 const DAILY_LIMIT=10;
+const STAGGER_MS = 30*60*1000;
+const WINDOW_MS = 30*60*1000;
+const DAY_MS = 24*60*60*1000;
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(); const db=firebase.firestore();
@@ -106,60 +115,91 @@ const balanceEl=el("bal"); const todayEl=el("today"); const statusEl=el("status"
 const playerEl=el("player"); const titleEl=el("videoTitle");
 const startBtn=el("startBtn"); const nextBtn=el("nextBtn"); const rewardCircle=el("rewardCircle");
 const controlsEl=el("controls"); const noteEl=el("note");
+const videoBoxEl=el("videoBox"); const lockPanelEl=el("lockPanel"); const lockMsgEl=el("lockMsg");
 let currentUser=null; let balance=0; let todayCount=0; let watchedVideoIds=[];
 let currentVideoIndex=-1; let videoElement=null; let watchedSeconds=0;
 let lastVideoTime=null; let watchInterval=null; let canClaim=false; let isSaving=false;
 let unsubscribeUser=null; let dayResetInProgress=false;
 let shuffledVideos=[];
-
+let chainLockTimer=null;
 function showBubble(m){const b=el("bubble"); b.textContent=m; b.style.display="block"; clearTimeout(showBubble.timeout); showBubble.timeout=setTimeout(()=>b.style.display="none",2400);}
 function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
-
-// DAILY SHUFFLE - different order each day per user
 function hashCode(str){let h=0; for(let i=0;i<str.length;i++){h=(h<<5)-h+str.charCodeAt(i); h|=0;} return h;}
 function seededRandom(seed){let x=Math.sin(seed)*10000; return x-Math.floor(x);}
 function shuffleWithSeed(array, seedStr){
-  let arr=array.slice();
-  let seed=hashCode(seedStr);
-  for(let i=arr.length-1;i>0;i--){
-    seed++;
-    const r=Math.floor(seededRandom(seed)* (i+1));
-    [arr[i],arr[r]]=[arr[r],arr[i]];
-  }
+  let arr=array.slice(); let seed=hashCode(seedStr);
+  for(let i=arr.length-1;i>0;i--){ seed++; const r=Math.floor(seededRandom(seed)* (i+1)); [arr[i],arr[r]]=[arr[r],arr[i]]; }
   return arr;
 }
-function buildShuffledList(){
-  if(!currentUser) return VIDEOS.slice();
-  const day=localDayKey();
-  const seedStr=day+"_"+currentUser.uid;
-  shuffledVideos=shuffleWithSeed(VIDEOS, seedStr);
-  return shuffledVideos;
+function buildShuffledList(){ if(!currentUser) return VIDEOS.slice(); const day=localDayKey(); const seedStr=day+"_"+currentUser.uid; shuffledVideos=shuffleWithSeed(VIDEOS, seedStr); return shuffledVideos; }
+function getAvailableVideos(){ const list=shuffledVideos.length?shuffledVideos:VIDEOS; return list.filter(v=>!watchedVideoIds.includes(v.id)); }
+function getChain(){ try{ return JSON.parse(localStorage.getItem('chain_v2')||'{}'); }catch(e){ return {}; } }
+function saveChain(c){ localStorage.setItem('chain_v2', JSON.stringify(c)); }
+function formatRemaining(ms){ if(ms<=0) return "0m"; const h=Math.floor(ms/3600000); const m=Math.floor((ms%3600000)/60000); const s=Math.floor((ms%60000)/1000); if(h>0) return `${h}h ${m}m`; if(m>0) return `${m}m ${s}s`; return `${s}s`; }
+function requestNotif(){ if("Notification" in window && Notification.permission==="default"){ Notification.requestPermission(); } }
+function pushNotif(title, body){ try{ if("Notification" in window && Notification.permission==="granted"){ new Notification(title,{body}); } }catch(e){} }
+function checkWatchLocked(){
+  const c=getChain(); const now=Date.now();
+  const nextAvail = c.watch_nextAvail ? Number(c.watch_nextAvail) : 0;
+  if(nextAvail && now < nextAvail){
+    lockPanelEl.style.display="block"; videoBoxEl.style.display="none"; noteEl.style.display="none";
+    const update = () => {
+      const now2=Date.now(); const diff = nextAvail - now2;
+      if(diff<=0){ clearInterval(chainLockTimer); lockPanelEl.style.display="none"; videoBoxEl.style.display="block"; noteEl.style.display="block"; updateUI(); return; }
+      lockMsgEl.textContent=`Opens in ${formatRemaining(diff)} • ${new Date(nextAvail).toLocaleTimeString()}`;
+    };
+    update(); if(chainLockTimer) clearInterval(chainLockTimer); chainLockTimer=setInterval(update,1000);
+    return true;
+  } else {
+    lockPanelEl.style.display="none"; videoBoxEl.style.display="block";
+    if(chainLockTimer) clearInterval(chainLockTimer);
+    return false;
+  }
 }
-function getAvailableVideos(){
-  const list=shuffledVideos.length?shuffledVideos:VIDEOS;
-  return list.filter(v=>!watchedVideoIds.includes(v.id));
+function onWatchFinishedChain(){
+  const now=Date.now();
+  const c=getChain();
+  if(c.watch_finishedToday === localDayKey()) return;
+  c.watch_finish = now;
+  c.watch_nextAvail = now + DAY_MS;
+  c.watch_finishedToday = localDayKey();
+  c.quiz_open = now + STAGGER_MS;
+  c.quiz_expiry = c.quiz_open + WINDOW_MS;
+  c.quiz_nextAvail = c.quiz_open + DAY_MS;
+  c.quiz_doneToday = false;
+  c.quiz_skippedToday = null;
+  c.quiz_warned10 = false;
+  saveChain(c);
+  if(currentUser){
+    db.collection("users").doc(currentUser.uid).set({
+      chain: { watch_finish: now, watch_nextAvail: c.watch_nextAvail, quiz_open: c.quiz_open, quiz_expiry: c.quiz_expiry, updated: firebase.firestore.FieldValue.serverTimestamp() }
+    }, {merge:true});
+  }
+  showBubble("Watch done! Quiz opens in 30 min");
+  pushNotif("Watch Completed", "Quiz will open in 30 min. 30 min window to complete.");
 }
 function showReward(){if(todayCount>=DAILY_LIMIT) return; if(watchedVideoIds.includes(VIDEOS[currentVideoIndex]?.id)) return; rewardCircle.classList.add("show"); canClaim=true;}
 function hideReward(){rewardCircle.classList.remove("show"); canClaim=false;}
 function showSeeYouSoon(){
   titleEl.style.display="none";
-  playerEl.innerHTML='<div class="placeholder">See you soon</div>';
+  playerEl.innerHTML='<div class="placeholder">See you soon<br><small style="font-size:12px">Quiz opens in 30 min</small></div>';
   playerEl.appendChild(rewardCircle);
-  controlsEl.style.display="none";
-  noteEl.style.display="none";
+  controlsEl.style.display="none"; noteEl.style.display="none";
+  if(todayCount>=DAILY_LIMIT || watchedVideoIds.length>=DAILY_LIMIT){
+    onWatchFinishedChain();
+  }
 }
 function updateUI(){
+ if(checkWatchLocked()) return;
  balanceEl.textContent=`${balance} 🪙 coins`;
  todayEl.textContent=`${Math.min(todayCount,DAILY_LIMIT)}/${DAILY_LIMIT}`;
  if(todayCount>=DAILY_LIMIT || watchedVideoIds.length>=DAILY_LIMIT){
-   statusEl.textContent="🎉 Daily limit reached!";
+   statusEl.textContent="🎉 Daily limit reached! Next: Quiz in 30 min";
    showSeeYouSoon();
    return;
  }
- statusEl.textContent=`${todayCount}/10 videos rewarded`;
- controlsEl.style.display="flex";
- noteEl.style.display="block";
- titleEl.style.display="block";
+ statusEl.textContent=`Watched ${Math.floor(watchedSeconds)}/${REQUIRED_WATCH_SECONDS}s • ${todayCount}/10 rewarded`;
+ controlsEl.style.display="flex"; noteEl.style.display="block"; titleEl.style.display="block";
  if(!videoElement){startBtn.hidden=false; startBtn.textContent="Start watching"; startBtn.disabled=false; nextBtn.hidden=false;}
  else if(videoElement.paused){startBtn.hidden=false; startBtn.textContent="Resume video"; startBtn.disabled=false; nextBtn.hidden=false;}
  else{startBtn.hidden=true; nextBtn.hidden=false;}
@@ -168,32 +208,25 @@ function stopWatchCounter(){if(watchInterval)clearInterval(watchInterval); watch
 function resetVideoSession(){stopWatchCounter(); hideReward(); if(videoElement){videoElement.pause(); videoElement.removeAttribute("src"); videoElement.load();} videoElement=null; watchedSeconds=0;}
 function chooseNextVideo(){
  const next=getAvailableVideos()[0];
- if(!next || todayCount>=DAILY_LIMIT){
-   showSeeYouSoon();
-   return;
- }
+ if(!next || todayCount>=DAILY_LIMIT){ showSeeYouSoon(); return; }
  currentVideoIndex=VIDEOS.findIndex(v=>v.id===next.id);
- titleEl.style.display="block";
- titleEl.textContent=`${next.title} • ${todayCount+1} of 10`;
- playerEl.innerHTML='<div class="placeholder">Press Start to load.</div>'; playerEl.appendChild(rewardCircle);
- controlsEl.style.display="flex";
- noteEl.style.display="block";
+ titleEl.style.display="block"; titleEl.textContent=`${next.title} • ${todayCount+1} of 10 • ${REQUIRED_WATCH_SECONDS}s`;
+ playerEl.innerHTML='<div class="placeholder">Press Start to load.<br><small>Video will loop to 35s</small></div>'; playerEl.appendChild(rewardCircle);
+ controlsEl.style.display="flex"; noteEl.style.display="block";
  startBtn.hidden=false; startBtn.textContent="Start watching"; startBtn.disabled=false; nextBtn.hidden=false;
  watchedSeconds=0; updateUI();
 }
 function createVideoElement(video){
  resetVideoSession();
- const v=document.createElement("video"); v.src=video.url; v.controls=true; v.playsInline=true; v.preload="metadata";
+ const v=document.createElement("video"); v.src=video.url; v.controls=true; v.playsInline=true; v.preload="metadata"; v.loop=false;
  v.addEventListener("error",()=>{stopWatchCounter(); playerEl.innerHTML='<div class="placeholder">Load failed.</div>'; playerEl.appendChild(rewardCircle); startBtn.hidden=false; startBtn.textContent="Retry";});
  v.addEventListener("play",()=>{if(!canClaim)startWatchCounter(); updateUI();});
  v.addEventListener("pause",()=>{stopWatchCounter(); updateUI();});
  v.addEventListener("ended",()=>{
-  if(watchedSeconds < REQUIRED_WATCH_SECONDS && todayCount < DAILY_LIMIT){
+  // FIXED: NEVER STOP - loop forever until Next button pressed
+  if(todayCount < DAILY_LIMIT){
    v.currentTime=0;
    v.play().catch(()=>{});
-  }else{
-   stopWatchCounter();
-   updateUI();
   }
  });
  playerEl.innerHTML=""; playerEl.appendChild(v); playerEl.appendChild(rewardCircle); videoElement=v; return v;
@@ -202,12 +235,17 @@ function startWatchCounter(){
  stopWatchCounter(); if(!videoElement||canClaim)return; lastVideoTime=videoElement.currentTime;
  watchInterval=setInterval(()=>{
   if(!videoElement||videoElement.paused||videoElement.ended||videoElement.seeking||videoElement.readyState<2){lastVideoTime=videoElement?videoElement.currentTime:null; return;}
-  const ct=videoElement.currentTime; if(lastVideoTime!==null){const d=ct-lastVideoTime; if(d>0&&d<=1.5)watchedSeconds=Math.min(20,watchedSeconds+d);} lastVideoTime=ct;
-  if(watchedSeconds>=REQUIRED_WATCH_SECONDS){stopWatchCounter(); showReward();}
+  const ct=videoElement.currentTime; if(lastVideoTime!==null){const d=ct-lastVideoTime; if(d>0&&d<=1.5)watchedSeconds=Math.min(REQUIRED_WATCH_SECONDS,watchedSeconds+d);} lastVideoTime=ct;
+  statusEl.textContent=`Watched ${Math.floor(watchedSeconds)}/${REQUIRED_WATCH_SECONDS}s • ${todayCount}/10`;
+  if(watchedSeconds>=REQUIRED_WATCH_SECONDS){
+    stopWatchCounter();
+    showReward();
+    // video continues looping, only Next stops it
+  }
  },500);
 }
 async function startOrResumeVideo(){
- if(!currentUser)return;
+ if(!currentUser)return; if(checkWatchLocked()) return;
  if(videoElement){try{await videoElement.play();}catch(e){} return;}
  if(todayCount>=DAILY_LIMIT){showSeeYouSoon(); return;}
  const video=getAvailableVideos()[0]; if(!video){showSeeYouSoon(); return;}
@@ -241,7 +279,7 @@ async function claimReward(){
    t.update(userRef,{balance:oldBal+COINS_PER_VIDEO, coins:oldCoins+COINS_PER_VIDEO, todayCount:count+1, watchedVideoIds:ids.concat(video.id), watchDay:todayKey, lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()});
   });
   showBubble("+2 coins added!");
-  if(videoElement){try{videoElement.play();}catch(e){}}
+  // keep video playing, user presses Next
  }catch(e){showBubble("Already collected");}finally{isSaving=false;}
 }
 async function refreshDailyProgressIfNeeded(data){
@@ -260,14 +298,15 @@ startBtn.addEventListener("click", startOrResumeVideo);
 nextBtn.addEventListener("click", ()=>{if(videoElement&&!videoElement.paused)videoElement.pause(); resetVideoSession(); chooseNextVideo();});
 auth.onAuthStateChanged(user=>{
  if(!user){location.href="./index.html"; return;}
- currentUser=user; 
- buildShuffledList();
+ currentUser=user; buildShuffledList(); requestNotif();
  statusEl.textContent="Loading..."; startBtn.disabled=true;
  if(unsubscribeUser)unsubscribeUser();
  unsubscribeUser=db.collection("users").doc(user.uid).onSnapshot(async snap=>{
   if(!snap.exists){statusEl.textContent="No account"; return;}
   const data=snap.data()||{}; await refreshDailyProgressIfNeeded(data); if(data.watchDay!==localDayKey()){buildShuffledList(); return;}
   balance=Number(data.balance??data.coins??0); todayCount=Number(data.todayCount||0); watchedVideoIds=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds:[];
+  if(data.chain){ const local=getChain(); let changed=false; for(let k in data.chain){ if(data.chain[k] && !local[k]){ local[k]=data.chain[k]; changed=true; } } if(changed) saveChain(local); }
+  checkWatchLocked();
   updateUI(); 
   if(todayCount>=DAILY_LIMIT || watchedVideoIds.length>=DAILY_LIMIT){showSeeYouSoon();}
   else if(!videoElement){chooseNextVideo();}
