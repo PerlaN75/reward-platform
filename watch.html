@@ -64,7 +64,7 @@ video{display:block;width:100%;max-height:65vh;background:#000}
 <div id="lockPanel" class="lock-box" style="display:none">
 <div style="font-size:15px;font-weight:900;color:#92400e">🔒 Watch is locked</div>
 <div id="lockMsg" style="font-size:13px;margin-top:6px;font-weight:800;color:#111827">Opens in --</div>
-<div style="font-size:11px;color:#6b7280;margin-top:6px">Next: Quiz opens 30 min after Watch</div>
+<div style="font-size:11px;color:#6b7280;margin-top:6px">Quiz is now open</div>
 </div>
 <section class="video-box" id="videoBox">
 <div class="video-title" id="videoTitle" style="display:none"></div>
@@ -80,7 +80,7 @@ video{display:block;width:100%;max-height:65vh;background:#000}
 <button class="btn secondary-btn" id="nextBtn">Next video</button>
 </div>
 </section>
-<p class="small-note" id="note">Watch 35s to unlock 2 coins. Video loops until Next.</p>
+<p class="small-note" id="note">Watch 35s to unlock 2 coins.</p>
 </main>
 <script>
 (() => {
@@ -104,7 +104,6 @@ const VIDEOS = [
 const REQUIRED_WATCH_SECONDS=35;
 const COINS_PER_VIDEO=2;
 const DAILY_LIMIT=10;
-const STAGGER_MS = 30*60*1000;
 const WINDOW_MS = 30*60*1000;
 const DAY_MS = 24*60*60*1000;
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
@@ -163,26 +162,29 @@ function onWatchFinishedChain(){
   c.watch_finish = now;
   c.watch_nextAvail = now + DAY_MS;
   c.watch_finishedToday = localDayKey();
-  c.quiz_open = now + STAGGER_MS;
-  c.quiz_expiry = c.quiz_open + WINDOW_MS;
-  c.quiz_nextAvail = c.quiz_open + DAY_MS;
+  c.quiz_open = now; // immediate, no 30 min delay
+  c.quiz_expiry = now + WINDOW_MS;
+  c.quiz_nextAvail = now + DAY_MS;
   c.quiz_doneToday = false;
   c.quiz_skippedToday = null;
   c.quiz_warned10 = false;
+  // clear watch live so it locks
+  c.watch_open = null;
+  c.watch_expiry = null;
   saveChain(c);
   if(currentUser){
     db.collection("users").doc(currentUser.uid).set({
       chain: { watch_finish: now, watch_nextAvail: c.watch_nextAvail, quiz_open: c.quiz_open, quiz_expiry: c.quiz_expiry, updated: firebase.firestore.FieldValue.serverTimestamp() }
     }, {merge:true});
   }
-  showBubble("Watch done! Quiz opens in 30 min");
-  pushNotif("Watch Completed", "Quiz will open in 30 min. 30 min window to complete.");
+  showBubble("Watch done! Quiz is Live now");
+  pushNotif("Watch Completed", "Quiz is Live now - 30 min window");
 }
 function showReward(){if(todayCount>=DAILY_LIMIT) return; if(watchedVideoIds.includes(VIDEOS[currentVideoIndex]?.id)) return; rewardCircle.classList.add("show"); canClaim=true;}
 function hideReward(){rewardCircle.classList.remove("show"); canClaim=false;}
 function showSeeYouSoon(){
   titleEl.style.display="none";
-  playerEl.innerHTML='<div class="placeholder">See you soon<br><small style="font-size:12px">Quiz opens in 30 min</small></div>';
+  playerEl.innerHTML='<div class="placeholder">See you soon<br><small style="font-size:12px">Quiz is Live now</small></div>';
   playerEl.appendChild(rewardCircle);
   controlsEl.style.display="none"; noteEl.style.display="none";
   if(todayCount>=DAILY_LIMIT || watchedVideoIds.length>=DAILY_LIMIT){
@@ -194,7 +196,7 @@ function updateUI(){
  balanceEl.textContent=`${balance} 🪙 coins`;
  todayEl.textContent=`${Math.min(todayCount,DAILY_LIMIT)}/${DAILY_LIMIT}`;
  if(todayCount>=DAILY_LIMIT || watchedVideoIds.length>=DAILY_LIMIT){
-   statusEl.textContent="🎉 Daily limit reached! Next: Quiz in 30 min";
+   statusEl.textContent="🎉 Daily limit reached! Quiz is Live";
    showSeeYouSoon();
    return;
  }
@@ -211,7 +213,7 @@ function chooseNextVideo(){
  if(!next || todayCount>=DAILY_LIMIT){ showSeeYouSoon(); return; }
  currentVideoIndex=VIDEOS.findIndex(v=>v.id===next.id);
  titleEl.style.display="block"; titleEl.textContent=`${next.title} • ${todayCount+1} of 10 • ${REQUIRED_WATCH_SECONDS}s`;
- playerEl.innerHTML='<div class="placeholder">Press Start to load.<br><small>Video will loop to 35s</small></div>'; playerEl.appendChild(rewardCircle);
+ playerEl.innerHTML='<div class="placeholder">Press Start to load.</div>'; playerEl.appendChild(rewardCircle);
  controlsEl.style.display="flex"; noteEl.style.display="block";
  startBtn.hidden=false; startBtn.textContent="Start watching"; startBtn.disabled=false; nextBtn.hidden=false;
  watchedSeconds=0; updateUI();
@@ -223,7 +225,6 @@ function createVideoElement(video){
  v.addEventListener("play",()=>{if(!canClaim)startWatchCounter(); updateUI();});
  v.addEventListener("pause",()=>{stopWatchCounter(); updateUI();});
  v.addEventListener("ended",()=>{
-  // FIXED: NEVER STOP - loop forever until Next button pressed
   if(todayCount < DAILY_LIMIT){
    v.currentTime=0;
    v.play().catch(()=>{});
@@ -240,7 +241,6 @@ function startWatchCounter(){
   if(watchedSeconds>=REQUIRED_WATCH_SECONDS){
     stopWatchCounter();
     showReward();
-    // video continues looping, only Next stops it
   }
  },500);
 }
@@ -279,7 +279,6 @@ async function claimReward(){
    t.update(userRef,{balance:oldBal+COINS_PER_VIDEO, coins:oldCoins+COINS_PER_VIDEO, todayCount:count+1, watchedVideoIds:ids.concat(video.id), watchDay:todayKey, lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()});
   });
   showBubble("+2 coins added!");
-  // keep video playing, user presses Next
  }catch(e){showBubble("Already collected");}finally{isSaving=false;}
 }
 async function refreshDailyProgressIfNeeded(data){
