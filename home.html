@@ -49,18 +49,20 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
   touch-action:manipulation;position:relative
 }
 .r-item:active{transform:scale(0.98);filter:brightness(0.97)}
-.r-item.locked{opacity:0.55;filter:grayscale(0.3);pointer-events:none}
-.r-item.open{box-shadow:0 0 0 2px #22c55e, 0 5px 12px rgba(0,0,0,0.16)}
+.r-item.locked{opacity:1;filter:none}
+.r-item.open{box-shadow:0 0 0 2.5px #22c55e, 0 5px 12px rgba(0,0,0,0.16)}
 .r1{background:#e3f2fd}.r2{background:#e8f5e9}.r3{background:#fff8e1}.r6{background:#f3e5f5}.r7{background:#fff3e0}
-.badge{font-size:10px;font-weight:900;padding:2px 6px;border-radius:8px;background:#111827;color:#fff;margin-left:6px;white-space:nowrap}
-.badge.green{background:#16a34a}.badge.orange{background:#f59e0b;color:#000}.badge.red{background:#dc2626}
+.badge{font-size:11px;font-weight:900;padding:3px 8px;border-radius:10px;color:#fff;margin-left:6px;white-space:nowrap}
+.badge.padlock{background:#111827;padding:4px 8px;font-size:13px}
+.badge.green{background:#16a34a}
+.badge.live{background:#16a34a}
 .bottom{width:82%;height:46px;background:rgba(255,255,255,0.98);border-radius:18px;display:flex;justify-content:space-around;align-items:center;margin:6px auto 10px;box-shadow:0 4px 12px rgba(0,0,0,0.25);z-index:20;flex-shrink:0;border:2px solid #fff;border-left:3px solid #fff}
 .bottom button{
   background:none;border:none;outline:none;display:flex;align-items:center;gap:4px;
   font-size:12.5px;font-weight:900;cursor:pointer;padding:6px 8px;border-radius:10px;
   -webkit-tap-highlight-color:transparent!important;user-select:none;touch-action:manipulation;position:relative
 }
-.bottom button.locked{opacity:0.45;pointer-events:none}
+.bottom button.locked{opacity:1}
 .bottom button.open{box-shadow:0 0 0 2px #22c55e inset}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:10px 14px;border-radius:10px;font-weight:bold;z-index:99999;display:none;max-width:90%;text-align:center}
 #maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
@@ -83,7 +85,6 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 <div style="text-align:center"><div style="font-size:10.5px;color:#0e7490;font-weight:900">💎 USDT</div><div id="usdtBalanceDisplay" style="font-size:20px;color:#059669;font-weight:900;line-height:1.1">0.8815 USDT</div></div>
 </div>
 </div></div>
-
 <div class="right-stack">
 <button class="r-item r1" id="btnWatch" onclick="goWatch()" type="button"><span>Watch & Earn</span><span>📺</span></button>
 <button class="r-item r2" onclick="location.href='./survey.html'" type="button"><span>Surveys</span><span>📋</span></button>
@@ -102,41 +103,62 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 </div>
 <script>
 (function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}');if(c&&(c.balance!=null||c.points!=null||c.username)){var bal=c.balance??c.points??0;var usdt=c.usdtBalance??0;document.getElementById('balance').textContent=bal+' coins';document.getElementById('usdBalance').textContent='= $'+(bal*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').textContent=Number(usdt).toFixed(4)+' USDT';if(c.username)document.getElementById('headerText').textContent=c.username;}}catch(e){}})();
-
-// ===== CHAIN SYSTEM Watch -> Quiz -> Articles =====
 const STAGGER=30*60*1000, WINDOW=30*60*1000, DAY=24*60*60*1000;
 function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}')}catch(e){return {}}}
 function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c))}
-function fmt(ms){if(ms<=0) return "0s"; const h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000), s=Math.floor((ms%60000)/1000); if(h>0) return h+"h "+m+"m"; if(m>0) return m+"m "+s+"s"; return s+"s";}
+function fmtShort(ms){
+  if(ms<=0) return "0m";
+  const m=Math.floor(ms/60000);
+  const s=Math.floor((ms%60000)/1000);
+  if(m>=60){ const h=Math.floor(m/60); const mm=m%60; return h+"h "+mm+"m"; }
+  if(m>0) return m+"m "+s+"s";
+  return s+"s";
+}
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3500);}
 window.alert=showToast;
 function pushNotif(title, body){try{if("Notification" in window && Notification.permission==="granted"){new Notification(title,{body})}}catch(e){}}
 function requestNotif(){if("Notification" in window && Notification.permission==="default"){Notification.requestPermission()}}
 requestNotif();
-
 const btnWatch=document.getElementById('btnWatch'), btnQuiz=document.getElementById('btnQuiz'), btnArticles=document.getElementById('btnArticles'), chainStatus=document.getElementById('chainStatus');
 
-function setBtnState(btn, state, text){
+function setBtnState(btn, state, countdownText, originalIcon){
   btn.classList.remove('locked','open');
   let badge=btn.querySelector('.badge'); if(badge) badge.remove();
-  if(state==='locked'){btn.classList.add('locked'); const b=document.createElement('span'); b.className='badge red'; b.textContent=text; btn.appendChild(b);}
-  else if(state==='open'){btn.classList.add('open'); const b=document.createElement('span'); b.className='badge green'; b.textContent=text; btn.appendChild(b);}
-  else if(state==='soon'){const b=document.createElement('span'); b.className='badge orange'; b.textContent=text; btn.appendChild(b);}
+  let iconSpan=btn.querySelector('.icon-right');
+  if(!iconSpan){ iconSpan=document.createElement('span'); iconSpan.className='icon-right'; btn.appendChild(iconSpan); }
+  iconSpan.textContent = originalIcon || btn.dataset.icon || '📺';
+  if(!btn.dataset.icon) btn.dataset.icon = iconSpan.textContent;
+
+  if(state==='locked'){
+    btn.classList.add('locked');
+    iconSpan.textContent='🔒';
+    const b=document.createElement('span'); b.className='badge padlock'; b.textContent='🔒'; btn.appendChild(b);
+  } else if(state==='open'){
+    btn.classList.add('open');
+    iconSpan.textContent = originalIcon;
+    const b=document.createElement('span'); b.className='badge green'; b.textContent='Open'; btn.appendChild(b);
+  } else if(state==='live'){
+    btn.classList.add('open');
+    iconSpan.textContent = originalIcon;
+    const b=document.createElement('span'); b.className='badge live'; b.textContent='Live '+countdownText; btn.appendChild(b);
+  } else if(state==='soon'){
+    btn.classList.add('locked');
+    iconSpan.textContent='🔒';
+    const b=document.createElement('span'); b.className='badge padlock'; b.textContent='🔒 '+countdownText; btn.appendChild(b);
+  }
 }
 
 function evaluateChain(){
   const c=getChain(); const now=Date.now();
-  // Auto skip logic
-  // If quiz was open and expired and not done today, skip to articles
   if(c.quiz_open && c.quiz_expiry && now > c.quiz_expiry && !c.quiz_doneToday && c.quiz_finishedToday!==localDayKey()){
     if(!c.articles_open || c.articles_open < c.quiz_expiry){
-      c.articles_open = c.quiz_expiry; // open instantly at expiry
+      c.articles_open = c.quiz_expiry;
       c.articles_expiry = c.articles_open + WINDOW;
       c.quiz_nextAvail = c.quiz_open + DAY;
       c.quiz_skippedToday = localDayKey();
       saveChain(c);
       showToast("Quiz missed - Articles are open now!");
-      pushNotif("Quiz Missed", "Articles are open now! 30 min window.");
+      pushNotif("Quiz Missed", "Articles are open now!");
     }
   }
   if(c.articles_open && c.articles_expiry && now > c.articles_expiry && !c.articles_doneToday && c.articles_finishedToday!==localDayKey()){
@@ -145,61 +167,48 @@ function evaluateChain(){
     saveChain(c);
   }
 
-  // Watch state
   if(c.watch_nextAvail && now < c.watch_nextAvail){
-    setBtnState(btnWatch,'locked', fmt(c.watch_nextAvail-now));
+    setBtnState(btnWatch,'locked', '', '📺');
     chainStatus.style.display='block';
-    chainStatus.textContent=`Watch locked - opens in ${fmt(c.watch_nextAvail-now)}`;
+    chainStatus.textContent=`Watch locked - ${fmtShort(c.watch_nextAvail-now)}`;
   } else {
-    setBtnState(btnWatch,'open','OPEN');
+    setBtnState(btnWatch,'open','', '📺');
   }
 
-  // Quiz state
   if(!c.quiz_open){
-    setBtnState(btnQuiz,'locked','-');
+    setBtnState(btnQuiz,'locked','', '🧠');
   } else if(now < c.quiz_open){
-    setBtnState(btnQuiz,'soon', 'in '+fmt(c.quiz_open-now));
+    setBtnState(btnQuiz,'soon', fmtShort(c.quiz_open-now), '🧠');
     chainStatus.style.display='block';
-    chainStatus.textContent=`Quiz opens in ${fmt(c.quiz_open-now)} - Watch done`;
+    chainStatus.textContent=`Quiz in ${fmtShort(c.quiz_open-now)}`;
   } else if(now >= c.quiz_open && now <= c.quiz_expiry && !c.quiz_doneToday){
     const left=c.quiz_expiry-now;
-    setBtnState(btnQuiz,'open', fmt(left)+' left');
+    setBtnState(btnQuiz,'live', fmtShort(left), '🧠');
     chainStatus.style.display='block';
-    chainStatus.innerHTML=`🔥 Quiz OPEN - ${fmt(left)} left! <span style="color:#dc2626">Tap now!</span>`;
-    if(left < 10*60*1000 && !c.quiz_warned10){ c.quiz_warned10=true; saveChain(c); showToast("Quiz expires in 10 min!"); pushNotif("Quiz expiring", "10 min left to complete Quiz"); }
-  } else if(c.quiz_doneToday || (c.quiz_open && now > c.quiz_expiry)){
-    setBtnState(btnQuiz,'locked', c.quiz_doneToday?'Done':'Missed');
+    chainStatus.textContent=`Quiz Live ${fmtShort(left)}`;
+  } else {
+    setBtnState(btnQuiz,'locked','', '🧠');
   }
 
-  // Articles state
   if(!c.articles_open){
-    setBtnState(btnArticles,'locked','-');
+    setBtnState(btnArticles,'locked','', '📖');
   } else if(now < c.articles_open){
-    setBtnState(btnArticles,'soon','in '+fmt(c.articles_open-now));
-    if(chainStatus.textContent==='') { chainStatus.style.display='block'; chainStatus.textContent=`Articles opens in ${fmt(c.articles_open-now)}`; }
+    setBtnState(btnArticles,'soon', fmtShort(c.articles_open-now), '📖');
   } else if(now >= c.articles_open && now <= c.articles_expiry && !c.articles_doneToday){
     const left=c.articles_expiry-now;
-    setBtnState(btnArticles,'open', fmt(left)+' left');
+    setBtnState(btnArticles,'live', fmtShort(left), '📖');
     chainStatus.style.display='block';
-    chainStatus.innerHTML=`🔥 Articles OPEN - ${fmt(left)} left!`;
-    if(left < 10*60*1000 && !c.articles_warned10){ c.articles_warned10=true; saveChain(c); showToast("Articles expires in 10 min!"); pushNotif("Articles expiring", "10 min left"); }
-  } else if(c.articles_doneToday || (c.articles_open && now > c.articles_expiry)){
-    setBtnState(btnArticles,'locked', c.articles_doneToday?'Done':'Missed');
-  }
-
-  // If all done
-  const allDone = (c.watch_nextAvail && now < c.watch_nextAvail) && (c.quiz_doneToday || c.quiz_skippedToday===localDayKey()) && (c.articles_doneToday || c.articles_skippedToday===localDayKey());
-  if(allDone){
-    chainStatus.style.display='block';
-    chainStatus.textContent=`✅ All heavy tasks done today. Come back tomorrow!`;
+    chainStatus.textContent=`Articles Live ${fmtShort(left)}`;
+  } else {
+    setBtnState(btnArticles,'locked','', '📖');
   }
 }
 
 function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
 
-window.goWatch=()=>{const c=getChain(); const now=Date.now(); if(c.watch_nextAvail && now < c.watch_nextAvail){showToast(`Watch locked - opens in ${fmt(c.watch_nextAvail-now)}`); return;} location.href='./watch.html';};
-window.goQuiz=()=>{const c=getChain(); const now=Date.now(); if(!c.quiz_open){showToast("Finish Watch first to unlock Quiz"); return;} if(now < c.quiz_open){showToast(`Quiz opens in ${fmt(c.quiz_open-now)}`); return;} if(now > c.quiz_expiry && !c.quiz_doneToday){showToast("Quiz window expired - Articles are open now"); location.href='./articles_earn.html'; return;} if(c.quiz_nextAvail && now < c.quiz_nextAvail && c.quiz_skippedToday===localDayKey()){showToast("Quiz missed today - comes back tomorrow"); return;} location.href='./quiz_earn.html';};
-window.goArticles=()=>{const c=getChain(); const now=Date.now(); if(!c.articles_open){showToast("Finish Watch & Quiz first"); return;} if(now < c.articles_open){showToast(`Articles opens in ${fmt(c.articles_open-now)}`); return;} if(now > c.articles_expiry && !c.articles_doneToday){showToast("Articles window expired"); return;} location.href='./articles_earn.html';};
+window.goWatch=()=>{const c=getChain(); const now=Date.now(); if(c.watch_nextAvail && now < c.watch_nextAvail){showToast(`Watch locked`); return;} location.href='./watch.html';};
+window.goQuiz=()=>{const c=getChain(); const now=Date.now(); if(!c.quiz_open){showToast("Finish Watch first"); return;} if(now < c.quiz_open){showToast(`Quiz in ${fmtShort(c.quiz_open-now)}`); return;} if(now > c.quiz_expiry && !c.quiz_doneToday){showToast("Quiz expired - Articles open"); location.href='./articles_earn.html'; return;} location.href='./quiz_earn.html';};
+window.goArticles=()=>{const c=getChain(); const now=Date.now(); if(!c.articles_open){showToast("Finish previous tasks"); return;} if(now < c.articles_open){showToast(`Articles in ${fmtShort(c.articles_open-now)}`); return;} location.href='./articles_earn.html';};
 
 setInterval(evaluateChain,1000); evaluateChain();
 </script>
