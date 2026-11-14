@@ -25,6 +25,7 @@ body{background:#f5f3ff;min-height:100vh;padding:0 0 100px 0;color:#111827}
 .gate-btn.wait{background:#f3f4f6;color:#6b7280;cursor:not-allowed}
 .gate-btn.continue{background:linear-gradient(180deg,#dcfce7,#bbf7d0);color:#166534;border-color:#22c55e;display:none;margin-top:10px}
 #gateTimer{font-size:13px;font-weight:900;color:#4c1d95;margin-top:10px}
+#safeAdAfter{display:none;background:#ffffff;border:2px solid #ede9fe;border-radius:12px;padding:10px;margin-top:12px;text-align:center}
 </style>
 </head><body>
 <div id="customToast"></div>
@@ -56,25 +57,19 @@ body{background:#f5f3ff;min-height:100vh;padding:0 0 100px 0;color:#111827}
 <div id="withdrawNote" class="note">Available: -- USDT • Min $1.5</div>
 <button class="action-btn" onclick="startWithdrawGate()">Request Withdraw</button>
 </div>
+<div id="safeAdAfter"><small style="color:#6b7280;font-weight:800;font-size:10px">Sponsored</small><div style="min-height:60px;margin-top:6px" id="adSlot"></div></div>
 </div>
 
-<!-- SAFE AD GATE - NO CLICK REQUIRED -->
 <div id="adGate"><div class="gate-box"><div id="gateTitle" class="gate-title"></div><div id="gateSub" class="gate-sub"></div><button id="waitBtn" class="gate-btn wait" disabled>⏳ Please wait 10s...</button><div id="gateTimer">Ads loading, please wait...</div><button id="continueBtn" class="gate-btn continue">✅ Continue</button><div style="font-size:10px;color:#9ca3af;margin-top:8px">Ad supports the platform - you don't need to click it</div></div></div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
-// === SAFE MONETAG LOADING ===
-// Load once per page, not on every click
+// === FIXED - ONLY ONE SAFE TAG, NO BACK POP ===
 (function(){
-  const s1=document.createElement('script');
-  s1.dataset.zone='12211617'; // vignette
-  s1.src='https://n6wxm.com/vignette.min.js';
-  s1.async=true;
-  document.body.appendChild(s1);
   const s2=document.createElement('script');
-  s2.dataset.zone='12211613'; // tag / in-page
+  s2.dataset.zone='12211613';
   s2.src='https://al5sm.com/tag.min.js';
   s2.async=true;
   document.body.appendChild(s2);
@@ -122,8 +117,6 @@ function openSafeGate(title, sub, action){
       waitBtn.style.display='none';
       timerEl.innerText='✅ Ready to continue';
       contBtn.style.display='block';
-      // Trigger vignette here if available (safe, user initiated wait)
-      try{ if(window.__monetag_vignette) window.__monetag_vignette(); }catch(e){}
     }
   },1000);
 }
@@ -156,6 +149,7 @@ async function convertPoints(){
     const userRef=db.collection('users').doc(currentUser.uid);
     await db.runTransaction(async (tx)=>{const snap=await tx.get(userRef);if(!snap.exists) throw "No user";const data=snap.data();const bal=data.balance ?? data.coins ?? 0;if(bal < pts) throw `Not enough coins`;tx.update(userRef,{balance: firebase.firestore.FieldValue.increment(-pts),coins: firebase.firestore.FieldValue.increment(-pts),points: firebase.firestore.FieldValue.increment(-pts),usdtBalance: firebase.firestore.FieldValue.increment(usdt),lastConvertAt: firebase.firestore.FieldValue.serverTimestamp()});});
     showToast(`✓ ${pts} → ${usdt.toFixed(4)} USDT`);document.getElementById('convertAmount').value=''; calcConvert();
+    document.getElementById('safeAdAfter').style.display='block';
   }catch(e){showToast('Failed: '+(e.message||e));}
 }
 async function requestWithdraw(){
@@ -168,6 +162,7 @@ async function requestWithdraw(){
     await db.runTransaction(async (tx)=>{const snap=await tx.get(userRef);if((snap.data().usdtBalance||0) < usdtAmount) throw "Not enough USDT";tx.update(userRef,{usdtBalance: firebase.firestore.FieldValue.increment(-usdtAmount)});});
     await db.collection('withdrawals').add({uid:currentUser.uid,username:userData.username||'',email:userData.email||currentUser.email||'',method:method,crypto:'USDT',payId:payId,amount:usdtAmount,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp()});
     showToast(`Withdraw ${usdtAmount.toFixed(2)} USDT requested!`);document.getElementById('withdrawAmount').value='';document.getElementById('walletAddress').value='';
+    document.getElementById('safeAdAfter').style.display='block';
   }catch(e){try{await db.collection('users').doc(currentUser.uid).update({usdtBalance: firebase.firestore.FieldValue.increment(usdtAmount)});}catch(_){}showToast('Failed: '+(e.message||e));}
 }
 auth.onAuthStateChanged(u=>{if(u){currentUser=u;db.collection('users').doc(u.uid).onSnapshot(doc=>{if(doc.exists) loadData(doc.data());});}else{location.href='./index.html';}});
