@@ -87,4 +87,85 @@ function loadData(d){
   if(d.usdtBalance==null) d.usdtBalance=0; if(d.balance==null) d.balance=d.coins||d.points||0;
   document.getElementById('coinBal').innerText=(d.balance||0)+' coins';
   document.getElementById('usdEq').innerText=`≈ $${((d.balance||0)*POINT_RATE).toFixed(4)}`;
-  document.getElementById('usdtBal').innerText=Number(d.usdtBalance||0).toFixed
+  document.getElementById('usdtBal').innerText=Number(d.usdtBalance||0).toFixed(4)+' USDT';
+  document.getElementById('withdrawNote').innerText=`Available: ${Number(d.usdtBalance||0).toFixed(4)} USDT • Min $1.5`;
+  localStorage.setItem('userData', JSON.stringify(d));
+}
+function calcConvert(){const pts=parseFloat(document.getElementById('convertAmount').value)||0;document.getElementById('convertResult').innerText=`You will receive: ${(pts*POINT_RATE).toFixed(4)} USDT`;}
+function switchTab(t){document.getElementById('convertTab').style.display=t==='convert'?'block':'none';document.getElementById('withdrawTab').style.display=t==='withdraw'?'block':'none';document.getElementById('tab1').className=t==='convert'?'tab active':'tab inactive';document.getElementById('tab2').className=t==='withdraw'?'tab active':'tab inactive';document.getElementById('safeAdAfter').style.display='none';}
+
+function openSafeGate(title, sub, action, adMode){
+  pendingAction=action;
+  window._adMode = adMode || 'SHOW';
+  document.getElementById('adGate').style.display='flex';
+  document.getElementById('gateTitle').innerText=title;
+  document.getElementById('gateSub').innerText=sub;
+  document.getElementById('gateAdNote').innerText = (window._adMode==='NO_AD') ? 'Verifying your request securely...' : 'Ad supports the platform - you don\'t need to click it';
+  const waitBtn=document.getElementById('waitBtn');
+  const contBtn=document.getElementById('continueBtn');
+  waitBtn.style.display='block'; waitBtn.disabled=true; waitBtn.innerText='⏳ Please wait 10s...';
+  contBtn.style.display='none';
+  const timerEl=document.getElementById('gateTimer');
+  let sec=10;
+  timerEl.innerText=`Please wait... ${sec}s`;
+  clearInterval(gateTimerInt);
+  gateTimerInt=setInterval(()=>{
+    sec--;
+    if(sec>0){
+      timerEl.innerText=`Please wait... ${sec}s`;
+      waitBtn.innerText=`⏳ Please wait ${sec}s...`;
+    } else {
+      clearInterval(gateTimerInt);
+      waitBtn.style.display='none';
+      timerEl.innerText='✅ Ready to continue';
+      contBtn.style.display='block';
+    }
+  },1000);
+}
+function startConvertGate(){
+  const pts=parseFloat(document.getElementById('convertAmount').value);
+  if(!pts||pts<=0) return showToast('Enter coins amount');
+  if(pts > (userData.balance||0)) return showToast('Not enough coins');
+  openSafeGate('🔓 Converting...','Please wait 10s while we prepare your conversion','convert','SHOW');
+}
+function startWithdrawGate(){
+  const usdtAmount=parseFloat(document.getElementById('withdrawAmount').value);
+  const payId=document.getElementById('walletAddress').value.trim();
+  if(!payId) return showToast('Enter Pay ID'); 
+  if(!usdtAmount||usdtAmount<MIN_WITHDRAW) return showToast('Min $1.5');
+  if(usdtAmount > (userData.usdtBalance||0)) return showToast('Not enough USDT');
+  openSafeGate('🔓 Processing Withdraw','Please wait 10s while we verify your request','withdraw','NO_AD');
+}
+document.getElementById('continueBtn').onclick=function(){
+  document.getElementById('adGate').style.display='none';
+  clearInterval(gateTimerInt);
+  if(pendingAction==='convert') convertPoints();
+  if(pendingAction==='withdraw') requestWithdraw();
+  pendingAction=null;
+};
+
+async function convertPoints(){
+  const pts=parseFloat(document.getElementById('convertAmount').value);
+  if(!pts) return; const usdt = pts * POINT_RATE; showToast('Converting...');
+  try{
+    const userRef=db.collection('users').doc(currentUser.uid);
+    await db.runTransaction(async (tx)=>{const snap=await tx.get(userRef);if(!snap.exists) throw "No user";const data=snap.data();const bal=data.balance ?? data.coins ?? 0;if(bal < pts) throw `Not enough coins`;tx.update(userRef,{balance: firebase.firestore.FieldValue.increment(-pts),coins: firebase.firestore.FieldValue.increment(-pts),points: firebase.firestore.FieldValue.increment(-pts),usdtBalance: firebase.firestore.FieldValue.increment(usdt),lastConvertAt: firebase.firestore.FieldValue.serverTimestamp()});});
+    showToast(`✓ ${pts} → ${usdt.toFixed(4)} USDT`);document.getElementById('convertAmount').value=''; calcConvert();
+    document.getElementById('safeAdAfter').style.display='block';
+  }catch(e){showToast('Failed: '+(e.message||e));}
+}
+async function requestWithdraw(){
+  const usdtAmount=parseFloat(document.getElementById('withdrawAmount').value);
+  const payId=document.getElementById('walletAddress').value.trim();
+  const method=document.getElementById('payMethod').value;
+  if(!payId||!usdtAmount) return; showToast('Requesting...');
+  try{
+    const userRef=db.collection('users').doc(currentUser.uid);
+    await db.runTransaction(async (tx)=>{const snap=await tx.get(userRef);if((snap.data().usdtBalance||0) < usdtAmount) throw "Not enough USDT";tx.update(userRef,{usdtBalance: firebase.firestore.FieldValue.increment(-usdtAmount)});});
+    await db.collection('withdrawals').add({uid:currentUser.uid,username:userData.username||'',email:userData.email||currentUser.email||'',method:method,crypto:'USDT',payId:payId,amount:usdtAmount,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    showToast(`Withdraw ${usdtAmount.toFixed(2)} USDT requested!`);document.getElementById('withdrawAmount').value='';document.getElementById('walletAddress').value='';
+    document.getElementById('safeAdAfter').style.display='none';
+  }catch(e){try{await db.collection('users').doc(currentUser.uid).update({usdtBalance: firebase.firestore.FieldValue.increment(usdtAmount)});}catch(_){}showToast('Failed: '+(e.message||e));}
+}
+auth.onAuthStateChanged(u=>{if(u){currentUser=u;db.collection('users').doc(u.uid).onSnapshot(doc=>{if(doc.exists) loadData(doc.data());});}else{location.href='./index.html';}});
+</script></body></html>
