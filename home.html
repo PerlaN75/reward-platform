@@ -22,7 +22,6 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 .bottom button{background:none;border:none;outline:none;display:flex;align-items:center;gap:4px;font-size:12.5px;font-weight:900;cursor:pointer;padding:6px 8px;border-radius:10px;position:relative}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:10px 14px;border-radius:10px;font-weight:bold;z-index:99999;display:none;max-width:90%;text-align:center}
 #maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
-#chainStatus{position:absolute;bottom:58px;left:50%;transform:translateX(-50%);width:88%;background:rgba(255,255,255,0.96);border-radius:12px;padding:8px 10px;font-size:11px;font-weight:800;color:#111827;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,0.2);z-index:15;display:none;border:2px solid #fbbf24}
 </style></head><body>
 <div id="maint"><div><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900">Back</button></div></div>
 <div id="toast"></div>
@@ -48,7 +47,6 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 <button class="r-item r6" id="btnArticles" onclick="goArticles()" type="button">Articles Earn 📖</button>
 <button class="r-item r7" onclick="location.href='./referrals.html'" type="button">Refer & Earn 🤝</button>
 </div>
-<div id="chainStatus"></div>
 </div>
 <div class="bottom">
 <button id="btnQuiz" onclick="goQuiz()" type="button">🧠 Quiz</button>
@@ -59,23 +57,13 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 </div>
 <script>
 (function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}');if(c&&(c.balance!=null||c.points!=null||c.username)){var bal=c.balance??c.points??0;var usdt=c.usdtBalance??0;document.getElementById('balance').textContent=bal+' coins';document.getElementById('usdBalance').textContent='= $'+(bal*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').textContent=Number(usdt).toFixed(4)+' USDT';if(c.username)document.getElementById('headerText').textContent=c.username;}}catch(e){}})();
-
 const WINDOW=30*60*1000, DAY=24*60*60*1000;
 function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}')}catch(e){return {}}}
 function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c))}
-function fmtShort(ms){
-  if(ms<=0) return "0m";
-  const m=Math.floor(ms/60000);
-  const s=Math.floor((ms%60000)/1000);
-  if(m>=60){const h=Math.floor(m/60); const mm=m%60; return h+"h "+mm+"m";}
-  if(m>0) return m+"m "+s+"s";
-  return s+"s";
-}
+function fmtShort(ms){if(ms<=0) return "0m"; const m=Math.floor(ms/60000); const s=Math.floor((ms%60000)/1000); if(m>=60){const h=Math.floor(m/60); const mm=m%60; return h+"h "+mm+"m";} if(m>0) return m+"m "+s+"s"; return s+"s";}
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
 window.alert=showToast;
-
-const btnWatch=document.getElementById('btnWatch'), btnQuiz=document.getElementById('btnQuiz'), btnArticles=document.getElementById('btnArticles'), chainStatus=document.getElementById('chainStatus');
-
+const btnWatch=document.getElementById('btnWatch'), btnQuiz=document.getElementById('btnQuiz'), btnArticles=document.getElementById('btnArticles');
 function setBtnState(btn, state, countdownText){
   let old=btn.querySelector('.badge'); if(old) old.remove();
   btn.classList.remove('open');
@@ -91,89 +79,62 @@ function setBtnState(btn, state, countdownText){
     const b=document.createElement('span'); b.className='badge padlock'; b.textContent='🔒 '+countdownText; btn.appendChild(b);
   }
 }
-
 function evaluateChain(){
   const c=getChain(); const now=Date.now();
-
-  // Auto advance if quiz window missed
   if(c.quiz_open && c.quiz_expiry && now > c.quiz_expiry && !c.quiz_doneToday && c.quiz_finishedToday!==localDayKey()){
     if(!c.articles_open || c.articles_open < c.quiz_expiry){
       c.articles_open = c.quiz_expiry; c.articles_expiry = c.articles_open + WINDOW;
       c.quiz_nextAvail = c.quiz_open + DAY; c.quiz_skippedToday = localDayKey(); saveChain(c);
     }
   }
-
-  // WATCH
   if(c.watch_nextAvail && now < c.watch_nextAvail){
     setBtnState(btnWatch,'locked','');
-    chainStatus.style.display='block'; chainStatus.textContent=`Watch locked ${fmtShort(c.watch_nextAvail-now)}`;
   } else if(c.watch_open && now < c.watch_expiry && !c.watch_finishedToday){
     setBtnState(btnWatch,'live', fmtShort(c.watch_expiry-now));
-    chainStatus.style.display='block'; chainStatus.textContent=`Watch Live ${fmtShort(c.watch_expiry-now)}`;
   } else {
     setBtnState(btnWatch,'open','');
-    chainStatus.style.display='none';
   }
-
-  // QUIZ
   if(!c.quiz_open){
     setBtnState(btnQuiz,'locked','');
   } else if(now < c.quiz_open){
     setBtnState(btnQuiz,'soon', fmtShort(c.quiz_open-now));
-    chainStatus.style.display='block'; chainStatus.textContent=`Quiz in ${fmtShort(c.quiz_open-now)}`;
   } else if(now >= c.quiz_open && now <= c.quiz_expiry && !c.quiz_doneToday){
     setBtnState(btnQuiz,'live', fmtShort(c.quiz_expiry-now));
-    chainStatus.style.display='block'; chainStatus.textContent=`Quiz Live ${fmtShort(c.quiz_expiry-now)}`;
   } else {
     setBtnState(btnQuiz,'locked','');
   }
-
-  // ARTICLES
   if(!c.articles_open){
     setBtnState(btnArticles,'locked','');
   } else if(now < c.articles_open){
     setBtnState(btnArticles,'soon', fmtShort(c.articles_open-now));
   } else if(now >= c.articles_open && now <= c.articles_expiry && !c.articles_doneToday){
     setBtnState(btnArticles,'live', fmtShort(c.articles_expiry-now));
-    chainStatus.style.display='block'; chainStatus.textContent=`Articles Live ${fmtShort(c.articles_expiry-now)}`;
   } else {
     setBtnState(btnArticles,'locked','');
   }
 }
-
 function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
-
-// ON CLICK -> START LIVE TIMER
 window.goWatch=()=>{
   const c=getChain(); const now=Date.now();
   if(c.watch_nextAvail && now < c.watch_nextAvail){showToast('Watch locked'); return;}
-  // If not already live, start 30 min window
   if(!c.watch_open || now > c.watch_expiry){
-    c.watch_open = now;
-    c.watch_expiry = now + WINDOW;
-    saveChain(c);
+    c.watch_open = now; c.watch_expiry = now + WINDOW; saveChain(c);
   }
   location.href='./watch.html';
 };
-
 window.goQuiz=()=>{
   const c=getChain(); const now=Date.now();
   if(!c.quiz_open){showToast("Finish Watch first"); return;}
   if(now < c.quiz_open){showToast(`Quiz in ${fmtShort(c.quiz_open-now)}`); return;}
   if(now > c.quiz_expiry){showToast("Expired"); return;}
-  // ensure expiry exists
-  saveChain(c);
   location.href='./quiz_earn.html';
 };
-
 window.goArticles=()=>{
   const c=getChain(); const now=Date.now();
   if(!c.articles_open){showToast("Finish previous tasks"); return;}
   if(now < c.articles_open){showToast(`Articles in ${fmtShort(c.articles_open-now)}`); return;}
-  if(now > c.articles_expiry){showToast("Expired"); return;}
   location.href='./articles_earn.html';
 };
-
 setInterval(evaluateChain,1000); evaluateChain();
 </script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
