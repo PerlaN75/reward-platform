@@ -24,9 +24,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 <div id="maint"><div><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900">Back</button></div></div>
 <div id="toast"></div>
 <div class="wrap">
-<div class="top">
-  <h2>Welcome <span id="headerText">Ineza</span></h2>
-</div>
+<div class="top"><h2>Welcome <span id="headerText">Ineza</span></h2></div>
 <div class="scene">
 <div class="monitor"><div class="screen">
 <div style="color:#6d28d9;font-size:11.5px;font-weight:900">Your Balance</div>
@@ -104,21 +102,17 @@ function evaluateChain(){
   if(!c.quiz_open){
     setBtnState(btnQuiz,'locked','');
   } else if(now < c.quiz_open){
-    setBtnState(btnQuiz,'soon', fmtShort(c.quiz_open-now));
+    setBtnState(btnQuiz,'locked','');
   } else if(now >= c.quiz_open && now <= c.quiz_expiry && !c.quiz_doneToday){
     setBtnState(btnQuiz,'live', fmtShort(c.quiz_expiry-now));
   } else {
-    if(c.quiz_nextAvail && now < c.quiz_nextAvail){
-      setBtnState(btnQuiz,'soon', fmtShort(c.quiz_nextAvail-now));
-    } else {
-      setBtnState(btnQuiz,'locked','');
-    }
+    setBtnState(btnQuiz,'locked','');
   }
 }
 function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
 window.goWatch=()=>{
   const c=getChain(); const now=Date.now();
-  if(c.watch_nextAvail && now < c.watch_nextAvail){showToast('Watch locked '+fmtShort(c.watch_nextAvail-now)); return;}
+  if(c.watch_nextAvail && now < c.watch_nextAvail){showToast(`Watch locked - Opens in ${fmtShort(c.watch_nextAvail-now)}`); return;}
   if(!c.watch_open || now > c.watch_expiry){
     c.watch_open = now; c.watch_expiry = now + WINDOW; saveChain(c);
   }
