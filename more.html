@@ -4,31 +4,29 @@
   <title>More - Coins</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://nap5k.com/tag.min.js" data-zone="12266334" async></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-    body{background:#f5f3ff;min-height:100vh;color:#111827}
+    body{background:#f5f3ff;min-height:100vh}
     .top-bar{background:#6d28d9;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100}
     .back-btn-checkin{width:45px;height:30px;border-radius:10px;background:#fff;border:2px solid #fecaca;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px}
     .center-pill{background:#fff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%)}
     .container{max-width:500px;margin:0 auto;padding:16px 14px 90px 14px}
-    .card{background:#fff;border:2px solid #ede9fe;border-radius:20px;padding:8px;position:relative;overflow:hidden;min-height:340px}
+    .card{background:#fff;border:2px solid #ede9fe;border-radius:20px;padding:8px}
     .menu-list a{display:flex;align-items:center;justify-content:space-between;padding:19px 16px;color:#111827;text-decoration:none;font-size:15px;font-weight:800;border-radius:14px}
     .menu-list a:not(:last-child){border-bottom:1px solid #f5f3ff}
-    .arrow{color:#a78bfa;font-size:20px}
-    #moreGate{position:absolute;inset:0;background:#fff;z-index:20;border-radius:20px;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;border:3px solid #fbbf24}
-    #moreGate.show{display:flex}
-    #moreTimerBox{width:88px;height:88px;border-radius:50%;background:linear-gradient(180deg,#fef3c7,#fbbf24);border:4px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;color:#92400e;margin:14px auto}
-    #moreProgress{width:100%;height:8px;background:#fef3c7;border-radius:99px;margin-top:16px;overflow:hidden}
-    #moreProgressBar{height:100%;width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width 1s linear}
-    .ad-label{font-size:9px;color:#8b5cf6;text-align:center;font-weight:900;margin:18px 0 6px 0;letter-spacing:0.8px}
-    .ad-box{min-height:130px;background:#fff;border:2px solid #ede9fe;border-radius:16px;padding:8px;overflow:hidden}
     .modal{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(76,29,149,0.45);justify-content:center;align-items:center;padding:15px}
     .modal-box{background:#fff;width:100%;max-width:420px;border-radius:20px;padding:20px;max-height:85vh;overflow-y:auto;position:relative}
-    .close{position:absolute;top:12px;right:15px;font-size:22px;font-weight:bold;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#f5f3ff;border-radius:50%;color:#6d28d9}
-    /* FORCE MONETAG IN-PAGE PUSH TO BE INSIDE BOX, NOT TOP */
-    #mainBanner > div, #mainBanner > div > div { position: relative !important; top: auto !important; left: auto !important; right: auto !important; max-width:100% !important; }
+    .close{position:absolute;top:12px;right:15px;font-size:22px;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#f5f3ff;border-radius:50%;color:#6d28d9}
+    .item{background:#f9fafb;border:1.5px solid #ede9fe;border-radius:12px;padding:10px 12px;margin-bottom:8px}
+    .avatar-letter{width:78px;height:78px;background:linear-gradient(180deg,#ede9fe,#ddd6fe);border:3px solid #a78bfa;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:#6d28d9;margin:8px auto}
+    .lang-option{display:flex;justify-content:space-between;padding:14px;border:2px solid #ede9fe;border-radius:12px;margin-bottom:8px;cursor:pointer}
+    .lang-option.active{border-color:#fbbf24;background:#fffbeb}
+    .mode-btn{flex:1;padding:12px;border-radius:12px;border:2px solid #ede9fe;background:#fff;cursor:pointer;text-align:center;font-weight:800}
+    .mode-btn.active{border-color:#fbbf24;background:linear-gradient(90deg,#fbbf24,#f59e0b)}
   </style>
 </head>
 <body>
@@ -38,82 +36,51 @@
   <div style="width:45px"></div>
 </div>
 <div class="container">
-  <div class="card" id="mainCard">
-    <div id="moreGate">
-      <div style="font-size:42px">🪙</div>
-      <div style="font-weight:900;font-size:18px;color:#92400e;margin-top:8px">Loading More Page</div>
-      <div id="moreTimerBox">10</div>
-      <div style="font-size:11px;color:#d97706;font-weight:800">Please wait</div>
-      <div id="moreProgress"><div id="moreProgressBar"></div></div>
-    </div>
+  <div class="card">
     <div class="menu-list">
-      <a onclick="openModal('notifModal')"><div>🔔 Notifications</div><span class="arrow">›</span></a>
-      <a onclick="openModal('profileModal')"><div>👤 Profile</div><span class="arrow">›</span></a>
-      <a onclick="openModal('historyModal')"><div>📜 History</div><span class="arrow">›</span></a>
-      <a href="help.html"><div>💬 Help/Support</div><span class="arrow">›</span></a>
+      <a onclick="openModal('notifModal')"><div>🔔 Notifications</div><span>›</span></a>
+      <a onclick="openModal('profileModal')"><div>👤 Profile</div><span>›</span></a>
+      <a onclick="openModal('historyModal')"><div>📜 History</div><span>›</span></a>
+      <a onclick="openModal('settingsModal')"><div>⚙️ Settings</div><span>›</span></a>
+      <a href="help.html"><div>💬 Help/Support</div><span>›</span></a>
     </div>
-  </div>
-
-  <div id="outerAdWrap" style="display:none">
-    <div class="ad-label">ADVERTISEMENT</div>
-    <div id="mainBanner" class="ad-box"></div>
   </div>
 </div>
 
+<div id="notifModal" class="modal" onclick="closeModal('notifModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('notifModal')">×</span><h3 style="text-align:center">🔔 Notifications</h3><div id="notifList" style="margin-top:12px">Loading...</div></div></div>
+
+<div id="profileModal" class="modal" onclick="closeModal('profileModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('profileModal')">×</span><div style="text-align:center"><div id="avatarLetter" class="avatar-letter">I</div><h3 id="pUsername">--</h3><p style="color:#22c55e;font-weight:900;font-size:12px">✓ Verified</p></div><div id="pDetails" style="margin-top:14px;background:#f9fafb;border:1.5px solid #ede9fe;border-radius:14px;padding:14px"><div>📧 <b>Email:</b> <span id="pEmail">...</span></div><div>📅 <b>Registered:</b> <span id="pDate">...</span></div><div>🆔 <b>ID:</b> <span id="pId">...</span></div><div style="margin-top:8px">🪙 <b>Balance:</b> <span id="pBal">--</span></div></div></div></div>
+
+<div id="historyModal" class="modal" onclick="closeModal('historyModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('historyModal')">×</span><h3 style="text-align:center">📜 History</h3><div style="display:flex;gap:10px;margin:12px 0"><button onclick="loadHistory()" style="flex:1;padding:10px;border:none;border-radius:10px;background:#fbbf24;font-weight:800">Refresh</button><button onclick="permanentClearHistory()" style="flex:1;padding:10px;border:none;border-radius:10px;background:#111827;color:#fff;font-weight:800">Clear</button></div><div id="historyList">Loading...</div></div></div>
+
+<div id="settingsModal" class="modal" onclick="closeModal('settingsModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('settingsModal')">×</span><h3 style="text-align:center;margin-bottom:14px">⚙️ Settings</h3><div><span style="font-size:13px;font-weight:800">Language</span><div class="lang-option active" id="lang-en" onclick="setLang('en',this)"><span>English 🇺🇸</span><span>✓</span></div></div><div style="margin:16px 0"><span style="font-size:13px;font-weight:800">Mode</span><div style="display:flex;gap:10px;margin-top:8px"><div class="mode-btn active" id="modeLight" onclick="setMode('light')">☀️ Light</div><div class="mode-btn" id="modeDark" onclick="setMode('dark')">🌙 Dark</div></div></div><button onclick="closeModal('settingsModal')" style="width:70%;margin:18px auto 0;display:block;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;padding:12px;border-radius:12px;font-weight:800">Save & Close</button></div></div>
+
 <script>
-// LOAD BANNER INSIDE BOX AFTER GATE - AND MOVE TOP ADS INTO BOX
-function loadBannerInsideBox(){
-  const banner=document.getElementById('mainBanner');
-  if(banner.dataset.done) return;
-  banner.dataset.done='1';
-  const s=document.createElement('script');
-  s.dataset.zone='12266334';
-  s.src='https://nap5k.com/tag.min.js';
-  banner.appendChild(s);
-
-  // After 1 sec, move any floating push ads that escaped to top into the box
-  let tries=0;
-  const mover=setInterval(()=>{
-    tries++;
-    document.querySelectorAll('body > div').forEach(el=>{
-      // Monetag push ads have text MoMo or RWF and position fixed top
-      if(el.textContent.includes('RWF') && el.textContent.includes('250 788') && !banner.contains(el)){
-        banner.appendChild(el);
-        el.style.position='relative';
-        el.style.top='auto';
-        el.style.marginBottom='8px';
-      }
-    });
-    if(tries>15) clearInterval(mover);
-  },800);
-}
-
-function initMoreGate(){
-  const gate=document.getElementById('moreGate');
-  const outer=document.getElementById('outerAdWrap');
-  const timerBox=document.getElementById('moreTimerBox');
-  const progressBar=document.getElementById('moreProgressBar');
-  const COOLDOWN=3*60*1000;
-  const last=parseInt(localStorage.getItem('moreGateLastShown')||'0');
-  if(last && (Date.now()-last)<COOLDOWN){
-    gate.style.display='none'; outer.style.display='block'; loadBannerInsideBox(); return;
-  }
-  outer.style.display='none'; gate.classList.add('show');
-  let sec=10; timerBox.innerText=sec; progressBar.style.width='100%';
-  const int=setInterval(()=>{
-    sec--; timerBox.innerText=sec; progressBar.style.width=(sec*10)+'%';
-    if(sec<=0){ clearInterval(int); gate.style.display='none'; outer.style.display='block'; localStorage.setItem('moreGateLastShown',Date.now()); loadBannerInsideBox(); }
-  },1000);
-}
-initMoreGate();
-function openModal(id){document.getElementById(id).style.display='flex'}
-function closeModal(id){document.getElementById(id).style.display='none'}
+// BLOCK XXX ADULT ADS ONLY - NOT MoMo
+setInterval(()=>{
+  document.querySelectorAll('div').forEach(el=>{
+    const t=(el.innerText||'').toLowerCase();
+    if((t.includes('sexy') || t.includes('xxx') || t.includes('secret videos')) && el.innerHTML.length < 800){
+      if(!el.closest('.card') && !el.closest('.modal-box')) el.remove();
+    }
+  });
+},800);
 </script>
 
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-firebase.auth().onAuthStateChanged(u=>{ if(!u) location.href='./index.html'; });
+try{ firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true); }catch(e){}
+const auth=firebase.auth(), db=firebase.firestore(); let cachedUser=null, allData=[];
+function openModal(id){ document.getElementById(id).style.display='flex'; if(id==='profileModal') loadProfile(); if(id==='historyModal') loadHistory(); if(id==='notifModal') loadNotifs(); }
+function closeModal(id){ document.getElementById(id).style.display='none'; }
+function setLang(code, el){ localStorage.setItem('app_lang', code); document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active')); el.classList.add('active'); }
+function setMode(mode){ localStorage.setItem('app_mode', mode); document.getElementById('modeLight').classList.toggle('active', mode==='light'); document.getElementById('modeDark').classList.toggle('active', mode==='dark'); }
+async function loadProfile(){ const u=auth.currentUser||cachedUser; if(!u) return; db.collection('users').doc(u.uid).onSnapshot(s=>{ if(!s.exists) return; const d=s.data(); const coins=d.balance??d.coins??d.points??0; document.getElementById('pUsername').innerText=d.username||u.email.split('@')[0]; document.getElementById('avatarLetter').innerText=(d.username||'I').charAt(0).toUpperCase(); document.getElementById('pEmail').innerText=d.email||u.email; document.getElementById('pId').innerText=u.uid.substring(0,8).toUpperCase(); document.getElementById('pDate').innerText=d.createdAt?.toDate?d.createdAt.toDate().toLocaleDateString():'--'; document.getElementById('pBal').innerText=coins+' coins'; }); }
+async function loadNotifs(){ const el=document.getElementById('notifList'); try{ const snap=await db.collection('notifications').orderBy('createdAt','desc').limit(20).get(); if(snap.empty){ el.innerHTML='<p style="text-align:center;padding:20px;color:#9ca3af">No notifications</p>'; return; } let h=''; snap.forEach(d=>{ h+=`<div class="item"><div style="font-size:12px">${d.data().message}</div></div>`; }); el.innerHTML=h; }catch(e){ el.innerHTML='Error'; } }
+async function loadHistory(){ const user=auth.currentUser||cachedUser; if(!user) return; db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(50).onSnapshot(snap=>{ let html=''; allData=[]; snap.forEach(d=>{ const v=d.data(); allData.push({id:d.id}); html+=`<div class="item"><div><b>${v.action||'Earn'}</b><div style="font-size:10px;color:#9ca3af">${v.timestamp?.toDate?v.timestamp.toDate().toLocaleDateString():''}</div></div><div style="color:#22c55e;font-weight:900">+${v.coins??v.points??0} 🪙</div></div>`; }); document.getElementById('historyList').innerHTML=html||'<p style="text-align:center;padding:20px">No history</p>'; }); }
+async function permanentClearHistory(){ if(allData.length===0) return; const user=auth.currentUser||cachedUser; const batch=db.batch(); allData.forEach(i=> batch.delete(db.collection('users').doc(user.uid).collection('earnHistory').doc(i.id)) ); await batch.commit(); }
+auth.onAuthStateChanged(u=>{ if(!u){ location.href='./index.html'; return; } cachedUser=u; loadProfile(); });
 </script>
 </body>
 </html>
