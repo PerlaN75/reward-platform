@@ -17,11 +17,9 @@
     .container{max-width:500px;margin:0 auto;padding:16px 14px 90px 14px}
     .card{background:#ffffff;border:2px solid #ede9fe;border-radius:20px;padding:8px;box-shadow:0 8px 30px rgba(109,40,217,0.08);position:relative;overflow:hidden;min-height:340px}
     .menu-list a{display:flex;align-items:center;justify-content:space-between;width:100%;padding:19px 16px;color:#111827;text-decoration:none;font-size:15px;font-weight:800;border-radius:14px;cursor:pointer;transition:0.2s}
-    .menu-list a:active{background:#f5f3ff}
-    .menu-list a:not(:last-child){border-bottom:1px solid #f5f3ff}
     .arrow{color:#a78bfa;font-size:20px}
     .ad-label{font-size:9px;color:#8b5cf6;text-align:center;letter-spacing:0.8px;font-weight:900;margin:18px 0 6px 0}
-    .ad-box{min-height:90px;display:flex;justify-content:center;align-items:center;overflow:hidden;transition:0.3s;background:#ffffff;border:2px solid #ede9fe;border-radius:16px;padding:8px;box-shadow:0 4px 15px rgba(0,0,0,0.04)}
+    .ad-box{min-height:90px;display:flex;justify-content:center;align-items:center;overflow:hidden;background:#ffffff;border:2px solid #ede9fe;border-radius:16px;padding:8px;box-shadow:0 4px 15px rgba(0,0,0,0.04)}
     #moreGate{position:absolute;inset:0;background:#ffffff;z-index:20;border-radius:20px;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;border:3px solid #fbbf24}
     #moreGate.show{display:flex}
     #moreTimerBox{width:88px;height:88px;border-radius:50%;background:linear-gradient(180deg,#fef3c7,#fbbf24);border:4px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;color:#92400e;margin:14px auto;box-shadow:0 6px 20px rgba(251,191,36,0.4);animation:pulse 1s infinite}
@@ -66,50 +64,71 @@
 </head>
 <body>
 <script>
-// === STRONG BLOCKER - NO VIGNETTE / POP / PUSH / GAMBLING ===
+// === ULTIMATE BLOCKER - BACK BUTTON HIJACK FIX ===
 (function(){
-  const blockList = ['blindautomata','winner.rw','winner','bet','casino','1xbet','gambling','betting','sportsbet'];
-  const _open = window.open;
-  window.open = function(url){
-    try{
-      if(!url) return null;
-      const u = String(url).toLowerCase();
-      for(let b of blockList){ if(u.includes(b)) return null; }
-      // block popunder (blank new tab with ad)
-      if(u === 'about:blank' || u.length < 10) return null;
-      return _open.apply(this, arguments);
-    }catch(e){ return null; }
+  const BLOCK = ['blindautomata','winner.rw','winner','bet','casino','1xbet','gambling','sportsbet'];
+  const isBad = (url)=>{ try{ if(!url) return false; const u=String(url).toLowerCase(); return BLOCK.some(b=>u.includes(b)); }catch(e){ return false; } };
+  // 1. Lock window.open FOREVER
+  const safeOpen = function(url){
+    if(!url || isBad(url) || String(url).toLowerCase().includes('about:blank')) return null;
+    // Allow ONLY if click is inside ad box
+    return null; // block all popunders, only banner allowed
   };
-  // Kill service workers = no push notifications
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.getRegistrations().then(regs=>{ regs.forEach(r=>r.unregister()); });
-  }
-  // Block notification permission
-  if(window.Notification){
-    try{ Notification.requestPermission = function(){ return Promise.resolve('denied'); }; }catch(e){}
-  }
-  // AUTO-DELETE VIGNETTE OVERLAY IF IT APPEARS
-  const observer = new MutationObserver((mutations)=>{
-    mutations.forEach(m=>{
-      m.addedNodes.forEach(node=>{
-        if(!(node instanceof HTMLElement)) return;
-        const html = (node.outerHTML || '').toLowerCase();
-        const style = (node.getAttribute('style') || '').toLowerCase();
-        // Vignette is fixed fullscreen with high z-index
-        const isFullscreen = style.includes('position: fixed') && (style.includes('100%') || style.includes('100vw') || style.includes('100vh')) || (node.id && node.id.includes('monetag') || node.id.includes('vignette'));
-        const hasGambling = blockList.some(b=> html.includes(b));
-        if(hasGambling || (isFullscreen && parseInt(node.style.zIndex||0) > 9000)){
-          try{ node.remove(); }catch(e){}
-        }
-      });
-    });
+  try{
+    Object.defineProperty(window, 'open', { value: safeOpen, writable:false, configurable:false });
+  }catch(e){ window.open = safeOpen; }
+
+  // 2. Block history trap (popunder uses pushState)
+  try{
+    const origPush = history.pushState;
+    history.pushState = function(){ 
+      // Allow our own pushes, but Monetag pushes 2-3 times quickly to trap back
+      // We limit to 1 push per second
+      const now = Date.now();
+      if(window._lastPush && (now - window._lastPush < 1000)) return;
+      window._lastPush = now;
+      return origPush.apply(this, arguments);
+    };
+  }catch(e){}
+
+  // 3. Global click interceptor in CAPTURE phase - kills pop before Monetag gets it
+  document.addEventListener('click', function(e){
+    const target = e.target;
+    // If click is on Back button or menu items, stop Monetag listeners
+    if(target.closest && (target.closest('.back-btn-checkin') || target.closest('.menu-list'))){
+      e.stopImmediatePropagation();
+      // Do NOT prevent default for menu, only for back we handle manually
+    }
+    // If click tries to navigate to bad domain
+    const anchor = target.closest ? target.closest('a') : null;
+    if(anchor && anchor.href && isBad(anchor.href)){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      e.stopPropagation();
+      return false;
+    }
+  }, true); // capture = runs BEFORE Monetag
+
+  // 4. Kill service workers & push
+  if('serviceWorker' in navigator){ navigator.serviceWorker.getRegistrations().then(r=>r.forEach(x=>x.unregister())); }
+  if(window.Notification){ try{ Notification.requestPermission = ()=>Promise.resolve('denied'); }catch(e){} }
+
+  // 5. Delete any fullscreen vignette overlay
+  const obs = new MutationObserver((muts)=>{
+    muts.forEach(m=>{ m.addedNodes.forEach(node=>{
+      if(!(node instanceof HTMLElement)) return;
+      const html = (node.outerHTML||'').toLowerCase();
+      if(isBad(html) && (node.style.position==='fixed' || parseInt(node.style.zIndex||0) > 5000)){
+        try{ node.remove(); }catch(e){}
+      }
+    });});
   });
-  observer.observe(document.documentElement, {childList:true, subtree:true});
+  obs.observe(document.documentElement, {childList:true, subtree:true});
 })();
 </script>
 
 <div class="top-bar">
-  <a href="home.html" class="back-btn-checkin">‹</a>
+  <a href="#" id="safeBack" class="back-btn-checkin">‹</a>
   <div class="center-pill">⚙️ More</div>
   <div style="width:45px"></div>
 </div>
@@ -144,29 +163,32 @@
 <div id="confirmModal" class="confirm-overlay" onclick="this.style.display='none'"><div class="confirm-box" onclick="event.stopPropagation()"><h4>Clear history?</h4><div class="confirm-actions"><button class="c-cancel" onclick="document.getElementById('confirmModal').style.display='none'">Cancel</button><button class="c-ok" onclick="permanentClearHistory()">Yes, Clear</button></div></div></div>
 
 <script>
-// OPTION 2 - tag.min.js loads ad NOW, but our blocker makes it SAFE BANNER ONLY
+// Load ad but safe
 function loadSafeAds(){
   const bannerDiv = document.getElementById('mainBanner');
-  bannerDiv.innerHTML = 'Loading ad...';
+  bannerDiv.innerHTML = '';
   const s1 = document.createElement('script');
   s1.dataset.zone = '12211613';
-  s1.src = 'https://al5sm.com/tag.min.js'; // Will show ad immediately even if banner disabled in dashboard
+  s1.src = 'https://al5sm.com/tag.min.js';
   s1.async = true;
   bannerDiv.appendChild(s1);
-  // If after 4 sec still empty, show safe fallback text
-  setTimeout(()=>{
-    if(bannerDiv.innerHTML.length < 30){
-      bannerDiv.innerHTML = '<div style="font-size:11px;color:#a78bfa">Ad loading...</div>';
-    }
-  },4000);
 }
+// SAFE BACK BUTTON - cannot be hijacked
+document.getElementById('safeBack').addEventListener('click', function(e){
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  e.stopPropagation();
+  // Remove ad scripts before leaving to stop pop
+  try{ document.querySelectorAll('script[src*="al5sm"],script[src*="monetag"]').forEach(s=>s.remove()); }catch(err){}
+  window.location.replace('home.html');
+}, true);
 
 function initMoreGate(){
   const gate=document.getElementById('moreGate');
   const outer=document.getElementById('outerAdWrap');
   const timerBox=document.getElementById('moreTimerBox');
   const progressBar=document.getElementById('moreProgressBar');
-  const COOLDOWN = 3 * 60 * 1000; // 3 min = NO FLAG
+  const COOLDOWN = 3 * 60 * 1000;
   const lastShown = parseInt(localStorage.getItem('moreGateLastShown') || '0');
   const now = Date.now();
   if(lastShown && (now - lastShown) < COOLDOWN){
