@@ -20,9 +20,6 @@
     .menu-list a:active{background:#f5f3ff}
     .menu-list a:not(:last-child){border-bottom:1px solid #f5f3ff}
     .arrow{color:#a78bfa;font-size:20px}
-    .ad-label{font-size:9px;color:#8b5cf6;text-align:center;letter-spacing:0.8px;font-weight:900;margin:18px 0 6px 0}
-    .ad-box{min-height:0;display:flex;justify-content:center;align-items:center;overflow:hidden;transition:0.3s}
-    .ad-box.has-ad{background:#ffffff;border:2px solid #ede9fe;border-radius:16px;padding:8px;min-height:90px;box-shadow:0 4px 15px rgba(0,0,0,0.04)}
     #moreGate{position:absolute;inset:0;background:#ffffff;z-index:20;border-radius:20px;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;border:3px solid #fbbf24}
     #moreGate.show{display:flex}
     #moreTimerBox{width:88px;height:88px;border-radius:50%;background:linear-gradient(180deg,#fef3c7,#fbbf24);border:4px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;color:#92400e;margin:14px auto;box-shadow:0 6px 20px rgba(251,191,36,0.4);animation:pulse 1s infinite}
@@ -66,25 +63,6 @@
   </style>
 </head>
 <body>
-<script>
-// === BLOCK GAMBLING POP + CLEAN OLD PUSH ===
-(function(){
-  const blockList = ['blindautomata','winner.rw','winner','bet','casino','1xbet'];
-  const _open = window.open;
-  window.open = function(url){
-    try{
-      if(!url) return null;
-      const u = String(url).toLowerCase();
-      for(let b of blockList){ if(u.includes(b)) { console.log('Blocked:',url); return null; } }
-      return _open.apply(this, arguments);
-    }catch(e){ return null; }
-  };
-  // Kill service workers that send Winner push
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.getRegistrations().then(regs=>{ regs.forEach(r=>r.unregister()); });
-  }
-})();
-</script>
 
 <div class="top-bar">
   <a href="home.html" class="back-btn-checkin">‹</a>
@@ -109,10 +87,6 @@
       <a href="help.html"><div>💬 Help/Support</div><span class="arrow">›</span></a>
     </div>
   </div>
-  <div id="outerAdWrap" style="display:none">
-    <div class="ad-label">ADVERTISEMENT</div>
-    <div id="mainBanner" class="ad-box"></div>
-  </div>
 </div>
 
 <div id="notifModal" class="modal" onclick="closeModal('notifModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('notifModal')">×</span><h3 style="text-align:center;font-size:15px;font-weight:900">🔔 Notifications</h3><div id="notifList" style="margin-top:12px">Loading...</div></div></div>
@@ -122,22 +96,22 @@
 <div id="confirmModal" class="confirm-overlay" onclick="this.style.display='none'"><div class="confirm-box" onclick="event.stopPropagation()"><h4>Clear history?</h4><div class="confirm-actions"><button class="c-cancel" onclick="document.getElementById('confirmModal').style.display='none'">Cancel</button><button class="c-ok" onclick="permanentClearHistory()">Yes, Clear</button></div></div></div>
 
 <script>
-// SAFE AD - ONLY 1 TAG, NO VIGNETTE, NO POP ON MODAL
-// This zone will show apps/crypto/news, not gambling (with blocker above)
-(function(){
-  const s=document.createElement('script');
-  s.dataset.zone='12211613';
-  s.src='https://al5sm.com/tag.min.js';
-  s.async=true;
-  document.body.appendChild(s);
-})();
-
+// === 3 MINUTES COOLDOWN GATE ONLY - NO ADS ===
 function initMoreGate(){
   const gate=document.getElementById('moreGate');
-  const outer=document.getElementById('outerAdWrap');
   const timerBox=document.getElementById('moreTimerBox');
   const progressBar=document.getElementById('moreProgressBar');
-  outer.style.display='none';
+
+  const COOLDOWN = 3 * 60 * 1000;
+  const last = parseInt(localStorage.getItem('moreGateLastShown') || '0');
+  const now = Date.now();
+
+  if(last && (now - last) < COOLDOWN){
+    gate.classList.remove('show');
+    gate.style.display='none';
+    return;
+  }
+
   gate.classList.add('show');
   let sec=10; timerBox.innerText=sec;
   progressBar.style.width='100%';
@@ -147,24 +121,11 @@ function initMoreGate(){
     if(sec<=0){
       clearInterval(int);
       gate.classList.remove('show');
-      outer.style.display='block';
+      localStorage.setItem('moreGateLastShown', String(Date.now()));
     }
   },1000);
 }
 initMoreGate();
-
-function checkAdBoxes(){
-  ['mainBanner'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(!el) return;
-    if(el.children.length>0 || el.innerHTML.length>20){
-      el.classList.add('has-ad');
-    } else {
-      el.classList.remove('has-ad');
-    }
-  });
-}
-setInterval(checkAdBoxes, 1500);
 </script>
 
 <script>
@@ -181,9 +142,7 @@ function openModal(id){
   if(id==='historyModal') loadHistory();
   if(id==='notifModal') loadNotifs();
 }
-function closeModal(id){
-  document.getElementById(id).style.display='none';
-}
+function closeModal(id){ document.getElementById(id).style.display='none'; }
 function getRealCoins(d){ return d.balance ?? d.coins ?? d.points ?? 0; } function getRealUsdt(d){ return d.usdtBalance ?? 0; }
 async function loadProfile(){ const u=auth.currentUser||cachedUser; if(!u) return; db.collection('users').doc(u.uid).onSnapshot(snap=>{ if(!snap.exists) return; const d=snap.data(); localStorage.setItem('userData', JSON.stringify({...d, uid:u.uid, email: d.email||u.email})); const coins=getRealCoins(d); const usdt=getRealUsdt(d); const usd=(coins*0.0005).toFixed(4); document.getElementById('pBalCard').innerText=coins+' coins'; document.getElementById('pUsdtCard').innerText=Number(usdt).toFixed(4)+' USDT'; document.getElementById('pUsdSmall').innerText='≈ $'+usd+' from coins'; document.getElementById('pUsername').innerText=d.username||u.email.split('@')[0]; document.getElementById('avatarLetter').innerText=(d.username||'I').charAt(0).toUpperCase(); document.getElementById('pEmail').innerText=d.email||u.email; let reg="Unknown"; if(d.createdAt&&d.createdAt.toDate) reg=d.createdAt.toDate().toLocaleDateString(); else if(u.metadata.creationTime) reg=new Date(u.metadata.creationTime).toLocaleDateString(); document.getElementById('pDate').innerText=reg; document.getElementById('pId').innerText=u.uid.substring(0,8).toUpperCase(); document.getElementById('hBal').innerText=coins+' coins'; document.getElementById('hUsd').innerText='≈ $'+usd; document.getElementById('hUsdt').innerText=Number(usdt).toFixed(4)+' USDT'; }); }
 async function loadNotifs(){ const el=document.getElementById('notifList'); el.innerHTML='Loading...'; try{ const snap=await db.collection('notifications').orderBy('createdAt','desc').limit(20).get(); if(snap.empty){ el.innerHTML='<p style="text-align:center;color:#9ca3af;padding:20px">No notifications</p>'; return; } let html=''; snap.forEach(d=>{ const n=d.data(); html+=`<div style="background:#f9fafb;border:1.5px solid #ede9fe;border-radius:10px;padding:10px;margin-bottom:8px"><div style="font-size:12px;font-weight:600">${n.message}</div><div style="font-size:10px;color:#9ca3af;margin-top:4px">${n.createdAt?new Date(n.createdAt.seconds*1000).toLocaleString():''}</div></div>`; }); el.innerHTML=html; }catch(e){ el.innerHTML='Error: '+e.message; } }
