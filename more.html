@@ -7,7 +7,6 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <!-- TOP AD - EARNING -->
   <script src="https://nap5k.com/tag.min.js" data-zone="12266334" async></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
@@ -65,8 +64,6 @@
       <a href="help.html"><div>💬 Help/Support</div><span>›</span></a>
     </div>
   </div>
-
-  <!-- BOTTOM AD - ONLY SHOWS AFTER GATE, NEVER BLANK -->
   <div id="outerAdWrap" style="display:none">
     <div class="ad-label">ADVERTISEMENT</div>
     <div id="mainBanner" class="ad-box"></div>
@@ -79,48 +76,49 @@
 <div id="settingsModal" class="modal" onclick="closeModal('settingsModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('settingsModal')">×</span><h3 style="text-align:center;margin-bottom:14px">⚙️ Settings</h3><div><span style="font-size:13px;font-weight:800">Language</span><div class="lang-option active" id="lang-en" onclick="setLang('en',this)"><span>English 🇺🇸</span><span>✓</span></div></div><div style="margin:16px 0"><span style="font-size:13px;font-weight:800">Appearance</span><div style="display:flex;gap:10px;margin-top:8px"><div class="mode-btn" id="modeLight" onclick="setMode('light')">☀️ Light</div><div class="mode-btn" id="modeDark" onclick="setMode('dark')">🌙 Dark</div></div></div><button onclick="saveSettings()" style="width:70%;margin:18px auto 0;display:block;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;padding:12px;border-radius:12px;font-weight:800">Save & Close</button></div></div>
 
 <script>
-// 1. STRONG ADULT BLOCK - FIXES Jean_sexy XXX + +1 818 phone
+// ===== ULTRA KILLER - NO MONETAG SETTINGS NEEDED - BLOCKS JEAN_SEXY AT ROOT =====
 (function(){
-  const BAD = ['sexy','xxx','secret videos','jean_','why are you ignoring me','+1 818','01855','0199'];
-  function isBad(el){
-    const txt=(el.innerText||'').toLowerCase();
-    return BAD.some(w=>txt.includes(w));
+  const BAD = ['jean','sexy','xxx','secret videos','why are you ignoring','+258','+1 818','855 5679','(0:16)','play video','720p'];
+  const GOOD = ['momo','250 788','rwf','850,000','urakomeje','gutsinda']; // keep earning ads
+  function isBadAd(el){
+    if(!el || !el.innerText) return false;
+    const txt=el.innerText.toLowerCase();
+    // if contains good (MoMo) = keep, don't delete
+    if(GOOD.some(g=>txt.includes(g))) return false;
+    return BAD.some(b=>txt.includes(b));
   }
-  const observer=new MutationObserver(()=>{
-    document.querySelectorAll('body > div').forEach(el=>{
-      if(isBad(el) && !el.closest('#mainCard') && !el.closest('.modal-box') && !el.closest('#outerAdWrap')){
-        el.style.display='none'; el.remove();
+  function nuke(){
+    // Monetag injects ads as fixed divs at body level
+    document.body.childNodes.forEach(node=>{
+      if(node.nodeType!==1) return;
+      if(node.id==='outerAdWrap' || node.classList.contains('container') || node.classList.contains('top-bar')) return;
+      if(node.closest('#mainCard') || node.closest('.modal')) return;
+      // If this top-level div contains bad text, kill it
+      if(isBadAd(node) || Array.from(node.querySelectorAll('*')).some(isBadAd)){
+        // double check it has Ad label (Monetag ads)
+        if(node.innerHTML.includes('>Ad<') || node.innerHTML.includes('>AD<') || node.innerHTML.includes('Jean')){
+          node.remove();
+        }
       }
     });
-  });
-  observer.observe(document.body,{childList:true,subtree:true});
-  setInterval(()=>{
-    document.querySelectorAll('div').forEach(el=>{
-      if(isBad(el) && !el.closest('#mainCard') && !el.closest('.modal-box') && el.innerHTML.length<1000){
-        el.remove();
-      }
-    });
-  },600);
+  }
+  // Run super fast
+  setInterval(nuke,100);
+  new MutationObserver(nuke).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
 
 <script>
-// 2. OPTION 2 WITH 3 MIN COOLDOWN - FIXES GATE REFRESH LOOP
 function loadBannerInsideBox(){
   const b=document.getElementById('mainBanner');
   if(b.dataset.done) return;
   b.dataset.done='1';
-  b.innerHTML='Loading...';
+  b.innerHTML='';
   const s=document.createElement('script');
   s.dataset.zone='12266334';
   s.src='https://nap5k.com/tag.min.js';
   b.appendChild(s);
-  // If after 3 sec still blank, hide wrapper to avoid blank page
-  setTimeout(()=>{
-    if(b.innerHTML.length<50 || b.innerText.includes('Loading')){
-      document.getElementById('outerAdWrap').style.display='none';
-    }
-  },4000);
+  setTimeout(()=>{ if(b.innerHTML.trim().length<30) document.getElementById('outerAdWrap').style.display='none'; },4000);
 }
 function initMoreGate(){
   const gate=document.getElementById('moreGate');
@@ -129,16 +127,13 @@ function initMoreGate(){
   const progressBar=document.getElementById('moreProgressBar');
   const COOLDOWN=3*60*1000;
   const last=parseInt(localStorage.getItem('moreGateLastShown')||'0');
-  const now=Date.now();
-  // IF WITHIN 3 MIN - SKIP GATE, SHOW BANNER DIRECTLY - FIXES REFRESH LOOP
-  if(last && (now-last)<COOLDOWN){
+  if(last && (Date.now()-last)<COOLDOWN){
     gate.style.display='none';
     gate.classList.remove('show');
     outer.style.display='block';
     loadBannerInsideBox();
     return;
   }
-  // SHOW GATE ONCE
   outer.style.display='none';
   gate.classList.add('show');
   gate.style.display='flex';
@@ -171,43 +166,10 @@ function saveSettings(){ closeModal('settingsModal'); }
 (function(){ const m=localStorage.getItem('app_mode')||'light'; setMode(m); })();
 async function loadProfile(){ const u=auth.currentUser||cachedUser; if(!u) return; db.collection('users').doc(u.uid).onSnapshot(s=>{ if(!s.exists) return; const d=s.data(); const coins=d.balance??d.coins??d.points??0; const usdt=d.usdtBalance??0; document.getElementById('pUsername').innerText=d.username||u.email.split('@')[0]; document.getElementById('avatarLetter').innerText=(d.username||'I').charAt(0).toUpperCase(); document.getElementById('pEmail').innerText=d.email||u.email; document.getElementById('pId').innerText=u.uid.substring(0,8).toUpperCase(); document.getElementById('pDate').innerText=d.createdAt?.toDate?d.createdAt.toDate().toLocaleDateString():'--'; document.getElementById('pBal').innerText=coins+' coins ('+Number(usdt).toFixed(4)+' USDT)'; }); }
 async function loadNotifs(){ const el=document.getElementById('notifList'); el.innerHTML='Loading...'; try{ const snap=await db.collection('notifications').orderBy('createdAt','desc').limit(20).get(); if(snap.empty){ el.innerHTML='<p style="text-align:center;padding:20px;color:#9ca3af">No notifications</p>'; return; } let h=''; snap.forEach(d=>{ const n=d.data(); const date=n.createdAt?.toDate?n.createdAt.toDate().toLocaleString():''; h+=`<div class="item"><div><div style="font-size:12px;font-weight:800">${n.message||n.title}</div><div style="font-size:10px;color:#9ca3af">${date}</div></div></div>`; }); el.innerHTML=h; }catch(e){ el.innerHTML='Error'; } }
-
-// HISTORY - FIXED CLEAR - USES HIDE NOT DELETE (WORKS EVEN IF RULES BLOCK DELETE)
 function getHiddenIds(){ try{ return JSON.parse(localStorage.getItem('hiddenHistoryIds')||'[]'); }catch{return [];} }
 function addHiddenIds(ids){ const cur=new Set(getHiddenIds()); ids.forEach(id=>cur.add(id)); const arr=[...cur]; localStorage.setItem('hiddenHistoryIds', JSON.stringify(arr)); const u=auth.currentUser||cachedUser; if(u){ db.collection('users').doc(u.uid).set({hiddenHistoryIds:arr},{merge:true}).catch(()=>{}); } }
-async function loadHistory(){
-  const user=auth.currentUser||cachedUser; if(!user) return;
-  const list=document.getElementById('historyList'); list.innerHTML='Loading...'; allData=[];
-  const hidden=new Set(getHiddenIds());
-  try{
-    const userDoc=await db.collection('users').doc(user.uid).get();
-    if(userDoc.exists && userDoc.data().hiddenHistoryIds){ localStorage.setItem('hiddenHistoryIds', JSON.stringify(userDoc.data().hiddenHistoryIds)); userDoc.data().hiddenHistoryIds.forEach(id=>hidden.add(id)); }
-  }catch(e){}
-  try{
-    const snap=await db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(100).get();
-    let html=''; snap.forEach(d=>{
-      if(hidden.has(d.id)) return;
-      const v=d.data(); if(v.hidden===true) return;
-      allData.push({id:d.id});
-      const date=v.timestamp?.toDate?v.timestamp.toDate().toLocaleString():new Date().toLocaleString();
-      html+=`<div class="item"><div><div style="font-weight:bold;font-size:13px">${v.action||'Earn'}</div><div style="font-size:11px;color:#9ca3af">${date}${v.desc?' - '+v.desc:''}</div></div><div style="color:#22c55e;font-weight:900">+${v.coins??v.points??0} 🪙</div></div>`;
-    });
-    list.innerHTML=html||'<p style="text-align:center;padding:20px">No history ✅</p>';
-  }catch(e){ list.innerHTML='Error: '+e.message; }
-}
-async function clearHistorySafe(){
-  if(allData.length===0){ document.getElementById('historyList').innerHTML='<p style="text-align:center;padding:20px">No history to clear</p>'; return; }
-  if(!confirm('Clear all '+allData.length+' history items?')) return;
-  const list=document.getElementById('historyList'); list.innerHTML='Clearing...';
-  const ids=allData.map(x=>x.id);
-  addHiddenIds(ids);
-  // Try hard delete too, but hide works even if delete fails
-  const user=auth.currentUser||cachedUser;
-  for(const id of ids){
-    try{ await db.collection('users').doc(user.uid).collection('earnHistory').doc(id).set({hidden:true},{merge:true}); }catch(e){}
-  }
-  allData=[]; list.innerHTML='<p style="text-align:center;padding:20px">Cleared ✅</p>';
-}
+async function loadHistory(){ const user=auth.currentUser||cachedUser; if(!user) return; const list=document.getElementById('historyList'); list.innerHTML='Loading...'; allData=[]; const hidden=new Set(getHiddenIds()); try{ const userDoc=await db.collection('users').doc(user.uid).get(); if(userDoc.exists && userDoc.data().hiddenHistoryIds){ userDoc.data().hiddenHistoryIds.forEach(id=>hidden.add(id)); } }catch(e){} try{ const snap=await db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(100).get(); let html=''; snap.forEach(d=>{ if(hidden.has(d.id)) return; const v=d.data(); if(v.hidden===true) return; allData.push({id:d.id}); const date=v.timestamp?.toDate?v.timestamp.toDate().toLocaleString():new Date().toLocaleString(); html+=`<div class="item"><div><div style="font-weight:bold;font-size:13px">${v.action||'Earn'}</div><div style="font-size:11px;color:#9ca3af">${date}${v.desc?' - '+v.desc:''}</div></div><div style="color:#22c55e;font-weight:900">+${v.coins??v.points??0} 🪙</div></div>`; }); list.innerHTML=html||'<p style="text-align:center;padding:20px">No history ✅</p>'; }catch(e){ list.innerHTML='Error: '+e.message; } }
+async function clearHistorySafe(){ if(allData.length===0){ document.getElementById('historyList').innerHTML='<p style="text-align:center;padding:20px">No history</p>'; return; } if(!confirm('Clear all '+allData.length+' history?')) return; const list=document.getElementById('historyList'); list.innerHTML='Clearing...'; const ids=allData.map(x=>x.id); addHiddenIds(ids); const user=auth.currentUser||cachedUser; for(const id of ids){ try{ await db.collection('users').doc(user.uid).collection('earnHistory').doc(id).set({hidden:true},{merge:true}); }catch(e){} } allData=[]; list.innerHTML='<p style="text-align:center;padding:20px">Cleared ✅</p>'; }
 auth.onAuthStateChanged(u=>{ if(!u){ location.href='./index.html'; return; } cachedUser=u; loadProfile(); });
 </script>
 </body>
