@@ -66,6 +66,20 @@
   </style>
 </head>
 <body>
+<script>
+// BLOCK ALL RISKY FORMATS - NO VIGNETTE, NO POP, NO PUSH, NO GAMBLING
+(function(){
+  const blockList = ['blindautomata','winner.rw','winner','bet','casino','1xbet','gambling','betting'];
+  const _open = window.open;
+  window.open = function(url){
+    try{ if(!url) return null; const u=String(url).toLowerCase(); for(let b of blockList){ if(u.includes(b)) return null; } return _open.apply(this, arguments); }catch(e){ return null; }
+  };
+  if('serviceWorker' in navigator){ navigator.serviceWorker.getRegistrations().then(regs=>{ regs.forEach(r=>r.unregister()); }); }
+  // Block push notifications request
+  if(window.Notification){ Notification.requestPermission = function(){ return Promise.resolve('denied'); }; }
+})();
+</script>
+
 <div class="top-bar">
   <a href="home.html" class="back-btn-checkin">‹</a>
   <div class="center-pill">⚙️ More</div>
@@ -102,45 +116,43 @@
 <div id="confirmModal" class="confirm-overlay" onclick="this.style.display='none'"><div class="confirm-box" onclick="event.stopPropagation()"><h4>Clear history?</h4><div class="confirm-actions"><button class="c-cancel" onclick="document.getElementById('confirmModal').style.display='none'">Cancel</button><button class="c-ok" onclick="permanentClearHistory()">Yes, Clear</button></div></div></div>
 
 <script>
-(function(){
-  const s=document.createElement('script');
-  s.dataset.zone='12211613';
-  s.src='https://al5sm.com/tag.min.js';
-  s.async=true;
-  document.body.appendChild(s);
-})();
+// SAFE ONLY - BANNER FORMAT (NO VIGNETTE, NO POP, NO PUSH)
+function loadSafeAds(){
+  const bannerDiv = document.getElementById('mainBanner');
+  bannerDiv.innerHTML = '';
+  // This script can ONLY show banner, it can NEVER show vignette/pop/push
+  const s1 = document.createElement('script');
+  s1.dataset.zone = '12211613';
+  s1.src = 'https://al5sm.com/banner.min.js'; // <- SAFE FORMAT ONLY
+  s1.async = true;
+  bannerDiv.appendChild(s1);
+}
 
 function initMoreGate(){
   const gate=document.getElementById('moreGate');
   const outer=document.getElementById('outerAdWrap');
   const timerBox=document.getElementById('moreTimerBox');
   const progressBar=document.getElementById('moreProgressBar');
-  outer.style.display='none';
-  gate.classList.add('show');
-  let sec=10; timerBox.innerText=sec;
-  progressBar.style.width='100%';
+  const COOLDOWN = 3 * 60 * 1000;
+  const lastShown = parseInt(localStorage.getItem('moreGateLastShown') || '0');
+  const now = Date.now();
+  if(lastShown && (now - lastShown) < COOLDOWN){
+    gate.classList.remove('show'); gate.style.display='none';
+    outer.style.display='block'; loadSafeAds(); return;
+  }
+  outer.style.display='none'; gate.classList.add('show');
+  let sec=10; timerBox.innerText=sec; progressBar.style.width='100%';
   const int=setInterval(()=>{
-    sec--; timerBox.innerText=sec;
-    progressBar.style.width=(sec*10)+'%';
-    if(sec<=0){
-      clearInterval(int);
-      gate.classList.remove('show');
-      outer.style.display='block';
-    }
+    sec--; timerBox.innerText=sec; progressBar.style.width=(sec*10)+'%';
+    if(sec<=0){ clearInterval(int); gate.classList.remove('show'); outer.style.display='block'; localStorage.setItem('moreGateLastShown', String(Date.now())); loadSafeAds(); }
   },1000);
 }
 initMoreGate();
 
 function checkAdBoxes(){
-  ['mainBanner'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(!el) return;
-    if(el.children.length>0 || el.innerHTML.length>20){
-      el.classList.add('has-ad');
-    } else {
-      el.classList.remove('has-ad');
-    }
-  });
+  const el=document.getElementById('mainBanner');
+  if(!el) return;
+  if(el.children.length>0 || el.innerHTML.length>20){ el.classList.add('has-ad'); } else { el.classList.remove('has-ad'); }
 }
 setInterval(checkAdBoxes, 1500);
 </script>
@@ -153,15 +165,8 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 try{ firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true); }catch(e){}
 const auth=firebase.auth(), db=firebase.firestore(); let cachedUser=null, allData=[];
-function openModal(id){
-  document.getElementById(id).style.display='flex';
-  if(id==='profileModal') loadProfile();
-  if(id==='historyModal') loadHistory();
-  if(id==='notifModal') loadNotifs();
-}
-function closeModal(id){
-  document.getElementById(id).style.display='none';
-}
+function openModal(id){ document.getElementById(id).style.display='flex'; if(id==='profileModal') loadProfile(); if(id==='historyModal') loadHistory(); if(id==='notifModal') loadNotifs(); }
+function closeModal(id){ document.getElementById(id).style.display='none'; }
 function getRealCoins(d){ return d.balance ?? d.coins ?? d.points ?? 0; } function getRealUsdt(d){ return d.usdtBalance ?? 0; }
 async function loadProfile(){ const u=auth.currentUser||cachedUser; if(!u) return; db.collection('users').doc(u.uid).onSnapshot(snap=>{ if(!snap.exists) return; const d=snap.data(); localStorage.setItem('userData', JSON.stringify({...d, uid:u.uid, email: d.email||u.email})); const coins=getRealCoins(d); const usdt=getRealUsdt(d); const usd=(coins*0.0005).toFixed(4); document.getElementById('pBalCard').innerText=coins+' coins'; document.getElementById('pUsdtCard').innerText=Number(usdt).toFixed(4)+' USDT'; document.getElementById('pUsdSmall').innerText='≈ $'+usd+' from coins'; document.getElementById('pUsername').innerText=d.username||u.email.split('@')[0]; document.getElementById('avatarLetter').innerText=(d.username||'I').charAt(0).toUpperCase(); document.getElementById('pEmail').innerText=d.email||u.email; let reg="Unknown"; if(d.createdAt&&d.createdAt.toDate) reg=d.createdAt.toDate().toLocaleDateString(); else if(u.metadata.creationTime) reg=new Date(u.metadata.creationTime).toLocaleDateString(); document.getElementById('pDate').innerText=reg; document.getElementById('pId').innerText=u.uid.substring(0,8).toUpperCase(); document.getElementById('hBal').innerText=coins+' coins'; document.getElementById('hUsd').innerText='≈ $'+usd; document.getElementById('hUsdt').innerText=Number(usdt).toFixed(4)+' USDT'; }); }
 async function loadNotifs(){ const el=document.getElementById('notifList'); el.innerHTML='Loading...'; try{ const snap=await db.collection('notifications').orderBy('createdAt','desc').limit(20).get(); if(snap.empty){ el.innerHTML='<p style="text-align:center;color:#9ca3af;padding:20px">No notifications</p>'; return; } let html=''; snap.forEach(d=>{ const n=d.data(); html+=`<div style="background:#f9fafb;border:1.5px solid #ede9fe;border-radius:10px;padding:10px;margin-bottom:8px"><div style="font-size:12px;font-weight:600">${n.message}</div><div style="font-size:10px;color:#9ca3af;margin-top:4px">${n.createdAt?new Date(n.createdAt.seconds*1000).toLocaleString():''}</div></div>`; }); el.innerHTML=html; }catch(e){ el.innerHTML='Error: '+e.message; } }
