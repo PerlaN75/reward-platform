@@ -23,9 +23,17 @@
     .ad-label{font-size:9px;color:#8b5cf6;text-align:center;letter-spacing:0.8px;font-weight:900;margin:18px 0 6px 0}
     .ad-box{min-height:0;display:flex;justify-content:center;align-items:center;overflow:hidden;transition:0.3s}
     .ad-box.has-ad{background:#ffffff;border:2px solid #ede9fe;border-radius:16px;padding:8px;min-height:90px;box-shadow:0 4px 15px rgba(0,0,0,0.04)}
-    #moreGate{position:absolute;inset:0;background:linear-gradient(180deg,#ffffff,#f5f3ff);z-index:20;border-radius:20px;display:none;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center;border:2px solid #ede9fe}
+    
+    /* NEW GOLDEN GATE - DIFFERENT FROM WALLET */
+    #moreGate{position:absolute;inset:0;background:#ffffff;z-index:20;border-radius:20px;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;border:3px solid #fbbf24}
     #moreGate.show{display:flex}
-    #moreTimerBox{width:72px;height:72px;border-radius:50%;background:linear-gradient(180deg,#ffffff,#ede9fe);border:3px solid #a78bfa;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:#f59e0b;margin:12px auto;box-shadow:0 4px 15px rgba(109,40,217,0.15)}
+    #moreTimerBox{width:88px;height:88px;border-radius:50%;background:linear-gradient(180deg,#fef3c7,#fbbf24);border:4px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;color:#92400e;margin:14px auto;box-shadow:0 6px 20px rgba(251,191,36,0.4);animation:pulse 1s infinite}
+    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+    #moreProgress{width:100%;height:8px;background:#fef3c7;border-radius:99px;margin-top:16px;overflow:hidden}
+    #moreProgressBar{height:100%;width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);border-radius:99px;transition:width 1s linear}
+    .more-gate-title{font-weight:900;font-size:18px;color:#92400e;margin-top:8px}
+    .more-gate-sub{font-size:12px;color:#a16207;margin-top:4px;font-weight:700}
+    
     .modal{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(76,29,149,0.45);backdrop-filter:blur(2px);justify-content:center;align-items:center;padding:15px}
     .modal-box{background:#ffffff;width:100%;max-width:420px;border-radius:20px;padding:20px;max-height:85vh;overflow-y:auto;color:#111827;position:relative;box-shadow:0 20px 60px rgba(109,40,217,0.25);border:2px solid #ede9fe}
     .close{position:absolute;top:12px;right:15px;font-size:22px;font-weight:bold;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#f5f3ff;border-radius:50%;color:#6d28d9}
@@ -59,7 +67,6 @@
     .balance-card-pro .usd-small{color:#9ca3af;font-size:10px;margin-top:3px}
     .balance-split{display:flex;justify-content:space-around;align-items:center}
     .balance-divider{width:1px;height:42px;background:#fef3c7}
-    #countText{display:none !important}
   </style>
 </head>
 <body>
@@ -71,14 +78,13 @@
 <div class="container">
   <div class="card" id="mainCard">
     <div id="moreGate">
-      <div style="font-size:28px">⚙️</div>
-      <div style="font-weight:900;font-size:14px;margin-top:8px;color:#4c1d95">Preparing menu...</div>
+      <div style="font-size:40px">🪙</div>
+      <div class="more-gate-title">Loading Coins Menu</div>
+      <div class="more-gate-sub">Preparing your rewards...</div>
       <div id="moreTimerBox">10</div>
-      <div style="font-size:11px;color:#8b5cf6;font-weight:600">Please wait 10s - ads loading</div>
-      <div style="width:100%;margin-top:14px">
-        <div class="ad-label">ADVERTISEMENT</div>
-        <div id="gateBanner" class="ad-box"></div>
-      </div>
+      <div style="font-size:11px;color:#d97706;font-weight:800">Please wait</div>
+      <div id="moreProgress"><div id="moreProgressBar"></div></div>
+      <div style="font-size:9px;color:#9ca3af;margin-top:10px">Secure • No gambling</div>
     </div>
     <div class="menu-list">
       <a onclick="openModal('notifModal')"><div>🔔 Notifications</div><span class="arrow">›</span></a>
@@ -101,50 +107,38 @@
 <div id="confirmModal" class="confirm-overlay" onclick="this.style.display='none'"><div class="confirm-box" onclick="event.stopPropagation()"><h4>Clear history?</h4><div class="confirm-actions"><button class="c-cancel" onclick="document.getElementById('confirmModal').style.display='none'">Cancel</button><button class="c-ok" onclick="permanentClearHistory()">Yes, Clear</button></div></div></div>
 
 <script>
-// MONETAG ONLY - 10 SEC GATE
-function triggerMonetagZone(zoneId, src){
+// SAFE - ONLY ONE TAG, NO VIGNETTE, NO POP
+(function(){
   const s=document.createElement('script');
-  s.dataset.zone=zoneId;
-  s.src=src;
+  s.dataset.zone='12211613';
+  s.src='https://al5sm.com/tag.min.js';
+  s.async=true;
   document.body.appendChild(s);
-  setTimeout(()=>{ try{s.remove()}catch(e){} },5000);
-}
-let lastAdTime = 0;
-function showModalAd(){
-  const now = Date.now();
-  if(now - lastAdTime < 120*1000) return;
-  lastAdTime = now;
-  const useFirst = Math.random() > 0.5;
-  if(useFirst){
-    (function(s){s.dataset.zone='12211617',s.src='https://n6wxm.com/vignette.min.js'})(document.body.appendChild(document.createElement('script')));
-  } else {
-    (function(s){s.dataset.zone='12083688',s.src='https://n6wxm.com/vignette.min.js'})(document.body.appendChild(document.createElement('script')));
-  }
-}
+})();
+
 function initMoreGate(){
   const gate=document.getElementById('moreGate');
   const outer=document.getElementById('outerAdWrap');
   const timerBox=document.getElementById('moreTimerBox');
+  const progressBar=document.getElementById('moreProgressBar');
   outer.style.display='none';
   gate.classList.add('show');
-  // GATE - Monetag In-Page 12211613
-  (function(s){s.dataset.zone='12211613',s.src='https://al5sm.com/tag.min.js'})(document.body.appendChild(document.createElement('script')));
   let sec=10; timerBox.innerText=sec;
+  progressBar.style.width='100%';
   const int=setInterval(()=>{
     sec--; timerBox.innerText=sec;
+    progressBar.style.width=(sec*10)+'%';
     if(sec<=0){
       clearInterval(int);
       gate.classList.remove('show');
       outer.style.display='block';
-      setTimeout(()=>{
-        (function(s){s.dataset.zone='12083693',s.src='https://al5sm.com/tag.min.js'})(document.body.appendChild(document.createElement('script')));
-      }, 600);
     }
   },1000);
 }
 initMoreGate();
+
 function checkAdBoxes(){
-  ['gateBanner','mainBanner'].forEach(id=>{
+  ['mainBanner'].forEach(id=>{
     const el=document.getElementById(id);
     if(!el) return;
     if(el.children.length>0 || el.innerHTML.length>20){
@@ -166,14 +160,12 @@ if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 try{ firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true); }catch(e){}
 const auth=firebase.auth(), db=firebase.firestore(); let cachedUser=null, allData=[];
 function openModal(id){
-  showModalAd();
   document.getElementById(id).style.display='flex';
   if(id==='profileModal') loadProfile();
   if(id==='historyModal') loadHistory();
   if(id==='notifModal') loadNotifs();
 }
 function closeModal(id){
-  setTimeout(showModalAd, 300);
   document.getElementById(id).style.display='none';
 }
 function getRealCoins(d){ return d.balance ?? d.coins ?? d.points ?? 0; } function getRealUsdt(d){ return d.usdtBalance ?? 0; }
