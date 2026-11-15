@@ -25,7 +25,6 @@ body{background:#f5f3ff;min-height:100vh;padding:0 0 100px 0;color:#111827}
 .gate-btn.wait{background:#f3f4f6;color:#6b7280;cursor:not-allowed}
 .gate-btn.continue{background:linear-gradient(180deg,#dcfce7,#bbf7d0);color:#166534;border-color:#22c55e;display:none;margin-top:10px}
 #gateTimer{font-size:13px;font-weight:900;color:#4c1d95;margin-top:10px}
-#safeAdAfter{display:none;background:#ffffff;border:2px solid #ede9fe;border-radius:12px;padding:10px;margin-top:12px;text-align:center}
 </style>
 </head><body>
 <div id="customToast"></div>
@@ -57,7 +56,7 @@ body{background:#f5f3ff;min-height:100vh;padding:0 0 100px 0;color:#111827}
 <div id="withdrawNote" class="note">Available: -- USDT • Min $1.5</div>
 <button class="action-btn" onclick="startWithdrawGate()">Request Withdraw</button>
 </div>
-<div id="safeAdAfter"><small style="color:#6b7280;font-weight:800;font-size:10px">Sponsored</small><div style="min-height:60px;margin-top:6px" id="adSlot"></div></div>
+<!-- NO BLANK BOX - REMOVED safeAdAfter -->
 </div>
 
 <div id="adGate"><div class="gate-box"><div id="gateTitle" class="gate-title"></div><div id="gateSub" class="gate-sub"></div><button id="waitBtn" class="gate-btn wait" disabled>⏳ Please wait 10s...</button><div id="gateTimer">Ads loading, please wait...</div><button id="continueBtn" class="gate-btn continue">✅ Continue</button><div style="font-size:10px;color:#9ca3af;margin-top:8px" id="gateAdNote">Ad supports the platform</div></div></div>
@@ -66,16 +65,16 @@ body{background:#f5f3ff;min-height:100vh;padding:0 0 100px 0;color:#111827}
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
-// NO AUTO MONETAG - Load only when needed
-let monetagLoaded=false;
-function loadMonetagOnlyForConvert(){
-  if(monetagLoaded) return;
-  monetagLoaded=true;
-  const s=document.createElement('script');
-  s.dataset.zone='12211613';
-  s.src='https://al5sm.com/tag.min.js';
-  s.async=true;
-  document.body.appendChild(s);
+// CLEAN VIGNETTE - SAME AS FINAL MORE PAGE - NO ADULT - NO FLAG
+let vignetteLoaded = false;
+function loadCleanVignette(){
+  if(vignetteLoaded) return;
+  vignetteLoaded = true;
+  const old = document.querySelector('script[src*="vignette.min.js"]');
+  if(old) old.remove();
+  (function(s){s.dataset.zone='12268552',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+  // Reset after 3 min so next convert can show again - safe frequency
+  setTimeout(()=>{ vignetteLoaded = false; }, 3*60*1000);
 }
 
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
@@ -95,7 +94,7 @@ function loadData(d){
   localStorage.setItem('userData', JSON.stringify(d));
 }
 function calcConvert(){const pts=parseFloat(document.getElementById('convertAmount').value)||0;document.getElementById('convertResult').innerText=`You will receive: ${(pts*POINT_RATE).toFixed(4)} USDT`;}
-function switchTab(t){document.getElementById('convertTab').style.display=t==='convert'?'block':'none';document.getElementById('withdrawTab').style.display=t==='withdraw'?'block':'none';document.getElementById('tab1').className=t==='convert'?'tab active':'tab inactive';document.getElementById('tab2').className=t==='withdraw'?'tab active':'tab inactive';document.getElementById('safeAdAfter').style.display='none';}
+function switchTab(t){document.getElementById('convertTab').style.display=t==='convert'?'block':'none';document.getElementById('withdrawTab').style.display=t==='withdraw'?'block':'none';document.getElementById('tab1').className=t==='convert'?'tab active':'tab inactive';document.getElementById('tab2').className=t==='withdraw'?'tab active':'tab inactive';}
 
 function openSafeGate(title, sub, action, adMode){
   pendingAction=action;
@@ -103,7 +102,7 @@ function openSafeGate(title, sub, action, adMode){
   document.getElementById('adGate').style.display='flex';
   document.getElementById('gateTitle').innerText=title;
   document.getElementById('gateSub').innerText=sub;
-  document.getElementById('gateAdNote').innerText = (adMode==='NO_AD') ? 'Secure verification, no ads' : 'Ad supports the platform';
+  document.getElementById('gateAdNote').innerText = (adMode==='NO_AD') ? 'Secure verification, no ads' : 'Clean ad supports the platform';
   const waitBtn=document.getElementById('waitBtn');
   const contBtn=document.getElementById('continueBtn');
   waitBtn.style.display='block'; waitBtn.disabled=true; waitBtn.innerText='⏳ Please wait 10s...';
@@ -129,8 +128,7 @@ function startConvertGate(){
   const pts=parseFloat(document.getElementById('convertAmount').value);
   if(!pts||pts<=0) return showToast('Enter coins amount');
   if(pts > (userData.balance||0)) return showToast('Not enough coins');
-  loadMonetagOnlyForConvert(); // LOAD AD ONLY HERE
-  openSafeGate('🔓 Converting...','Please wait 10s while we prepare','convert','SHOW');
+  openSafeGate('🔓 Converting...','Clean ad loading - please wait 10s','convert','SHOW');
 }
 function startWithdrawGate(){
   const usdtAmount=parseFloat(document.getElementById('withdrawAmount').value);
@@ -143,6 +141,10 @@ function startWithdrawGate(){
 document.getElementById('continueBtn').onclick=function(){
   document.getElementById('adGate').style.display='none';
   clearInterval(gateTimerInt);
+  // Load clean vignette ONLY after user clicks continue on convert - safe, 1 impression
+  if(pendingAction==='convert' && window._adMode==='SHOW'){
+    loadCleanVignette();
+  }
   if(pendingAction==='convert') convertPoints();
   if(pendingAction==='withdraw') requestWithdraw();
   pendingAction=null;
@@ -155,7 +157,6 @@ async function convertPoints(){
     const userRef=db.collection('users').doc(currentUser.uid);
     await db.runTransaction(async (tx)=>{const snap=await tx.get(userRef);if(!snap.exists) throw "No user";const data=snap.data();const bal=data.balance ?? data.coins ?? 0;if(bal < pts) throw `Not enough coins`;tx.update(userRef,{balance: firebase.firestore.FieldValue.increment(-pts),coins: firebase.firestore.FieldValue.increment(-pts),points: firebase.firestore.FieldValue.increment(-pts),usdtBalance: firebase.firestore.FieldValue.increment(usdt),lastConvertAt: firebase.firestore.FieldValue.serverTimestamp()});});
     showToast(`✓ ${pts} → ${usdt.toFixed(4)} USDT`);document.getElementById('convertAmount').value=''; calcConvert();
-    if(window._adMode==='SHOW') document.getElementById('safeAdAfter').style.display='block';
   }catch(e){showToast('Failed: '+(e.message||e));}
 }
 async function requestWithdraw(){
@@ -168,7 +169,6 @@ async function requestWithdraw(){
     await db.runTransaction(async (tx)=>{const snap=await tx.get(userRef);if((snap.data().usdtBalance||0) < usdtAmount) throw "Not enough USDT";tx.update(userRef,{usdtBalance: firebase.firestore.FieldValue.increment(-usdtAmount)});});
     await db.collection('withdrawals').add({uid:currentUser.uid,username:userData.username||'',email:userData.email||currentUser.email||'',method:method,crypto:'USDT',payId:payId,amount:usdtAmount,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp()});
     showToast(`Withdraw ${usdtAmount.toFixed(2)} USDT requested!`);document.getElementById('withdrawAmount').value='';document.getElementById('walletAddress').value='';
-    document.getElementById('safeAdAfter').style.display='none';
   }catch(e){try{await db.collection('users').doc(currentUser.uid).update({usdtBalance: firebase.firestore.FieldValue.increment(usdtAmount)});}catch(_){}showToast('Failed: '+(e.message||e));}
 }
 auth.onAuthStateChanged(u=>{if(u){currentUser=u;db.collection('users').doc(u.uid).onSnapshot(doc=>{if(doc.exists) loadData(doc.data());});}else{location.href='./index.html';}});
