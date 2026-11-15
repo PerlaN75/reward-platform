@@ -3,63 +3,31 @@
 <head>
   <title>More - Coins</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="referrer" content="no-referrer-when-downgrade" />
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
     body{background:#f5f3ff;min-height:100vh;color:#111827}
-    .top-bar{background:#6d28d9;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;box-shadow:0 4px 12px rgba(109,40,217,0.3)}
-    .back-btn-checkin{width:45px;height:30px;border-radius:10px;background:#ffffff;border:2px solid #fecaca;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5}
-    .center-pill{background:#ffffff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%);box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+    .top-bar{background:#6d28d9;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100}
+    .back-btn-checkin{width:45px;height:30px;border-radius:10px;background:#fff;border:2px solid #fecaca;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px}
+    .center-pill{background:#fff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%)}
     .container{max-width:500px;margin:0 auto;padding:16px 14px 90px 14px}
-    .card{background:#ffffff;border:2px solid #ede9fe;border-radius:20px;padding:8px;box-shadow:0 8px 30px rgba(109,40,217,0.08);position:relative;overflow:hidden;min-height:340px}
-    .menu-list a{display:flex;align-items:center;justify-content:space-between;width:100%;padding:19px 16px;color:#111827;text-decoration:none;font-size:15px;font-weight:800;border-radius:14px;cursor:pointer;transition:0.2s}
-    .menu-list a:active{background:#f5f3ff}
+    .card{background:#fff;border:2px solid #ede9fe;border-radius:20px;padding:8px;position:relative;overflow:hidden;min-height:340px}
+    .menu-list a{display:flex;align-items:center;justify-content:space-between;padding:19px 16px;color:#111827;text-decoration:none;font-size:15px;font-weight:800;border-radius:14px}
     .menu-list a:not(:last-child){border-bottom:1px solid #f5f3ff}
     .arrow{color:#a78bfa;font-size:20px}
-    #moreGate{position:absolute;inset:0;background:#ffffff;z-index:20;border-radius:20px;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;border:3px solid #fbbf24}
+    #moreGate{position:absolute;inset:0;background:#fff;z-index:20;border-radius:20px;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;border:3px solid #fbbf24}
     #moreGate.show{display:flex}
-    #moreTimerBox{width:88px;height:88px;border-radius:50%;background:linear-gradient(180deg,#fef3c7,#fbbf24);border:4px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;color:#92400e;margin:14px auto;box-shadow:0 6px 20px rgba(251,191,36,0.4);animation:pulse 1s infinite}
-    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+    #moreTimerBox{width:88px;height:88px;border-radius:50%;background:linear-gradient(180deg,#fef3c7,#fbbf24);border:4px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;color:#92400e;margin:14px auto}
     #moreProgress{width:100%;height:8px;background:#fef3c7;border-radius:99px;margin-top:16px;overflow:hidden}
-    #moreProgressBar{height:100%;width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);border-radius:99px;transition:width 1s linear}
-    .more-gate-title{font-weight:900;font-size:18px;color:#92400e;margin-top:8px}
-    .modal{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(76,29,149,0.45);backdrop-filter:blur(2px);justify-content:center;align-items:center;padding:15px}
-    .modal-box{background:#ffffff;width:100%;max-width:420px;border-radius:20px;padding:20px;max-height:85vh;overflow-y:auto;color:#111827;position:relative;box-shadow:0 20px 60px rgba(109,40,217,0.25);border:2px solid #ede9fe}
+    #moreProgressBar{height:100%;width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width 1s linear}
+    .ad-label{font-size:9px;color:#8b5cf6;text-align:center;font-weight:900;margin:18px 0 6px 0;letter-spacing:0.8px}
+    .ad-box{min-height:110px;background:#fff;border:2px solid #ede9fe;border-radius:16px;display:flex;justify-content:center;align-items:center;padding:8px;overflow:hidden}
+    .modal{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(76,29,149,0.45);justify-content:center;align-items:center;padding:15px}
+    .modal-box{background:#fff;width:100%;max-width:420px;border-radius:20px;padding:20px;max-height:85vh;overflow-y:auto;position:relative}
     .close{position:absolute;top:12px;right:15px;font-size:22px;font-weight:bold;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#f5f3ff;border-radius:50%;color:#6d28d9}
-    .top-actions{display:flex;gap:10px;margin:12px 0}
-    .btn{flex:1;padding:12px;border:none;border-radius:12px;font-weight:800;cursor:pointer;font-size:13px}
-    .btn-refresh{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 3px 0 #d97706}
-    .btn-clear{background:#111827;color:#fff;box-shadow:0 3px 0 #000}
-    .item{background:#f9fafb;border:1.5px solid #ede9fe;border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-    .profile-header{text-align:center}
     .avatar-letter{width:78px;height:78px;background:linear-gradient(180deg,#ede9fe,#ddd6fe);border:3px solid #a78bfa;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:#6d28d9;margin:8px auto}
-    .profile-name{font-size:18px;font-weight:900;color:#111827}
-    .profile-details{background:#f9fafb;border:1.5px solid #ede9fe;border-radius:14px;padding:14px;margin:14px 0}
-    .profile-row{display:flex;gap:8px;margin:10px 0;font-size:13px;color:#6b7280}
-    .profile-row b{color:#111827;min-width:82px}
-    .confirm-overlay{display:none;position:fixed;z-index:10000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center}
-    .confirm-box{background:#fff;border-radius:16px;padding:20px;width:85%;max-width:320px;text-align:center}
-    .confirm-actions{display:flex;gap:10px;margin-top:14px}
-    .confirm-actions button{flex:1;padding:11px;border-radius:10px;border:none;font-weight:bold;cursor:pointer}
-    .c-cancel{background:#f3f4f6;color:#111827}
-    .c-ok{background:#ef4444;color:#fff}
-    .set-label{font-size:13px;font-weight:800;color:#111827;margin-bottom:8px;display:block}
-    .lang-option{display:flex;justify-content:space-between;align-items:center;padding:14px;border:2px solid #ede9fe;border-radius:12px;margin-bottom:8px;cursor:pointer;background:#fff}
-    .lang-option.active{border-color:#fbbf24;background:#fffbeb;color:#92400e;font-weight:800}
-    .mode-box{display:flex;gap:10px;justify-content:center}
-    .mode-btn{flex:1;max-width:110px;padding:12px;border-radius:12px;border:2px solid #ede9fe;background:#fff;cursor:pointer;text-align:center;font-weight:800;font-size:13px}
-    .mode-btn.active{border-color:#fbbf24;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000}
-    .save-close-btn{width:65%!important;margin:18px auto 0 auto!important;display:block!important;background:linear-gradient(90deg,#fbbf24,#f59e0b)!important;color:#000!important;border:none!important;padding:12px!important;border-radius:12px!important;font-weight:800!important;cursor:pointer!important;box-shadow:0 3px 0 #d97706}
-    .balance-card-pro{background:#ffffff;border:2px solid #fbbf24;border-radius:16px;padding:14px;text-align:center;box-shadow:0 4px 20px rgba(251,191,36,0.15);margin-bottom:12px}
-    .balance-card-pro .coin-val{color:#d97706;font-weight:900;font-size:20px}
-    .balance-card-pro .usdt-val{color:#16a34a;font-weight:900;font-size:15px;margin-top:2px}
-    .balance-card-pro .usd-small{color:#9ca3af;font-size:10px;margin-top:3px}
-    .balance-split{display:flex;justify-content:space-around;align-items:center}
-    .balance-divider{width:1px;height:42px;background:#fef3c7}
   </style>
 </head>
 <body>
@@ -69,93 +37,106 @@
   <div class="center-pill">⚙️ More</div>
   <div style="width:45px"></div>
 </div>
+
 <div class="container">
   <div class="card" id="mainCard">
     <div id="moreGate">
-      <div style="font-size:42px;animation:pulse 1s infinite">🪙</div>
-      <div class="more-gate-title">Loading More Page</div>
+      <div style="font-size:42px">🪙</div>
+      <div style="font-weight:900;font-size:18px;color:#92400e;margin-top:8px">Loading More Page</div>
       <div id="moreTimerBox">10</div>
       <div style="font-size:11px;color:#d97706;font-weight:800">Please wait</div>
       <div id="moreProgress"><div id="moreProgressBar"></div></div>
-      <div style="font-size:9px;color:#9ca3af;margin-top:10px">Secured Future</div>
     </div>
     <div class="menu-list">
       <a onclick="openModal('notifModal')"><div>🔔 Notifications</div><span class="arrow">›</span></a>
       <a onclick="openModal('profileModal')"><div>👤 Profile</div><span class="arrow">›</span></a>
       <a onclick="openModal('historyModal')"><div>📜 History</div><span class="arrow">›</span></a>
-      <a onclick="openModal('settingsModal')"><div>⚙️ Settings</div><span class="arrow">›</span></a>
       <a href="help.html"><div>💬 Help/Support</div><span class="arrow">›</span></a>
     </div>
   </div>
+
+  <!-- AD BOX - HIDDEN UNTIL GATE FINISHES -->
+  <div id="outerAdWrap" style="display:none">
+    <div class="ad-label">ADVERTISEMENT</div>
+    <div id="mainBanner" class="ad-box">Loading ad...</div>
+  </div>
 </div>
 
-<div id="notifModal" class="modal" onclick="closeModal('notifModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('notifModal')">×</span><h3 style="text-align:center;font-size:15px;font-weight:900">🔔 Notifications</h3><div id="notifList" style="margin-top:12px">Loading...</div></div></div>
-<div id="profileModal" class="modal" onclick="closeModal('profileModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('profileModal')">×</span><div class="profile-header"><div id="avatarLetter" class="avatar-letter">I</div><h3 id="pUsername" class="profile-name">--</h3><p style="color:#22c55e;font-weight:900;font-size:12px;margin-top:4px">✓ Verified</p></div><div class="balance-card-pro"><div style="font-size:11px;color:#9ca3af;font-weight:700">YOUR BALANCE</div><div id="pBalCard" class="coin-val">-- coins</div><div id="pUsdtCard" class="usdt-val">-- USDT</div><div id="pUsdSmall" class="usd-small">≈ $--</div></div><div class="profile-details"><div class="profile-row">📧 <b>Email:</b> <span id="pEmail">...</span></div><div class="profile-row">📅 <b>Registered:</b> <span id="pDate">...</span></div><div class="profile-row">🆔 <b>User ID:</b> <span id="pId">...</span></div></div></div></div>
-<div id="historyModal" class="modal" onclick="closeModal('historyModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('historyModal')">×</span><h3 style="text-align:center;font-size:15px;font-weight:900">📜 History</h3><div class="balance-card-pro" style="margin-top:12px"><div class="balance-split"><div><div style="font-size:10px;color:#9ca3af;font-weight:700">COINS</div><div id="hBal" style="color:#d97706;font-weight:900;font-size:16px">--</div><div id="hUsd" style="font-size:10px;color:#9ca3af">≈ $--</div></div><div class="balance-divider"></div><div><div style="font-size:10px;color:#9ca3af;font-weight:700">USDT</div><div id="hUsdt" style="color:#16a34a;font-weight:900;font-size:16px">-- USDT</div></div></div></div><div class="top-actions"><button class="btn btn-refresh" onclick="loadHistory()">Refresh</button><button class="btn btn-clear" onclick="document.getElementById('confirmModal').style.display='flex'">Clear</button></div><div id="historyList" style="margin-top:12px;max-height:50vh;overflow-y:auto;color:#6b7280;text-align:center">Loading...</div></div></div>
-<div id="settingsModal" class="modal" onclick="closeModal('settingsModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('settingsModal')">×</span><h3 style="text-align:center;margin-bottom:14px;font-weight:900">⚙️ Settings</h3><div style="margin:16px 0"><span class="set-label">Language</span><div class="lang-option active" id="lang-en" onclick="setLang('en',this)"><span>English 🇺🇸 - Default</span><span>✓</span></div></div><div style="margin:16px 0"><span class="set-label">Appearance - Mode</span><div class="mode-box"><div class="mode-btn active" id="modeLight" onclick="setMode('light')">☀️ Light</div><div class="mode-btn" id="modeDark" onclick="setMode('dark')">🌙 Dark</div></div></div><button onclick="saveSettings()" class="save-close-btn">Save & Close</button></div></div>
-<div id="confirmModal" class="confirm-overlay" onclick="this.style.display='none'"><div class="confirm-box" onclick="event.stopPropagation()"><h4>Clear history?</h4><div class="confirm-actions"><button class="c-cancel" onclick="document.getElementById('confirmModal').style.display='none'">Cancel</button><button class="c-ok" onclick="permanentClearHistory()">Yes, Clear</button></div></div></div>
+<div id="notifModal" class="modal" onclick="closeModal('notifModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('notifModal')">×</span><h3 style="text-align:center">🔔 Notifications</h3><div id="notifList" style="margin-top:12px">Loading...</div></div></div>
+<div id="profileModal" class="modal" onclick="closeModal('profileModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('profileModal')">×</span><div style="text-align:center"><div id="avatarLetter" class="avatar-letter">I</div><h3 id="pUsername">--</h3></div></div></div>
+<div id="historyModal" class="modal" onclick="closeModal('historyModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('historyModal')">×</span><h3 style="text-align:center">📜 History</h3><div id="historyList" style="margin-top:12px">Loading...</div></div></div>
 
 <script>
-// === 3 MINUTES COOLDOWN GATE ONLY - NO ADS ===
+// === BANNER INSIDE BOX ONLY - AFTER GATE ===
+function loadBannerInsideBox(){
+  const banner = document.getElementById('mainBanner');
+  if(banner.dataset.done) return;
+  banner.dataset.done='1';
+  banner.innerHTML='';
+  const s=document.createElement('script');
+  s.dataset.zone='12266334';
+  s.src='https://nap5k.com/tag.min.js';
+  // IMPORTANT: append inside the box, not body
+  banner.appendChild(s);
+  
+  // Force any floating push ads back into box (block top)
+  const observer = new MutationObserver(()=>{
+    document.querySelectorAll('div[style*="position: fixed"], div[style*="position:fixed"]').forEach(el=>{
+      if(el.innerText && el.innerText.toLowerCase().includes('winner')){ el.remove(); return; }
+      // if it's monetag push outside box, move inside
+      if(!banner.contains(el) && el.innerHTML.length>20){
+        if(el.getBoundingClientRect().top < 100){ // top floating
+          // don't show top ads, keep only box
+          if(el.textContent.includes('WINNER') || el.textContent.includes('bonus')){ el.style.display='none'; }
+        }
+      }
+    });
+  });
+  observer.observe(document.body,{childList:true,subtree:true});
+  setTimeout(()=>observer.disconnect(),15000);
+}
+
+// === 3 MIN COOLDOWN GATE ===
 function initMoreGate(){
   const gate=document.getElementById('moreGate');
+  const outer=document.getElementById('outerAdWrap');
   const timerBox=document.getElementById('moreTimerBox');
   const progressBar=document.getElementById('moreProgressBar');
-
-  const COOLDOWN = 3 * 60 * 1000;
-  const last = parseInt(localStorage.getItem('moreGateLastShown') || '0');
-  const now = Date.now();
-
-  if(last && (now - last) < COOLDOWN){
-    gate.classList.remove('show');
+  const COOLDOWN=3*60*1000;
+  const last=parseInt(localStorage.getItem('moreGateLastShown')||'0');
+  
+  if(last && (Date.now()-last)<COOLDOWN){
     gate.style.display='none';
+    outer.style.display='block';
+    loadBannerInsideBox();
     return;
   }
-
+  
+  outer.style.display='none';
   gate.classList.add('show');
-  let sec=10; timerBox.innerText=sec;
-  progressBar.style.width='100%';
+  let sec=10; timerBox.innerText=sec; progressBar.style.width='100%';
   const int=setInterval(()=>{
-    sec--; timerBox.innerText=sec;
-    progressBar.style.width=(sec*10)+'%';
+    sec--; timerBox.innerText=sec; progressBar.style.width=(sec*10)+'%';
     if(sec<=0){
       clearInterval(int);
-      gate.classList.remove('show');
-      localStorage.setItem('moreGateLastShown', String(Date.now()));
+      gate.style.display='none';
+      outer.style.display='block';
+      localStorage.setItem('moreGateLastShown',String(Date.now()));
+      loadBannerInsideBox();
     }
   },1000);
 }
 initMoreGate();
+
+function openModal(id){document.getElementById(id).style.display='flex'}
+function closeModal(id){document.getElementById(id).style.display='none'}
 </script>
 
 <script>
-(function(){ try{ var c=JSON.parse(localStorage.getItem('userData')||'{}'); if(c){ var coins=c.balance??c.points??c.coins??0; var usdt=c.usdtBalance??0; document.getElementById('pBalCard').textContent=coins+' coins'; document.getElementById('pUsdtCard').textContent=Number(usdt).toFixed(4)+' USDT'; document.getElementById('pUsdSmall').textContent='≈ $'+(coins*0.0005).toFixed(4)+' from coins'; if(c.username){ document.getElementById('pUsername').innerText=c.username; document.getElementById('avatarLetter').innerText=c.username.charAt(0).toUpperCase(); } if(c.email) document.getElementById('pEmail').innerText=c.email; document.getElementById('hBal').textContent=coins+' coins'; document.getElementById('hUsd').textContent='≈ $'+(coins*0.0005).toFixed(4); document.getElementById('hUsdt').textContent=Number(usdt).toFixed(4)+' USDT'; } }catch(e){} })();
-</script>
-<script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-try{ firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true); }catch(e){}
-const auth=firebase.auth(), db=firebase.firestore(); let cachedUser=null, allData=[];
-function openModal(id){
-  document.getElementById(id).style.display='flex';
-  if(id==='profileModal') loadProfile();
-  if(id==='historyModal') loadHistory();
-  if(id==='notifModal') loadNotifs();
-}
-function closeModal(id){ document.getElementById(id).style.display='none'; }
-function getRealCoins(d){ return d.balance ?? d.coins ?? d.points ?? 0; } function getRealUsdt(d){ return d.usdtBalance ?? 0; }
-async function loadProfile(){ const u=auth.currentUser||cachedUser; if(!u) return; db.collection('users').doc(u.uid).onSnapshot(snap=>{ if(!snap.exists) return; const d=snap.data(); localStorage.setItem('userData', JSON.stringify({...d, uid:u.uid, email: d.email||u.email})); const coins=getRealCoins(d); const usdt=getRealUsdt(d); const usd=(coins*0.0005).toFixed(4); document.getElementById('pBalCard').innerText=coins+' coins'; document.getElementById('pUsdtCard').innerText=Number(usdt).toFixed(4)+' USDT'; document.getElementById('pUsdSmall').innerText='≈ $'+usd+' from coins'; document.getElementById('pUsername').innerText=d.username||u.email.split('@')[0]; document.getElementById('avatarLetter').innerText=(d.username||'I').charAt(0).toUpperCase(); document.getElementById('pEmail').innerText=d.email||u.email; let reg="Unknown"; if(d.createdAt&&d.createdAt.toDate) reg=d.createdAt.toDate().toLocaleDateString(); else if(u.metadata.creationTime) reg=new Date(u.metadata.creationTime).toLocaleDateString(); document.getElementById('pDate').innerText=reg; document.getElementById('pId').innerText=u.uid.substring(0,8).toUpperCase(); document.getElementById('hBal').innerText=coins+' coins'; document.getElementById('hUsd').innerText='≈ $'+usd; document.getElementById('hUsdt').innerText=Number(usdt).toFixed(4)+' USDT'; }); }
-async function loadNotifs(){ const el=document.getElementById('notifList'); el.innerHTML='Loading...'; try{ const snap=await db.collection('notifications').orderBy('createdAt','desc').limit(20).get(); if(snap.empty){ el.innerHTML='<p style="text-align:center;color:#9ca3af;padding:20px">No notifications</p>'; return; } let html=''; snap.forEach(d=>{ const n=d.data(); html+=`<div style="background:#f9fafb;border:1.5px solid #ede9fe;border-radius:10px;padding:10px;margin-bottom:8px"><div style="font-size:12px;font-weight:600">${n.message}</div><div style="font-size:10px;color:#9ca3af;margin-top:4px">${n.createdAt?new Date(n.createdAt.seconds*1000).toLocaleString():''}</div></div>`; }); el.innerHTML=html; }catch(e){ el.innerHTML='Error: '+e.message; } }
-function getHiddenIds(){ try{ return JSON.parse(localStorage.getItem('hiddenHistoryIds')||'[]'); }catch(e){ return []; } }
-function addHiddenIds(newIds){ const cur=new Set(getHiddenIds()); newIds.forEach(id=>cur.add(id)); const arr=[...cur]; localStorage.setItem('hiddenHistoryIds', JSON.stringify(arr)); const u=auth.currentUser||cachedUser; if(u){ db.collection('users').doc(u.uid).set({ hiddenHistoryIds: arr, historyClearedAt: firebase.firestore.FieldValue.serverTimestamp() },{merge:true}); } }
-async function loadHistory(){ const user=auth.currentUser||cachedUser; if(!user) return; document.getElementById('historyList').innerHTML='<p>Loading...</p>'; allData=[]; try{ const userDoc=await db.collection('users').doc(user.uid).get(); if(userDoc.exists && userDoc.data().hiddenHistoryIds){ localStorage.setItem('hiddenHistoryIds', JSON.stringify(userDoc.data().hiddenHistoryIds)); } }catch(e){} const hiddenIds=new Set(getHiddenIds()); try{ db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(100).onSnapshot(snap=>{ allData=[]; snap.forEach(d=>{ if(hiddenIds.has(d.id)) return; const v=d.data(); if(v.hidden===true) return; const date=v.timestamp?.toDate?v.timestamp.toDate():new Date(); allData.push({id:d.id, title:v.action||'Earn',desc:v.desc||'',points:v.coins ?? v.points ?? 0,date:date}); }); render(allData.slice(0,20)); }); }catch(e){ db.collection('users').doc(user.uid).collection('earnHistory').onSnapshot(snap=>{ allData=[]; snap.forEach(d=>{ if(hiddenIds.has(d.id)) return; const v=d.data(); if(v.hidden===true) return; const date=v.timestamp?.toDate?v.timestamp.toDate():new Date(); allData.push({id:d.id, title:v.action||'Earn',desc:v.desc||'',points:v.coins ?? v.points ?? 0,date:date}); }); allData.sort((a,b)=>b.date - a.date); render(allData.slice(0,20)); }); } }
-function render(data){ const list=document.getElementById('historyList'); if(data.length===0){ list.innerHTML='<p style="padding:20px">No history ✅</p>'; return; } list.innerHTML=''; data.forEach(i=>{ list.innerHTML+=`<div class="item"><div><div style="font-weight:bold;font-size:13px">${i.title}</div><div style="font-size:11px;color:#9ca3af">${i.desc} - ${i.date.toLocaleDateString()}</div></div><div style="color:#22c55e;font-weight:900">+${i.points} 🪙</div></div>`; }); }
-async function permanentClearHistory(){ document.getElementById('confirmModal').style.display='none'; const listEl=document.getElementById('historyList'); const idsToHide=allData.slice(0,20).map(x=>x.id); if(idsToHide.length===0){ listEl.innerHTML='<p style="padding:20px">No history to clear</p>'; return; } listEl.innerHTML=`<p style="padding:20px;text-align:center">Clearing...</p>`; addHiddenIds(idsToHide); const user=auth.currentUser||cachedUser; if(user){ try{ const batch=db.batch(); idsToHide.forEach(id=>{ const ref=db.collection('users').doc(user.uid).collection('earnHistory').doc(id); batch.set(ref, {hidden:true, hiddenAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge:true}); }); await batch.commit(); }catch(e){} } render([]); }
-function setLang(code, el){ localStorage.setItem('app_lang', code); localStorage.setItem('appLang', code); document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active')); el.classList.add('active'); }
-function setMode(mode){ localStorage.setItem('app_mode', mode); document.getElementById('modeLight').classList.toggle('active', mode==='light'); document.getElementById('modeDark').classList.toggle('active', mode==='dark'); if(mode==='dark') document.body.classList.add('dark'); else document.body.classList.remove('dark'); }
-function saveSettings(){ closeModal('settingsModal'); }
-(function(){ const mode=localStorage.getItem('app_mode')||'light'; const lang=localStorage.getItem('app_lang')||localStorage.getItem('appLang')||'en'; if(mode==='dark') document.body.classList.add('dark'); document.getElementById('modeLight').classList.toggle('active', mode==='light'); document.getElementById('modeDark').classList.toggle('active', mode==='dark'); document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active')); const el=document.getElementById('lang-'+lang); if(el) el.classList.add('active'); })();
-auth.onAuthStateChanged(u=>{ if(!u){ location.href='./index.html'; return; } cachedUser=u; loadProfile(); });
+const auth=firebase.auth();
+auth.onAuthStateChanged(u=>{ if(!u) location.href='./index.html'; });
 </script>
 </body>
 </html>
