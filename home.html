@@ -108,7 +108,11 @@ function evaluateChain(){
   } else if(now >= c.quiz_open && now <= c.quiz_expiry && !c.quiz_doneToday){
     setBtnState(btnQuiz,'live', fmtShort(c.quiz_expiry-now));
   } else {
-    setBtnState(btnQuiz,'locked','');
+    if(c.quiz_nextAvail && now < c.quiz_nextAvail){
+      setBtnState(btnQuiz,'soon', fmtShort(c.quiz_nextAvail-now));
+    } else {
+      setBtnState(btnQuiz,'locked','');
+    }
   }
 }
 function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
@@ -123,8 +127,16 @@ window.goWatch=()=>{
 window.goQuiz=()=>{
   const c=getChain(); const now=Date.now();
   if(!c.quiz_open){showToast("Finish Watch first"); return;}
-  if(now < c.quiz_open){showToast(`Quiz in ${fmtShort(c.quiz_open-now)}`); return;}
-  if(now > c.quiz_expiry){showToast("Expired"); return;}
+  if(now < c.quiz_open){showToast(`Quiz locked - Opens in ${fmtShort(c.quiz_open-now)}`); return;}
+  if(now > c.quiz_expiry){
+    const remain = c.quiz_nextAvail ? c.quiz_nextAvail - now : 0;
+    if(remain > 0){
+      showToast(`Quiz locked - Opens in ${fmtShort(remain)}`);
+    } else {
+      showToast(`Quiz locked - Come back tomorrow`);
+    }
+    return;
+  }
   location.href='./quiz_earn.html';
 };
 window.goArticles=()=>{
