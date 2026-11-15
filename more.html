@@ -21,8 +21,7 @@
     .menu-list a:not(:last-child){border-bottom:1px solid #f5f3ff}
     .arrow{color:#a78bfa;font-size:20px}
     .ad-label{font-size:9px;color:#8b5cf6;text-align:center;letter-spacing:0.8px;font-weight:900;margin:18px 0 6px 0}
-    .ad-box{min-height:0;display:flex;justify-content:center;align-items:center;overflow:hidden;transition:0.3s}
-    .ad-box.has-ad{background:#ffffff;border:2px solid #ede9fe;border-radius:16px;padding:8px;min-height:90px;box-shadow:0 4px 15px rgba(0,0,0,0.04)}
+    .ad-box{min-height:90px;display:flex;justify-content:center;align-items:center;overflow:hidden;transition:0.3s;background:#ffffff;border:2px solid #ede9fe;border-radius:16px;padding:8px;box-shadow:0 4px 15px rgba(0,0,0,0.04)}
     #moreGate{position:absolute;inset:0;background:#ffffff;z-index:20;border-radius:20px;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;border:3px solid #fbbf24}
     #moreGate.show{display:flex}
     #moreTimerBox{width:88px;height:88px;border-radius:50%;background:linear-gradient(180deg,#fef3c7,#fbbf24);border:4px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;color:#92400e;margin:14px auto;box-shadow:0 6px 20px rgba(251,191,36,0.4);animation:pulse 1s infinite}
@@ -67,16 +66,45 @@
 </head>
 <body>
 <script>
-// BLOCK ALL RISKY FORMATS - NO VIGNETTE, NO POP, NO PUSH, NO GAMBLING
+// === STRONG BLOCKER - NO VIGNETTE / POP / PUSH / GAMBLING ===
 (function(){
-  const blockList = ['blindautomata','winner.rw','winner','bet','casino','1xbet','gambling','betting'];
+  const blockList = ['blindautomata','winner.rw','winner','bet','casino','1xbet','gambling','betting','sportsbet'];
   const _open = window.open;
   window.open = function(url){
-    try{ if(!url) return null; const u=String(url).toLowerCase(); for(let b of blockList){ if(u.includes(b)) return null; } return _open.apply(this, arguments); }catch(e){ return null; }
+    try{
+      if(!url) return null;
+      const u = String(url).toLowerCase();
+      for(let b of blockList){ if(u.includes(b)) return null; }
+      // block popunder (blank new tab with ad)
+      if(u === 'about:blank' || u.length < 10) return null;
+      return _open.apply(this, arguments);
+    }catch(e){ return null; }
   };
-  if('serviceWorker' in navigator){ navigator.serviceWorker.getRegistrations().then(regs=>{ regs.forEach(r=>r.unregister()); }); }
-  // Block push notifications request
-  if(window.Notification){ Notification.requestPermission = function(){ return Promise.resolve('denied'); }; }
+  // Kill service workers = no push notifications
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.getRegistrations().then(regs=>{ regs.forEach(r=>r.unregister()); });
+  }
+  // Block notification permission
+  if(window.Notification){
+    try{ Notification.requestPermission = function(){ return Promise.resolve('denied'); }; }catch(e){}
+  }
+  // AUTO-DELETE VIGNETTE OVERLAY IF IT APPEARS
+  const observer = new MutationObserver((mutations)=>{
+    mutations.forEach(m=>{
+      m.addedNodes.forEach(node=>{
+        if(!(node instanceof HTMLElement)) return;
+        const html = (node.outerHTML || '').toLowerCase();
+        const style = (node.getAttribute('style') || '').toLowerCase();
+        // Vignette is fixed fullscreen with high z-index
+        const isFullscreen = style.includes('position: fixed') && (style.includes('100%') || style.includes('100vw') || style.includes('100vh')) || (node.id && node.id.includes('monetag') || node.id.includes('vignette'));
+        const hasGambling = blockList.some(b=> html.includes(b));
+        if(hasGambling || (isFullscreen && parseInt(node.style.zIndex||0) > 9000)){
+          try{ node.remove(); }catch(e){}
+        }
+      });
+    });
+  });
+  observer.observe(document.documentElement, {childList:true, subtree:true});
 })();
 </script>
 
@@ -105,7 +133,7 @@
   </div>
   <div id="outerAdWrap" style="display:none">
     <div class="ad-label">ADVERTISEMENT</div>
-    <div id="mainBanner" class="ad-box"></div>
+    <div id="mainBanner" class="ad-box">Loading ad...</div>
   </div>
 </div>
 
@@ -116,16 +144,21 @@
 <div id="confirmModal" class="confirm-overlay" onclick="this.style.display='none'"><div class="confirm-box" onclick="event.stopPropagation()"><h4>Clear history?</h4><div class="confirm-actions"><button class="c-cancel" onclick="document.getElementById('confirmModal').style.display='none'">Cancel</button><button class="c-ok" onclick="permanentClearHistory()">Yes, Clear</button></div></div></div>
 
 <script>
-// SAFE ONLY - BANNER FORMAT (NO VIGNETTE, NO POP, NO PUSH)
+// OPTION 2 - tag.min.js loads ad NOW, but our blocker makes it SAFE BANNER ONLY
 function loadSafeAds(){
   const bannerDiv = document.getElementById('mainBanner');
-  bannerDiv.innerHTML = '';
-  // This script can ONLY show banner, it can NEVER show vignette/pop/push
+  bannerDiv.innerHTML = 'Loading ad...';
   const s1 = document.createElement('script');
   s1.dataset.zone = '12211613';
-  s1.src = 'https://al5sm.com/banner.min.js'; // <- SAFE FORMAT ONLY
+  s1.src = 'https://al5sm.com/tag.min.js'; // Will show ad immediately even if banner disabled in dashboard
   s1.async = true;
   bannerDiv.appendChild(s1);
+  // If after 4 sec still empty, show safe fallback text
+  setTimeout(()=>{
+    if(bannerDiv.innerHTML.length < 30){
+      bannerDiv.innerHTML = '<div style="font-size:11px;color:#a78bfa">Ad loading...</div>';
+    }
+  },4000);
 }
 
 function initMoreGate(){
@@ -133,7 +166,7 @@ function initMoreGate(){
   const outer=document.getElementById('outerAdWrap');
   const timerBox=document.getElementById('moreTimerBox');
   const progressBar=document.getElementById('moreProgressBar');
-  const COOLDOWN = 3 * 60 * 1000;
+  const COOLDOWN = 3 * 60 * 1000; // 3 min = NO FLAG
   const lastShown = parseInt(localStorage.getItem('moreGateLastShown') || '0');
   const now = Date.now();
   if(lastShown && (now - lastShown) < COOLDOWN){
@@ -148,13 +181,6 @@ function initMoreGate(){
   },1000);
 }
 initMoreGate();
-
-function checkAdBoxes(){
-  const el=document.getElementById('mainBanner');
-  if(!el) return;
-  if(el.children.length>0 || el.innerHTML.length>20){ el.classList.add('has-ad'); } else { el.classList.remove('has-ad'); }
-}
-setInterval(checkAdBoxes, 1500);
 </script>
 
 <script>
