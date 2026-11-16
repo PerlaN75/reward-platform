@@ -71,7 +71,6 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 <script>
 (() => {
 "use strict";
-// ===== ZONE 12270885 — PROFITABLE CLAIM AT END =====
 let vignetteLoaded=false;
 function loadCleanVignette(){
   if(vignetteLoaded) return;
@@ -104,7 +103,6 @@ document.getElementById('continueBtn').onclick=function(){
   loadCleanVignette();
   const fn=pendingNext; pendingNext=null; if(fn) fn();
 };
-// entry gate
 let gateSec=10;const gateTimerEl=document.getElementById('gateTimer');const gateInt=setInterval(()=>{gateSec--; if(gateTimerEl) gateTimerEl.innerText=gateSec; if(gateSec<=0){ clearInterval(gateInt); const g=document.getElementById('entryGate'); if(g) g.remove(); }},1000);
 
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};firebase.initializeApp(firebaseConfig);try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}const auth=firebase.auth(),db=firebase.firestore();
@@ -112,13 +110,14 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}')}catch(e){return {}}}
 function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c))}
 function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
-const WINDOW_MS=30*60*1000,GAP_MS=10*60*1000;
+const WINDOW_MS=30*60*1000,GAP_MS=0;
 function onQuizFinishedChain(){
   const now=Date.now(), c=getChain(), today=localDayKey();
   if(c.quiz_finishedToday===today) return;
   c.quiz_finishedToday=today; c.quiz_doneToday=today;
-  c.articles_open=now + GAP_MS;
-  c.articles_expiry=c.articles_open + WINDOW_MS;
+  // INSTANT
+  c.articles_open=now;
+  c.articles_expiry=now + WINDOW_MS + 3600000;
   delete c.articles_doneToday; delete c.articles_finishedToday;
   saveChain(c);
   if(window.currentUser) db.collection("users").doc(window.currentUser.uid).set({chain:{quiz_finishedToday:today,quiz_doneToday:today,articles_open:c.articles_open,articles_expiry:c.articles_expiry,updated:firebase.firestore.FieldValue.serverTimestamp()}},{merge:true});
@@ -127,10 +126,8 @@ function checkQuizLock(){
   const c=getChain(), now=Date.now(), today=localDayKey();
   const lockPanel=document.getElementById('lockPanel'); const msg=document.getElementById('lockMsg');
   if(c.watch_finishedToday!==today){lockPanel.style.display='flex'; msg.innerText='Finish Watch first'; return true;}
-  if(!c.quiz_open){lockPanel.style.display='flex'; msg.innerText='Quiz not ready'; return true;}
-  if(now < c.quiz_open){lockPanel.style.display='flex'; msg.innerText='Quiz opens in '+Math.ceil((c.quiz_open-now)/60000)+'m'; return true;}
-  if(now > c.quiz_expiry){lockPanel.style.display='flex'; msg.innerText='Quiz expired - tomorrow'; return true;}
-  if(c.quiz_finishedToday===today){lockPanel.style.display='flex'; msg.innerText='Quiz done today ✅ Articles in 10min'; return true;}
+  if(c.quiz_finishedToday===today){lockPanel.style.display='flex'; msg.innerText='Quiz done today ✅ Articles is open now'; return true;}
+  if(c.quiz_open && now > c.quiz_expiry){lockPanel.style.display='flex'; msg.innerText='Quiz expired - tomorrow'; return true;}
   lockPanel.style.display='none'; return false;
 }
 
@@ -224,7 +221,6 @@ function showFinal(){
 document.getElementById('claimBtn').onclick=function(){
   if(isClaiming) return;
   if(score===0){
-    // still need to finish chain even with 0
     if(confirm("You got 0 correct = 0 coins. Claim 0 to finish and open Articles?")){
       finishWithZero();
     }
@@ -256,14 +252,13 @@ async function claimFinal(){
 async function finishWithZero(){
   clearSession();
   onQuizFinishedChain();
-  showToast("Finished — 0 coins, Articles in 10min");
+  showToast("Finished — Articles is open now");
   setTimeout(()=>{location.href='home.html';},1500);
 }
 
 auth.onAuthStateChanged(async u=>{
   if(!u){location.href='./index.html';return;}
   currentUser=u; window.currentUser=u;
-  // check if already done today
   try{
     const doc=await db.collection('users').doc(u.uid).get();
     if(doc.exists && doc.data().quizEarn_date===localDayKey() && doc.data().chain && doc.data().chain.quiz_finishedToday===localDayKey()){
@@ -278,8 +273,6 @@ auth.onAuthStateChanged(async u=>{
   checkQuizLock();
 });
 setInterval(checkQuizLock,1000);
-// if user closes tab before finish, reset circle to 0 on next open? We keep session, but if they explicitly quit via back button we clear. For profit, if they close browser mid-quiz, session stays but we treat as reset if expired? Simple: if 30min window expires, session cleared and score 0.
-window.addEventListener('beforeunload', ()=>{ /* keep session to allow continue, but profit if they abandon */ });
 })();
 </script>
 </body>
