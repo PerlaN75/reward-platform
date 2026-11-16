@@ -36,8 +36,8 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 </div></div>
 <div class="right-stack">
 <button class="r-item r1" id="btnWatch" onclick="goWatch()" type="button">Watch & Earn 📺</button>
-<button class="r-item r6" id="btnArticles" onclick="goArticles()" type="button">Articles Earn 📖</button>
 <button class="r-item r4" id="btnQuiz" onclick="goQuiz()" type="button">Quiz 🧠</button>
+<button class="r-item r6" id="btnArticles" onclick="goArticles()" type="button">Articles Earn 📖</button>
 <button class="r-item r3" onclick="location.href='./bonus.html'" type="button">Bonus 🎁</button>
 <button class="r-item r2" onclick="location.href='./survey.html'" type="button">Surveys 📋</button>
 <button class="r-item r7" onclick="location.href='./referrals.html'" type="button">Refer & Earn 🤝</button>
@@ -52,13 +52,14 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 </div>
 <script>
 (function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}');if(c&&(c.balance!=null||c.points!=null||c.username)){var bal=c.balance??c.points??0;var usdt=c.usdtBalance??0;document.getElementById('balance').textContent=bal+' coins';document.getElementById('usdBalance').textContent='= $'+(bal*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').textContent=Number(usdt).toFixed(4)+' USDT';if(c.username)document.getElementById('headerText').textContent=c.username;}}catch(e){}})();
-const WINDOW=30*60*1000, DAY=24*60*60*1000;
+const WINDOW=30*60*1000, GAP=10*60*1000, DAY=24*60*60*1000;
 function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}')}catch(e){return {}}}
 function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c))}
 function fmtShort(ms){if(ms<=0) return "0m"; const m=Math.floor(ms/60000); const s=Math.floor((ms%60000)/1000); if(m>=60){const h=Math.floor(m/60); const mm=m%60; return h+"h "+mm+"m";} if(m>0) return m+"m "+s+"s"; return s+"s";}
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
 window.alert=showToast;
 const btnWatch=document.getElementById('btnWatch'), btnQuiz=document.getElementById('btnQuiz'), btnArticles=document.getElementById('btnArticles');
+function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
 function setBtnState(btn, state, countdownText){
   if(!btn) return;
   let old=btn.querySelector('.badge'); if(old) old.remove();
@@ -73,70 +74,81 @@ function setBtnState(btn, state, countdownText){
     const b=document.createElement('span'); b.className='badge live'; b.textContent='Live '+countdownText; btn.appendChild(b);
   } else if(state==='soon'){
     const b=document.createElement('span'); b.className='badge padlock'; b.textContent='🔒 '+countdownText; btn.appendChild(b);
+  } else if(state==='done'){
+    const b=document.createElement('span'); b.className='badge padlock'; b.textContent='✅'; btn.appendChild(b);
   }
 }
 function evaluateChain(){
-  const c=getChain(); const now=Date.now();
-  if(c.quiz_open && c.quiz_expiry && now > c.quiz_expiry && !c.quiz_doneToday && c.quiz_finishedToday!==localDayKey()){
-    if(!c.articles_open || c.articles_open < c.quiz_expiry){
-      c.articles_open = c.quiz_expiry; c.articles_expiry = c.articles_open + WINDOW;
-      c.quiz_nextAvail = c.quiz_open + DAY; c.quiz_skippedToday = localDayKey(); saveChain(c);
-    }
-  }
+  const c=getChain(); const now=Date.now(); const today=localDayKey();
+  
+  // --- WATCH ---
   if(c.watch_nextAvail && now < c.watch_nextAvail){
     setBtnState(btnWatch,'locked','');
-  } else if(c.watch_open && now < c.watch_expiry && !c.watch_finishedToday){
+  } else if(c.watch_finishedToday===today){
+    setBtnState(btnWatch,'done','');
+  } else if(c.watch_open && now < c.watch_expiry && c.watch_finishedToday!==today){
     setBtnState(btnWatch,'live', fmtShort(c.watch_expiry-now));
   } else {
     setBtnState(btnWatch,'open','');
   }
-  if(!c.articles_open){
+
+  // --- QUIZ --- strict: must have finished watch today
+  if(c.watch_finishedToday!==today){
+    setBtnState(btnQuiz,'locked','');
+  } else if(c.quiz_doneToday===today || c.quiz_finishedToday===today){
+    setBtnState(btnQuiz,'done','');
+  } else if(!c.quiz_open){
+    setBtnState(btnQuiz,'locked','');
+  } else if(now < c.quiz_open){
+    setBtnState(btnQuiz,'soon', fmtShort(c.quiz_open-now));
+  } else if(now >= c.quiz_open && now <= c.quiz_expiry){
+    setBtnState(btnQuiz,'live', fmtShort(c.quiz_expiry-now));
+  } else {
+    // expired, not done -> will reset tomorrow via watch
+    setBtnState(btnQuiz,'locked','');
+  }
+
+  // --- ARTICLES --- strict: must have finished quiz today
+  if(c.quiz_finishedToday!==today && c.quiz_doneToday!==today){
+    setBtnState(btnArticles,'locked','');
+  } else if(c.articles_doneToday===today || c.articles_finishedToday===today){
+    setBtnState(btnArticles,'done','');
+  } else if(!c.articles_open){
     setBtnState(btnArticles,'locked','');
   } else if(now < c.articles_open){
     setBtnState(btnArticles,'soon', fmtShort(c.articles_open-now));
-  } else if(now >= c.articles_open && now <= c.articles_expiry && !c.articles_doneToday){
+  } else if(now >= c.articles_open && now <= c.articles_expiry){
     setBtnState(btnArticles,'live', fmtShort(c.articles_expiry-now));
   } else {
     setBtnState(btnArticles,'locked','');
   }
-  if(!c.quiz_open){
-    setBtnState(btnQuiz,'locked','');
-  } else if(now < c.quiz_open){
-    setBtnState(btnQuiz,'locked','');
-  } else if(now >= c.quiz_open && now <= c.quiz_expiry && !c.quiz_doneToday){
-    setBtnState(btnQuiz,'live', fmtShort(c.quiz_expiry-now));
-  } else {
-    setBtnState(btnQuiz,'locked','');
-  }
 }
-function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
+
 window.goWatch=()=>{
   const c=getChain(); const now=Date.now();
   if(c.watch_nextAvail && now < c.watch_nextAvail){showToast(`Watch locked - Opens in ${fmtShort(c.watch_nextAvail-now)}`); return;}
+  if(c.watch_finishedToday===localDayKey()){showToast(`Watch done today`); return;}
   if(!c.watch_open || now > c.watch_expiry){
     c.watch_open = now; c.watch_expiry = now + WINDOW; saveChain(c);
   }
   location.href='./watch.html';
 };
 window.goQuiz=()=>{
-  const c=getChain(); const now=Date.now();
-  if(!c.quiz_open){showToast("Finish Watch first"); return;}
-  if(now < c.quiz_open){showToast(`Quiz locked - Opens in ${fmtShort(c.quiz_open-now)}`); return;}
-  if(now > c.quiz_expiry){
-    const remain = c.quiz_nextAvail ? c.quiz_nextAvail - now : 0;
-    if(remain > 0){
-      showToast(`Quiz locked - Opens in ${fmtShort(remain)}`);
-    } else {
-      showToast(`Quiz locked - Come back tomorrow`);
-    }
-    return;
-  }
+  const c=getChain(); const now=Date.now(); const today=localDayKey();
+  if(c.watch_finishedToday!==today){showToast("Finish Watch first"); return;}
+  if(c.quiz_finishedToday===today || c.quiz_doneToday===today){showToast("Quiz done today ✅"); return;}
+  if(!c.quiz_open){showToast("Quiz not ready yet"); return;}
+  if(now < c.quiz_open){showToast(`Quiz opens in ${fmtShort(c.quiz_open-now)}`); return;}
+  if(now > c.quiz_expiry){showToast(`Quiz expired - tomorrow`); return;}
   location.href='./quiz_earn.html';
 };
 window.goArticles=()=>{
-  const c=getChain(); const now=Date.now();
-  if(!c.articles_open){showToast("Finish Watch first"); return;}
+  const c=getChain(); const now=Date.now(); const today=localDayKey();
+  if(c.quiz_finishedToday!==today && c.quiz_doneToday!==today){showToast("Finish Quiz first"); return;}
+  if(c.articles_finishedToday===today || c.articles_doneToday===today){showToast("Articles done today ✅"); return;}
+  if(!c.articles_open){showToast("Articles not ready yet"); return;}
   if(now < c.articles_open){showToast(`Articles in ${fmtShort(c.articles_open-now)}`); return;}
+  if(now > c.articles_expiry){showToast(`Articles expired - tomorrow`); return;}
   location.href='./articles_earn.html';
 };
 setInterval(evaluateChain,1000); evaluateChain();
