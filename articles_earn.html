@@ -25,11 +25,15 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
 .btn:disabled{opacity:.5}
 .lock-box{background:#fef3c7;border:2px solid #fbbf24;border-radius:14px;padding:14px;text-align:center;margin-top:10px}
 .bubble{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#000;padding:10px 18px;border-radius:999px;font-weight:900;z-index:10000;display:none}
+#fullLock{position:fixed;inset:0;background:#f5f3ff;z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;text-align:center}
+#adGate{position:fixed;inset:0;background:rgba(17,12,34,0.65);backdrop-filter:blur(8px);z-index:10001;display:none;align-items:center;justify-content:center;padding:20px}.gate-box{background:linear-gradient(180deg,#ffffff,#fbf7ff);border:2px solid #fbbf24;border-radius:24px;padding:22px 20px 18px;text-align:center;max-width:360px;width:100%;box-shadow:0 20px 50px rgba(109,40,217,0.35), 0 0 0 6px rgba(251,191,36,0.12);position:relative;overflow:hidden}.gate-box:before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#fbbf24,#f59e0b,#a78bfa)}.gate-icon{width:64px;height:64px;margin:0 auto 10px;background:linear-gradient(180deg,#fef3c7,#fbbf24);border:3px solid #f59e0b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px}.gate-title{font-weight:900;font-size:18px;color:#4c1d95}.gate-sub{font-size:12px;color:#6b7280;margin:8px 0 16px;line-height:1.4;font-weight:600}.gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #ede9fe;font-weight:900;font-size:14px;cursor:pointer}.gate-btn.watch{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 4px 0 #d97706, 0 8px 20px rgba(245,158,11,0.25);border-color:#f59e0b}.gate-btn.watch:disabled{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb;cursor:not-allowed}.gate-btn.continue{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #15803d, 0 8px 20px rgba(34,197,94,0.3);display:none;margin-top:10px}#gateTimer2{font-size:13px;font-weight:900;color:#92400e;margin-top:12px;background:#fffbeb;border:1.5px solid #fde68a;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
 </style>
 </head>
 <body>
 <div id="bubble" class="bubble"></div>
 <div class="top-bar"><a href="home.html" class="back-btn">‹</a><div class="center-pill">📰 Articles & Earn</div><div style="width:45px"></div></div>
+<div id="fullLock"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Articles Locked</h2><div id="fullLockMsg" style="font-weight:800;color:#6b7280">Finish Quiz first</div><button onclick="location.href='home.html'" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
+
 <main class="main-card">
 <section class="balance-box">
 <div style="color:#d1d5db;font-size:11px">Your Balance</div>
@@ -48,9 +52,60 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
 </section>
 </main>
 
+<div id="adGate"><div class="gate-box"><div class="gate-icon">📰</div><div class="gate-title">Unlock Coins</div><div id="gateSub" class="gate-sub">Watch clean ad 10s to collect</div><button id="watchAdBtn" class="gate-btn watch">▶️ Watch Ad (10s)</button><div id="gateTimer2"></div><button id="continueBtn" class="gate-btn continue">✅ Collect Coins</button><div style="font-size:9px;color:#9ca3af;margin-top:10px;font-weight:700">12273869 • Clean & safe • Better Ads</div></div></div>
+
 <script>
 (() => {
 "use strict";
+// ===== ARTICLES ZONE 12273869 CLEAN - 1 AD PER READ = SAFE =====
+let vignetteLoaded=false;
+function loadCleanVignette(){
+  if(vignetteLoaded) return;
+  vignetteLoaded=true;
+  const old=document.querySelector('script[src*="vignette.min.js"]');
+  if(old) old.remove();
+  (function(s){s.dataset.zone='12273869',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+  setTimeout(()=>{vignetteLoaded=false;}, 60*1000);
+}
+let pendingClaim=null;
+function openArticleAdGate(afterFn, reward){
+  const COOLDOWN=30*1000;
+  const last=parseInt(localStorage.getItem('articles_claim_last')||'0');
+  if(last && (Date.now()-last)<COOLDOWN){
+    if(afterFn) afterFn();
+    return;
+  }
+  pendingClaim=afterFn;
+  document.getElementById('gateSub').innerText='Watch clean ad 10s to collect +'+reward+' coins';
+  document.getElementById('adGate').style.display='flex';
+  document.getElementById('watchAdBtn').style.display='block';
+  document.getElementById('continueBtn').style.display='none';
+  document.getElementById('watchAdBtn').disabled=false;
+  document.getElementById('gateTimer2').innerText='';
+  document.getElementById('watchAdBtn').innerText='▶️ Watch Ad (10s)';
+}
+document.getElementById('watchAdBtn').onclick=function(){
+  this.innerText='⏳ Please wait...';this.disabled=true;
+  let sec=10; const timerEl=document.getElementById('gateTimer2');
+  timerEl.innerText='⏳ Wait '+sec+'s...';
+  const interval=setInterval(()=>{
+    sec--;
+    if(sec>0){timerEl.innerText='⏳ Wait '+sec+'s...';}
+    else{clearInterval(interval);
+      document.getElementById('watchAdBtn').style.display='none';
+      timerEl.innerText='✅ Unlocked!';
+      document.getElementById('continueBtn').style.display='block';
+    }
+  },1000);
+};
+document.getElementById('continueBtn').onclick=function(){
+  document.getElementById('adGate').style.display='none';
+  localStorage.setItem('articles_claim_last', String(Date.now()));
+  loadCleanVignette();
+  const fn=pendingClaim; pendingClaim=null;
+  if(fn) fn();
+};
+
 const ARTICLES = [
 {id:"a1",title:"How to Save Money Daily",text:"Saving money starts with small habits. Track your expenses, set a daily limit, and avoid impulse buying. Even 500 RWF a day becomes 15,000 RWF a month. Consistency is the key to financial freedom.",reward:2},
 {id:"a2",title:"Benefits of Reading",text:"Reading improves focus, vocabulary, and mental health. Just 10 minutes a day can reduce stress by 60%. Make reading part of your daily routine.",reward:2},
@@ -63,7 +118,7 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore();
 const el=id=>document.getElementById(id);
-const balEl=el("bal"), todayEl=el("today"), statusEl=el("status"), lockPanel=el("lockPanel"), lockMsg=el("lockMsg"), listEl=el("articlesList"), contentBox=el("contentBox");
+const balEl=el("bal"), todayEl=el("today"), statusEl=el("status"), lockPanel=el("lockPanel"), lockMsg=el("lockMsg"), listEl=el("articlesList"), contentBox=el("contentBox"), fullLock=el("fullLock"), fullLockMsg=el("fullLockMsg");
 let currentUser=null, balance=0, todayCount=0, readIds=[], unsubscribe=null, timer=null;
 
 function showBubble(m){const b=el("bubble");b.textContent=m;b.style.display="block";clearTimeout(showBubble.t);showBubble.t=setTimeout(()=>b.style.display="none",2200);}
@@ -72,92 +127,86 @@ function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}'
 function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c));}
 function formatRemaining(ms){if(ms<=0)return"0m";const h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);if(h>0)return `${h}h ${m}m`;if(m>0)return `${m}m ${s}s`;return `${s}s`;}
 
-// ADS REMOVED - will reset later
-// const ADS_BLOCK = ``;
+function onArticlesFinishedChain(){
+  const now=Date.now(), c=getChain(), today=localDayKey();
+  if(c.articles_finishedToday===today) return;
+  c.articles_finishedToday=today;
+  c.articles_doneToday=today;
+  c.watch_nextAvail=now+DAY_MS;
+  c.quiz_nextAvail=now+DAY_MS;
+  c.articles_nextAvail=now+DAY_MS;
+  saveChain(c);
+  if(currentUser) db.collection("users").doc(currentUser.uid).set({chain:{articles_finishedToday:today,articles_doneToday:today,watch_nextAvail:c.watch_nextAvail,quiz_nextAvail:c.quiz_nextAvail,articles_nextAvail:c.articles_nextAvail,updated:firebase.firestore.FieldValue.serverTimestamp()}},{merge:true});
+}
 
 function checkArticlesState(){
-  const c=getChain(), now=Date.now();
-  // not yet unlocked? Watch or Quiz still active
-  if(!c.articles_open && !c.quiz_skippedToday && !c.quiz_doneToday){
-    // if quiz still live, articles locked
-    if(c.quiz_open && c.quiz_expiry && now < c.quiz_expiry){
-      lockPanel.style.display="block"; contentBox.style.display="none";
-      lockMsg.textContent=`Opens after Quiz - ${formatRemaining(c.quiz_expiry - now)}`;
-      return true; // locked
-    }
-    if(!c.quiz_open){
-      lockPanel.style.display="block"; contentBox.style.display="none";
-      lockMsg.textContent=`Complete Watch & Quiz first`;
-      return true;
-    }
-  }
-  // Articles live window
-  if(c.articles_open && c.articles_expiry){
-    const diff = c.articles_expiry - now;
-    if(diff > 0){
-      lockPanel.style.display="none"; contentBox.style.display="block";
-      statusEl.textContent=`Live ${formatRemaining(diff)} • ${todayCount}/${DAILY_LIMIT}`;
-      if(timer) clearInterval(timer);
-      timer=setInterval(()=>{
-        const d=c.articles_expiry - Date.now();
-        if(d<=0){clearInterval(timer); onArticlesExpired(); checkArticlesState();}
-        else statusEl.textContent=`Live ${formatRemaining(d)} • ${todayCount}/${DAILY_LIMIT}`;
-      },1000);
-      return false; // open
-    } else {
-      onArticlesExpired();
-      return true;
-    }
-  }
-  // 24h lock
-  if(c.articles_nextAvail && now < c.articles_nextAvail){
-    lockPanel.style.display="block"; contentBox.style.display="none";
-    const diff=c.articles_nextAvail - now;
-    lockMsg.textContent=`Opens in ${formatRemaining(diff)}`;
-    if(timer) clearInterval(timer);
-    timer=setInterval(()=>{const d=c.articles_nextAvail - Date.now(); if(d<=0){clearInterval(timer); lockPanel.style.display="none"; contentBox.style.display="block";} else lockMsg.textContent=`Opens in ${formatRemaining(d)}`;},1000);
+  const c=getChain(), now=Date.now(), today=localDayKey();
+  if(c.quiz_finishedToday!==today && c.quiz_doneToday!==today){
+    fullLock.style.display="flex";
+    fullLockMsg.textContent="Finish Quiz first - Watch → Quiz → Articles";
+    lockPanel.style.display="none"; contentBox.style.display="none";
     return true;
   }
-  // first time open logic - if quiz done/skipped, open articles
-  if((c.quiz_doneToday || c.quiz_skippedToday) && !c.articles_open){
-    openArticlesNow();
-    return false;
+  if(c.articles_finishedToday===today){
+    fullLock.style.display="flex";
+    fullLockMsg.textContent="All done today ✅ Come back tomorrow";
+    lockPanel.style.display="none"; contentBox.style.display="none";
+    return true;
   }
+  if(!c.articles_open){
+    fullLock.style.display="flex";
+    fullLockMsg.textContent="Articles not ready yet";
+    lockPanel.style.display="none"; contentBox.style.display="none";
+    return true;
+  }
+  if(now < c.articles_open){
+    fullLock.style.display="flex";
+    fullLockMsg.textContent="Articles opens in "+formatRemaining(c.articles_open-now);
+    lockPanel.style.display="none"; contentBox.style.display="none";
+    return true;
+  }
+  if(now > c.articles_expiry){
+    onArticlesExpired();
+    return true;
+  }
+  fullLock.style.display="none";
+  lockPanel.style.display="none"; contentBox.style.display="block";
+  const diff=c.articles_expiry-now;
+  statusEl.textContent=`Live ${formatRemaining(diff)} • ${todayCount}/${DAILY_LIMIT}`;
+  if(timer) clearInterval(timer);
+  timer=setInterval(()=>{
+    const d=c.articles_expiry - Date.now();
+    if(d<=0){clearInterval(timer); onArticlesExpired();}
+    else statusEl.textContent=`Live ${formatRemaining(d)} • ${todayCount}/${DAILY_LIMIT}`;
+  },1000);
   return false;
 }
 
-function openArticlesNow(){
-  const now=Date.now(), c=getChain();
-  if(c.articles_open) return;
-  c.articles_open=now;
-  c.articles_expiry=now+WINDOW_MS;
-  c.articles_nextAvail=now+DAY_MS;
-  c.articles_doneToday=false;
-  saveChain(c);
-  if(currentUser) db.collection("users").doc(currentUser.uid).set({chain:{articles_open:now,articles_expiry:c.articles_expiry,updated:firebase.firestore.FieldValue.serverTimestamp()}},{merge:true});
-}
-
 function onArticlesExpired(){
-  const now=Date.now(), c=getChain();
-  if(c.articles_doneToday) return;
-  c.articles_open=null;
-  c.articles_expiry=null;
+  const now=Date.now(), c=getChain(), today=localDayKey();
+  if(c.articles_finishedToday===today) return;
+  c.articles_open=null; c.articles_expiry=null;
   c.articles_nextAvail=now+DAY_MS;
-  c.articles_doneToday=true;
   c.watch_nextAvail=now+DAY_MS;
   c.quiz_nextAvail=now+DAY_MS;
-  c.watch_finishedToday=localDayKey();
+  c.articles_finishedToday=today;
   saveChain(c);
-  lockPanel.style.display="block"; contentBox.style.display="none";
-  lockMsg.textContent=`Closed - Opens tomorrow`;
-  showBubble("Articles closed for today");
+  fullLock.style.display="flex";
+  fullLockMsg.textContent="Closed - Opens tomorrow";
+  lockPanel.style.display="none"; contentBox.style.display="none";
 }
 
 function renderArticles(){
   listEl.innerHTML="";
+  if(todayCount>=DAILY_LIMIT || readIds.length>=DAILY_LIMIT){
+    listEl.innerHTML=`<div class="article-box"><div class="article-title">🎉 All done for today</div><div class="article-text">You finished all articles. Come back tomorrow.</div></div>`;
+    if(todayCount>=DAILY_LIMIT) onArticlesFinishedChain();
+    return;
+  }
   const available=ARTICLES.filter(a=>!readIds.includes(a.id));
-  if(available.length===0 || todayCount>=DAILY_LIMIT){
-    listEl.innerHTML=`<div class="article-box"><div class="article-title">🎉 All done for today</div><div class="article-text">Come back tomorrow for new articles.</div></div>`;
+  if(available.length===0){
+    listEl.innerHTML=`<div class="article-box"><div class="article-title">🎉 All done</div></div>`;
+    onArticlesFinishedChain();
     return;
   }
   available.forEach(a=>{
@@ -167,8 +216,14 @@ function renderArticles(){
     listEl.appendChild(div);
   });
   listEl.querySelectorAll("button").forEach(btn=>{
-    btn.addEventListener("click",()=>claimArticle(btn.dataset.id, btn));
+    btn.addEventListener("click",()=>handleReadClick(btn.dataset.id, btn));
   });
+}
+
+function handleReadClick(id, btnEl){
+  const art=ARTICLES.find(a=>a.id===id);
+  if(!art) return;
+  openArticleAdGate(()=>{ claimArticle(id, btnEl); }, art.reward);
 }
 
 async function claimArticle(id, btnEl){
@@ -222,6 +277,7 @@ auth.onAuthStateChanged(user=>{
       renderArticles();
     }
   });
+  setInterval(checkArticlesState,1000);
 });
 })();
 </script>
