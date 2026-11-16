@@ -7,10 +7,11 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 .top h2{font-size:19px;color:#14532d;font-weight:900;text-align:center;width:100%}
 #headerText{font-size:20px;color:#4c1d95!important;font-weight:900}
 .scene{flex:1;position:relative;z-index:2;overflow:hidden;min-height:0}
-.monitor{position:absolute;left:4%;top:32%;width:44%;max-width:190px;height:172px;background:linear-gradient(135deg, #ffffff 0%, #FFF8F0 18%, #FFE9E3 100%);border:2px solid #fecaca;border-left:3.5px solid #ffffff;border-radius:18px;overflow:hidden;z-index:5;box-shadow:inset 5px 0 10px rgba(255,255,255,0.95),0 10px 22px rgba(0,0,0,0.20),0 3px 0 #fca5a5;display:flex;flex-direction:column}
+.monitor{position:absolute;left:4%;top:38%;width:44%;max-width:190px;height:172px;background:linear-gradient(135deg, #ffffff 0%, #FFF8F0 18%, #FFE9E3 100%);border:2px solid #fecaca;border-left:3.5px solid #ffffff;border-radius:18px;overflow:hidden;z-index:5;box-shadow:inset 5px 0 10px rgba(255,255,255,0.95),0 10px 22px rgba(0,0,0,0.20),0 3px 0 #fca5a5;display:flex;flex-direction:column}
 .screen{flex:1;padding:12px 8px 10px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:8px}
 .right-stack{position:absolute;right:2%;top:88px;width:64%;display:flex;flex-direction:column;gap:10px;align-items:flex-end;z-index:10}
-.r-item{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:12.5px;font-weight:900;color:#000;cursor:pointer;white-space:nowrap;height:48px;min-width:200px;max-width:100%;padding:0 12px 0 14px;border-radius:18px;border:none;outline:none;box-shadow:0 5px 12px rgba(0,0,0,0.16);position:relative}
+.r-item{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:12.5px;font-weight:900;color:#000;cursor:pointer;white-space:nowrap;height:46px;min-width:168px;max-width:100%;padding:0 12px 0 14px;border-radius:18px;border:none;outline:none;box-shadow:0 5px 12px rgba(0,0,0,0.16);position:relative}
+.r-item.wide{min-width:200px}
 .r-item.open{box-shadow:0 0 0 2.5px #22c55e, 0 5px 12px rgba(0,0,0,0.16)}
 .r1{background:#e3f2fd}.r2{background:#e8f5e9}.r3{background:#fff8e1}.r4{background:#f3e5f5}.r5{background:#e8f5e9}.r6{background:#f3e5f5}.r7{background:#fff3e0}
 .badge{font-size:10px;font-weight:900;padding:3px 7px;border-radius:10px;color:#fff;margin-left:4px;white-space:nowrap;flex-shrink:0}
@@ -35,9 +36,9 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 </div>
 </div></div>
 <div class="right-stack">
-<button class="r-item r1" id="btnWatch" onclick="goWatch()" type="button">Watch & Earn 📺</button>
-<button class="r-item r4" id="btnQuiz" onclick="goQuiz()" type="button">Quiz 🧠</button>
-<button class="r-item r6" id="btnArticles" onclick="goArticles()" type="button">Articles Earn 📖</button>
+<button class="r-item r1 wide" id="btnWatch" onclick="goWatch()" type="button">Watch & Earn 📺</button>
+<button class="r-item r4 wide" id="btnQuiz" onclick="goQuiz()" type="button">Quiz 🧠</button>
+<button class="r-item r6 wide" id="btnArticles" onclick="goArticles()" type="button">Articles Earn 📖</button>
 <button class="r-item r3" onclick="location.href='./bonus.html'" type="button">Bonus 🎁</button>
 <button class="r-item r2" onclick="location.href='./survey.html'" type="button">Surveys 📋</button>
 <button class="r-item r7" onclick="location.href='./referrals.html'" type="button">Refer & Earn 🤝</button>
@@ -91,10 +92,7 @@ function setBtnState(btn, state, countdownText){
 }
 function evaluateChain(){
   const c=getChain(); const now=Date.now(); const today=localDayKey();
-  
-  // --- WATCH --- highest priority: if done today and nextAvail future, show wait
   if(c.articles_finishedToday===today || c.articles_doneToday===today){
-    // full chain done today
     if(c.watch_nextAvail && now < c.watch_nextAvail){
       setBtnState(btnWatch,'wait', fmtShort(c.watch_nextAvail-now));
     } else {
@@ -104,7 +102,6 @@ function evaluateChain(){
     setBtnState(btnArticles,'done','');
     return;
   }
-
   if(c.watch_nextAvail && now < c.watch_nextAvail){
     setBtnState(btnWatch,'wait', fmtShort(c.watch_nextAvail-now));
   } else if(c.watch_finishedToday===today){
@@ -114,8 +111,6 @@ function evaluateChain(){
   } else {
     setBtnState(btnWatch,'open','');
   }
-
-  // --- QUIZ ---
   if(c.quiz_finishedToday===today || c.quiz_doneToday===today){
     setBtnState(btnQuiz,'done','');
   } else if(c.watch_finishedToday!==today){
@@ -129,8 +124,6 @@ function evaluateChain(){
   } else {
     setBtnState(btnQuiz,'locked','');
   }
-
-  // --- ARTICLES ---
   if(c.articles_finishedToday===today || c.articles_doneToday===today){
     setBtnState(btnArticles,'done','');
   } else if(c.quiz_finishedToday!==today && c.quiz_doneToday!==today){
@@ -145,7 +138,6 @@ function evaluateChain(){
     setBtnState(btnArticles,'locked','');
   }
 }
-
 window.goWatch=()=>{
   const c=getChain(); const now=Date.now(); const today=localDayKey();
   if(c.articles_finishedToday===today || c.articles_doneToday===today){
@@ -177,12 +169,6 @@ window.goArticles=()=>{
   if(now > c.articles_expiry){showToast(`Articles expired - tomorrow`); return;}
   location.href='./articles_earn.html';
 };
-
-// long press header to reset chain for testing (hold 3 sec)
-let pressTimer=null;
-document.getElementById('headerText').addEventListener('touchstart',()=>{pressTimer=setTimeout(()=>{if(confirm('Reset chain for testing?')){localStorage.removeItem('chain_v2'); location.reload();}},3000);});
-document.getElementById('headerText').addEventListener('touchend',()=>{clearTimeout(pressTimer);});
-
 setInterval(evaluateChain,1000); evaluateChain();
 </script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
