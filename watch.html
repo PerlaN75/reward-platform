@@ -20,7 +20,7 @@
 <script>
 (() => {
 "use strict";
-// ===== WATCH ZONE 12270633 — PROFITABLE 10x1 +5 BONUS =====
+// ===== WATCH ZONE 12270633 — INSTANT CHAIN =====
 let vignetteLoaded=false;
 function loadCleanVignette(){
   if(vignetteLoaded) return;
@@ -30,7 +30,7 @@ function loadCleanVignette(){
   (function(s){s.dataset.zone='12270633',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
   setTimeout(()=>{vignetteLoaded=false;}, 60*1000);
 }
-let pendingType="video"; // video or bonus
+let pendingType="video";
 function openClaimGate(type){
   pendingType=type;
   const isBonus=type==="bonus";
@@ -88,8 +88,8 @@ const VIDEOS = [
 {id:"video16",title:"Video 16",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video16.mp4"},
 {id:"video19",title:"Video 19",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video19.mp4"}
 ];
-// PROFITABLE VALUES: 1 coin per video + 5 bonus
-const REQUIRED_WATCH_SECONDS=35,COINS_PER_VIDEO=1,BONUS_REWARD=5,DAILY_LIMIT=10,WINDOW_MS=30*60*1000,GAP_MS=10*60*1000,DAY_MS=24*60*60*1000;
+// INSTANT VALUES
+const REQUIRED_WATCH_SECONDS=35,COINS_PER_VIDEO=1,BONUS_REWARD=5,DAILY_LIMIT=10,WINDOW_MS=30*60*1000,GAP_MS=0,DAY_MS=24*60*60*1000;
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
@@ -107,12 +107,13 @@ function formatRemaining(ms){if(ms<=0)return"0m";const h=Math.floor(ms/3600000),
 function onWatchFinishedChain(){
   const now=Date.now(),c=getChain();const today=localDayKey();if(c.watch_finishedToday===today)return;
   c.watch_finish=now;c.watch_nextAvail=now+DAY_MS;c.watch_finishedToday=today;
-  c.quiz_open=now + GAP_MS;c.quiz_expiry=c.quiz_open + WINDOW_MS;c.quiz_nextAvail=now+DAY_MS;
+  // INSTANT - quiz opens now
+  c.quiz_open=now;c.quiz_expiry=now + WINDOW_MS + 3600000;c.quiz_nextAvail=now+DAY_MS;
   c.quiz_doneToday=false;c.quiz_finishedToday=null;c.quiz_skippedToday=null;
   delete c.articles_open;delete c.articles_expiry;delete c.articles_doneToday;delete c.articles_finishedToday;
   c.watch_open=null;c.watch_expiry=null;saveChain(c);
   if(currentUser)db.collection("users").doc(currentUser.uid).set({chain:{watch_finish:now,watch_nextAvail:c.watch_nextAvail,watch_finishedToday:today,quiz_open:c.quiz_open,quiz_expiry:c.quiz_expiry,quiz_nextAvail:c.quiz_nextAvail,updated:firebase.firestore.FieldValue.serverTimestamp()}},{merge:true});
-  showBubble("Watch done! Quiz in 10min");
+  showBubble("Watch done! Quiz is open now");
 }
 function checkWatchLocked(){
   const c=getChain(),now=Date.now(),nextAvail=c.watch_nextAvail?Number(c.watch_nextAvail):0;
@@ -123,7 +124,7 @@ function checkWatchLocked(){
   }
   if(c.watch_open&&c.watch_expiry&&now>=c.watch_expiry&&c.watch_finishedToday!==localDayKey()){
     onWatchFinishedChain();
-    lockPanelEl.style.display="block";videoBoxEl.style.display="none";lockMsgEl.textContent=`Watch closed - Quiz in 10min`;return true;
+    lockPanelEl.style.display="block";videoBoxEl.style.display="none";lockMsgEl.textContent=`Watch finished - Quiz is open`;return true;
   }
   lockPanelEl.style.display="none";videoBoxEl.style.display="block";if(chainLockTimer)clearInterval(chainLockTimer);return false;
 }
@@ -133,16 +134,16 @@ function showSeeYouSoon(){
   titleEl.style.display="none";
   if(todayCount>=DAILY_LIMIT){
     if(!bonusClaimed){playerEl.innerHTML='<div class="placeholder">All 10 watched!<br><small>Claim +5 bonus below</small></div>';playerEl.appendChild(rewardCircle);bonusBox.style.display="block";}
-    else {playerEl.innerHTML='<div class="placeholder">See you soon<br><small>Quiz Live in 10min</small></div>';playerEl.appendChild(rewardCircle);bonusBox.style.display="none"; onWatchFinishedChain();}
+    else {playerEl.innerHTML='<div class="placeholder">✅ Watch done!<br><small>Go do Quiz now → Open</small></div>';playerEl.appendChild(rewardCircle);bonusBox.style.display="none"; onWatchFinishedChain();}
   } else {
-    playerEl.innerHTML='<div class="placeholder">See you soon<br><small>Quiz Live in 10min</small></div>';playerEl.appendChild(rewardCircle);
+    playerEl.innerHTML='<div class="placeholder">✅ Watch done!<br><small>Quiz is open now</small></div>';playerEl.appendChild(rewardCircle);
   }
   controlsEl.style.display="none";
 }
 function updateUI(){
   if(checkWatchLocked())return;
   balanceEl.textContent=`${balance} 🪙 coins`;todayEl.textContent=`${Math.min(todayCount,DAILY_LIMIT)}/${DAILY_LIMIT}`;bonusTxt.textContent=bonusClaimed?`Claimed`:(todayCount>=DAILY_LIMIT?`Ready`:`${todayCount}/10`);
-  if(todayCount>=DAILY_LIMIT||watchedVideoIds.length>=DAILY_LIMIT){statusEl.textContent=bonusClaimed? "🎉 All done! Quiz in 10min":"Bonus ready! Claim below";showSeeYouSoon();return;}
+  if(todayCount>=DAILY_LIMIT||watchedVideoIds.length>=DAILY_LIMIT){statusEl.textContent=bonusClaimed? "🎉 All done! Quiz is open":"Bonus ready! Claim below";showSeeYouSoon();return;}
   statusEl.textContent=`Watched ${Math.floor(watchedSeconds)}/${REQUIRED_WATCH_SECONDS}s • ${todayCount}/10 • +1 per video +5 bonus`;
   controlsEl.style.display="flex";titleEl.style.display="block";bonusBox.style.display="none";
   if(!videoElement){startBtn.hidden=false;startBtn.textContent="Start watching";startBtn.disabled=false;nextBtn.hidden=false;}
