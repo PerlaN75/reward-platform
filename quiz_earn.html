@@ -37,6 +37,7 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 #entryGate{position:fixed;inset:0;background:linear-gradient(180deg,#ffffff,#f5f3ff);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;text-align:center}
 #gateTimer{width:74px;height:74px;border-radius:50%;background:linear-gradient(180deg,#ffffff,#ede9fe);border:3px solid #a78bfa;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#f59e0b;margin:14px auto;box-shadow:0 4px 12px rgba(167,139,250,0.3)}
 #adGate{position:fixed;inset:0;background:rgba(17,12,34,0.65);backdrop-filter:blur(8px);z-index:10001;display:none;align-items:center;justify-content:center;padding:20px}.gate-box{background:linear-gradient(180deg,#ffffff,#fbf7ff);border:2px solid #fbbf24;border-radius:24px;padding:22px 20px 18px;text-align:center;max-width:360px;width:100%;box-shadow:0 20px 50px rgba(109,40,217,0.35), 0 0 0 6px rgba(251,191,36,0.12);position:relative;overflow:hidden}.gate-box:before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#fbbf24,#f59e0b,#a78bfa)}.gate-icon{width:64px;height:64px;margin:0 auto 10px;background:linear-gradient(180deg,#fef3c7,#fbbf24);border:3px solid #f59e0b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px}.gate-title{font-weight:900;font-size:18px;color:#4c1d95}.gate-sub{font-size:12px;color:#6b7280;margin:8px 0 16px;line-height:1.4;font-weight:600}.gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #ede9fe;font-weight:900;font-size:14px;cursor:pointer}.gate-btn.watch{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 4px 0 #d97706, 0 8px 20px rgba(245,158,11,0.25);border-color:#f59e0b}.gate-btn.watch:disabled{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb;cursor:not-allowed}.gate-btn.continue{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #15803d, 0 8px 20px rgba(34,197,94,0.3);display:none;margin-top:10px}#gateTimer2{font-size:13px;font-weight:900;color:#92400e;margin-top:12px;background:#fffbeb;border:1.5px solid #fde68a;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
+#lockPanel{position:fixed;inset:0;background:#f5f3ff;z-index:9998;display:none;align-items:center;justify-content:center;padding:20px;text-align:center}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
@@ -47,6 +48,7 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 <div id="backBtn" onclick="location.href='home.html'">‹</div>
 <div class="top-bar"><div class="center-pill">🧠 Quiz Earn</div></div>
 <div id="toast"></div>
+<div id="lockPanel"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Quiz Locked</h2><div id="lockMsg" style="font-weight:800;color:#6b7280">Finish Watch first</div><button onclick="location.href='home.html'" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
 
 <div id="entryGate">
   <div style="font-size:42px">🧠</div>
@@ -77,6 +79,7 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 <script>
 (() => {
 "use strict";
+// ===== MONETAG ZONE 12270885 SAFE =====
 let vignetteLoaded=false;
 function loadCleanVignette(){
   if(vignetteLoaded) return;
@@ -117,8 +120,41 @@ document.getElementById('continueBtn').onclick=function(){
   const fn=pendingClaimFn; pendingClaimFn=null;
   if(fn) fn();
 };
+// entry gate
 let gateSec=10;const gateTimerEl=document.getElementById('gateTimer');const gateInt=setInterval(()=>{gateSec--; if(gateTimerEl) gateTimerEl.innerText=gateSec; if(gateSec<=0){ clearInterval(gateInt); const g=document.getElementById('entryGate'); if(g) g.remove(); }},1000);
+
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};firebase.initializeApp(firebaseConfig);try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}const auth=firebase.auth(),db=firebase.firestore();
+
+// ===== FIXED CHAIN LOGIC =====
+function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}')}catch(e){return {}}}
+function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c))}
+function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
+const WINDOW_MS=30*60*1000,GAP_MS=10*60*1000;
+function onQuizFinishedChain(){
+  const now=Date.now(), c=getChain(), today=localDayKey();
+  if(c.quiz_finishedToday===today) return;
+  c.quiz_finishedToday=today; c.quiz_doneToday=today;
+  c.articles_open=now + GAP_MS;
+  c.articles_expiry=c.articles_open + WINDOW_MS;
+  delete c.articles_doneToday; delete c.articles_finishedToday;
+  saveChain(c);
+  if(window.currentUser) db.collection("users").doc(window.currentUser.uid).set({chain:{quiz_finishedToday:today,quiz_doneToday:today,articles_open:c.articles_open,articles_expiry:c.articles_expiry,updated:firebase.firestore.FieldValue.serverTimestamp()}},{merge:true});
+}
+function checkQuizLock(){
+  const c=getChain(), now=Date.now(), today=localDayKey();
+  const lockPanel=document.getElementById('lockPanel');
+  const msg=document.getElementById('lockMsg');
+  if(!lockPanel) return false;
+  if(c.watch_finishedToday!==today){
+    lockPanel.style.display='flex'; msg.innerText='Finish Watch first - Watch → Quiz → Articles'; return true;
+  }
+  if(!c.quiz_open){ lockPanel.style.display='flex'; msg.innerText='Quiz not ready'; return true; }
+  if(now < c.quiz_open){ lockPanel.style.display='flex'; msg.innerText='Quiz opens in '+Math.ceil((c.quiz_open-now)/60000)+'m'; return true; }
+  if(now > c.quiz_expiry){ lockPanel.style.display='flex'; msg.innerText='Quiz expired - come back tomorrow'; return true; }
+  if(c.quiz_finishedToday===today || c.quiz_doneToday===today){ lockPanel.style.display='flex'; msg.innerText='Quiz done today ✅ - Articles in 10min'; return true; }
+  lockPanel.style.display='none'; return false;
+}
+
 const FULL_POOL=[
 {q:"What is Bitcoin?",opts:["A digital currency","A phone brand","A car"],ans:0},
 {q:"1 USDT equals?",opts:["$1","$10","100 RWF"],ans:0},
@@ -178,6 +214,7 @@ function quizHTML(cfg,isDone,rem){
   return `<div class="quiz-card ${cfg.tier}"><div class="quiz-title">${cfg.id+1}. ${cfg.q}</div><div class="quiz-meta">⏱ ${cfg.sec}s • +${cfg.reward} 🪙 • ${cfg.tier}</div><div style="margin-top:8px;text-align:right"><button class="btn ${btnCls}" onclick="startAd(${cfg.id})" ${dis?'disabled':''}>${btnTxt}</button></div></div>`;
 }
 function render(){
+  if(checkQuizLock()) return;
   document.getElementById('totalPtsBadge').innerText="Total Today: "+total+" 🪙 Coins";
   document.getElementById('countText').innerText=done.length+"/10 done - Resets midnight";
   document.getElementById('progBar').style.width=(done.length*10)+'%';
@@ -193,7 +230,7 @@ function render(){
   } else { bonusBtn.style.display='none'; }
   if(rem>0) setTimeout(render,1000);
 }
-window.startAd=function(i){if(done.includes(i)) return; if(isClaiming) return;const nowSec=Date.now()/1000; if(nowSec<nextAllowed){ showToast("Wait "+Math.ceil(nextAllowed-nowSec)+"s"); return; }let cfg=tasksConfig[i]; cur=i; sec=cfg.sec; visViolated=false; answered=false;
+window.startAd=function(i){if(done.includes(i)) return; if(isClaiming) return;if(checkQuizLock()) return;const nowSec=Date.now()/1000; if(nowSec<nextAllowed){ showToast("Wait "+Math.ceil(nextAllowed-nowSec)+"s"); return; }let cfg=tasksConfig[i]; cur=i; sec=cfg.sec; visViolated=false; answered=false;
 document.getElementById('timerNum').innerText=sec;document.getElementById('modalTitle').innerText='Quiz '+(i+1)+' - '+cfg.tier;document.getElementById('quizQ').innerText=cfg.q;
 let optsHtml=''; cfg.opts.forEach((op,idx)=>{ optsHtml+=`<button class="opt" id="opt${idx}" onclick="checkAns(${idx})">${op}</button>`; }); document.getElementById('quizOpts').innerHTML=optsHtml;
 document.getElementById('distractPhase').innerText='Answer correctly to earn '+cfg.reward+' coins';document.getElementById('timerModal').style.display='flex';
@@ -205,11 +242,11 @@ window.checkAns=function(idx){
  document.getElementById('distractPhase').innerText=isCorrect?'Correct! Unlocking...':'Wrong answer - try next quiz';
  setTimeout(async()=>{ clearInterval(tmr); document.getElementById('timerModal').style.display='none'; if(visViolated){ showToast('Canceled - stay on page'); answered=false; return; } if(isCorrect){ openQuizAdGate(()=>{claimAd();}, cfg.reward); } else { showToast('Wrong answer, no coins but try again later'); answered=false; } },1200);
 }
-window.startBonus=function(){if(bonusClaimed) return; if(done.length<10) return showToast('Complete 10 first');if(isClaiming) return; const nowSec=Date.now()/1000; if(nowSec<nextAllowed){ showToast("Wait "+Math.ceil(nextAllowed-nowSec)+"s"); return; }sec=BONUS_SEC; visViolated=false;document.getElementById('timerNum').innerText=sec;document.getElementById('modalTitle').innerText='🎁 Bonus 2 Coins';document.getElementById('quizQ').innerText='Bonus: What is 3000 coins worth?';document.getElementById('quizOpts').innerHTML='<button class="opt" onclick="claimBonusGate()">$1.5 - Click to claim</button>';document.getElementById('distractPhase').innerText='Bonus • Keep open';document.getElementById('timerModal').style.display='flex';tmr=setInterval(()=>{if(document.hidden){ visViolated=true; }sec--; document.getElementById('timerNum').innerText=sec;if(sec<=0){ clearInterval(tmr); document.getElementById('timerModal').style.display='none'; }},1000);}
+window.startBonus=function(){if(bonusClaimed) return; if(done.length<10) return showToast('Complete 10 first');if(isClaiming) return; if(checkQuizLock()) return;const nowSec=Date.now()/1000; if(nowSec<nextAllowed){ showToast("Wait "+Math.ceil(nextAllowed-nowSec)+"s"); return; }sec=BONUS_SEC; visViolated=false;document.getElementById('timerNum').innerText=sec;document.getElementById('modalTitle').innerText='🎁 Bonus 2 Coins';document.getElementById('quizQ').innerText='Bonus: What is 3000 coins worth?';document.getElementById('quizOpts').innerHTML='<button class="opt" onclick="claimBonusGate()">$1.5 - Click to claim</button>';document.getElementById('distractPhase').innerText='Bonus • Keep open';document.getElementById('timerModal').style.display='flex';tmr=setInterval(()=>{if(document.hidden){ visViolated=true; }sec--; document.getElementById('timerNum').innerText=sec;if(sec<=0){ clearInterval(tmr); document.getElementById('timerModal').style.display='none'; }},1000);}
 window.claimBonusGate=function(){ clearInterval(tmr); document.getElementById('timerModal').style.display='none'; if(visViolated){ showToast('Canceled'); return; } openQuizAdGate(()=>{claimBonus();}, BONUS_REWARD); }
-async function claimAd(){if(isClaiming) return; isClaiming=true;if(done.includes(cur)){isClaiming=false; return;}let cfg=tasksConfig[cur]; if(done.length>=10){isClaiming=false; return;}done=[...new Set([...done,cur])]; total+=cfg.reward; saveLocal();nextAllowed=Date.now()/1000+COOLDOWN_AFTER; render();try{await db.collection('users').doc(currentUser.uid).set({balance: firebase.firestore.FieldValue.increment(cfg.reward),coins: firebase.firestore.FieldValue.increment(cfg.reward),points: firebase.firestore.FieldValue.increment(cfg.reward),lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),quizEarn_date: getToday(), quizEarn_done: done, quizEarn_total: total},{merge:true});showToast("✓ +"+cfg.reward+" 🪙 added!");}catch(e){ showToast(e.message); done=done.filter(x=>x!==cur); total-=cfg.reward; saveLocal(); render(); }isClaiming=false; answered=false;}
-async function claimBonus(){if(isClaiming) return; isClaiming=true;if(bonusClaimed){isClaiming=false; return;}bonusClaimed=true; total+=BONUS_REWARD; saveLocal();nextAllowed=Date.now()/1000+COOLDOWN_AFTER; render();try{await db.collection('users').doc(currentUser.uid).set({balance: firebase.firestore.FieldValue.increment(BONUS_REWARD),coins: firebase.firestore.FieldValue.increment(BONUS_REWARD),points: firebase.firestore.FieldValue.increment(BONUS_REWARD),lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),quizEarn_bonus: getToday(), quizEarn_date: getToday(), quizEarn_done: done, quizEarn_total: total},{merge:true});showToast("🎁 Bonus +"+BONUS_REWARD+" 🪙 added!");}catch(e){ showToast(e.message); bonusClaimed=false; total-=BONUS_REWARD; saveLocal(); render(); }isClaiming=false;}
-auth.onAuthStateChanged(async u=>{if(!u){location.href='./index.html';return;} currentUser=u;try{const doc=await db.collection('users').doc(u.uid).get();if(doc.exists){userData=doc.data(); const today=getToday(); const fbDate=userData.quizEarn_date||'';if(fbDate!==today && fbDate!==''){ done=[]; total=0; bonusClaimed=false; saveLocal();tasksConfig=getTodayPool();await db.collection('users').doc(u.uid).set({quizEarn_date:today,quizEarn_done:[],quizEarn_total:0,quizEarn_bonus:firebase.firestore.FieldValue.delete()},{merge:true});} else if(fbDate===today){const fbDone=userData.quizEarn_done||[]; done=[...new Set(fbDone)].filter(x=>x>=0&&x<=9); total=userData.quizEarn_total||0; bonusClaimed=(userData.quizEarn_bonus===today);let real=0; done.forEach(id=>{const c=tasksConfig.find(t=>t.id===id); if(c) real+=c.reward}); if(bonusClaimed) real+=BONUS_REWARD; if(total!==real && total<50) total=real; saveLocal();}}}catch(e){}render();});render();
+async function claimAd(){if(isClaiming) return; isClaiming=true;if(done.includes(cur)){isClaiming=false; return;}let cfg=tasksConfig[cur]; if(done.length>=10){isClaiming=false; return;}done=[...new Set([...done,cur])]; total+=cfg.reward; saveLocal();nextAllowed=Date.now()/1000+COOLDOWN_AFTER; render();try{await db.collection('users').doc(currentUser.uid).set({balance: firebase.firestore.FieldValue.increment(cfg.reward),coins: firebase.firestore.FieldValue.increment(cfg.reward),points: firebase.firestore.FieldValue.increment(cfg.reward),lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),quizEarn_date: getToday(), quizEarn_done: done, quizEarn_total: total},{merge:true});showToast("✓ +"+cfg.reward+" 🪙 added!"); if(done.length>=10){ onQuizFinishedChain(); showToast("All 10 done! Articles in 10min"); }}catch(e){ showToast(e.message); done=done.filter(x=>x!==cur); total-=cfg.reward; saveLocal(); render(); }isClaiming=false; answered=false;}
+async function claimBonus(){if(isClaiming) return; isClaiming=true;if(bonusClaimed){isClaiming=false; return;}bonusClaimed=true; total+=BONUS_REWARD; saveLocal();nextAllowed=Date.now()/1000+COOLDOWN_AFTER; render();try{await db.collection('users').doc(currentUser.uid).set({balance: firebase.firestore.FieldValue.increment(BONUS_REWARD),coins: firebase.firestore.FieldValue.increment(BONUS_REWARD),points: firebase.firestore.FieldValue.increment(BONUS_REWARD),lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),quizEarn_bonus: getToday(), quizEarn_date: getToday(), quizEarn_done: done, quizEarn_total: total},{merge:true});showToast("🎁 Bonus +"+BONUS_REWARD+" 🪙 added!"); onQuizFinishedChain();}catch(e){ showToast(e.message); bonusClaimed=false; total-=BONUS_REWARD; saveLocal(); render(); }isClaiming=false;}
+auth.onAuthStateChanged(async u=>{if(!u){location.href='./index.html';return;} currentUser=u; window.currentUser=u;try{const doc=await db.collection('users').doc(u.uid).get();if(doc.exists){userData=doc.data(); const today=getToday(); const fbDate=userData.quizEarn_date||'';if(fbDate!==today && fbDate!==''){ done=[]; total=0; bonusClaimed=false; saveLocal();tasksConfig=getTodayPool();await db.collection('users').doc(u.uid).set({quizEarn_date:today,quizEarn_done:[],quizEarn_total:0,quizEarn_bonus:firebase.firestore.FieldValue.delete()},{merge:true});} else if(fbDate===today){const fbDone=userData.quizEarn_done||[]; done=[...new Set(fbDone)].filter(x=>x>=0&&x<=9); total=userData.quizEarn_total||0; bonusClaimed=(userData.quizEarn_bonus===today);let real=0; done.forEach(id=>{const c=tasksConfig.find(t=>t.id===id); if(c) real+=c.reward}); if(bonusClaimed) real+=BONUS_REWARD; if(total!==real && total<50) total=real; saveLocal();} if(userData.chain){ const local=getChain(); let changed=false; for(let k in userData.chain){ if(userData.chain[k]&&!local[k]){local[k]=userData.chain[k];changed=true;}} if(changed) saveChain(local);}}}catch(e){}render(); checkQuizLock();});render(); setInterval(checkQuizLock,1000);
 })();
 </script>
 </body>
