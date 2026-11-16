@@ -22,13 +22,9 @@ body{background:#f5f3ff;min-height:100vh;color:#111827}
 .card{background:#ffffff;border:2px solid #ede9fe;border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;box-shadow:0 4px 12px rgba(109,40,217,0.06);transition:0.2s;position:relative;overflow:hidden}
 .card:active{transform:scale(0.97)}
 .card.free{border-color:#22c55e}.card.coins{border-color:#ede9fe}
-.card.news{border-color:#fbbf24;background:linear-gradient(180deg,#ffffff,#fffbeb);box-shadow:0 0 0 2px rgba(251,191,36,0.15), 0 4px 12px rgba(109,40,217,0.06)}
-.card.news:after{content:'NEW';position:absolute;top:6px;right:6px;background:#ef4444;color:#fff;font-size:7px;font-weight:900;padding:2px 6px;border-radius:99px;animation:pulse 1.5s infinite}
-@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
 .emoji{font-size:28px}.name{font-weight:900;font-size:12px;color:#111827}.sub{font-size:10px;color:#6b7280;margin-top:2px}
 .badge{display:inline-block;margin-top:6px;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:900;border:1.5px solid}
 .badge.free{background:#dcfce7;color:#166534;border-color:#86efac}.badge.coins{background:#fef3c7;color:#92400e;border-color:#fbbf24}
-.badge.news{background:#fbbf24;color:#000;border-color:#f59e0b;animation:pulse 1.5s infinite}
 #toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#ffffff;color:#4c1d95;padding:14px 20px;border-radius:14px;font-weight:900;font-size:13px;z-index:99999;display:none;border:2px solid #ede9fe;box-shadow:0 8px 24px rgba(109,40,217,0.15);text-align:center;max-width:90%}
 
 /* GATE */
@@ -43,17 +39,6 @@ body{background:#f5f3ff;min-height:100vh;color:#111827}
 .gate-btn.watch:disabled{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb;cursor:not-allowed}
 .gate-btn.continue{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #15803d, 0 8px 20px rgba(34,197,94,0.3);display:none;margin-top:10px}
 #gateTimer{font-size:13px;font-weight:900;color:#92400e;margin-top:12px;background:#fffbeb;border:1.5px solid #fde68a;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
-
-/* NEWS FOLDER - PHONE FOLDER STYLE */
-#newsModal{position:fixed;inset:0;background:#f5f3ff;z-index:99998;display:none;flex-direction:column}
-#newsHeader{background:#6d28d9;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;color:#fff;flex-shrink:0}
-#newsContent{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:12px;max-width:500px;margin:0 auto;width:100%}
-.news-item{background:#fff;border:2px solid #ede9fe;border-radius:18px;padding:12px;overflow:hidden;box-shadow:0 4px 12px rgba(109,40,217,0.06)}
-.news-item .t{font-weight:900;font-size:14px;color:#4c1d95}
-.news-item .c{font-size:12.5px;color:#374151;margin-top:6px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
-.news-item img{width:100%;max-height:380px;object-fit:contain;border-radius:12px;margin-top:10px;border:1px solid #ede9fe;background:#f9fafb}
-.news-item .date{font-size:9px;color:#9ca3af;margin-top:8px;font-weight:700}
-.news-item .linkBtn{margin-top:10px;width:100%;padding:10px;border-radius:12px;border:none;background:linear-gradient(90deg,#6d28d9,#8b5cf6);color:#fff;font-weight:900;font-size:12px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -62,12 +47,6 @@ body{background:#f5f3ff;min-height:100vh;color:#111827}
 <div class="container">
 <div class="balance-card"><div><b id="balCoins">0 coins</b><div style="font-size:10px;color:#9ca3af">≈ $<span id="balUsd">0</span></div></div><div style="width:1px;background:#2a3a1a"></div><div><div class="usdt" id="balUsdt">0 USDT</div><div style="font-size:10px;color:#9ca3af">Withdrawable</div></div></div>
 <div class="grid" id="grid"></div>
-</div>
-
-<!-- NEWS MODAL -->
-<div id="newsModal">
-  <div id="newsHeader"><h3>📰 News</h3><button onclick="closeNews()" style="width:36px;height:36px;background:#fff;border-radius:10px;border:none;font-weight:900;color:#6d28d9;cursor:pointer">✕</button></div>
-  <div id="newsContent"><div style="text-align:center;padding:40px;color:#9ca3af;font-weight:700">Loading news...</div></div>
 </div>
 
 <div id="adGate"><div class="gate-box"><div class="gate-icon" id="gateIcon">🪙</div><div id="gateTitle" class="gate-title"></div><div id="gateSub" class="gate-sub"></div><button id="watchAdBtn" class="gate-btn watch"></button><div id="gateTimer"></div><button id="continueBtn" class="gate-btn continue">✅ Continue</button><div style="font-size:9px;color:#9ca3af;margin-top:10px;font-weight:700">Clean & safe ads • Better Ads Standards • 12268552</div></div></div>
@@ -93,7 +72,6 @@ let cachedUser=null;
 const OFFERS=[
   {id:'bnb_faucet', emoji:'💧', name:'BNB Faucet', sub:'FREE BNB hourly', link:'https://bnbpick.io/?ref=SilasN75', type:'free'},
   {id:'telegram_join', emoji:'✈️', name:'Telegram', sub:'Daily bonus', link:'https://t.me/formrw_earning', type:'free'},
-  {id:'news', emoji:'📰', name:'News', sub:'Updates & screenshots', link:'', type:'news'},
   {id:'play_game', emoji:'🎮', name:'Play Game', sub:'Games upload soon', link:'', type:'play'},
   {id:'install_app', emoji:'📲', name:'Install App', sub:'Apps available soon', link:'', type:'install'},
 ];
@@ -103,33 +81,17 @@ function renderInstant(){
   OFFERS.forEach(o=>{
     let cls='coins', badge='SOON + AD';
     if(o.type==='free'){cls='free'; badge='FREE + AD';}
-    if(o.type==='news'){cls='news'; badge='0 NEW • OPEN';}
-    const idAttr=o.id==='news'?'id="newsCardBadge"':'';
-    grid.innerHTML+='<div class="card '+cls+'" onclick="clickOffer(\''+o.id+'\')"><div class="emoji">'+o.emoji+'</div><div class="name">'+o.name+'</div><div class="sub">'+o.sub+'</div><div class="badge '+cls+'" '+idAttr+'>'+badge+'</div></div>';
+    grid.innerHTML+='<div class="card '+cls+'" onclick="clickOffer(\''+o.id+'\')"><div class="emoji">'+o.emoji+'</div><div class="name">'+o.name+'</div><div class="sub">'+o.sub+'</div><div class="badge '+cls+'">'+badge+'</div></div>';
   });
 }
 
-let pendingOffer=null, pendingUrl=null;
+let pendingOffer=null;
 
 function clickOffer(id){
   const o=OFFERS.find(x=>x.id===id);if(!cachedUser||!o) return;
   const COOLDOWN=3*60*1000;
   const last=parseInt(localStorage.getItem('offer_'+o.id+'_last')||'0');
   pendingOffer=o;
-
-  // NEWS HAS NO COOLDOWN FOR FIRST OPEN, BUT AD ALWAYS
-  if(o.type==='news'){
-    document.getElementById('adGate').style.display='flex';
-    document.getElementById('watchAdBtn').style.display='block';
-    document.getElementById('continueBtn').style.display='none';
-    document.getElementById('watchAdBtn').disabled=false;
-    document.getElementById('gateTimer').innerText='';
-    document.getElementById('gateIcon').innerText='📰';
-    document.getElementById('gateTitle').innerText='📰 Unlock News';
-    document.getElementById('gateSub').innerText='Watch clean ad 10s to see latest updates, screenshots & links';
-    document.getElementById('watchAdBtn').innerText='▶️ Watch Ad (10s)';
-    return;
-  }
 
   if(last && (Date.now()-last)<COOLDOWN){
     if(o.type==='free' && o.link){ window.open(o.link,'_blank'); }
@@ -185,10 +147,7 @@ document.getElementById('continueBtn').onclick=function(){
   loadCleanVignette();
   localStorage.setItem('offer_'+o.id+'_last', String(Date.now()));
 
-  if(o.type==='news'){
-    document.getElementById('newsModal').style.display='flex';
-    loadNews();
-  }else if(o.type==='free' && o.link){
+  if(o.type==='free' && o.link){
     window.open(o.link,'_blank');
     showToast('✅ '+o.name+' unlocked!');
   }else if(o.type==='play'){
@@ -198,54 +157,6 @@ document.getElementById('continueBtn').onclick=function(){
   }
   pendingOffer=null;
 };
-
-// ===== NEWS LOGIC - TEXT + PHOTOS + LINKS =====
-function closeNews(){ document.getElementById('newsModal').style.display='none'; }
-
-async function loadNews(){
-  const cont=document.getElementById('newsContent');
-  cont.innerHTML='<div style="text-align:center;padding:20px;color:#9ca3af">Loading news...</div>';
-  try{
-    // Try orderBy date desc, fallback without orderBy
-    let snap;
-    try{
-      snap=await db.collection('news_folder').where('active','==',true).orderBy('date','desc').limit(30).get();
-    }catch(e){
-      snap=await db.collection('news_folder').where('active','==',true).get();
-    }
-    const countEl=document.getElementById('newsCardBadge');
-    if(countEl) countEl.innerText=snap.size+' NEW • OPEN';
-
-    if(snap.empty){
-      cont.innerHTML='<div style="text-align:center;padding:40px"><div style="font-size:40px">📰</div><div style="font-weight:900;color:#4c1d95;margin-top:10px">No news yet</div><div style="font-size:11px;color:#9ca3af;margin-top:8px;line-height:1.5">To add news:<br>Firebase → Firestore → Create collection<br><b>news_folder</b><br><br>Fields:<br>title (text)<br>content (long text)<br>imageUrl (screenshot link)<br>url (link)<br>active = true<br>date = now</div></div>';
-      return;
-    }
-    cont.innerHTML='';
-    snap.forEach(doc=>{
-      const d=doc.data();
-      const div=document.createElement('div');
-      div.className='news-item';
-      const dateStr=d.date && d.date.toDate ? d.date.toDate().toLocaleDateString() : (d.date? new Date(d.date.seconds*1000).toLocaleDateString() : '');
-      div.innerHTML=`
-        <div class="t">${d.title||'News'}</div>
-        ${d.content?`<div class="c">${escapeHtml(d.content)}</div>`:''}
-        ${d.imageUrl?`<img src="${d.imageUrl}" loading="lazy" onerror="this.style.display='none'">`:''}
-        ${d.url?`<button class="linkBtn" data-url="${d.url}">🔗 Open Link</button>`:''}
-        <div class="date">${dateStr}</div>
-      `;
-      cont.appendChild(div);
-      const btn=div.querySelector('.linkBtn');
-      if(btn){
-        btn.onclick=(e)=>{ e.stopPropagation(); const url=btn.getAttribute('data-url'); if(url) window.open(url,'_blank'); };
-      }
-    });
-  }catch(e){
-    cont.innerHTML='<div style="padding:20px;color:#ef4444;font-size:12px">Error: '+e.message+'<br><br>Create collection <b>news_folder</b> with field active=true</div>';
-  }
-}
-function escapeHtml(text){
-  const div=document.createElement('div'); div.textContent=text; return div.innerHTML;
-}
 
 function loadBalance(){
   const c=JSON.parse(localStorage.getItem('userData')||'{}');
@@ -265,11 +176,6 @@ auth.onAuthStateChanged(u=>{
   cachedUser=u;
   renderInstant();
   loadBalance();
-  // Live news count
-  db.collection('news_folder').where('active','==',true).onSnapshot(s=>{
-    const el=document.getElementById('newsCardBadge');
-    if(el) el.innerText=s.size+' NEW • OPEN';
-  });
 });
 </script>
 </body>
