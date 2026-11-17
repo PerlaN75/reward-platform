@@ -21,13 +21,13 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;ove
 .bottom button{background:none;border:none;outline:none;display:flex;align-items:center;gap:4px;font-size:12.5px;font-weight:900;cursor:pointer;padding:6px 8px;border-radius:10px;position:relative}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:10px 14px;border-radius:10px;font-weight:bold;z-index:99999;display:none;max-width:90%;text-align:center}
 #maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
-/* GOOGLE PULL SPIN - CLEAR SLOW */
+/* ARROW SPIN 1s */
 #pullRef{position:absolute;top:0;left:50%;transform:translateX(-50%) translateY(-60px);z-index:100;width:48px;height:48px;background:#ffffff;border-radius:50%;box-shadow:0 4px 16px rgba(0,0,0,0.22);display:flex;align-items:center;justify-content:center;transition:transform 0.25s ease;pointer-events:none}
 #pullRef.show{transform:translateX(-50%) translateY(14px)}
 #pullRef.loading{transform:translateX(-50%) translateY(14px)}
-.spin{width:26px;height:26px;border:3px solid #e5e7eb;border-top-color:#16a34a;border-radius:50%;animation:spin 1.2s linear infinite;display:block}
-@keyframes spin{to{transform:rotate(360deg)}}
-#pullIcon{font-size:26px;color:#16a34a;font-weight:900;line-height:1;display:flex;align-items:center;justify-content:center}
+#pullIcon{font-size:28px;color:#16a34a;font-weight:900;line-height:1;display:flex;align-items:center;justify-content:center}
+#pullIcon.spin-arrow{animation:spinArrow 1s linear infinite}
+@keyframes spinArrow{to{transform:rotate(360deg)}}
 </style></head><body>
 <div id="maint"><div><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900">Back</button></div></div>
 <div id="toast"></div>
@@ -113,7 +113,7 @@ setInterval(evaluateChain,1000); evaluateChain();
   const pullIcon=document.getElementById('pullIcon');
   let startY=0, pulling=false, threshold=80;
   wrap.addEventListener('touchstart', e=>{
-    if(window.scrollY===0){startY=e.touches[0].clientY;pulling=false;pullIcon.className='';pullIcon.innerHTML='↻';pullIcon.style.transform='rotate(0deg)';}
+    if(window.scrollY===0){startY=e.touches[0].clientY;pulling=false;pullIcon.className='';pullIcon.innerHTML='↻';}
   }, {passive:true});
   wrap.addEventListener('touchmove', e=>{
     const curY=e.touches[0].clientY;
@@ -133,12 +133,13 @@ setInterval(evaluateChain,1000); evaluateChain();
       const diff=e.changedTouches[0].clientY-startY;
       if(diff>threshold){
         pullRef.classList.add('loading');
+        pullIcon.innerHTML='↻';
         pullIcon.style.transform='rotate(0deg)';
-        pullIcon.innerHTML='';
-        pullIcon.className='spin';
-        setTimeout(()=>location.reload(), 700);
+        pullIcon.className='spin-arrow';
+        setTimeout(()=>location.reload(), 800);
       } else {
         pullRef.classList.remove('show','loading');
+        pullIcon.className='';
         pullIcon.style.transform='rotate(0deg)';
       }
     }
