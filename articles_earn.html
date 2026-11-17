@@ -112,7 +112,7 @@ const ARTICLES = [
 {id:"a4",title:"How to Stay Focused",text:"Remove distractions, set a timer for 25 minutes, work, then take 5 min break. This Pomodoro technique boosts productivity. Keep your phone in silent mode while working.",reward:1},
 {id:"a5",title:"Why Learn New Skills",text:"The world changes fast. Learning a new skill every month keeps you relevant and opens new income opportunities. Start with free videos and practice daily for 30 minutes.",reward:1}
 ];
-const DAILY_LIMIT=5, COIN_PER_ARTICLE=1, READ_SECONDS=15, WINDOW_MS=30*60*1000, DAY_MS=24*60*60*1000;
+const DAILY_LIMIT=5, READ_SECONDS=15, WINDOW_MS=30*60*1000, DAY_MS=24*60*60*1000;
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore();
@@ -124,7 +124,18 @@ function showBubble(m){const b=el("bubble");b.textContent=m;b.style.display="blo
 function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
 function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}');}catch(e){return {};}}
 function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c));}
-function formatRemaining(ms){if(ms<=0)return"0m";const h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);if(h>0)return `${h}h ${m}m`;if(m>0)return `${m}m ${s}s`;return `${s}s`;}
+function formatRemaining(ms){
+  if(ms<=0) return "0m";
+  const totalSec=Math.floor(ms/1000);
+  const m=Math.floor(totalSec/60);
+  const s=totalSec%60;
+  if(m>=60) {
+    const mm=m%60;
+    return `${Math.floor(m/60)}h ${mm}m`;
+  }
+  if(m>0) return `${m}m ${s}s`;
+  return `${s}s`;
+}
 function saveSession(){localStorage.setItem('articles_session', JSON.stringify({day:localDayKey(), idx:currentIdx, read:readInSession}));}
 function loadSession(){try{const s=JSON.parse(localStorage.getItem('articles_session')||'null'); if(s && s.day===localDayKey()){currentIdx=s.idx||0; readInSession=s.read||[]; return true;}}catch(e){} return false;}
 function clearSession(){localStorage.removeItem('articles_session');}
@@ -138,18 +149,34 @@ function onArticlesFinishedChain(){
   saveChain(c);
   if(currentUser) db.collection("users").doc(currentUser.uid).set({chain:{articles_finishedToday:today,articles_doneToday:today,watch_nextAvail:c.watch_nextAvail,quiz_nextAvail:c.quiz_nextAvail,articles_nextAvail:c.articles_nextAvail,updated:firebase.firestore.FieldValue.serverTimestamp()}},{merge:true});
 }
+function ensureArticlesWindow(){
+  const c=getChain();
+  const now=Date.now();
+  // FIX: Always ensure Articles has its OWN 30min window, not Watch's old window
+  if(!c.articles_open || now > c.articles_expiry || (c.articles_expiry - c.articles_open) > (WINDOW_MS + 60000)){
+    c.articles_open = now;
+    c.articles_expiry = now + WINDOW_MS;
+    saveChain(c);
+    if(currentUser) db.collection("users").doc(currentUser.uid).set({chain:{articles_open:c.articles_open, articles_expiry:c.articles_expiry, updated:firebase.firestore.FieldValue.serverTimestamp()}},{merge:true});
+  }
+  return c;
+}
 function checkArticlesState(){
-  const c=getChain(), now=Date.now(), today=localDayKey();
+  let c=getChain(); const now=Date.now(), today=localDayKey();
   if(c.quiz_finishedToday!==today && c.quiz_doneToday!==today){fullLock.style.display="flex"; fullLockMsg.textContent="Finish Quiz first - Watch → Quiz → Articles"; contentBox.style.display="none"; finalBox.style.display="none"; return true;}
   if(c.articles_finishedToday===today){fullLock.style.display="flex"; fullLockMsg.textContent="All done today ✅ Come back tomorrow"; contentBox.style.display="none"; finalBox.style.display="none"; return true;}
-  if(c.articles_open && now > c.articles_expiry){onArticlesExpired(); return true;}
+  c=ensureArticlesWindow();
+  if(now > c.articles_expiry){onArticlesExpired(); return true;}
   fullLock.style.display="none"; contentBox.style.display="block";
-  if(c.articles_open){
-    const diff=c.articles_expiry-now;
-    statusEl.textContent=`Live ${formatRemaining(diff)} • Session ${currentIdx}/${DAILY_LIMIT} • Today ${todayCount}/${DAILY_LIMIT}`;
-    if(chainTimer) clearInterval(chainTimer);
-    chainTimer=setInterval(()=>{const d=c.articles_expiry - Date.now(); if(d<=0){clearInterval(chainTimer); onArticlesExpired();} else statusEl.textContent=`Live ${formatRemaining(d)} • Session ${currentIdx}/${DAILY_LIMIT} • Today ${todayCount}/${DAILY_LIMIT}`;},1000);
-  }
+  const diff=c.articles_expiry-now;
+  // FIXED: will never show 1h29, max 30m
+  statusEl.textContent=`Live ${formatRemaining(diff)} • Session ${currentIdx}/${DAILY_LIMIT} • Today ${todayCount}/${DAILY_LIMIT}`;
+  if(chainTimer) clearInterval(chainTimer);
+  chainTimer=setInterval(()=>{
+    const d=getChain().articles_expiry - Date.now();
+    if(d<=0){clearInterval(chainTimer); onArticlesExpired();}
+    else statusEl.textContent=`Live ${formatRemaining(d)} • Session ${currentIdx}/${DAILY_LIMIT} • Today ${todayCount}/${DAILY_LIMIT}`;
+  },1000);
   return false;
 }
 function onArticlesExpired(){
@@ -209,8 +236,8 @@ async function claimFinal(){
     await db.runTransaction(async t=>{
       const snap=await t.get(userRef); if(!snap.exists) throw new Error("No account");
       const data=snap.data()||{}, savedDay=data.articleDay||todayKey;
-      let count=Number(data.articleCount||0), ids=Array.isArray(data.articleIds)?data.articleIds.slice():[];
-      if(savedDay!==todayKey){count=0;ids=[];}
+      let count=Number(data.articleCount||0);
+      if(savedDay!==todayKey){count=0;}
       if(count>=DAILY_LIMIT) throw new Error("Done");
       const oldBal=Number(data.balance??data.coins??0);
       t.update(userRef,{balance:oldBal+DAILY_LIMIT,coins:oldBal+DAILY_LIMIT,articleCount:count+DAILY_LIMIT,articleIds:ARTICLES.map(a=>a.id),articleDay:todayKey,lastArticleDate:firebase.firestore.FieldValue.serverTimestamp()});
