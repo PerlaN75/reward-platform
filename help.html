@@ -26,53 +26,32 @@ body{background:#f5f3ff;min-height:100vh;color:#111827}
 .offer-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .offer-btn{background:linear-gradient(180deg,#eff6ff,#dbeafe);border:2px solid #bfdbfe;border-radius:12px;padding:12px;text-align:center;font-weight:900;font-size:12px;cursor:pointer}
 #adGate{position:fixed;inset:0;background:rgba(17,12,34,0.6);backdrop-filter:blur(8px);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}
-.gate-box{background:#ffffff;border:2px solid #fde68a;border-radius:26px;padding:28px 22px;text-align:center;max-width:340px;width:100%;box-shadow:0 20px 40px rgba(0,0,0,0.2)}
-.gate-icon{font-size:38px;margin-bottom:6px}
-.gate-title{font-weight:900;font-size:20px;color:#4c1d95;margin-bottom:4px}
-.gate-sub{font-size:12px;color:#6b7280;font-weight:700;margin-bottom:16px}
-.gate-wait{width:100%;background:linear-gradient(90deg,#fef3c7,#fbbf24);border:2px solid #f59e0b;border-radius:14px;padding:14px;font-weight:900;font-size:18px;color:#78350f;letter-spacing:0.3px}
-.gate-continue{width:100%;background:linear-gradient(180deg,#dcfce7,#22c55e);border:2px solid #16a34a;border-radius:14px;padding:14px;font-weight:900;font-size:15px;color:#fff;display:none;cursor:pointer;margin-top:12px}
+.gate-box{background:#fff;border:2px solid #fde68a;border-radius:26px;padding:26px 22px 22px;text-align:center;max-width:340px;width:100%;box-shadow:0 20px 40px rgba(0,0,0,0.2)}
+.gate-icon{font-size:36px}
+.gate-title{font-weight:900;font-size:20px;color:#4c1d95;margin:6px 0 2px}
+.gate-sub{font-size:12px;color:#6b7280;font-weight:700;margin-bottom:14px}
+.gate-wait-text{font-weight:900;font-size:18px;color:#92400e;background:linear-gradient(90deg,#78350f,#92400e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-top:4px;letter-spacing:0.2px}
 </style>
 </head>
 <body>
 <div class="top-bar"><div class="top-pill">💬 Help / Support</div><a href="more.html" class="close-profile">×</a></div>
 <div class="container">
-<div class="card">
-<div style="font-weight:900;font-size:16px;color:#4c1d95;margin-bottom:10px">❓ Quick Answers</div>
-<div id="faqList"></div>
-</div>
-<div class="card" style="background:linear-gradient(180deg,#fffbeb,#fef3c7);border-color:#fbbf24">
-<div style="font-weight:900;font-size:14px;color:#92400e">🚀 Need Coins Faster?</div>
-<div class="offer-grid">
-<div class="offer-btn" onclick="location.href='./offers.html'">💎 High Pay Offers</div>
-<div class="offer-btn" onclick="location.href='./referrals.html'">🤝 Refer & Earn 10%</div>
-<div class="offer-btn" onclick="location.href='./bonus.html'">🎁 Hourly Bonus</div>
-<div class="offer-btn" onclick="location.href='./survey.html'">📋 Paid Surveys</div>
-</div>
-</div>
-<div class="card">
-<div style="font-weight:900;font-size:15px;margin-bottom:12px">📩 Contact Support (Free)</div>
-<input id="nameInput" class="input" placeholder="Your name" readonly>
-<input id="emailInput" class="input" placeholder="Your email" readonly>
-<textarea id="issueInput" class="area" placeholder="Describe your issue... min 10 chars"></textarea>
-<button class="btn" onclick="doSendTicket()">Send Message</button>
-<div id="status" style="text-align:center;font-size:13px;margin-top:12px;color:#6b7280;font-weight:700"></div>
-</div>
+<div class="card"><div style="font-weight:900;font-size:16px;color:#4c1d95;margin-bottom:10px">❓ Quick Answers</div><div id="faqList"></div></div>
+<div class="card" style="background:linear-gradient(180deg,#fffbeb,#fef3c7);border-color:#fbbf24"><div style="font-weight:900;font-size:14px;color:#92400e">🚀 Need Coins Faster?</div><div class="offer-grid"><div class="offer-btn" onclick="location.href='./offers.html'">💎 High Pay Offers</div><div class="offer-btn" onclick="location.href='./referrals.html'">🤝 Refer & Earn 10%</div><div class="offer-btn" onclick="location.href='./bonus.html'">🎁 Hourly Bonus</div><div class="offer-btn" onclick="location.href='./survey.html'">📋 Paid Surveys</div></div></div>
+<div class="card"><div style="font-weight:900;font-size:15px;margin-bottom:12px">📩 Contact Support (Free)</div><input id="nameInput" class="input" placeholder="Your name" readonly><input id="emailInput" class="input" placeholder="Your email" readonly><textarea id="issueInput" class="area" placeholder="Describe your issue... min 10 chars"></textarea><button class="btn" onclick="doSendTicket()">Send Message</button><div id="status" style="text-align:center;font-size:13px;margin-top:12px;color:#6b7280;font-weight:700"></div></div>
 <div class="card"><div style="font-weight:900;font-size:15px">Your Tickets & Replies</div><div id="ticketsList" style="margin-top:10px"><p style="color:#9ca3af;text-align:center;padding:20px 0">Loading...</p></div></div>
 </div>
-
-<div id="adGate"><div class="gate-box"><div class="gate-icon">🎁</div><div class="gate-title">Unlock Answer</div><div class="gate-sub">Please wait to view</div><div id="waitBox" class="gate-wait">Wait for... 10s</div><button id="continueBtn" class="gate-continue">✅ View Answer</button></div></div>
-
+<div id="adGate"><div class="gate-box"><div class="gate-icon">🎁</div><div class="gate-title">Unlock Answer</div><div class="gate-sub">Please wait to view</div><div id="waitText" class="gate-wait-text">Wait for... 10s</div></div></div>
 <script>
 const FAQS=[
-{q:"💰 How to withdraw?",a:"Go to Wallet > Withdraw. Minimum is <b>3000 coins = $1.5</b>. Payout in USDT (BEP20) within 24-48h. Complete Watch, Quiz, Articles daily to keep account active."},
+{q:"💰 How to withdraw?",a:"Go to Wallet > Withdraw. Minimum is <b>3000 coins = $1.5</b>. Payout in USDT (BEP20) within 24-48h. Complete Watch, Quiz, Articles daily."},
 {q:"🪙 Coins not added?",a:"Watch full 35s without skipping. Wait for +1 circle, then watch 10s ad and claim. Clear cache if needed."},
-{q:"📺 Video not playing?",a:"Videos are 30-50MB. Use WiFi or strong 4G. Click Next Video. We have 32 videos available."},
-{q:"❓ Quiz locked?",a:"Finish Watch first. Chain: Watch -> Quiz -> Articles. 30 min window for each."},
-{q:"🎁 Bonus?",a:"Watch 10 videos = +5 bonus videos. Claim same day. Resets at midnight."},
+{q:"📺 Video not playing?",a:"Videos are 30-50MB. Use WiFi or 4G. Click Next Video. 32 videos available."},
+{q:"❓ Quiz locked?",a:"Finish Watch first. Chain: Watch -> Quiz -> Articles. 30 min window each."},
+{q:"🎁 Bonus?",a:"Watch 10 videos = +5 bonus. Claim same day. Resets midnight."},
 {q:"🤝 Referral?",a:"Friend must sign up with your link + complete 1 Watch. You get 10% lifetime."},
-{q:"⏳ Pending withdraw?",a:"Manual review within 12h. If more than 48h, send ticket with your wallet address."},
-{q:"📧 Contact?",a:"Use form below. Reply within 24h. One ticket per issue is enough."}
+{q:"⏳ Pending withdraw?",a:"Manual review within 12h. If 48h+, send ticket with wallet address."},
+{q:"📧 Contact?",a:"Use form below. Reply within 24h. One ticket per issue."}
 ];
 let vignetteLoaded=false;
 function loadCleanVignette(){if(vignetteLoaded) return; vignetteLoaded=true; const old=document.querySelector('script[src*="vignette.min.js"]'); if(old) old.remove(); (function(s){s.dataset.zone='12270633',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script'))); setTimeout(()=>{vignetteLoaded=false;},60000);}
@@ -93,33 +72,32 @@ FAQS.forEach((f,i)=>{
     }
     pendingIdx=i;
     document.getElementById('adGate').style.display='flex';
-    document.getElementById('continueBtn').style.display='none';
-    document.getElementById('waitBox').style.display='block';
     startWait();
   };
   faqList.appendChild(div);
 });
 function startWait(){
   let sec=10;
-  const waitBox=document.getElementById('waitBox');
-  waitBox.innerText=`Wait for... ${sec}s`;
-  waitBox.style.background='linear-gradient(90deg,#fef3c7,#fbbf24)';
+  const waitText=document.getElementById('waitText');
+  waitText.innerText=`Wait for... ${sec}s`;
   clearInterval(timerInterval);
   timerInterval=setInterval(()=>{
     sec--;
-    if(sec>0){waitBox.innerText=`Wait for... ${sec}s`;}
-    else{clearInterval(timerInterval); waitBox.style.display='none'; document.getElementById('continueBtn').style.display='block';}
+    if(sec>0){
+      waitText.innerText=`Wait for... ${sec}s`;
+    }else{
+      clearInterval(timerInterval);
+      // AUTO OPEN IMMEDIATELY
+      document.getElementById('adGate').style.display='none';
+      loadCleanVignette();
+      if(pendingIdx!==null){
+        const opened=getOpened(); opened[pendingIdx]=Date.now(); saveOpened(opened);
+        document.querySelectorAll('.faq-item').forEach(el=>el.classList.remove('open'));
+        document.getElementById('faq-'+pendingIdx).classList.add('open');
+      }
+    }
   },1000);
 }
-document.getElementById('continueBtn').onclick=function(){
-  document.getElementById('adGate').style.display='none';
-  loadCleanVignette();
-  if(pendingIdx!==null){
-    const opened=getOpened(); opened[pendingIdx]=Date.now(); saveOpened(opened);
-    document.querySelectorAll('.faq-item').forEach(el=>el.classList.remove('open'));
-    document.getElementById('faq-'+pendingIdx).classList.add('open');
-  }
-};
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore(); let cachedUser=null;
