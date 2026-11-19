@@ -1,14 +1,13 @@
 <!DOCTYPE html><html><head><title>Home</title><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent!important}
-body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;overscroll-behavior:none}
-.wrap{width:100%;max-width:430px;height:100dvh;height:100svh;background:#ffffff;background-image:url('./bg.jpg');background-repeat:no-repeat;background-size:100% auto;background-position:center center;position:relative;display:flex;flex-direction:column;overflow:hidden}
+body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
+.wrap{width:100%;max-width:430px;height:100dvh;background:#ffffff;background-image:url('./bg.jpg');background-repeat:no-repeat;background-size:100% auto;background-position:center center;position:relative;display:flex;flex-direction:column;overflow:hidden}
 .top{width:100%;background:#ffedd5;border-bottom:2px solid #fdba74;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:30;box-shadow:0 6px 14px rgba(0,0,0,0.12);flex-shrink:0}
-#menuBtn{width:44px;height:44px;border:none;background:none;font-size:26px;font-weight:900;cursor:pointer;color:#4c1d95;display:flex;align-items:center;justify-content:center}
+#menuBtn{width:44px;height:44px;border:none;background:none;font-size:26px;font-weight:900;color:#4c1d95;display:flex;align-items:center;justify-content:center}
 .top h2{font-size:19px;font-weight:900;text-align:center;flex:1;color:#111827}
-.scene{flex:1;position:relative;z-index:2;background:#ffffff;overflow:hidden}
-/* BALANCE INSIDE GOLD RING - EXACT LIKE YOUR PHOTO */
-.monitor{position:absolute;left:50%;top:50%;transform:translate(-50%,-42%);width:82%;max-width:310px;background:none;border:none;box-shadow:none;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.scene{flex:1;position:relative;z-index:2;background:transparent}
+.monitor{position:absolute;left:50%;top:50%;transform:translate(-50%,-40%);width:84%;max-width:320px;background:none;border:none;box-shadow:none;display:flex;flex-direction:column;align-items:center;text-align:center;z-index:5}
 .screen{display:flex;flex-direction:column;align-items:center;gap:6px}
 .badge{font-size:10px;font-weight:900;padding:3px 7px;border-radius:10px;color:#fff;margin-left:auto}
 .badge.padlock{background:#111827;padding:4px 8px;font-size:11px}
@@ -21,7 +20,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;ove
 @keyframes spinBlack{to{transform:rotate(360deg)}}
 #drawerOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:998}
 #drawerOverlay.show{display:block}
-#sideDrawer{position:fixed;top:0;left:0;transform:translateX(-100%);width:82%;max-width:310px;height:100dvh;background:#ffffff;z-index:999;display:flex;flex-direction:column;transition:transform 0.32s cubic-bezier(.2,.8,.2,1);box-shadow:6px 0 24px rgba(0,0,0,0.18)}
+#sideDrawer{position:fixed;top:0;left:0;transform:translateX(-100%);width:82%;max-width:310px;height:100dvh;background:#fff;z-index:999;display:flex;flex-direction:column;transition:transform 0.32s cubic-bezier(.2,.8,.2,1);box-shadow:6px 0 24px rgba(0,0,0,0.18)}
 #sideDrawer.open{transform:translateX(0)}
 .drawer-head{padding:18px;background:#fffdf5;border-bottom:1.5px solid #ffedd5}
 .drawer-profile{display:flex;align-items:center;gap:12px}
@@ -38,16 +37,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;ove
 <div id="toast"></div>
 <div id="drawerOverlay" onclick="closeDrawer()"></div>
 <div id="sideDrawer">
-  <div class="drawer-head">
-    <div class="drawer-profile">
-      <div class="drawer-avatar" id="drawerAvatar">I</div>
-      <div>
-        <div class="drawer-name"><span id="drawerUsername">Ineza</span><span style="color:#16a34a"> ✅</span><span style="color:#16a34a;font-size:11px">Verified</span></div>
-        <div class="drawer-sub" id="drawerEmail" style="color:#0d7dd8">ineza@email.com</div>
-        <div class="drawer-sub" id="drawerId" style="color:#d97706">ID: RW-88421</div>
-      </div>
-    </div>
-  </div>
+  <div class="drawer-head"><div class="drawer-profile"><div class="drawer-avatar" id="drawerAvatar">I</div><div><div class="drawer-name"><span id="drawerUsername">Ineza</span><span style="color:#16a34a"> ✅</span><span style="color:#16a34a;font-size:11px">Verified</span></div><div class="drawer-sub" id="drawerEmail" style="color:#0d7dd8">ineza@email.com</div><div class="drawer-sub" id="drawerId" style="color:#d97706">ID: RW-88421</div></div></div></div>
   <div class="drawer-menu">
     <button class="drawer-item" id="btnWatch" onclick="goWatch()" type="button" style="color:#0d7dd8"><span class="emo">📺</span> Watch & Earn</button>
     <button class="drawer-item" id="btnQuiz" onclick="goQuiz()" type="button" style="color:#7c3aed"><span class="emo">🧠</span> Quiz</button>
@@ -68,17 +58,13 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;ove
 </div>
 <div class="wrap" id="wrap">
 <div id="pullRef"><div id="pullIcon"></div></div>
-<div class="top">
-<button id="menuBtn" onclick="openDrawer()" type="button">☰</button>
-<h2>Welcome Ineza</h2>
-<div style="width:44px"></div>
-</div>
+<div class="top"><button id="menuBtn" onclick="openDrawer()" type="button">☰</button><h2>Welcome Ineza</h2><div style="width:44px"></div></div>
 <div class="scene">
 <div class="monitor"><div class="screen">
-<div style="color:#6d28d9;font-size:24px;font-weight:900;text-shadow:0 2px 6px rgba(255,255,255,0.9)">Balance</div>
-<div style="margin-top:6px;font-size:17px;font-weight:900;white-space:nowrap"><span style="color:#fbbf24">⭐</span><span style="color:#92400e" id="balance">118 Coins</span><span style="color:#111827"> = <span id="usdBalance">$0.0580</span></span></div>
+<div style="color:#6d28d9;font-size:23px;font-weight:900;text-shadow:0 2px 6px rgba(255,255,255,0.9)">Balance</div>
+<div style="margin-top:6px;font-size:16px;font-weight:900;white-space:nowrap"><span style="color:#fbbf24">⭐</span> <span style="color:#92400e" id="balance">118 Coins</span><span style="color:#111827"> = <span id="usdBalance">$0.0580</span></span></div>
 <div style="width:140px;height:1px;background:rgba(0,0,0,0.15);margin:8px auto"></div>
-<div style="font-size:17px;font-weight:900"><span style="color:#0ea5e9">💎</span><span style="color:#111827" id="usdtBalanceDisplay">0.9565 <span style="color:#059669">USDT</span></span></div>
+<div style="font-size:16px;font-weight:900"><span style="color:#0ea5e9">💎</span> <span style="color:#111827" id="usdtBalanceDisplay">0.9565 <span style="color:#059669">USDT</span></span></div>
 </div></div>
 </div>
 </div>
