@@ -33,7 +33,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 <div id="toast"></div>
 <div id="drawerOverlay" onclick="closeDrawer()"></div>
 <div id="sideDrawer">
-  <div class="drawer-head"><div class="drawer-profile"><div class="drawer-avatar" id="drawerAvatar">I</div><div><div class="drawer-name"><span id="drawerUsername">Ineza</span><span style="color:#16a34a"> ✅</span><span style="color:#16a34a;font-size:11px">Verified</span></div><div class="drawer-sub" id="drawerEmail" style="color:#0d7dd8">ineza@email.com</div><div class="drawer-sub" id="drawerId" style="color:#d97706">ID: RW-88421</div></div></div></div>
+  <div class="drawer-head"><div class="drawer-profile"><div class="drawer-avatar" id="drawerAvatar">U</div><div><div class="drawer-name"><span id="drawerUsername">User</span><span style="color:#16a34a"> ✅</span><span style="color:#16a34a;font-size:11px">Verified</span></div><div class="drawer-sub" id="drawerEmail" style="color:#0d7dd8"></div><div class="drawer-sub" id="drawerId" style="color:#d97706"></div></div></div></div>
   <div class="drawer-menu">
     <button class="drawer-item" id="btnWatch" onclick="goWatch()" type="button" style="color:#0d7dd8"><span class="emo">📺</span> Watch & Earn</button>
     <button class="drawer-item" id="btnQuiz" onclick="goQuiz()" type="button" style="color:#7c3aed"><span class="emo">🧠</span> Quiz</button>
@@ -53,7 +53,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
   <div class="drawer-foot">© 2026 Reward Platform RW.<br>Coins System V.2</div>
 </div>
 <div class="wrap" id="wrap">
-<div class="top"><button id="menuBtn" onclick="openDrawer()" type="button">☰</button><h2><span style="color:#14532d">Welcome</span> <span style="color:#7c3aed">Ineza</span></h2><div style="width:44px"></div></div>
+<div class="top"><button id="menuBtn" onclick="openDrawer()" type="button">☰</button><h2><span style="color:#14532d">Welcome</span> <span style="color:#7c3aed" id="topUsername">User</span></h2><div style="width:44px"></div></div>
 <div class="scene">
 <div class="monitor"><div class="screen">
 <div style="color:#7c3aed;font-size:20px;font-weight:900;text-shadow:0 2px 8px rgba(255,255,255,0.95)">Balance</div>
@@ -63,6 +63,85 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 </div></div>
 </div>
 </div>
+
+<script>
+// FIX: All users are Ineza bug
+(function(){
+  try{
+    let name = 'User', email = '', uid = '';
+    // Try many possible storage keys
+    const keys = ['user','currentUser','loggedUser','auth','userData'];
+    for(let k of keys){
+      let v = localStorage.getItem(k);
+      if(!v) continue;
+      try{ 
+        let o = JSON.parse(v);
+        if(o.username) name = o.username;
+        if(o.name) name = o.name;
+        if(o.displayName) name = o.displayName;
+        if(o.email) email = o.email;
+        if(o.id || o.uid || o.userId) uid = o.id || o.uid || o.userId;
+      }catch{}
+    }
+    if(localStorage.getItem('username')) name = localStorage.getItem('username');
+    if(localStorage.getItem('email')) email = localStorage.getItem('email');
+    if(localStorage.getItem('userId')) uid = localStorage.getItem('userId');
+    if(localStorage.getItem('uid')) uid = localStorage.getItem('uid');
+
+    // Apply to UI
+    const topEl = document.getElementById('topUsername');
+    const drawerEl = document.getElementById('drawerUsername');
+    const emailEl = document.getElementById('drawerEmail');
+    const idEl = document.getElementById('drawerId');
+    const avEl = document.getElementById('drawerAvatar');
+
+    if(topEl && name) topEl.textContent = name;
+    if(drawerEl && name) drawerEl.textContent = name;
+    if(emailEl && email) emailEl.textContent = email;
+    if(idEl && uid) idEl.textContent = "ID: " + uid;
+    if(avEl && name) avEl.textContent = name.charAt(0).toUpperCase();
+  }catch(e){ console.log(e); }
+})();
+</script>
+<script>
+// FIX: All users are Ineza bug
+(function(){
+  try{
+    let name = 'User', email = '', uid = '';
+    // Try many possible storage keys
+    const keys = ['user','currentUser','loggedUser','auth','userData'];
+    for(let k of keys){
+      let v = localStorage.getItem(k);
+      if(!v) continue;
+      try{ 
+        let o = JSON.parse(v);
+        if(o.username) name = o.username;
+        if(o.name) name = o.name;
+        if(o.displayName) name = o.displayName;
+        if(o.email) email = o.email;
+        if(o.id || o.uid || o.userId) uid = o.id || o.uid || o.userId;
+      }catch{}
+    }
+    if(localStorage.getItem('username')) name = localStorage.getItem('username');
+    if(localStorage.getItem('email')) email = localStorage.getItem('email');
+    if(localStorage.getItem('userId')) uid = localStorage.getItem('userId');
+    if(localStorage.getItem('uid')) uid = localStorage.getItem('uid');
+
+    // Apply to UI
+    const topEl = document.getElementById('topUsername');
+    const drawerEl = document.getElementById('drawerUsername');
+    const emailEl = document.getElementById('drawerEmail');
+    const idEl = document.getElementById('drawerId');
+    const avEl = document.getElementById('drawerAvatar');
+
+    if(topEl && name) topEl.textContent = name;
+    if(drawerEl && name) drawerEl.textContent = name;
+    if(emailEl && email) emailEl.textContent = email;
+    if(idEl && uid) idEl.textContent = "ID: " + uid;
+    if(avEl && name) avEl.textContent = name.charAt(0).toUpperCase();
+  }catch(e){ console.log(e); }
+})();
+</script>
 <script>
 function openDrawer(){document.getElementById('sideDrawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('show');}
 function closeDrawer(){document.getElementById('sideDrawer').classList.remove('open');document.getElementById('drawerOverlay').classList.remove('show');}
