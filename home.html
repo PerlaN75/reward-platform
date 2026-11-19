@@ -2,14 +2,15 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent!important}
 body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;overscroll-behavior:none}
-.wrap{width:100%;max-width:430px;height:100dvh;height:100svh;background-color:#bfe6f7;background-image:url('./bg.jpg');background-repeat:no-repeat;background-size:100% auto;background-position:center bottom;position:relative;display:flex;flex-direction:column;overflow:hidden;overscroll-behavior:none}
+.wrap{width:100%;max-width:430px;height:100dvh;height:100svh;background-color:#ffffff;background-image:url('./bg.jpg');background-repeat:no-repeat;background-size:100% auto;background-position:center center;position:relative;display:flex;flex-direction:column;overflow:hidden;overscroll-behavior:none}
 .top{position:relative;width:100%;background:#ffedd5;border-bottom:2px solid #fdba74;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:30;box-shadow:0 6px 14px rgba(0,0,0,0.12);flex-shrink:0}
 #menuBtn{width:44px;height:44px;border:none;background:none;font-size:26px;font-weight:900;cursor:pointer;color:#4c1d95;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .top h2{font-size:19px;color:#14532d;font-weight:900;text-align:center;flex:1}
 #headerText{font-size:20px;color:#4c1d95!important;font-weight:900}
-.scene{flex:1;position:relative;z-index:2;overflow:hidden;min-height:0}
-.monitor{position:absolute;left:4%;top:38%;width:44%;max-width:190px;height:172px;background:linear-gradient(135deg, #ffffff 0%, #FFF8F0 18%, #FFE9E3 100%);border:2px solid #fecaca;border-left:3.5px solid #ffffff;border-radius:18px;overflow:hidden;z-index:5;box-shadow:inset 5px 0 10px rgba(255,255,255,0.95),0 10px 22px rgba(0,0,0,0.20),0 3px 0 #fca5a5;display:flex;flex-direction:column}
-.screen{flex:1;padding:12px 8px 10px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:8px}
+.scene{flex:1;position:relative;z-index:2;overflow:hidden;min-height:0;background:#ffffff}
+/* FINAL DISPOSITION #1 - BALANCE INSIDE GOLD RING - NORMAL TEXT - NO CARD */
+.monitor{position:absolute;left:50%;top:50%;transform:translate(-50%,-45%);width:84%;max-width:320px;background:none;border:none;box-shadow:none;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:5;text-align:center}
+.screen{display:flex;flex-direction:column;gap:6px;align-items:center;background:none;padding:0}
 .badge{font-size:10px;font-weight:900;padding:3px 7px;border-radius:10px;color:#fff;margin-left:auto;white-space:nowrap;flex-shrink:0}
 .badge.padlock{background:#111827;padding:4px 8px;font-size:11px}
 .badge.green{background:#16a34a}.badge.live{background:#16a34a;font-size:10px}.badge.soon{background:#f59e0b;color:#000}
@@ -19,9 +20,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;ove
 #pullRef.show{transform:translateX(-50%) translateY(14px)}
 #pullRef.loading{transform:translateX(-50%) translateY(14px)}
 #pullIcon{width:28px;height:28px;border:3px solid #e5e7eb;border-top-color:#111827;border-radius:50%;display:block;animation:spinBlack 0.8s linear infinite}
-#pullIcon.spin-line{animation:spinBlack 0.8s linear infinite}
 @keyframes spinBlack{to{transform:rotate(360deg)}}
-/* DRAWER - NO GOOGLE BLUE */
 #drawerOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:998}
 #drawerOverlay.show{display:block}
 #sideDrawer{position:fixed;top:0;left:0;transform:translateX(-100%);width:82%;max-width:310px;height:100dvh;background:#ffffff;z-index:999;display:flex;flex-direction:column;transition:transform 0.32s cubic-bezier(.2,.8,.2,1);box-shadow:6px 0 24px rgba(0,0,0,0.18);overflow:hidden}
@@ -32,7 +31,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;ove
 .drawer-name{font-size:16px;font-weight:900;color:#111827;display:flex;align-items:center;gap:6px}
 .drawer-sub{font-size:12.5px;font-weight:700;margin-top:3px;word-break:break-all}
 .drawer-menu{flex:1;overflow-y:auto;padding:10px 0}
-.drawer-item{width:100%;display:flex;align-items:center;gap:14px;padding:13px 18px;border:none;background:none;outline:none;cursor:pointer;font-size:14px;font-weight:800;text-align:left;position:relative;-webkit-tap-highlight-color:transparent;color:inherit}
+.drawer-item{width:100%;display:flex;align-items:center;gap:14px;padding:13px 18px;border:none;background:none;outline:none;cursor:pointer;font-size:14px;font-weight:800;text-align:left;position:relative;color:inherit}
 .drawer-item:active{background:#f9fafb}
 .drawer-item .emo{font-size:18px;width:26px;text-align:center;flex-shrink:0}
 .drawer-sep{height:1px;background:#e5e7eb;margin:10px 18px}
@@ -79,11 +78,11 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;ove
 </div>
 <div class="scene">
 <div class="monitor"><div class="screen">
-<div style="color:#6d28d9;font-size:11.5px;font-weight:900">Your Balance</div>
-<div style="display:flex;flex-direction:column;gap:10px;align-items:center;width:100%;margin-top:6px">
-<div style="text-align:center"><div style="font-size:10.5px;color:#92400e;font-weight:900">⭐ COINS</div><div id="balance" style="font-size:20px;color:#111827;font-weight:900">0 coins</div><div id="usdBalance" style="font-size:10.5px;color:#6b7280;font-weight:800">= $0.0000</div></div>
-<div style="width:78%;height:1.5px;background:linear-gradient(90deg, transparent, rgba(251,191,36,0.35), transparent)"></div>
-<div style="text-align:center"><div style="font-size:10.5px;color:#0e7490;font-weight:900">💎 USDT</div><div id="usdtBalanceDisplay" style="font-size:20px;color:#059669;font-weight:900">0.8815 USDT</div></div>
+<div style="color:#6d28d9;font-size:28px;font-weight:900;letter-spacing:-0.5px;text-shadow:0 2px 8px rgba(255,255,255,0.9)">Balance</div>
+<div style="margin-top:10px;text-align:center;line-height:1.35">
+<div style="font-size:18px;font-weight:900"><span style="color:#fbbf24">⭐</span> <span id="balance" style="color:#92400e">118 Coins</span> <span style="color:#111827">= <span id="usdBalance" style="color:#111827">$0.0580</span></span></div>
+<div style="width:160px;height:1.5px;background:linear-gradient(90deg, transparent, rgba(0,0,0,0.15), transparent);margin:12px auto"></div>
+<div style="font-size:18px;font-weight:900"><span style="color:#0ea5e9">💎</span> <span id="usdtBalanceDisplay" style="color:#111827">0.9565 <span style="color:#059669">USDT</span></span></div>
 </div>
 </div></div>
 </div>
@@ -91,7 +90,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;ove
 <script>
 function openDrawer(){document.getElementById('sideDrawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('show');}
 function closeDrawer(){document.getElementById('sideDrawer').classList.remove('open');document.getElementById('drawerOverlay').classList.remove('show');}
-(function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}');if(c&&(c.balance!=null||c.points!=null||c.username)){var bal=c.balance??c.points??0;var usdt=c.usdtBalance??0;document.getElementById('balance').textContent=bal+' coins';document.getElementById('usdBalance').textContent='= $'+(bal*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').textContent=Number(usdt).toFixed(4)+' USDT';if(c.username){document.getElementById('headerText').textContent=c.username;document.getElementById('drawerUsername').textContent=c.username;document.getElementById('drawerAvatar').textContent=c.username.charAt(0).toUpperCase();}if(c.email){document.getElementById('drawerEmail').textContent=c.email;}if(c.uid||c.id){document.getElementById('drawerId').textContent='ID: '+(c.uid||c.id).toString().slice(0,10);} }}catch(e){}})();
+(function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}');if(c&&(c.balance!=null||c.points!=null||c.username)){var bal=c.balance??c.points??0;var usdt=c.usdtBalance??0;document.getElementById('balance').textContent=bal+' Coins';document.getElementById('usdBalance').textContent='$'+(bal*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').innerHTML=Number(usdt).toFixed(4)+' <span style="color:#059669">USDT</span>';if(c.username){document.getElementById('headerText').textContent=c.username;document.getElementById('drawerUsername').textContent=c.username;document.getElementById('drawerAvatar').textContent=c.username.charAt(0).toUpperCase();}if(c.email){document.getElementById('drawerEmail').textContent=c.email;}if(c.uid||c.id){document.getElementById('drawerId').textContent='ID: '+(c.uid||c.id).toString().slice(0,10);} }}catch(e){}})();
 const WINDOW=30*60*1000, GAP=0, DAY=24*60*60*1000, BONUS_COOLDOWN=60*60*1000;
 function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}')}catch(e){return {}}}
 function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c))}
@@ -177,7 +176,7 @@ setInterval(evaluateChain,1000); evaluateChain();
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};firebase.initializeApp(firebaseConfig);
 try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
 const auth=firebase.auth(),db=firebase.firestore();
-function loadData(d){if(!d)return;document.getElementById('headerText').innerText=d.username||'';document.getElementById('balance').innerText=(d.balance??d.points??0)+' coins';document.getElementById('usdBalance').innerText='= $'+((d.balance??d.points??0)*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').innerText=Number(d.usdtBalance||0).toFixed(4)+' USDT';localStorage.setItem('userData',JSON.stringify(d)); 
+function loadData(d){if(!d)return;document.getElementById('headerText').innerText=d.username||'';document.getElementById('balance').innerText=(d.balance??d.points??0)+' Coins';document.getElementById('usdBalance').innerText='$'+((d.balance??d.points??0)*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').innerHTML=Number(d.usdtBalance||0).toFixed(4)+' <span style="color:#059669">USDT</span>';localStorage.setItem('userData',JSON.stringify(d)); 
 if(d.username){document.getElementById('drawerUsername').innerText=d.username;document.getElementById('drawerAvatar').innerText=d.username.charAt(0).toUpperCase();}
 if(d.email){document.getElementById('drawerEmail').innerText=d.email;}
 if(d.uid||d.id||d.userId){let idv=d.uid||d.id||d.userId;document.getElementById('drawerId').innerText='ID: '+String(idv).slice(0,12);}
