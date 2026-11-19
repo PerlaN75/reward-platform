@@ -2,40 +2,39 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent!important}
 body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;overscroll-behavior:none}
-.wrap{width:100%;max-width:430px;height:100dvh;height:100svh;background-color:#ffffff;background-image:url('./bg.jpg');background-repeat:no-repeat;background-size:100% auto;background-position:center center;position:relative;display:flex;flex-direction:column;overflow:hidden;overscroll-behavior:none}
+.wrap{width:100%;max-width:430px;height:100dvh;height:100svh;background:#ffffff;position:relative;display:flex;flex-direction:column;overflow:hidden;overscroll-behavior:none}
 .top{position:relative;width:100%;background:#ffedd5;border-bottom:2px solid #fdba74;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:30;box-shadow:0 6px 14px rgba(0,0,0,0.12);flex-shrink:0}
-#menuBtn{width:44px;height:44px;border:none;background:none;font-size:26px;font-weight:900;cursor:pointer;color:#4c1d95;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.top h2{font-size:19px;color:#14532d;font-weight:900;text-align:center;flex:1}
+#menuBtn{width:44px;height:44px;border:none;background:none;font-size:26px;font-weight:900;cursor:pointer;color:#4c1d95;display:flex;align-items:center;justify-content:center}
+.top h2{font-size:19px;font-weight:900;text-align:center;flex:1}
 #headerText{font-size:20px;color:#4c1d95!important;font-weight:900}
-.scene{flex:1;position:relative;z-index:2;overflow:hidden;min-height:0;background:#ffffff}
-/* FINAL DISPOSITION #1 - BALANCE INSIDE GOLD RING - NORMAL TEXT - NO CARD */
-.monitor{position:absolute;left:50%;top:50%;transform:translate(-50%,-45%);width:84%;max-width:320px;background:none;border:none;box-shadow:none;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:5;text-align:center}
-.screen{display:flex;flex-direction:column;gap:6px;align-items:center;background:none;padding:0}
-.badge{font-size:10px;font-weight:900;padding:3px 7px;border-radius:10px;color:#fff;margin-left:auto;white-space:nowrap;flex-shrink:0}
+.welcome-green{color:#065f46} .welcome-purple{color:#4c1d95}
+.scene{flex:1;position:relative;z-index:2;background:#ffffff;display:flex;align-items:center;justify-content:center}
+/* ONLY THIS - BALANCE CENTERED WHITE */
+.monitor{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:90%;max-width:340px;background:none;border:none;box-shadow:none;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.screen{display:flex;flex-direction:column;gap:8px;align-items:center}
+.badge{font-size:10px;font-weight:900;padding:3px 7px;border-radius:10px;color:#fff;margin-left:auto;white-space:nowrap}
 .badge.padlock{background:#111827;padding:4px 8px;font-size:11px}
 .badge.green{background:#16a34a}.badge.live{background:#16a34a;font-size:10px}.badge.soon{background:#f59e0b;color:#000}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:10px 14px;border-radius:10px;font-weight:bold;z-index:99999;display:none;max-width:90%;text-align:center}
 #maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
 #pullRef{position:absolute;top:0;left:50%;transform:translateX(-50%) translateY(-60px);z-index:100;width:48px;height:48px;background:#ffffff;border-radius:50%;box-shadow:0 4px 16px rgba(0,0,0,0.22);display:flex;align-items:center;justify-content:center;transition:transform 0.25s ease;pointer-events:none}
 #pullRef.show{transform:translateX(-50%) translateY(14px)}
-#pullRef.loading{transform:translateX(-50%) translateY(14px)}
-#pullIcon{width:28px;height:28px;border:3px solid #e5e7eb;border-top-color:#111827;border-radius:50%;display:block;animation:spinBlack 0.8s linear infinite}
+#pullIcon{width:28px;height:28px;border:3px solid #e5e7eb;border-top-color:#111827;border-radius:50%;animation:spinBlack 0.8s linear infinite}
 @keyframes spinBlack{to{transform:rotate(360deg)}}
 #drawerOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:998}
 #drawerOverlay.show{display:block}
-#sideDrawer{position:fixed;top:0;left:0;transform:translateX(-100%);width:82%;max-width:310px;height:100dvh;background:#ffffff;z-index:999;display:flex;flex-direction:column;transition:transform 0.32s cubic-bezier(.2,.8,.2,1);box-shadow:6px 0 24px rgba(0,0,0,0.18);overflow:hidden}
+#sideDrawer{position:fixed;top:0;left:0;transform:translateX(-100%);width:82%;max-width:310px;height:100dvh;background:#ffffff;z-index:999;display:flex;flex-direction:column;transition:transform 0.32s cubic-bezier(.2,.8,.2,1);box-shadow:6px 0 24px rgba(0,0,0,0.18)}
 #sideDrawer.open{transform:translateX(0)}
 .drawer-head{padding:18px 18px 14px;background:#fffdf5;border-bottom:1.5px solid #ffedd5}
 .drawer-profile{display:flex;align-items:center;gap:12px}
-.drawer-avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#14b8a6,#06b6d4);color:#fff;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.drawer-avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#14b8a6,#06b6d4);color:#fff;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center}
 .drawer-name{font-size:16px;font-weight:900;color:#111827;display:flex;align-items:center;gap:6px}
 .drawer-sub{font-size:12.5px;font-weight:700;margin-top:3px;word-break:break-all}
 .drawer-menu{flex:1;overflow-y:auto;padding:10px 0}
-.drawer-item{width:100%;display:flex;align-items:center;gap:14px;padding:13px 18px;border:none;background:none;outline:none;cursor:pointer;font-size:14px;font-weight:800;text-align:left;position:relative;color:inherit}
-.drawer-item:active{background:#f9fafb}
-.drawer-item .emo{font-size:18px;width:26px;text-align:center;flex-shrink:0}
+.drawer-item{width:100%;display:flex;align-items:center;gap:14px;padding:13px 18px;border:none;background:none;cursor:pointer;font-size:14px;font-weight:800;text-align:left;color:inherit}
+.drawer-item .emo{font-size:18px;width:26px;text-align:center}
 .drawer-sep{height:1px;background:#e5e7eb;margin:10px 18px}
-.drawer-foot{padding:12px 18px 16px;background:#fafafa;border-top:1px solid #e5e7eb;text-align:center;font-size:11px;color:#6b7280;font-weight:700;line-height:1.5}
+.drawer-foot{padding:12px 18px 16px;background:#fafafa;border-top:1px solid #e5e7eb;text-align:center;font-size:11px;color:#6b7280;font-weight:700}
 </style></head><body>
 <div id="maint"><div><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900">Back</button></div></div>
 <div id="toast"></div>
@@ -45,7 +44,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;ove
     <div class="drawer-profile">
       <div class="drawer-avatar" id="drawerAvatar">I</div>
       <div>
-        <div class="drawer-name"><span id="drawerUsername">Ineza</span><span style="color:#16a34a;font-size:16px"> ✅</span><span style="color:#16a34a;font-size:11px;font-weight:900">Verified</span></div>
+        <div class="drawer-name"><span id="drawerUsername">Ineza</span><span style="color:#16a34a"> ✅</span><span style="color:#16a34a;font-size:11px;font-weight:900">Verified</span></div>
         <div class="drawer-sub" id="drawerEmail" style="color:#0d7dd8">ineza@email.com</div>
         <div class="drawer-sub" id="drawerId" style="color:#d97706">ID: RW-88421</div>
       </div>
@@ -70,105 +69,70 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;ove
   <div class="drawer-foot">© 2026 Reward Platform RW.<br>Coins System V.2</div>
 </div>
 <div class="wrap" id="wrap">
-<div id="pullRef"><div id="pullIcon" class="spin-line"></div></div>
+<div id="pullRef"><div id="pullIcon"></div></div>
 <div class="top">
 <button id="menuBtn" onclick="openDrawer()" type="button">☰</button>
-<h2>Welcome <span id="headerText">Ineza</span></h2>
+<h2><span class="welcome-green">Welcome</span> <span id="headerText">Ineza</span></h2>
 <div style="width:44px"></div>
 </div>
 <div class="scene">
 <div class="monitor"><div class="screen">
-<div style="color:#6d28d9;font-size:28px;font-weight:900;letter-spacing:-0.5px;text-shadow:0 2px 8px rgba(255,255,255,0.9)">Balance</div>
-<div style="margin-top:10px;text-align:center;line-height:1.35">
-<div style="font-size:18px;font-weight:900"><span style="color:#fbbf24">⭐</span> <span id="balance" style="color:#92400e">118 Coins</span> <span style="color:#111827">= <span id="usdBalance" style="color:#111827">$0.0580</span></span></div>
-<div style="width:160px;height:1.5px;background:linear-gradient(90deg, transparent, rgba(0,0,0,0.15), transparent);margin:12px auto"></div>
-<div style="font-size:18px;font-weight:900"><span style="color:#0ea5e9">💎</span> <span id="usdtBalanceDisplay" style="color:#111827">0.9565 <span style="color:#059669">USDT</span></span></div>
-</div>
+<div style="color:#7c3aed;font-size:22px;font-weight:900">Balance</div>
+<div style="margin-top:8px;font-size:15px;font-weight:900"><span style="color:#fbbf24">⭐</span> <span style="color:#92400e" id="balance">118 Coins</span> <span style="color:#111827">= <span id="usdBalance">$0.0590</span></span></div>
+<div style="margin-top:10px;font-size:15px;font-weight:900"><span style="color:#38bdf8">💎</span> <span id="usdtBalanceDisplay" style="color:#111827">0.9565 <span style="color:#059669">USDT</span></span></div>
 </div></div>
 </div>
 </div>
 <script>
 function openDrawer(){document.getElementById('sideDrawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('show');}
 function closeDrawer(){document.getElementById('sideDrawer').classList.remove('open');document.getElementById('drawerOverlay').classList.remove('show');}
-(function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}');if(c&&(c.balance!=null||c.points!=null||c.username)){var bal=c.balance??c.points??0;var usdt=c.usdtBalance??0;document.getElementById('balance').textContent=bal+' Coins';document.getElementById('usdBalance').textContent='$'+(bal*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').innerHTML=Number(usdt).toFixed(4)+' <span style="color:#059669">USDT</span>';if(c.username){document.getElementById('headerText').textContent=c.username;document.getElementById('drawerUsername').textContent=c.username;document.getElementById('drawerAvatar').textContent=c.username.charAt(0).toUpperCase();}if(c.email){document.getElementById('drawerEmail').textContent=c.email;}if(c.uid||c.id){document.getElementById('drawerId').textContent='ID: '+(c.uid||c.id).toString().slice(0,10);} }}catch(e){}})();
-const WINDOW=30*60*1000, GAP=0, DAY=24*60*60*1000, BONUS_COOLDOWN=60*60*1000;
+(function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}');if(c&&(c.balance!=null||c.points!=null)){var bal=c.balance??c.points??0;var usdt=c.usdtBalance??0;document.getElementById('balance').textContent=bal+' Coins';document.getElementById('usdBalance').textContent='$'+(bal*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').innerHTML=Number(usdt).toFixed(4)+' <span style="color:#059669">USDT</span>';if(c.username){document.getElementById('headerText').textContent=c.username;document.getElementById('drawerUsername').textContent=c.username;document.getElementById('drawerAvatar').textContent=c.username.charAt(0).toUpperCase();}if(c.email){document.getElementById('drawerEmail').textContent=c.email;}if(c.uid||c.id){document.getElementById('drawerId').textContent='ID: '+(c.uid||c.id).toString().slice(0,10);} }}catch(e){}})();
+const WINDOW=30*60*1000, BONUS_COOLDOWN=60*60*1000;
 function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}')}catch(e){return {}}}
 function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c))}
-function fmtShort(ms){if(ms<=0) return "0m";const totalM=Math.floor(ms/60000);const h=Math.floor(totalM/60);const m=totalM%60;if(h>0) return h+"h "+m+"m";if(m>0) return m+"m";const s=Math.floor((ms%60000)/1000);return s+"s";}
+function fmtShort(ms){if(ms<=0) return "0m";const m=Math.floor(ms/60000);const h=Math.floor(m/60);const rm=m%60;if(h>0) return h+"h "+rm+"m";return m+"m";}
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3200);}
 window.alert=showToast;
 const btnWatch=document.getElementById('btnWatch'), btnQuiz=document.getElementById('btnQuiz'), btnArticles=document.getElementById('btnArticles'), btnBonus=document.getElementById('btnBonus');
 function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
-function setBtnState(btn, state, countdownText){
-  if(!btn) return;
-  let old=btn.querySelector('.badge'); if(old) old.remove();
-  btn.classList.remove('open');
+function setBtnState(btn, state, txt){
+  if(!btn) return; let old=btn.querySelector('.badge'); if(old) old.remove();
   if(state==='locked'){const b=document.createElement('span'); b.className='badge padlock'; b.textContent='🔒'; btn.appendChild(b);}
-  else if(state==='open'){btn.classList.add('open');const b=document.createElement('span'); b.className='badge green'; b.textContent='Open'; btn.appendChild(b);}
-  else if(state==='live'){btn.classList.add('open');const b=document.createElement('span'); b.className='badge live'; b.textContent='Live '+countdownText; btn.appendChild(b);}
-  else if(state==='soon'){const b=document.createElement('span'); b.className='badge soon'; b.textContent=countdownText; btn.appendChild(b);}
+  else if(state==='open'){const b=document.createElement('span'); b.className='badge green'; b.textContent='Open'; btn.appendChild(b);}
+  else if(state==='live'){const b=document.createElement('span'); b.className='badge live'; b.textContent='Live '+txt; btn.appendChild(b);}
+  else if(state==='wait'){const b=document.createElement('span'); b.className='badge soon'; b.textContent='⏳ '+txt; btn.appendChild(b);}
   else if(state==='done'){const b=document.createElement('span'); b.className='badge padlock'; b.textContent='✅ Done'; btn.appendChild(b);}
-  else if(state==='wait'){const b=document.createElement('span'); b.className='badge soon'; b.textContent='⏳ '+countdownText; btn.appendChild(b);}
 }
 function evaluateChain(){
   const c=getChain(); const now=Date.now(); const today=localDayKey();
-  if(c.articles_finishedToday===today || c.articles_doneToday===today){
-    if(c.watch_nextAvail && now < c.watch_nextAvail){setBtnState(btnWatch,'wait', fmtShort(c.watch_nextAvail-now));} else {setBtnState(btnWatch,'done','');}
-    setBtnState(btnQuiz,'done','');setBtnState(btnArticles,'done','');
-  } else {
+  if(c.articles_finishedToday===today){setBtnState(btnWatch,'done','');setBtnState(btnQuiz,'done','');setBtnState(btnArticles,'done','');}
+  else {
     if(c.watch_nextAvail && now < c.watch_nextAvail){setBtnState(btnWatch,'wait', fmtShort(c.watch_nextAvail-now));}
     else if(c.watch_finishedToday===today){setBtnState(btnWatch,'done','');}
-    else if(c.watch_open && now < c.watch_expiry && c.watch_finishedToday!==today){setBtnState(btnWatch,'live', fmtShort(c.watch_expiry-now));}
+    else if(c.watch_open && now < c.watch_expiry){setBtnState(btnWatch,'live', fmtShort(c.watch_expiry-now));}
     else {setBtnState(btnWatch,'open','');}
-    if(c.quiz_finishedToday===today || c.quiz_doneToday===today){setBtnState(btnQuiz,'done','');}
+    if(c.quiz_finishedToday===today){setBtnState(btnQuiz,'done','');}
     else if(c.watch_finishedToday!==today){setBtnState(btnQuiz,'locked','');}
     else {setBtnState(btnQuiz,'open','');}
-    if(c.articles_finishedToday===today || c.articles_doneToday===today){setBtnState(btnArticles,'done','');}
-    else if(c.quiz_finishedToday!==today && c.quiz_doneToday!==today){setBtnState(btnArticles,'locked','');}
+    if(c.articles_finishedToday===today){setBtnState(btnArticles,'done','');}
+    else if(c.quiz_finishedToday!==today){setBtnState(btnArticles,'locked','');}
     else {setBtnState(btnArticles,'open','');}
   }
   try{
-    const userData=JSON.parse(localStorage.getItem('userData')||'{}');let ms=0;
-    if(userData.lastBonusTimestamp){const lb=userData.lastBonusTimestamp;if(lb.toMillis) ms=lb.toMillis();else if(lb.seconds) ms=lb.seconds*1000;else if(typeof lb==='number') ms=lb;else if(lb._seconds) ms=lb._seconds*1000;else {const parsed=Date.parse(lb); if(!isNaN(parsed)) ms=parsed;}}
+    const ud=JSON.parse(localStorage.getItem('userData')||'{}');let ms=0;
+    if(ud.lastBonusTimestamp){const lb=ud.lastBonusTimestamp;if(lb.toMillis) ms=lb.toMillis();else if(lb.seconds) ms=lb.seconds*1000;else if(typeof lb==='number') ms=lb;}
     if(!ms){setBtnState(btnBonus,'open','');} else {const diff=now-ms;if(diff>=BONUS_COOLDOWN){setBtnState(btnBonus,'live','Ready');} else {setBtnState(btnBonus,'wait', fmtShort(BONUS_COOLDOWN-diff));}}
   }catch(e){ setBtnState(btnBonus,'open',''); }
 }
-window.goWatch=()=>{const c=getChain(); const now=Date.now(); const today=localDayKey();if(c.articles_finishedToday===today || c.articles_doneToday===today){if(c.watch_nextAvail && now < c.watch_nextAvail){showToast(`All done today ✅ Opens in ${fmtShort(c.watch_nextAvail-now)}`); return;}}if(c.watch_nextAvail && now < c.watch_nextAvail){showToast(`Watch locked - Opens in ${fmtShort(c.watch_nextAvail-now)}`); return;}if(c.watch_finishedToday===today){showToast(`Watch done today ✅`); return;}if(!c.watch_open || now > c.watch_expiry){c.watch_open = now; c.watch_expiry = now + WINDOW; saveChain(c);}location.href='./watch.html';};
-window.goQuiz=()=>{const c=getChain(); const today=localDayKey();if(c.articles_finishedToday===today){showToast(`All done today ✅ Opens tomorrow`); return;}if(c.quiz_finishedToday===today || c.quiz_doneToday===today){showToast("Quiz done today ✅ Articles next"); return;}if(c.watch_finishedToday!==today){showToast("Finish Watch first"); return;}location.href='./quiz_earn.html';};
-window.goArticles=()=>{const c=getChain(); const today=localDayKey();if(c.articles_finishedToday===today || c.articles_doneToday===today){showToast(`All done today ✅ Come back tomorrow`); return;}if(c.quiz_finishedToday!==today && c.quiz_doneToday!==today){showToast("Finish Quiz first"); return;}location.href='./articles_earn.html';};
+window.goWatch=()=>{const c=getChain(); const now=Date.now(); const today=localDayKey();if(c.articles_finishedToday===today){showToast(`All done today ✅`); return;}if(c.watch_nextAvail && now < c.watch_nextAvail){showToast(`Watch locked - ${fmtShort(c.watch_nextAvail-now)}`); return;}if(c.watch_finishedToday===today){showToast(`Watch done today`); return;}if(!c.watch_open || now > c.watch_expiry){c.watch_open=now;c.watch_expiry=now+WINDOW;saveChain(c);}location.href='./watch.html';};
+window.goQuiz=()=>{const c=getChain(); const today=localDayKey();if(c.articles_finishedToday===today){showToast(`All done today`); return;}if(c.quiz_finishedToday===today){showToast("Quiz done"); return;}if(c.watch_finishedToday!==today){showToast("Finish Watch first"); return;}location.href='./quiz_earn.html';};
+window.goArticles=()=>{const c=getChain(); const today=localDayKey();if(c.articles_finishedToday===today){showToast(`All done today`); return;}if(c.quiz_finishedToday!==today){showToast("Finish Quiz first"); return;}location.href='./articles_earn.html';};
 setInterval(evaluateChain,1000); evaluateChain();
 (function(){
-  const wrap=document.getElementById('wrap');
-  const pullRef=document.getElementById('pullRef');
-  const pullIcon=document.getElementById('pullIcon');
-  let startY=0, pulling=false, threshold=80;
-  wrap.addEventListener('touchstart', e=>{
-    if(window.scrollY===0){startY=e.touches[0].clientY;pulling=false;}
-  }, {passive:true});
-  wrap.addEventListener('touchmove', e=>{
-    const curY=e.touches[0].clientY;
-    const diff=curY-startY;
-    if(diff>0 && startY>0){
-      if(diff>15){
-        pulling=true;pullRef.classList.add('show');pullRef.classList.remove('loading');
-        pullIcon.className='spin-line';
-        if(diff>20) e.preventDefault();
-      }
-    }
-  }, {passive:false});
-  wrap.addEventListener('touchend', e=>{
-    if(pulling){
-      const diff=e.changedTouches[0].clientY-startY;
-      if(diff>threshold){
-        pullRef.classList.add('loading');
-        pullIcon.className='spin-line';
-        setTimeout(()=>location.reload(), 700);
-      } else {
-        pullRef.classList.remove('show','loading');
-      }
-    }
-    startY=0; pulling=false;
-  }, {passive:true});
+  const wrap=document.getElementById('wrap');const pullRef=document.getElementById('pullRef');let startY=0,pulling=false,threshold=80;
+  wrap.addEventListener('touchstart',e=>{if(window.scrollY===0){startY=e.touches[0].clientY;pulling=false;}},{passive:true});
+  wrap.addEventListener('touchmove',e=>{const diff=e.touches[0].clientY-startY;if(diff>15){pulling=true;pullRef.classList.add('show');}},{passive:true});
+  wrap.addEventListener('touchend',e=>{if(pulling){const diff=e.changedTouches[0].clientY-startY;if(diff>threshold){pullRef.classList.add('loading');setTimeout(()=>location.reload(),700);}else{pullRef.classList.remove('show');}}startY=0;pulling=false;},{passive:true});
 })();
 </script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
@@ -176,11 +140,11 @@ setInterval(evaluateChain,1000); evaluateChain();
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};firebase.initializeApp(firebaseConfig);
 try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
 const auth=firebase.auth(),db=firebase.firestore();
-function loadData(d){if(!d)return;document.getElementById('headerText').innerText=d.username||'';document.getElementById('balance').innerText=(d.balance??d.points??0)+' Coins';document.getElementById('usdBalance').innerText='$'+((d.balance??d.points??0)*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').innerHTML=Number(d.usdtBalance||0).toFixed(4)+' <span style="color:#059669">USDT</span>';localStorage.setItem('userData',JSON.stringify(d)); 
+function loadData(d){if(!d)return;document.getElementById('headerText').innerText=d.username||'';document.getElementById('balance').innerText=(d.balance??d.points??0)+' Coins';document.getElementById('usdBalance').innerText='$'+((d.balance??d.points??0)*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').innerHTML=Number(d.usdtBalance||0).toFixed(4)+' <span style="color:#059669">USDT</span>';localStorage.setItem('userData',JSON.stringify(d));
 if(d.username){document.getElementById('drawerUsername').innerText=d.username;document.getElementById('drawerAvatar').innerText=d.username.charAt(0).toUpperCase();}
 if(d.email){document.getElementById('drawerEmail').innerText=d.email;}
-if(d.uid||d.id||d.userId){let idv=d.uid||d.id||d.userId;document.getElementById('drawerId').innerText='ID: '+String(idv).slice(0,12);}
-if(d.chain){ const local=getChain(); let changed=false; for(let k in d.chain){ if(d.chain[k]){ if(!local[k] || d.chain[k]>local[k]){local[k]=d.chain[k]; changed=true;}}} if(changed) saveChain(local); evaluateChain(); } evaluateChain(); }
+if(d.uid||d.id){document.getElementById('drawerId').innerText='ID: '+String(d.uid||d.id).slice(0,12);}
+if(d.chain){const local=getChain();let changed=false;for(let k in d.chain){if(d.chain[k]){if(!local[k]||d.chain[k]>local[k]){local[k]=d.chain[k];changed=true;}}}if(changed) saveChain(local); evaluateChain();}}
 db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maint').style.display='flex';}else{document.getElementById('maint').style.display='none';}});
 auth.onAuthStateChanged(u=>{if(u){if(u.email)document.getElementById('drawerEmail').innerText=u.email;if(u.uid)document.getElementById('drawerId').innerText='ID: '+u.uid.slice(0,12);db.collection('users').doc(u.uid).onSnapshot(doc=>{if(doc.exists)loadData(doc.data());});}else{location.href='./index.html';}});
 </script></body></html>
