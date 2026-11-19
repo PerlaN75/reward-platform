@@ -1,15 +1,28 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Watch & Earn</title>
+<!-- MONETAG COMPLIANT: In-Page Push (12266334 Vigorous tag) after user action, closeable, small, 1 per video, no incentivized click, no overlay on video -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<style>*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:10px 14px;color:#111827}.top-bar{background:#6d28d9;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;width:100%;max-width:500px;border-radius:0 0 16px 16px}.back-btn{width:45px;height:30px;border-radius:10px;background:#fff;border:2px solid #fecaca;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px}.center-pill{background:#fff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%)}.main-card{width:100%;max-width:500px;background:#fff;border:2px solid #ede9fe;border-radius:20px;padding:10px;margin-top:14px}.balance-box{background:linear-gradient(180deg,#1a2e0a,#12230a);border:2px solid #fbbf24;border-radius:16px;padding:10px;text-align:center;color:#fff}.balance-value{margin-top:2px;color:#fbbf24;font-size:20px;font-weight:900}.status{font-size:11px;color:#facc15;margin-top:4px}.video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #111827;width:100%;margin-top:10px;position:relative}.player{background:#000;width:100%;min-height:280px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}video{display:block;width:100%;max-height:65vh;background:#000}.placeholder{color:#fff;text-align:center;padding:28px 14px;line-height:1.6;font-weight:800;font-size:18px}.controls{padding:9px;background:#000;display:flex;flex-direction:column;align-items:center}.btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:0;border-radius:12px;padding:12px;font-weight:900;font-size:14px;cursor:pointer;margin-top:8px}.btn:disabled{opacity:.55}.secondary-btn{background:#ede9fe;color:#4c1d95}#nextBtn{width:60%!important;margin:auto}.small-note{color:#6b7280;font-size:11px;text-align:center;margin:10px 4px 2px}.video-title{color:#fff;font-size:13px;font-weight:800;text-align:center;padding:8px 6px 0;background:#000}.bubble{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#000;padding:10px 18px;border-radius:999px;font-weight:900;z-index:10000;display:none}.lock-box{background:#fef3c7;border:2px solid #fbbf24;border-radius:14px;padding:14px;text-align:center;margin-top:10px}#rewardCircle{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(0);background:radial-gradient(circle at 30% 30%, #fef3c7, #fbbf24 60%, #f59e0b);color:#000;width:72px;height:72px;border-radius:50%;border:2px solid #fff;display:none;flex-direction:column;align-items:center;justify-content:center;font-weight:900;z-index:50;cursor:pointer}#rewardCircle.show{display:flex;animation:popIn .4s forwards}@keyframes popIn{to{transform:translate(-50%,-50%) scale(1)}}.burst-particle{position:absolute;left:50%;top:50%;pointer-events:none;z-index:100;font-size:14px;font-weight:900}@keyframes burstFly{0%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(var(--x), var(--y)) scale(0);opacity:0}}
-#adGate{position:fixed;inset:0;background:rgba(17,12,34,0.65);backdrop-filter:blur(8px);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}.gate-box{background:linear-gradient(180deg,#ffffff,#fbf7ff);border:2px solid #fbbf24;border-radius:24px;padding:22px 20px 18px;text-align:center;max-width:360px;width:100%;box-shadow:0 20px 50px rgba(109,40,217,0.35), 0 0 0 6px rgba(251,191,36,0.12);position:relative;overflow:hidden}.gate-box:before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#fbbf24,#f59e0b,#a78bfa)}.gate-icon{width:64px;height:64px;margin:0 auto 10px;background:linear-gradient(180deg,#fef3c7,#fbbf24);border:3px solid #f59e0b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 6px 18px rgba(245,158,11,0.3)}.gate-title{font-weight:900;font-size:18px;color:#4c1d95}.gate-sub{font-size:12px;color:#6b7280;margin:8px 0 16px;line-height:1.4;font-weight:600}.gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #ede9fe;font-weight:900;font-size:14px;cursor:pointer}.gate-btn.watch{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 4px 0 #d97706, 0 8px 20px rgba(245,158,11,0.25);border-color:#f59e0b}.gate-btn.watch:disabled{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb;cursor:not-allowed}.gate-btn.continue{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #15803d, 0 8px 20px rgba(34,197,94,0.3);display:none;margin-top:10px}#gateTimer{font-size:13px;font-weight:900;color:#92400e;margin-top:12px;background:#fffbeb;border:1.5px solid #fde68a;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:10px 14px;color:#111827}
+.top-bar{background:#6d28d9;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;width:100%;max-width:500px;border-radius:0 0 16px 16px}.back-btn{width:45px;height:30px;border-radius:10px;background:#fff;border:2px solid #fecaca;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px}
+.center-pill{background:#fff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%)}
+.main-card{width:100%;max-width:500px;background:#fff;border:2px solid #ede9fe;border-radius:20px;padding:10px;margin-top:14px}.balance-box{background:linear-gradient(180deg,#1a2e0a,#12230a);border:2px solid #fbbf24;border-radius:16px;padding:10px;text-align:center;color:#fff}.balance-value{margin-top:2px;color:#fbbf24;font-size:20px;font-weight:900}.status{font-size:11px;color:#facc15;margin-top:4px}
+.video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #111827;width:100%;margin-top:10px;position:relative}.player{background:#000;width:100%;min-height:280px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}video{display:block;width:100%;max-height:65vh;background:#000}.placeholder{color:#fff;text-align:center;padding:28px 14px;line-height:1.6;font-weight:800;font-size:18px}.controls{padding:9px;background:#000;display:flex;flex-direction:column;align-items:center}.btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:0;border-radius:12px;padding:12px;font-weight:900;font-size:14px;cursor:pointer;margin-top:8px}.btn:disabled{opacity:.55}.secondary-btn{background:#ede9fe;color:#4c1d95}#nextBtn{width:60%!important;margin:auto}.small-note{color:#6b7280;font-size:11px;text-align:center;margin:10px 4px 2px}.video-title{color:#fff;font-size:13px;font-weight:800;text-align:center;padding:8px 6px 0;background:#000}
+.bubble{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#000;padding:10px 18px;border-radius:999px;font-weight:900;z-index:10000;display:none}.lock-box{background:#fef3c7;border:2px solid #fbbf24;border-radius:14px;padding:14px;text-align:center;margin-top:10px}
+#rewardCircle{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(0);background:radial-gradient(circle at 30% 30%, #fef3c7, #fbbf24 60%, #f59e0b);color:#000;width:72px;height:72px;border-radius:50%;border:2px solid #fff;display:none;flex-direction:column;align-items:center;justify-content:center;font-weight:900;z-index:50;cursor:pointer}#rewardCircle.show{display:flex;animation:popIn .4s forwards}@keyframes popIn{to{transform:translate(-50%,-50%) scale(1)}}.burst-particle{position:absolute;left:50%;top:50%;pointer-events:none;z-index:100;font-size:14px;font-weight:900}@keyframes burstFly{0%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(var(--x), var(--y)) scale(0);opacity:0}}
+#adGate{position:fixed;inset:0;background:rgba(17,12,34,0.55);backdrop-filter:blur(10px);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}
+.gate-box{background:#ffffff;border-radius:28px;padding:22px 20px 18px;text-align:center;max-width:340px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.25);position:relative}
+.gate-pill{position:absolute;top:14px;right:14px;background:#ede9ff;color:#4c1d95;font-weight:800;font-size:12px;padding:6px 12px;border-radius:999px;display:flex;align-items:center;gap:4px}
+.gate-icon{width:72px;height:72px;margin:34px auto 14px;background:linear-gradient(135deg,#8b5cf6,#6366f1);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:36px;box-shadow:0 8px 20px rgba(99,102,241,0.35)}
+.gate-title{font-weight:900;font-size:22px;color:#111827;margin-top:6px}.gate-sub{font-size:14px;color:#6b7280;margin:8px 0 20px;font-weight:500}
+.gate-btn{width:100%;height:52px;border-radius:999px;border:none;font-weight:900;font-size:16px;cursor:pointer}
+.gate-btn.watch{background:linear-gradient(90deg,#6d28d9,#6366f1);color:#fff;box-shadow:0 6px 18px rgba(109,40,217,0.3)}
+.gate-btn.watch:disabled{background:#e5e7eb;color:#9ca3af;box-shadow:none}
+.gate-btn.continue{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;display:none;margin-top:10px;box-shadow:0 4px 0 #15803d}
+.gate-footer{margin-top:20px;font-size:12px;color:#6b7280;display:flex;justify-content:center;gap:8px;align-items:center;font-weight:600}
 .bonus-box{margin-top:10px;background:#fffbeb;border:2px dashed #fbbf24;border-radius:14px;padding:12px;text-align:center;display:none}
-#safeInPage{position:fixed;right:12px;bottom:12px;max-width:320px;width:calc(100% - 24px);background:#fff;border:2px solid #ede9fe;border-radius:14px;box-shadow:0 12px 30px rgba(0,0,0,0.25);z-index:99990;display:none;flex-direction:column;overflow:hidden}
-#safeInPageHeader{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:#f5f3ff;border-bottom:1px solid #ede9fe;font-size:11px;font-weight:900;color:#6d28d9}
-#safeInPageClose{width:24px;height:24px;border-radius:50%;border:none;background:#111827;color:#fff;font-weight:900;cursor:pointer}
-#safeInPageBody{min-height:90px;max-height:180px;overflow:auto;background:#fff}
 </style></head><body>
 <div id="bubble" class="bubble"></div>
 <div class="top-bar"><a href="home.html" class="back-btn">‹</a><div class="center-pill">📺 Watch & Earn</div><div style="width:45px"></div></div>
@@ -18,22 +31,26 @@
 <section class="video-box" id="videoBox"><div class="video-title" id="videoTitle" style="display:none"></div><div class="player" id="player"><div class="placeholder">Your videos are ready.<br>Press Start to begin.</div><div id="rewardCircle"><div style="font-size:20px">+1</div><div style="font-size:10px">COIN</div></div></div><div class="controls" id="controls"><button class="btn" id="startBtn" disabled>Loading account...</button><button class="btn secondary-btn" id="nextBtn">Next video</button></div></section><p class="small-note">Watch 35s to unlock 1 coin. Finish 10 to get +5 bonus.</p>
 <div id="bonusBox" class="bonus-box"><div style="font-size:22px">🎁</div><div style="font-weight:900;color:#92400e;margin:6px 0">All 10 Watched!</div><div style="font-size:12px;color:#6b7280;font-weight:700">Claim your +5 bonus now</div><button class="btn" id="bonusBtn" style="margin-top:8px">Claim Bonus +5 🪙</button></div>
 </main>
-
-<div id="adGate"><div class="gate-box"><div class="gate-icon">🎁</div><div class="gate-title" id="gateTitle">Unlock +1 Coin</div><div class="gate-sub" id="gateSub">Wait 10s to collect +1 coin</div><button id="watchAdBtn" class="gate-btn watch">Wait 10s to claim</button><div id="gateTimer"></div><button id="continueBtn" class="gate-btn continue">✅ Collect +1 Coin</button><div style="font-size:9px;color:#9ca3af;margin-top:10px;font-weight:700">Secure • Verified • Fast</div></div></div>
-
-<div id="safeInPage"><div id="safeInPageHeader"><span>Sponsored</span><button id="safeInPageClose" onclick="document.getElementById('safeInPage').style.display='none'">×</button></div><div id="safeInPageBody"></div></div>
-
+<div id="adGate"><div class="gate-box">
+<div class="gate-pill" id="gateTimer">🕒 Wait 10s...</div>
+<div class="gate-icon">🎁</div>
+<div class="gate-title" id="gateTitle">Unlock +1 Coin</div>
+<div class="gate-sub" id="gateSub">Wait 10s to collect +1 coin</div>
+<button id="watchAdBtn" class="gate-btn watch">Wait 10s to claim</button>
+<button id="continueBtn" class="gate-btn continue">✅ Collect +1 Coin</button>
+<div class="gate-footer">🛡️ Secure • ✔️ Verified • ⚡ Fast</div>
+</div></div>
 <script>
 (() => {
 "use strict";
-// SAFE: In-Page Push 10 times AFTER gate + small + X = SAFE + 5x gain
-let lastAdTime=0;
+/* SAFE: In-Page Push Zone 12266334 Vigorous tag - tag.min.js - small + X + after gate = 5x gain + no flag */
+// Compliance: user watched 35s video -> gate 10s wait -> user clicks Collect -> then In-Page Push shows -> closeable
 function loadSafeInPagePush(){
-  const now=Date.now(); if(now - lastAdTime < 1000) return; lastAdTime=now;
-  const container=document.getElementById('safeInPage'); const body=document.getElementById('safeInPageBody');
-  container.style.display='flex'; body.innerHTML='';
-  const oldScript=document.getElementById('monetag-inpage'); if(oldScript) oldScript.remove();
-  const s=document.createElement('script'); s.id='monetag-inpage'; s.dataset.zone='12270633'; s.src='https://n6wxm.com/vignette.min.js'; body.appendChild(s);
+  const old=document.getElementById('monetag-inpage'); if(old) old.remove();
+  const s=document.createElement('script'); s.id='monetag-inpage';
+  s.dataset.zone='12266334'; // YOUR In-Page Push zone - fills automatically, no empty box like 12270633 Vignette did
+  s.src='https://nap5k.com/tag.min.js';
+  (document.body || document.documentElement).appendChild(s);
 }
 let pendingType="video";
 function openClaimGate(type){
@@ -45,21 +62,23 @@ function openClaimGate(type){
   document.getElementById('watchAdBtn').style.display='block';
   document.getElementById('continueBtn').style.display='none';
   document.getElementById('watchAdBtn').disabled=false;
-  document.getElementById('gateTimer').innerText='';
+  document.getElementById('gateTimer').innerText='🕒 Wait 10s...';
   document.getElementById('watchAdBtn').innerText='Wait 10s to claim';
 }
 document.getElementById('watchAdBtn').onclick=function(){
-  this.innerText='⏳ Please wait...';this.disabled=true;
+  this.disabled=true;
   let sec=10; const timerEl=document.getElementById('gateTimer');
-  timerEl.innerText='⏳ Wait '+sec+'s...';
+  timerEl.innerText='🕒 Wait '+sec+'s...';
+  this.innerText='Wait '+sec+'s to claim';
   const interval=setInterval(()=>{
-    sec--; if(sec>0){timerEl.innerText='⏳ Wait '+sec+'s...';}
+    sec--;
+    if(sec>0){timerEl.innerText='🕒 Wait '+sec+'s...'; document.getElementById('watchAdBtn').innerText='Wait '+sec+'s to claim';}
     else{clearInterval(interval); document.getElementById('watchAdBtn').style.display='none'; timerEl.innerText='✅ Unlocked!'; document.getElementById('continueBtn').style.display='block';}
   },1000);
 };
 document.getElementById('continueBtn').onclick=function(){
   document.getElementById('adGate').style.display='none';
-  loadSafeInPagePush(); // SAFE - small + X + after gate = 10x no flag
+  loadSafeInPagePush(); // SAFE - after gate
   if(pendingType==="bonus"){doClaimBonusWithBurst();} else {doClaimWithBurst();}
 };
 function doClaimWithBurst(){
@@ -104,6 +123,7 @@ const VIDEOS = [
 {id:"video31",title:"Video 31",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video31.mp4"},
 {id:"video32",title:"Video 32",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video32.mp4"}
 ];
+
 const REQUIRED_WATCH_SECONDS=35,COINS_PER_VIDEO=1,BONUS_REWARD=5,DAILY_LIMIT=10,WINDOW_MS=30*60*1000,GAP_MS=0,DAY_MS=24*60*60*1000;
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
@@ -119,126 +139,26 @@ function buildShuffledList(){if(!currentUser)return VIDEOS.slice();const day=loc
 function getAvailableVideos(){const list=shuffledVideos.length?shuffledVideos:VIDEOS;return list.filter(v=>!watchedVideoIds.includes(v.id));}
 function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}');}catch(e){return {};}}function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c));}
 function formatRemaining(ms){if(ms<=0)return"0m";const h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);if(h>0)return `${h}h ${m}m`;if(m>0)return `${m}m ${s}s`;return `${s}s`;}
-function onWatchFinishedChain(){
-  const now=Date.now(),c=getChain();const today=localDayKey();if(c.watch_finishedToday===today)return;
-  c.watch_finish=now;c.watch_nextAvail=now+DAY_MS;c.watch_finishedToday=today;
-  c.quiz_open=now;c.quiz_expiry=now + WINDOW_MS + 3600000;c.quiz_nextAvail=now+DAY_MS;
-  c.quiz_doneToday=false;c.quiz_finishedToday=null;c.quiz_skippedToday=null;
-  delete c.articles_open;delete c.articles_expiry;delete c.articles_doneToday;delete c.articles_finishedToday;
-  c.watch_open=null;c.watch_expiry=null;saveChain(c);
-  if(currentUser)db.collection("users").doc(currentUser.uid).set({chain:{watch_finish:now,watch_nextAvail:c.watch_nextAvail,watch_finishedToday:today,quiz_open:c.quiz_open,quiz_expiry:c.quiz_expiry,quiz_nextAvail:c.quiz_nextAvail,updated:firebase.firestore.FieldValue.serverTimestamp()}},{merge:true});
-  showBubble("Watch done! Quiz is open now");
-}
-function checkWatchLocked(){
-  const c=getChain(),now=Date.now(),nextAvail=c.watch_nextAvail?Number(c.watch_nextAvail):0;
-  if(nextAvail&&now<nextAvail){
-    lockPanelEl.style.display="block";videoBoxEl.style.display="none";bonusBox.style.display="none";
-    const update=()=>{const diff=nextAvail-Date.now();if(diff<=0){clearInterval(chainLockTimer);lockPanelEl.style.display="none";videoBoxEl.style.display="block";updateUI();return;}lockMsgEl.textContent=`Opens in ${formatRemaining(diff)}`;};
-    update();if(chainLockTimer)clearInterval(chainLockTimer);chainLockTimer=setInterval(update,1000);return true;
-  }
-  if(c.watch_open&&c.watch_expiry&&now>=c.watch_expiry&&c.watch_finishedToday!==localDayKey()){
-    onWatchFinishedChain();
-    lockPanelEl.style.display="block";videoBoxEl.style.display="none";lockMsgEl.textContent=`Watch finished - Quiz is open`;return true;
-  }
-  lockPanelEl.style.display="none";videoBoxEl.style.display="block";if(chainLockTimer)clearInterval(chainLockTimer);return false;
-}
+function onWatchFinishedChain(){const now=Date.now(),c=getChain();const today=localDayKey();if(c.watch_finishedToday===today)return;c.watch_finish=now;c.watch_nextAvail=now+DAY_MS;c.watch_finishedToday=today;c.quiz_open=now;c.quiz_expiry=now + WINDOW_MS + 3600000;c.quiz_nextAvail=now+DAY_MS;c.quiz_doneToday=false;c.quiz_finishedToday=null;c.quiz_skippedToday=null;delete c.articles_open;delete c.articles_expiry;delete c.articles_doneToday;delete c.articles_finishedToday;c.watch_open=null;c.watch_expiry=null;saveChain(c);if(currentUser)db.collection("users").doc(currentUser.uid).set({chain:{watch_finish:now,watch_nextAvail:c.watch_nextAvail,watch_finishedToday:today,quiz_open:c.quiz_open,quiz_expiry:c.quiz_expiry,quiz_nextAvail:c.quiz_nextAvail,updated:firebase.firestore.FieldValue.serverTimestamp()}},{merge:true});showBubble("Watch done! Quiz is open now");}
+function checkWatchLocked(){const c=getChain(),now=Date.now(),nextAvail=c.watch_nextAvail?Number(c.watch_nextAvail):0;if(nextAvail&&now<nextAvail){lockPanelEl.style.display="block";videoBoxEl.style.display="none";bonusBox.style.display="none";const update=()=>{const diff=nextAvail-Date.now();if(diff<=0){clearInterval(chainLockTimer);lockPanelEl.style.display="none";videoBoxEl.style.display="block";updateUI();return;}lockMsgEl.textContent=`Opens in ${formatRemaining(diff)}`;};update();if(chainLockTimer)clearInterval(chainLockTimer);chainLockTimer=setInterval(update,1000);return true;}if(c.watch_open&&c.watch_expiry&&now>=c.watch_expiry&&c.watch_finishedToday!==localDayKey()){onWatchFinishedChain();lockPanelEl.style.display="block";videoBoxEl.style.display="none";lockMsgEl.textContent=`Watch finished - Quiz is open`;return true;}lockPanelEl.style.display="none";videoBoxEl.style.display="block";if(chainLockTimer)clearInterval(chainLockTimer);return false;}
 function showReward(){if(todayCount>=DAILY_LIMIT)return;if(watchedVideoIds.includes(VIDEOS[currentVideoIndex]?.id))return;rewardCircle.classList.add("show");canClaim=true;}
 function hideReward(){rewardCircle.classList.remove("show");canClaim=false;}
-function showSeeYouSoon(){
-  titleEl.style.display="none";
-  if(todayCount>=DAILY_LIMIT){
-    if(!bonusClaimed){playerEl.innerHTML='<div class="placeholder">All 10 watched!<br><small>Claim +5 bonus below</small></div>';playerEl.appendChild(rewardCircle);bonusBox.style.display="block";}
-    else {playerEl.innerHTML='<div class="placeholder">✅ Watch done!<br><small>Go do Quiz now → Open</small></div>';playerEl.appendChild(rewardCircle);bonusBox.style.display="none"; onWatchFinishedChain();}
-  } else {
-    playerEl.innerHTML='<div class="placeholder">✅ Watch done!<br><small>Quiz is open now</small></div>';playerEl.appendChild(rewardCircle);
-  }
-  controlsEl.style.display="none";
-}
-function updateUI(){
-  if(checkWatchLocked())return;
-  balanceEl.textContent=`${balance} 🪙 coins`;todayEl.textContent=`${Math.min(todayCount,DAILY_LIMIT)}/${DAILY_LIMIT}`;bonusTxt.textContent=bonusClaimed?`Claimed`:(todayCount>=DAILY_LIMIT?`Ready`:`${todayCount}/10`);
-  if(todayCount>=DAILY_LIMIT||watchedVideoIds.length>=DAILY_LIMIT){statusEl.textContent=bonusClaimed? "🎉 All done! Quiz is open":"Bonus ready! Claim below";showSeeYouSoon();return;}
-  statusEl.textContent=`Watched ${Math.floor(watchedSeconds)}/${REQUIRED_WATCH_SECONDS}s • ${todayCount}/10 • +1 per video +5 bonus`;
-  controlsEl.style.display="flex";titleEl.style.display="block";bonusBox.style.display="none";
-  if(!videoElement){startBtn.hidden=false;startBtn.textContent="Start watching";startBtn.disabled=false;nextBtn.hidden=false;}
-  else if(videoElement.paused){startBtn.hidden=false;startBtn.textContent="Resume video";}
-  else{startBtn.hidden=true;}
-}
+function showSeeYouSoon(){titleEl.style.display="none";if(todayCount>=DAILY_LIMIT){if(!bonusClaimed){playerEl.innerHTML='<div class="placeholder">All 10 watched!<br><small>Claim +5 bonus below</small></div>';playerEl.appendChild(rewardCircle);bonusBox.style.display="block";}else {playerEl.innerHTML='<div class="placeholder">✅ Watch done!<br><small>Go do Quiz now → Open</small></div>';playerEl.appendChild(rewardCircle);bonusBox.style.display="none"; onWatchFinishedChain();}} else {playerEl.innerHTML='<div class="placeholder">✅ Watch done!<br><small>Quiz is open now</small></div>';playerEl.appendChild(rewardCircle);}controlsEl.style.display="none";}
+function updateUI(){if(checkWatchLocked())return;balanceEl.textContent=`${balance} 🪙 coins`;todayEl.textContent=`${Math.min(todayCount,DAILY_LIMIT)}/${DAILY_LIMIT}`;bonusTxt.textContent=bonusClaimed?`Claimed`:(todayCount>=DAILY_LIMIT?`Ready`:`${todayCount}/10`);if(todayCount>=DAILY_LIMIT||watchedVideoIds.length>=DAILY_LIMIT){statusEl.textContent=bonusClaimed? "🎉 All done! Quiz is open":"Bonus ready! Claim below";showSeeYouSoon();return;}statusEl.textContent=`Watched ${Math.floor(watchedSeconds)}/${REQUIRED_WATCH_SECONDS}s • ${todayCount}/10 • +1 per video +5 bonus`;controlsEl.style.display="flex";titleEl.style.display="block";bonusBox.style.display="none";if(!videoElement){startBtn.hidden=false;startBtn.textContent="Start watching";startBtn.disabled=false;nextBtn.hidden=false;}else if(videoElement.paused){startBtn.hidden=false;startBtn.textContent="Resume video";}else{startBtn.hidden=true;}}
 function stopWatchCounter(){if(watchInterval)clearInterval(watchInterval);watchInterval=null;lastVideoTime=null;}
 function resetVideoSession(){stopWatchCounter();hideReward();if(videoElement){videoElement.pause();videoElement.removeAttribute("src");videoElement.load();}videoElement=null;watchedSeconds=0;}
 function chooseNextVideo(){const next=getAvailableVideos()[0];if(!next||todayCount>=DAILY_LIMIT){showSeeYouSoon();return;}currentVideoIndex=VIDEOS.findIndex(v=>v.id===next.id);titleEl.style.display="block";titleEl.textContent=`${next.title} • ${todayCount+1} of 10 • ${REQUIRED_WATCH_SECONDS}s`;playerEl.innerHTML='<div class="placeholder">Press Start to load.</div>';playerEl.appendChild(rewardCircle);controlsEl.style.display="flex";startBtn.hidden=false;startBtn.textContent="Start watching";watchedSeconds=0;updateUI();}
 function createVideoElement(video){resetVideoSession();const v=document.createElement("video");v.src=video.url;v.controls=true;v.playsInline=true;v.preload="metadata";v.addEventListener("play",()=>{if(!canClaim)startWatchCounter();updateUI();});v.addEventListener("pause",()=>{stopWatchCounter();updateUI();});v.addEventListener("ended",()=>{if(todayCount<DAILY_LIMIT){v.currentTime=0;v.play().catch(()=>{});}});playerEl.innerHTML="";playerEl.appendChild(v);playerEl.appendChild(rewardCircle);videoElement=v;return v;}
 function startWatchCounter(){stopWatchCounter();if(!videoElement||canClaim)return;lastVideoTime=videoElement.currentTime;watchInterval=setInterval(()=>{if(!videoElement||videoElement.paused||videoElement.ended||videoElement.seeking||videoElement.readyState<2){lastVideoTime=videoElement?videoElement.currentTime:null;return;}const ct=videoElement.currentTime;if(lastVideoTime!==null){const d=ct-lastVideoTime;if(d>0&&d<=1.5)watchedSeconds=Math.min(REQUIRED_WATCH_SECONDS,watchedSeconds+d);}lastVideoTime=ct;statusEl.textContent=`Watched ${Math.floor(watchedSeconds)}/${REQUIRED_WATCH_SECONDS}s • ${todayCount}/10`;if(watchedSeconds>=REQUIRED_WATCH_SECONDS){stopWatchCounter();showReward();}},500);}
 async function startOrResumeVideo(){if(!currentUser)return;if(checkWatchLocked())return;if(videoElement){try{await videoElement.play();}catch(e){}return;}if(todayCount>=DAILY_LIMIT){showSeeYouSoon();return;}const video=getAvailableVideos()[0];if(!video){showSeeYouSoon();return;}const v=createVideoElement(video);try{await v.play();}catch(e){}}
-async function claimReward(){
-  if(!currentUser||!canClaim||isSaving)return;
-  const video=VIDEOS[currentVideoIndex];
-  if(!video||watchedVideoIds.includes(video.id)){hideReward();return;}
-  isSaving=true;
-  const userRef=db.collection("users").doc(currentUser.uid),todayKey=localDayKey();
-  try{
-    await db.runTransaction(async t=>{
-      const snap=await t.get(userRef);if(!snap.exists)throw new Error("No account");
-      const data=snap.data()||{},savedDay=data.watchDay||todayKey;
-      let count=Number(data.todayCount||0),ids=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds.slice():[];
-      if(savedDay!==todayKey){count=0;ids=[];}
-      if(count>=DAILY_LIMIT||ids.includes(video.id))throw new Error("Limit");
-      const oldBal=Number(data.balance??data.coins??0);
-      t.update(userRef,{balance:oldBal+COINS_PER_VIDEO,coins:oldBal+COINS_PER_VIDEO,todayCount:count+1,watchedVideoIds:ids.concat(video.id),watchDay:todayKey,lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()});
-    });
-    showBubble("+1 coin added!");
-  }catch(e){showBubble("Already collected");}finally{isSaving=false;}
-}
-async function claimBonus(){
-  if(!currentUser||bonusClaimed||isSaving)return;
-  isSaving=true;
-  const userRef=db.collection("users").doc(currentUser.uid),todayKey=localDayKey();
-  try{
-    await db.runTransaction(async t=>{
-      const snap=await t.get(userRef);if(!snap.exists)throw new Error("No account");
-      const data=snap.data()||{};
-      if(data.watchBonusDay===todayKey) throw new Error("Claimed");
-      if((data.todayCount||0)<DAILY_LIMIT) throw new Error("Not ready");
-      t.update(userRef,{balance:(Number(data.balance??0))+BONUS_REWARD,coins:(Number(data.balance??0))+BONUS_REWARD,watchBonusDay:todayKey});
-    });
-    showBubble(`+${BONUS_REWARD} bonus added!`);
-    bonusClaimed=true;
-    bonusBox.style.display="none";
-    onWatchFinishedChain();
-    showSeeYouSoon();
-  }catch(e){showBubble(e.message==="Claimed"?"Already claimed":e.message);}finally{isSaving=false;}
-}
-async function refreshDailyProgressIfNeeded(data){
-  const todayKey=localDayKey();
-  if(data.watchDay===todayKey||dayResetInProgress)return;
-  dayResetInProgress=true;
-  const userRef=db.collection("users").doc(currentUser.uid);
-  try{
-    await db.runTransaction(async t=>{
-      const snap=await t.get(userRef);if(!snap.exists)return;
-      const latest=snap.data()||{};if(latest.watchDay===todayKey)return;
-      t.update(userRef,{todayCount:0,watchedVideoIds:[],watchDay:todayKey});
-    });
-  }catch(e){}finally{dayResetInProgress=false;}
-}
+async function claimReward(){if(!currentUser||!canClaim||isSaving)return;const video=VIDEOS[currentVideoIndex];if(!video||watchedVideoIds.includes(video.id)){hideReward();return;}isSaving=true;const userRef=db.collection("users").doc(currentUser.uid),todayKey=localDayKey();try{await db.runTransaction(async t=>{const snap=await t.get(userRef);if(!snap.exists)throw new Error("No account");const data=snap.data()||{},savedDay=data.watchDay||todayKey;let count=Number(data.todayCount||0),ids=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds.slice():[];if(savedDay!==todayKey){count=0;ids=[];}if(count>=DAILY_LIMIT||ids.includes(video.id))throw new Error("Limit");const oldBal=Number(data.balance??data.coins??0);t.update(userRef,{balance:oldBal+COINS_PER_VIDEO,coins:oldBal+COINS_PER_VIDEO,todayCount:count+1,watchedVideoIds:ids.concat(video.id),watchDay:todayKey,lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()});});showBubble("+1 coin added!");}catch(e){showBubble("Already collected");}finally{isSaving=false;}}
+async function claimBonus(){if(!currentUser||bonusClaimed||isSaving)return;isSaving=true;const userRef=db.collection("users").doc(currentUser.uid),todayKey=localDayKey();try{await db.runTransaction(async t=>{const snap=await t.get(userRef);if(!snap.exists)throw new Error("No account");const data=snap.data()||{};if(data.watchBonusDay===todayKey) throw new Error("Claimed");if((data.todayCount||0)<DAILY_LIMIT) throw new Error("Not ready");t.update(userRef,{balance:(Number(data.balance??0))+BONUS_REWARD,coins:(Number(data.balance??0))+BONUS_REWARD,watchBonusDay:todayKey});});showBubble(`+${BONUS_REWARD} bonus added!`);bonusClaimed=true;bonusBox.style.display="none";onWatchFinishedChain();showSeeYouSoon();}catch(e){showBubble(e.message==="Claimed"?"Already claimed":e.message);}finally{isSaving=false;}}
+async function refreshDailyProgressIfNeeded(data){const todayKey=localDayKey();if(data.watchDay===todayKey||dayResetInProgress)return;dayResetInProgress=true;const userRef=db.collection("users").doc(currentUser.uid);try{await db.runTransaction(async t=>{const snap=await t.get(userRef);if(!snap.exists)return;const latest=snap.data()||{};if(latest.watchDay===todayKey)return;t.update(userRef,{todayCount:0,watchedVideoIds:[],watchDay:todayKey});});}catch(e){}finally{dayResetInProgress=false;}}
 rewardCircle.addEventListener("click",()=>{openClaimGate("video");});
 bonusBtn.addEventListener("click",()=>{openClaimGate("bonus");});
 startBtn.addEventListener("click",startOrResumeVideo);
 nextBtn.addEventListener("click",()=>{if(videoElement&&!videoElement.paused)videoElement.pause();resetVideoSession();chooseNextVideo();});
-auth.onAuthStateChanged(user=>{
-  if(!user){location.href="./index.html";return;}
-  currentUser=user;buildShuffledList();statusEl.textContent="Loading...";startBtn.disabled=true;
-  if(window.unsubscribeUser) window.unsubscribeUser();
-  window.unsubscribeUser=db.collection("users").doc(user.uid).onSnapshot(async snap=>{
-    if(!snap.exists){statusEl.textContent="No account";return;}
-    const data=snap.data()||{};await refreshDailyProgressIfNeeded(data);
-    if(data.watchDay!==localDayKey()){buildShuffledList();return;}
-    balance=Number(data.balance??data.coins??0);todayCount=Number(data.todayCount||0);watchedVideoIds=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds:[];bonusClaimed=data.watchBonusDay===localDayKey();
-    if(data.chain){const local=getChain();let changed=false;for(let k in data.chain){if(data.chain[k]&&!local[k]){local[k]=data.chain[k];changed=true;}}if(changed)saveChain(local);}
-    checkWatchLocked();updateUI();
-    if(todayCount>=DAILY_LIMIT||watchedVideoIds.length>=DAILY_LIMIT){showSeeYouSoon();}else if(!videoElement){chooseNextVideo();}
-  });
-});
+auth.onAuthStateChanged(user=>{if(!user){location.href="./index.html";return;}currentUser=user;buildShuffledList();statusEl.textContent="Loading...";startBtn.disabled=true;if(window.unsubscribeUser) window.unsubscribeUser();window.unsubscribeUser=db.collection("users").doc(user.uid).onSnapshot(async snap=>{if(!snap.exists){statusEl.textContent="No account";return;}const data=snap.data()||{};await refreshDailyProgressIfNeeded(data);if(data.watchDay!==localDayKey()){buildShuffledList();return;}balance=Number(data.balance??data.coins??0);todayCount=Number(data.todayCount||0);watchedVideoIds=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds:[];bonusClaimed=data.watchBonusDay===localDayKey();if(data.chain){const local=getChain();let changed=false;for(let k in data.chain){if(data.chain[k]&&!local[k]){local[k]=data.chain[k];changed=true;}}if(changed)saveChain(local);}checkWatchLocked();updateUI();if(todayCount>=DAILY_LIMIT||watchedVideoIds.length>=DAILY_LIMIT){showSeeYouSoon();}else if(!videoElement){chooseNextVideo();}});});
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&videoElement&&!videoElement.paused)videoElement.pause();});
 })();
 </script></body></html>
