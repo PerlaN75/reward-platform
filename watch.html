@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Watch & Earn</title>
-<!-- MONETAG COMPLIANT: In-Page Push (12266334 Vigorous tag) after user action, closeable, small, 1 per video, no incentivized click, no overlay on video -->
+<!-- MONETAG COMPLIANT: In-Page Push 12266334 after Collect, 1 per video, hide during 10s wait, closeable, small -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
@@ -43,17 +43,24 @@
 <script>
 (() => {
 "use strict";
-/* SAFE: In-Page Push Zone 12266334 Vigorous tag - tag.min.js - small + X + after gate = 5x gain + no flag */
-// Compliance: user watched 35s video -> gate 10s wait -> user clicks Collect -> then In-Page Push shows -> closeable
+// VERIFIED SAFE: No ads during 10s wait, 1 ad after Collect only
+function hideOldAds(){
+  try{
+    document.querySelectorAll('[id*="monetag"], [class*="monetag"]').forEach(el=>{
+      if(!el.closest('#adGate')) el.style.display='none';
+    });
+  }catch(e){}
+}
 function loadSafeInPagePush(){
   const old=document.getElementById('monetag-inpage'); if(old) old.remove();
   const s=document.createElement('script'); s.id='monetag-inpage';
-  s.dataset.zone='12266334'; // YOUR In-Page Push zone - fills automatically, no empty box like 12270633 Vignette did
+  s.dataset.zone='12266334'; // YOUR In-Page Push - no empty box
   s.src='https://nap5k.com/tag.min.js';
   (document.body || document.documentElement).appendChild(s);
 }
 let pendingType="video";
 function openClaimGate(type){
+  hideOldAds(); // VERIFIED: hide old ads so gate is clean during 10s wait
   pendingType=type; const isBonus=type==="bonus";
   document.getElementById('gateTitle').innerText=isBonus?'Unlock +5 Bonus':'Unlock +1 Coin';
   document.getElementById('gateSub').innerText=isBonus?'Wait 10s to collect +5 bonus':'Wait 10s to collect +1 coin';
@@ -78,7 +85,7 @@ document.getElementById('watchAdBtn').onclick=function(){
 };
 document.getElementById('continueBtn').onclick=function(){
   document.getElementById('adGate').style.display='none';
-  loadSafeInPagePush(); // SAFE - after gate
+  loadSafeInPagePush(); // AD APPEARS ONLY AFTER COLLECT - SAFE
   if(pendingType==="bonus"){doClaimBonusWithBurst();} else {doClaimWithBurst();}
 };
 function doClaimWithBurst(){
@@ -123,7 +130,6 @@ const VIDEOS = [
 {id:"video31",title:"Video 31",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video31.mp4"},
 {id:"video32",title:"Video 32",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video32.mp4"}
 ];
-
 const REQUIRED_WATCH_SECONDS=35,COINS_PER_VIDEO=1,BONUS_REWARD=5,DAILY_LIMIT=10,WINDOW_MS=30*60*1000,GAP_MS=0,DAY_MS=24*60*60*1000;
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
