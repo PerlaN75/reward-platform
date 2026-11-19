@@ -2,22 +2,20 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent!important}
 body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;overscroll-behavior:none}
-.wrap{width:100%;max-width:430px;height:100dvh;height:100svh;background:#ffffff;position:relative;display:flex;flex-direction:column;overflow:hidden;overscroll-behavior:none}
-.top{position:relative;width:100%;background:#ffedd5;border-bottom:2px solid #fdba74;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:30;box-shadow:0 6px 14px rgba(0,0,0,0.12);flex-shrink:0}
+.wrap{width:100%;max-width:430px;height:100dvh;height:100svh;background:#ffffff;background-image:url('./bg.jpg');background-repeat:no-repeat;background-size:100% auto;background-position:center center;position:relative;display:flex;flex-direction:column;overflow:hidden}
+.top{width:100%;background:#ffedd5;border-bottom:2px solid #fdba74;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:30;box-shadow:0 6px 14px rgba(0,0,0,0.12);flex-shrink:0}
 #menuBtn{width:44px;height:44px;border:none;background:none;font-size:26px;font-weight:900;cursor:pointer;color:#4c1d95;display:flex;align-items:center;justify-content:center}
-.top h2{font-size:19px;font-weight:900;text-align:center;flex:1}
-#headerText{font-size:20px;color:#4c1d95!important;font-weight:900}
-.welcome-green{color:#065f46} .welcome-purple{color:#4c1d95}
-.scene{flex:1;position:relative;z-index:2;background:#ffffff;display:flex;align-items:center;justify-content:center}
-/* ONLY THIS - BALANCE CENTERED WHITE */
-.monitor{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:90%;max-width:340px;background:none;border:none;box-shadow:none;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-.screen{display:flex;flex-direction:column;gap:8px;align-items:center}
-.badge{font-size:10px;font-weight:900;padding:3px 7px;border-radius:10px;color:#fff;margin-left:auto;white-space:nowrap}
+.top h2{font-size:19px;font-weight:900;text-align:center;flex:1;color:#111827}
+.scene{flex:1;position:relative;z-index:2;background:#ffffff;overflow:hidden}
+/* BALANCE INSIDE GOLD RING - EXACT LIKE YOUR PHOTO */
+.monitor{position:absolute;left:50%;top:50%;transform:translate(-50%,-42%);width:82%;max-width:310px;background:none;border:none;box-shadow:none;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.screen{display:flex;flex-direction:column;align-items:center;gap:6px}
+.badge{font-size:10px;font-weight:900;padding:3px 7px;border-radius:10px;color:#fff;margin-left:auto}
 .badge.padlock{background:#111827;padding:4px 8px;font-size:11px}
-.badge.green{background:#16a34a}.badge.live{background:#16a34a;font-size:10px}.badge.soon{background:#f59e0b;color:#000}
+.badge.green{background:#16a34a}.badge.live{background:#16a34a}.badge.soon{background:#f59e0b;color:#000}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:10px 14px;border-radius:10px;font-weight:bold;z-index:99999;display:none;max-width:90%;text-align:center}
 #maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
-#pullRef{position:absolute;top:0;left:50%;transform:translateX(-50%) translateY(-60px);z-index:100;width:48px;height:48px;background:#ffffff;border-radius:50%;box-shadow:0 4px 16px rgba(0,0,0,0.22);display:flex;align-items:center;justify-content:center;transition:transform 0.25s ease;pointer-events:none}
+#pullRef{position:absolute;top:0;left:50%;transform:translateX(-50%) translateY(-60px);z-index:100;width:48px;height:48px;background:#fff;border-radius:50%;box-shadow:0 4px 16px rgba(0,0,0,0.22);display:flex;align-items:center;justify-content:center;transition:transform 0.25s ease;pointer-events:none}
 #pullRef.show{transform:translateX(-50%) translateY(14px)}
 #pullIcon{width:28px;height:28px;border:3px solid #e5e7eb;border-top-color:#111827;border-radius:50%;animation:spinBlack 0.8s linear infinite}
 @keyframes spinBlack{to{transform:rotate(360deg)}}
@@ -25,7 +23,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;ove
 #drawerOverlay.show{display:block}
 #sideDrawer{position:fixed;top:0;left:0;transform:translateX(-100%);width:82%;max-width:310px;height:100dvh;background:#ffffff;z-index:999;display:flex;flex-direction:column;transition:transform 0.32s cubic-bezier(.2,.8,.2,1);box-shadow:6px 0 24px rgba(0,0,0,0.18)}
 #sideDrawer.open{transform:translateX(0)}
-.drawer-head{padding:18px 18px 14px;background:#fffdf5;border-bottom:1.5px solid #ffedd5}
+.drawer-head{padding:18px;background:#fffdf5;border-bottom:1.5px solid #ffedd5}
 .drawer-profile{display:flex;align-items:center;gap:12px}
 .drawer-avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#14b8a6,#06b6d4);color:#fff;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center}
 .drawer-name{font-size:16px;font-weight:900;color:#111827;display:flex;align-items:center;gap:6px}
@@ -34,7 +32,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;ove
 .drawer-item{width:100%;display:flex;align-items:center;gap:14px;padding:13px 18px;border:none;background:none;cursor:pointer;font-size:14px;font-weight:800;text-align:left;color:inherit}
 .drawer-item .emo{font-size:18px;width:26px;text-align:center}
 .drawer-sep{height:1px;background:#e5e7eb;margin:10px 18px}
-.drawer-foot{padding:12px 18px 16px;background:#fafafa;border-top:1px solid #e5e7eb;text-align:center;font-size:11px;color:#6b7280;font-weight:700}
+.drawer-foot{padding:12px 18px;text-align:center;font-size:11px;color:#6b7280;font-weight:700}
 </style></head><body>
 <div id="maint"><div><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900">Back</button></div></div>
 <div id="toast"></div>
@@ -44,7 +42,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;ove
     <div class="drawer-profile">
       <div class="drawer-avatar" id="drawerAvatar">I</div>
       <div>
-        <div class="drawer-name"><span id="drawerUsername">Ineza</span><span style="color:#16a34a"> ✅</span><span style="color:#16a34a;font-size:11px;font-weight:900">Verified</span></div>
+        <div class="drawer-name"><span id="drawerUsername">Ineza</span><span style="color:#16a34a"> ✅</span><span style="color:#16a34a;font-size:11px">Verified</span></div>
         <div class="drawer-sub" id="drawerEmail" style="color:#0d7dd8">ineza@email.com</div>
         <div class="drawer-sub" id="drawerId" style="color:#d97706">ID: RW-88421</div>
       </div>
@@ -72,21 +70,22 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;ove
 <div id="pullRef"><div id="pullIcon"></div></div>
 <div class="top">
 <button id="menuBtn" onclick="openDrawer()" type="button">☰</button>
-<h2><span class="welcome-green">Welcome</span> <span id="headerText">Ineza</span></h2>
+<h2>Welcome Ineza</h2>
 <div style="width:44px"></div>
 </div>
 <div class="scene">
 <div class="monitor"><div class="screen">
-<div style="color:#7c3aed;font-size:22px;font-weight:900">Balance</div>
-<div style="margin-top:8px;font-size:15px;font-weight:900"><span style="color:#fbbf24">⭐</span> <span style="color:#92400e" id="balance">118 Coins</span> <span style="color:#111827">= <span id="usdBalance">$0.0590</span></span></div>
-<div style="margin-top:10px;font-size:15px;font-weight:900"><span style="color:#38bdf8">💎</span> <span id="usdtBalanceDisplay" style="color:#111827">0.9565 <span style="color:#059669">USDT</span></span></div>
+<div style="color:#6d28d9;font-size:24px;font-weight:900;text-shadow:0 2px 6px rgba(255,255,255,0.9)">Balance</div>
+<div style="margin-top:6px;font-size:17px;font-weight:900;white-space:nowrap"><span style="color:#fbbf24">⭐</span><span style="color:#92400e" id="balance">118 Coins</span><span style="color:#111827"> = <span id="usdBalance">$0.0580</span></span></div>
+<div style="width:140px;height:1px;background:rgba(0,0,0,0.15);margin:8px auto"></div>
+<div style="font-size:17px;font-weight:900"><span style="color:#0ea5e9">💎</span><span style="color:#111827" id="usdtBalanceDisplay">0.9565 <span style="color:#059669">USDT</span></span></div>
 </div></div>
 </div>
 </div>
 <script>
 function openDrawer(){document.getElementById('sideDrawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('show');}
 function closeDrawer(){document.getElementById('sideDrawer').classList.remove('open');document.getElementById('drawerOverlay').classList.remove('show');}
-(function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}');if(c&&(c.balance!=null||c.points!=null)){var bal=c.balance??c.points??0;var usdt=c.usdtBalance??0;document.getElementById('balance').textContent=bal+' Coins';document.getElementById('usdBalance').textContent='$'+(bal*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').innerHTML=Number(usdt).toFixed(4)+' <span style="color:#059669">USDT</span>';if(c.username){document.getElementById('headerText').textContent=c.username;document.getElementById('drawerUsername').textContent=c.username;document.getElementById('drawerAvatar').textContent=c.username.charAt(0).toUpperCase();}if(c.email){document.getElementById('drawerEmail').textContent=c.email;}if(c.uid||c.id){document.getElementById('drawerId').textContent='ID: '+(c.uid||c.id).toString().slice(0,10);} }}catch(e){}})();
+(function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}');if(c&&(c.balance!=null||c.points!=null)){var bal=c.balance??c.points??0;var usdt=c.usdtBalance??0;document.getElementById('balance').textContent=bal+' Coins';document.getElementById('usdBalance').textContent='$'+(bal*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').innerHTML=Number(usdt).toFixed(4)+' <span style="color:#059669">USDT</span>';}}catch(e){}})();
 const WINDOW=30*60*1000, BONUS_COOLDOWN=60*60*1000;
 function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}')}catch(e){return {}}}
 function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c))}
@@ -140,11 +139,7 @@ setInterval(evaluateChain,1000); evaluateChain();
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};firebase.initializeApp(firebaseConfig);
 try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
 const auth=firebase.auth(),db=firebase.firestore();
-function loadData(d){if(!d)return;document.getElementById('headerText').innerText=d.username||'';document.getElementById('balance').innerText=(d.balance??d.points??0)+' Coins';document.getElementById('usdBalance').innerText='$'+((d.balance??d.points??0)*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').innerHTML=Number(d.usdtBalance||0).toFixed(4)+' <span style="color:#059669">USDT</span>';localStorage.setItem('userData',JSON.stringify(d));
-if(d.username){document.getElementById('drawerUsername').innerText=d.username;document.getElementById('drawerAvatar').innerText=d.username.charAt(0).toUpperCase();}
-if(d.email){document.getElementById('drawerEmail').innerText=d.email;}
-if(d.uid||d.id){document.getElementById('drawerId').innerText='ID: '+String(d.uid||d.id).slice(0,12);}
-if(d.chain){const local=getChain();let changed=false;for(let k in d.chain){if(d.chain[k]){if(!local[k]||d.chain[k]>local[k]){local[k]=d.chain[k];changed=true;}}}if(changed) saveChain(local); evaluateChain();}}
+function loadData(d){if(!d)return;document.getElementById('balance').innerText=(d.balance??d.points??0)+' Coins';document.getElementById('usdBalance').innerText='$'+((d.balance??d.points??0)*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').innerHTML=Number(d.usdtBalance||0).toFixed(4)+' <span style="color:#059669">USDT</span>';localStorage.setItem('userData',JSON.stringify(d));if(d.username){document.getElementById('drawerUsername').innerText=d.username;document.getElementById('drawerAvatar').innerText=d.username.charAt(0).toUpperCase();}if(d.email){document.getElementById('drawerEmail').innerText=d.email;}if(d.uid||d.id){document.getElementById('drawerId').innerText='ID: '+String(d.uid||d.id).slice(0,12);}if(d.chain){const local=getChain();let changed=false;for(let k in d.chain){if(d.chain[k]){if(!local[k]||d.chain[k]>local[k]){local[k]=d.chain[k];changed=true;}}}if(changed) saveChain(local); evaluateChain();}}
 db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maint').style.display='flex';}else{document.getElementById('maint').style.display='none';}});
 auth.onAuthStateChanged(u=>{if(u){if(u.email)document.getElementById('drawerEmail').innerText=u.email;if(u.uid)document.getElementById('drawerId').innerText='ID: '+u.uid.slice(0,12);db.collection('users').doc(u.uid).onSnapshot(doc=>{if(doc.exists)loadData(doc.data());});}else{location.href='./index.html';}});
 </script></body></html>
