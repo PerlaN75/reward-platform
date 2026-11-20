@@ -54,44 +54,33 @@
     </div>
     <div class="menu-list">
       <a onclick="openModal('notifModal')"><div>🔔 Notifications</div><span>›</span></a>
-      <a onclick="openModal('profileModal')"><div>👤 Profile</div><span>›</span></a>
       <a onclick="openModal('historyModal')"><div>📜 History</div><span>›</span></a>
       <a onclick="openModal('settingsModal')"><div>⚙️ Settings</div><span>›</span></a>
-      <a href="help.html"><div>💬 Help/Support</div><span>›</span></a>
     </div>
   </div>
-  <!-- NO AD BOX HERE ANYMORE - VIGNETTE IS FULL SCREEN, NO BLANK BOX -->
 </div>
 
 <div id="notifModal" class="modal" onclick="closeModal('notifModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('notifModal')">×</span><h3 style="text-align:center">🔔 Notifications</h3><div id="notifList" style="margin-top:12px">Loading...</div></div></div>
-<div id="profileModal" class="modal" onclick="closeModal('profileModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('profileModal')">×</span><div style="text-align:center"><div id="avatarLetter" class="avatar-letter">I</div><h3 id="pUsername">--</h3><p style="color:#22c55e;font-weight:900;font-size:12px">✓ Verified</p></div><div style="margin-top:14px;background:#f9fafb;border:1.5px solid #ede9fe;border-radius:14px;padding:14px"><div>📧 <b>Email:</b> <span id="pEmail">...</span></div><div>📅 <b>Registered:</b> <span id="pDate">...</span></div><div>🆔 <b>ID:</b> <span id="pId">...</span></div><div style="margin-top:8px">🪙 <b>Balance:</b> <span id="pBal">--</span></div></div></div></div>
 <div id="historyModal" class="modal" onclick="closeModal('historyModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('historyModal')">×</span><h3 style="text-align:center">📜 History</h3><div style="display:flex;gap:10px;margin:12px 0"><button onclick="loadHistory()" style="flex:1;padding:10px;border:none;border-radius:10px;background:#fbbf24;font-weight:800">Refresh</button><button onclick="clearHistorySafe()" style="flex:1;padding:10px;border:none;border-radius:10px;background:#ef4444;color:#fff;font-weight:800">Clear All</button></div><div id="historyList" style="max-height:50vh;overflow-y:auto">Loading...</div></div></div>
 <div id="settingsModal" class="modal" onclick="closeModal('settingsModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('settingsModal')">×</span><h3 style="text-align:center;margin-bottom:14px">⚙️ Settings</h3><div><span style="font-size:13px;font-weight:800">Language</span><div class="lang-option active" id="lang-en" onclick="setLang('en',this)"><span>English 🇺🇸</span><span>✓</span></div></div><div style="margin:16px 0"><span style="font-size:13px;font-weight:800">Appearance</span><div style="display:flex;gap:10px;margin-top:8px"><div class="mode-btn" id="modeLight" onclick="setMode('light')">☀️ Light</div><div class="mode-btn" id="modeDark" onclick="setMode('dark')">🌙 Dark</div></div></div><button onclick="saveSettings()" style="width:70%;margin:18px auto 0;display:block;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;padding:12px;border-radius:12px;font-weight:800">Save & Close</button></div></div>
 
 <script>
-// VIGNETTE LOADER - CLEAN SAFE - ONLY AFTER GATE
 function loadVignette(){
-  // Remove old if exists
   const old = document.querySelector('script[src*="vignette.min.js"]');
   if(old) old.remove();
   (function(s){s.dataset.zone='12268552',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
 }
-
 function initMoreGate(){
   const gate=document.getElementById('moreGate');
   const timerBox=document.getElementById('moreTimerBox');
   const progressBar=document.getElementById('moreProgressBar');
   const COOLDOWN=3*60*1000;
   const last=parseInt(localStorage.getItem('moreGateLastShown')||'0');
-  
-  // Within 3 min = skip gate, NO ad reload, NO blank box
   if(last && (Date.now()-last)<COOLDOWN){
     gate.style.display='none';
     gate.classList.remove('show');
     return;
   }
-  
-  // First time in 3 min = show gate 10 sec
   gate.classList.add('show');
   gate.style.display='flex';
   let sec=10; timerBox.innerText=sec; progressBar.style.width='100%';
@@ -102,7 +91,7 @@ function initMoreGate(){
       gate.style.display='none';
       gate.classList.remove('show');
       localStorage.setItem('moreGateLastShown', String(Date.now()));
-      loadVignette(); // Show clean Vignette ad AFTER gate - real ad, not placeholder
+      loadVignette();
     }
   },1000);
 }
@@ -114,19 +103,18 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 try{ firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true); }catch(e){}
 const auth=firebase.auth(), db=firebase.firestore(); let cachedUser=null, allData=[];
-function openModal(id){ document.getElementById(id).style.display='flex'; if(id==='profileModal') loadProfile(); if(id==='historyModal') loadHistory(); if(id==='notifModal') loadNotifs(); }
+function openModal(id){ document.getElementById(id).style.display='flex'; if(id==='historyModal') loadHistory(); if(id==='notifModal') loadNotifs(); }
 function closeModal(id){ document.getElementById(id).style.display='none'; }
 function setLang(c,el){ localStorage.setItem('app_lang',c); document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active')); el.classList.add('active'); }
 function setMode(m){ localStorage.setItem('app_mode',m); document.getElementById('modeLight').classList.toggle('active',m==='light'); document.getElementById('modeDark').classList.toggle('active',m==='dark'); if(m==='dark') document.body.classList.add('dark'); else document.body.classList.remove('dark'); }
 function saveSettings(){ closeModal('settingsModal'); }
 (function(){ const m=localStorage.getItem('app_mode')||'light'; setMode(m); })();
-async function loadProfile(){ const u=auth.currentUser||cachedUser; if(!u) return; db.collection('users').doc(u.uid).onSnapshot(s=>{ if(!s.exists) return; const d=s.data(); const coins=d.balance??d.coins??d.points??0; const usdt=d.usdtBalance??0; document.getElementById('pUsername').innerText=d.username||u.email.split('@')[0]; document.getElementById('avatarLetter').innerText=(d.username||'I').charAt(0).toUpperCase(); document.getElementById('pEmail').innerText=d.email||u.email; document.getElementById('pId').innerText=u.uid.substring(0,8).toUpperCase(); document.getElementById('pDate').innerText=d.createdAt?.toDate?d.createdAt.toDate().toLocaleDateString():'--'; document.getElementById('pBal').innerText=coins+' coins ('+Number(usdt).toFixed(4)+' USDT)'; }); }
 async function loadNotifs(){ const el=document.getElementById('notifList'); el.innerHTML='Loading...'; try{ const snap=await db.collection('notifications').orderBy('createdAt','desc').limit(20).get(); if(snap.empty){ el.innerHTML='<p style="text-align:center;padding:20px;color:#9ca3af">No notifications</p>'; return; } let h=''; snap.forEach(d=>{ const n=d.data(); const date=n.createdAt?.toDate?n.createdAt.toDate().toLocaleString():''; h+=`<div class="item"><div><div style="font-size:12px;font-weight:800">${n.message||n.title}</div><div style="font-size:10px;color:#9ca3af">${date}</div></div></div>`; }); el.innerHTML=h; }catch(e){ el.innerHTML='Error'; } }
 function getHiddenIds(){ try{ return JSON.parse(localStorage.getItem('hiddenHistoryIds')||'[]'); }catch{return [];} }
 function addHiddenIds(ids){ const cur=new Set(getHiddenIds()); ids.forEach(id=>cur.add(id)); const arr=[...cur]; localStorage.setItem('hiddenHistoryIds', JSON.stringify(arr)); const u=auth.currentUser||cachedUser; if(u){ db.collection('users').doc(u.uid).set({hiddenHistoryIds:arr},{merge:true}).catch(()=>{}); } }
 async function loadHistory(){ const user=auth.currentUser||cachedUser; if(!user) return; const list=document.getElementById('historyList'); list.innerHTML='Loading...'; allData=[]; const hidden=new Set(getHiddenIds()); try{ const userDoc=await db.collection('users').doc(user.uid).get(); if(userDoc.exists && userDoc.data().hiddenHistoryIds){ userDoc.data().hiddenHistoryIds.forEach(id=>hidden.add(id)); } }catch(e){} try{ const snap=await db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(100).get(); let html=''; snap.forEach(d=>{ if(hidden.has(d.id)) return; const v=d.data(); if(v.hidden===true) return; allData.push({id:d.id}); const date=v.timestamp?.toDate?v.timestamp.toDate().toLocaleString():new Date().toLocaleString(); html+=`<div class="item"><div><div style="font-weight:bold;font-size:13px">${v.action||'Earn'}</div><div style="font-size:11px;color:#9ca3af">${date}${v.desc?' - '+v.desc:''}</div></div><div style="color:#22c55e;font-weight:900">+${v.coins??v.points??0} 🪙</div></div>`; }); list.innerHTML=html||'<p style="text-align:center;padding:20px">No history ✅</p>'; }catch(e){ list.innerHTML='Error: '+e.message; } }
 async function clearHistorySafe(){ if(allData.length===0){ document.getElementById('historyList').innerHTML='<p style="text-align:center;padding:20px">No history</p>'; return; } if(!confirm('Clear all '+allData.length+' history?')) return; const list=document.getElementById('historyList'); list.innerHTML='Clearing...'; const ids=allData.map(x=>x.id); addHiddenIds(ids); const user=auth.currentUser||cachedUser; for(const id of ids){ try{ await db.collection('users').doc(user.uid).collection('earnHistory').doc(id).set({hidden:true},{merge:true}); }catch(e){} } allData=[]; list.innerHTML='<p style="text-align:center;padding:20px">Cleared ✅</p>'; }
-auth.onAuthStateChanged(u=>{ if(!u){ location.href='./index.html'; return; } cachedUser=u; loadProfile(); });
+auth.onAuthStateChanged(u=>{ if(!u){ location.href='./index.html'; return; } cachedUser=u; });
 </script>
 </body>
 </html>
