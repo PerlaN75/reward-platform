@@ -25,7 +25,8 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 .drawer-name{font-size:16px;font-weight:900;color:#111827;display:flex;align-items:center;gap:6px}
 .drawer-sub{font-size:12.5px;font-weight:700;margin-top:3px;word-break:break-all}
 #drawerUsername{font-family:'Trebuchet MS','Segoe UI',Tahoma,sans-serif;font-weight:800;letter-spacing:0.2px;font-size:16.5px;color:#111827}
-#drawerEmail{font-family:'Courier New',Courier,monospace;font-weight:700;font-size:12px;color:#0d7dd8;letter-spacing:-0.2px}
+#drawerEmail{font-family:'Courier New',Courier,monospace;font-weight:800;font-size:13.5px;color:#0a1f8f;letter-spacing:-0.2px}
+#drawerId{color:#0a1f8f !important;font-size:12.5px !important;font-weight:800 !important}
 .drawer-menu{flex:1;overflow-y:auto;padding:10px 0}
 .drawer-item{width:100%;display:flex;align-items:center;gap:14px;padding:13px 18px;border:none;background:none;cursor:pointer;font-size:14px;font-weight:800;text-align:left;color:inherit}
 .drawer-item .emo{font-size:18px;width:26px;text-align:center}
@@ -36,7 +37,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 <div id="toast"></div>
 <div id="drawerOverlay" onclick="closeDrawer()"></div>
 <div id="sideDrawer">
-  <div class="drawer-head"><div class="drawer-profile"><div class="drawer-avatar" id="drawerAvatar"><img src="./default-avatar.jpg" alt="avatar"></div><div><div class="drawer-name"><span id="drawerUsername">User</span></div><div class="drawer-sub" id="drawerEmail"></div><div class="drawer-sub" id="drawerId" style="color:#d97706"></div></div></div></div>
+  <div class="drawer-head"><div class="drawer-profile"><div class="drawer-avatar" id="drawerAvatar"><img src="./default-avatar.jpg" alt="avatar"></div><div><div class="drawer-name"><span id="drawerUsername">User</span></div><div class="drawer-sub" id="drawerEmail"></div><div class="drawer-sub" id="drawerId"></div></div></div></div>
   <div class="drawer-menu">
     <button class="drawer-item" id="btnWatch" onclick="goWatch()" type="button" style="color:#0d7dd8"><span class="emo">📺</span> Watch & Earn</button>
     <button class="drawer-item" id="btnQuiz" onclick="goQuiz()" type="button" style="color:#7c3aed"><span class="emo">🧠</span> Quiz</button>
@@ -69,7 +70,6 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 </div>
 
 <script>
-// INSTANT LOAD - fixes Welcome User flash + shows avatar instantly
 (function(){
   try{
     let name = localStorage.getItem('username') || '';
@@ -162,7 +162,6 @@ function updateAvatarFromData(d, u){
       document.getElementById('drawerAvatar').innerHTML = `<img src="${photo}" style="width:100%;height:100%;object-fit:cover">`;
       localStorage.setItem('photoURL', photo);
     } else {
-      // keep default-avatar.jpg - no letter
       document.getElementById('drawerAvatar').innerHTML = `<img src="./default-avatar.jpg" style="width:100%;height:100%;object-fit:cover">`;
     }
   }catch(e){}
