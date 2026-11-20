@@ -19,7 +19,7 @@
 *:focus{outline:none !important}
 body{width:100%;background:#f8f7ff;color:#1e1b4b;overflow-x:hidden;display:block}
 .top-bar{width:100%;background:#ffffff;padding:12px 14px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ede9fe;position:relative;z-index:20;gap:8px;padding-top:calc(44px + env(safe-area-inset-top, 0px))}
-.hamburger{width:48px;height:30px;background:#1e1b4b;color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;margin-left:6px;flex-shrink:0}
+.hamburger{width:48px;height:30px;background:#1e1b4b;color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-left:6px;flex-shrink:0;opacity:0.55;pointer-events:none;cursor:default}
 .logo-alone{height:32px;width:auto;display:block;background:#fff;border:none;margin-right:6px;flex-shrink:0}
 .top-bar-center{flex:1;display:flex;justify-content:center;align-items:center}
 .earn-pill{background:linear-gradient(90deg,#00A1DE 0%,#38bdf8 28%,#FAD201 55%,#4ade80 80%,#00A651 100%);color:#0f172a;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:900;box-shadow:0 2px 10px rgba(0,161,222,0.35);white-space:nowrap;border:1.8px solid #fff}
@@ -35,20 +35,13 @@ body{width:100%;background:#f8f7ff;color:#1e1b4b;overflow-x:hidden;display:block
 .activity-item .act-emoji{font-size:18px;width:26px;text-align:center;flex-shrink:0}
 .auth-area{width:92%;max-width:320px;margin:10px auto 2px;display:flex;flex-direction:column;gap:12px}
 .auth-row{display:flex;align-items:center;justify-content:center;gap:10px}
-.standalone-emoji{font-size:24px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+.standalone-emoji{font-size:24px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .center-btn{flex:0 1 190px;background:#ffffff;border:1.8px solid #ede9fe;border-radius:16px;padding:13px 10px;font-size:15px;font-weight:800;color:#1e1b4b;text-decoration:none;text-align:center;box-shadow:0 3px 12px rgba(0,0,0,0.07);cursor:pointer}
 .center-btn:active{transform:scale(0.97)}
 footer{background:#ffffff;border-top:1px solid #ede9fe;padding:12px 18px 14px;text-align:center;width:100%;margin-top:10px}
 .footer-links{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:6px;opacity:0.4;pointer-events:none}
 .footer-links span{color:#9ca3af;font-size:12.5px;font-weight:700}
 .footer-copy{color:#9ca3af;font-size:10px;line-height:1.5;max-width:600px;margin:4px auto 0}
-#overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:40;display:none}
-#drawer{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:50;transform:translateX(-100%);transition:transform 0.3s ease;overflow-y:auto}
-#drawer.open{transform:translateX(0)}#overlay.show{display:block}
-.drawer-header-new{background:#1e1b4b;padding:12px 10px;display:flex;justify-content:center;align-items:center;gap:10px;padding-top:calc(12px + env(safe-area-inset-top, 0px))}
-.btn-h-same{padding:8px 18px;border-radius:10px;text-decoration:none;font-weight:800;font-size:13px;text-align:center;background:transparent;color:#fff;border:1.5px solid #fff;cursor:pointer;white-space:nowrap}
-.drawer-inner{padding:24px 16px}
-.drawer-about-btn{width:100%;padding:14px;background:#1e1b4b;color:#fff;border:none;border-radius:12px;font-weight:900;font-size:15px;display:flex;align-items:center;gap:12px;justify-content:center}
 .grecaptcha-badge{visibility:hidden !important;opacity:0 !important;width:0 !important;height:0 !important;overflow:hidden !important;pointer-events:none !important;position:absolute !important;left:-9999px !important}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -58,7 +51,7 @@ footer{background:#ffffff;border-top:1px solid #ede9fe;padding:12px 18px 14px;te
 </head>
 <body>
 <div class="top-bar">
-<div class="hamburger" onclick="toggleDrawer()"><i class="fa fa-bars"></i></div>
+<div class="hamburger"><i class="fa fa-bars"></i></div>
 <div class="top-bar-center"><div class="earn-pill">🪙 1000 Coins = $0.5 USDT</div></div>
 <img src="logo.jpg" alt="RP Logo" class="logo-alone">
 </div>
@@ -80,14 +73,6 @@ footer{background:#ffffff;border-top:1px solid #ede9fe;padding:12px 18px 14px;te
 <div class="auth-row"><span class="standalone-emoji">🏆</span><a href="reg.html" class="center-btn">Register</a><span class="standalone-emoji">🔔</span></div>
 </div>
 </div>
-<div id="overlay" onclick="toggleDrawer()"></div>
-<div id="drawer">
-<div class="drawer-header-new"><a href="log.html" class="btn-h-same">Login</a><a href="reg.html" class="btn-h-same">Register</a><div class="btn-h-same" onclick="toggleDrawer()">Menu</div></div>
-<div class="drawer-inner">
-<button class="drawer-about-btn" onclick="location.href='./about.html'">ℹ️ About Us</button>
-<p style="text-align:center;margin-top:20px;font-size:13px;color:#6b7280">Learn How it works, Why choose us, and FAQs on About page.</p>
-</div>
-</div>
 <footer>
 <div class="footer-links">
 <span>Privacy Policy</span>
@@ -97,7 +82,6 @@ footer{background:#ffffff;border-top:1px solid #ede9fe;padding:12px 18px 14px;te
 <div class="footer-copy">rewardplatformrw@gmail.com<br>© 2026 Reward Platform RW - Coins System V2.0</div>
 </footer>
 <script>
-function toggleDrawer(){document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};firebase.initializeApp(firebaseConfig);
 try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
 </script>
