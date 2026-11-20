@@ -20,7 +20,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 #sideDrawer.open{transform:translateX(0)}
 .drawer-head{padding:18px;background:#fffdf5;border-bottom:1.5px solid #ffedd5}
 .drawer-profile{display:flex;align-items:center;gap:12px}
-.drawer-avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#14b8a6,#06b6d4);color:#fff;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
+.drawer-avatar{width:46px;height:46px;border-radius:50%;background:#e5e7eb;color:#fff;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
 .drawer-avatar img{width:100%;height:100%;object-fit:cover;display:block}
 .drawer-name{font-size:16px;font-weight:900;color:#111827;display:flex;align-items:center;gap:6px}
 .drawer-sub{font-size:12.5px;font-weight:700;margin-top:3px;word-break:break-all}
@@ -36,7 +36,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 <div id="toast"></div>
 <div id="drawerOverlay" onclick="closeDrawer()"></div>
 <div id="sideDrawer">
-  <div class="drawer-head"><div class="drawer-profile"><div class="drawer-avatar" id="drawerAvatar">U</div><div><div class="drawer-name"><span id="drawerUsername">User</span></div><div class="drawer-sub" id="drawerEmail"></div><div class="drawer-sub" id="drawerId" style="color:#d97706"></div></div></div></div>
+  <div class="drawer-head"><div class="drawer-profile"><div class="drawer-avatar" id="drawerAvatar"><img src="./default-avatar.jpg" alt="avatar"></div><div><div class="drawer-name"><span id="drawerUsername">User</span></div><div class="drawer-sub" id="drawerEmail"></div><div class="drawer-sub" id="drawerId" style="color:#d97706"></div></div></div></div>
   <div class="drawer-menu">
     <button class="drawer-item" id="btnWatch" onclick="goWatch()" type="button" style="color:#0d7dd8"><span class="emo">📺</span> Watch & Earn</button>
     <button class="drawer-item" id="btnQuiz" onclick="goQuiz()" type="button" style="color:#7c3aed"><span class="emo">🧠</span> Quiz</button>
@@ -48,7 +48,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
     <button class="drawer-item" onclick="location.href='./offers.html'" type="button" style="color:#7e22ce"><span class="emo">💎</span> Offers</button>
     <button class="drawer-item" onclick="location.href='./more.html'" type="button" style="color:#0891b2"><span class="emo">❄️</span> More</button>
     <button class="drawer-item" onclick="location.href='./more.html'" type="button" style="color:#4b5563"><span class="emo">🎧</span> Help/Support</button>
-    <button class="drawer-item" onclick="localStorage.clear();sessionStorage.clear();location.href='./index.html'" type="button" style="color:#dc2626"><span class="emo">🚪</span> Sign Out</button>
+    <button class="drawer-item" onclick="localStorage.clear();sessionStorage.clear();location.href='./index.html'" type="button" style="color:#dc2626"><span class="emo">♻️</span> Sign Out</button>
     <div class="drawer-sep"></div>
     <button class="drawer-item" onclick="location.href='./index.html#about'" type="button" style="color:#6b7280"><span class="emo">ℹ️</span> About Us</button>
     <button class="drawer-item" onclick="location.href='./privacy.html'" type="button" style="color:#6b7280"><span class="emo">🔒</span> Privacy Policy</button>
@@ -68,14 +68,39 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 </div>
 </div>
 
-<!-- PART 1 ENDS HERE / PART 2 STARTS HERE -->
+<script>
+// INSTANT LOAD - fixes Welcome User flash + shows avatar instantly
+(function(){
+  try{
+    let name = localStorage.getItem('username') || '';
+    let email = localStorage.getItem('email') || '';
+    let uid = localStorage.getItem('userId') || localStorage.getItem('uid') || '';
+    let photo = localStorage.getItem('photoURL') || localStorage.getItem('photo') || '';
+    try{
+      const ud = JSON.parse(localStorage.getItem('userData')||'{}');
+      if(!name) name = ud.username || ud.name || ud.displayName || '';
+      if(!email) email = ud.email || '';
+      if(!uid) uid = ud.uid || ud.id || '';
+      if(!photo) photo = ud.photoURL || ud.photo || ud.avatar || '';
+    }catch(e){}
+    if(name){
+      document.getElementById('topUsername').textContent = name;
+      document.getElementById('drawerUsername').textContent = name;
+    }
+    if(email) document.getElementById('drawerEmail').textContent = email;
+    if(uid) document.getElementById('drawerId').textContent = "ID: "+uid.slice(0,12);
+    if(photo){
+      document.getElementById('drawerAvatar').innerHTML = '<img src="'+photo+'" style="width:100%;height:100%;object-fit:cover">';
+      localStorage.setItem('photoURL', photo);
+    }
+  }catch(e){}
+})();
+</script>
 
 <script>
 function openDrawer(){document.getElementById('sideDrawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('show');}
 function closeDrawer(){document.getElementById('sideDrawer').classList.remove('open');document.getElementById('drawerOverlay').classList.remove('show');}
-
 (function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}');if(c&&(c.balance!=null||c.points!=null)){var bal=c.balance??c.points??0;var usdt=c.usdtBalance??0;document.getElementById('balance').textContent=bal+' Coins';document.getElementById('usdBalance').textContent='$'+(bal*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').innerHTML=Number(usdt).toFixed(4)+' <span style="color:#059669">USDT</span>';}}catch(e){}})();
-
 const WINDOW=30*60*1000, BONUS_COOLDOWN=60*60*1000;
 function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}')}catch(e){return {}}}
 function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c))}
@@ -119,8 +144,6 @@ window.goArticles=()=>{const c=getChain(); const today=localDayKey();if(c.articl
 setInterval(evaluateChain,1000); evaluateChain();
 </script>
 
-<!-- PART 2 ENDS HERE / PART 3 STARTS HERE -->
-
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};firebase.initializeApp(firebaseConfig);
@@ -129,19 +152,18 @@ const auth=firebase.auth(),db=firebase.firestore();
 
 function updateAvatarFromData(d, u){
   try{
-    let name = d.username || d.name || d.displayName || u?.displayName || localStorage.getItem('username') || 'User';
+    let name = d.username || d.name || d.displayName || u?.displayName || '';
     let photo = d.photoURL || d.photo || d.avatar || d.profilePic || u?.photoURL || '';
-    const avEl=document.getElementById('drawerAvatar');
-    const topEl=document.getElementById('topUsername');
-    const drawerEl=document.getElementById('drawerUsername');
-    if(topEl) topEl.textContent=name;
-    if(drawerEl) drawerEl.textContent=name;
-    if(avEl){
-      if(photo){
-        avEl.innerHTML=`<img src="${photo}" onerror="this.parentElement.textContent='${name.charAt(0).toUpperCase()}'">`;
-      }else{
-        avEl.textContent=name.charAt(0).toUpperCase();
-      }
+    if(name){
+      document.getElementById('topUsername').textContent = name;
+      document.getElementById('drawerUsername').textContent = name;
+    }
+    if(photo){
+      document.getElementById('drawerAvatar').innerHTML = `<img src="${photo}" style="width:100%;height:100%;object-fit:cover">`;
+      localStorage.setItem('photoURL', photo);
+    } else {
+      // keep default-avatar.jpg - no letter
+      document.getElementById('drawerAvatar').innerHTML = `<img src="./default-avatar.jpg" style="width:100%;height:100%;object-fit:cover">`;
     }
   }catch(e){}
 }
