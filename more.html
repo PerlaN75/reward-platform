@@ -23,12 +23,19 @@
     .card{background:#fff;border:2px solid #ede9fe;border-radius:20px;padding:4px 8px;position:relative;overflow:hidden}
     .menu-list a{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;color:inherit;text-decoration:none;font-size:15px;font-weight:800;border-radius:14px;cursor:pointer}
     .menu-list a:not(:last-child){border-bottom:1px solid #f5f3ff}
-    #moreGate{position:fixed;inset:0;background:transparent;z-index:999;display:none;align-items:center;justify-content:center;padding:20px;pointer-events:none}
+
+    /* GATE - transparent backdrop, light purple small card */
+    #moreGate{position:fixed;inset:0;background:transparent;z-index:999;display:none;align-items:center;justify-content:center;padding:20px}
     #moreGate.show{display:flex}
-    .gate-card{background:linear-gradient(180deg,#ede9fe,#ddd6fe);border:2px solid #c4b5fd;border-radius:22px;padding:22px 20px;width:100%;max-width:320px;text-align:center;box-shadow:0 20px 40px rgba(76,29,149,0.25);pointer-events:auto}
+    .gate-card{background:linear-gradient(180deg,#ede9fe,#ddd6fe);border:2px solid #c4b5fd;border-radius:22px;padding:22px 20px;width:100%;max-width:320px;text-align:center;box-shadow:0 20px 40px rgba(76,29,149,0.25)}
     #moreTimerBox{width:88px;height:88px;border-radius:50%;background:#fff;border:4px solid #ddd6fe;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;color:#4c1d95;margin:14px auto;box-shadow:0 10px 25px rgba(0,0,0,0.15)}
     #moreProgress{width:100%;height:8px;background:rgba(76,29,149,0.15);border-radius:99px;margin-top:16px;overflow:hidden}
     #moreProgressBar{height:100%;width:100%;background:#6d28d9;transition:width 1s linear}
+
+    /* HIDE CONTENT WHILE GATING - blur, not purple wash */
+    body.gating .container, body.gating .top-bar{filter:blur(7px);pointer-events:none;user-select:none}
+    body.gating #moreGate{filter:none}
+
     .modal{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(76,29,149,0.45);justify-content:center;align-items:center;padding:15px}
     .modal-box{background:#fff;width:100%;max-width:420px;border-radius:20px;padding:20px;max-height:85vh;overflow-y:auto;position:relative}
     .close{position:absolute;top:12px;right:15px;font-size:22px;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#f5f3ff;border-radius:50%;color:#6d28d9}
@@ -84,8 +91,11 @@ function initMoreGate(){
   if(last && (Date.now()-last)<COOLDOWN){
     gate.style.display='none';
     gate.classList.remove('show');
+    document.body.classList.remove('gating');
     return;
   }
+  // SHOW GATE + BLUR + BLOCK CONTENT
+  document.body.classList.add('gating');
   gate.classList.add('show');
   gate.style.display='flex';
   let sec=10; timerBox.innerText=sec; progressBar.style.width='100%';
@@ -95,6 +105,7 @@ function initMoreGate(){
       clearInterval(int);
       gate.style.display='none';
       gate.classList.remove('show');
+      document.body.classList.remove('gating');
       localStorage.setItem('moreGateLastShown', String(Date.now()));
       loadVignette();
     }
