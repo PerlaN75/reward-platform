@@ -14,33 +14,41 @@
     *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
     body{background:#f5f3ff;min-height:100vh;color:#111827}
     .top-bar{background:#6d28d9;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100}
-    .back-btn-checkin{width:45px;height:30px;border-radius:10px;background:#fff;border:2px solid #fecaca;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px}
+    .back-btn-checkin{width:45px;height:30px;border-radius:10px;background:#fff;border:2px solid #fecaca;display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0}
+    .back-btn-checkin .lines{display:flex;flex-direction:column;gap:3px}
+    .back-btn-checkin .lines i{display:block;width:18px;height:2.5px;background:#000;border-radius:2px}
     .center-pill{background:#fff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%)}
     .container{max-width:600px;margin:0 auto;padding:14px 12px 20px}
     .card{background:#fff;border:2px solid #ede9fe;border-radius:20px;padding:8px;position:relative;overflow:hidden;min-height:700px}
-    #surveyGate{position:absolute;inset:0;background:#fff;z-index:20;border-radius:20px;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;border:3px solid #fbbf24}
+    /* SMALL GATE CARD - transparent backdrop, not full white */
+    #surveyGate{position:absolute;inset:0;background:transparent;z-index:20;border-radius:20px;display:none;align-items:center;justify-content:center;padding:20px;text-align:center}
     #surveyGate.show{display:flex}
-    #surveyTimerBox{width:88px;height:88px;border-radius:50%;background:linear-gradient(180deg,#fef3c7,#fbbf24);border:4px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;color:#92400e;margin:14px auto}
-    #surveyProgress{width:100%;height:8px;background:#fef3c7;border-radius:99px;margin-top:16px;overflow:hidden}
-    #surveyProgressBar{height:100%;width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width 1s linear}
+    .gate-card{background:linear-gradient(180deg,#ede9fe,#ddd6fe);border:2px solid #c4b5fd;border-radius:22px;padding:22px 20px;width:100%;max-width:320px;text-align:center;box-shadow:0 20px 40px rgba(76,29,149,0.25)}
+    #surveyTimerBox{width:88px;height:88px;border-radius:50%;background:#fff;border:4px solid #ddd6fe;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;color:#4c1d95;margin:14px auto;box-shadow:0 10px 25px rgba(0,0,0,0.15)}
+    #surveyProgress{width:100%;height:8px;background:rgba(76,29,149,0.15);border-radius:99px;margin-top:16px;overflow:hidden}
+    #surveyProgressBar{height:100%;width:100%;background:#6d28d9;transition:width 1s linear}
+    /* Hide / blur content behind gate */
+    #mainCard.gating > div:not(#surveyGate){filter:blur(7px);pointer-events:none;user-select:none}
   </style>
 </head>
 <body>
 <div class="top-bar">
-  <a href="home.html" class="back-btn-checkin">‹</a>
+  <a href="home.html" class="back-btn-checkin"><span class="lines"><i></i><i></i><i></i></span></a>
   <div class="center-pill">📋 CPX Surveys</div>
   <div style="width:45px"></div>
 </div>
 
 <div class="container">
   <div class="card" id="mainCard">
-    <!-- GATE LIKE MORE.HTML -->
+    <!-- GATE LIKE MORE.HTML - SMALL CARD -->
     <div id="surveyGate">
-      <div style="font-size:42px">📋</div>
-      <div style="font-weight:900;font-size:18px;color:#92400e;margin-top:8px">Loading Surveys</div>
-      <div id="surveyTimerBox">10</div>
-      <div style="font-size:11px;color:#d97706;font-weight:800">Clean ads loading...</div>
-      <div id="surveyProgress"><div id="surveyProgressBar"></div></div>
+      <div class="gate-card">
+        <div style="font-size:42px">📋</div>
+        <div style="font-weight:900;font-size:18px;color:#4c1d95;margin-top:8px">Loading Surveys</div>
+        <div id="surveyTimerBox">10</div>
+        <div style="font-size:11px;color:#6d28d9;font-weight:800">Clean ads loading...</div>
+        <div id="surveyProgress"><div id="surveyProgressBar"></div></div>
+      </div>
     </div>
 
     <!-- CPX CONTENT -->
@@ -101,6 +109,7 @@ firebase.auth().onAuthStateChanged(user => {
 
 function initSurveyGate(){
   const gate=document.getElementById('surveyGate');
+  const card=document.getElementById('mainCard');
   const timerBox=document.getElementById('surveyTimerBox');
   const progressBar=document.getElementById('surveyProgressBar');
   const COOLDOWN=3*60*1000;
@@ -109,9 +118,11 @@ function initSurveyGate(){
   if(last && (Date.now()-last)<COOLDOWN){
     gate.style.display='none';
     gate.classList.remove('show');
+    card.classList.remove('gating');
     return;
   }
   
+  card.classList.add('gating');
   gate.classList.add('show');
   gate.style.display='flex';
   let sec=10; timerBox.innerText=sec; progressBar.style.width='100%';
@@ -121,6 +132,7 @@ function initSurveyGate(){
       clearInterval(int);
       gate.style.display='none';
       gate.classList.remove('show');
+      card.classList.remove('gating');
       localStorage.setItem('surveyGateLastShown', String(Date.now()));
       loadCpx();
       loadVignette(); // Clean full-screen vignette AFTER gate, like more.html
