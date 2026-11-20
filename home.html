@@ -62,36 +62,59 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 <div class="scene">
 <div class="monitor"><div class="screen">
 <div style="color:#7c3aed;font-size:20px;font-weight:900;text-shadow:0 2px 8px rgba(255,255,255,0.95)">Balance</div>
-<div style="font-size:14px;font-weight:900;white-space:nowrap;text-shadow:0 1px 4px rgba(255,255,255,0.9)"><span style="color:#fbbf24">⭐</span> <span style="color:#92400e" id="balance">119 Coins</span><span style="color:#111827"> = <span id="usdBalance">$0.0595</span></span></div>
+<div style="font-size:14px;font-weight:900;white-space:nowrap;text-shadow:0 1px 4px rgba(255,255,255,0.9)"><span style="color:#fbbf24">⭐</span> <span style="color:#92400e" id="balance">0 Coins</span><span style="color:#111827"> = <span id="usdBalance">$0.0000</span></span></div>
 <div style="width:120px;height:1.5px;background:rgba(0,0,0,0.15);margin:4px auto"></div>
-<div style="font-size:14px;font-weight:900;white-space:nowrap;text-shadow:0 1px 4px rgba(255,255,255,0.9)"><span style="color:#0ea5e9">💎</span> <span style="color:#111827" id="usdtBalanceDisplay">0.9565 <span style="color:#059669">USDT</span></span></div>
+<div style="font-size:14px;font-weight:900;white-space:nowrap;text-shadow:0 1px 4px rgba(255,255,255,0.9)"><span style="color:#0ea5e9">💎</span> <span style="color:#111827" id="usdtBalanceDisplay">0.0000 <span style="color:#059669">USDT</span></span></div>
 </div></div>
 </div>
 </div>
 
 <script>
+// INSTANT - No Firebase wait - safe, no leak
 (function(){
   try{
     let name = localStorage.getItem('username') || '';
     let email = localStorage.getItem('email') || '';
     let uid = localStorage.getItem('userId') || localStorage.getItem('uid') || '';
-    let photo = localStorage.getItem('photoURL') || localStorage.getItem('photo') || '';
+    let photo = localStorage.getItem('photoURL') || '';
+    let balance = 0, usdt = 0;
     try{
       const ud = JSON.parse(localStorage.getItem('userData')||'{}');
       if(!name) name = ud.username || ud.name || ud.displayName || '';
       if(!email) email = ud.email || '';
       if(!uid) uid = ud.uid || ud.id || '';
       if(!photo) photo = ud.photoURL || ud.photo || ud.avatar || '';
+      if(ud.balance!=null) balance = ud.balance;
+      if(ud.usdtBalance!=null) usdt = ud.usdtBalance;
     }catch(e){}
     if(name){
-      document.getElementById('topUsername').textContent = name;
-      document.getElementById('drawerUsername').textContent = name;
+      const el1 = document.getElementById('topUsername');
+      const el2 = document.getElementById('drawerUsername');
+      if(el1) el1.textContent = name;
+      if(el2) el2.textContent = name;
     }
-    if(email) document.getElementById('drawerEmail').textContent = email;
-    if(uid) document.getElementById('drawerId').textContent = "ID: "+uid.slice(0,12);
+    if(email){
+      const e = document.getElementById('drawerEmail');
+      if(e) e.textContent = email;
+    }
+    if(uid){
+      const i = document.getElementById('drawerId');
+      if(i) i.textContent = "ID: "+String(uid).slice(0,12);
+    }
     if(photo){
-      document.getElementById('drawerAvatar').innerHTML = '<img src="'+photo+'" style="width:100%;height:100%;object-fit:cover">';
-      localStorage.setItem('photoURL', photo);
+      const av = document.getElementById('drawerAvatar');
+      if(av) av.innerHTML = '<img src="'+photo+'" style="width:100%;height:100%;object-fit:cover" onerror="this.src=\'./default-avatar.jpg\'">';
+    }
+    // Instant balance from cache too
+    if(balance){
+      const b = document.getElementById('balance');
+      const u = document.getElementById('usdBalance');
+      if(b) b.textContent = balance+' Coins';
+      if(u) u.textContent = '$'+(balance*0.0005).toFixed(4);
+    }
+    if(usdt){
+      const ud = document.getElementById('usdtBalanceDisplay');
+      if(ud) ud.innerHTML = Number(usdt).toFixed(4)+' <span style="color:#059669">USDT</span>';
     }
   }catch(e){}
 })();
@@ -100,7 +123,6 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 <script>
 function openDrawer(){document.getElementById('sideDrawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('show');}
 function closeDrawer(){document.getElementById('sideDrawer').classList.remove('open');document.getElementById('drawerOverlay').classList.remove('show');}
-(function(){try{var c=JSON.parse(localStorage.getItem('userData')||'{}');if(c&&(c.balance!=null||c.points!=null)){var bal=c.balance??c.points??0;var usdt=c.usdtBalance??0;document.getElementById('balance').textContent=bal+' Coins';document.getElementById('usdBalance').textContent='$'+(bal*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').innerHTML=Number(usdt).toFixed(4)+' <span style="color:#059669">USDT</span>';}}catch(e){}})();
 const WINDOW=30*60*1000, BONUS_COOLDOWN=60*60*1000;
 function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}')}catch(e){return {}}}
 function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c))}
@@ -155,21 +177,76 @@ function updateAvatarFromData(d, u){
     let name = d.username || d.name || d.displayName || u?.displayName || '';
     let photo = d.photoURL || d.photo || d.avatar || d.profilePic || u?.photoURL || '';
     if(name){
-      document.getElementById('topUsername').textContent = name;
-      document.getElementById('drawerUsername').textContent = name;
+      const a = document.getElementById('topUsername');
+      const b = document.getElementById('drawerUsername');
+      if(a) a.textContent = name;
+      if(b) b.textContent = name;
     }
     if(photo){
-      document.getElementById('drawerAvatar').innerHTML = `<img src="${photo}" style="width:100%;height:100%;object-fit:cover">`;
-      localStorage.setItem('photoURL', photo);
+      const av = document.getElementById('drawerAvatar');
+      if(av) av.innerHTML = `<img src="${photo}" style="width:100%;height:100%;object-fit:cover" onerror="this.src='./default-avatar.jpg'">`;
+      try{ localStorage.setItem('photoURL', photo); }catch(e){}
     } else {
-      document.getElementById('drawerAvatar').innerHTML = `<img src="./default-avatar.jpg" style="width:100%;height:100%;object-fit:cover">`;
+      const av = document.getElementById('drawerAvatar');
+      if(av) av.innerHTML = `<img src="./default-avatar.jpg" style="width:100%;height:100%;object-fit:cover">`;
     }
   }catch(e){}
 }
 
-function loadData(d){if(!d)return;document.getElementById('balance').innerText=(d.balance??d.points??0)+' Coins';document.getElementById('usdBalance').innerText='$'+((d.balance??d.points??0)*0.0005).toFixed(4);document.getElementById('usdtBalanceDisplay').innerHTML=Number(d.usdtBalance||0).toFixed(4)+' <span style="color:#059669">USDT</span>';localStorage.setItem('userData',JSON.stringify(d));if(d.username){document.getElementById('drawerUsername').innerText=d.username;}if(d.email){document.getElementById('drawerEmail').innerText=d.email;}if(d.uid||d.id){document.getElementById('drawerId').innerText='ID: '+String(d.uid||d.id).slice(0,12);}updateAvatarFromData(d, null); if(d.chain){const local=getChain();let changed=false;for(let k in d.chain){if(d.chain[k]){if(!local[k]||d.chain[k]>local[k]){local[k]=d.chain[k];changed=true;}}}if(changed) saveChain(local); evaluateChain();}}
+function loadData(d){
+  if(!d) return;
+  // Verify and overwrite with real Firebase data
+  try{
+    const bal = d.balance ?? d.points ?? 0;
+    document.getElementById('balance').innerText = bal+' Coins';
+    document.getElementById('usdBalance').innerText = '$'+(bal*0.0005).toFixed(4);
+    document.getElementById('usdtBalanceDisplay').innerHTML = Number(d.usdtBalance||0).toFixed(4)+' <span style="color:#059669">USDT</span>';
+    localStorage.setItem('userData', JSON.stringify(d));
+    if(d.username) localStorage.setItem('username', d.username);
+    if(d.email) localStorage.setItem('email', d.email);
+    if(d.uid||d.id) localStorage.setItem('userId', d.uid||d.id);
+    if(d.username) document.getElementById('drawerUsername').innerText = d.username;
+    if(d.email) document.getElementById('drawerEmail').innerText = d.email;
+    if(d.uid||d.id) document.getElementById('drawerId').innerText = 'ID: '+String(d.uid||d.id).slice(0,12);
+    updateAvatarFromData(d, null);
+    if(d.chain){
+      const local=getChain();let changed=false;
+      for(let k in d.chain){if(d.chain[k]){if(!local[k]||d.chain[k]>local[k]){local[k]=d.chain[k];changed=true;}}}
+      if(changed) saveChain(local);
+      evaluateChain();
+    }
+  }catch(e){}
+}
 
-db.collection("appConfig").doc("main").onSnapshot(s=>{if(s.exists&&s.data().maintenanceMode==="on"){document.getElementById('maint').style.display='flex';}else{document.getElementById('maint').style.display='none';}});
+db.collection("appConfig").doc("main").onSnapshot(s=>{
+  if(s.exists && s.data().maintenanceMode==="on"){
+    document.getElementById('maint').style.display='flex';
+  }else{
+    document.getElementById('maint').style.display='none';
+  }
+});
 
-auth.onAuthStateChanged(u=>{if(u){if(u.email)document.getElementById('drawerEmail').innerText=u.email;if(u.uid)document.getElementById('drawerId').innerText='ID: '+u.uid.slice(0,12);if(u.displayName){document.getElementById('drawerUsername').innerText=u.displayName;document.getElementById('topUsername').innerText=u.displayName;} updateAvatarFromData({}, u); db.collection('users').doc(u.uid).onSnapshot(doc=>{if(doc.exists)loadData(doc.data());});}else{location.href='./index.html';}});
+auth.onAuthStateChanged(u=>{
+  if(u){
+    // Instant from auth (fallback)
+    try{
+      if(u.email && !document.getElementById('drawerEmail').textContent) document.getElementById('drawerEmail').innerText = u.email;
+      if(u.uid && !document.getElementById('drawerId').textContent) document.getElementById('drawerId').innerText = 'ID: '+u.uid.slice(0,12);
+      if(u.displayName){
+        const curTop = document.getElementById('topUsername').textContent;
+        if(!curTop || curTop==='User'){
+          document.getElementById('drawerUsername').innerText = u.displayName;
+          document.getElementById('topUsername').innerText = u.displayName;
+        }
+      }
+      updateAvatarFromData({}, u);
+    }catch(e){}
+    // Then verify from Firestore (real data)
+    db.collection('users').doc(u.uid).onSnapshot(doc=>{
+      if(doc.exists) loadData(doc.data());
+    });
+  }else{
+    location.href='./index.html';
+  }
+});
 </script></body></html>
