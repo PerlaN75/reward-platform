@@ -5,7 +5,9 @@
 <style>*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
 body{background:#f5f3ff;min-height:100vh;padding:0 0 100px 0;color:#111827}
 .top-bar{background:#6d28d9;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;box-shadow:0 4px 12px rgba(109,40,217,0.3)}
-.back-btn{width:45px;height:30px;border-radius:10px;background:#ffffff;border:2px solid #fecaca;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#991b1b;font-weight:900;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #fca5a5}
+.back-btn-checkin{width:45px;height:30px;border-radius:10px;background:#fff;border:2px solid #fecaca;display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0}
+.back-btn-checkin .lines{display:flex;flex-direction:column;gap:3px}
+.back-btn-checkin .lines i{display:block;width:18px;height:2.5px;background:#000;border-radius:2px}
 .center-pill{background:#ffffff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%);box-shadow:0 2px 8px rgba(0,0,0,0.08)}
 .container{max-width:500px;margin:0 auto;padding:14px}
 .card{background:linear-gradient(180deg,#1a2e0a,#12230a);border:2px solid #fbbf24;border-radius:18px;padding:14px;text-align:center;margin:10px 0;box-shadow:0 8px 24px rgba(251,191,36,0.18)}
@@ -18,17 +20,17 @@ body{background:#f5f3ff;min-height:100vh;padding:0 0 100px 0;color:#111827}
 .action-btn{width:100%;padding:14px;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:2px solid #f59e0b;border-radius:12px;font-weight:900;font-size:14px;cursor:pointer;margin-top:8px;box-shadow:0 3px 0 #d97706}
 #customToast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#ffffff;border:2px solid #ede9fe;color:#4c1d95;padding:14px 20px;border-radius:14px;font-weight:900;z-index:99999;display:none;text-align:center;box-shadow:0 8px 24px rgba(109,40,217,0.15);max-width:90%;font-size:13px}
 .note{font-size:11px;color:#6b7280;text-align:center;margin-top:6px;font-weight:700}
-#adGate{position:fixed;inset:0;background:rgba(76,29,149,0.55);backdrop-filter:blur(3px);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}
-.gate-box{background:#ffffff;border:2px solid #ede9fe;border-radius:20px;padding:22px;text-align:center;max-width:360px;width:100%;box-shadow:0 12px 32px rgba(109,40,217,0.2)}
-.gate-title{font-weight:900;font-size:16px;color:#4c1d95}.gate-sub{font-size:12px;color:#6b7280;margin:8px 0 14px}
+#adGate{position:fixed;inset:0;background:transparent;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}
+.gate-box{background:linear-gradient(180deg,#ede9fe,#ddd6fe);border:2px solid #c4b5fd;border-radius:22px;padding:22px 20px;text-align:center;max-width:320px;width:100%;box-shadow:0 20px 40px rgba(76,29,149,0.25)}
+.gate-title{font-weight:900;font-size:16px;color:#4c1d95}.gate-sub{font-size:12px;color:#6d28d9;margin:8px 0 14px;font-weight:700}
 .gate-btn{width:100%;height:48px;border-radius:12px;border:2px solid #ede9fe;font-weight:900;font-size:14px;cursor:pointer}
 .gate-btn.wait{background:#f3f4f6;color:#6b7280;cursor:not-allowed}
 .gate-btn.continue{background:linear-gradient(180deg,#dcfce7,#bbf7d0);color:#166534;border-color:#22c55e;display:none;margin-top:10px}
-#gateTimer{font-size:13px;font-weight:900;color:#4c1d95;margin-top:10px}
+#gateTimer{font-size:13px;font-weight:900;color:#92400e;margin-top:10px;background:#fffbeb;border:1.5px solid #fde68a;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
 </style>
 </head><body>
 <div id="customToast"></div>
-<div class="top-bar"><a href="home.html" class="back-btn">‹</a><div class="center-pill">💰 Wallet</div><div style="width:45px"></div></div>
+<div class="top-bar"><a href="home.html" class="back-btn-checkin"><span class="lines"><i></i><i></i><i></i></span></a><div class="center-pill">💰 Wallet</div><div style="width:45px"></div></div>
 <div class="container">
 <div class="card">
 <div style="color:#d1d5db;font-size:11px;font-weight:800">Your Balance</div>
@@ -59,7 +61,7 @@ body{background:#f5f3ff;min-height:100vh;padding:0 0 100px 0;color:#111827}
 <!-- NO BLANK BOX - REMOVED safeAdAfter -->
 </div>
 
-<div id="adGate"><div class="gate-box"><div id="gateTitle" class="gate-title"></div><div id="gateSub" class="gate-sub"></div><button id="waitBtn" class="gate-btn wait" disabled>⏳ Please wait 10s...</button><div id="gateTimer">Ads loading, please wait...</div><button id="continueBtn" class="gate-btn continue">✅ Continue</button><div style="font-size:10px;color:#9ca3af;margin-top:8px" id="gateAdNote">Ad supports the platform</div></div></div>
+<div id="adGate"><div class="gate-box"><div id="gateTitle" class="gate-title"></div><div id="gateSub" class="gate-sub"></div><button id="waitBtn" class="gate-btn wait" disabled>⏳ Please wait 10s...</button><div id="gateTimer">Ads loading, please wait...</div><button id="continueBtn" class="gate-btn continue">✅ Continue</button><div style="font-size:10px;color:#6d28d9;margin-top:8px;font-weight:700" id="gateAdNote">Ad supports the platform</div></div></div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
