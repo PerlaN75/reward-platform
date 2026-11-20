@@ -9,7 +9,10 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
 body{background:#f5f3ff;min-height:100vh;color:#111827}
-.top-bar{background:#fff;height:64px;display:flex;align-items:center;justify-content:center;padding:0 14px;position:sticky;top:0;z-index:100;border-bottom:2px solid #f1f5f9}
+.top-bar{background:#fff;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;border-bottom:2px solid #f1f5f9}
+.back-btn-checkin{width:45px;height:30px;border-radius:10px;background:#fff;border:2px solid #fecaca;display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0}
+.back-btn-checkin .lines{display:flex;flex-direction:column;gap:3px}
+.back-btn-checkin .lines i{display:block;width:18px;height:2.5px;background:#000;border-radius:2px}
 .top-pill{font-weight:900;font-size:14px;color:#4c1d95;background:linear-gradient(180deg,#eff6ff,#dbeafe);border:2px solid #bfdbfe;border-radius:999px;padding:7px 18px}
 .container{max-width:500px;margin:0 auto;padding:16px 14px 90px}
 .card{background:#fff;border:2px solid #ede9fe;border-radius:20px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,0.06);margin-bottom:14px}
@@ -24,26 +27,26 @@ body{background:#f5f3ff;min-height:100vh;color:#111827}
 .btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:13px;padding:14px;font-weight:900;font-size:15px;cursor:pointer;box-shadow:0 4px 0 #d97706}
 .offer-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .offer-btn{background:linear-gradient(180deg,#eff6ff,#dbeafe);border:2px solid #bfdbfe;border-radius:12px;padding:12px;text-align:center;font-weight:900;font-size:12px;cursor:pointer}
-.wrapper{text-align:center;padding:0 14px 22px}
-.back-link{display:inline-block;text-align:center;background:#fff;color:#111827 !important;text-decoration:none;font-size:13px;font-weight:700;border:1.5px solid #e5e7eb;border-radius:20px;padding:10px 20px;box-shadow:0 2px 0 #e5e7eb}
-.back-link:active{transform:scale(0.98)}
-#adGate{position:fixed;inset:0;background:rgba(17,12,34,0.6);backdrop-filter:blur(8px);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}
-.gate-box{background:#fff;border:2px solid #fde68a;border-radius:26px;padding:26px 22px 22px;text-align:center;max-width:340px;width:100%;box-shadow:0 20px 40px rgba(0,0,0,0.2)}
+#adGate{position:fixed;inset:0;background:transparent;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;pointer-events:none}
+.gate-box{background:linear-gradient(180deg,#ede9fe,#ddd6fe);border:2px solid #c4b5fd;border-radius:26px;padding:26px 22px 22px;text-align:center;max-width:340px;width:100%;box-shadow:0 20px 40px rgba(76,29,149,0.25);pointer-events:auto}
 .gate-icon{font-size:36px}
 .gate-title{font-weight:900;font-size:20px;color:#4c1d95;margin:6px 0 2px}
-.gate-sub{font-size:12px;color:#6b7280;font-weight:700;margin-bottom:14px}
-.gate-wait-text{font-weight:900;font-size:18px;color:#92400e;background:linear-gradient(90deg,#78350f,#92400e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-top:4px;letter-spacing:0.2px}
+.gate-sub{font-size:12px;color:#6d28d9;font-weight:700;margin-bottom:14px}
+.gate-wait-text{font-weight:900;font-size:18px;color:#4c1d95;margin-top:4px;letter-spacing:0.2px}
 </style>
 </head>
 <body>
-<div class="top-bar"><div class="top-pill">💬 Help / Support</div></div>
+<div class="top-bar">
+  <a href="home.html" class="back-btn-checkin"><span class="lines"><i></i><i></i><i></i></span></a>
+  <div class="top-pill">💬 Help / Support</div>
+  <div style="width:45px"></div>
+</div>
 <div class="container">
 <div class="card"><div style="font-weight:900;font-size:16px;color:#4c1d95;margin-bottom:10px">❓ Quick Answers</div><div id="faqList"></div></div>
 <div class="card" style="background:linear-gradient(180deg,#fffbeb,#fef3c7);border-color:#fbbf24"><div style="font-weight:900;font-size:14px;color:#92400e">🚀 Need Coins Faster?</div><div class="offer-grid"><div class="offer-btn" onclick="location.href='./offers.html'">💎 High Pay Offers</div><div class="offer-btn" onclick="location.href='./referrals.html'">🤝 Refer & Earn 10%</div><div class="offer-btn" onclick="location.href='./bonus.html'">🎁 Hourly Bonus</div><div class="offer-btn" onclick="location.href='./survey.html'">📋 Paid Surveys</div></div></div>
 <div class="card"><div style="font-weight:900;font-size:15px;margin-bottom:12px">📩 Contact Support (Free)</div><input id="nameInput" class="input" placeholder="Your name" readonly><input id="emailInput" class="input" placeholder="Your email" readonly><textarea id="issueInput" class="area" placeholder="Describe your issue... min 10 chars"></textarea><button class="btn" onclick="doSendTicket()">Send Message</button><div id="status" style="text-align:center;font-size:13px;margin-top:12px;color:#6b7280;font-weight:700"></div></div>
 <div class="card"><div style="font-weight:900;font-size:15px">Your Tickets & Replies</div><div id="ticketsList" style="margin-top:10px"><p style="color:#9ca3af;text-align:center;padding:20px 0">Loading...</p></div></div>
 </div>
-<div class="wrapper"><a href="home.html" class="back-link">Back to Home</a></div>
 <div id="adGate"><div class="gate-box"><div class="gate-icon">🎁</div><div class="gate-title">Unlock Answer</div><div class="gate-sub">Please wait to view</div><div id="waitText" class="gate-wait-text">Wait for... 10s</div></div></div>
 <script>
 const FAQS=[
