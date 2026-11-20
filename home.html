@@ -48,7 +48,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
     <button class="drawer-item" onclick="location.href='./referrals.html'" type="button" style="color:#2563eb"><span class="emo">🤝</span> Refer & Earn</button>
     <button class="drawer-item" onclick="location.href='./offers.html'" type="button" style="color:#7e22ce"><span class="emo">💎</span> Offers</button>
     <button class="drawer-item" onclick="location.href='./more.html'" type="button" style="color:#0891b2"><span class="emo">❄️</span> More</button>
-    <button class="drawer-item" onclick="location.href='./more.html'" type="button" style="color:#4b5563"><span class="emo">🎧</span> Help/Support</button>
+    <button class="drawer-item" onclick="location.href='./help.html'" type="button" style="color:#4b5563"><span class="emo">🎧</span> Help/Support</button>
     <button class="drawer-item" onclick="localStorage.clear();sessionStorage.clear();location.href='./index.html'" type="button" style="color:#dc2626"><span class="emo">♻️</span> Sign Out</button>
     <div class="drawer-sep"></div>
     <button class="drawer-item" onclick="location.href='./about.html'" type="button" style="color:#6b7280"><span class="emo">ℹ️</span> About Us</button>
@@ -222,10 +222,9 @@ auth.onAuthStateChanged(u=>{
     try{
       if(u.email && !document.getElementById('drawerEmail').textContent) document.getElementById('drawerEmail').innerText = u.email;
       if(u.uid && !document.getElementById('drawerId').textContent) document.getElementById('drawerId').innerText = 'ID: '+u.uid.slice(0,12);
-      // No "User" fallback - only show if real name exists
       if(u.displayName){
         const curTop = document.getElementById('topUsername').textContent;
-        if(!curTop){ // only fill if empty
+        if(!curTop){
           document.getElementById('drawerUsername').innerText = u.displayName;
           document.getElementById('topUsername').innerText = u.displayName;
         }
