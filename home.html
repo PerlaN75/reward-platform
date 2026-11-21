@@ -43,7 +43,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
     <button class="drawer-item" id="btnQuiz" onclick="goQuiz()" type="button" style="color:#7c3aed"><span class="emo">🧠</span> Quiz</button>
     <button class="drawer-item" id="btnArticles" onclick="goArticles()" type="button" style="color:#111827"><span class="emo">📖</span> Articles Earn</button>
     <button class="drawer-item" onclick="location.href='./wallet.html'" type="button" style="color:#16a34a"><span class="emo">💰</span> Wallet</button>
-    <button class="drawer-item" id="btnBonus" onclick="location.href='./bonus.html'" type="button" style="color:#111827"><span class="emo">🎁</span> Bonus</button>
+    <button class="drawer-item" id="btnBonus" onclick="goBonus()" type="button" style="color:#111827"><span class="emo">🎁</span> Bonus</button>
     <button class="drawer-item" onclick="location.href='./survey.html'" type="button" style="color:#0d9488"><span class="emo">📋</span> Survey</button>
     <button class="drawer-item" onclick="location.href='./referrals.html'" type="button" style="color:#2563eb"><span class="emo">🤝</span> Refer & Earn</button>
     <button class="drawer-item" onclick="location.href='./offers.html'" type="button" style="color:#7e22ce"><span class="emo">💎</span> Offers</button>
@@ -125,7 +125,6 @@ function closeDrawer(){document.getElementById('sideDrawer').classList.remove('o
 const WINDOW=30*60*1000, BONUS_COOLDOWN=60*60*1000;
 function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}')}catch(e){return {}}}
 function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c))}
-// FIX: show seconds when < 1m, so Bonus never stuck at "0m"
 function fmtShort(ms){
   if(ms<=0) return "Ready";
   const totalSec=Math.floor(ms/1000);
@@ -144,61 +143,72 @@ function setBtnState(btn, state, txt){
   if(!btn) return; let old=btn.querySelector('.badge'); if(old) old.remove();
   if(state==='locked'){const b=document.createElement('span'); b.className='badge padlock'; b.textContent='🔒'; btn.appendChild(b);}
   else if(state==='open'){const b=document.createElement('span'); b.className='badge green'; b.textContent='Open'; btn.appendChild(b);}
-  else if(state==='live'){const b=document.createElement('span'); b.className='badge live'; b.textContent='Live '+txt; btn.appendChild(b);}
-  else if(state==='wait'){const b=document.createElement('span'); b.className='badge soon'; b.textContent='⏳ '+txt; btn.appendChild(b);}
+  else if(state==='live'){const b=document.createElement('span'); b.className='badge live'; b.textContent='Live'; btn.appendChild(b);}
+  else if(state==='wait'){const b=document.createElement('span'); b.className='badge padlock'; b.textContent='🔒'; btn.appendChild(b);}
   else if(state==='done'){const b=document.createElement('span'); b.className='badge padlock'; b.textContent='✅ Done'; btn.appendChild(b);}
 }
-// FIX: countdown FIRST, Done second - never force all to Done
-function evaluateChain(){
-  const c=getChain(); const now=Date.now(); const today=localDayKey();
-
-  // WATCH - nextAvail wins over Done
-  if(c.watch_nextAvail && now < c.watch_nextAvail){ setBtnState(btnWatch,'wait', fmtShort(c.watch_nextAvail-now)); }
-  else if(c.watch_finishedToday===today){ setBtnState(btnWatch,'done',''); }
-  else if(c.watch_open && now < c.watch_expiry){ setBtnState(btnWatch,'live', fmtShort(c.watch_expiry-now)); }
-  else { setBtnState(btnWatch,'open',''); }
-
-  // QUIZ
-  if(c.quiz_nextAvail && now < c.quiz_nextAvail){ setBtnState(btnQuiz,'wait', fmtShort(c.quiz_nextAvail-now)); }
-  else if(c.quiz_finishedToday===today){ setBtnState(btnQuiz,'done',''); }
-  else if(c.watch_finishedToday!==today){ setBtnState(btnQuiz,'locked',''); }
-  else if(c.quiz_open && now < c.quiz_expiry){ setBtnState(btnQuiz,'live', fmtShort(c.quiz_expiry-now)); }
-  else { setBtnState(btnQuiz,'open',''); }
-
-  // ARTICLES
-  if(c.articles_nextAvail && now < c.articles_nextAvail){ setBtnState(btnArticles,'wait', fmtShort(c.articles_nextAvail-now)); }
-  else if(c.articles_finishedToday===today){ setBtnState(btnArticles,'done',''); }
-  else if(c.quiz_finishedToday!==today){ setBtnState(btnArticles,'locked',''); }
-  else if(c.articles_open && now < c.articles_expiry){ setBtnState(btnArticles,'live', fmtShort(c.articles_expiry-now)); }
-  else { setBtnState(btnArticles,'open',''); }
-
-  // BONUS
+function getBonusRemaining(){
   try{
     const ud=JSON.parse(localStorage.getItem('userData')||'{}');let ms=0;
     if(ud.lastBonusTimestamp){const lb=ud.lastBonusTimestamp;if(lb.toMillis) ms=lb.toMillis();else if(lb.seconds) ms=lb.seconds*1000;else if(lb._seconds) ms=lb._seconds*1000;else if(typeof lb==='number') ms=lb;else if(typeof lb==='string') ms=Date.parse(lb)||0;}
-    if(!ms){setBtnState(btnBonus,'open','');} else {const diff=now-ms;if(diff>=BONUS_COOLDOWN){setBtnState(btnBonus,'live','Ready');} else {setBtnState(btnBonus,'wait', fmtShort(BONUS_COOLDOWN-diff));}}
-  }catch(e){ setBtnState(btnBonus,'open',''); }
+    if(!ms) return 0;
+    return Math.max(0, BONUS_COOLDOWN - (Date.now()-ms));
+  }catch(e){ return 0; }
 }
+// HIDDEN TIME: drawer shows only 🔒 / Open / Done - no countdown
+function evaluateChain(){
+  const c=getChain(); const now=Date.now(); const today=localDayKey();
+
+  // WATCH
+  if(c.watch_nextAvail && now < c.watch_nextAvail){ setBtnState(btnWatch,'wait',''); }
+  else if(c.watch_finishedToday===today){ setBtnState(btnWatch,'done',''); }
+  else if(c.watch_open && now < c.watch_expiry){ setBtnState(btnWatch,'live',''); }
+  else { setBtnState(btnWatch,'open',''); }
+
+  // QUIZ
+  if(c.quiz_nextAvail && now < c.quiz_nextAvail){ setBtnState(btnQuiz,'wait',''); }
+  else if(c.quiz_finishedToday===today){ setBtnState(btnQuiz,'done',''); }
+  else if(c.watch_finishedToday!==today){ setBtnState(btnQuiz,'locked',''); }
+  else if(c.quiz_open && now < c.quiz_expiry){ setBtnState(btnQuiz,'live',''); }
+  else { setBtnState(btnQuiz,'open',''); }
+
+  // ARTICLES
+  if(c.articles_nextAvail && now < c.articles_nextAvail){ setBtnState(btnArticles,'wait',''); }
+  else if(c.articles_finishedToday===today){ setBtnState(btnArticles,'done',''); }
+  else if(c.quiz_finishedToday!==today){ setBtnState(btnArticles,'locked',''); }
+  else if(c.articles_open && now < c.articles_expiry){ setBtnState(btnArticles,'live',''); }
+  else { setBtnState(btnArticles,'open',''); }
+
+  // BONUS - hidden time, only 🔒 / Ready
+  const rem=getBonusRemaining();
+  if(rem>0){ setBtnState(btnBonus,'wait',''); }
+  else { setBtnState(btnBonus,'open',''); }
+}
+// PRESS = show remaining time
 window.goWatch=()=>{
   const c=getChain(); const now=Date.now(); const today=localDayKey();
-  if(c.watch_nextAvail && now < c.watch_nextAvail){showToast(`Watch locked - ${fmtShort(c.watch_nextAvail-now)}`); return;}
-  if(c.articles_finishedToday===today && c.watch_finishedToday===today){showToast(`All done today ✅ Next in ${fmtShort((c.watch_nextAvail||0)-now)}`); return;}
-  if(c.watch_finishedToday===today){showToast(`Watch done today`); return;}
+  if(c.watch_nextAvail && now < c.watch_nextAvail){showToast(`⏳ Watch locked - Opens in ${fmtShort(c.watch_nextAvail-now)}`); return;}
+  if(c.watch_finishedToday===today){showToast(`Watch done today ✅`); return;}
   if(!c.watch_open || now > c.watch_expiry){c.watch_open=now;c.watch_expiry=now+WINDOW;saveChain(c);}location.href='./watch.html';
 };
 window.goQuiz=()=>{
   const c=getChain(); const now=Date.now(); const today=localDayKey();
-  if(c.quiz_nextAvail && now < c.quiz_nextAvail){showToast(`Quiz locked - ${fmtShort(c.quiz_nextAvail-now)}`); return;}
-  if(c.quiz_finishedToday===today){showToast("Quiz done"); return;}
+  if(c.quiz_nextAvail && now < c.quiz_nextAvail){showToast(`⏳ Quiz locked - Opens in ${fmtShort(c.quiz_nextAvail-now)}`); return;}
+  if(c.quiz_finishedToday===today){showToast("Quiz done ✅"); return;}
   if(c.watch_finishedToday!==today){showToast("Finish Watch first"); return;}
   location.href='./quiz_earn.html';
 };
 window.goArticles=()=>{
   const c=getChain(); const now=Date.now(); const today=localDayKey();
-  if(c.articles_nextAvail && now < c.articles_nextAvail){showToast(`Articles locked - ${fmtShort(c.articles_nextAvail-now)}`); return;}
-  if(c.articles_finishedToday===today){showToast(`All done today`); return;}
+  if(c.articles_nextAvail && now < c.articles_nextAvail){showToast(`⏳ Articles locked - Opens in ${fmtShort(c.articles_nextAvail-now)}`); return;}
+  if(c.articles_finishedToday===today){showToast(`All done today ✅`); return;}
   if(c.quiz_finishedToday!==today){showToast("Finish Quiz first"); return;}
   location.href='./articles_earn.html';
+};
+window.goBonus=()=>{
+  const rem=getBonusRemaining();
+  if(rem>0){showToast(`⏳ Bonus locked - Ready in ${fmtShort(rem)}`); return;}
+  location.href='./bonus.html';
 };
 setInterval(evaluateChain,1000); evaluateChain();
 </script>
