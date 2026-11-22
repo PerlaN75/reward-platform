@@ -32,7 +32,8 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 .drawer-item .emo{font-size:18px;width:26px;text-align:center}
 .drawer-sep{height:1px;background:#e5e7eb;margin:10px 18px}
 .drawer-foot{padding:12px 18px;text-align:center;font-size:11px;color:#6b7280;font-weight:700}
-#bottomAdBox{background:#fff;border-top:1px solid #ffedd5;padding:10px 12px;flex-shrink:0;z-index:20;position:relative}
+/* FAIR AD - OVERLAY, DOES NOT PUSH ANYTHING */
+#fairAd{position:absolute;left:10px;right:10px;bottom:10px;z-index:25;background:rgba(255,255,255,0.96);border-radius:12px;padding:8px;box-shadow:0 4px 14px rgba(0,0,0,0.18)}
 </style></head><body>
 <div id="maint"><div><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900">Back</button></div></div>
 <div id="toast"></div>
@@ -68,13 +69,13 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 <div style="font-size:14px;font-weight:900;white-space:nowrap;text-shadow:0 1px 4px rgba(255,255,255,0.9)"><span style="color:#0ea5e9">💎</span> <span style="color:#111827" id="usdtBalanceDisplay">0.0000 <span style="color:#059669">USDT</span></span></div>
 </div></div>
 </div>
-<div id="bottomAdBox">
-  <div style="font-weight:900;font-size:13px;margin-bottom:6px">🔥 TRENDING FOR YOU</div>
-  <a href="https://uplcm.com/4/12320736" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:10px;background:#FFD700;border-radius:12px;padding:12px">
-    <div style="flex:1"><div style="font-weight:700;color:#000;font-size:14px">🎁 Claim Your $100 Bonus</div><div style="font-size:12px;color:#333">Limited offer • Claim now</div></div>
-    <div style="background:#000;color:#fff;padding:8px 12px;border-radius:20px;font-size:13px;font-weight:700">Claim Now →</div>
+<!-- FAIR AD - OVERLAY AT BOTTOM, DOES NOT MOVE HEADER OR BALANCE -->
+<div id="fairAd">
+  <div style="font-weight:900;font-size:11px;margin-bottom:4px">🔥 TRENDING FOR YOU <span style="float:right;font-weight:700;color:#888">Sponsored</span></div>
+  <a href="https://uplcm.com/4/12320736" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:10px;padding:10px">
+    <div style="flex:1"><div style="font-weight:700;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div style="font-size:11px;color:#333">Limited offer • Claim now</div></div>
+    <div style="background:#000;color:#fff;padding:7px 10px;border-radius:20px;font-size:12px;font-weight:700">Claim →</div>
   </a>
-  <div style="font-size:10px;color:#888;text-align:center;margin-top:4px">Sponsored • Tap to claim</div>
 </div>
 </div>
 
@@ -163,7 +164,6 @@ function getBonusRemaining(){
     return Math.max(0, BONUS_COOLDOWN - (Date.now()-ms));
   }catch(e){ return 0; }
 }
-// FIXED CHAIN - Finished Today wins over old timer
 function evaluateChain(){
   const c=getChain(); const now=Date.now(); const today=localDayKey();
   if(c.watch_finishedToday===today){ setBtnState(btnWatch,'done',''); }
