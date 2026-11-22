@@ -113,23 +113,37 @@ function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}'
 function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c))}
 function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
 const WINDOW_MS=30*60*1000,GAP_MS=0;
+// TIME TO MIDNIGHT for 11h45 popup
+function fmtMidnight(){
+  const now=new Date(); const mid=new Date(now); mid.setHours(24,0,0,0);
+  const ms=mid.getTime()-now.getTime();
+  const totalMin=Math.floor(ms/60000);
+  const h=Math.floor(totalMin/60); const m=totalMin%60;
+  return h+"h"+String(m).padStart(2,"0");
+}
 function onQuizFinishedChain(){
   const now=Date.now(), c=getChain(), today=localDayKey();
   if(c.quiz_finishedToday===today) return;
   c.quiz_finishedToday=today; c.quiz_doneToday=today;
-  // INSTANT
   c.articles_open=now;
   c.articles_expiry=now + WINDOW_MS + 3600000;
   delete c.articles_doneToday; delete c.articles_finishedToday;
   saveChain(c);
   if(window.currentUser) db.collection("users").doc(window.currentUser.uid).set({chain:{quiz_finishedToday:today,quiz_doneToday:today,articles_open:c.articles_open,articles_expiry:c.articles_expiry,updated:firebase.firestore.FieldValue.serverTimestamp()}},{merge:true});
 }
+// ===== FIXED LOCK - THIS WAS THE BUG =====
 function checkQuizLock(){
   const c=getChain(), now=Date.now(), today=localDayKey();
   const lockPanel=document.getElementById('lockPanel'); const msg=document.getElementById('lockMsg');
+  // 1. Watch not done -> locked
   if(c.watch_finishedToday!==today){lockPanel.style.display='flex'; msg.innerText='Finish Watch first'; return true;}
-  if(c.quiz_finishedToday===today){lockPanel.style.display='flex'; msg.innerText='Quiz done today ✅ Articles is open now'; return true;}
-  if(c.quiz_open && now > c.quiz_expiry){lockPanel.style.display='flex'; msg.innerText='Quiz expired - tomorrow'; return true;}
+  // 2. Quiz already done today -> locked for time to midnight (like Watch 11h45)
+  if(c.quiz_finishedToday===today){lockPanel.style.display='flex'; msg.innerText='🔒 Locked for '+fmtMidnight()+' • Articles is open now'; return true;}
+  // 3. FIX: If no window OR old window expired -> START NEW 30-min window, DO NOT lock
+  // Old code locked here because quiz_open was from yesterday
+  if(!c.quiz_open || now > c.quiz_expiry){
+    c.quiz_open=now; c.quiz_expiry=now+WINDOW_MS; saveChain(c);
+  }
   lockPanel.style.display='none'; return false;
 }
 
