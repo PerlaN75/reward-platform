@@ -89,9 +89,7 @@ const ADS=[
 const AD_TIME=2*60*1000;
 const AD_KEY='fairAd_state_v1';
 let adIndex=0;
-function saveAd(){
-  try{ localStorage.setItem(AD_KEY, JSON.stringify({index:adIndex, changedAt:Date.now()})); }catch(e){}
-}
+function saveAd(){ try{ localStorage.setItem(AD_KEY, JSON.stringify({index:adIndex, changedAt:Date.now()})); }catch(e){} }
 function showAd(i){
   const a=ADS[i];
   const link=document.getElementById('adLink');
@@ -102,22 +100,17 @@ function showAd(i){
   link.href=a.link; link.style.background=a.bg;
   t.textContent=a.title; s.textContent=a.sub; b.textContent=a.btn;
 }
-function nextAd(){
-  adIndex=(adIndex+1)%ADS.length;
-  showAd(adIndex); saveAd();
-}
-// On load: catch up if time passed while away / during refresh
+function nextAd(){ adIndex=(adIndex+1)%ADS.length; showAd(adIndex); saveAd(); }
 (function initAd(){
   try{
     const raw=localStorage.getItem(AD_KEY);
-    if(!raw){ showAd(0); saveAd(); setTimeout(function tick(){ nextAd(); setInterval(nextAd, AD_TIME); }, AD_TIME); return; }
+    if(!raw){ showAd(0); saveAd(); setTimeout(function(){ nextAd(); setInterval(nextAd, AD_TIME); }, AD_TIME); return; }
     const saved=JSON.parse(raw);
     const elapsed=Date.now() - (saved.changedAt||Date.now());
     const steps=Math.floor(elapsed / AD_TIME);
     adIndex=((saved.index||0)+steps)%ADS.length;
     const remain=AD_TIME - (elapsed % AD_TIME);
     showAd(adIndex);
-    // save with corrected time so next refresh is still correct
     try{ localStorage.setItem(AD_KEY, JSON.stringify({index:adIndex, changedAt:Date.now()-(elapsed%AD_TIME)})); }catch(e){}
     setTimeout(function(){ nextAd(); setInterval(nextAd, AD_TIME); }, remain);
   }catch(e){ showAd(0); saveAd(); setInterval(nextAd, AD_TIME); }
@@ -189,6 +182,20 @@ function fmtShort(ms){
   if(m>0) return m+"m "+s+"s";
   return s+"s";
 }
+// TIME LEFT UNTIL MIDNIGHT - for 23h52 popup
+function timeToMidnight(){
+  const now=new Date();
+  const mid=new Date(now);
+  mid.setHours(24,0,0,0);
+  return mid.getTime()-now.getTime();
+}
+function fmtMidnight(){
+  const ms=timeToMidnight();
+  const totalMin=Math.floor(ms/60000);
+  const h=Math.floor(totalMin/60);
+  const m=totalMin%60;
+  return h+"h"+String(m).padStart(2,"0");
+}
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3200);}
 window.alert=showToast;
 const btnWatch=document.getElementById('btnWatch'), btnQuiz=document.getElementById('btnQuiz'), btnArticles=document.getElementById('btnArticles'), btnBonus=document.getElementById('btnBonus');
@@ -199,7 +206,7 @@ function setBtnState(btn, state, txt){
   else if(state==='open'){const b=document.createElement('span'); b.className='badge green'; b.textContent='Open'; btn.appendChild(b);}
   else if(state==='live'){const b=document.createElement('span'); b.className='badge live'; b.textContent='Live'; btn.appendChild(b);}
   else if(state==='wait'){const b=document.createElement('span'); b.className='badge padlock'; b.textContent='🔒'; btn.appendChild(b);}
-  else if(state==='done'){const b=document.createElement('span'); b.className='badge padlock'; b.textContent='✅ Done'; btn.appendChild(b);}
+  else if(state==='done'){const b=document.createElement('span'); b.className='badge padlock'; b.textContent='🔒'; btn.appendChild(b);}
 }
 function getBonusRemaining(){
   try{
@@ -211,14 +218,17 @@ function getBonusRemaining(){
 }
 function evaluateChain(){
   const c=getChain(); const now=Date.now(); const today=localDayKey();
-  if(c.watch_finishedToday===today){ setBtnState(btnWatch,'done',''); }
+  // WATCH: finished today = PADLOCK (not Done)
+  if(c.watch_finishedToday===today){ setBtnState(btnWatch,'locked',''); }
   else if(c.watch_open && now < c.watch_expiry){ setBtnState(btnWatch,'live',''); }
   else { setBtnState(btnWatch,'open',''); }
-  if(c.quiz_finishedToday===today){ setBtnState(btnQuiz,'done',''); }
+  // QUIZ: finished today = PADLOCK
+  if(c.quiz_finishedToday===today){ setBtnState(btnQuiz,'locked',''); }
   else if(c.watch_finishedToday===today){ setBtnState(btnQuiz,'open',''); }
   else if(c.quiz_open && now < c.quiz_expiry){ setBtnState(btnQuiz,'live',''); }
   else { setBtnState(btnQuiz,'locked',''); }
-  if(c.articles_finishedToday===today){ setBtnState(btnArticles,'done',''); }
+  // ARTICLES: finished today = PADLOCK
+  if(c.articles_finishedToday===today){ setBtnState(btnArticles,'locked',''); }
   else if(c.quiz_finishedToday===today){ setBtnState(btnArticles,'open',''); }
   else if(c.articles_open && now < c.articles_expiry){ setBtnState(btnArticles,'live',''); }
   else { setBtnState(btnArticles,'locked',''); }
@@ -228,18 +238,18 @@ function evaluateChain(){
 }
 window.goWatch=()=>{
   const c=getChain(); const now=Date.now(); const today=localDayKey();
-  if(c.watch_finishedToday===today){showToast(`Watch done today ✅`); return;}
+  if(c.watch_finishedToday===today){showToast(`🔒 Locked for ${fmtMidnight()}`); return;}
   if(!c.watch_open || now > c.watch_expiry){c.watch_open=now;c.watch_expiry=now+WINDOW;saveChain(c);}location.href='./watch.html';
 };
 window.goQuiz=()=>{
   const c=getChain(); const today=localDayKey();
-  if(c.quiz_finishedToday===today){showToast("Quiz done ✅"); return;}
+  if(c.quiz_finishedToday===today){showToast(`🔒 Locked for ${fmtMidnight()}`); return;}
   if(c.watch_finishedToday!==today){showToast("Finish Watch first"); return;}
   location.href='./quiz_earn.html';
 };
 window.goArticles=()=>{
   const c=getChain(); const today=localDayKey();
-  if(c.articles_finishedToday===today){showToast(`All done today ✅`); return;}
+  if(c.articles_finishedToday===today){showToast(`🔒 Locked for ${fmtMidnight()}`); return;}
   if(c.quiz_finishedToday!==today){showToast("Finish Quiz first"); return;}
   location.href='./articles_earn.html';
 };
