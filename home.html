@@ -1,12 +1,13 @@
-<!DOCTYPE html><html><head><title>Home</title><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!DOCTYPE html><html><head><title>Home</title><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent!important}
-body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
-.wrap{width:100%;max-width:430px;height:100dvh;background:#fff;background-image:url('./bg.jpg');background-repeat:no-repeat;background-size:100% auto;background-position:center center;position:relative;display:flex;flex-direction:column;overflow:hidden}
+html,body{height:100%;height:100dvh;height:100svh;overflow:hidden;overscroll-behavior:none;position:fixed;inset:0;width:100%}
+body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;min-height:100dvh;min-height:100svh}
+.wrap{width:100%;max-width:430px;height:100dvh;height:100svh;max-height:100dvh;max-height:100svh;background:#fff;background-image:url('./bg.jpg');background-repeat:no-repeat;background-size:100% auto;background-position:center center;position:relative;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
 .top{width:100%;background:#ffedd5;border-bottom:2px solid #fdba74;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:30;flex-shrink:0}
 #menuBtn{width:44px;height:44px;border:none;background:none;font-size:26px;font-weight:900;color:#4c1d95;display:flex;align-items:center;justify-content:center}
 .top h2{font-size:19px;font-weight:900;text-align:center;flex:1;color:#111827}
-.scene{flex:1;position:relative;z-index:2;background:transparent}
+.scene{flex:1;position:relative;z-index:2;background:transparent;overflow:hidden;min-height:0}
 .monitor{position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);width:88%;max-width:340px;background:none;border:none;box-shadow:none;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:5}
 .screen{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:100%;text-align:center}
 .badge{font-size:10px;font-weight:900;padding:3px 7px;border-radius:10px;color:#fff;margin-left:auto}
@@ -16,7 +17,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 #maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
 #drawerOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:998}
 #drawerOverlay.show{display:block}
-#sideDrawer{position:fixed;top:0;left:0;transform:translateX(-100%);width:82%;max-width:310px;height:100dvh;background:#fff;z-index:999;display:flex;flex-direction:column;transition:transform 0.32s cubic-bezier(.2,.8,.2,1);box-shadow:6px 0 24px rgba(0,0,0,0.18)}
+#sideDrawer{position:fixed;top:0;left:0;transform:translateX(-100%);width:82%;max-width:310px;height:100dvh;height:100svh;background:#fff;z-index:999;display:flex;flex-direction:column;transition:transform 0.32s cubic-bezier(.2,.8,.2,1);box-shadow:6px 0 24px rgba(0,0,0,0.18)}
 #sideDrawer.open{transform:translateX(0)}
 .drawer-head{padding:18px;background:#fffdf5;border-bottom:1.5px solid #ffedd5}
 .drawer-profile{display:flex;align-items:center;gap:12px}
@@ -32,7 +33,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 .drawer-item .emo{font-size:18px;width:26px;text-align:center}
 .drawer-sep{height:1px;background:#e5e7eb;margin:10px 18px}
 .drawer-foot{padding:12px 18px;text-align:center;font-size:11px;color:#6b7280;font-weight:700}
-/* FAIR AD - OVERLAY, MOVED UP TO 38px */
+/* FAIR AD - OVERLAY, DOES NOT PUSH */
 #fairAd{position:absolute;left:10px;right:10px;bottom:38px;z-index:25;background:rgba(255,255,255,0.96);border-radius:12px;padding:8px;box-shadow:0 4px 14px rgba(0,0,0,0.18)}
 </style></head><body>
 <div id="maint"><div><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900">Back</button></div></div>
