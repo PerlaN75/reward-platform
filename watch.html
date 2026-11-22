@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Watch & Earn</title>
-<!-- MONETAG COMPLIANT: In-Page Push 12266334 after Collect, 1 per video, hide during 10s wait, closeable, small -->
+<!-- MONETAG COMPLIANT: In-Page Push 12266334 after Open, 1 per video, hide during 10s wait, closeable, small - NO DIRECT LINK IN WATCH -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
@@ -22,7 +22,7 @@
 .gate-btn{width:100%;height:52px;border-radius:999px;border:none;font-weight:900;font-size:16px;cursor:pointer}
 .gate-btn.watch{background:linear-gradient(90deg,#6d28d9,#6366f1);color:#fff;box-shadow:0 6px 18px rgba(109,40,217,0.3)}
 .gate-btn.watch:disabled{background:#e5e7eb;color:#9ca3af;box-shadow:none}
-.gate-btn.continue{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;display:none;margin-top:10px;box-shadow:0 4px 0 #15803d}
+.gate-btn.open{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;display:none;margin-top:10px;box-shadow:0 4px 0 #15803d}
 .gate-footer{margin-top:20px;font-size:12px;color:#6b7280;display:flex;justify-content:center;gap:8px;align-items:center;font-weight:600}
 .bonus-box{margin-top:10px;background:#fffbeb;border:2px dashed #fbbf24;border-radius:14px;padding:12px;text-align:center;display:none}
 </style></head><body>
@@ -33,19 +33,21 @@
 <section class="video-box" id="videoBox"><div class="video-title" id="videoTitle" style="display:none"></div><div class="player" id="player"><div class="placeholder">Your videos are ready.<br>Press Start to begin.</div><div id="rewardCircle"><div style="font-size:20px">+1</div><div style="font-size:10px">COIN</div></div></div><div class="controls" id="controls"><button class="btn" id="startBtn" disabled>Loading account...</button><button class="btn secondary-btn" id="nextBtn">Next video</button></div></section><p class="small-note">Watch 35s to unlock 1 coin. Finish 10 to get +5 bonus.</p>
 <div id="bonusBox" class="bonus-box"><div style="font-size:22px">🎁</div><div style="font-weight:900;color:#92400e;margin:6px 0">All 10 Watched!</div><div style="font-size:12px;color:#6b7280;font-weight:700">Claim your +5 bonus now</div><button class="btn" id="bonusBtn" style="margin-top:8px">Claim Bonus +5 🪙</button></div>
 </main>
+<!-- NO DIRECT LINK IN WATCH - IN-PAGE PUSH ONLY, AFTER OPEN -->
 <div id="adGate"><div class="gate-box">
+<button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;left:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button>
 <div class="gate-pill" id="gateTimer">🕒 Wait 10s...</div>
 <div class="gate-icon">🎁</div>
 <div class="gate-title" id="gateTitle">Unlock +1 Coin</div>
-<div class="gate-sub" id="gateSub">Wait 10s to collect +1 coin</div>
-<button id="watchAdBtn" class="gate-btn watch">Wait 10s to claim</button>
-<button id="continueBtn" class="gate-btn continue">✅ Collect +1 Coin</button>
-<div class="gate-footer">🛡️ Secure • ✔️ Verified • ⚡ Fast</div>
+<div class="gate-sub" id="gateSub">Open to collect +1 coin</div>
+<button id="watchAdBtn" class="gate-btn watch">Open</button>
+<button id="openBtn" class="gate-btn open">✅ Open</button>
+<div class="gate-footer">Advertisement</div>
 </div></div>
 <script>
 (() => {
 "use strict";
-// VERIFIED SAFE: No ads during 10s wait, 1 ad after Collect only
+// VERIFIED SAFE: No ads during 10s wait, 1 ad after Open only - NO DIRECT LINK
 function hideOldAds(){
   try{
     document.querySelectorAll('[id*="monetag"], [class*="monetag"]').forEach(el=>{
@@ -56,38 +58,38 @@ function hideOldAds(){
 function loadSafeInPagePush(){
   const old=document.getElementById('monetag-inpage'); if(old) old.remove();
   const s=document.createElement('script'); s.id='monetag-inpage';
-  s.dataset.zone='12266334'; // YOUR In-Page Push - no empty box
+  s.dataset.zone='12266334';
   s.src='https://nap5k.com/tag.min.js';
   (document.body || document.documentElement).appendChild(s);
 }
 let pendingType="video";
 function openClaimGate(type){
-  hideOldAds(); // VERIFIED: hide old ads so gate is clean during 10s wait
+  hideOldAds();
   pendingType=type; const isBonus=type==="bonus";
   document.getElementById('gateTitle').innerText=isBonus?'Unlock +5 Bonus':'Unlock +1 Coin';
-  document.getElementById('gateSub').innerText=isBonus?'Wait 10s to collect +5 bonus':'Wait 10s to collect +1 coin';
-  document.getElementById('continueBtn').innerText=isBonus?'✅ Collect +5 Bonus':'✅ Collect +1 Coin';
+  document.getElementById('gateSub').innerText=isBonus?'Open to collect +5 bonus':'Open to collect +1 coin';
+  document.getElementById('openBtn').innerText=isBonus?'✅ Open':'✅ Open';
   document.getElementById('adGate').style.display='flex';
   document.getElementById('watchAdBtn').style.display='block';
-  document.getElementById('continueBtn').style.display='none';
+  document.getElementById('openBtn').style.display='none';
   document.getElementById('watchAdBtn').disabled=false;
   document.getElementById('gateTimer').innerText='🕒 Wait 10s...';
-  document.getElementById('watchAdBtn').innerText='Wait 10s to claim';
+  document.getElementById('watchAdBtn').innerText='Open';
 }
 document.getElementById('watchAdBtn').onclick=function(){
   this.disabled=true;
   let sec=10; const timerEl=document.getElementById('gateTimer');
   timerEl.innerText='🕒 Wait '+sec+'s...';
-  this.innerText='Wait '+sec+'s to claim';
+  this.innerText='⏳ Please wait...';
   const interval=setInterval(()=>{
     sec--;
-    if(sec>0){timerEl.innerText='🕒 Wait '+sec+'s...'; document.getElementById('watchAdBtn').innerText='Wait '+sec+'s to claim';}
-    else{clearInterval(interval); document.getElementById('watchAdBtn').style.display='none'; timerEl.innerText='✅ Unlocked!'; document.getElementById('continueBtn').style.display='block';}
+    if(sec>0){timerEl.innerText='🕒 Wait '+sec+'s...'; document.getElementById('watchAdBtn').innerText='⏳ Please wait...';}
+    else{clearInterval(interval); document.getElementById('watchAdBtn').style.display='none'; timerEl.innerText='✅ Ready!'; document.getElementById('openBtn').style.display='block';}
   },1000);
 };
-document.getElementById('continueBtn').onclick=function(){
+document.getElementById('openBtn').onclick=function(){
   document.getElementById('adGate').style.display='none';
-  loadSafeInPagePush(); // AD APPEARS ONLY AFTER COLLECT - SAFE
+  loadSafeInPagePush(); // AD APPEARS ONLY AFTER OPEN - SAFE - NO DIRECT LINK
   if(pendingType==="bonus"){doClaimBonusWithBurst();} else {doClaimWithBurst();}
 };
 function doClaimWithBurst(){
