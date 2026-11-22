@@ -25,17 +25,19 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 .btn:disabled{opacity:.5}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#fff;border:2px solid #ede9fe;color:#111827;padding:12px 18px;border-radius:12px;font-weight:bold;z-index:10000;display:none;max-width:90%;text-align:center}
 #adGate{position:fixed;inset:0;background:rgba(17,12,34,0.65);backdrop-filter:blur(8px);z-index:10001;display:none;align-items:center;justify-content:center;padding:20px}
-.gate-box{background:#fff;border:2px solid #fbbf24;border-radius:24px;padding:22px 20px 18px;text-align:center;max-width:360px;width:100%}
+.gate-box{background:#fff;border:2px solid #fbbf24;border-radius:24px;padding:22px 20px 18px;text-align:center;max-width:360px;width:100%;position:relative}
 .gate-icon{width:64px;height:64px;margin:0 auto 10px;background:linear-gradient(180deg,#fef3c7,#fbbf24);border:3px solid #f59e0b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px}
 .gate-title{font-weight:900;font-size:18px;color:#4c1d95}
 .gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #ede9fe;font-weight:900;font-size:14px;cursor:pointer}
 .gate-btn.watch{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 4px 0 #d97706,0 8px 20px rgba(245,158,11,0.25);border-color:#f59e0b}
 .gate-btn.watch:disabled{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb}
-.gate-btn.continue{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #15803d,0 8px 20px rgba(34,197,94,0.3);display:none;margin-top:10px}
+.gate-btn.open{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #15803d,0 8px 20px rgba(34,197,94,0.3);display:none;margin-top:10px}
 #gateTimer2{font-size:13px;font-weight:900;color:#92400e;margin-top:12px;background:#fffbeb;border:1.5px solid #fde68a;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
+#gateTimer2:empty{display:none}
 #lockPanel{position:fixed;inset:0;background:#f5f3ff;z-index:9998;display:none;align-items:center;justify-content:center;padding:20px;text-align:center}
 #entryGate{position:fixed;inset:0;background:linear-gradient(180deg,#ffffff,#f5f3ff);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;text-align:center}
 #gateTimer{width:74px;height:74px;border-radius:50%;background:linear-gradient(180deg,#ffffff,#ede9fe);border:3px solid #a78bfa;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#f59e0b;margin:14px auto}
+.top-ad-wrap{position:sticky;top:62px;z-index:90;background:#f5f3ff;padding:10px 14px 0;width:100%;max-width:430px}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
@@ -45,10 +47,20 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 <body>
 <div id="backBtn" onclick="if(confirm('Quit? Progress will reset to 0 and you get 0 coins')){localStorage.removeItem('quiz_session'); location.href='home.html'}"><span class="lines"><i></i><i></i><i></i></span></div>
 <div class="top-bar"><div class="center-pill">🧠 Quiz Earn — 10×1</div></div>
+
+<!-- DIRECT LINK - TOP - USER CLICKS HIMSELF ONLY - 12320757 -->
+<div class="top-ad-wrap">
+  <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:0.5px">Advertisement</div>
+  <a id="quizAdLink" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
+    <div style="flex:1"><div id="quizAdTitle" style="font-weight:900;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div id="quizAdSub" style="font-size:11px;color:#333">Limited offer • Sponsored</div></div>
+    <div id="quizAdBtn" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
+  </a>
+</div>
+
 <div id="toast"></div>
 <div id="lockPanel"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Quiz Locked</h2><div id="lockMsg" style="font-weight:800;color:#6b7280">Finish Watch first</div><button onclick="location.href='home.html'" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
 
-<div id="entryGate"><div style="font-size:42px">🧠</div><h3 style="margin:12px 0 6px;font-size:18px;color:#4c1d95;font-weight:900">Quiz is Live — 30 min</h3><div id="gateTimer">10</div><div style="font-size:12px;color:#8b5cf6;font-weight:800;margin-top:4px">Loading quiz...</div><div style="font-size:10px;color:#9ca3af;font-weight:700;margin-top:6px">12270885 • Safe</div></div>
+<div id="entryGate"><div style="font-size:42px">🧠</div><h3 style="margin:12px 0 6px;font-size:18px;color:#4c1d95;font-weight:900">Quiz is Live — 30 min</h3><div id="gateTimer">10</div><div style="font-size:12px;color:#8b5cf6;font-weight:800;margin-top:4px">Loading quiz...</div><div style="font-size:10px;color:#9ca3af;font-weight:700;margin-top:6px">Advertisement</div></div>
 
 <div class="card" id="quizCard">
 <div class="badge" id="progressBadge">Q 1/10 • Score 0</div>
@@ -67,7 +79,17 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 <div style="font-size:10px;color:#9ca3af;margin-top:8px">If you quit before this, circle resets to 0</div>
 </div>
 
-<div id="adGate"><div class="gate-box"><div class="gate-icon">🧠</div><div class="gate-title">Next Question</div><button id="watchAdBtn" class="gate-btn watch" style="margin-top:16px">▶️ Watch Ad (10s)</button><div id="gateTimer2"></div><button id="continueBtn" class="gate-btn continue">✅ Continue</button><div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700;letter-spacing:0.5px">Advertisement</div></div></div>
+<!-- DIRECT LINK - BOTTOM - USER CLICKS HIMSELF ONLY - 12320757 - SEPARATE FROM VIGNETTE -->
+<div style="max-width:400px;margin:0 auto;padding:0 14px 30px;width:100%">
+  <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:0.5px">Advertisement</div>
+  <a id="quizAdLinkBottom" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
+    <div style="flex:1"><div id="quizAdTitleBottom" style="font-weight:900;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div id="quizAdSubBottom" style="font-size:11px;color:#333">Limited offer • Sponsored</div></div>
+    <div id="quizAdBtnBottom" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
+  </a>
+</div>
+
+<!-- VIGNETTE GATE - ONLY THIS LOADS VIGNETTE, NEVER DIRECT LINK -->
+<div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button><div class="gate-icon">🧠</div><div class="gate-title">Next Question</div><button id="watchAdBtn" class="gate-btn watch" style="margin-top:16px">Open</button><div id="gateTimer2"></div><button id="openBtn" class="gate-btn open">✅ Open</button><div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700;letter-spacing:0.5px">Advertisement</div></div></div>
 
 <script>
 (() => {
@@ -80,25 +102,58 @@ function loadCleanVignette(){
   (function(s){s.dataset.zone='12270885',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
   setTimeout(()=>{vignetteLoaded=false;}, 60*1000);
 }
+
+// ===== DIRECT LINK TOP + BOTTOM - SAME ROTATION, 1 STATE, 12320757 ONLY =====
+// Top and Bottom are 2 views of same ad, NOT 2 different ads. No double trigger.
+const QUIZ_ADS=[
+  {title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Sponsored",btn:"Visit →",bg:"#FFD700",link:"https://uplcm.com/4/12320757"},
+  {title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • Sponsored",btn:"Visit →",bg:"#7CFC00",link:"https://uplcm.com/4/12320757"},
+  {title:"📱 Win Free Airtime Today",sub:"MTN • Airtel • Sponsored",btn:"Visit →",bg:"#00D4FF",link:"https://uplcm.com/4/12320757"},
+  {title:"🔥 Hot Offer - Double Your Coins",sub:"Today only • Sponsored",btn:"Visit →",bg:"#FF9F43",link:"https://uplcm.com/4/12320757"}
+];
+const QUIZ_AD_TIME=2*60*1000, QUIZ_AD_KEY='quizAd_state_v1';
+let quizAdIndex=0;
+function saveQuizAd(){ try{ localStorage.setItem(QUIZ_AD_KEY, JSON.stringify({index:quizAdIndex, changedAt:Date.now()})); }catch(e){} }
+function showQuizAd(i){
+  const a=QUIZ_ADS[i];
+  const top=document.getElementById('quizAdLink');
+  if(top){ top.href=a.link; top.style.background=a.bg; document.getElementById('quizAdTitle').textContent=a.title; document.getElementById('quizAdSub').textContent=a.sub; document.getElementById('quizAdBtn').textContent=a.btn; }
+  const bot=document.getElementById('quizAdLinkBottom');
+  if(bot){ bot.href=a.link; bot.style.background=a.bg; document.getElementById('quizAdTitleBottom').textContent=a.title; document.getElementById('quizAdSubBottom').textContent=a.sub; document.getElementById('quizAdBtnBottom').textContent=a.btn; }
+}
+function nextQuizAd(){ quizAdIndex=(quizAdIndex+1)%QUIZ_ADS.length; showQuizAd(quizAdIndex); saveQuizAd(); }
+(function initQuizAd(){
+  try{
+    const raw=localStorage.getItem(QUIZ_AD_KEY);
+    if(!raw){ showQuizAd(0); saveQuizAd(); setTimeout(function(){ nextQuizAd(); setInterval(nextQuizAd, QUIZ_AD_TIME); }, QUIZ_AD_TIME); return; }
+    const saved=JSON.parse(raw); const elapsed=Date.now()-(saved.changedAt||Date.now());
+    const steps=Math.floor(elapsed/QUIZ_AD_TIME); quizAdIndex=((saved.index||0)+steps)%QUIZ_ADS.length;
+    const remain=QUIZ_AD_TIME-(elapsed%QUIZ_AD_TIME); showQuizAd(quizAdIndex);
+    try{ localStorage.setItem(QUIZ_AD_KEY, JSON.stringify({index:quizAdIndex, changedAt:Date.now()-(elapsed%QUIZ_AD_TIME)})); }catch(e){}
+    setTimeout(function(){ nextQuizAd(); setInterval(nextQuizAd, QUIZ_AD_TIME); }, remain);
+  }catch(e){ showQuizAd(0); saveQuizAd(); setInterval(nextQuizAd, QUIZ_AD_TIME); }
+})();
+
 let pendingNext=null;
 function openAdGate(nextFn, isFinal, reward){
   pendingNext=nextFn;
   document.getElementById('adGate').style.display='flex';
   document.getElementById('watchAdBtn').style.display='block';
-  document.getElementById('continueBtn').style.display='none';
+  document.getElementById('openBtn').style.display='none';
   document.getElementById('watchAdBtn').disabled=false;
   document.getElementById('gateTimer2').innerText='';
-  document.getElementById('watchAdBtn').innerText='▶️ Watch Ad (10s)';
+  document.getElementById('watchAdBtn').innerText='Open';
   document.querySelector('#adGate .gate-title').innerText=isFinal? 'Claim Coins' : 'Next Question';
-  document.getElementById('continueBtn').innerText=isFinal? '✅ Claim +'+reward : '✅ Continue';
+  document.getElementById('openBtn').innerText=isFinal? '✅ Claim +'+reward : '✅ Open';
 }
 document.getElementById('watchAdBtn').onclick=function(){
   this.innerText='⏳ Please wait...';this.disabled=true;
   let sec=10; const el=document.getElementById('gateTimer2');
   el.innerText='⏳ Wait '+sec+'s...';
-  const iv=setInterval(()=>{sec--; if(sec>0){el.innerText='⏳ Wait '+sec+'s...';} else {clearInterval(iv); document.getElementById('watchAdBtn').style.display='none'; el.innerText='✅ Unlocked!'; document.getElementById('continueBtn').style.display='block';}},1000);
+  const iv=setInterval(()=>{sec--; if(sec>0){el.innerText='⏳ Wait '+sec+'s...';} else {clearInterval(iv); document.getElementById('watchAdBtn').style.display='none'; el.innerText='✅ Ready!'; document.getElementById('openBtn').style.display='block';}},1000);
 };
-document.getElementById('continueBtn').onclick=function(){
+// ONLY VIGNETTE HERE - NO DIRECT LINK, NO window.open, NO second ad
+document.getElementById('openBtn').onclick=function(){
   document.getElementById('adGate').style.display='none';
   loadCleanVignette();
   const fn=pendingNext; pendingNext=null; if(fn) fn();
@@ -139,30 +194,65 @@ function checkQuizLock(){
   lockPanel.style.display='none'; return false;
 }
 
+// ===== 40 QUESTIONS POOL - correct is opts[0] BEFORE shuffle =====
 const FULL_POOL=[
-{q:"What is Bitcoin?",opts:["A digital currency","A phone brand","A car"],ans:0},
-{q:"1 USDT equals?",opts:["$1","$10","100 RWF"],ans:0},
-{q:"Blockchain is like?",opts:["Shared notebook","Private diary","Game"],ans:0},
-{q:"Best network for cheap USDT in Rwanda?",opts:["BEP20","TRC20 is cheaper","BTC"],ans:0},
-{q:"What is your seed phrase?",opts:["Master key - keep secret","Public username","Password to share"],ans:0},
-{q:"Binance P2P is used to?",opts:["Sell USDT for MoMo","Buy airtime only","Play games"],ans:0},
-{q:"Inflation means?",opts:["Prices go up yearly","Prices go down","No change"],ans:0},
-{q:"How much is 3000 coins?",opts:["$1.5","$10","$100"],ans:0},
-{q:"AI can help Rwandans to?",opts:["Write CV & translate","Replace all jobs","Only play music"],ans:0},
-{q:"Saving $1.5 daily for 30 days = ?",opts:["$45","$5","$500"],ans:0},
-{q:"What is MoMo?",opts:["Mobile Money","A game","A bank in USA"],ans:0},
-{q:"What is private key?",opts:["Secret to control wallet","Email password","Phone number"],ans:0},
-{q:"TRC20 needs what for fee?",opts:["TRX","BTC","ETH"],ans:0},
-{q:"Best way to keep crypto safe?",opts:["Save seed offline","Share on Facebook","Screenshot to friends"],ans:0},
-{q:"What is staking?",opts:["Lock coins to earn","Delete coins","Borrow coins"],ans:0},
-{q:"Which is stablecoin?",opts:["USDT","BTC","ETH"],ans:0},
-{q:"Kigali is capital of?",opts:["Rwanda","Kenya","Uganda"],ans:0},
-{q:"What does KYC mean?",opts:["Know Your Customer - ID check","Keep Your Coins","Keep Your Cash"],ans:0},
-{q:"P2P scam protection is?",opts:["Never release before payment","Release first","Send extra"],ans:0},
-{q:"What is gas fee?",opts:["Fee to process transaction","Car fuel","Internet bill"],ans:0}
+{q:"What is Bitcoin?",opts:["A digital currency","A phone brand","A car model","A social app"],ans:0},
+{q:"1 USDT equals?",opts:["$1","$10","100 RWF","$0.01"],ans:0},
+{q:"Blockchain is like?",opts:["Shared notebook everyone can check","Private diary","Video game","Music app"],ans:0},
+{q:"Best network for cheap USDT in Rwanda?",opts:["BEP20","BTC network","ETH mainnet","DOGE"],ans:0},
+{q:"What is your seed phrase?",opts:["Master key - keep secret","Public username","Password to share","Email address"],ans:0},
+{q:"Binance P2P is used to?",opts:["Sell USDT for MoMo","Buy airtime only","Play games","Watch videos"],ans:0},
+{q:"Inflation means?",opts:["Prices go up yearly","Prices go down","No change","Money doubles"],ans:0},
+{q:"How much is 3000 coins?",opts:["$1.5","$10","$100","$0.15"],ans:0},
+{q:"AI can help Rwandans to?",opts:["Write CV & translate","Replace all jobs","Only play music","Cook food"],ans:0},
+{q:"Saving $1.5 daily for 30 days = ?",opts:["$45","$5","$500","$15"],ans:0},
+{q:"What is MoMo?",opts:["Mobile Money","A game","A bank in USA","A phone"],ans:0},
+{q:"What is private key?",opts:["Secret to control wallet","Email password","Phone number","Username"],ans:0},
+{q:"TRC20 needs what for fee?",opts:["TRX","BTC","ETH","USDT"],ans:0},
+{q:"Best way to keep crypto safe?",opts:["Save seed offline","Share on Facebook","Screenshot to friends","Send to stranger"],ans:0},
+{q:"What is staking?",opts:["Lock coins to earn","Delete coins","Borrow coins","Hide coins"],ans:0},
+{q:"Which is stablecoin?",opts:["USDT","BTC","ETH","DOGE"],ans:0},
+{q:"Kigali is capital of?",opts:["Rwanda","Kenya","Uganda","Tanzania"],ans:0},
+{q:"What does KYC mean?",opts:["Know Your Customer - ID check","Keep Your Coins","Keep Your Cash","Know Your Code"],ans:0},
+{q:"P2P scam protection is?",opts:["Never release before payment","Release first","Send extra","Trust stranger"],ans:0},
+{q:"What is gas fee?",opts:["Fee to process transaction","Car fuel","Internet bill","Phone charge"],ans:0},
+{q:"What is the currency of Rwanda?",opts:["Rwandan Franc (RWF)","Naira","Shilling Kenya","Dollar"],ans:0},
+{q:"How many days in a leap year?",opts:["366","365","360","364"],ans:0},
+{q:"What is 10% of 500?",opts:["50","5","100","25"],ans:0},
+{q:"Which app is used for Mobile Money in Rwanda?",opts:["MTN MoMo","WhatsApp Pay","PayPal only","Cash App"],ans:0},
+{q:"What does WiFi stand for?",opts:["Wireless Fidelity","Wide Fire","Wire Fast","Web File"],ans:0},
+{q:"Which is safest password?",opts:["Long mix of letters + numbers + symbols","123456","Your name","Birth date"],ans:0},
+{q:"What is phishing?",opts:["Fake link to steal your info","Fishing in lake","New game","Email from friend"],ans:0},
+{q:"If you earn 10 coins daily, in 10 days you have?",opts:["100 coins","10 coins","1000 coins","20 coins"],ans:0},
+{q:"What is the largest continent?",opts:["Asia","Africa","Europe","Australia"],ans:0},
+{q:"Water boils at?",opts:["100°C","50°C","90°C","120°C"],ans:0},
+{q:"What is 15 x 4?",opts:["60","45","50","75"],ans:0},
+{q:"Which planet is called Red Planet?",opts:["Mars","Venus","Jupiter","Saturn"],ans:0},
+{q:"How many minutes in 2 hours?",opts:["120","100","90","200"],ans:0},
+{q:"What is the main language in Kigali?",opts:["Kinyarwanda","French only","Swahili only","English only"],ans:0},
+{q:"If 1 coin = $0.0005, 2000 coins = ?",opts:["$1","$10","$0.10","$2"],ans:0},
+{q:"What should you do if someone asks for your seed phrase?",opts:["Never share it","Share it quickly","Send screenshot","Tell on WhatsApp"],ans:0},
+{q:"Which is a crypto wallet?",opts:["Trust Wallet","Instagram","TikTok","Gmail"],ans:0},
+{q:"What is 2FA?",opts:["Extra security code - Two Factor Auth","Two Facebook Accounts","Second phone","Fast internet"],ans:0},
+{q:"How many seconds in 1 minute?",opts:["60","100","30","90"],ans:0},
+{q:"Best time to claim Hourly Bonus?",opts:["Every 1 hour","Every 1 minute","Once a month","Only Sunday"],ans:0}
 ];
-function seededShuffle(array, seedStr){let seed=0; for(let i=0;i<seedStr.length;i++) seed+=seedStr.charCodeAt(i); let arr=[...array]; for(let i=arr.length-1;i>0;i--){ seed=(seed*9301+49297)%233280; let j=seed% (i+1); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr;}
-function getTodayPool(){const seed=new Date().toISOString().split('T')[0]; return seededShuffle(FULL_POOL, seed).slice(0,10);}
+function seededShuffle(array, seedStr){
+  let seed=0; for(let i=0;i<seedStr.length;i++) seed=(seed*31+seedStr.charCodeAt(i))>>>0;
+  let arr=[...array];
+  for(let i=arr.length-1;i>0;i--){ seed=(seed*9301+49297)%233280; let j=seed%(i+1); [arr[i],arr[j]]=[arr[j],arr[i]]; }
+  return arr;
+}
+function getTodayPool(){
+  const day=new Date().toISOString().split('T')[0];
+  const uid=(window.currentUser && window.currentUser.uid) || localStorage.getItem('quiz_uid_seed') || 'guest';
+  const picked=seededShuffle(FULL_POOL, day+'-'+uid).slice(0,10);
+  return picked.map((qq, idx)=>{
+    const correctText=qq.opts[qq.ans];
+    const shuffled=seededShuffle(qq.opts, day+'-'+uid+'-q'+idx);
+    return { q:qq.q, opts:shuffled, ans:shuffled.indexOf(correctText) };
+  });
+}
 
 let pool=getTodayPool();
 let currentIndex=0, score=0, timer=null, sec=12, answers=[], isClaiming=false;
@@ -267,6 +357,7 @@ async function finishWithZero(){
 auth.onAuthStateChanged(async u=>{
   if(!u){location.href='./index.html';return;}
   currentUser=u; window.currentUser=u;
+  try{ localStorage.setItem('quiz_uid_seed', u.uid); }catch(e){}
   try{
     const doc=await db.collection('users').doc(u.uid).get();
     if(doc.exists && doc.data().quizEarn_date===localDayKey() && doc.data().chain && doc.data().chain.quiz_finishedToday===localDayKey()){
@@ -275,6 +366,7 @@ auth.onAuthStateChanged(async u=>{
     }
   }catch(e){}
   if(!loadSession()){
+    pool=getTodayPool();
     currentIndex=0; score=0; answers=[];
   }
   renderQuestion();
