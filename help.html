@@ -3,6 +3,7 @@
 <head>
 <title>Help - Rewards</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer-when-downgrade" />
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
@@ -14,7 +15,9 @@ body{background:#f5f3ff;min-height:100vh;color:#111827}
 .back-btn-checkin .lines{display:flex;flex-direction:column;gap:3px}
 .back-btn-checkin .lines i{display:block;width:18px;height:2.5px;background:#000;border-radius:2px}
 .top-pill{font-weight:900;font-size:14px;color:#4c1d95;background:#fff;border:2px solid #ede9fe;border-radius:999px;padding:7px 18px}
-.container{max-width:500px;margin:0 auto;padding:16px 14px 90px}
+/* AD ON TOP - STICKY - CONTENT MOVED DOWN */
+.top-ad-wrap{position:sticky;top:64px;z-index:90;background:#f5f3ff;padding:10px 14px 0}
+.container{max-width:500px;margin:0 auto;padding:12px 14px 90px}
 .card{background:#fff;border:2px solid #ede9fe;border-radius:20px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,0.06);margin-bottom:14px}
 .faq-item{border:2px solid #f1f5f9;border-radius:12px;margin-bottom:8px;overflow:hidden}
 .faq-item.open{border-color:#bbf7d0;background:#f0fdf4}
@@ -27,12 +30,17 @@ body{background:#f5f3ff;min-height:100vh;color:#111827}
 .btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:13px;padding:14px;font-weight:900;font-size:15px;cursor:pointer;box-shadow:0 4px 0 #d97706}
 .offer-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .offer-btn{background:linear-gradient(180deg,#eff6ff,#dbeafe);border:2px solid #bfdbfe;border-radius:12px;padding:12px;text-align:center;font-weight:900;font-size:12px;cursor:pointer}
-#adGate{position:fixed;inset:0;background:transparent;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;pointer-events:none}
-.gate-box{background:linear-gradient(180deg,#ede9fe,#ddd6fe);border:2px solid #c4b5fd;border-radius:26px;padding:26px 22px 22px;text-align:center;max-width:340px;width:100%;box-shadow:0 20px 40px rgba(76,29,149,0.25);pointer-events:auto}
+#adGate{position:fixed;inset:0;background:rgba(17,12,34,0.65);backdrop-filter:blur(8px);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}
+.gate-box{background:linear-gradient(180deg,#ede9fe,#ddd6fe);border:2px solid #c4b5fd;border-radius:26px;padding:26px 22px 22px;text-align:center;max-width:340px;width:100%;box-shadow:0 20px 40px rgba(76,29,149,0.25);position:relative}
 .gate-icon{font-size:36px}
 .gate-title{font-weight:900;font-size:20px;color:#4c1d95;margin:6px 0 2px}
 .gate-sub{font-size:12px;color:#6d28d9;font-weight:700;margin-bottom:14px}
-.gate-wait-text{font-weight:900;font-size:18px;color:#4c1d95;margin-top:4px;letter-spacing:0.2px}
+.gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #ede9fe;font-weight:900;font-size:14px;cursor:pointer}
+.gate-btn.watch{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 4px 0 #d97706;border-color:#f59e0b}
+.gate-btn.watch:disabled{background:#f3f4f6;color:#9ca3af;box-shadow:none}
+.gate-btn.open{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #15803d;display:none;margin-top:10px}
+#waitText{font-size:13px;font-weight:900;color:#92400e;margin-top:12px;background:#fffbeb;border:1.5px solid #fde68a;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
+#waitText:empty{display:none}
 </style>
 </head>
 <body>
@@ -41,13 +49,25 @@ body{background:#f5f3ff;min-height:100vh;color:#111827}
   <div class="top-pill">💬 Help / Support</div>
   <div style="width:45px"></div>
 </div>
+
+<!-- AD AT TOP - STICKY - 12320757 ONLY -->
+<div class="top-ad-wrap">
+  <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:0.5px">Advertisement</div>
+  <a id="helpAdLink" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
+    <div style="flex:1"><div id="helpAdTitle" style="font-weight:900;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div id="helpAdSub" style="font-size:11px;color:#333">Limited offer • Sponsored</div></div>
+    <div id="helpAdBtn" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
+  </a>
+</div>
+
+<!-- CONTENT MOVED DOWN - BELOW AD -->
 <div class="container">
 <div class="card"><div style="font-weight:900;font-size:16px;color:#4c1d95;margin-bottom:10px">❓ Quick Answers</div><div id="faqList"></div></div>
 <div class="card" style="background:linear-gradient(180deg,#fffbeb,#fef3c7);border-color:#fbbf24"><div style="font-weight:900;font-size:14px;color:#92400e">🚀 Need Coins Faster?</div><div class="offer-grid"><div class="offer-btn" onclick="location.href='./offers.html'">💎 High Pay Offers</div><div class="offer-btn" onclick="location.href='./referrals.html'">🤝 Refer & Earn 10%</div><div class="offer-btn" onclick="location.href='./bonus.html'">🎁 Hourly Bonus</div><div class="offer-btn" onclick="location.href='./survey.html'">📋 Paid Surveys</div></div></div>
 <div class="card"><div style="font-weight:900;font-size:15px;margin-bottom:12px">📩 Contact Support (Free)</div><input id="nameInput" class="input" placeholder="Your name" readonly><input id="emailInput" class="input" placeholder="Your email" readonly><textarea id="issueInput" class="area" placeholder="Describe your issue... min 10 chars"></textarea><button class="btn" onclick="doSendTicket()">Send Message</button><div id="status" style="text-align:center;font-size:13px;margin-top:12px;color:#6b7280;font-weight:700"></div></div>
 <div class="card"><div style="font-weight:900;font-size:15px">Your Tickets & Replies</div><div id="ticketsList" style="margin-top:10px"><p style="color:#9ca3af;text-align:center;padding:20px 0">Loading...</p></div></div>
 </div>
-<div id="adGate"><div class="gate-box"><div class="gate-icon">🎁</div><div class="gate-title">Open Answer</div><div class="gate-sub">Please wait to view</div><div id="waitText" class="gate-wait-text">Wait for... 10s</div></div></div>
+
+<div id="adGate"><div class="gate-box"><button onclick="closeHelpGate()" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button><div class="gate-icon">🎁</div><div class="gate-title">Open Answer</div><div class="gate-sub">Please wait 10s to open</div><button id="watchAdBtn" class="gate-btn watch">Open Answer</button><div id="waitText"></div><button id="openBtn" class="gate-btn open">✅ Open</button><div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div></div></div>
 <script>
 const FAQS=[
 {q:"💰 How to withdraw?",a:"Go to Wallet > Withdraw. Minimum is <b>3000 coins = $1.5</b>. Payout in USDT (BEP20) within 24-48h. Complete Watch, Quiz, Articles daily."},
@@ -59,11 +79,49 @@ const FAQS=[
 {q:"⏳ Pending withdraw?",a:"Manual review within 12h. If 48h+, send ticket with wallet address."},
 {q:"📧 Contact?",a:"Use form below. Reply within 24h. One ticket per issue."}
 ];
+
+// ===== TOP AD - 2 MIN ROTATE - SURVIVES REFRESH - 12320757 ONLY =====
+const HELP_ADS=[
+  {title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Sponsored",btn:"Visit →",bg:"#FFD700",link:"https://uplcm.com/4/12320757"},
+  {title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • Sponsored",btn:"Visit →",bg:"#7CFC00",link:"https://uplcm.com/4/12320757"},
+  {title:"📱 Win Free Airtime Today",sub:"MTN • Airtel • Sponsored",btn:"Visit →",bg:"#00D4FF",link:"https://uplcm.com/4/12320757"},
+  {title:"🔥 Hot Offer - Double Your Coins",sub:"Today only • Sponsored",btn:"Visit →",bg:"#FF9F43",link:"https://uplcm.com/4/12320757"}
+];
+const HELP_AD_TIME=2*60*1000;
+const HELP_AD_KEY='helpAd_state_v1';
+let helpAdIndex=0;
+function saveHelpAd(){ try{ localStorage.setItem(HELP_AD_KEY, JSON.stringify({index:helpAdIndex, changedAt:Date.now()})); }catch(e){} }
+function showHelpAd(i){
+  const a=HELP_ADS[i];
+  const link=document.getElementById('helpAdLink');
+  if(!link) return;
+  link.href=a.link; link.style.background=a.bg;
+  document.getElementById('helpAdTitle').textContent=a.title;
+  document.getElementById('helpAdSub').textContent=a.sub;
+  document.getElementById('helpAdBtn').textContent=a.btn;
+}
+function nextHelpAd(){ helpAdIndex=(helpAdIndex+1)%HELP_ADS.length; showHelpAd(helpAdIndex); saveHelpAd(); }
+(function initHelpAd(){
+  try{
+    const raw=localStorage.getItem(HELP_AD_KEY);
+    if(!raw){ showHelpAd(0); saveHelpAd(); setTimeout(function(){ nextHelpAd(); setInterval(nextHelpAd, HELP_AD_TIME); }, HELP_AD_TIME); return; }
+    const saved=JSON.parse(raw);
+    const elapsed=Date.now() - (saved.changedAt||Date.now());
+    const steps=Math.floor(elapsed / HELP_AD_TIME);
+    helpAdIndex=((saved.index||0)+steps)%HELP_ADS.length;
+    const remain=HELP_AD_TIME - (elapsed % HELP_AD_TIME);
+    showHelpAd(helpAdIndex);
+    try{ localStorage.setItem(HELP_AD_KEY, JSON.stringify({index:helpAdIndex, changedAt:Date.now()-(elapsed%HELP_AD_TIME)})); }catch(e){}
+    setTimeout(function(){ nextHelpAd(); setInterval(nextHelpAd, HELP_AD_TIME); }, remain);
+  }catch(e){ showHelpAd(0); saveHelpAd(); setInterval(nextHelpAd, HELP_AD_TIME); }
+})();
+
 let vignetteLoaded=false;
 function loadCleanVignette(){if(vignetteLoaded) return; vignetteLoaded=true; const old=document.querySelector('script[src*="vignette.min.js"]'); if(old) old.remove(); (function(s){s.dataset.zone='12270633',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script'))); setTimeout(()=>{vignetteLoaded=false;},60000);}
 function getOpened(){try{return JSON.parse(localStorage.getItem('faq_opened_v2')||'{}')}catch(e){return {}}}
 function saveOpened(o){localStorage.setItem('faq_opened_v2',JSON.stringify(o))}
 let pendingIdx=null, timerInterval=null;
+function closeHelpGate(){ document.getElementById('adGate').style.display='none'; pendingIdx=null; clearInterval(timerInterval); }
 const faqList=document.getElementById('faqList');
 FAQS.forEach((f,i)=>{
   const div=document.createElement('div'); div.className='faq-item'; div.id='faq-'+i;
@@ -78,31 +136,41 @@ FAQS.forEach((f,i)=>{
     }
     pendingIdx=i;
     document.getElementById('adGate').style.display='flex';
-    startWait();
+    document.getElementById('watchAdBtn').style.display='block';
+    document.getElementById('openBtn').style.display='none';
+    document.getElementById('watchAdBtn').disabled=false;
+    document.getElementById('watchAdBtn').innerText='Open Answer';
+    document.getElementById('waitText').innerText='';
   };
   faqList.appendChild(div);
 });
-function startWait(){
+document.getElementById('watchAdBtn').onclick=function(){
+  this.innerText='⏳ Please wait...'; this.disabled=true;
   let sec=10;
   const waitText=document.getElementById('waitText');
-  waitText.innerText=`Wait for... ${sec}s`;
+  waitText.innerText=`⏳ Wait ${sec}s...`;
   clearInterval(timerInterval);
   timerInterval=setInterval(()=>{
     sec--;
     if(sec>0){
-      waitText.innerText=`Wait for... ${sec}s`;
+      waitText.innerText=`⏳ Wait ${sec}s...`;
     }else{
       clearInterval(timerInterval);
-      document.getElementById('adGate').style.display='none';
-      loadCleanVignette();
-      if(pendingIdx!==null){
-        const opened=getOpened(); opened[pendingIdx]=Date.now(); saveOpened(opened);
-        document.querySelectorAll('.faq-item').forEach(el=>el.classList.remove('open'));
-        document.getElementById('faq-'+pendingIdx).classList.add('open');
-      }
+      document.getElementById('watchAdBtn').style.display='none';
+      waitText.innerText='✅ Ready!';
+      document.getElementById('openBtn').style.display='block';
     }
   },1000);
-}
+};
+document.getElementById('openBtn').onclick=function(){
+  document.getElementById('adGate').style.display='none';
+  loadCleanVignette();
+  if(pendingIdx!==null){
+    const opened=getOpened(); opened[pendingIdx]=Date.now(); saveOpened(opened);
+    document.querySelectorAll('.faq-item').forEach(el=>el.classList.remove('open'));
+    document.getElementById('faq-'+pendingIdx).classList.add('open');
+  }
+};
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore(); let cachedUser=null;
