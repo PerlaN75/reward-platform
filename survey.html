@@ -20,15 +20,16 @@
     .center-pill{background:#fff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%)}
     .container{max-width:600px;margin:0 auto;padding:14px 12px 20px}
     .card{background:#fff;border:2px solid #ede9fe;border-radius:20px;padding:8px;position:relative;overflow:hidden;min-height:700px}
-    /* SMALL GATE CARD - transparent backdrop, not full white */
-    #surveyGate{position:absolute;inset:0;background:transparent;z-index:20;border-radius:20px;display:none;align-items:center;justify-content:center;padding:20px;text-align:center}
+    /* SAFE GATE - SAME AS OFFERS / BONUS / MORE */
+    #surveyGate{position:fixed;inset:0;background:rgba(17,12,34,0.65);backdrop-filter:blur(8px);z-index:20;display:none;align-items:center;justify-content:center;padding:20px;text-align:center}
     #surveyGate.show{display:flex}
-    .gate-card{background:linear-gradient(180deg,#ede9fe,#ddd6fe);border:2px solid #c4b5fd;border-radius:22px;padding:22px 20px;width:100%;max-width:320px;text-align:center;box-shadow:0 20px 40px rgba(76,29,149,0.25)}
-    #surveyTimerBox{width:88px;height:88px;border-radius:50%;background:#fff;border:4px solid #ddd6fe;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;color:#4c1d95;margin:14px auto;box-shadow:0 10px 25px rgba(0,0,0,0.15)}
-    #surveyProgress{width:100%;height:8px;background:rgba(76,29,149,0.15);border-radius:99px;margin-top:16px;overflow:hidden}
-    #surveyProgressBar{height:100%;width:100%;background:#6d28d9;transition:width 1s linear}
-    /* Hide / blur content behind gate */
-    #mainCard.gating > div:not(#surveyGate){filter:blur(7px);pointer-events:none;user-select:none}
+    .gate-card{background:linear-gradient(180deg,#ede9fe,#ddd6fe);border:2px solid #c4b5fd;border-radius:22px;padding:22px 20px;width:100%;max-width:320px;text-align:center;box-shadow:0 20px 40px rgba(76,29,149,0.25);position:relative}
+    .gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #ede9fe;font-weight:900;font-size:14px;cursor:pointer}
+    .gate-btn.watch{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 4px 0 #d97706;border-color:#f59e0b}
+    .gate-btn.watch:disabled{background:#f3f4f6;color:#9ca3af;box-shadow:none}
+    .gate-btn.continue{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #15803d;display:none;margin-top:10px}
+    #surveyTimerBox{font-size:13px;font-weight:900;color:#92400e;margin-top:12px;background:#fffbeb;border:1.5px solid #fde68a;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
+    #surveyTimerBox:empty{display:none}
   </style>
 </head>
 <body>
@@ -40,14 +41,17 @@
 
 <div class="container">
   <div class="card" id="mainCard">
-    <!-- GATE LIKE MORE.HTML - SMALL CARD -->
+    <!-- SAFE GATE - OPTIONAL, NOT FORCED -->
     <div id="surveyGate">
       <div class="gate-card">
+        <button onclick="closeSurveyGate()" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button>
         <div style="font-size:42px">📋</div>
-        <div style="font-weight:900;font-size:18px;color:#4c1d95;margin-top:8px">Loading Surveys</div>
-        <div id="surveyTimerBox">10</div>
-        <div style="font-size:11px;color:#6d28d9;font-weight:800">Clean ads loading...</div>
-        <div id="surveyProgress"><div id="surveyProgressBar"></div></div>
+        <div style="font-weight:900;font-size:18px;color:#4c1d95;margin-top:8px">Open Surveys</div>
+        <div style="font-size:12px;color:#6d28d9;margin:8px 0 16px;font-weight:700;line-height:1.4">Please wait 10s to open</div>
+        <button id="surveyOpenBtn" class="gate-btn watch">Open Surveys</button>
+        <div id="surveyTimerBox"></div>
+        <button id="surveyContinueBtn" class="gate-btn continue">✅ Continue</button>
+        <div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div>
       </div>
     </div>
 
@@ -61,7 +65,7 @@
         <div id="cpx-loading" class="p-10 text-center">
           <div class="w-16 h-16 bg-[#f5f3ff] rounded-full flex items-center justify-center mb-4 mx-auto animate-pulse"><i class="fa fa-circle-notch text-2xl text-[#6d28d9]"></i></div>
           <h3 class="font-black text-gray-800">CPX Research Live</h3>
-          <p class="text-gray-500 text-sm mt-2">Active - Surveys for Rwanda<br>Waiting for unlock...</p>
+          <p class="text-gray-500 text-sm mt-2">Active - Surveys for Rwanda<br>Waiting to open...</p>
         </div>
         <div id="cpx-iframe-holder" class="w-full hidden"></div>
       </div>
@@ -70,12 +74,24 @@
   </div>
 </div>
 
+<!-- BOTTOM DIRECT LINK - NEW 12325659 ONLY -->
+<div style="max-width:600px;margin:0 auto;padding:0 12px 30px;width:100%">
+  <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px">Advertisement</div>
+  <a href="https://uplcm.com/4/12325659" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
+    <div style="flex:1"><div style="font-weight:900;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div style="font-size:11px;color:#333">Limited offer • Sponsored</div></div>
+    <div style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
+  </a>
+</div>
+
 <script>
-// VIGNETTE LOADER - SAME AS MORE.HTML BUT WITH YOUR NEW ZONE 12272200
+// VIGNETTE LOADER - ZONE 12272200 - ONLY ON CONTINUE
+let vignetteLoaded=false;
 function loadVignette(){
+  if(vignetteLoaded) return; vignetteLoaded=true;
   const old = document.querySelector('script[src*="vignette.min.js"]');
   if(old) old.remove();
   (function(s){s.dataset.zone='12272200',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+  setTimeout(()=>{vignetteLoaded=false;}, 60*1000);
 }
 
 const firebaseConfig = {
@@ -99,7 +115,6 @@ firebase.auth().onAuthStateChanged(user => {
     document.getElementById('userEmail').innerText = user.email;
     const uid = encodeURIComponent(user.uid);
     cpxUrlReady = `https://offers.cpx-research.com/index.php?app_id=37033&ext_user_id=${uid}&subid_1=&subid_2=`;
-    // if gate already passed within 3min, load immediately
     const last = parseInt(localStorage.getItem('surveyGateLastShown')||'0');
     if(last && (Date.now()-last) < 3*60*1000){
       loadCpx();
@@ -107,38 +122,39 @@ firebase.auth().onAuthStateChanged(user => {
   } else { window.location.href = 'index.html'; }
 });
 
+function closeSurveyGate(){
+  document.getElementById('surveyGate').style.display='none';
+  document.getElementById('surveyGate').classList.remove('show');
+}
 function initSurveyGate(){
   const gate=document.getElementById('surveyGate');
-  const card=document.getElementById('mainCard');
-  const timerBox=document.getElementById('surveyTimerBox');
-  const progressBar=document.getElementById('surveyProgressBar');
   const COOLDOWN=3*60*1000;
   const last=parseInt(localStorage.getItem('surveyGateLastShown')||'0');
-  
   if(last && (Date.now()-last)<COOLDOWN){
     gate.style.display='none';
     gate.classList.remove('show');
-    card.classList.remove('gating');
     return;
   }
-  
-  card.classList.add('gating');
   gate.classList.add('show');
   gate.style.display='flex';
-  let sec=10; timerBox.innerText=sec; progressBar.style.width='100%';
-  const int=setInterval(()=>{
-    sec--; timerBox.innerText=sec; progressBar.style.width=(sec*10)+'%';
-    if(sec<=0){
-      clearInterval(int);
-      gate.style.display='none';
-      gate.classList.remove('show');
-      card.classList.remove('gating');
-      localStorage.setItem('surveyGateLastShown', String(Date.now()));
-      loadCpx();
-      loadVignette(); // Clean full-screen vignette AFTER gate, like more.html
-    }
-  },1000);
+  document.getElementById('surveyOpenBtn').style.display='block';
+  document.getElementById('surveyContinueBtn').style.display='none';
+  document.getElementById('surveyOpenBtn').disabled=false;
+  document.getElementById('surveyOpenBtn').innerText='Open Surveys';
+  document.getElementById('surveyTimerBox').innerText='';
 }
+document.getElementById('surveyOpenBtn').onclick=function(){
+  this.innerText='⏳ Please wait...'; this.disabled=true;
+  let sec=10; const el=document.getElementById('surveyTimerBox');
+  el.innerText='⏳ Wait '+sec+'s...';
+  const iv=setInterval(()=>{ sec--; if(sec>0){ el.innerText='⏳ Wait '+sec+'s...'; } else { clearInterval(iv); document.getElementById('surveyOpenBtn').style.display='none'; el.innerText='✅ Unlocked!'; document.getElementById('surveyContinueBtn').style.display='block'; } },1000);
+};
+document.getElementById('surveyContinueBtn').onclick=function(){
+  closeSurveyGate();
+  localStorage.setItem('surveyGateLastShown', String(Date.now()));
+  loadCpx();
+  loadVignette();
+};
 initSurveyGate();
 </script>
 </body>
