@@ -1,9 +1,9 @@
 <!DOCTYPE html><html><head><title>Home</title><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent!important}
-html,body{height:100%;height:100dvh;height:100svh;overflow:hidden;overscroll-behavior:auto}
+html,body{height:100%;height:100dvh;height:100svh;overflow-x:hidden;overflow-y:auto;overscroll-behavior-y:auto;-webkit-overscroll-behavior-y:auto;touch-action:pan-y}
 body{background:#6d28d9;display:flex;justify-content:center;min-height:100dvh;min-height:100svh}
-.wrap{width:100%;max-width:430px;height:100dvh;height:100svh;max-height:100dvh;max-height:100svh;background:#fff;background-image:url('./bg.jpg');background-repeat:no-repeat;background-size:100% auto;background-position:center center;position:relative;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.wrap{width:100%;max-width:430px;height:100dvh;height:100svh;max-height:100dvh;max-height:100svh;background:#fff;background-image:url('./bg.jpg');background-repeat:no-repeat;background-size:100% auto;background-position:center center;position:relative;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;touch-action:pan-y}
 .top{width:100%;background:#ffedd5;border-bottom:2px solid #fdba74;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:30;flex-shrink:0}
 #menuBtn{width:44px;height:44px;border:none;background:none;font-size:26px;font-weight:900;color:#4c1d95;display:flex;align-items:center;justify-content:center}
 .top h2{font-size:19px;font-weight:900;text-align:center;flex:1;color:#111827}
@@ -79,14 +79,19 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100dvh;mi
 </div>
 
 <script>
-// ===== ADS ROTATE EVERY 2 MINUTES - LOOP FOREVER =====
+// ===== ADS ROTATE EVERY 2 MIN - SURVIVES PULL-TO-REFRESH =====
 const ADS=[
   {title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Claim now",btn:"Claim →",bg:"#FFD700",link:"https://uplcm.com/4/12320736"},
   {title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • No experience needed",btn:"Start →",bg:"#7CFC00",link:"https://uplcm.com/4/12320736"},
   {title:"📱 Win Free Airtime Today",sub:"MTN • Airtel • Claim in 1 min",btn:"Win →",bg:"#00D4FF",link:"https://uplcm.com/4/12320736"},
   {title:"🔥 Hot Offer - Double Your Coins",sub:"Today only • Limited slots",btn:"Get →",bg:"#FF9F43",link:"https://uplcm.com/4/12320736"}
 ];
+const AD_TIME=2*60*1000;
+const AD_KEY='fairAd_state_v1';
 let adIndex=0;
+function saveAd(){
+  try{ localStorage.setItem(AD_KEY, JSON.stringify({index:adIndex, changedAt:Date.now()})); }catch(e){}
+}
 function showAd(i){
   const a=ADS[i];
   const link=document.getElementById('adLink');
@@ -97,11 +102,26 @@ function showAd(i){
   link.href=a.link; link.style.background=a.bg;
   t.textContent=a.title; s.textContent=a.sub; b.textContent=a.btn;
 }
-showAd(0);
-setInterval(function(){
+function nextAd(){
   adIndex=(adIndex+1)%ADS.length;
-  showAd(adIndex);
-}, 2*60*1000); // 2 minutes
+  showAd(adIndex); saveAd();
+}
+// On load: catch up if time passed while away / during refresh
+(function initAd(){
+  try{
+    const raw=localStorage.getItem(AD_KEY);
+    if(!raw){ showAd(0); saveAd(); setTimeout(function tick(){ nextAd(); setInterval(nextAd, AD_TIME); }, AD_TIME); return; }
+    const saved=JSON.parse(raw);
+    const elapsed=Date.now() - (saved.changedAt||Date.now());
+    const steps=Math.floor(elapsed / AD_TIME);
+    adIndex=((saved.index||0)+steps)%ADS.length;
+    const remain=AD_TIME - (elapsed % AD_TIME);
+    showAd(adIndex);
+    // save with corrected time so next refresh is still correct
+    try{ localStorage.setItem(AD_KEY, JSON.stringify({index:adIndex, changedAt:Date.now()-(elapsed%AD_TIME)})); }catch(e){}
+    setTimeout(function(){ nextAd(); setInterval(nextAd, AD_TIME); }, remain);
+  }catch(e){ showAd(0); saveAd(); setInterval(nextAd, AD_TIME); }
+})();
 </script>
 
 <script>
