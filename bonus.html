@@ -17,8 +17,8 @@
 .bonus-box{background:#fffbeb;border:2px dashed #f59e0b;border-radius:16px;padding:18px;margin:10px 0}
 .btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;border-radius:12px;padding:14px;font-weight:900;font-size:15px;cursor:pointer;margin-top:14px;box-shadow:0 4px 0 #d97706}.btn:disabled{background:#e5e7eb;color:#9ca3af;box-shadow:none}
 .notif-box{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:12px;padding:10px;margin-top:10px;text-align:left}
-#adGate{position:fixed;inset:0;background:transparent;z-index:10001;display:none;align-items:center;justify-content:center;padding:20px}
-.gate-box{background:linear-gradient(180deg,#ede9fe,#ddd6fe);border:2px solid #c4b5fd;border-radius:22px;padding:22px 20px;width:100%;max-width:320px;text-align:center;box-shadow:0 20px 40px rgba(76,29,149,0.25)}
+#adGate{position:fixed;inset:0;background:rgba(17,12,34,0.65);backdrop-filter:blur(8px);z-index:10001;display:none;align-items:center;justify-content:center;padding:20px}
+.gate-box{background:linear-gradient(180deg,#ede9fe,#ddd6fe);border:2px solid #c4b5fd;border-radius:22px;padding:22px 20px;width:100%;max-width:320px;text-align:center;box-shadow:0 20px 40px rgba(76,29,149,0.25);position:relative}
 .gate-icon{width:64px;height:64px;margin:0 auto 10px;background:#fff;border:4px solid #ddd6fe;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 10px 25px rgba(0,0,0,0.15)}
 .gate-title{font-weight:900;font-size:18px;color:#4c1d95}
 .gate-sub{font-size:12px;color:#6d28d9;margin:8px 0 16px;line-height:1.4;font-weight:700}
@@ -40,11 +40,18 @@
     <div id="notifStatus" style="font-size:11px;color:#6b7280;margin-top:4px">Enable notifications to get alert every hour when bonus is ready</div>
     <button id="notifBtn" style="margin-top:8px;padding:8px 12px;border-radius:8px;border:1.5px solid #bfdbfe;background:#fff;color:#1e40af;font-weight:900;font-size:11px;cursor:pointer">Enable Notifications</button>
   </div>
-
-  <div id="info" style="font-size:11px;color:#6b7280;margin-top:12px">Profit: 1 ad = $0.0008, payout $0.0005 = +$0.0003</div>
 </div>
 
-<div id="adGate"><div class="gate-box"><div class="gate-icon">🎁</div><div class="gate-title">Unlock Bonus</div><div id="gateSub" class="gate-sub">Watch clean ad 10s to claim +1 coin</div><button id="watchAdBtn" class="gate-btn watch">▶️ Watch Ad (10s)</button><div id="gateTimer2"></div><button id="continueBtn" class="gate-btn continue">✅ Collect +1 Coin</button><div style="font-size:9px;color:#6d28d9;margin-top:10px;font-weight:700">12272570 • Clean & safe</div></div></div>
+<!-- SAFE DIRECT LINK - BOTTOM - 2 MIN ROTATE - 12320757 ONLY -->
+<div style="max-width:380px;margin:0 auto;padding:0 14px 30px;width:100%">
+  <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:0.5px">Advertisement</div>
+  <a id="bonusAdLink" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
+    <div style="flex:1"><div id="bonusAdTitle" style="font-weight:900;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div id="bonusAdSub" style="font-size:11px;color:#333">Limited offer • Sponsored</div></div>
+    <div id="bonusAdBtn" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
+  </a>
+</div>
+
+<div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button><div class="gate-icon">🎁</div><div class="gate-title">Open Bonus</div><div id="gateSub" class="gate-sub">Please wait 10s to open</div><button id="watchAdBtn" class="gate-btn watch">Open Bonus</button><div id="gateTimer2"></div><button id="continueBtn" class="gate-btn continue">✅ Collect +1 Coin</button><div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div></div></div>
 
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
@@ -54,11 +61,46 @@ const auth=firebase.auth(),db=firebase.firestore();
 
 const BONUS_ZONE='12272570';
 const BONUS_COINS=1;
-const COOLDOWN_MS=60*60*1000; // 1 hour
+const COOLDOWN_MS=60*60*1000;
 let currentUser=null, canClaim=false, nextAllowed=0, timerInt=null, notifTimer=null;
 const claimBtn=document.getElementById('claimBtn'),timerEl=document.getElementById('timer'),countTodayEl=document.getElementById('countToday'),notifStatus=document.getElementById('notifStatus'),notifBtn=document.getElementById('notifBtn');
 
-// ===== NOTIFICATION LOGIC =====
+// ===== BOTTOM AD - 2 MIN ROTATE - SURVIVES REFRESH =====
+const BONUS_ADS=[
+  {title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Sponsored",btn:"Visit →",bg:"#FFD700",link:"https://uplcm.com/4/12320757"},
+  {title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • Sponsored",btn:"Visit →",bg:"#7CFC00",link:"https://uplcm.com/4/12320757"},
+  {title:"📱 Win Free Airtime Today",sub:"MTN • Airtel • Sponsored",btn:"Visit →",bg:"#00D4FF",link:"https://uplcm.com/4/12320757"},
+  {title:"🔥 Hot Offer - Double Your Coins",sub:"Today only • Sponsored",btn:"Visit →",bg:"#FF9F43",link:"https://uplcm.com/4/12320757"}
+];
+const BONUS_AD_TIME=2*60*1000;
+const BONUS_AD_KEY='bonusAd_state_v1';
+let bonusAdIndex=0;
+function saveBonusAd(){ try{ localStorage.setItem(BONUS_AD_KEY, JSON.stringify({index:bonusAdIndex, changedAt:Date.now()})); }catch(e){} }
+function showBonusAd(i){
+  const a=BONUS_ADS[i];
+  const link=document.getElementById('bonusAdLink');
+  if(!link) return;
+  link.href=a.link; link.style.background=a.bg;
+  document.getElementById('bonusAdTitle').textContent=a.title;
+  document.getElementById('bonusAdSub').textContent=a.sub;
+  document.getElementById('bonusAdBtn').textContent=a.btn;
+}
+function nextBonusAd(){ bonusAdIndex=(bonusAdIndex+1)%BONUS_ADS.length; showBonusAd(bonusAdIndex); saveBonusAd(); }
+(function initBonusAd(){
+  try{
+    const raw=localStorage.getItem(BONUS_AD_KEY);
+    if(!raw){ showBonusAd(0); saveBonusAd(); setTimeout(function(){ nextBonusAd(); setInterval(nextBonusAd, BONUS_AD_TIME); }, BONUS_AD_TIME); return; }
+    const saved=JSON.parse(raw);
+    const elapsed=Date.now() - (saved.changedAt||Date.now());
+    const steps=Math.floor(elapsed / BONUS_AD_TIME);
+    bonusAdIndex=((saved.index||0)+steps)%BONUS_ADS.length;
+    const remain=BONUS_AD_TIME - (elapsed % BONUS_AD_TIME);
+    showBonusAd(bonusAdIndex);
+    try{ localStorage.setItem(BONUS_AD_KEY, JSON.stringify({index:bonusAdIndex, changedAt:Date.now()-(elapsed% BONUS_AD_TIME)})); }catch(e){}
+    setTimeout(function(){ nextBonusAd(); setInterval(nextBonusAd, BONUS_AD_TIME); }, remain);
+  }catch(e){ showBonusAd(0); saveBonusAd(); setInterval(nextBonusAd, BONUS_AD_TIME); }
+})();
+
 function checkNotifPermission(){
   if(!("Notification" in window)){notifStatus.innerText="Notifications not supported on this device"; notifBtn.style.display="none"; return;}
   if(Notification.permission==="granted"){notifStatus.innerText="✅ Notifications ON — You'll get alert every hour"; notifBtn.innerText="Notifications ON ✓"; notifBtn.disabled=true; notifBtn.style.background="#dcfce7"; notifBtn.style.borderColor="#22c55e"; notifBtn.style.color="#15803d";}
@@ -75,7 +117,6 @@ function showNotif(title, body){
   if(!("Notification" in window)) return;
   if(Notification.permission!=="granted") return;
   try{
-    // Try service worker notification if possible, fallback to normal
     if(navigator.serviceWorker && navigator.serviceWorker.ready){
       navigator.serviceWorker.ready.then(reg=>{reg.showNotification(title,{body:body,icon:"https://cdn-icons-png.flaticon.com/512/138/138292.png",badge:"https://cdn-icons-png.flaticon.com/512/138/138292.png"});});
     } else {
@@ -90,13 +131,11 @@ function scheduleNotifForNextBonus(){
   if(diff<=0) return;
   notifTimer=setTimeout(()=>{
     showNotif("🎁 Bonus Ready! +1 Coin","Your hourly bonus is ready — Claim now before it expires!");
-    // Vibrate if supported
     if(navigator.vibrate) navigator.vibrate([200,100,200]);
   }, diff);
 }
 checkNotifPermission();
 
-// ===== ADS =====
 let vignetteLoaded=false;
 function loadVignette(){
   if(vignetteLoaded) return; vignetteLoaded=true;
@@ -112,7 +151,7 @@ function openGate(){
   document.getElementById('continueBtn').style.display='none';
   document.getElementById('watchAdBtn').disabled=false;
   document.getElementById('gateTimer2').innerText='';
-  document.getElementById('watchAdBtn').innerText='▶️ Watch Ad (10s)';
+  document.getElementById('watchAdBtn').innerText='Open Bonus';
 }
 document.getElementById('watchAdBtn').onclick=function(){
   this.innerText='⏳ Please wait...';this.disabled=true;
@@ -162,9 +201,8 @@ function startReady(){
   canClaim=true;
   claimBtn.disabled=false;
   claimBtn.textContent=`Claim ${BONUS_COINS} Coin Free`;
-  timerEl.textContent='Ready to claim! Tap to watch ad + claim';
+  timerEl.textContent='Ready to claim! Tap to continue';
   if(timerInt) clearInterval(timerInt);
-  // If notifications on and was waiting, show ready now
   if(Notification.permission==="granted" && nextAllowed>0 && Date.now()>=nextAllowed){
     showNotif("🎁 Bonus Ready! +1 Coin","Your hourly bonus is ready — Come claim!");
   }
@@ -211,7 +249,6 @@ async function doClaim(){
     },{merge:true});
     timerEl.textContent=`✅ Claimed +${BONUS_COINS}! Next in 1h`;
     showNotif("✅ +1 Coin Claimed!","Next bonus in 1 hour — We'll notify you!");
-    // Auto-request notif after first claim if not asked
     if(Notification.permission==="default"){setTimeout(()=>{notifBtn.click();},1000);}
   }catch(e){
     alert(e.message);
