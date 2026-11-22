@@ -1,299 +1,103 @@
-<!DOCTYPE html><html><head><title>Home</title><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home - Earn Coins</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent!important}
-body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
-.wrap{width:100%;max-width:430px;height:100dvh;background:#fff;background-image:url('./bg.jpg');background-repeat:no-repeat;background-size:100% auto;background-position:center center;position:relative;display:flex;flex-direction:column;overflow:hidden}
-.top{width:100%;background:#ffedd5;border-bottom:2px solid #fdba74;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:30;flex-shrink:0}
-#menuBtn{width:44px;height:44px;border:none;background:none;font-size:26px;font-weight:900;color:#4c1d95;display:flex;align-items:center;justify-content:center}
-.top h2{font-size:19px;font-weight:900;text-align:center;flex:1;color:#111827}
-.scene{flex:1;position:relative;z-index:2;background:transparent}
-.monitor{position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);width:88%;max-width:340px;background:none;border:none;box-shadow:none;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:5}
-.screen{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:100%;text-align:center}
-.badge{font-size:10px;font-weight:900;padding:3px 7px;border-radius:10px;color:#fff;margin-left:auto}
-.badge.padlock{background:#111827;padding:4px 8px;font-size:11px}
-.badge.green{background:#16a34a}.badge.live{background:#16a34a}.badge.soon{background:#f59e0b;color:#000}
-/* BOTTOM - MONETAG 12320606 - 2 MIN ROTATE */
-.bottomAdWrap{flex-shrink:0;padding:8px 12px 12px;background:transparent;z-index:20}
-.bottomAdCard{background:#fff;border:2px solid #ede9fe;border-radius:16px;padding:8px 10px;box-shadow:0 4px 12px rgba(0,0,0,0.08);min-height:88px;overflow:hidden}
-.bottomAdLabel{font-size:10px;font-weight:900;color:#6b7280;text-align:center;margin-bottom:4px;letter-spacing:.3px}
-#bottomAdBox{min-height:70px}
-#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:10px 14px;border-radius:10px;font-weight:bold;z-index:99999;display:none;max-width:90%;text-align:center}
-#maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
-#drawerOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:998}
-#drawerOverlay.show{display:block}
-#sideDrawer{position:fixed;top:0;left:0;transform:translateX(-100%);width:82%;max-width:310px;height:100dvh;background:#fff;z-index:999;display:flex;flex-direction:column;transition:transform 0.32s cubic-bezier(.2,.8,.2,1);box-shadow:6px 0 24px rgba(0,0,0,0.18)}
-#sideDrawer.open{transform:translateX(0)}
-.drawer-head{padding:18px;background:#fffdf5;border-bottom:1.5px solid #ffedd5}
-.drawer-profile{display:flex;align-items:center;gap:12px}
-.drawer-avatar{width:46px;height:46px;border-radius:50%;background:#e5e7eb;color:#fff;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
-.drawer-avatar img{width:100%;height:100%;object-fit:cover;display:block}
-.drawer-name{font-size:16px;font-weight:900;color:#111827;display:flex;align-items:center;gap:6px}
-.drawer-sub{font-size:12.5px;font-weight:700;margin-top:3px;word-break:break-all}
-#drawerUsername{font-family:'Trebuchet MS','Segoe UI',Tahoma,sans-serif;font-weight:800;letter-spacing:0.2px;font-size:16.5px;color:#111827}
-#drawerEmail{font-family:'Courier New',Courier,monospace;font-weight:800;font-size:13.5px;color:#0a1f8f;letter-spacing:-0.2px}
-#drawerId{color:#0a1f8f !important;font-size:12.5px !important;font-weight:800 !important}
-.drawer-menu{flex:1;overflow-y:auto;padding:10px 0}
-.drawer-item{width:100%;display:flex;align-items:center;gap:14px;padding:13px 18px;border:none;background:none;cursor:pointer;font-size:14px;font-weight:800;text-align:left;color:inherit}
-.drawer-item .emo{font-size:18px;width:26px;text-align:center}
-.drawer-sep{height:1px;background:#e5e7eb;margin:10px 18px}
-.drawer-foot{padding:12px 18px;text-align:center;font-size:11px;color:#6b7280;font-weight:700}
-</style></head><body>
-<div id="maint"><div><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900">Back</button></div></div>
-<div id="toast"></div>
-<div id="drawerOverlay" onclick="closeDrawer()"></div>
-<div id="sideDrawer">
-  <div class="drawer-head"><div class="drawer-profile"><div class="drawer-avatar" id="drawerAvatar"><img src="./default-avatar.jpg" alt="avatar"></div><div><div class="drawer-name"><span id="drawerUsername"></span></div><div class="drawer-sub" id="drawerEmail"></div><div class="drawer-sub" id="drawerId"></div></div></div></div>
-  <div class="drawer-menu">
-    <button class="drawer-item" id="btnWatch" onclick="goWatch()" type="button" style="color:#0d7dd8"><span class="emo">📺</span> Watch & Earn</button>
-    <button class="drawer-item" id="btnQuiz" onclick="goQuiz()" type="button" style="color:#7c3aed"><span class="emo">🧠</span> Quiz</button>
-    <button class="drawer-item" id="btnArticles" onclick="goArticles()" type="button" style="color:#111827"><span class="emo">📖</span> Articles Earn</button>
-    <button class="drawer-item" onclick="location.href='./wallet.html'" type="button" style="color:#16a34a"><span class="emo">💰</span> Wallet</button>
-    <button class="drawer-item" id="btnBonus" onclick="goBonus()" type="button" style="color:#111827"><span class="emo">🎁</span> Bonus</button>
-    <button class="drawer-item" onclick="location.href='./survey.html'" type="button" style="color:#0d9488"><span class="emo">📋</span> Survey</button>
-    <button class="drawer-item" onclick="location.href='./referrals.html'" type="button" style="color:#2563eb"><span class="emo">🤝</span> Refer & Earn</button>
-    <button class="drawer-item" onclick="location.href='./offers.html'" type="button" style="color:#7e22ce"><span class="emo">💎</span> Offers</button>
-    <button class="drawer-item" onclick="location.href='./more.html'" type="button" style="color:#0891b2"><span class="emo">❄️</span> More</button>
-    <button class="drawer-item" onclick="location.href='./help.html'" type="button" style="color:#4b5563"><span class="emo">🎧</span> Help/Support</button>
-    <button class="drawer-item" onclick="localStorage.clear();sessionStorage.clear();location.href='./index.html'" type="button" style="color:#dc2626"><span class="emo">♻️</span> Sign Out</button>
-    <div class="drawer-sep"></div>
-    <button class="drawer-item" onclick="location.href='./about.html'" type="button" style="color:#6b7280"><span class="emo">ℹ️</span> About Us</button>
-    <button class="drawer-item" onclick="location.href='./privacy.html'" type="button" style="color:#6b7280"><span class="emo">🔒</span> Privacy Policy</button>
-    <button class="drawer-item" onclick="location.href='./terms.html'" type="button" style="color:#6b7280"><span class="emo">📄</span> Terms</button>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+  body{background:#f5f5f5;padding-bottom:90px}
+  .header{background:#fff;padding:14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 5px rgba(0,0,0,0.08)}
+  .logo{font-weight:800;font-size:18px}
+  .logo span{color:#FF9800}
+  .bell{font-size:20px}
+  .balanceCard{background:linear-gradient(135deg,#FF9800,#FF6D00);color:#fff;margin:14px;border-radius:16px;padding:16px}
+  .balanceCard small{opacity:0.9}
+  .balanceCard h1{font-size:32px;margin:4px 0}
+  .balanceRow{display:flex;gap:10px;margin-top:12px}
+  .balanceBtn{flex:1;background:rgba(255,255,255,0.25);border:none;color:#fff;padding:10px;border-radius:10px;font-weight:700}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 14px}
+  .card{background:#fff;border-radius:14px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+  .card .icon{font-size:28px}
+  .card b{display:block;margin:6px 0 2px}
+  .card small{color:#888}
+  .sectionTitle{padding:16px 14px 8px;font-weight:800}
+  /* BOTTOM AD - DIRECT LINK */
+  #bottomAdBox{background:#fff;border-radius:14px;padding:12px;margin:12px 14px;box-shadow:0 2px 10px rgba(0,0,0,0.08)}
+  .bottomNav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:10px 0;border-top:1px solid #eee}
+  .bottomNav div{text-align:center;font-size:12px;color:#888}
+  .bottomNav .active{color:#FF9800;font-weight:700}
+</style>
+</head>
+<body>
+
+<!-- TOP IS CLEAR - NO ADS HERE -->
+
+<div class="header">
+  <div class="logo">EARN<span>COINS</span></div>
+  <div class="bell">🔔</div>
+</div>
+
+<div class="balanceCard">
+  <small>Your Balance</small>
+  <h1>🪙 34 Coins</h1>
+  <small>≈ $0.034 • Keep earning</small>
+  <div class="balanceRow">
+    <button class="balanceBtn">💰 Withdraw</button>
+    <button class="balanceBtn">👥 Invite Friend</button>
   </div>
-  <div class="drawer-foot">© 2026 Reward Platform RW.<br>Coins System V.2</div>
 </div>
-<div class="wrap" id="wrap">
-<div class="top"><button id="menuBtn" onclick="openDrawer()" type="button">☰</button><h2><span style="color:#14532d">Welcome</span> <span style="color:#7c3aed" id="topUsername"></span></h2><div style="width:44px"></div></div>
-<div class="scene">
-<div class="monitor"><div class="screen">
-<div style="color:#7c3aed;font-size:20px;font-weight:900;text-shadow:0 2px 8px rgba(255,255,255,0.95)">Balance</div>
-<div style="font-size:14px;font-weight:900;white-space:nowrap;text-shadow:0 1px 4px rgba(255,255,255,0.9)"><span style="color:#fbbf24">⭐</span> <span style="color:#92400e" id="balance">0 Coins</span><span style="color:#111827"> = <span id="usdBalance">$0.0000</span></span></div>
-<div style="width:120px;height:1.5px;background:rgba(0,0,0,0.15);margin:4px auto"></div>
-<div style="font-size:14px;font-weight:900;white-space:nowrap;text-shadow:0 1px 4px rgba(255,255,255,0.9)"><span style="color:#0ea5e9">💎</span> <span style="color:#111827" id="usdtBalanceDisplay">0.0000 <span style="color:#059669">USDT</span></span></div>
-</div></div>
+
+<div class="grid">
+  <div class="card"><div class="icon">🎡</div><b>Spin & Win</b><small>Daily spin</small></div>
+  <div class="card"><div class="icon">📋</div><b>Daily Tasks</b><small>Complete tasks</small></div>
+  <div class="card"><div class="icon">🎥</div><b>Watch & Earn</b><small>Watch videos</small></div>
+  <div class="card"><div class="icon">🧩</div><b>Quiz</b><small>Play quiz</small></div>
 </div>
-<!-- BOTTOM AD - MONETAG 12320606 -->
-<div class="bottomAdWrap"><div class="bottomAdCard"><div class="bottomAdLabel">🔥 TRENDING FOR YOU</div><div id="bottomAdBox"></div></div></div>
+
+<div class="sectionTitle">Quick Actions</div>
+<div class="grid">
+  <div class="card"><div class="icon">🎁</div><b>Daily Bonus</b><small>Claim now</small></div>
+  <div class="card"><div class="icon">🏆</div><b>Leaderboard</b><small>Top earners</small></div>
+</div>
+
+<!-- BOTTOM - DIRECT LINK - STAYS HERE, NEVER MOVES TO TOP -->
+<div id="bottomAdBox">
+  <div style="font-weight:800;font-size:15px;margin-bottom:8px">🔥 TRENDING FOR YOU</div>
+  <div id="bottomAdContent"></div>
+  <div style="font-size:11px;color:#888;text-align:center;margin-top:6px">Sponsored • Tap to claim</div>
+</div>
+
+<div class="bottomNav">
+  <div class="active">🏠<br>Home</div>
+  <div>🎥<br>Watch</div>
+  <div>🧩<br>Quiz</div>
+  <div>👤<br>Profile</div>
 </div>
 
 <script>
-// INSTANT - no "User" flash
-(function(){
-  try{
-    let name = localStorage.getItem('username') || '';
-    let email = localStorage.getItem('email') || '';
-    let uid = localStorage.getItem('userId') || localStorage.getItem('uid') || '';
-    let photo = localStorage.getItem('photoURL') || '';
-    let balance = 0, usdt = 0;
-    try{
-      const ud = JSON.parse(localStorage.getItem('userData')||'{}');
-      if(!name) name = ud.username || ud.name || ud.displayName || '';
-      if(!email) email = ud.email || '';
-      if(!uid) uid = ud.uid || ud.id || '';
-      if(!photo) photo = ud.photoURL || ud.photo || ud.avatar || '';
-      if(ud.balance!=null) balance = ud.balance;
-      if(ud.usdtBalance!=null) usdt = ud.usdtBalance;
-    }catch(e){}
-    if(name){
-      const el1 = document.getElementById('topUsername');
-      const el2 = document.getElementById('drawerUsername');
-      if(el1) el1.textContent = name;
-      if(el2) el2.textContent = name;
-    }
-    if(email){
-      const e = document.getElementById('drawerEmail');
-      if(e) e.textContent = email;
-    }
-    if(uid){
-      const i = document.getElementById('drawerId');
-      if(i) i.textContent = "ID: "+String(uid).slice(0,12);
-    }
-    if(photo){
-      const av = document.getElementById('drawerAvatar');
-      if(av) av.innerHTML = '<img src="'+photo+'" style="width:100%;height:100%;object-fit:cover" onerror="this.src=\'./default-avatar.jpg\'">';
-    }
-    if(balance){
-      const b = document.getElementById('balance');
-      const u = document.getElementById('usdBalance');
-      if(b) b.textContent = balance+' Coins';
-      if(u) u.textContent = '$'+(balance*0.0005).toFixed(4);
-    }
-    if(usdt){
-      const ud = document.getElementById('usdtBalanceDisplay');
-      if(ud) ud.innerHTML = Number(usdt).toFixed(4)+' <span style="color:#059669">USDT</span>';
-    }
-  }catch(e){}
-})();
+const directLink = "https://uplcm.com/4/12320736";
+const bottomAds = [
+  {title:"🎁 Claim Your $100 Bonus", sub:"Limited offer • Claim now", bg:"#FFD700", btn:"Claim Now"},
+  {title:"💰 100% Deposit Bonus", sub:"Double your first deposit", bg:"#7CFF6B", btn:"Get Bonus"},
+  {title:"🎮 Play & Earn Coins", sub:"Top game of the week", bg:"#FF9F43", btn:"Play Now"}
+];
+let bi = 0;
+function showBottomAd(){
+  const a = bottomAds[bi];
+  document.getElementById("bottomAdContent").innerHTML = `
+    <a href="${directLink}" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:10px;background:${a.bg};border-radius:12px;padding:12px">
+      <div style="flex:1">
+        <div style="font-weight:700;color:#000;font-size:14px">${a.title}</div>
+        <div style="font-size:12px;color:#333">${a.sub}</div>
+      </div>
+      <div style="background:#000;color:#fff;padding:8px 12px;border-radius:20px;font-size:13px;font-weight:700">${a.btn} →</div>
+    </a>`;
+  bi = (bi + 1) % bottomAds.length;
+}
+showBottomAd();
+setInterval(showBottomAd, 120000);
 </script>
 
-<script>
-function openDrawer(){document.getElementById('sideDrawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('show');}
-function closeDrawer(){document.getElementById('sideDrawer').classList.remove('open');document.getElementById('drawerOverlay').classList.remove('show');}
-const WINDOW=30*60*1000, BONUS_COOLDOWN=60*60*1000;
-function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}')}catch(e){return {}}}
-function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c))}
-function fmtShort(ms){
-  if(ms<=0) return "Ready";
-  const totalSec=Math.floor(ms/1000);
-  const h=Math.floor(totalSec/3600);
-  const m=Math.floor((totalSec%3600)/60);
-  const s=totalSec%60;
-  if(h>0) return h+"h "+m+"m";
-  if(m>0) return m+"m "+s+"s";
-  return s+"s";
-}
-function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3200);}
-window.alert=showToast;
-const btnWatch=document.getElementById('btnWatch'), btnQuiz=document.getElementById('btnQuiz'), btnArticles=document.getElementById('btnArticles'), btnBonus=document.getElementById('btnBonus');
-function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
-function setBtnState(btn, state, txt){
-  if(!btn) return; let old=btn.querySelector('.badge'); if(old) old.remove();
-  if(state==='locked'){const b=document.createElement('span'); b.className='badge padlock'; b.textContent='🔒'; btn.appendChild(b);}
-  else if(state==='open'){const b=document.createElement('span'); b.className='badge green'; b.textContent='Open'; btn.appendChild(b);}
-  else if(state==='live'){const b=document.createElement('span'); b.className='badge live'; b.textContent='Live'; btn.appendChild(b);}
-  else if(state==='wait'){const b=document.createElement('span'); b.className='badge padlock'; b.textContent='🔒'; btn.appendChild(b);}
-  else if(state==='done'){const b=document.createElement('span'); b.className='badge padlock'; b.textContent='✅ Done'; btn.appendChild(b);}
-}
-function getBonusRemaining(){
-  try{
-    const ud=JSON.parse(localStorage.getItem('userData')||'{}');let ms=0;
-    if(ud.lastBonusTimestamp){const lb=ud.lastBonusTimestamp;if(lb.toMillis) ms=lb.toMillis();else if(lb.seconds) ms=lb.seconds*1000;else if(lb._seconds) ms=lb._seconds*1000;else if(typeof lb==='number') ms=lb;else if(typeof lb==='string') ms=Date.parse(lb)||0;}
-    if(!ms) return 0;
-    return Math.max(0, BONUS_COOLDOWN - (Date.now()-ms));
-  }catch(e){ return 0; }
-}
-function evaluateChain(){
-  const c=getChain(); const now=Date.now(); const today=localDayKey();
-  if(c.watch_nextAvail && now < c.watch_nextAvail){ setBtnState(btnWatch,'wait',''); }
-  else if(c.watch_finishedToday===today){ setBtnState(btnWatch,'done',''); }
-  else if(c.watch_open && now < c.watch_expiry){ setBtnState(btnWatch,'live',''); }
-  else { setBtnState(btnWatch,'open',''); }
-  if(c.quiz_nextAvail && now < c.quiz_nextAvail){ setBtnState(btnQuiz,'wait',''); }
-  else if(c.quiz_finishedToday===today){ setBtnState(btnQuiz,'done',''); }
-  else if(c.watch_finishedToday!==today){ setBtnState(btnQuiz,'locked',''); }
-  else if(c.quiz_open && now < c.quiz_expiry){ setBtnState(btnQuiz,'live',''); }
-  else { setBtnState(btnQuiz,'open',''); }
-  if(c.articles_nextAvail && now < c.articles_nextAvail){ setBtnState(btnArticles,'wait',''); }
-  else if(c.articles_finishedToday===today){ setBtnState(btnArticles,'done',''); }
-  else if(c.quiz_finishedToday!==today){ setBtnState(btnArticles,'locked',''); }
-  else if(c.articles_open && now < c.articles_expiry){ setBtnState(btnArticles,'live',''); }
-  else { setBtnState(btnArticles,'open',''); }
-  const rem=getBonusRemaining();
-  if(rem>0){ setBtnState(btnBonus,'wait',''); }
-  else { setBtnState(btnBonus,'open',''); }
-}
-window.goWatch=()=>{
-  const c=getChain(); const now=Date.now(); const today=localDayKey();
-  if(c.watch_nextAvail && now < c.watch_nextAvail){showToast(`⏳ Watch locked - Opens in ${fmtShort(c.watch_nextAvail-now)}`); return;}
-  if(c.watch_finishedToday===today){showToast(`Watch done today ✅`); return;}
-  if(!c.watch_open || now > c.watch_expiry){c.watch_open=now;c.watch_expiry=now+WINDOW;saveChain(c);}location.href='./watch.html';
-};
-window.goQuiz=()=>{
-  const c=getChain(); const now=Date.now(); const today=localDayKey();
-  if(c.quiz_nextAvail && now < c.quiz_nextAvail){showToast(`⏳ Quiz locked - Opens in ${fmtShort(c.quiz_nextAvail-now)}`); return;}
-  if(c.quiz_finishedToday===today){showToast("Quiz done ✅"); return;}
-  if(c.watch_finishedToday!==today){showToast("Finish Watch first"); return;}
-  location.href='./quiz_earn.html';
-};
-window.goArticles=()=>{
-  const c=getChain(); const now=Date.now(); const today=localDayKey();
-  if(c.articles_nextAvail && now < c.articles_nextAvail){showToast(`⏳ Articles locked - Opens in ${fmtShort(c.articles_nextAvail-now)}`); return;}
-  if(c.articles_finishedToday===today){showToast(`All done today ✅`); return;}
-  if(c.quiz_finishedToday!==today){showToast("Finish Quiz first"); return;}
-  location.href='./articles_earn.html';
-};
-window.goBonus=()=>{
-  const rem=getBonusRemaining();
-  if(rem>0){showToast(`⏳ Bonus locked - Ready in ${fmtShort(rem)}`); return;}
-  location.href='./bonus.html';
-};
-setInterval(evaluateChain,1000); evaluateChain();
-
-// BOTTOM MONETAG - LET MONETAG DISPLAY ITS CONTENTS - 2 MIN ROTATE
-function loadBottomAd(){
-  var box=document.getElementById('bottomAdBox');
-  if(!box) return;
-  box.innerHTML='';
-  var s=document.createElement('script');
-  s.dataset.zone='12320606';
-  s.src='https://nap5k.com/tag.min.js';
-  box.appendChild(s);
-}
-loadBottomAd();
-setInterval(loadBottomAd, 120000);
-</script>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script>
-const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};firebase.initializeApp(firebaseConfig);
-try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
-const auth=firebase.auth(),db=firebase.firestore();
-function updateAvatarFromData(d, u){
-  try{
-    let name = d.username || d.name || d.displayName || u?.displayName || '';
-    let photo = d.photoURL || d.photo || d.avatar || d.profilePic || u?.photoURL || '';
-    if(name){
-      const a = document.getElementById('topUsername');
-      const b = document.getElementById('drawerUsername');
-      if(a) a.textContent = name;
-      if(b) b.textContent = name;
-    }
-    if(photo){
-      const av = document.getElementById('drawerAvatar');
-      if(av) av.innerHTML = `<img src="${photo}" style="width:100%;height:100%;object-fit:cover" onerror="this.src='./default-avatar.jpg'">`;
-      try{ localStorage.setItem('photoURL', photo); }catch(e){}
-    }
-  }catch(e){}
-}
-function loadData(d){
-  if(!d) return;
-  try{
-    const bal = d.balance ?? d.points ?? 0;
-    document.getElementById('balance').innerText = bal+' Coins';
-    document.getElementById('usdBalance').innerText = '$'+(bal*0.0005).toFixed(4);
-    document.getElementById('usdtBalanceDisplay').innerHTML = Number(d.usdtBalance||0).toFixed(4)+' <span style="color:#059669">USDT</span>';
-    localStorage.setItem('userData', JSON.stringify(d));
-    if(d.username) localStorage.setItem('username', d.username);
-    if(d.email) localStorage.setItem('email', d.email);
-    if(d.uid||d.id) localStorage.setItem('userId', d.uid||d.id);
-    if(d.username) document.getElementById('drawerUsername').innerText = d.username;
-    if(d.email) document.getElementById('drawerEmail').innerText = d.email;
-    if(d.uid||d.id) document.getElementById('drawerId').innerText = 'ID: '+String(d.uid||d.id).slice(0,12);
-    updateAvatarFromData(d, null);
-    if(d.chain){
-      const local=getChain();let changed=false;
-      for(let k in d.chain){if(d.chain[k]){if(!local[k]||d.chain[k]>local[k]){local[k]=d.chain[k];changed=true;}}}
-      if(changed) saveChain(local);
-      evaluateChain();
-    }
-  }catch(e){}
-}
-db.collection("appConfig").doc("main").onSnapshot(s=>{
-  if(s.exists && s.data().maintenanceMode==="on"){
-    document.getElementById('maint').style.display='flex';
-  }else{
-    document.getElementById('maint').style.display='none';
-  }
-});
-auth.onAuthStateChanged(u=>{
-  if(u){
-    try{
-      if(u.email && !document.getElementById('drawerEmail').textContent) document.getElementById('drawerEmail').innerText = u.email;
-      if(u.uid && !document.getElementById('drawerId').textContent) document.getElementById('drawerId').innerText = 'ID: '+u.uid.slice(0,12);
-      if(u.displayName){
-        const curTop = document.getElementById('topUsername').textContent;
-        if(!curTop){
-          document.getElementById('drawerUsername').innerText = u.displayName;
-          document.getElementById('topUsername').innerText = u.displayName;
-        }
-      }
-      updateAvatarFromData({}, u);
-    }catch(e){}
-    db.collection('users').doc(u.uid).onSnapshot(doc=>{
-      if(doc.exists) loadData(doc.data());
-    });
-  }else{
-    location.href='./index.html';
-  }
-});
-</script></body></html>
+</body>
+</html>
