@@ -28,7 +28,6 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 .gate-box{background:#fff;border:2px solid #fbbf24;border-radius:24px;padding:22px 20px 18px;text-align:center;max-width:360px;width:100%}
 .gate-icon{width:64px;height:64px;margin:0 auto 10px;background:linear-gradient(180deg,#fef3c7,#fbbf24);border:3px solid #f59e0b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px}
 .gate-title{font-weight:900;font-size:18px;color:#4c1d95}
-.gate-sub{font-size:12px;color:#6b7280;margin:8px 0 16px;line-height:1.4;font-weight:600}
 .gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #ede9fe;font-weight:900;font-size:14px;cursor:pointer}
 .gate-btn.watch{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 4px 0 #d97706,0 8px 20px rgba(245,158,11,0.25);border-color:#f59e0b}
 .gate-btn.watch:disabled{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb}
@@ -68,7 +67,7 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 <div style="font-size:10px;color:#9ca3af;margin-top:8px">If you quit before this, circle resets to 0</div>
 </div>
 
-<div id="adGate"><div class="gate-box"><div class="gate-icon">🧠</div><div class="gate-title">Next Question</div><div id="gateSub" class="gate-sub">Watch clean ad 10s to continue</div><button id="watchAdBtn" class="gate-btn watch">▶️ Watch Ad (10s)</button><div id="gateTimer2"></div><button id="continueBtn" class="gate-btn continue">✅ Continue</button><div style="font-size:9px;color:#9ca3af;margin-top:10px;font-weight:700">12270885 • Clean & safe</div></div></div>
+<div id="adGate"><div class="gate-box"><div class="gate-icon">🧠</div><div class="gate-title">Next Question</div><button id="watchAdBtn" class="gate-btn watch" style="margin-top:16px">▶️ Watch Ad (10s)</button><div id="gateTimer2"></div><button id="continueBtn" class="gate-btn continue">✅ Continue</button><div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700;letter-spacing:0.5px">Advertisement</div></div></div>
 
 <script>
 (() => {
@@ -83,7 +82,6 @@ function loadCleanVignette(){
 }
 let pendingNext=null;
 function openAdGate(nextFn, isFinal, reward){
-  document.getElementById('gateSub').innerText=isFinal? 'Watch clean ad 10s to claim +'+reward+' coins' : 'Watch clean ad 10s for next question';
   pendingNext=nextFn;
   document.getElementById('adGate').style.display='flex';
   document.getElementById('watchAdBtn').style.display='block';
@@ -113,7 +111,6 @@ function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}'
 function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c))}
 function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
 const WINDOW_MS=30*60*1000,GAP_MS=0;
-// TIME TO MIDNIGHT for 11h45 popup
 function fmtMidnight(){
   const now=new Date(); const mid=new Date(now); mid.setHours(24,0,0,0);
   const ms=mid.getTime()-now.getTime();
@@ -131,16 +128,11 @@ function onQuizFinishedChain(){
   saveChain(c);
   if(window.currentUser) db.collection("users").doc(window.currentUser.uid).set({chain:{quiz_finishedToday:today,quiz_doneToday:today,articles_open:c.articles_open,articles_expiry:c.articles_expiry,updated:firebase.firestore.FieldValue.serverTimestamp()}},{merge:true});
 }
-// ===== FIXED LOCK - THIS WAS THE BUG =====
 function checkQuizLock(){
   const c=getChain(), now=Date.now(), today=localDayKey();
   const lockPanel=document.getElementById('lockPanel'); const msg=document.getElementById('lockMsg');
-  // 1. Watch not done -> locked
   if(c.watch_finishedToday!==today){lockPanel.style.display='flex'; msg.innerText='Finish Watch first'; return true;}
-  // 2. Quiz already done today -> locked for time to midnight (like Watch 11h45)
   if(c.quiz_finishedToday===today){lockPanel.style.display='flex'; msg.innerText='🔒 Locked for '+fmtMidnight()+' • Articles is open now'; return true;}
-  // 3. FIX: If no window OR old window expired -> START NEW 30-min window, DO NOT lock
-  // Old code locked here because quiz_open was from yesterday
   if(!c.quiz_open || now > c.quiz_expiry){
     c.quiz_open=now; c.quiz_expiry=now+WINDOW_MS; saveChain(c);
   }
