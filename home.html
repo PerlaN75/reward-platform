@@ -1,8 +1,8 @@
-<!DOCTYPE html><html><head><title>Home</title><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<!DOCTYPE html><html><head><title>Home</title><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent!important}
-html,body{height:100%;height:100dvh;height:100svh;overflow:hidden;overscroll-behavior:none;position:fixed;inset:0;width:100%}
-body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;min-height:100dvh;min-height:100svh}
+html,body{height:100%;height:100dvh;height:100svh;overflow:hidden;overscroll-behavior:auto}
+body{background:#6d28d9;display:flex;justify-content:center;min-height:100dvh;min-height:100svh}
 .wrap{width:100%;max-width:430px;height:100dvh;height:100svh;max-height:100dvh;max-height:100svh;background:#fff;background-image:url('./bg.jpg');background-repeat:no-repeat;background-size:100% auto;background-position:center center;position:relative;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
 .top{width:100%;background:#ffedd5;border-bottom:2px solid #fdba74;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:30;flex-shrink:0}
 #menuBtn{width:44px;height:44px;border:none;background:none;font-size:26px;font-weight:900;color:#4c1d95;display:flex;align-items:center;justify-content:center}
@@ -33,7 +33,6 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;min
 .drawer-item .emo{font-size:18px;width:26px;text-align:center}
 .drawer-sep{height:1px;background:#e5e7eb;margin:10px 18px}
 .drawer-foot{padding:12px 18px;text-align:center;font-size:11px;color:#6b7280;font-weight:700}
-/* FAIR AD - OVERLAY, DOES NOT PUSH */
 #fairAd{position:absolute;left:10px;right:10px;bottom:38px;z-index:25;background:rgba(255,255,255,0.96);border-radius:12px;padding:8px;box-shadow:0 4px 14px rgba(0,0,0,0.18)}
 </style></head><body>
 <div id="maint"><div><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900">Back</button></div></div>
@@ -72,12 +71,38 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh;min
 </div>
 <div id="fairAd">
   <div style="font-weight:900;font-size:11px;margin-bottom:4px">🔥 TRENDING FOR YOU <span style="float:right;font-weight:700;color:#888">Sponsored</span></div>
-  <a href="https://uplcm.com/4/12320736" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:10px;padding:10px">
-    <div style="flex:1"><div style="font-weight:700;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div style="font-size:11px;color:#333">Limited offer • Claim now</div></div>
-    <div style="background:#000;color:#fff;padding:7px 10px;border-radius:20px;font-size:12px;font-weight:700">Claim →</div>
+  <a id="adLink" href="https://uplcm.com/4/12320736" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:10px;padding:10px">
+    <div style="flex:1"><div id="adTitle" style="font-weight:700;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div id="adSub" style="font-size:11px;color:#333">Limited offer • Claim now</div></div>
+    <div id="adBtn" style="background:#000;color:#fff;padding:7px 10px;border-radius:20px;font-size:12px;font-weight:700">Claim →</div>
   </a>
 </div>
 </div>
+
+<script>
+// ===== ADS ROTATE EVERY 2 MINUTES - LOOP FOREVER =====
+const ADS=[
+  {title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Claim now",btn:"Claim →",bg:"#FFD700",link:"https://uplcm.com/4/12320736"},
+  {title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • No experience needed",btn:"Start →",bg:"#7CFC00",link:"https://uplcm.com/4/12320736"},
+  {title:"📱 Win Free Airtime Today",sub:"MTN • Airtel • Claim in 1 min",btn:"Win →",bg:"#00D4FF",link:"https://uplcm.com/4/12320736"},
+  {title:"🔥 Hot Offer - Double Your Coins",sub:"Today only • Limited slots",btn:"Get →",bg:"#FF9F43",link:"https://uplcm.com/4/12320736"}
+];
+let adIndex=0;
+function showAd(i){
+  const a=ADS[i];
+  const link=document.getElementById('adLink');
+  const t=document.getElementById('adTitle');
+  const s=document.getElementById('adSub');
+  const b=document.getElementById('adBtn');
+  if(!link||!t) return;
+  link.href=a.link; link.style.background=a.bg;
+  t.textContent=a.title; s.textContent=a.sub; b.textContent=a.btn;
+}
+showAd(0);
+setInterval(function(){
+  adIndex=(adIndex+1)%ADS.length;
+  showAd(adIndex);
+}, 2*60*1000); // 2 minutes
+</script>
 
 <script>
 (function(){
