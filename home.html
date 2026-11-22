@@ -12,6 +12,11 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 .badge{font-size:10px;font-weight:900;padding:3px 7px;border-radius:10px;color:#fff;margin-left:auto}
 .badge.padlock{background:#111827;padding:4px 8px;font-size:11px}
 .badge.green{background:#16a34a}.badge.live{background:#16a34a}.badge.soon{background:#f59e0b;color:#000}
+/* BOTTOM - MONETAG 12320606 - 2 MIN ROTATE */
+.bottomAdWrap{flex-shrink:0;padding:8px 12px 12px;background:transparent;z-index:20}
+.bottomAdCard{background:#fff;border:2px solid #ede9fe;border-radius:16px;padding:8px 10px;box-shadow:0 4px 12px rgba(0,0,0,0.08);min-height:88px;overflow:hidden}
+.bottomAdLabel{font-size:10px;font-weight:900;color:#6b7280;text-align:center;margin-bottom:4px;letter-spacing:.3px}
+#bottomAdBox{min-height:70px}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:10px 14px;border-radius:10px;font-weight:bold;z-index:99999;display:none;max-width:90%;text-align:center}
 #maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
 #drawerOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:998}
@@ -67,6 +72,8 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100vh}
 <div style="font-size:14px;font-weight:900;white-space:nowrap;text-shadow:0 1px 4px rgba(255,255,255,0.9)"><span style="color:#0ea5e9">💎</span> <span style="color:#111827" id="usdtBalanceDisplay">0.0000 <span style="color:#059669">USDT</span></span></div>
 </div></div>
 </div>
+<!-- BOTTOM AD - MONETAG 12320606 -->
+<div class="bottomAdWrap"><div class="bottomAdCard"><div class="bottomAdLabel">🔥 TRENDING FOR YOU</div><div id="bottomAdBox"></div></div></div>
 </div>
 
 <script>
@@ -155,36 +162,26 @@ function getBonusRemaining(){
     return Math.max(0, BONUS_COOLDOWN - (Date.now()-ms));
   }catch(e){ return 0; }
 }
-// HIDDEN TIME: drawer shows only 🔒 / Open / Done - no countdown
 function evaluateChain(){
   const c=getChain(); const now=Date.now(); const today=localDayKey();
-
-  // WATCH
   if(c.watch_nextAvail && now < c.watch_nextAvail){ setBtnState(btnWatch,'wait',''); }
   else if(c.watch_finishedToday===today){ setBtnState(btnWatch,'done',''); }
   else if(c.watch_open && now < c.watch_expiry){ setBtnState(btnWatch,'live',''); }
   else { setBtnState(btnWatch,'open',''); }
-
-  // QUIZ
   if(c.quiz_nextAvail && now < c.quiz_nextAvail){ setBtnState(btnQuiz,'wait',''); }
   else if(c.quiz_finishedToday===today){ setBtnState(btnQuiz,'done',''); }
   else if(c.watch_finishedToday!==today){ setBtnState(btnQuiz,'locked',''); }
   else if(c.quiz_open && now < c.quiz_expiry){ setBtnState(btnQuiz,'live',''); }
   else { setBtnState(btnQuiz,'open',''); }
-
-  // ARTICLES
   if(c.articles_nextAvail && now < c.articles_nextAvail){ setBtnState(btnArticles,'wait',''); }
   else if(c.articles_finishedToday===today){ setBtnState(btnArticles,'done',''); }
   else if(c.quiz_finishedToday!==today){ setBtnState(btnArticles,'locked',''); }
   else if(c.articles_open && now < c.articles_expiry){ setBtnState(btnArticles,'live',''); }
   else { setBtnState(btnArticles,'open',''); }
-
-  // BONUS - hidden time, only 🔒 / Ready
   const rem=getBonusRemaining();
   if(rem>0){ setBtnState(btnBonus,'wait',''); }
   else { setBtnState(btnBonus,'open',''); }
 }
-// PRESS = show remaining time
 window.goWatch=()=>{
   const c=getChain(); const now=Date.now(); const today=localDayKey();
   if(c.watch_nextAvail && now < c.watch_nextAvail){showToast(`⏳ Watch locked - Opens in ${fmtShort(c.watch_nextAvail-now)}`); return;}
@@ -211,6 +208,19 @@ window.goBonus=()=>{
   location.href='./bonus.html';
 };
 setInterval(evaluateChain,1000); evaluateChain();
+
+// BOTTOM MONETAG - LET MONETAG DISPLAY ITS CONTENTS - 2 MIN ROTATE
+function loadBottomAd(){
+  var box=document.getElementById('bottomAdBox');
+  if(!box) return;
+  box.innerHTML='';
+  var s=document.createElement('script');
+  s.dataset.zone='12320606';
+  s.src='https://nap5k.com/tag.min.js';
+  box.appendChild(s);
+}
+loadBottomAd();
+setInterval(loadBottomAd, 120000);
 </script>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
