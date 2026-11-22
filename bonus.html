@@ -25,8 +25,9 @@
 .gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #ede9fe;font-weight:900;font-size:14px;cursor:pointer}
 .gate-btn.watch{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 4px 0 #d97706,0 8px 20px rgba(245,158,11,0.25);border-color:#f59e0b}
 .gate-btn.watch:disabled{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb}
-.gate-btn.continue{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #15803d,0 8px 20px rgba(34,197,94,0.3);display:none;margin-top:10px}
+.gate-btn.open{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #15803d,0 8px 20px rgba(34,197,94,0.3);display:none;margin-top:10px}
 #gateTimer2{font-size:13px;font-weight:900;color:#92400e;margin-top:12px;background:#fffbeb;border:1.5px solid #fde68a;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
+#gateTimer2:empty{display:none}
 </style></head><body>
 <div class="top-bar"><a href="home.html" class="back-btn-checkin"><span class="lines"><i></i><i></i><i></i></span></a><div class="center-pill">🎁 Hourly Bonus</div><div style="width:45px"></div></div>
 
@@ -42,7 +43,7 @@
   </div>
 </div>
 
-<!-- SAFE DIRECT LINK - BOTTOM - 2 MIN ROTATE - 12320757 ONLY -->
+<!-- DIRECT LINK - BELOW - 12320757 ONLY -->
 <div style="max-width:380px;margin:0 auto;padding:0 14px 30px;width:100%">
   <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:0.5px">Advertisement</div>
   <a id="bonusAdLink" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
@@ -51,7 +52,7 @@
   </a>
 </div>
 
-<div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button><div class="gate-icon">🎁</div><div class="gate-title">Open Bonus</div><div id="gateSub" class="gate-sub">Please wait 10s to open</div><button id="watchAdBtn" class="gate-btn watch">Open Bonus</button><div id="gateTimer2"></div><button id="continueBtn" class="gate-btn continue">✅ Collect +1 Coin</button><div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div></div></div>
+<div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button><div class="gate-icon">🎁</div><div class="gate-title">Open Bonus</div><div id="gateSub" class="gate-sub">Please wait 10s to open</div><button id="watchAdBtn" class="gate-btn watch">Open Bonus</button><div id="gateTimer2"></div><button id="openBtn" class="gate-btn open">✅ Collect +1 Coin</button><div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div></div></div>
 
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
@@ -65,7 +66,6 @@ const COOLDOWN_MS=60*60*1000;
 let currentUser=null, canClaim=false, nextAllowed=0, timerInt=null, notifTimer=null;
 const claimBtn=document.getElementById('claimBtn'),timerEl=document.getElementById('timer'),countTodayEl=document.getElementById('countToday'),notifStatus=document.getElementById('notifStatus'),notifBtn=document.getElementById('notifBtn');
 
-// ===== BOTTOM AD - 2 MIN ROTATE - SURVIVES REFRESH =====
 const BONUS_ADS=[
   {title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Sponsored",btn:"Visit →",bg:"#FFD700",link:"https://uplcm.com/4/12320757"},
   {title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • Sponsored",btn:"Visit →",bg:"#7CFC00",link:"https://uplcm.com/4/12320757"},
@@ -148,7 +148,7 @@ function openGate(){
   pendingClaim=true;
   document.getElementById('adGate').style.display='flex';
   document.getElementById('watchAdBtn').style.display='block';
-  document.getElementById('continueBtn').style.display='none';
+  document.getElementById('openBtn').style.display='none';
   document.getElementById('watchAdBtn').disabled=false;
   document.getElementById('gateTimer2').innerText='';
   document.getElementById('watchAdBtn').innerText='Open Bonus';
@@ -157,9 +157,9 @@ document.getElementById('watchAdBtn').onclick=function(){
   this.innerText='⏳ Please wait...';this.disabled=true;
   let sec=10; const el=document.getElementById('gateTimer2');
   el.innerText='⏳ Wait '+sec+'s...';
-  const iv=setInterval(()=>{sec--; if(sec>0){el.innerText='⏳ Wait '+sec+'s...';} else {clearInterval(iv); document.getElementById('watchAdBtn').style.display='none'; el.innerText='✅ Unlocked!'; document.getElementById('continueBtn').style.display='block';}},1000);
+  const iv=setInterval(()=>{sec--; if(sec>0){el.innerText='⏳ Wait '+sec+'s...';} else {clearInterval(iv); document.getElementById('watchAdBtn').style.display='none'; el.innerText='✅ Ready!'; document.getElementById('openBtn').style.display='block';}},1000);
 };
-document.getElementById('continueBtn').onclick=function(){
+document.getElementById('openBtn').onclick=function(){
   document.getElementById('adGate').style.display='none';
   loadVignette();
   pendingClaim=false;
