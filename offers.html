@@ -37,20 +37,19 @@ body{background:#f5f3ff;min-height:100vh;color:#111827}
 .gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #ede9fe;font-weight:900;font-size:14px;cursor:pointer;transition:0.2s}
 .gate-btn.watch{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 4px 0 #d97706, 0 8px 20px rgba(245,158,11,0.25);border-color:#f59e0b}
 .gate-btn.watch:disabled{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb;cursor:not-allowed}
-.gate-btn.continue{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #15803d, 0 8px 20px rgba(34,197,94,0.3);display:none;margin-top:10px}
+.gate-btn.open{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #15803d, 0 8px 20px rgba(34,197,94,0.3);display:none;margin-top:10px}
 #gateTimer{font-size:13px;font-weight:900;color:#92400e;margin-top:12px;background:#fffbeb;border:1.5px solid #fde68a;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
+#gateTimer:empty{display:none}
+/* AD ON TOP - STICKY */
+.top-ad-wrap{position:sticky;top:62px;z-index:90;background:#f5f3ff;padding:8px 14px 0}
 </style>
 </head>
 <body>
 <div id="toast"></div>
 <div class="top-bar"><a href="home.html" class="back-btn-checkin"><span class="lines"><i></i><i></i><i></i></span></a><div class="center-pill">💎 Offers</div><div style="width:45px"></div></div>
-<div class="container">
-<div class="balance-card"><div><b id="balCoins">0 coins</b><div style="font-size:10px;color:#9ca3af">≈ $<span id="balUsd">0</span></div></div><div style="width:1px;background:#2a3a1a"></div><div><div class="usdt" id="balUsdt">0 USDT</div><div style="font-size:10px;color:#9ca3af">Withdrawable</div></div></div>
-<div class="grid" id="grid"></div>
-</div>
 
-<!-- SAFE DIRECT LINK - BOTTOM - 2 MIN ROTATE - OPTIONAL - 12320757 ONLY -->
-<div style="max-width:500px;margin:0 auto;padding:0 14px 90px">
+<!-- AD MOVED UP - TOP, STICKY - 12320757 ONLY -->
+<div class="top-ad-wrap">
   <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:0.5px">Advertisement</div>
   <a id="offersAdLink" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
     <div style="flex:1"><div id="offersAdTitle" style="font-weight:900;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div id="offersAdSub" style="font-size:11px;color:#333">Limited offer • Sponsored</div></div>
@@ -58,7 +57,12 @@ body{background:#f5f3ff;min-height:100vh;color:#111827}
   </a>
 </div>
 
-<div id="adGate"><div class="gate-box"><button onclick="closeGate()" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button><div class="gate-icon" id="gateIcon">🪙</div><div id="gateTitle" class="gate-title"></div><div id="gateSub" class="gate-sub"></div><button id="watchAdBtn" class="gate-btn watch"></button><div id="gateTimer"></div><button id="continueBtn" class="gate-btn continue">✅ Continue</button><div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div></div></div>
+<div class="container">
+<div class="balance-card"><div><b id="balCoins">0 coins</b><div style="font-size:10px;color:#9ca3af">≈ $<span id="balUsd">0</span></div></div><div style="width:1px;background:#2a3a1a"></div><div><div class="usdt" id="balUsdt">0 USDT</div><div style="font-size:10px;color:#9ca3af">Withdrawable</div></div></div>
+<div class="grid" id="grid"></div>
+</div>
+
+<div id="adGate"><div class="gate-box"><button onclick="closeGate()" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button><div class="gate-icon" id="gateIcon">🪙</div><div id="gateTitle" class="gate-title"></div><div id="gateSub" class="gate-sub"></div><button id="watchAdBtn" class="gate-btn watch"></button><div id="gateTimer"></div><button id="openBtn" class="gate-btn open">✅ Open</button><div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div></div></div>
 <script>
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',5000);}
 function closeGate(){document.getElementById('adGate').style.display='none';}
@@ -73,7 +77,6 @@ function loadCleanVignette(){
   setTimeout(()=>{vignetteLoaded=false;}, 3*60*1000);
 }
 
-// ===== DIRECT LINK BOTTOM - 2 MIN ROTATE - SURVIVES REFRESH - 12320757 ONLY =====
 const OFFERS_ADS=[
   {title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Sponsored",btn:"Visit →",bg:"#FFD700",link:"https://uplcm.com/4/12320757"},
   {title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • Sponsored",btn:"Visit →",bg:"#7CFC00",link:"https://uplcm.com/4/12320757"},
@@ -147,7 +150,7 @@ function clickOffer(id){
   }
   document.getElementById('adGate').style.display='flex';
   document.getElementById('watchAdBtn').style.display='block';
-  document.getElementById('continueBtn').style.display='none';
+  document.getElementById('openBtn').style.display='none';
   document.getElementById('watchAdBtn').disabled=false;
   document.getElementById('gateTimer').innerText='';
   document.getElementById('gateIcon').innerText=o.emoji;
@@ -160,11 +163,11 @@ function clickOffer(id){
     document.getElementById('gateSub').innerText='Please wait 10s to open';
     document.getElementById('watchAdBtn').innerText='Open Telegram';
   }else if(o.type==='play'){
-    document.getElementById('gateTitle').innerText='🔓 Open Play Game';
+    document.getElementById('gateTitle').innerText='🎮 Open Play Game';
     document.getElementById('gateSub').innerText='Please wait 10s to open';
     document.getElementById('watchAdBtn').innerText='Open Play Game';
   }else{
-    document.getElementById('gateTitle').innerText='🔓 Open Install App';
+    document.getElementById('gateTitle').innerText='📲 Open Install App';
     document.getElementById('gateSub').innerText='Please wait 10s to open';
     document.getElementById('watchAdBtn').innerText='Open Install App';
   }
@@ -180,13 +183,13 @@ document.getElementById('watchAdBtn').onclick=function(){
     if(sec>0){timerEl.innerText='⏳ Wait '+sec+'s...';}
     else{clearInterval(interval);
       document.getElementById('watchAdBtn').style.display='none';
-      timerEl.innerText='✅ Unlocked!';
-      document.getElementById('continueBtn').style.display='block';
+      timerEl.innerText='✅ Ready!';
+      document.getElementById('openBtn').style.display='block';
     }
   },1000);
 };
 
-document.getElementById('continueBtn').onclick=function(){
+document.getElementById('openBtn').onclick=function(){
   document.getElementById('adGate').style.display='none';
   if(!pendingOffer) return;
   const o=pendingOffer;
@@ -195,7 +198,7 @@ document.getElementById('continueBtn').onclick=function(){
 
   if(o.type==='free' && o.link){
     window.open(o.link,'_blank');
-    showToast('✅ '+o.name+' unlocked!');
+    showToast('✅ '+o.name+' Ready!');
   }else if(o.type==='play'){
     showToast('🎮 Games upload soon!');
   }else{
