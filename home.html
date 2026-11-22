@@ -182,7 +182,6 @@ function fmtShort(ms){
   if(m>0) return m+"m "+s+"s";
   return s+"s";
 }
-// TIME LEFT UNTIL MIDNIGHT - for 23h52 popup
 function timeToMidnight(){
   const now=new Date();
   const mid=new Date(now);
@@ -218,16 +217,13 @@ function getBonusRemaining(){
 }
 function evaluateChain(){
   const c=getChain(); const now=Date.now(); const today=localDayKey();
-  // WATCH: finished today = PADLOCK (not Done)
   if(c.watch_finishedToday===today){ setBtnState(btnWatch,'locked',''); }
   else if(c.watch_open && now < c.watch_expiry){ setBtnState(btnWatch,'live',''); }
   else { setBtnState(btnWatch,'open',''); }
-  // QUIZ: finished today = PADLOCK
   if(c.quiz_finishedToday===today){ setBtnState(btnQuiz,'locked',''); }
   else if(c.watch_finishedToday===today){ setBtnState(btnQuiz,'open',''); }
   else if(c.quiz_open && now < c.quiz_expiry){ setBtnState(btnQuiz,'live',''); }
   else { setBtnState(btnQuiz,'locked',''); }
-  // ARTICLES: finished today = PADLOCK
   if(c.articles_finishedToday===today){ setBtnState(btnArticles,'locked',''); }
   else if(c.quiz_finishedToday===today){ setBtnState(btnArticles,'open',''); }
   else if(c.articles_open && now < c.articles_expiry){ setBtnState(btnArticles,'live',''); }
@@ -244,13 +240,17 @@ window.goWatch=()=>{
 window.goQuiz=()=>{
   const c=getChain(); const today=localDayKey();
   if(c.quiz_finishedToday===today){showToast(`🔒 Locked for ${fmtMidnight()}`); return;}
-  if(c.watch_finishedToday!==today){showToast("Finish Watch first"); return;}
+  if(c.watch_finishedToday!==today){showToast("Wait for Watch"); return;}
+  const now=Date.now();
+  if(!c.quiz_open || now > c.quiz_expiry){c.quiz_open=now; c.quiz_expiry=now+WINDOW; saveChain(c);}
   location.href='./quiz_earn.html';
 };
 window.goArticles=()=>{
   const c=getChain(); const today=localDayKey();
   if(c.articles_finishedToday===today){showToast(`🔒 Locked for ${fmtMidnight()}`); return;}
-  if(c.quiz_finishedToday!==today){showToast("Finish Quiz first"); return;}
+  if(c.quiz_finishedToday!==today){showToast("Wait for Quiz"); return;}
+  const now=Date.now();
+  if(!c.articles_open || now > c.articles_expiry){c.articles_open=now; c.articles_expiry=now+WINDOW; saveChain(c);}
   location.href='./articles_earn.html';
 };
 window.goBonus=()=>{
