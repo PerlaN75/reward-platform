@@ -24,17 +24,16 @@
     .menu-list a{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;color:inherit;text-decoration:none;font-size:15px;font-weight:800;border-radius:14px;cursor:pointer}
     .menu-list a:not(:last-child){border-bottom:1px solid #f5f3ff}
 
-    /* GATE - transparent backdrop, light purple small card */
-    #moreGate{position:fixed;inset:0;background:transparent;z-index:999;display:none;align-items:center;justify-content:center;padding:20px}
+    /* SAFE GATE - SAME AS OFFERS / BONUS */
+    #moreGate{position:fixed;inset:0;background:rgba(17,12,34,0.65);backdrop-filter:blur(8px);z-index:999;display:none;align-items:center;justify-content:center;padding:20px}
     #moreGate.show{display:flex}
-    .gate-card{background:linear-gradient(180deg,#ede9fe,#ddd6fe);border:2px solid #c4b5fd;border-radius:22px;padding:22px 20px;width:100%;max-width:320px;text-align:center;box-shadow:0 20px 40px rgba(76,29,149,0.25)}
-    #moreTimerBox{width:88px;height:88px;border-radius:50%;background:#fff;border:4px solid #ddd6fe;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;color:#4c1d95;margin:14px auto;box-shadow:0 10px 25px rgba(0,0,0,0.15)}
-    #moreProgress{width:100%;height:8px;background:rgba(76,29,149,0.15);border-radius:99px;margin-top:16px;overflow:hidden}
-    #moreProgressBar{height:100%;width:100%;background:#6d28d9;transition:width 1s linear}
-
-    /* HIDE CONTENT WHILE GATING - blur, not purple wash */
-    body.gating .container, body.gating .top-bar{filter:blur(7px);pointer-events:none;user-select:none}
-    body.gating #moreGate{filter:none}
+    .gate-card{background:linear-gradient(180deg,#ede9fe,#ddd6fe);border:2px solid #c4b5fd;border-radius:22px;padding:22px 20px;width:100%;max-width:320px;text-align:center;box-shadow:0 20px 40px rgba(76,29,149,0.25);position:relative}
+    .gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #ede9fe;font-weight:900;font-size:14px;cursor:pointer}
+    .gate-btn.watch{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 4px 0 #d97706;border-color:#f59e0b}
+    .gate-btn.watch:disabled{background:#f3f4f6;color:#9ca3af;box-shadow:none}
+    .gate-btn.continue{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #15803d;display:none;margin-top:10px}
+    #moreTimerBox{font-size:13px;font-weight:900;color:#92400e;margin-top:12px;background:#fffbeb;border:1.5px solid #fde68a;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
+    #moreTimerBox:empty{display:none}
 
     .modal{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(76,29,149,0.45);justify-content:center;align-items:center;padding:15px}
     .modal-box{background:#fff;width:100%;max-width:420px;border-radius:20px;padding:20px;max-height:85vh;overflow-y:auto;position:relative}
@@ -62,55 +61,68 @@
   </div>
 </div>
 
+<!-- BOTTOM DIRECT LINK - 12320757 ONLY -->
+<div style="max-width:500px;margin:0 auto;padding:0 14px 30px;width:100%">
+  <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px">Advertisement</div>
+  <a id="moreAdLink" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
+    <div style="flex:1"><div id="moreAdTitle" style="font-weight:900;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div id="moreAdSub" style="font-size:11px;color:#333">Limited offer • Sponsored</div></div>
+    <div style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
+  </a>
+</div>
+
+<!-- SAFE GATE -->
 <div id="moreGate">
   <div class="gate-card">
+    <button onclick="closeMoreGate()" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button>
     <div style="font-size:42px">🪙</div>
-    <div style="font-weight:900;font-size:18px;color:#4c1d95;margin-top:8px">Loading More</div>
-    <div id="moreTimerBox">10</div>
-    <div style="font-size:11px;color:#6d28d9;font-weight:800">Clean ads loading...</div>
-    <div id="moreProgress"><div id="moreProgressBar"></div></div>
+    <div style="font-weight:900;font-size:18px;color:#4c1d95;margin-top:8px">Open More</div>
+    <div style="font-size:12px;color:#6d28d9;margin:8px 0 16px;font-weight:700;line-height:1.4">Please wait 10s to open</div>
+    <button id="moreOpenBtn" class="gate-btn watch">Open More</button>
+    <div id="moreTimerBox"></div>
+    <button id="moreContinueBtn" class="gate-btn continue">✅ Continue</button>
+    <div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div>
   </div>
 </div>
 
 <div id="notifModal" class="modal" onclick="closeModal('notifModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('notifModal')">×</span><h3 style="text-align:center">🔔 Notifications</h3><div id="notifList" style="margin-top:12px">Loading...</div></div></div>
-<div id="historyModal" class="modal" onclick="closeModal('historyModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('historyModal')">×</span><h3 style="text-align:center">📜 History</h3><div style="display:flex;gap:10px;margin:12px 0"><button onclick="loadHistory()" style="flex:1;padding:10px;border:none;border-radius:10px;background:#fbbf24;font-weight:800">Refresh</button><button onclick="clearHistorySafe()" style="flex:1;padding:10px;border:none;border-radius:10px;background:#ef4444;color:#fff;font-weight:800">Clear All</button></div><div id="historyList" style="max-height:50vh;overflow-y:auto">Loading...</div></div></div>
+<div id="historyModal" class="modal" onclick="closeModal('historyModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('historyModal')">×</span><h3 style="text-align:center">📜 History</h3><div style="display:flex;gap:6px;margin:12px 0;flex-wrap:wrap"><button onclick="filterHistory('ALL')" id="f-ALL" style="padding:7px 10px;border:none;border-radius:20px;background:#6d28d9;color:#fff;font-weight:800;font-size:11px">All</button><button onclick="filterHistory('Watch')" id="f-Watch" style="padding:7px 10px;border:1px solid #ede9fe;border-radius:20px;background:#fff;font-weight:800;font-size:11px">Watch</button><button onclick="filterHistory('Quiz')" id="f-Quiz" style="padding:7px 10px;border:1px solid #ede9fe;border-radius:20px;background:#fff;font-weight:800;font-size:11px">Quiz</button><button onclick="filterHistory('Articles')" id="f-Articles" style="padding:7px 10px;border:1px solid #ede9fe;border-radius:20px;background:#fff;font-weight:800;font-size:11px">Articles</button><button onclick="filterHistory('Refer')" id="f-Refer" style="padding:7px 10px;border:1px solid #ede9fe;border-radius:20px;background:#fff;font-weight:800;font-size:11px">Refer</button><button onclick="filterHistory('Bonus')" id="f-Bonus" style="padding:7px 10px;border:1px solid #ede9fe;border-radius:20px;background:#fff;font-weight:800;font-size:11px">Bonus</button><button onclick="filterHistory('Wallet')" id="f-Wallet" style="padding:7px 10px;border:1px solid #ede9fe;border-radius:20px;background:#fff;font-weight:800;font-size:11px">Wallet</button></div><div style="display:flex;gap:10px;margin:0 0 12px"><button onclick="loadHistory()" style="flex:1;padding:10px;border:none;border-radius:10px;background:#fbbf24;font-weight:800">Refresh</button><button onclick="clearHistorySafe()" style="flex:1;padding:10px;border:none;border-radius:10px;background:#ef4444;color:#fff;font-weight:800">Clear All</button></div><div id="historyList" style="max-height:50vh;overflow-y:auto">Loading...</div></div></div>
 <div id="settingsModal" class="modal" onclick="closeModal('settingsModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('settingsModal')">×</span><h3 style="text-align:center;margin-bottom:14px">⚙️ Settings</h3><div><span style="font-size:13px;font-weight:800">Language</span><div class="lang-option active" id="lang-en" onclick="setLang('en',this)"><span>English 🇺🇸</span><span>✓</span></div></div><div style="margin:16px 0"><span style="font-size:13px;font-weight:800">Appearance</span><div style="display:flex;gap:10px;margin-top:8px"><div class="mode-btn" id="modeLight" onclick="setMode('light')">☀️ Light</div><div class="mode-btn" id="modeDark" onclick="setMode('dark')">🌙 Dark</div></div></div><button onclick="saveSettings()" style="width:70%;margin:18px auto 0;display:block;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;padding:12px;border-radius:12px;font-weight:800">Save & Close</button></div></div>
 
 <script>
+// ===== SAFE GATE - SAME AS OFFERS / BONUS - NO AUTO, NO BLUR =====
+let vignetteLoaded=false;
 function loadVignette(){
+  if(vignetteLoaded) return; vignetteLoaded=true;
   const old = document.querySelector('script[src*="vignette.min.js"]');
   if(old) old.remove();
   (function(s){s.dataset.zone='12268552',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+  setTimeout(()=>{vignetteLoaded=false;}, 60*1000);
 }
+function closeMoreGate(){ document.getElementById('moreGate').style.display='none'; document.getElementById('moreGate').classList.remove('show'); }
 function initMoreGate(){
   const gate=document.getElementById('moreGate');
-  const timerBox=document.getElementById('moreTimerBox');
-  const progressBar=document.getElementById('moreProgressBar');
   const COOLDOWN=3*60*1000;
   const last=parseInt(localStorage.getItem('moreGateLastShown')||'0');
-  if(last && (Date.now()-last)<COOLDOWN){
-    gate.style.display='none';
-    gate.classList.remove('show');
-    document.body.classList.remove('gating');
-    return;
-  }
-  // SHOW GATE + BLUR + BLOCK CONTENT
-  document.body.classList.add('gating');
-  gate.classList.add('show');
-  gate.style.display='flex';
-  let sec=10; timerBox.innerText=sec; progressBar.style.width='100%';
-  const int=setInterval(()=>{
-    sec--; timerBox.innerText=sec; progressBar.style.width=(sec*10)+'%';
-    if(sec<=0){
-      clearInterval(int);
-      gate.style.display='none';
-      gate.classList.remove('show');
-      document.body.classList.remove('gating');
-      localStorage.setItem('moreGateLastShown', String(Date.now()));
-      loadVignette();
-    }
-  },1000);
+  if(last && (Date.now()-last)<COOLDOWN){ return; }
+  // Show gate but DO NOT blur, DO NOT block, DO NOT auto-ad
+  gate.classList.add('show'); gate.style.display='flex';
+  document.getElementById('moreOpenBtn').style.display='block';
+  document.getElementById('moreContinueBtn').style.display='none';
+  document.getElementById('moreOpenBtn').disabled=false;
+  document.getElementById('moreOpenBtn').innerText='Open More';
+  document.getElementById('moreTimerBox').innerText='';
 }
+document.getElementById('moreOpenBtn').onclick=function(){
+  this.innerText='⏳ Please wait...'; this.disabled=true;
+  let sec=10; const el=document.getElementById('moreTimerBox');
+  el.innerText='⏳ Wait '+sec+'s...';
+  const iv=setInterval(()=>{ sec--; if(sec>0){ el.innerText='⏳ Wait '+sec+'s...'; } else { clearInterval(iv); document.getElementById('moreOpenBtn').style.display='none'; el.innerText='✅ Unlocked!'; document.getElementById('moreContinueBtn').style.display='block'; } },1000);
+};
+document.getElementById('moreContinueBtn').onclick=function(){
+  closeMoreGate();
+  localStorage.setItem('moreGateLastShown', String(Date.now()));
+  loadVignette();
+};
 initMoreGate();
 </script>
 
@@ -118,7 +130,7 @@ initMoreGate();
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 try{ firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true); }catch(e){}
-const auth=firebase.auth(), db=firebase.firestore(); let cachedUser=null, allData=[];
+const auth=firebase.auth(), db=firebase.firestore(); let cachedUser=null, allData=[], currentFilter='ALL';
 function openModal(id){ document.getElementById(id).style.display='flex'; if(id==='historyModal') loadHistory(); if(id==='notifModal') loadNotifs(); }
 function closeModal(id){ document.getElementById(id).style.display='none'; }
 function setLang(c,el){ localStorage.setItem('app_lang',c); document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active')); el.classList.add('active'); }
@@ -128,8 +140,97 @@ function saveSettings(){ closeModal('settingsModal'); }
 async function loadNotifs(){ const el=document.getElementById('notifList'); el.innerHTML='Loading...'; try{ const snap=await db.collection('notifications').orderBy('createdAt','desc').limit(20).get(); if(snap.empty){ el.innerHTML='<p style="text-align:center;padding:20px;color:#9ca3af">No notifications</p>'; return; } let h=''; snap.forEach(d=>{ const n=d.data(); const date=n.createdAt?.toDate?n.createdAt.toDate().toLocaleString():''; h+=`<div class="item"><div><div style="font-size:12px;font-weight:800">${n.message||n.title}</div><div style="font-size:10px;color:#9ca3af">${date}</div></div></div>`; }); el.innerHTML=h; }catch(e){ el.innerHTML='Error'; } }
 function getHiddenIds(){ try{ return JSON.parse(localStorage.getItem('hiddenHistoryIds')||'[]'); }catch{return [];} }
 function addHiddenIds(ids){ const cur=new Set(getHiddenIds()); ids.forEach(id=>cur.add(id)); const arr=[...cur]; localStorage.setItem('hiddenHistoryIds', JSON.stringify(arr)); const u=auth.currentUser||cachedUser; if(u){ db.collection('users').doc(u.uid).set({hiddenHistoryIds:arr},{merge:true}).catch(()=>{}); } }
-async function loadHistory(){ const user=auth.currentUser||cachedUser; if(!user) return; const list=document.getElementById('historyList'); list.innerHTML='Loading...'; allData=[]; const hidden=new Set(getHiddenIds()); try{ const userDoc=await db.collection('users').doc(user.uid).get(); if(userDoc.exists && userDoc.data().hiddenHistoryIds){ userDoc.data().hiddenHistoryIds.forEach(id=>hidden.add(id)); } }catch(e){} try{ const snap=await db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(100).get(); let html=''; snap.forEach(d=>{ if(hidden.has(d.id)) return; const v=d.data(); if(v.hidden===true) return; allData.push({id:d.id}); const date=v.timestamp?.toDate?v.timestamp.toDate().toLocaleString():new Date().toLocaleString(); html+=`<div class="item"><div><div style="font-weight:bold;font-size:13px">${v.action||'Earn'}</div><div style="font-size:11px;color:#9ca3af">${date}${v.desc?' - '+v.desc:''}</div></div><div style="color:#22c55e;font-weight:900">+${v.coins??v.points??0} 🪙</div></div>`; }); list.innerHTML=html||'<p style="text-align:center;padding:20px">No history ✅</p>'; }catch(e){ list.innerHTML='Error: '+e.message; } }
-async function clearHistorySafe(){ if(allData.length===0){ document.getElementById('historyList').innerHTML='<p style="text-align:center;padding:20px">No history</p>'; return; } if(!confirm('Clear all '+allData.length+' history?')) return; const list=document.getElementById('historyList'); list.innerHTML='Clearing...'; const ids=allData.map(x=>x.id); addHiddenIds(ids); const user=auth.currentUser||cachedUser; for(const id of ids){ try{ await db.collection('users').doc(user.uid).collection('earnHistory').doc(id).set({hidden:true},{merge:true}); }catch(e){} } allData=[]; list.innerHTML='<p style="text-align:center;padding:20px">Cleared ✅</p>'; }
+
+// ===== HISTORY - NORMALIZE ANY TYPE TO Watch/Quiz/Articles/Refer/Bonus/Wallet =====
+function normalizeType(raw, desc){
+  const s=((raw||'')+' '+(desc||'')).toLowerCase();
+  if(s.includes('withdraw')||s.includes('payout')||s.includes('cashout')||s.includes('wallet')||s.includes('redeem')) return 'Wallet';
+  if(s.includes('refer')||s.includes('invite')||s.includes('friend')) return 'Refer';
+  if(s.includes('quiz')||s.includes('trivia')||s.includes('question')) return 'Quiz';
+  if(s.includes('article')||s.includes('read')||s.includes('news')||s.includes('blog')) return 'Articles';
+  if(s.includes('bonus')||s.includes('hourly')||s.includes('daily')||s.includes('check')) return 'Bonus';
+  if(s.includes('watch')||s.includes('video')||s.includes('ad')||s.includes('faucet')||s.includes('offer')||s.includes('task')||s.includes('earn')) return 'Watch';
+  return 'Watch';
+}
+function typeIcon(t){ return t==='Quiz'?'🧠':t==='Articles'?'📰':t==='Refer'?'👥':t==='Bonus'?'🎁':t==='Wallet'?'💰':'👁️'; }
+function toDate(v){ if(!v) return new Date(); if(v.toDate) return v.toDate(); if(v.seconds) return new Date(v.seconds*1000); const d=new Date(v); return isNaN(d)?new Date():d; }
+function renderHistory(){
+  const list=document.getElementById('historyList');
+  const filtered = currentFilter==='ALL' ? allData : allData.filter(x=>x.type===currentFilter);
+  // Update filter buttons
+  ['ALL','Watch','Quiz','Articles','Refer','Bonus','Wallet'].forEach(f=>{
+    const b=document.getElementById('f-'+f); if(!b) return;
+    const active = f===currentFilter;
+    b.style.background=active?'#6d28d9':'#fff'; b.style.color=active?'#fff':'#111'; b.style.border=active?'none':'1px solid #ede9fe';
+  });
+  if(!filtered.length){ list.innerHTML='<p style="text-align:center;padding:20px">No history for '+currentFilter+' ✅<br><span style="font-size:11px;color:#9ca3af">Do Watch / Quiz / Articles / Refer / Bonus and come back</span></p>'; return; }
+  let html='';
+  filtered.forEach(v=>{
+    const dateStr = v.date.toLocaleString();
+    const isNeg = v.coins<0;
+    html+=`<div class="item"><div><div style="font-weight:bold;font-size:13px">${typeIcon(v.type)} ${v.type} • ${v.action}</div><div style="font-size:11px;color:#9ca3af">${dateStr}${v.desc?' - '+v.desc:''}</div></div><div style="color:${isNeg?'#ef4444':'#22c55e'};font-weight:900;white-space:nowrap">${isNeg?v.coins:v.coins>=0?'+'+v.coins:v.coins} 🪙</div></div>`;
+  });
+  list.innerHTML=html;
+}
+function filterHistory(f){ currentFilter=f; renderHistory(); }
+
+async function loadHistory(){
+  const user=auth.currentUser||cachedUser; if(!user) return;
+  const list=document.getElementById('historyList'); list.innerHTML='Loading...'; allData=[];
+  const hidden=new Set(getHiddenIds());
+  try{ const userDoc=await db.collection('users').doc(user.uid).get(); if(userDoc.exists && userDoc.data().hiddenHistoryIds){ userDoc.data().hiddenHistoryIds.forEach(id=>hidden.add(id)); } }catch(e){}
+
+  const pushItem=(id, raw, coins, dateVal, desc, source)=>{
+    if(hidden.has(id)) return;
+    const type=normalizeType(raw, desc);
+    allData.push({ id, type, action: raw||type, coins: Number(coins)||0, date: toDate(dateVal), desc: desc||'', source });
+  };
+
+  // 1) earnHistory (old)
+  try{
+    const snap=await db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(100).get();
+    snap.forEach(d=>{ const v=d.data(); if(v.hidden===true) return; pushItem('earn_'+d.id, v.action||v.type||'Earn', v.coins??v.points??v.amount??0, v.timestamp||v.createdAt||v.date, v.desc||v.description||'', 'earnHistory'); });
+  }catch(e){}
+  // 2) transactions
+  try{
+    const snap=await db.collection('users').doc(user.uid).collection('transactions').orderBy('timestamp','desc').limit(100).get();
+    snap.forEach(d=>{ const v=d.data(); pushItem('tx_'+d.id, v.action||v.type||v.title||'Earn', v.coins??v.points??v.amount??0, v.timestamp||v.createdAt||v.date, v.desc||v.description||'', 'transactions'); });
+  }catch(e){}
+  // 3) history
+  try{
+    const snap=await db.collection('users').doc(user.uid).collection('history').orderBy('timestamp','desc').limit(100).get();
+    snap.forEach(d=>{ const v=d.data(); pushItem('hist_'+d.id, v.action||v.type||'Earn', v.coins??v.points??v.amount??0, v.timestamp||v.createdAt||v.date, v.desc||v.description||'', 'history'); });
+  }catch(e){}
+  // 4) withdrawals -> negative Wallet
+  try{
+    const snap=await db.collection('users').doc(user.uid).collection('withdrawals').orderBy('createdAt','desc').limit(50).get();
+    snap.forEach(d=>{ const v=d.data(); const amt = -(Math.abs(Number(v.coins??v.amount??v.points??0))); pushItem('wd_'+d.id, 'Withdraw - '+(v.method||v.status||'Wallet'), amt, v.createdAt||v.timestamp||v.date, (v.status||'')+' '+(v.method||''), 'withdrawals'); });
+  }catch(e){}
+  // 5) Top-level withdrawals collection (userId field)
+  try{
+    const snap=await db.collection('withdrawals').where('userId','==',user.uid).orderBy('createdAt','desc').limit(50).get();
+    snap.forEach(d=>{ const v=d.data(); const amt = -(Math.abs(Number(v.coins??v.amount??0))); pushItem('wdtop_'+d.id, 'Withdraw - '+(v.method||v.status||'Wallet'), amt, v.createdAt||v.timestamp, (v.status||'')+' '+(v.method||''), 'withdrawals-top'); });
+  }catch(e){}
+
+  // 6) Fallback: if still empty, build from users doc counters
+  if(allData.length===0){
+    try{
+      const udoc=await db.collection('users').doc(user.uid).get();
+      const u=udoc.exists?udoc.data():{};
+      const now=new Date();
+      if(u.bonusClaimsToday>0) pushItem('fb_bonus','Bonus - Hourly Bonus', Number(u.bonusClaimsToday)||0, u.lastBonusTimestamp||now, 'Today: '+u.bonusClaimsToday+' claims', 'fallback');
+      if(u.referralCount>0||u.referrals>0) pushItem('fb_refer','Refer - Invite Friends', Number(u.referralCount||u.referrals||0)*5, u.lastReferralAt||now, 'Referrals', 'fallback');
+      if(u.totalQuizEarned>0||u.quizCount>0) pushItem('fb_quiz','Quiz - Quiz Earned', Number(u.totalQuizEarned||0), u.lastQuizAt||now, (u.quizCount||'')+' quizzes', 'fallback');
+      if(u.totalWatchEarned>0||u.watchCount>0) pushItem('fb_watch','Watch - Watch Earned', Number(u.totalWatchEarned||0), u.lastWatchAt||now, (u.watchCount||'')+' watches', 'fallback');
+    }catch(e){}
+  }
+
+  // Dedupe + sort newest first
+  const seen=new Set(); allData=allData.filter(x=>{ if(seen.has(x.id)) return false; seen.add(x.id); return true; });
+  allData.sort((a,b)=>b.date - a.date);
+  renderHistory();
+}
+async function clearHistorySafe(){ if(allData.length===0){ document.getElementById('historyList').innerHTML='<p style="text-align:center;padding:20px">No history</p>'; return; } if(!confirm('Clear all '+allData.length+' history?')) return; const list=document.getElementById('historyList'); list.innerHTML='Clearing...'; const ids=allData.map(x=>x.id); addHiddenIds(ids); const user=auth.currentUser||cachedUser; for(const it of allData){ try{ if(it.source==='earnHistory'){ const realId=it.id.replace('earn_',''); await db.collection('users').doc(user.uid).collection('earnHistory').doc(realId).set({hidden:true},{merge:true}); } }catch(e){} } allData=[]; renderHistory(); }
 auth.onAuthStateChanged(u=>{ if(!u){ location.href='./index.html'; return; } cachedUser=u; });
 </script>
 </body>
