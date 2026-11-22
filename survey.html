@@ -20,8 +20,11 @@
     .center-pill{background:#fff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%)}
     .container{max-width:600px;margin:0 auto;padding:14px 12px 20px}
     .card{background:#fff;border:2px solid #ede9fe;border-radius:20px;padding:8px;position:relative;overflow:hidden;min-height:700px}
+    /* AD ON TOP - STICKY, ALWAYS VISIBLE, NO SCROLL */
+    .top-ad-wrap{position:sticky;top:62px;z-index:90;background:#f5f3ff;padding:8px 12px 0}
+    .top-ad{max-width:600px;margin:0 auto;text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px;box-shadow:0 4px 12px rgba(0,0,0,0.12)}
     /* SAFE GATE - SAME AS OFFERS / BONUS / MORE */
-    #surveyGate{position:fixed;inset:0;background:rgba(17,12,34,0.65);backdrop-filter:blur(8px);z-index:20;display:none;align-items:center;justify-content:center;padding:20px;text-align:center}
+    #surveyGate{position:fixed;inset:0;background:rgba(17,12,34,0.65);backdrop-filter:blur(8px);z-index:999;display:none;align-items:center;justify-content:center;padding:20px;text-align:center}
     #surveyGate.show{display:flex}
     .gate-card{background:linear-gradient(180deg,#ede9fe,#ddd6fe);border:2px solid #c4b5fd;border-radius:22px;padding:22px 20px;width:100%;max-width:320px;text-align:center;box-shadow:0 20px 40px rgba(76,29,149,0.25);position:relative}
     .gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #ede9fe;font-weight:900;font-size:14px;cursor:pointer}
@@ -37,6 +40,15 @@
   <a href="home.html" class="back-btn-checkin"><span class="lines"><i></i><i></i><i></i></span></a>
   <div class="center-pill">📋 CPX Surveys</div>
   <div style="width:45px"></div>
+</div>
+
+<!-- AD MOVED UP - TOP, STICKY, VISIBLE WITHOUT SCROLL - NEW 12325659 -->
+<div class="top-ad-wrap">
+  <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:4px">Advertisement</div>
+  <a href="https://uplcm.com/4/12325659" target="_blank" rel="sponsored noopener" class="top-ad">
+    <div style="flex:1"><div style="font-weight:900;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div style="font-size:11px;color:#333">Limited offer • Sponsored</div></div>
+    <div style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
+  </a>
 </div>
 
 <div class="container">
@@ -74,17 +86,7 @@
   </div>
 </div>
 
-<!-- BOTTOM DIRECT LINK - NEW 12325659 ONLY -->
-<div style="max-width:600px;margin:0 auto;padding:0 12px 30px;width:100%">
-  <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px">Advertisement</div>
-  <a href="https://uplcm.com/4/12325659" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
-    <div style="flex:1"><div style="font-weight:900;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div style="font-size:11px;color:#333">Limited offer • Sponsored</div></div>
-    <div style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
-  </a>
-</div>
-
 <script>
-// VIGNETTE LOADER - ZONE 12272200 - ONLY ON CONTINUE
 let vignetteLoaded=false;
 function loadVignette(){
   if(vignetteLoaded) return; vignetteLoaded=true;
@@ -93,7 +95,6 @@ function loadVignette(){
   (function(s){s.dataset.zone='12272200',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
   setTimeout(()=>{vignetteLoaded=false;}, 60*1000);
 }
-
 const firebaseConfig = {
   apiKey: "AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",
   authDomain: "reward-platform-rw-2e13d.firebaseapp.com",
@@ -101,7 +102,6 @@ const firebaseConfig = {
 };
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 let cpxUrlReady = '';
-
 function loadCpx(){
   if(cpxUrlReady){
     document.getElementById('cpx-iframe-holder').innerHTML = `<iframe src="${cpxUrlReady}" class="w-full h-[750px] border-0 rounded-xl" loading="lazy" allow="fullscreen"></iframe>`;
@@ -109,7 +109,6 @@ function loadCpx(){
     document.getElementById('cpx-loading').classList.add('hidden');
   }
 }
-
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
     document.getElementById('userEmail').innerText = user.email;
@@ -121,7 +120,6 @@ firebase.auth().onAuthStateChanged(user => {
     }
   } else { window.location.href = 'index.html'; }
 });
-
 function closeSurveyGate(){
   document.getElementById('surveyGate').style.display='none';
   document.getElementById('surveyGate').classList.remove('show');
