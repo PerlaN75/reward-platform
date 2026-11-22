@@ -17,7 +17,7 @@ body{background:#f5f3ff;min-height:100vh;color:#111827}
 .back-btn-checkin .lines{display:flex;flex-direction:column;gap:3px}
 .back-btn-checkin .lines i{display:block;width:18px;height:2.5px;background:#000;border-radius:2px}
 .center-pill{background:#ffffff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%);box-shadow:0 2px 8px rgba(0,0,0,0.08)}
-.container{max-width:500px;margin:0 auto;padding:14px 14px 90px}
+.container{max-width:500px;margin:0 auto;padding:14px 14px 10px}
 .balance-card{background:linear-gradient(180deg,#1a2e0a,#12230a);border:2px solid #fbbf24;border-radius:18px;padding:14px;display:flex;justify-content:space-around;text-align:center;color:#fff;box-shadow:0 8px 24px rgba(251,191,36,0.18)}
 .balance-card b{color:#fbbf24;font-size:18px}.usdt{color:#22f59b;font-weight:900;font-size:18px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
@@ -28,8 +28,6 @@ body{background:#f5f3ff;min-height:100vh;color:#111827}
 .badge{display:inline-block;margin-top:6px;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:900;border:1.5px solid}
 .badge.free{background:#dcfce7;color:#166534;border-color:#86efac}.badge.coins{background:#fef3c7;color:#92400e;border-color:#fbbf24}
 #toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#ffffff;color:#4c1d95;padding:14px 20px;border-radius:14px;font-weight:900;font-size:13px;z-index:99999;display:none;border:2px solid #ede9fe;box-shadow:0 8px 24px rgba(109,40,217,0.15);text-align:center;max-width:90%}
-
-/* GATE */
 #adGate{position:fixed;inset:0;background:rgba(17,12,34,0.65);backdrop-filter:blur(8px);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}
 .gate-box{background:linear-gradient(180deg,#ffffff,#fbf7ff);border:2px solid #fbbf24;border-radius:24px;padding:22px 20px 18px;text-align:center;max-width:360px;width:100%;box-shadow:0 20px 50px rgba(109,40,217,0.35), 0 0 0 6px rgba(251,191,36,0.12);position:relative;overflow:hidden}
 .gate-box:before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#fbbf24,#f59e0b,#a78bfa)}
@@ -51,9 +49,19 @@ body{background:#f5f3ff;min-height:100vh;color:#111827}
 <div class="grid" id="grid"></div>
 </div>
 
-<div id="adGate"><div class="gate-box"><div class="gate-icon" id="gateIcon">🪙</div><div id="gateTitle" class="gate-title"></div><div id="gateSub" class="gate-sub"></div><button id="watchAdBtn" class="gate-btn watch"></button><div id="gateTimer"></div><button id="continueBtn" class="gate-btn continue">✅ Continue</button><div style="font-size:9px;color:#9ca3af;margin-top:10px;font-weight:700">Clean & safe ads • Better Ads Standards • 12268552</div></div></div>
+<!-- SAFE DIRECT LINK - BOTTOM - 2 MIN ROTATE - OPTIONAL -->
+<div style="max-width:500px;margin:0 auto;padding:0 14px 90px">
+  <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:0.5px">Advertisement</div>
+  <a id="offersAdLink" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
+    <div style="flex:1"><div id="offersAdTitle" style="font-weight:900;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div id="offersAdSub" style="font-size:11px;color:#333">Limited offer • Sponsored</div></div>
+    <div id="offersAdBtn" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
+  </a>
+</div>
+
+<div id="adGate"><div class="gate-box"><button onclick="closeGate()" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button><div class="gate-icon" id="gateIcon">🪙</div><div id="gateTitle" class="gate-title"></div><div id="gateSub" class="gate-sub"></div><button id="watchAdBtn" class="gate-btn watch"></button><div id="gateTimer"></div><button id="continueBtn" class="gate-btn continue">✅ Continue</button><div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div></div></div>
 <script>
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',5000);}
+function closeGate(){document.getElementById('adGate').style.display='none';}
 
 let vignetteLoaded=false;
 function loadCleanVignette(){
@@ -64,6 +72,42 @@ function loadCleanVignette(){
   (function(s){s.dataset.zone='12268552',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
   setTimeout(()=>{vignetteLoaded=false;}, 3*60*1000);
 }
+
+// ===== DIRECT LINK BOTTOM - 2 MIN ROTATE - SURVIVES REFRESH - USES 12320757 ONLY (NOT HOME LINK) =====
+const OFFERS_ADS=[
+  {title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Sponsored",btn:"Visit →",bg:"#FFD700",link:"https://uplcm.com/4/12320757"},
+  {title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • Sponsored",btn:"Visit →",bg:"#7CFC00",link:"https://uplcm.com/4/12320757"},
+  {title:"📱 Win Free Airtime Today",sub:"MTN • Airtel • Sponsored",btn:"Visit →",bg:"#00D4FF",link:"https://uplcm.com/4/12320757"},
+  {title:"🔥 Hot Offer - Double Your Coins",sub:"Today only • Sponsored",btn:"Visit →",bg:"#FF9F43",link:"https://uplcm.com/4/12320757"}
+];
+const OFFERS_AD_TIME=2*60*1000;
+const OFFERS_AD_KEY='offersAd_state_v1';
+let offersAdIndex=0;
+function saveOffersAd(){ try{ localStorage.setItem(OFFERS_AD_KEY, JSON.stringify({index:offersAdIndex, changedAt:Date.now()})); }catch(e){} }
+function showOffersAd(i){
+  const a=OFFERS_ADS[i];
+  const link=document.getElementById('offersAdLink');
+  if(!link) return;
+  link.href=a.link; link.style.background=a.bg;
+  document.getElementById('offersAdTitle').textContent=a.title;
+  document.getElementById('offersAdSub').textContent=a.sub;
+  document.getElementById('offersAdBtn').textContent=a.btn;
+}
+function nextOffersAd(){ offersAdIndex=(offersAdIndex+1)%OFFERS_ADS.length; showOffersAd(offersAdIndex); saveOffersAd(); }
+(function initOffersAd(){
+  try{
+    const raw=localStorage.getItem(OFFERS_AD_KEY);
+    if(!raw){ showOffersAd(0); saveOffersAd(); setTimeout(function(){ nextOffersAd(); setInterval(nextOffersAd, OFFERS_AD_TIME); }, OFFERS_AD_TIME); return; }
+    const saved=JSON.parse(raw);
+    const elapsed=Date.now() - (saved.changedAt||Date.now());
+    const steps=Math.floor(elapsed / OFFERS_AD_TIME);
+    offersAdIndex=((saved.index||0)+steps)%OFFERS_ADS.length;
+    const remain=OFFERS_AD_TIME - (elapsed % OFFERS_AD_TIME);
+    showOffersAd(offersAdIndex);
+    try{ localStorage.setItem(OFFERS_AD_KEY, JSON.stringify({index:offersAdIndex, changedAt:Date.now()-(elapsed%OFFERS_AD_TIME)})); }catch(e){}
+    setTimeout(function(){ nextOffersAd(); setInterval(nextOffersAd, OFFERS_AD_TIME); }, remain);
+  }catch(e){ showOffersAd(0); saveOffersAd(); setInterval(nextOffersAd, OFFERS_AD_TIME); }
+})();
 
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 firebase.initializeApp(firebaseConfig);
@@ -109,19 +153,19 @@ function clickOffer(id){
   document.getElementById('gateIcon').innerText=o.emoji;
   if(o.id==='bnb_faucet'){
     document.getElementById('gateTitle').innerText='💧 Unlock BNB Faucet';
-    document.getElementById('gateSub').innerText='Watch clean ad 10s to get free BNB link';
+    document.getElementById('gateSub').innerText='Wait 10s to unlock';
     document.getElementById('watchAdBtn').innerText='▶️ Watch Ad (10s)';
   }else if(o.id==='telegram_join'){
     document.getElementById('gateTitle').innerText='✈️ Unlock Telegram';
-    document.getElementById('gateSub').innerText='Watch clean ad 10s to join channel';
+    document.getElementById('gateSub').innerText='Wait 10s to unlock';
     document.getElementById('watchAdBtn').innerText='▶️ Watch Ad (10s)';
   }else if(o.type==='play'){
     document.getElementById('gateTitle').innerText='🔓 Unlock Play Game';
-    document.getElementById('gateSub').innerText='Watch clean ad 10s to unlock';
+    document.getElementById('gateSub').innerText='Wait 10s to unlock';
     document.getElementById('watchAdBtn').innerText='▶️ Watch Ad (10s)';
   }else{
     document.getElementById('gateTitle').innerText='🔓 Unlock Install App';
-    document.getElementById('gateSub').innerText='Watch clean ad 10s to unlock';
+    document.getElementById('gateSub').innerText='Wait 10s to unlock';
     document.getElementById('watchAdBtn').innerText='▶️ Watch Ad (10s)';
   }
 }
