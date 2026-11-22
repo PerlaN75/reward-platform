@@ -24,14 +24,13 @@
     .menu-list a{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;color:inherit;text-decoration:none;font-size:15px;font-weight:800;border-radius:14px;cursor:pointer}
     .menu-list a:not(:last-child){border-bottom:1px solid #f5f3ff}
 
-    /* SAFE GATE - SAME AS OFFERS / BONUS */
     #moreGate{position:fixed;inset:0;background:rgba(17,12,34,0.65);backdrop-filter:blur(8px);z-index:999;display:none;align-items:center;justify-content:center;padding:20px}
     #moreGate.show{display:flex}
     .gate-card{background:linear-gradient(180deg,#ede9fe,#ddd6fe);border:2px solid #c4b5fd;border-radius:22px;padding:22px 20px;width:100%;max-width:320px;text-align:center;box-shadow:0 20px 40px rgba(76,29,149,0.25);position:relative}
     .gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #ede9fe;font-weight:900;font-size:14px;cursor:pointer}
     .gate-btn.watch{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 4px 0 #d97706;border-color:#f59e0b}
     .gate-btn.watch:disabled{background:#f3f4f6;color:#9ca3af;box-shadow:none}
-    .gate-btn.continue{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #15803d;display:none;margin-top:10px}
+    .gate-btn.open{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #15803d;display:none;margin-top:10px}
     #moreTimerBox{font-size:13px;font-weight:900;color:#92400e;margin-top:12px;background:#fffbeb;border:1.5px solid #fde68a;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
     #moreTimerBox:empty{display:none}
 
@@ -70,7 +69,7 @@
   </a>
 </div>
 
-<!-- SAFE GATE -->
+<!-- GATE -->
 <div id="moreGate">
   <div class="gate-card">
     <button onclick="closeMoreGate()" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button>
@@ -79,7 +78,7 @@
     <div style="font-size:12px;color:#6d28d9;margin:8px 0 16px;font-weight:700;line-height:1.4">Please wait 10s to open</div>
     <button id="moreOpenBtn" class="gate-btn watch">Open More</button>
     <div id="moreTimerBox"></div>
-    <button id="moreContinueBtn" class="gate-btn continue">✅ Continue</button>
+    <button id="moreOpenBtn2" class="gate-btn open">✅ Open</button>
     <div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div>
   </div>
 </div>
@@ -89,7 +88,6 @@
 <div id="settingsModal" class="modal" onclick="closeModal('settingsModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('settingsModal')">×</span><h3 style="text-align:center;margin-bottom:14px">⚙️ Settings</h3><div><span style="font-size:13px;font-weight:800">Language</span><div class="lang-option active" id="lang-en" onclick="setLang('en',this)"><span>English 🇺🇸</span><span>✓</span></div></div><div style="margin:16px 0"><span style="font-size:13px;font-weight:800">Appearance</span><div style="display:flex;gap:10px;margin-top:8px"><div class="mode-btn" id="modeLight" onclick="setMode('light')">☀️ Light</div><div class="mode-btn" id="modeDark" onclick="setMode('dark')">🌙 Dark</div></div></div><button onclick="saveSettings()" style="width:70%;margin:18px auto 0;display:block;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;padding:12px;border-radius:12px;font-weight:800">Save & Close</button></div></div>
 
 <script>
-// ===== SAFE GATE - SAME AS OFFERS / BONUS - NO AUTO, NO BLUR =====
 let vignetteLoaded=false;
 function loadVignette(){
   if(vignetteLoaded) return; vignetteLoaded=true;
@@ -104,10 +102,9 @@ function initMoreGate(){
   const COOLDOWN=3*60*1000;
   const last=parseInt(localStorage.getItem('moreGateLastShown')||'0');
   if(last && (Date.now()-last)<COOLDOWN){ return; }
-  // Show gate but DO NOT blur, DO NOT block, DO NOT auto-ad
   gate.classList.add('show'); gate.style.display='flex';
   document.getElementById('moreOpenBtn').style.display='block';
-  document.getElementById('moreContinueBtn').style.display='none';
+  document.getElementById('moreOpenBtn2').style.display='none';
   document.getElementById('moreOpenBtn').disabled=false;
   document.getElementById('moreOpenBtn').innerText='Open More';
   document.getElementById('moreTimerBox').innerText='';
@@ -116,9 +113,9 @@ document.getElementById('moreOpenBtn').onclick=function(){
   this.innerText='⏳ Please wait...'; this.disabled=true;
   let sec=10; const el=document.getElementById('moreTimerBox');
   el.innerText='⏳ Wait '+sec+'s...';
-  const iv=setInterval(()=>{ sec--; if(sec>0){ el.innerText='⏳ Wait '+sec+'s...'; } else { clearInterval(iv); document.getElementById('moreOpenBtn').style.display='none'; el.innerText='✅ Unlocked!'; document.getElementById('moreContinueBtn').style.display='block'; } },1000);
+  const iv=setInterval(()=>{ sec--; if(sec>0){ el.innerText='⏳ Wait '+sec+'s...'; } else { clearInterval(iv); document.getElementById('moreOpenBtn').style.display='none'; el.innerText='✅ Ready!'; document.getElementById('moreOpenBtn2').style.display='block'; } },1000);
 };
-document.getElementById('moreContinueBtn').onclick=function(){
+document.getElementById('moreOpenBtn2').onclick=function(){
   closeMoreGate();
   localStorage.setItem('moreGateLastShown', String(Date.now()));
   loadVignette();
@@ -140,8 +137,6 @@ function saveSettings(){ closeModal('settingsModal'); }
 async function loadNotifs(){ const el=document.getElementById('notifList'); el.innerHTML='Loading...'; try{ const snap=await db.collection('notifications').orderBy('createdAt','desc').limit(20).get(); if(snap.empty){ el.innerHTML='<p style="text-align:center;padding:20px;color:#9ca3af">No notifications</p>'; return; } let h=''; snap.forEach(d=>{ const n=d.data(); const date=n.createdAt?.toDate?n.createdAt.toDate().toLocaleString():''; h+=`<div class="item"><div><div style="font-size:12px;font-weight:800">${n.message||n.title}</div><div style="font-size:10px;color:#9ca3af">${date}</div></div></div>`; }); el.innerHTML=h; }catch(e){ el.innerHTML='Error'; } }
 function getHiddenIds(){ try{ return JSON.parse(localStorage.getItem('hiddenHistoryIds')||'[]'); }catch{return [];} }
 function addHiddenIds(ids){ const cur=new Set(getHiddenIds()); ids.forEach(id=>cur.add(id)); const arr=[...cur]; localStorage.setItem('hiddenHistoryIds', JSON.stringify(arr)); const u=auth.currentUser||cachedUser; if(u){ db.collection('users').doc(u.uid).set({hiddenHistoryIds:arr},{merge:true}).catch(()=>{}); } }
-
-// ===== HISTORY - NORMALIZE ANY TYPE TO Watch/Quiz/Articles/Refer/Bonus/Wallet =====
 function normalizeType(raw, desc){
   const s=((raw||'')+' '+(desc||'')).toLowerCase();
   if(s.includes('withdraw')||s.includes('payout')||s.includes('cashout')||s.includes('wallet')||s.includes('redeem')) return 'Wallet';
@@ -157,7 +152,6 @@ function toDate(v){ if(!v) return new Date(); if(v.toDate) return v.toDate(); if
 function renderHistory(){
   const list=document.getElementById('historyList');
   const filtered = currentFilter==='ALL' ? allData : allData.filter(x=>x.type===currentFilter);
-  // Update filter buttons
   ['ALL','Watch','Quiz','Articles','Refer','Bonus','Wallet'].forEach(f=>{
     const b=document.getElementById('f-'+f); if(!b) return;
     const active = f===currentFilter;
@@ -173,46 +167,36 @@ function renderHistory(){
   list.innerHTML=html;
 }
 function filterHistory(f){ currentFilter=f; renderHistory(); }
-
 async function loadHistory(){
   const user=auth.currentUser||cachedUser; if(!user) return;
   const list=document.getElementById('historyList'); list.innerHTML='Loading...'; allData=[];
   const hidden=new Set(getHiddenIds());
   try{ const userDoc=await db.collection('users').doc(user.uid).get(); if(userDoc.exists && userDoc.data().hiddenHistoryIds){ userDoc.data().hiddenHistoryIds.forEach(id=>hidden.add(id)); } }catch(e){}
-
   const pushItem=(id, raw, coins, dateVal, desc, source)=>{
     if(hidden.has(id)) return;
     const type=normalizeType(raw, desc);
     allData.push({ id, type, action: raw||type, coins: Number(coins)||0, date: toDate(dateVal), desc: desc||'', source });
   };
-
-  // 1) earnHistory (old)
   try{
     const snap=await db.collection('users').doc(user.uid).collection('earnHistory').orderBy('timestamp','desc').limit(100).get();
     snap.forEach(d=>{ const v=d.data(); if(v.hidden===true) return; pushItem('earn_'+d.id, v.action||v.type||'Earn', v.coins??v.points??v.amount??0, v.timestamp||v.createdAt||v.date, v.desc||v.description||'', 'earnHistory'); });
   }catch(e){}
-  // 2) transactions
   try{
     const snap=await db.collection('users').doc(user.uid).collection('transactions').orderBy('timestamp','desc').limit(100).get();
     snap.forEach(d=>{ const v=d.data(); pushItem('tx_'+d.id, v.action||v.type||v.title||'Earn', v.coins??v.points??v.amount??0, v.timestamp||v.createdAt||v.date, v.desc||v.description||'', 'transactions'); });
   }catch(e){}
-  // 3) history
   try{
     const snap=await db.collection('users').doc(user.uid).collection('history').orderBy('timestamp','desc').limit(100).get();
     snap.forEach(d=>{ const v=d.data(); pushItem('hist_'+d.id, v.action||v.type||'Earn', v.coins??v.points??v.amount??0, v.timestamp||v.createdAt||v.date, v.desc||v.description||'', 'history'); });
   }catch(e){}
-  // 4) withdrawals -> negative Wallet
   try{
     const snap=await db.collection('users').doc(user.uid).collection('withdrawals').orderBy('createdAt','desc').limit(50).get();
     snap.forEach(d=>{ const v=d.data(); const amt = -(Math.abs(Number(v.coins??v.amount??v.points??0))); pushItem('wd_'+d.id, 'Withdraw - '+(v.method||v.status||'Wallet'), amt, v.createdAt||v.timestamp||v.date, (v.status||'')+' '+(v.method||''), 'withdrawals'); });
   }catch(e){}
-  // 5) Top-level withdrawals collection (userId field)
   try{
     const snap=await db.collection('withdrawals').where('userId','==',user.uid).orderBy('createdAt','desc').limit(50).get();
     snap.forEach(d=>{ const v=d.data(); const amt = -(Math.abs(Number(v.coins??v.amount??0))); pushItem('wdtop_'+d.id, 'Withdraw - '+(v.method||v.status||'Wallet'), amt, v.createdAt||v.timestamp, (v.status||'')+' '+(v.method||''), 'withdrawals-top'); });
   }catch(e){}
-
-  // 6) Fallback: if still empty, build from users doc counters
   if(allData.length===0){
     try{
       const udoc=await db.collection('users').doc(user.uid).get();
@@ -224,8 +208,6 @@ async function loadHistory(){
       if(u.totalWatchEarned>0||u.watchCount>0) pushItem('fb_watch','Watch - Watch Earned', Number(u.totalWatchEarned||0), u.lastWatchAt||now, (u.watchCount||'')+' watches', 'fallback');
     }catch(e){}
   }
-
-  // Dedupe + sort newest first
   const seen=new Set(); allData=allData.filter(x=>{ if(seen.has(x.id)) return false; seen.add(x.id); return true; });
   allData.sort((a,b)=>b.date - a.date);
   renderHistory();
