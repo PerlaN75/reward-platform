@@ -24,7 +24,14 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px auto 4px;max-width:300px;width:100%}
 .gift{aspect-ratio:1/0.75;border-radius:14px;border:2px solid #fbcfe8;background:linear-gradient(180deg,#fdf2f8,#fce7f3);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:.2s;box-shadow:0 3px 0 #f9a8d4;padding:4px}
 .gift:active{transform:scale(.96);box-shadow:0 1px 0 #f9a8d4}
+.gift.opened{cursor:default;box-shadow:none}
+.gift.opened.win{background:linear-gradient(180deg,#fef9c3,#fde047);border-color:#eab308}
+.gift.opened.miss{background:#f3f4f6;border-color:#e5e7eb}
 .gift-emoji{font-size:26px;line-height:1}
+.gift.opened .gift-emoji{font-size:26px;animation:pop .35s}
+@keyframes pop{0%{transform:scale(.4)}70%{transform:scale(1.25)}100%{transform:scale(1)}}
+.moving-q{animation:shake .6s infinite}
+@keyframes shake{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(-4px) rotate(-10deg)}75%{transform:translateX(4px) rotate(10deg)}}
 .btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:0;border-radius:12px;padding:12px;font-weight:900;font-size:14px;cursor:pointer;margin-top:10px}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .bubble{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#000;padding:10px 18px;border-radius:999px;font-weight:900;z-index:10000;display:none}
@@ -141,6 +148,7 @@ const auth=firebase.auth(), db=firebase.firestore();
 const el=id=>document.getElementById(id);
 const balEl=el("bal"), todayEl=el("today"), progFill=el("progFill"), gridEl=el("giftGrid"), finalBox=el("finalBox"), finalMsg=el("finalMsg"), claimBtn=el("claimFinalBtn"), fullLock=el("fullLock"), fullLockMsg=el("fullLockMsg"), checkingEl=el("checking");
 let currentUser=null, balance=0, openedIds=[], wonCoins=0, isClaiming=false, unsubscribe=null, lockTimer=null, firestoreReady=false;
+let justRevealed=-1, hideTimer=null;
 function showBubble(m){const b=el("bubble");b.textContent=m;b.style.display="block";clearTimeout(showBubble.t);showBubble.t=setTimeout(()=>b.style.display="none",2200);}
 function getGiftsNextAvail(){ return Number(localStorage.getItem('gifts_nextAvail_v1')||0); }
 function setGiftsNextAvail(ts){ localStorage.setItem('gifts_nextAvail_v1', String(ts)); }
@@ -165,10 +173,18 @@ function renderGrid(){
   BOXES.forEach((box, idx)=>{
     const isOpen=openedIds.includes(idx);
     const d=document.createElement('div');
-    d.className='gift';
-    d.innerHTML=`<span class="gift-emoji">🎁</span>`;
-    if(!isOpen){
-      d.onclick=()=>{ if(openedIds.length>=MAX_PICKS){ showBubble("No picks left"); return; } openGiftAdGate(idx); };
+    // ONLY the box just tapped (last 3.5s) shows emoji. All others show normal 🎁
+    if(isOpen && idx===justRevealed){
+      d.className='gift'+(box.type==='win'?' opened win':' opened miss');
+      d.innerHTML=`<span class="gift-emoji ${box.moving?'moving-q':''}">${box.emoji}</span>`;
+    } else {
+      // Normal - closed OR already closed again after 3.5s - 100% same bright 🎁
+      d.className='gift';
+      d.innerHTML=`<span class="gift-emoji">🎁</span>`;
+      if(!isOpen){
+        d.onclick=()=>{ if(openedIds.length>=MAX_PICKS){ showBubble("No picks left"); return; } openGiftAdGate(idx); };
+      }
+      // If isOpen but not justRevealed: NO onclick, looks exactly normal
     }
     gridEl.appendChild(d);
   });
@@ -183,10 +199,17 @@ async function doReveal(idx){
   if(openedIds.length>=MAX_PICKS) return;
   const box=BOXES[idx];
   openedIds.push(idx);
-  if(box.type==='win'){ wonCoins=Math.min(MAX_COINS, wonCoins+box.coins); showBubble(`🎉 +${box.coins}`); }
-  else { showBubble(box.label); }
+  if(box.type==='win'){ wonCoins=Math.min(MAX_COINS, wonCoins+box.coins); showBubble(box.emoji); }
+  else { showBubble(box.emoji); }
   if(currentUser){ try{ await db.collection("users").doc(currentUser.uid).set({giftsDay:localDayKey(), giftsOpened:openedIds, giftsWon:wonCoins, giftsCount:openedIds.length}, {merge:true}); }catch(e){} }
+  // SHOW EMOJI 3.5s, THEN CLOSE BACK TO NORMAL 🎁
+  justRevealed=idx;
   renderGrid();
+  if(hideTimer) clearTimeout(hideTimer);
+  hideTimer=setTimeout(()=>{
+    justRevealed=-1;
+    renderGrid(); // box back to normal 🎁, still counted, cannot tap again
+  }, 3500);
 }
 claimBtn.onclick=async()=>{
   if(isClaiming) return; isClaiming=true;
@@ -200,7 +223,7 @@ claimBtn.onclick=async()=>{
       const win=Math.min(MAX_COINS, wonCoins);
       t.update(userRef,{balance:oldBal+win, coins:oldBal+win, giftsDay:localDayKey(), giftsOpened:openedIds, giftsWon:win, giftsCount:openedIds.length, gifts_nextAvail:Date.now()+DAY_MS, lastGiftsDate:firebase.firestore.FieldValue.serverTimestamp()});
     });
-    showBubble(`+${wonCoins} coins claimed!`);
+    showBubble(`🪙 +${wonCoins}`);
     setGiftsNextAvail(Date.now()+DAY_MS);
     localStorage.removeItem('gifts_session');
     setTimeout(()=>{ location.href='home.html'; },1500);
