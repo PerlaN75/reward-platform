@@ -11,31 +11,20 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
 body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:10px 14px;color:#111827}
-/* TOP BAR - same as app */
 .top-bar{background:#6d28d9;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;width:100%;max-width:500px;border-radius:0 0 16px 16px}
-/* BACK BUTTON - three black lines in small rectangle */
 .back-btn{width:45px;height:30px;border-radius:10px;background:#fff;border:2px solid #fecaca;display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0}
 .back-btn .lines{display:flex;flex-direction:column;gap:3px}
 .back-btn .lines i{display:block;width:18px;height:2.5px;background:#000;border-radius:2px}
 .center-pill{background:#fff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap}
-.main-card{width:100%;max-width:500px;background:#fff;border:2px solid #ede9fe;border-radius:20px;padding:14px 14px 18px;margin-top:14px}
+.main-card{width:100%;max-width:500px;background:#fff;border:2px solid #ede9fe;border-radius:20px;padding:10px 12px 12px;margin-top:14px}
 .balance-box{background:linear-gradient(180deg,#1a2e0a,#12230a);border:2px solid #fbbf24;border-radius:16px;padding:10px 12px;color:#fff}
 .balance-value{color:#fbbf24;font-size:20px;font-weight:900}
 .progress-bar{height:7px;background:#ede9fe;border-radius:10px;margin-top:10px;overflow:hidden}
 .progress-fill{height:100%;background:#8b5cf6;width:0%;transition:.3s}
-/* GRID - small, centered, NOT filling whole page - space above/below for ads */
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px auto 6px;max-width:340px;width:100%}
-/* BOXES - colors kept as they are - light pink */
-.gift{aspect-ratio:1/0.85;border-radius:16px;border:2px solid #fbcfe8;background:linear-gradient(180deg,#fdf2f8,#fce7f3);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:.2s;box-shadow:0 4px 0 #f9a8d4;padding:6px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px auto 4px;max-width:300px;width:100%}
+.gift{aspect-ratio:1/0.75;border-radius:14px;border:2px solid #fbcfe8;background:linear-gradient(180deg,#fdf2f8,#fce7f3);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:.2s;box-shadow:0 3px 0 #f9a8d4;padding:4px}
 .gift:active{transform:scale(.96);box-shadow:0 1px 0 #f9a8d4}
-.gift.opened{cursor:default;box-shadow:none}
-.gift.opened.win{background:linear-gradient(180deg,#fef9c3,#fde047);border-color:#eab308}
-.gift.opened.miss{background:#f3f4f6;border-color:#e5e7eb}
-.gift-emoji{font-size:32px;line-height:1}
-.gift.opened .gift-emoji{font-size:32px;animation:pop .35s}
-@keyframes pop{0%{transform:scale(.4)}70%{transform:scale(1.25)}100%{transform:scale(1)}}
-.moving-q{animation:shake .6s infinite}
-@keyframes shake{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(-4px) rotate(-10deg)}75%{transform:translateX(4px) rotate(10deg)}}
+.gift-emoji{font-size:26px;line-height:1}
 .btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:0;border-radius:12px;padding:12px;font-weight:900;font-size:14px;cursor:pointer;margin-top:10px}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .bubble{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#000;padding:10px 18px;border-radius:999px;font-weight:900;z-index:10000;display:none}
@@ -57,15 +46,11 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
 </head>
 <body>
 <div id="bubble" class="bubble"></div>
-
-<!-- TOP BAR + BACK BUTTON: three black lines in small white rectangle -->
 <div class="top-bar">
   <a href="home.html" class="back-btn"><span class="lines"><i></i><i></i><i></i></span></a>
   <div class="center-pill">🎁 Gifts & Earn</div>
   <div style="width:45px"></div>
 </div>
-
-<!-- TOP AD - space above boxes -->
 <div class="top-ad-wrap">
   <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:.5px">Advertisement</div>
   <a id="giftsAdLink" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
@@ -73,12 +58,9 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
     <div id="giftsAdBtn" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
   </a>
 </div>
-
 <div id="checking"><div><div style="font-size:42px">⏳</div><h2 style="color:#4c1d95;margin:10px 0">Checking...</h2><div style="font-weight:800;color:#6b7280">Please wait</div></div></div>
 <div id="fullLock"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Gifts Locked</h2><div id="fullLockMsg" style="font-weight:800;color:#6b7280">Gifts Live in --</div><div style="font-size:12px;color:#9ca3af;margin-top:8px">You used your 5 picks today.<br>Come back tomorrow • Watch / Quiz still open</div><button onclick="location.href='home.html'" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
-
 <main class="main-card">
-  <!-- BALANCE CARD - ONLY Balance + Picks. NO Won today, NO Max, NO progress text -->
   <section class="balance-box">
     <div style="display:flex;justify-content:space-between;align-items:center">
       <div><div style="color:#d1d5db;font-size:11px">Your Balance</div><div class="balance-value" id="bal">-- 🪙</div></div>
@@ -87,15 +69,11 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
     <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
     <div id="status" style="display:none"></div>
   </section>
-
   <div style="text-align:center;margin-top:12px">
     <div style="font-size:15px;font-weight:900;color:#4c1d95">Tap to open.</div>
     <div style="font-size:12px;font-weight:800;color:#6b7280;margin-top:2px"><i>You have only 5 picks / day</i></div>
   </div>
-
-  <!-- BOXES - emoji only, NO #numbers, NO Tap to Open, NO labels -->
   <div class="grid" id="giftGrid"></div>
-
   <div id="finalBox" style="display:none;text-align:center;padding:14px;border:2px dashed #fbbf24;background:#fffbeb;border-radius:16px;margin-top:12px">
     <div style="font-size:32px">🎉</div><h3 style="color:#4c1d95;margin:8px 0;font-weight:900">All 5 Picks Used!</h3>
     <div id="finalMsg" style="font-size:13px;color:#6b7280;font-weight:700">You used your 5 picks</div>
@@ -103,19 +81,14 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
     <div style="font-size:10px;color:#9ca3af;margin-top:6px">Claim locks Gifts for 24h</div>
   </div>
 </main>
-
-<!-- BOTTOM AD - space below boxes, NO +1 Pick -->
-<div style="max-width:500px;margin:0 auto;padding:14px 14px 30px;width:100%">
+<div style="max-width:500px;margin:0 auto;padding:8px 14px 30px;width:100%">
   <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:.5px">Advertisement</div>
   <a id="giftsAdLinkBottom" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
     <div style="flex:1"><div id="giftsAdTitleBottom" style="font-weight:900;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div id="giftsAdSubBottom" style="font-size:11px;color:#333">Limited offer • Sponsored</div></div>
     <div id="giftsAdBtnBottom" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
   </a>
 </div>
-
-<!-- AD GATE -->
 <div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button><div class="gate-icon">🎁</div><div class="gate-title" id="gateTitle">Open Gift</div><div id="gateSub" class="gate-sub">Open to reveal what's inside this box</div><button id="watchAdBtn" class="gate-btn watch">Open</button><div id="gateTimer2"></div><button id="openBtn" class="gate-btn open">✅ Open Gift</button><div style="font-size:9px;color:#9ca3af;margin-top:10px;font-weight:700">Advertisement</div></div></div>
-
 <script>
 (()=>{ "use strict";
 let vignetteLoaded=false;
@@ -138,8 +111,6 @@ function openGiftAdGate(boxId){
 }
 document.getElementById('watchAdBtn').onclick=function(){ this.innerText='⏳ Please wait...'; this.disabled=true; let sec=10; const te=document.getElementById('gateTimer2'); te.innerText='⏳ Wait '+sec+'s...'; const iv=setInterval(()=>{sec--; if(sec>0){te.innerText='⏳ Wait '+sec+'s...';}else{clearInterval(iv);document.getElementById('watchAdBtn').style.display='none';te.innerText='✅ Ready!';document.getElementById('openBtn').style.display='block';}},1000); };
 document.getElementById('openBtn').onclick=function(){ document.getElementById('adGate').style.display='none'; loadCleanVignette(); const id=pendingPick; pendingPick=null; if(id!==null && id!==undefined) doReveal(id); };
-// ===== GIFTS LOGIC - 15 boxes, 5 picks, max 3 coins =====
-// 12 MISSES - emoji only on screen, labels kept internally for bubble only
 const MISSES=[
   {emoji:"🐄", label:"Cow"},
   {emoji:"🏠", label:"House"},
@@ -154,7 +125,6 @@ const MISSES=[
   {emoji:"📦", label:"Empty"},
   {emoji:"💨", label:"Air"},
 ];
-// 3 WINS - total = 3 coins max, never more
 const WINS=[
   {emoji:"🪙", label:"Coin", coins:1},
   {emoji:"🪙", label:"Coin", coins:1},
@@ -195,9 +165,8 @@ function renderGrid(){
   BOXES.forEach((box, idx)=>{
     const isOpen=openedIds.includes(idx);
     const d=document.createElement('div');
-    d.className='gift'+(isOpen?(box.type==='win'?' opened win':' opened miss'):'');
-    // CLOSED: only 🎁 | OPENED: only emoji (🐄 / 🪙 / 🏠 / ❓ / 0 ...) - NO #number, NO label, NO Tap to Open
-    d.innerHTML=`<span class="gift-emoji ${isOpen && box.moving?'moving-q':''}">${isOpen?box.emoji:'🎁'}</span>`;
+    d.className='gift';
+    d.innerHTML=`<span class="gift-emoji">🎁</span>`;
     if(!isOpen){
       d.onclick=()=>{ if(openedIds.length>=MAX_PICKS){ showBubble("No picks left"); return; } openGiftAdGate(idx); };
     }
