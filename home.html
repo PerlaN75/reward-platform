@@ -43,7 +43,6 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100dvh;mi
   <div class="drawer-menu">
     <button class="drawer-item" id="btnWatch" onclick="goWatch()" type="button" style="color:#0d7dd8"><span class="emo">📺</span> Watch & Earn</button>
     <button class="drawer-item" id="btnQuiz" onclick="goQuiz()" type="button" style="color:#7c3aed"><span class="emo">🧠</span> Quiz</button>
-    <button class="drawer-item" id="btnArticles" onclick="goArticles()" type="button" style="color:#111827"><span class="emo">📖</span> Articles Earn</button>
     <button class="drawer-item" onclick="location.href='./wallet.html'" type="button" style="color:#16a34a"><span class="emo">💰</span> Wallet</button>
     <button class="drawer-item" id="btnBonus" onclick="goBonus()" type="button" style="color:#111827"><span class="emo">🎁</span> Bonus</button>
     <button class="drawer-item" onclick="location.href='./survey.html'" type="button" style="color:#0d9488"><span class="emo">📋</span> Survey</button>
@@ -96,9 +95,9 @@ function nextAd(){ adIndex=(adIndex+1)%ADS.length; showAd(adIndex); saveAd(); }
 <script>
 function openDrawer(){document.getElementById('sideDrawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('show');}
 function closeDrawer(){document.getElementById('sideDrawer').classList.remove('open');document.getElementById('drawerOverlay').classList.remove('show');}
-// ===== INDEPENDENT - NO 3s FAKE - ONLY REAL FIRESTORE CAN SAY OPEN =====
+// ===== WATCH / QUIZ / BONUS - INSTANT FROM localStorage - NO FIRESTORE WAIT, NO ⏳, NO 3s =====
+// ARTICLES DELETED - no button, no goArticles, no articles_nextAvail sync
 const BONUS_COOLDOWN=60*60*1000;
-let firestoreReady=false;
 function getNextAvail(key){ return Number(localStorage.getItem(key+'_v1')||0); }
 function setNextAvail(key, ts){ localStorage.setItem(key+'_v1', String(ts)); }
 function fmtShort(ms){
@@ -110,16 +109,11 @@ function fmtShort(ms){
 }
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3200);}
 window.alert=showToast;
-const btnWatch=document.getElementById('btnWatch'), btnQuiz=document.getElementById('btnQuiz'), btnArticles=document.getElementById('btnArticles'), btnBonus=document.getElementById('btnBonus');
+const btnWatch=document.getElementById('btnWatch'), btnQuiz=document.getElementById('btnQuiz'), btnBonus=document.getElementById('btnBonus');
 function setBtnState(btn, state, remainingMs, label){
   if(!btn) return;
   let old=btn.querySelector('.badge'); if(old) old.remove();
   const b=document.createElement('span');
-  if(!firestoreReady){
-    b.className='badge soon'; b.textContent='⏳';
-    b.onclick=function(e){ e.preventDefault(); e.stopPropagation(); showToast('Checking... please wait'); return false; };
-    btn.appendChild(b); return;
-  }
   b.className = (state==='locked') ? 'badge padlock' : 'badge green';
   b.textContent = (state==='locked') ? '🔒' : 'Open';
   if(state==='locked'){
@@ -144,34 +138,21 @@ function getBonusRemaining(){
 }
 function evaluateIndependent(){
   const now=Date.now();
-  const w=getNextAvail('watch_nextAvail'), q=getNextAvail('quiz_nextAvail'), a=getNextAvail('articles_nextAvail');
+  const w=getNextAvail('watch_nextAvail'), q=getNextAvail('quiz_nextAvail');
   setBtnState(btnWatch, (w && now<w)?'locked':'open', w-now, 'Watch');
   setBtnState(btnQuiz, (q && now<q)?'locked':'open', q-now, 'Quiz');
-  setBtnState(btnArticles, (a && now<a)?'locked':'open', a-now, 'Articles');
   const rem=getBonusRemaining();
   setBtnState(btnBonus, rem>0?'locked':'open', rem, 'Bonus');
 }
-function guardFirestore(){
-  if(!firestoreReady){ showToast('Checking... please wait'); return true; }
-  return false;
-}
 window.goWatch=()=>{
-  if(guardFirestore()) return;
   const now=Date.now(), w=getNextAvail('watch_nextAvail');
   if(w && now<w){ showToast(`Watch Live in ${fmtShort(w-now)}`); return; }
   location.href='./watch.html';
 };
 window.goQuiz=()=>{
-  if(guardFirestore()) return;
   const now=Date.now(), q=getNextAvail('quiz_nextAvail');
   if(q && now<q){ showToast(`Quiz Live in ${fmtShort(q-now)}`); return; }
   location.href='./quiz_earn.html';
-};
-window.goArticles=()=>{
-  if(guardFirestore()) return;
-  const now=Date.now(), a=getNextAvail('articles_nextAvail');
-  if(a && now<a){ showToast(`Articles Live in ${fmtShort(a-now)}`); return; }
-  location.href='./articles_earn.html';
 };
 window.goBonus=()=>{
   const rem=getBonusRemaining();
@@ -208,14 +189,12 @@ function loadData(d){
     if(d.email) document.getElementById('drawerEmail').innerText = d.email;
     if(d.uid||d.id) document.getElementById('drawerId').innerText = 'ID: '+String(d.uid||d.id).slice(0,12);
     updateAvatarFromData(d, null);
-    ['watch_nextAvail','quiz_nextAvail','articles_nextAvail'].forEach(k=>{
+    // ONLY Watch + Quiz - Articles removed, not synced
+    ['watch_nextAvail','quiz_nextAvail'].forEach(k=>{
       let v = d[k] || (d.chain && d.chain[k]) || 0;
       v = Number(v)||0;
       if(v>0){ const cur=getNextAvail(k); if(v>cur) setNextAvail(k, v); }
-      if(v===0){ /* keep local - Firestore has no lock */ }
     });
-    // ONLY HERE - real Firestore snapshot - can say Open / 🔒
-    firestoreReady=true;
     evaluateIndependent();
   }catch(e){}
 }
@@ -230,13 +209,7 @@ auth.onAuthStateChanged(u=>{
       if(u.displayName){ const curTop = document.getElementById('topUsername').textContent; if(!curTop){ document.getElementById('drawerUsername').innerText = u.displayName; document.getElementById('topUsername').innerText = u.displayName; } }
       updateAvatarFromData({}, u);
     }catch(e){}
-    // SAME AS WATCH / QUIZ - no timeout, no 3s fake. Only real snapshot.
-    db.collection('users').doc(u.uid).onSnapshot(doc=>{
-      if(doc.exists) loadData(doc.data());
-      else { firestoreReady=true; evaluateIndependent(); }
-    }, (err)=>{
-      showToast('Offline - checking...');
-    });
+    db.collection('users').doc(u.uid).onSnapshot(doc=>{ if(doc.exists) loadData(doc.data()); });
   }else{ location.href='./index.html'; }
 });
 </script></body></html>
