@@ -11,7 +11,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100dvh;mi
 .monitor{position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);width:88%;max-width:340px;background:none;border:none;box-shadow:none;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:5}
 .screen{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:100%;text-align:center}
 .badge{font-size:10px;font-weight:900;padding:3px 7px;border-radius:10px;color:#fff;margin-left:auto;white-space:nowrap}
-.badge.padlock{background:#111827;padding:4px 8px;font-size:11px}
+.badge.padlock{background:#111827;padding:4px 8px;font-size:11px;cursor:pointer}
 .badge.green{background:#16a34a}.badge.live{background:#16a34a}.badge.soon{background:#f59e0b;color:#000}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#2f3e1a;border:2px solid #fbbf24;color:#fff;padding:10px 14px;border-radius:10px;font-weight:bold;z-index:99999;display:none;max-width:90%;text-align:center}
 #maint{display:none;position:fixed;inset:0;background:#0f1508;z-index:999999;align-items:center;justify-content:center;padding:20px;text-align:center}
@@ -96,25 +96,42 @@ function nextAd(){ adIndex=(adIndex+1)%ADS.length; showAd(adIndex); saveAd(); }
 <script>
 function openDrawer(){document.getElementById('sideDrawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('show');}
 function closeDrawer(){document.getElementById('sideDrawer').classList.remove('open');document.getElementById('drawerOverlay').classList.remove('show');}
-// ===== INDEPENDENT - NO CHAIN - EACH PAGE HAS OWN nextAvail =====
+// ===== INDEPENDENT - WAIT FOR FIRESTORE BEFORE SAYING OPEN =====
 const BONUS_COOLDOWN=60*60*1000;
+let firestoreReady=false;
 function getNextAvail(key){ return Number(localStorage.getItem(key+'_v1')||0); }
 function setNextAvail(key, ts){ localStorage.setItem(key+'_v1', String(ts)); }
 function fmtShort(ms){
   if(ms<=0) return "Ready";
   const h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000), s=Math.floor((ms%60000)/1000);
-  if(h>0) return h+"h "+m+"m";
-  if(m>0) return m+"m "+s+"s";
+  if(h>0) return h+"h"+String(m).padStart(2,"0");
+  if(m>0) return m+"m"+String(s).padStart(2,"0");
   return s+"s";
 }
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3200);}
 window.alert=showToast;
 const btnWatch=document.getElementById('btnWatch'), btnQuiz=document.getElementById('btnQuiz'), btnArticles=document.getElementById('btnArticles'), btnBonus=document.getElementById('btnBonus');
-function setBtnState(btn, state, remainingMs){
-  if(!btn) return; let old=btn.querySelector('.badge'); if(old) old.remove();
+function setBtnState(btn, state, remainingMs, label){
+  if(!btn) return;
+  let old=btn.querySelector('.badge'); if(old) old.remove();
   const b=document.createElement('span');
-  if(state==='locked'){ b.className='badge padlock'; b.textContent='🔒 '+fmtShort(remainingMs); }
-  else { b.className='badge green'; b.textContent='Open'; }
+  if(!firestoreReady){
+    b.className='badge soon'; b.textContent='⏳';
+    b.onclick=function(e){ e.preventDefault(); e.stopPropagation(); showToast('Checking... please wait 2 sec'); return false; };
+    btn.appendChild(b); return;
+  }
+  b.className = (state==='locked') ? 'badge padlock' : 'badge green';
+  b.textContent = (state==='locked') ? '🔒' : 'Open';
+  if(state==='locked'){
+    b.style.cursor='pointer';
+    b.dataset.remaining = remainingMs;
+    b.dataset.label = label || 'Watch';
+    b.onclick = function(e){
+      e.preventDefault(); e.stopPropagation();
+      showToast(`${this.dataset.label} Live in ${fmtShort(Number(this.dataset.remaining||0))}`);
+      return false;
+    };
+  }
   btn.appendChild(b);
 }
 function getBonusRemaining(){
@@ -128,30 +145,37 @@ function getBonusRemaining(){
 function evaluateIndependent(){
   const now=Date.now();
   const w=getNextAvail('watch_nextAvail'), q=getNextAvail('quiz_nextAvail'), a=getNextAvail('articles_nextAvail');
-  setBtnState(btnWatch, (w && now<w)?'locked':'open', w-now);
-  setBtnState(btnQuiz, (q && now<q)?'locked':'open', q-now);
-  setBtnState(btnArticles, (a && now<a)?'locked':'open', a-now);
+  setBtnState(btnWatch, (w && now<w)?'locked':'open', w-now, 'Watch');
+  setBtnState(btnQuiz, (q && now<q)?'locked':'open', q-now, 'Quiz');
+  setBtnState(btnArticles, (a && now<a)?'locked':'open', a-now, 'Articles');
   const rem=getBonusRemaining();
-  setBtnState(btnBonus, rem>0?'locked':'open', rem);
+  setBtnState(btnBonus, rem>0?'locked':'open', rem, 'Bonus');
+}
+function guardFirestore(){
+  if(!firestoreReady){ showToast('Checking... please wait 2 sec'); return true; }
+  return false;
 }
 window.goWatch=()=>{
+  if(guardFirestore()) return;
   const now=Date.now(), w=getNextAvail('watch_nextAvail');
-  if(w && now<w){ showToast(`🔒 Watch locked - Opens in ${fmtShort(w-now)}`); return; }
+  if(w && now<w){ showToast(`Watch Live in ${fmtShort(w-now)}`); return; }
   location.href='./watch.html';
 };
 window.goQuiz=()=>{
+  if(guardFirestore()) return;
   const now=Date.now(), q=getNextAvail('quiz_nextAvail');
-  if(q && now<q){ showToast(`🔒 Quiz locked - Opens in ${fmtShort(q-now)}`); return; }
+  if(q && now<q){ showToast(`Quiz Live in ${fmtShort(q-now)}`); return; }
   location.href='./quiz_earn.html';
 };
 window.goArticles=()=>{
+  if(guardFirestore()) return;
   const now=Date.now(), a=getNextAvail('articles_nextAvail');
-  if(a && now<a){ showToast(`🔒 Articles locked - Opens in ${fmtShort(a-now)}`); return; }
+  if(a && now<a){ showToast(`Articles Live in ${fmtShort(a-now)}`); return; }
   location.href='./articles_earn.html';
 };
 window.goBonus=()=>{
   const rem=getBonusRemaining();
-  if(rem>0){showToast(`⏳ Bonus locked - Ready in ${fmtShort(rem)}`); return;}
+  if(rem>0){ showToast(`Bonus Live in ${fmtShort(rem)}`); return; }
   location.href='./bonus.html';
 };
 setInterval(evaluateIndependent,1000); evaluateIndependent();
@@ -184,15 +208,12 @@ function loadData(d){
     if(d.email) document.getElementById('drawerEmail').innerText = d.email;
     if(d.uid||d.id) document.getElementById('drawerId').innerText = 'ID: '+String(d.uid||d.id).slice(0,12);
     updateAvatarFromData(d, null);
-    // Sync independent nextAvail - take MAX, support both top-level and old chain field
     ['watch_nextAvail','quiz_nextAvail','articles_nextAvail'].forEach(k=>{
       let v = d[k] || (d.chain && d.chain[k]) || 0;
       v = Number(v)||0;
-      if(v>0){
-        const cur=getNextAvail(k);
-        if(v>cur) setNextAvail(k, v);
-      }
+      if(v>0){ const cur=getNextAvail(k); if(v>cur) setNextAvail(k, v); }
     });
+    firestoreReady=true;
     evaluateIndependent();
   }catch(e){}
 }
@@ -208,6 +229,7 @@ auth.onAuthStateChanged(u=>{
       updateAvatarFromData({}, u);
     }catch(e){}
     db.collection('users').doc(u.uid).onSnapshot(doc=>{ if(doc.exists) loadData(doc.data()); });
+    setTimeout(()=>{ if(!firestoreReady){ firestoreReady=true; evaluateIndependent(); } }, 3000);
   }else{ location.href='./index.html'; }
 });
 </script></body></html>
