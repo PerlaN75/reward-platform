@@ -43,6 +43,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100dvh;mi
   <div class="drawer-menu">
     <button class="drawer-item" id="btnWatch" onclick="goWatch()" type="button" style="color:#0d7dd8"><span class="emo">📺</span> Watch & Earn</button>
     <button class="drawer-item" id="btnQuiz" onclick="goQuiz()" type="button" style="color:#7c3aed"><span class="emo">🧠</span> Quiz</button>
+    <button class="drawer-item" id="btnGifts" onclick="goGifts()" type="button" style="color:#be185d"><span class="emo">🎁</span> Gifts</button>
     <button class="drawer-item" onclick="location.href='./wallet.html'" type="button" style="color:#16a34a"><span class="emo">💰</span> Wallet</button>
     <button class="drawer-item" id="btnBonus" onclick="goBonus()" type="button" style="color:#111827"><span class="emo">🎁</span> Bonus</button>
     <button class="drawer-item" onclick="location.href='./survey.html'" type="button" style="color:#0d9488"><span class="emo">📋</span> Survey</button>
@@ -95,7 +96,7 @@ function nextAd(){ adIndex=(adIndex+1)%ADS.length; showAd(adIndex); saveAd(); }
 <script>
 function openDrawer(){document.getElementById('sideDrawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('show');}
 function closeDrawer(){document.getElementById('sideDrawer').classList.remove('open');document.getElementById('drawerOverlay').classList.remove('show');}
-// ===== WATCH / QUIZ / BONUS - INSTANT FROM localStorage - NO FIRESTORE WAIT, NO ⏳, NO 3s =====
+// ===== WATCH / QUIZ / GIFTS / BONUS - INSTANT FROM localStorage - NO FIRESTORE WAIT, NO ⏳, NO 3s =====
 // ARTICLES DELETED - no button, no goArticles, no articles_nextAvail sync
 const BONUS_COOLDOWN=60*60*1000;
 function getNextAvail(key){ return Number(localStorage.getItem(key+'_v1')||0); }
@@ -109,7 +110,7 @@ function fmtShort(ms){
 }
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3200);}
 window.alert=showToast;
-const btnWatch=document.getElementById('btnWatch'), btnQuiz=document.getElementById('btnQuiz'), btnBonus=document.getElementById('btnBonus');
+const btnWatch=document.getElementById('btnWatch'), btnQuiz=document.getElementById('btnQuiz'), btnGifts=document.getElementById('btnGifts'), btnBonus=document.getElementById('btnBonus');
 function setBtnState(btn, state, remainingMs, label){
   if(!btn) return;
   let old=btn.querySelector('.badge'); if(old) old.remove();
@@ -138,9 +139,10 @@ function getBonusRemaining(){
 }
 function evaluateIndependent(){
   const now=Date.now();
-  const w=getNextAvail('watch_nextAvail'), q=getNextAvail('quiz_nextAvail');
+  const w=getNextAvail('watch_nextAvail'), q=getNextAvail('quiz_nextAvail'), g=getNextAvail('gifts_nextAvail');
   setBtnState(btnWatch, (w && now<w)?'locked':'open', w-now, 'Watch');
   setBtnState(btnQuiz, (q && now<q)?'locked':'open', q-now, 'Quiz');
+  setBtnState(btnGifts, (g && now<g)?'locked':'open', g-now, 'Gifts');
   const rem=getBonusRemaining();
   setBtnState(btnBonus, rem>0?'locked':'open', rem, 'Bonus');
 }
@@ -153,6 +155,11 @@ window.goQuiz=()=>{
   const now=Date.now(), q=getNextAvail('quiz_nextAvail');
   if(q && now<q){ showToast(`Quiz Live in ${fmtShort(q-now)}`); return; }
   location.href='./quiz_earn.html';
+};
+window.goGifts=()=>{
+  const now=Date.now(), g=getNextAvail('gifts_nextAvail');
+  if(g && now<g){ showToast(`Gifts Live in ${fmtShort(g-now)}`); return; }
+  location.href='./gifts.html';
 };
 window.goBonus=()=>{
   const rem=getBonusRemaining();
@@ -189,8 +196,8 @@ function loadData(d){
     if(d.email) document.getElementById('drawerEmail').innerText = d.email;
     if(d.uid||d.id) document.getElementById('drawerId').innerText = 'ID: '+String(d.uid||d.id).slice(0,12);
     updateAvatarFromData(d, null);
-    // ONLY Watch + Quiz - Articles removed, not synced
-    ['watch_nextAvail','quiz_nextAvail'].forEach(k=>{
+    // Watch + Quiz + Gifts - Articles removed, not synced
+    ['watch_nextAvail','quiz_nextAvail','gifts_nextAvail'].forEach(k=>{
       let v = d[k] || (d.chain && d.chain[k]) || 0;
       v = Number(v)||0;
       if(v>0){ const cur=getNextAvail(k); if(v>cur) setNextAvail(k, v); }
