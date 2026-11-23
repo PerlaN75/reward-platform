@@ -96,7 +96,7 @@ function nextAd(){ adIndex=(adIndex+1)%ADS.length; showAd(adIndex); saveAd(); }
 <script>
 function openDrawer(){document.getElementById('sideDrawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('show');}
 function closeDrawer(){document.getElementById('sideDrawer').classList.remove('open');document.getElementById('drawerOverlay').classList.remove('show');}
-// ===== INDEPENDENT - WAIT FOR FIRESTORE BEFORE SAYING OPEN =====
+// ===== INDEPENDENT - NO 3s FAKE - ONLY REAL FIRESTORE CAN SAY OPEN =====
 const BONUS_COOLDOWN=60*60*1000;
 let firestoreReady=false;
 function getNextAvail(key){ return Number(localStorage.getItem(key+'_v1')||0); }
@@ -117,7 +117,7 @@ function setBtnState(btn, state, remainingMs, label){
   const b=document.createElement('span');
   if(!firestoreReady){
     b.className='badge soon'; b.textContent='⏳';
-    b.onclick=function(e){ e.preventDefault(); e.stopPropagation(); showToast('Checking... please wait 2 sec'); return false; };
+    b.onclick=function(e){ e.preventDefault(); e.stopPropagation(); showToast('Checking... please wait'); return false; };
     btn.appendChild(b); return;
   }
   b.className = (state==='locked') ? 'badge padlock' : 'badge green';
@@ -152,7 +152,7 @@ function evaluateIndependent(){
   setBtnState(btnBonus, rem>0?'locked':'open', rem, 'Bonus');
 }
 function guardFirestore(){
-  if(!firestoreReady){ showToast('Checking... please wait 2 sec'); return true; }
+  if(!firestoreReady){ showToast('Checking... please wait'); return true; }
   return false;
 }
 window.goWatch=()=>{
@@ -212,7 +212,9 @@ function loadData(d){
       let v = d[k] || (d.chain && d.chain[k]) || 0;
       v = Number(v)||0;
       if(v>0){ const cur=getNextAvail(k); if(v>cur) setNextAvail(k, v); }
+      if(v===0){ /* keep local - Firestore has no lock */ }
     });
+    // ONLY HERE - real Firestore snapshot - can say Open / 🔒
     firestoreReady=true;
     evaluateIndependent();
   }catch(e){}
@@ -228,8 +230,13 @@ auth.onAuthStateChanged(u=>{
       if(u.displayName){ const curTop = document.getElementById('topUsername').textContent; if(!curTop){ document.getElementById('drawerUsername').innerText = u.displayName; document.getElementById('topUsername').innerText = u.displayName; } }
       updateAvatarFromData({}, u);
     }catch(e){}
-    db.collection('users').doc(u.uid).onSnapshot(doc=>{ if(doc.exists) loadData(doc.data()); });
-    setTimeout(()=>{ if(!firestoreReady){ firestoreReady=true; evaluateIndependent(); } }, 3000);
+    // SAME AS WATCH / QUIZ - no timeout, no 3s fake. Only real snapshot.
+    db.collection('users').doc(u.uid).onSnapshot(doc=>{
+      if(doc.exists) loadData(doc.data());
+      else { firestoreReady=true; evaluateIndependent(); }
+    }, (err)=>{
+      showToast('Offline - checking...');
+    });
   }else{ location.href='./index.html'; }
 });
 </script></body></html>
