@@ -30,6 +30,7 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
 .timer{font-size:12px;color:#8b5cf6;font-weight:900;margin-top:6px}
 .bubble{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#000;padding:10px 18px;border-radius:999px;font-weight:900;z-index:10000;display:none}
 #fullLock{position:fixed;inset:0;background:#f5f3ff;z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;text-align:center}
+#checking{position:fixed;inset:0;background:#f5f3ff;z-index:9998;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}
 #adGate{position:fixed;inset:0;background:rgba(17,12,34,0.65);backdrop-filter:blur(8px);z-index:10001;display:none;align-items:center;justify-content:center;padding:20px}
 .gate-box{background:linear-gradient(180deg,#ffffff,#fbf7ff);border:2px solid #fbbf24;border-radius:24px;padding:22px 20px 18px;text-align:center;max-width:360px;width:100%;box-shadow:0 20px 50px rgba(109,40,217,0.35);position:relative}
 .gate-icon{width:64px;height:64px;margin:0 auto 10px;background:linear-gradient(180deg,#fef3c7,#fbbf24);border:3px solid #f59e0b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px}
@@ -54,7 +55,8 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
     <div id="articlesAdBtn" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
   </a>
 </div>
-<div id="fullLock"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Articles Locked</h2><div id="fullLockMsg" style="font-weight:800;color:#6b7280">Opens in --</div><div style="font-size:12px;color:#9ca3af;margin-top:8px">Articles locks 24h from finish time.<br>You can do Watch / Quiz now.</div><button onclick="location.href='home.html'" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
+<div id="checking"><div><div style="font-size:42px">⏳</div><h2 style="color:#4c1d95;margin:10px 0">Checking...</h2><div style="font-weight:800;color:#6b7280">Please wait 2 sec</div></div></div>
+<div id="fullLock"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Articles Locked</h2><div id="fullLockMsg" style="font-weight:800;color:#6b7280">Articles Live in --</div><div style="font-size:12px;color:#9ca3af;margin-top:8px">Articles locks 24h from finish time.<br>You can do Watch / Quiz now.</div><button onclick="location.href='home.html'" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
 <main class="main-card">
 <section class="balance-box">
 <div style="color:#d1d5db;font-size:11px">Your Balance</div>
@@ -84,8 +86,7 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
 "use strict";
 let vignetteLoaded=false;
 function loadCleanVignette(){
-  if(vignetteLoaded) return;
-  vignetteLoaded=true;
+  if(vignetteLoaded) return; vignetteLoaded=true;
   const old=document.querySelector('script[src*="vignette.min.js"]'); if(old) old.remove();
   (function(s){s.dataset.zone='12273869',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
   setTimeout(()=>{vignetteLoaded=false;}, 60*1000);
@@ -142,7 +143,6 @@ document.getElementById('openBtn').onclick=function(){
   loadCleanVignette();
   const fn=pendingNext; pendingNext=null; if(fn) fn();
 };
-// ===== 35 ARTICLES POOL - 5 RANDOM PER DAY - INDEPENDENT =====
 const ARTICLES_POOL = [
 {id:"a1",title:"How to Save Money Daily",text:"Saving money starts with small habits. Track your expenses, set a daily limit, and avoid impulse buying. Even 500 RWF a day becomes 15,000 RWF a month. Consistency is the key to financial freedom. Start today with a small goal.",reward:1},
 {id:"a2",title:"Benefits of Reading",text:"Reading improves focus, vocabulary, and mental health. Just 10 minutes a day can reduce stress by 60%. Make reading part of your daily routine. Choose topics you love to stay motivated.",reward:1},
@@ -187,9 +187,7 @@ function seededShuffle(arr, seedStr){
   return a;
 }
 function getTodayArticles(uid){
-  const day=localDayKey();
-  const seed=day+"-"+(uid||"guest");
-  return seededShuffle(ARTICLES_POOL, seed).slice(0,5);
+  return seededShuffle(ARTICLES_POOL, localDayKey()+"-"+(uid||"guest")).slice(0,5);
 }
 let ARTICLES = getTodayArticles(null);
 const DAILY_LIMIT=5, READ_SECONDS=15, DAY_MS=24*60*60*1000;
@@ -197,18 +195,18 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore();
 const el=id=>document.getElementById(id);
-const balEl=el("bal"), todayEl=el("today"), readingIdxEl=el("readingIdx"), statusEl=el("status"), progFill=el("progFill"), articleContainer=el("articleContainer"), finalBox=el("finalBox"), finalMsg=el("finalMsg"), claimFinalBtn=el("claimFinalBtn"), contentBox=el("contentBox"), fullLock=el("fullLock"), fullLockMsg=el("fullLockMsg");
-let currentUser=null, balance=0, todayCount=0, currentIdx=0, readInSession=[], readSeconds=0, timer=null, isClaiming=false, unsubscribe=null;
+const balEl=el("bal"), todayEl=el("today"), readingIdxEl=el("readingIdx"), statusEl=el("status"), progFill=el("progFill"), articleContainer=el("articleContainer"), finalBox=el("finalBox"), finalMsg=el("finalMsg"), claimFinalBtn=el("claimFinalBtn"), contentBox=el("contentBox"), fullLock=el("fullLock"), fullLockMsg=el("fullLockMsg"), checkingEl=el("checking");
+let currentUser=null, balance=0, todayCount=0, currentIdx=0, readInSession=[], readSeconds=0, timer=null, isClaiming=false, unsubscribe=null, lockTimer=null, firestoreReady=false;
 function showBubble(m){const b=el("bubble");b.textContent=m;b.style.display="block";clearTimeout(showBubble.t);showBubble.t=setTimeout(()=>b.style.display="none",2200);}
 function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
 function getArticlesNextAvail(){ return Number(localStorage.getItem('articles_nextAvail_v1')||0); }
 function setArticlesNextAvail(ts){ localStorage.setItem('articles_nextAvail_v1', String(ts)); }
-function formatRemaining(ms){
-  if(ms<=0) return "0m";
+function fmtShort(ms){
+  if(ms<=0) return "Ready";
   const h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000), s=Math.floor((ms%60000)/1000);
-  if(h>0) return `${h}h ${m}m`;
-  if(m>0) return `${m}m ${s}s`;
-  return `${s}s`;
+  if(h>0) return h+"h"+String(m).padStart(2,"0");
+  if(m>0) return m+"m"+String(s).padStart(2,"0");
+  return s+"s";
 }
 function saveSession(){localStorage.setItem('articles_session', JSON.stringify({day:localDayKey(), idx:currentIdx, read:readInSession, ids:ARTICLES.map(a=>a.id)}));}
 function loadSession(){try{const s=JSON.parse(localStorage.getItem('articles_session')||'null'); if(s && s.day===localDayKey() && s.ids && s.ids.join(',')===ARTICLES.map(a=>a.id).join(',')){currentIdx=s.idx||0; readInSession=s.read||[]; return true;}}catch(e){} return false;}
@@ -218,15 +216,18 @@ function onArticlesFinishedIndependent(){
   const now=Date.now(), next=now+DAY_MS;
   setArticlesNextAvail(next);
   if(currentUser) db.collection("users").doc(currentUser.uid).set({articles_nextAvail:next, articles_lastFinish:now, updated:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
-  try{ const c=JSON.parse(localStorage.getItem('chain_v2')||'{}'); c.articles_nextAvail=next; localStorage.setItem('chain_v2', JSON.stringify(c)); }catch(e){}
 }
 function checkArticlesState(){
+  if(!firestoreReady) return true;
   const now=Date.now(), next=getArticlesNextAvail();
-  if(next && now < next){
+  if(next && now>=next){ setArticlesNextAvail(0); }
+  if(next && now<next){
     fullLock.style.display="flex";
-    fullLockMsg.textContent="🔒 Opens in "+formatRemaining(next-now)+" • Articles locks 24h from finish";
+    fullLockMsg.textContent="Articles Live in "+fmtShort(next-now);
     contentBox.style.display="none"; finalBox.style.display="none";
-    statusEl.textContent=`Locked • Opens in ${formatRemaining(next-now)}`;
+    statusEl.textContent=`Articles Live in ${fmtShort(next-now)}`;
+    if(lockTimer) clearInterval(lockTimer);
+    lockTimer=setInterval(()=>{ const d=getArticlesNextAvail()-Date.now(); if(d<=0){clearInterval(lockTimer); fullLock.style.display="none"; contentBox.style.display="block"; renderCurrentArticle();} else { fullLockMsg.textContent="Articles Live in "+fmtShort(d); statusEl.textContent=`Articles Live in ${fmtShort(d)}`; } },1000);
     return true;
   }
   fullLock.style.display="none"; contentBox.style.display="block";
@@ -234,6 +235,7 @@ function checkArticlesState(){
   return false;
 }
 function renderCurrentArticle(){
+  if(!firestoreReady) return;
   if(checkArticlesState()) return;
   if(currentIdx>=DAILY_LIMIT){showFinal(); return;}
   const art=ARTICLES[currentIdx];
@@ -260,20 +262,14 @@ function renderCurrentArticle(){
   saveSession();
 }
 function showFinal(){
-  articleContainer.innerHTML="";
-  contentBox.style.display="none";
-  finalBox.style.display="block";
-  progFill.style.width='100%';
-  readingIdxEl.innerText=`5/5`;
+  articleContainer.innerHTML=""; contentBox.style.display="none"; finalBox.style.display="block";
+  progFill.style.width='100%'; readingIdxEl.innerText=`5/5`;
   finalMsg.innerText=`You read ${DAILY_LIMIT}/${DAILY_LIMIT} • Reward ${DAILY_LIMIT} coins`;
   claimFinalBtn.innerText=`Claim ${DAILY_LIMIT} Coins 🪙`;
 }
 claimFinalBtn.onclick=function(){
-  if(isClaiming) return;
-  isClaiming=true;
-  openArticleAdGate(async ()=>{
-    await claimFinal();
-  }, true, DAILY_LIMIT);
+  if(isClaiming) return; isClaiming=true;
+  openArticleAdGate(async ()=>{ await claimFinal(); }, true, DAILY_LIMIT);
 };
 async function claimFinal(){
   if(!currentUser) return;
@@ -282,51 +278,43 @@ async function claimFinal(){
     await db.runTransaction(async t=>{
       const snap=await t.get(userRef); if(!snap.exists) throw new Error("No account");
       const data=snap.data()||{}, savedDay=data.articleDay||todayKey;
-      let count=Number(data.articleCount||0);
-      if(savedDay!==todayKey){count=0;}
+      let count=Number(data.articleCount||0); if(savedDay!==todayKey) count=0;
       if(count>=DAILY_LIMIT) throw new Error("Done");
       const oldBal=Number(data.balance??data.coins??0);
-      t.update(userRef,{balance:oldBal+DAILY_LIMIT,coins:oldBal+DAILY_LIMIT,articleCount:count+DAILY_LIMIT,articleIds:ARTICLES.map(a=>a.id),articleDay:todayKey,lastArticleDate:firebase.firestore.FieldValue.serverTimestamp()});
+      t.update(userRef,{balance:oldBal+DAILY_LIMIT,coins:oldBal+DAILY_LIMIT,articleCount:count+DAILY_LIMIT,articleIds:ARTICLES.map(a=>a.id),articleDay:todayKey,lastArticleDate:firebase.firestore.FieldValue.serverTimestamp(),articles_nextAvail:Date.now()+DAY_MS});
     });
     showBubble(`+${DAILY_LIMIT} coins claimed!`);
-    clearSession();
-    onArticlesFinishedIndependent();
+    clearSession(); onArticlesFinishedIndependent();
     setTimeout(()=>{location.href='home.html';},1500);
   }catch(e){showBubble(e.message==="Done"?"Already done":"Error"); isClaiming=false;}
 }
 async function refreshDailyIfNeeded(data){
-  const todayKey=localDayKey();
-  if(data.articleDay===todayKey) return;
+  const todayKey=localDayKey(); if(data.articleDay===todayKey) return;
   const userRef=db.collection("users").doc(currentUser.uid);
-  try{
-    await db.runTransaction(async t=>{
-      const snap=await t.get(userRef); if(!snap.exists) return;
-      const latest=snap.data()||{}; if(latest.articleDay===todayKey) return;
-      t.update(userRef,{articleCount:0,articleIds:[],articleDay:todayKey});
-    });
-  }catch(e){}
+  try{ await db.runTransaction(async t=>{ const snap=await t.get(userRef); if(!snap.exists) return; const latest=snap.data()||{}; if(latest.articleDay===todayKey) return; t.update(userRef,{articleCount:0,articleIds:[],articleDay:todayKey}); }); }catch(e){}
 }
 auth.onAuthStateChanged(user=>{
   if(!user){location.href="./index.html";return;}
-  currentUser=user;
-  ARTICLES = getTodayArticles(user.uid);
+  currentUser=user; ARTICLES=getTodayArticles(user.uid);
   if(unsubscribe) unsubscribe();
   unsubscribe=db.collection("users").doc(user.uid).onSnapshot(async snap=>{
-    if(!snap.exists){statusEl.textContent="No account";return;}
+    if(!snap.exists){checkingEl.style.display='none'; statusEl.textContent="No account"; firestoreReady=true; return;}
     const data=snap.data()||{};
     if(data.articleDay!==localDayKey()) await refreshDailyIfNeeded(data);
-    if(data.articles_nextAvail && Number(data.articles_nextAvail) > getArticlesNextAvail()) setArticlesNextAvail(Number(data.articles_nextAvail));
-    balance=Number(data.balance??data.coins??0);
-    todayCount=Number(data.articleCount||0);
-    balEl.textContent=`${balance} 🪙 coins`;
-    todayEl.textContent=`${Math.min(todayCount,DAILY_LIMIT)}/${DAILY_LIMIT}`;
+    const v = Number(data.articles_nextAvail||0) || Number((data.chain&&data.chain.articles_nextAvail)||0) || 0;
+    if(v>0 && v>getArticlesNextAvail()) setArticlesNextAvail(v);
+    if(v>0 && v<Date.now()) setArticlesNextAvail(0);
+    balance=Number(data.balance??data.coins??0); todayCount=Number(data.articleCount||0);
+    balEl.textContent=`${balance} 🪙 coins`; todayEl.textContent=`${Math.min(todayCount,DAILY_LIMIT)}/${DAILY_LIMIT}`;
+    firestoreReady=true;
+    checkingEl.style.display='none';
     if(!checkArticlesState()){
       if(!loadSession()){currentIdx=0; readInSession=[];}
-      if(todayCount>=DAILY_LIMIT){fullLock.style.display="flex"; fullLockMsg.textContent="All done today ✅ Come back tomorrow";}
-      else {renderCurrentArticle();}
+      renderCurrentArticle();
     }
   });
-  setInterval(checkArticlesState,1000);
+  setTimeout(()=>{ if(!firestoreReady){ firestoreReady=true; checkingEl.style.display='none'; if(!checkArticlesState()) renderCurrentArticle(); } }, 3000);
+  setInterval(()=>{ if(firestoreReady) checkArticlesState(); },1000);
 });
 })();
 </script>
