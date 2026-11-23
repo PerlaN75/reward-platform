@@ -207,6 +207,11 @@ function setBtnState(btn, state, txt){
   else if(state==='wait'){const b=document.createElement('span'); b.className='badge padlock'; b.textContent='🔒'; btn.appendChild(b);}
   else if(state==='done'){const b=document.createElement('span'); b.className='badge padlock'; b.textContent='🔒'; btn.appendChild(b);}
 }
+// FIX: nextAvail is KING - even after midnight, if nextAvail is in future, it's LOCKED
+function isLockedByNextAvail(c, key){
+  const v = c[key] ? Number(c[key]) : 0;
+  return v && Date.now() < v;
+}
 function getBonusRemaining(){
   try{
     const ud=JSON.parse(localStorage.getItem('userData')||'{}');let ms=0;
@@ -217,14 +222,18 @@ function getBonusRemaining(){
 }
 function evaluateChain(){
   const c=getChain(); const now=Date.now(); const today=localDayKey();
-  if(c.watch_finishedToday===today){ setBtnState(btnWatch,'locked',''); }
+  // WATCH - check nextAvail FIRST
+  if(isLockedByNextAvail(c,'watch_nextAvail') || c.watch_finishedToday===today){ setBtnState(btnWatch,'locked',''); }
   else if(c.watch_open && now < c.watch_expiry){ setBtnState(btnWatch,'live',''); }
   else { setBtnState(btnWatch,'open',''); }
-  if(c.quiz_finishedToday===today){ setBtnState(btnQuiz,'locked',''); }
+  // QUIZ - check nextAvail FIRST
+  if(isLockedByNextAvail(c,'quiz_nextAvail') || c.quiz_finishedToday===today){ setBtnState(btnQuiz,'locked',''); }
+  else if(c.watch_finishedToday===today || isLockedByNextAvail(c,'watch_nextAvail')===false && c.watch_finishedToday===today){ setBtnState(btnQuiz,'open',''); }
   else if(c.watch_finishedToday===today){ setBtnState(btnQuiz,'open',''); }
   else if(c.quiz_open && now < c.quiz_expiry){ setBtnState(btnQuiz,'live',''); }
   else { setBtnState(btnQuiz,'locked',''); }
-  if(c.articles_finishedToday===today){ setBtnState(btnArticles,'locked',''); }
+  // ARTICLES - check nextAvail FIRST
+  if(isLockedByNextAvail(c,'articles_nextAvail') || c.articles_finishedToday===today){ setBtnState(btnArticles,'locked',''); }
   else if(c.quiz_finishedToday===today){ setBtnState(btnArticles,'open',''); }
   else if(c.articles_open && now < c.articles_expiry){ setBtnState(btnArticles,'live',''); }
   else { setBtnState(btnArticles,'locked',''); }
@@ -234,22 +243,24 @@ function evaluateChain(){
 }
 window.goWatch=()=>{
   const c=getChain(); const now=Date.now(); const today=localDayKey();
+  // FIX: use real nextAvail, NOT midnight
+  if(isLockedByNextAvail(c,'watch_nextAvail')){showToast(`🔒 Watch locked - Opens in ${fmtShort(Number(c.watch_nextAvail)-now)}`); return;}
   if(c.watch_finishedToday===today){showToast(`🔒 Locked for ${fmtMidnight()}`); return;}
   if(!c.watch_open || now > c.watch_expiry){c.watch_open=now;c.watch_expiry=now+WINDOW;saveChain(c);}location.href='./watch.html';
 };
 window.goQuiz=()=>{
-  const c=getChain(); const today=localDayKey();
+  const c=getChain(); const today=localDayKey(); const now=Date.now();
+  if(isLockedByNextAvail(c,'quiz_nextAvail')){showToast(`🔒 Quiz locked - Opens in ${fmtShort(Number(c.quiz_nextAvail)-now)}`); return;}
   if(c.quiz_finishedToday===today){showToast(`🔒 Locked for ${fmtMidnight()}`); return;}
   if(c.watch_finishedToday!==today){showToast("Wait for Watch"); return;}
-  const now=Date.now();
   if(!c.quiz_open || now > c.quiz_expiry){c.quiz_open=now; c.quiz_expiry=now+WINDOW; saveChain(c);}
   location.href='./quiz_earn.html';
 };
 window.goArticles=()=>{
-  const c=getChain(); const today=localDayKey();
+  const c=getChain(); const today=localDayKey(); const now=Date.now();
+  if(isLockedByNextAvail(c,'articles_nextAvail')){showToast(`🔒 Articles locked - Opens in ${fmtShort(Number(c.articles_nextAvail)-now)}`); return;}
   if(c.articles_finishedToday===today){showToast(`🔒 Locked for ${fmtMidnight()}`); return;}
   if(c.quiz_finishedToday!==today){showToast("Wait for Quiz"); return;}
-  const now=Date.now();
   if(!c.articles_open || now > c.articles_expiry){c.articles_open=now; c.articles_expiry=now+WINDOW; saveChain(c);}
   location.href='./articles_earn.html';
 };
@@ -301,8 +312,14 @@ function loadData(d){
     if(d.chain){
       const local=getChain();let changed=false;
       for(let k in d.chain){
-        if(k.indexOf('_nextAvail')!==-1) continue;
-        if(d.chain[k]){if(!local[k]||d.chain[k]>local[k]){local[k]=d.chain[k];changed=true;}}
+        // FIX: DO NOT skip _nextAvail - it is the real lock. Take the LATEST value.
+        if(d.chain[k]){
+          const incoming = Number(d.chain[k]);
+          const existing = Number(local[k]||0);
+          // For timestamps, keep max. For day strings, keep if different.
+          if(!isNaN(incoming) && incoming>1000000000000){ if(incoming>existing){local[k]=d.chain[k];changed=true;} }
+          else { if(local[k]!==d.chain[k]){local[k]=d.chain[k];changed=true;} }
+        }
       }
       if(changed) saveChain(local);
       evaluateChain();
