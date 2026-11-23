@@ -47,8 +47,6 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
 <body>
 <div id="bubble" class="bubble"></div>
 <div class="top-bar"><a href="home.html" class="back-btn-checkin" onclick="return confirmQuit()"><span class="lines"><i></i><i></i><i></i></span></a><div class="center-pill">📰 Articles & Earn</div><div style="width:45px"></div></div>
-
-<!-- DIRECT LINK - TOP - USER CLICKS HIMSELF ONLY - 12320757 -->
 <div class="top-ad-wrap">
   <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:0.5px">Advertisement</div>
   <a id="articlesAdLink" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
@@ -56,9 +54,7 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
     <div id="articlesAdBtn" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
   </a>
 </div>
-
-<div id="fullLock"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Articles Locked</h2><div id="fullLockMsg" style="font-weight:800;color:#6b7280">Finish Quiz first</div><button onclick="location.href='home.html'" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
-
+<div id="fullLock"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Articles Locked</h2><div id="fullLockMsg" style="font-weight:800;color:#6b7280">Opens in --</div><div style="font-size:12px;color:#9ca3af;margin-top:8px">Articles locks 24h from finish time.<br>You can do Watch / Quiz now.</div><button onclick="location.href='home.html'" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
 <main class="main-card">
 <section class="balance-box">
 <div style="color:#d1d5db;font-size:11px">Your Balance</div>
@@ -67,21 +63,14 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
 <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
 <div class="status" id="status">Checking...</div>
 </section>
-
-<section id="contentBox">
-<div id="articleContainer"></div>
-</section>
-
+<section id="contentBox"><div id="articleContainer"></div></section>
 <div id="finalBox" style="display:none;text-align:center;padding:14px;border:2px dashed #fbbf24;background:#fffbeb;border-radius:16px;margin-top:12px">
-<div style="font-size:32px">🎉</div>
-<h3 style="color:#4c1d95;margin:8px 0;font-weight:900">All 5 Articles Read!</h3>
+<div style="font-size:32px">🎉</div><h3 style="color:#4c1d95;margin:8px 0;font-weight:900">All 5 Articles Read!</h3>
 <div id="finalMsg" style="font-size:13px;color:#6b7280;font-weight:700">You read 5/5 • Reward 5 coins</div>
 <button id="claimFinalBtn" class="btn">Claim 5 Coins 🪙</button>
 <div style="font-size:10px;color:#9ca3af;margin-top:6px">Quit before this = circle resets to 0</div>
 </div>
 </main>
-
-<!-- DIRECT LINK - BOTTOM - USER CLICKS HIMSELF ONLY - 12320757 - SEPARATE FROM VIGNETTE -->
 <div style="max-width:500px;margin:0 auto;padding:14px 14px 30px;width:100%">
   <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:0.5px">Advertisement</div>
   <a id="articlesAdLinkBottom" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
@@ -89,10 +78,7 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
     <div id="articlesAdBtnBottom" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
   </a>
 </div>
-
-<!-- VIGNETTE GATE - ONLY THIS LOADS VIGNETTE, NEVER DIRECT LINK -->
 <div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button><div class="gate-icon">📰</div><div class="gate-title" id="gateTitle">Next Article</div><div id="gateSub" class="gate-sub">Open to continue</div><button id="watchAdBtn" class="gate-btn watch">Open</button><div id="gateTimer2"></div><button id="openBtn" class="gate-btn open">✅ Open</button><div style="font-size:9px;color:#9ca3af;margin-top:10px;font-weight:700">Advertisement</div></div></div>
-
 <script>
 (() => {
 "use strict";
@@ -104,8 +90,6 @@ function loadCleanVignette(){
   (function(s){s.dataset.zone='12273869',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
   setTimeout(()=>{vignetteLoaded=false;}, 60*1000);
 }
-
-// ===== DIRECT LINK TOP + BOTTOM - SAME ROTATION, 1 STATE, 12320757 ONLY =====
 const ARTICLES_ADS=[
   {title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Sponsored",btn:"Visit →",bg:"#FFD700",link:"https://uplcm.com/4/12320757"},
   {title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • Sponsored",btn:"Visit →",bg:"#7CFC00",link:"https://uplcm.com/4/12320757"},
@@ -134,7 +118,6 @@ function nextArticlesAd(){ articlesAdIndex=(articlesAdIndex+1)%ARTICLES_ADS.leng
     setTimeout(function(){ nextArticlesAd(); setInterval(nextArticlesAd, ARTICLES_AD_TIME); }, remain);
   }catch(e){ showArticlesAd(0); saveArticlesAd(); setInterval(nextArticlesAd, ARTICLES_AD_TIME); }
 })();
-
 let pendingNext=null;
 function openArticleAdGate(nextFn, isFinal, reward){
   document.getElementById('gateTitle').innerText=isFinal? 'Claim +'+reward+' Coins' : 'Next Article';
@@ -154,93 +137,102 @@ document.getElementById('watchAdBtn').onclick=function(){
   timerEl.innerText='⏳ Wait '+sec+'s...';
   const iv=setInterval(()=>{sec--; if(sec>0){timerEl.innerText='⏳ Wait '+sec+'s...';} else {clearInterval(iv); document.getElementById('watchAdBtn').style.display='none'; timerEl.innerText='✅ Ready!'; document.getElementById('openBtn').style.display='block';}},1000);
 };
-// ONLY VIGNETTE HERE - NO DIRECT LINK, NO window.open, NO second ad
 document.getElementById('openBtn').onclick=function(){
   document.getElementById('adGate').style.display='none';
   loadCleanVignette();
   const fn=pendingNext; pendingNext=null; if(fn) fn();
 };
-
-const ARTICLES = [
+// ===== 35 ARTICLES POOL - 5 RANDOM PER DAY - INDEPENDENT =====
+const ARTICLES_POOL = [
 {id:"a1",title:"How to Save Money Daily",text:"Saving money starts with small habits. Track your expenses, set a daily limit, and avoid impulse buying. Even 500 RWF a day becomes 15,000 RWF a month. Consistency is the key to financial freedom. Start today with a small goal.",reward:1},
 {id:"a2",title:"Benefits of Reading",text:"Reading improves focus, vocabulary, and mental health. Just 10 minutes a day can reduce stress by 60%. Make reading part of your daily routine. Choose topics you love to stay motivated.",reward:1},
 {id:"a3",title:"Healthy Living Tips",text:"Drink 2L water, walk 30 minutes, sleep 7-8 hours. Small healthy choices compound over time into a strong body and clear mind. Avoid sugary drinks and stay consistent with your habits.",reward:1},
 {id:"a4",title:"How to Stay Focused",text:"Remove distractions, set a timer for 25 minutes, work, then take 5 min break. This Pomodoro technique boosts productivity. Keep your phone in silent mode while working.",reward:1},
-{id:"a5",title:"Why Learn New Skills",text:"The world changes fast. Learning a new skill every month keeps you relevant and opens new income opportunities. Start with free videos and practice daily for 30 minutes.",reward:1}
+{id:"a5",title:"Why Learn New Skills",text:"The world changes fast. Learning a new skill every month keeps you relevant and opens new income opportunities. Start with free videos and practice daily for 30 minutes.",reward:1},
+{id:"a6",title:"What is USDT and Why It Matters",text:"USDT is a stablecoin worth about $1. Unlike Bitcoin, it does not go up and down fast. In Rwanda many people use USDT to save, send money, and trade on Binance P2P. Learn how to buy, store and sell it safely.",reward:1},
+{id:"a7",title:"How MoMo and Crypto Work Together",text:"You can sell USDT on Binance P2P and receive MTN MoMo in minutes. Always confirm payment before you release coins. Never release before you see MoMo in your account. Check name, amount and reference.",reward:1},
+{id:"a8",title:"How to Avoid Scams Online",text:"If someone promises double your money in one day, it is a scam. Never share your seed phrase, OTP, or PIN. Real platforms never ask you to send money to unlock money. Pause, verify, ask a trusted friend.",reward:1},
+{id:"a9",title:"How to Build a CV With AI",text:"AI can help you write a clean CV in 10 minutes. List your skills, experience, and education. Ask AI to make it short, clear, and professional. Then read it yourself and fix mistakes before you send it.",reward:1},
+{id:"a10",title:"How to Save for a Goal",text:"Pick one goal: phone, school fees, business. Divide the price by 30 days. Save that small amount every day. Put it in a separate MoMo pocket or wallet so you do not touch it.",reward:1},
+{id:"a11",title:"What is Inflation in Simple Words",text:"Inflation means prices go up over time. What cost 1000 RWF last year may cost 1200 RWF this year. Saving in cash alone loses value. Learn to save and earn a little more each month.",reward:1},
+{id:"a12",title:"How to Start a Small Business",text:"Start with what people need every day: food, airtime, cleaning, repair. Start small, test with 10 customers, keep your costs low, and reinvest profit. Do not borrow big money at the start.",reward:1},
+{id:"a13",title:"How to Protect Your Wallet",text:"Your seed phrase is your master key. Write it on paper, keep it offline, never screenshot it, never send it on WhatsApp. If someone gets it, they can take all your coins.",reward:1},
+{id:"a14",title:"BEP20 vs TRC20 - Which is Cheaper?",text:"Sending USDT on TRC20 needs TRX for fee, BEP20 needs BNB. Fees change. Before you send, check the fee, the network, and the address. Wrong network can lose your money. Always send a small test first.",reward:1},
+{id:"a15",title:"How to Learn English Fast",text:"Listen 10 minutes, speak 10 minutes, read 10 minutes every day. Use free videos, repeat sentences out loud, and write 3 new words daily. Consistency beats long study once a week.",reward:1},
+{id:"a16",title:"How to Manage Time Better",text:"Write 3 tasks for today, not 20. Do the hardest one first. Put your phone away for 25 minutes. At night, check what you finished. Small wins every day build big results.",reward:1},
+{id:"a17",title:"What is Staking?",text:"Staking means you lock your coins to help a network, and you earn a small reward. It is not risk-free. Prices can fall. Only stake what you can afford to keep locked for a while.",reward:1},
+{id:"a18",title:"How to Stay Healthy on a Budget",text:"You do not need expensive food to be healthy. Beans, cabbage, carrots, eggs and water are cheap and strong. Walk daily, sleep well, avoid soda. Your body is your first business.",reward:1},
+{id:"a19",title:"How to Use AI to Translate",text:"AI can translate Kinyarwanda to English and back in seconds. Paste your text, ask for simple English, then read it. Always check names, numbers and dates yourself before you send it.",reward:1},
+{id:"a20",title:"How to Make a Budget in 5 Minutes",text:"Write income, then list food, transport, airtime, savings. If expenses are more than income, cut one small thing first. A budget is not punishment, it is a plan to control your money.",reward:1},
+{id:"a21",title:"What is KYC?",text:"KYC means Know Your Customer. Platforms ask for ID to stop fraud. Use your real name, clear photo of ID, and a good selfie. Never use someone else's ID. Your account can be blocked.",reward:1},
+{id:"a22",title:"How to Sell on WhatsApp",text:"Take clear photos, write price, location, and delivery. Answer fast, be polite, and keep a list of customers. Do not spam groups. Helpful sellers get repeat customers.",reward:1},
+{id:"a23",title:"How to Avoid Debt Traps",text:"Borrow only for something that earns money. Check interest, fees, and repayment date. If you cannot repay in time, do not borrow. Small loans with high interest can grow fast.",reward:1},
+{id:"a24",title:"How to Improve Your Memory",text:"Teach what you learn to someone else. Write it, say it, use it. Sleep helps memory. Review after 1 day, after 3 days, after 7 days. Repetition is the secret.",reward:1},
+{id:"a25",title:"What is a Crypto Wallet?",text:"A wallet does not hold coins, it holds keys to control coins. Trust Wallet and MetaMask are popular. Keep your app updated, use a strong PIN, and back up your seed phrase offline.",reward:1},
+{id:"a26",title:"How to Earn From Your Phone",text:"Your phone can earn: learn a skill, do small tasks, sell, translate, create content. Avoid apps that promise free money for doing nothing. Real earning needs real effort, even if small.",reward:1},
+{id:"a27",title:"How to Stay Safe on Public WiFi",text:"On public WiFi, do not log into bank or wallet if you can avoid it. Use mobile data for money apps. Log out after use. Keep your phone locked with PIN.",reward:1},
+{id:"a28",title:"How to Set Goals That Work",text:"Make goals clear: I will save 15,000 RWF in 30 days. Write it, split it daily, track it. If you miss one day, continue next day. Do not quit because of one miss.",reward:1},
+{id:"a29",title:"What is 2FA and Why You Need It",text:"2FA is a second code after password. Even if someone knows your password, they cannot enter without your phone code. Turn it on for email, Binance, and wallet apps.",reward:1},
+{id:"a30",title:"How to Read a P2P Offer",text:"Check price, limits, payment method, and seller rating. Read the terms. If the price is too good, be careful. Trade only inside the platform, never outside WhatsApp.",reward:1},
+{id:"a31",title:"How to Learn a New Language With Videos",text:"Watch short videos with subtitles. Pause, repeat, write new words. Speak to a friend. 15 minutes daily for 3 months is better than 3 hours once.",reward:1},
+{id:"a32",title:"How to Take Care of Your Phone",text:"Do not charge to 100% all the time, avoid heat, delete unused apps, update software. A clean phone is faster and safer. Back up photos and contacts.",reward:1},
+{id:"a33",title:"How to Negotiate Price Politely",text:"Ask price, say thank you, offer a fair price, explain why. Do not insult the seller. If they refuse, smile and decide. Good negotiation keeps both sides happy.",reward:1},
+{id:"a34",title:"How to Build Confidence",text:"Confidence comes from small actions: speak once a day, finish one task, keep one promise to yourself. Prepare before you speak. Everyone starts shy.",reward:1},
+{id:"a35",title:"How to Plan Your Day in Kigali",text:"Kigali traffic is busy in morning and evening. Plan travel early, keep water, keep charge, keep small cash. Write your 3 tasks before you leave home.",reward:1}
 ];
-const DAILY_LIMIT=5, READ_SECONDS=15, WINDOW_MS=30*60*1000, DAY_MS=24*60*60*1000;
+function seededShuffle(arr, seedStr){
+  let seed=0; for(let i=0;i<seedStr.length;i++) seed=(seed*31+seedStr.charCodeAt(i))>>>0;
+  let a=[...arr];
+  for(let i=a.length-1;i>0;i--){ seed=(seed*9301+49297)%233280; let j=seed%(i+1); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function getTodayArticles(uid){
+  const day=localDayKey();
+  const seed=day+"-"+(uid||"guest");
+  return seededShuffle(ARTICLES_POOL, seed).slice(0,5);
+}
+let ARTICLES = getTodayArticles(null);
+const DAILY_LIMIT=5, READ_SECONDS=15, DAY_MS=24*60*60*1000;
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore();
 const el=id=>document.getElementById(id);
 const balEl=el("bal"), todayEl=el("today"), readingIdxEl=el("readingIdx"), statusEl=el("status"), progFill=el("progFill"), articleContainer=el("articleContainer"), finalBox=el("finalBox"), finalMsg=el("finalMsg"), claimFinalBtn=el("claimFinalBtn"), contentBox=el("contentBox"), fullLock=el("fullLock"), fullLockMsg=el("fullLockMsg");
-let currentUser=null, balance=0, todayCount=0, currentIdx=0, readInSession=[], readSeconds=0, timer=null, isClaiming=false, unsubscribe=null, chainTimer=null;
-
+let currentUser=null, balance=0, todayCount=0, currentIdx=0, readInSession=[], readSeconds=0, timer=null, isClaiming=false, unsubscribe=null;
 function showBubble(m){const b=el("bubble");b.textContent=m;b.style.display="block";clearTimeout(showBubble.t);showBubble.t=setTimeout(()=>b.style.display="none",2200);}
 function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
-function getChain(){try{return JSON.parse(localStorage.getItem('chain_v2')||'{}');}catch(e){return {};}}
-function saveChain(c){localStorage.setItem('chain_v2',JSON.stringify(c));}
+function getArticlesNextAvail(){ return Number(localStorage.getItem('articles_nextAvail_v1')||0); }
+function setArticlesNextAvail(ts){ localStorage.setItem('articles_nextAvail_v1', String(ts)); }
 function formatRemaining(ms){
   if(ms<=0) return "0m";
-  const totalSec=Math.floor(ms/1000);
-  const m=Math.floor(totalSec/60);
-  const s=totalSec%60;
-  if(m>=60) {
-    const mm=m%60;
-    return `${Math.floor(m/60)}h ${mm}m`;
-  }
+  const h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000), s=Math.floor((ms%60000)/1000);
+  if(h>0) return `${h}h ${m}m`;
   if(m>0) return `${m}m ${s}s`;
   return `${s}s`;
 }
-function saveSession(){localStorage.setItem('articles_session', JSON.stringify({day:localDayKey(), idx:currentIdx, read:readInSession}));}
-function loadSession(){try{const s=JSON.parse(localStorage.getItem('articles_session')||'null'); if(s && s.day===localDayKey()){currentIdx=s.idx||0; readInSession=s.read||[]; return true;}}catch(e){} return false;}
+function saveSession(){localStorage.setItem('articles_session', JSON.stringify({day:localDayKey(), idx:currentIdx, read:readInSession, ids:ARTICLES.map(a=>a.id)}));}
+function loadSession(){try{const s=JSON.parse(localStorage.getItem('articles_session')||'null'); if(s && s.day===localDayKey() && s.ids && s.ids.join(',')===ARTICLES.map(a=>a.id).join(',')){currentIdx=s.idx||0; readInSession=s.read||[]; return true;}}catch(e){} return false;}
 function clearSession(){localStorage.removeItem('articles_session');}
 window.confirmQuit=function(){if(currentIdx>0 && currentIdx<5){if(confirm('Quit? Progress will reset to 0 and you get 0 coins. You will lose '+currentIdx+' articles.')){clearSession(); location.href='home.html'; return false;} return false;} else {location.href='home.html'; return false;}}
-
-function onArticlesFinishedChain(){
-  const now=Date.now(), c=getChain(), today=localDayKey();
-  if(c.articles_finishedToday===today) return;
-  c.articles_finishedToday=today; c.articles_doneToday=today;
-  c.watch_nextAvail=now+DAY_MS; c.quiz_nextAvail=now+DAY_MS; c.articles_nextAvail=now+DAY_MS;
-  saveChain(c);
-  if(currentUser) db.collection("users").doc(currentUser.uid).set({chain:{articles_finishedToday:today,articles_doneToday:today,watch_nextAvail:c.watch_nextAvail,quiz_nextAvail:c.quiz_nextAvail,articles_nextAvail:c.articles_nextAvail,updated:firebase.firestore.FieldValue.serverTimestamp()}},{merge:true});
-}
-function ensureArticlesWindow(){
-  const c=getChain();
-  const now=Date.now();
-  if(!c.articles_open || now > c.articles_expiry || (c.articles_expiry - c.articles_open) > (WINDOW_MS + 60000)){
-    c.articles_open = now;
-    c.articles_expiry = now + WINDOW_MS;
-    saveChain(c);
-    if(currentUser) db.collection("users").doc(currentUser.uid).set({chain:{articles_open:c.articles_open, articles_expiry:c.articles_expiry, updated:firebase.firestore.FieldValue.serverTimestamp()}},{merge:true});
-  }
-  return c;
+function onArticlesFinishedIndependent(){
+  const now=Date.now(), next=now+DAY_MS;
+  setArticlesNextAvail(next);
+  if(currentUser) db.collection("users").doc(currentUser.uid).set({articles_nextAvail:next, articles_lastFinish:now, updated:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+  try{ const c=JSON.parse(localStorage.getItem('chain_v2')||'{}'); c.articles_nextAvail=next; localStorage.setItem('chain_v2', JSON.stringify(c)); }catch(e){}
 }
 function checkArticlesState(){
-  let c=getChain(); const now=Date.now(), today=localDayKey();
-  if(c.quiz_finishedToday!==today && c.quiz_doneToday!==today){fullLock.style.display="flex"; fullLockMsg.textContent="Finish Quiz first - Watch → Quiz → Articles"; contentBox.style.display="none"; finalBox.style.display="none"; return true;}
-  if(c.articles_finishedToday===today){fullLock.style.display="flex"; fullLockMsg.textContent="All done today ✅ Come back tomorrow"; contentBox.style.display="none"; finalBox.style.display="none"; return true;}
-  c=ensureArticlesWindow();
-  if(now > c.articles_expiry){onArticlesExpired(); return true;}
+  const now=Date.now(), next=getArticlesNextAvail();
+  if(next && now < next){
+    fullLock.style.display="flex";
+    fullLockMsg.textContent="🔒 Opens in "+formatRemaining(next-now)+" • Articles locks 24h from finish";
+    contentBox.style.display="none"; finalBox.style.display="none";
+    statusEl.textContent=`Locked • Opens in ${formatRemaining(next-now)}`;
+    return true;
+  }
   fullLock.style.display="none"; contentBox.style.display="block";
-  const diff=c.articles_expiry-now;
-  statusEl.textContent=`Live ${formatRemaining(diff)} • Session ${currentIdx}/${DAILY_LIMIT} • Today ${todayCount}/${DAILY_LIMIT}`;
-  if(chainTimer) clearInterval(chainTimer);
-  chainTimer=setInterval(()=>{
-    const d=getChain().articles_expiry - Date.now();
-    if(d<=0){clearInterval(chainTimer); onArticlesExpired();}
-    else statusEl.textContent=`Live ${formatRemaining(d)} • Session ${currentIdx}/${DAILY_LIMIT} • Today ${todayCount}/${DAILY_LIMIT}`;
-  },1000);
+  statusEl.textContent=`Today's 5 Articles • ${currentIdx}/${DAILY_LIMIT} • Read ${READ_SECONDS}s each`;
   return false;
 }
-function onArticlesExpired(){
-  const now=Date.now(), c=getChain(), today=localDayKey();
-  if(c.articles_finishedToday===today) return;
-  c.articles_open=null; c.articles_expiry=null; c.articles_nextAvail=now+DAY_MS; c.watch_nextAvail=now+DAY_MS; c.quiz_nextAvail=now+DAY_MS; c.articles_finishedToday=today;
-  saveChain(c); clearSession();
-  fullLock.style.display="flex"; fullLockMsg.textContent="Closed - Opens tomorrow"; contentBox.style.display="none"; finalBox.style.display="none";
-}
-
 function renderCurrentArticle(){
   if(checkArticlesState()) return;
   if(currentIdx>=DAILY_LIMIT){showFinal(); return;}
@@ -298,7 +290,7 @@ async function claimFinal(){
     });
     showBubble(`+${DAILY_LIMIT} coins claimed!`);
     clearSession();
-    onArticlesFinishedChain();
+    onArticlesFinishedIndependent();
     setTimeout(()=>{location.href='home.html';},1500);
   }catch(e){showBubble(e.message==="Done"?"Already done":"Error"); isClaiming=false;}
 }
@@ -314,18 +306,18 @@ async function refreshDailyIfNeeded(data){
     });
   }catch(e){}
 }
-
 auth.onAuthStateChanged(user=>{
   if(!user){location.href="./index.html";return;}
   currentUser=user;
+  ARTICLES = getTodayArticles(user.uid);
   if(unsubscribe) unsubscribe();
   unsubscribe=db.collection("users").doc(user.uid).onSnapshot(async snap=>{
     if(!snap.exists){statusEl.textContent="No account";return;}
     const data=snap.data()||{};
     if(data.articleDay!==localDayKey()) await refreshDailyIfNeeded(data);
+    if(data.articles_nextAvail && Number(data.articles_nextAvail) > getArticlesNextAvail()) setArticlesNextAvail(Number(data.articles_nextAvail));
     balance=Number(data.balance??data.coins??0);
     todayCount=Number(data.articleCount||0);
-    if(data.chain){const local=getChain();let ch=false;for(let k in data.chain){if(data.chain[k]&&!local[k]){local[k]=data.chain[k];ch=true;}} if(ch) saveChain(local);}
     balEl.textContent=`${balance} 🪙 coins`;
     todayEl.textContent=`${Math.min(todayCount,DAILY_LIMIT)}/${DAILY_LIMIT}`;
     if(!checkArticlesState()){
