@@ -80,14 +80,19 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100dvh;mi
 .carousel-dots{display:flex;justify-content:center;gap:5px;margin-top:6px}
 .carousel-dots i{display:block;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.75);box-shadow:0 1px 4px rgba(0,0,0,.25);transition:.3s}
 .carousel-dots i.on{width:18px;border-radius:999px;background:#fff}
-/* ===== ONLY NEW: HOME SLIDE - VERTICAL SCROLL INSIDE CARD ===== */
+/* ===== HOME SLIDE - VERTICAL SCROLL INSIDE CARD ===== */
 .home-flex{display:flex;gap:8px;align-items:center;width:100%}
 .home-left{flex:1;min-width:0}
-.home-left .c-desc{max-width:100%}
+.home-left .c-title{font-size:22px}
+.home-left .c-desc{max-width:100%;font-size:13px}
 .v-scroll{width:118px;height:66px;overflow:hidden;border-radius:10px;background:rgba(255,255,255,.18);padding:6px 7px;flex-shrink:0;mask-image:linear-gradient(to bottom,transparent,#000 15%,#000 85%,transparent);-webkit-mask-image:linear-gradient(to bottom,transparent,#000 15%,#000 85%,transparent)}
 .v-track{display:flex;flex-direction:column;gap:5px;animation:vUp 7s linear infinite}
 .v-track span{display:block;background:rgba(255,255,255,.92);color:#111827;font-size:10px;font-weight:900;padding:4px 7px;border-radius:999px;white-space:nowrap}
 @keyframes vUp{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
+/* ===== HOME 3-LINES - SMALL DISTANCE ===== */
+.home-title{display:flex;align-items:center;gap:7px}
+.home-lines{display:inline-flex;flex-direction:column;gap:2px}
+.home-lines i{display:block;width:18px;height:2.5px;background:#fff;border-radius:2px}
 </style></head><body>
 <div id="maint"><div><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900">Back</button></div></div>
 <div id="toast"></div>
@@ -118,7 +123,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100dvh;mi
 <div class="scene">
 <!-- ===== ONLY NEW: CAROUSEL IN WHITE SPACE ABOVE BALANCE ===== -->
 <div id="homeCarousel"><div class="carousel-card" id="carouselCard">
-  <div class="carousel-slide s-home active" data-link=""><div class="home-flex"><div class="home-left"><div class="c-emoji">☰</div><div class="c-title">Home (3-line button)</div><div class="c-desc">Press on Home to view all options. 👆 Explore everything!</div></div><div class="v-scroll"><div class="v-track"><span>📺 Watch &amp; Earn</span><span>🧠 Quiz</span><span>🎁 Gifts</span><span>💰 Wallet</span><span>🎁 Bonus</span><span>📋 Survey</span><span>🤝 Refer &amp; Earn</span><span>💎 Offers</span><span>❄️ More</span><span>🎧 Help/Support</span><span>📺 Watch &amp; Earn</span><span>🧠 Quiz</span><span>🎁 Gifts</span><span>💰 Wallet</span><span>🎁 Bonus</span><span>📋 Survey</span><span>🤝 Refer &amp; Earn</span><span>💎 Offers</span><span>❄️ More</span><span>🎧 Help/Support</span></div></div></div><button class="c-btn" onclick="openDrawer()">☰ Open Menu</button></div>
+  <div class="carousel-slide s-home active" data-link=""><div class="home-flex"><div class="home-left"><div class="c-title home-title">Home <span class="home-lines"><i></i><i></i><i></i></span></div><div class="c-desc">👉 Explore everything in App</div></div><div class="v-scroll"><div class="v-track"><span>📺 Watch &amp; Earn</span><span>🧠 Quiz</span><span>🎁 Gifts</span><span>💰 Wallet</span><span>🎁 Bonus</span><span>📋 Survey</span><span>🤝 Refer &amp; Earn</span><span>💎 Offers</span><span>❄️ More</span><span>🎧 Help/Support</span><span>📺 Watch &amp; Earn</span><span>🧠 Quiz</span><span>🎁 Gifts</span><span>💰 Wallet</span><span>🎁 Bonus</span><span>📋 Survey</span><span>🤝 Refer &amp; Earn</span><span>💎 Offers</span><span>❄️ More</span><span>🎧 Help/Support</span></div></div></div></div>
   <div class="carousel-slide s-watch" data-link="./watch.html"><div class="c-big">🪙</div><div class="c-emoji">🎬</div><div class="c-title">Watch &amp; Earn</div><div class="c-desc">Watch only 10 videos (35s / 1 video) and get 10 coins + 5 Bonus. See your balance grow! 📈</div><button class="c-btn" onclick="location.href='./watch.html'">▶ Start</button></div>
   <div class="carousel-slide s-gifts" data-link="./gifts.html"><div class="c-big">🎁</div><div class="c-emoji">🎁</div><div class="c-title">Gifts &amp; Earn</div><div class="c-desc">Pick 5 boxes a day — win up to 3 coins! 🍀 One box could change your day! 😍</div><button class="c-btn" onclick="location.href='./gifts.html'">🎁 Open</button></div>
   <div class="carousel-slide s-quiz" data-link="./quiz_earn.html"><div class="c-big">🧠</div><div class="c-emoji">🧠</div><div class="c-title">Quiz &amp; Earn</div><div class="c-desc">Smart = Rich! 🤓 Answer easy questions and earn coins for every correct answer.</div><button class="c-btn" onclick="location.href='./quiz_earn.html'">🧠 Play</button></div>
@@ -181,11 +186,10 @@ function nextAd(){ adIndex=(adIndex+1)%ADS.length; showAd(adIndex); saveAd(); }
     if(dx<-30){ show((idx+1)%slides.length); reset(); }
     else if(dx>30){ show((idx-1+slides.length)%slides.length); reset(); }
   },{passive:true});
-  // --- Persistent init: catch up missed slides while away / refreshed ---
   try{
     var raw=localStorage.getItem(CAR_KEY);
     if(!raw){
-      show(0); // First ever visit: Home slide
+      show(0);
       setTimeout(function(){ next(); reset(); }, CAR_TIME);
       return;
     }
