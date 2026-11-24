@@ -44,7 +44,6 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100dvh;mi
 .carousel-slide .c-desc{font-size:11.5px;font-weight:700;line-height:1.35;opacity:.96;max-width:78%}
 .carousel-slide .c-btn{position:absolute;right:12px;bottom:11px;background:#fff;color:#111827;font-size:11px;font-weight:900;padding:6px 12px;border-radius:999px;border:none;box-shadow:0 2px 8px rgba(0,0,0,.2)}
 .carousel-slide .c-big{position:absolute;right:8px;top:6px;font-size:46px;opacity:.9}
-/* Different colors */
 .s-watch{background:linear-gradient(135deg,#7c3aed,#a855f7,#ec4899)}
 .s-gifts{background:linear-gradient(135deg,#f97316,#ec4899,#facc15)}
 .s-quiz{background:linear-gradient(135deg,#2563eb,#06b6d4,#3b82f6)}
@@ -52,9 +51,9 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100dvh;mi
 .s-survey{background:linear-gradient(135deg,#0d9488,#14b8a6,#06b6d4)}
 .s-offers{background:linear-gradient(135deg,#dc2626,#f59e0b,#facc15)}
 .s-ads{background:linear-gradient(135deg,#111827,#4c1d95,#06b6d4)}
-.s-withdraw{background:linear-gradient(135deg,#111827,#ca8a04,#fbbf24);color:#fff}
+.s-withdraw{background:linear-gradient(135deg,#111827,#ca8a04,#fbbf24)}
 .s-help{background:linear-gradient(135deg,#0284c7,#38bdf8,#fff)}
-/* Different motions - each slide animates differently when it appears */
+.s-home{background:linear-gradient(135deg,#4c1d95,#7c3aed,#06b6d4)}
 .carousel-slide.active .c-emoji{animation:cPop .6s ease}
 .carousel-slide.active .c-title{animation:cSlideR .55s ease}
 .carousel-slide.active .c-desc{animation:cFade .7s ease}
@@ -81,6 +80,14 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100dvh;mi
 .carousel-dots{display:flex;justify-content:center;gap:5px;margin-top:6px}
 .carousel-dots i{display:block;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.75);box-shadow:0 1px 4px rgba(0,0,0,.25);transition:.3s}
 .carousel-dots i.on{width:18px;border-radius:999px;background:#fff}
+/* ===== ONLY NEW: HOME SLIDE - VERTICAL SCROLL INSIDE CARD ===== */
+.home-flex{display:flex;gap:8px;align-items:center;width:100%}
+.home-left{flex:1;min-width:0}
+.home-left .c-desc{max-width:100%}
+.v-scroll{width:118px;height:66px;overflow:hidden;border-radius:10px;background:rgba(255,255,255,.18);padding:6px 7px;flex-shrink:0;mask-image:linear-gradient(to bottom,transparent,#000 15%,#000 85%,transparent);-webkit-mask-image:linear-gradient(to bottom,transparent,#000 15%,#000 85%,transparent)}
+.v-track{display:flex;flex-direction:column;gap:5px;animation:vUp 7s linear infinite}
+.v-track span{display:block;background:rgba(255,255,255,.92);color:#111827;font-size:10px;font-weight:900;padding:4px 7px;border-radius:999px;white-space:nowrap}
+@keyframes vUp{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
 </style></head><body>
 <div id="maint"><div><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900">Back</button></div></div>
 <div id="toast"></div>
@@ -111,7 +118,8 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100dvh;mi
 <div class="scene">
 <!-- ===== ONLY NEW: CAROUSEL IN WHITE SPACE ABOVE BALANCE ===== -->
 <div id="homeCarousel"><div class="carousel-card" id="carouselCard">
-  <div class="carousel-slide s-watch active" data-link="./watch.html"><div class="c-big">🪙</div><div class="c-emoji">🎬</div><div class="c-title">Watch &amp; Earn</div><div class="c-desc">Watch only 10 videos (35s / 1 video) and get 10 coins + 5 Bonus. See your balance grow! 📈</div><button class="c-btn" onclick="location.href='./watch.html'">▶ Start</button></div>
+  <div class="carousel-slide s-home active" data-link=""><div class="home-flex"><div class="home-left"><div class="c-emoji">☰</div><div class="c-title">Home (3-line button)</div><div class="c-desc">Press on Home to view all options. 👆 Explore everything!</div></div><div class="v-scroll"><div class="v-track"><span>📺 Watch &amp; Earn</span><span>🧠 Quiz</span><span>🎁 Gifts</span><span>💰 Wallet</span><span>🎁 Bonus</span><span>📋 Survey</span><span>🤝 Refer &amp; Earn</span><span>💎 Offers</span><span>❄️ More</span><span>🎧 Help/Support</span><span>📺 Watch &amp; Earn</span><span>🧠 Quiz</span><span>🎁 Gifts</span><span>💰 Wallet</span><span>🎁 Bonus</span><span>📋 Survey</span><span>🤝 Refer &amp; Earn</span><span>💎 Offers</span><span>❄️ More</span><span>🎧 Help/Support</span></div></div></div><button class="c-btn" onclick="openDrawer()">☰ Open Menu</button></div>
+  <div class="carousel-slide s-watch" data-link="./watch.html"><div class="c-big">🪙</div><div class="c-emoji">🎬</div><div class="c-title">Watch &amp; Earn</div><div class="c-desc">Watch only 10 videos (35s / 1 video) and get 10 coins + 5 Bonus. See your balance grow! 📈</div><button class="c-btn" onclick="location.href='./watch.html'">▶ Start</button></div>
   <div class="carousel-slide s-gifts" data-link="./gifts.html"><div class="c-big">🎁</div><div class="c-emoji">🎁</div><div class="c-title">Gifts &amp; Earn</div><div class="c-desc">Pick 5 boxes a day — win up to 3 coins! 🍀 One box could change your day! 😍</div><button class="c-btn" onclick="location.href='./gifts.html'">🎁 Open</button></div>
   <div class="carousel-slide s-quiz" data-link="./quiz_earn.html"><div class="c-big">🧠</div><div class="c-emoji">🧠</div><div class="c-title">Quiz &amp; Earn</div><div class="c-desc">Smart = Rich! 🤓 Answer easy questions and earn coins for every correct answer.</div><button class="c-btn" onclick="location.href='./quiz_earn.html'">🧠 Play</button></div>
   <div class="carousel-slide s-refer" data-link="./referrals.html"><div class="c-big">👥</div><div class="c-emoji">👥</div><div class="c-title">Refer &amp; Earn</div><div class="c-desc">Invite friends, earn commissions! 💸 They earn, YOU earn too — forever! 🔥</div><button class="c-btn" onclick="location.href='./referrals.html'">👥 Invite</button></div>
@@ -137,12 +145,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100dvh;mi
 </div>
 </div>
 <script>
-const ADS=[
-  {title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Claim now",btn:"Claim →",bg:"#FFD700",link:"https://uplcm.com/4/12320736"},
-  {title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • No experience needed",btn:"Start →",bg:"#7CFC00",link:"https://uplcm.com/4/12320736"},
-  {title:"📱 Win Free Airtime Today",sub:"MTN • Airtel • Claim in 1 min",btn:"Win →",bg:"#00D4FF",link:"https://uplcm.com/4/12320736"},
-  {title:"🔥 Hot Offer - Double Your Coins",sub:"Today only • Limited slots",btn:"Get →",bg:"#FF9F43",link:"https://uplcm.com/4/12320736"}
-];
+const ADS=[{title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Claim now",btn:"Claim →",bg:"#FFD700",link:"https://uplcm.com/4/12320736"},{title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • No experience needed",btn:"Start →",bg:"#7CFC00",link:"https://uplcm.com/4/12320736"},{title:"📱 Win Free Airtime Today",sub:"MTN • Airtel • Claim in 1 min",btn:"Win →",bg:"#00D4FF",link:"https://uplcm.com/4/12320736"},{title:"🔥 Hot Offer - Double Your Coins",sub:"Today only • Limited slots",btn:"Get →",bg:"#FF9F43",link:"https://uplcm.com/4/12320736"}];
 const AD_TIME=2*60*1000; const AD_KEY='fairAd_state_v1'; let adIndex=0;
 function saveAd(){ try{ localStorage.setItem(AD_KEY, JSON.stringify({index:adIndex, changedAt:Date.now()})); }catch(e){} }
 function showAd(i){ const a=ADS[i]; const link=document.getElementById('adLink'); const t=document.getElementById('adTitle'); const s=document.getElementById('adSub'); const b=document.getElementById('adBtn'); if(!link||!t) return; link.href=a.link; link.style.background=a.bg; t.textContent=a.title; s.textContent=a.sub; b.textContent=a.btn; }
@@ -150,23 +153,51 @@ function nextAd(){ adIndex=(adIndex+1)%ADS.length; showAd(adIndex); saveAd(); }
 (function initAd(){ try{ const raw=localStorage.getItem(AD_KEY); if(!raw){ showAd(0); saveAd(); setTimeout(function(){ nextAd(); setInterval(nextAd, AD_TIME); }, AD_TIME); return; } const saved=JSON.parse(raw); const elapsed=Date.now() - (saved.changedAt||Date.now()); const steps=Math.floor(elapsed / AD_TIME); adIndex=((saved.index||0)+steps)%ADS.length; const remain=AD_TIME - (elapsed % AD_TIME); showAd(adIndex); try{ localStorage.setItem(AD_KEY, JSON.stringify({index:adIndex, changedAt:Date.now()-(elapsed%AD_TIME)})); }catch(e){} setTimeout(function(){ nextAd(); setInterval(nextAd, AD_TIME); }, remain); }catch(e){ showAd(0); saveAd(); setInterval(nextAd, AD_TIME); } })();
 </script>
 <script>
-// ===== ONLY NEW: CAROUSEL LOGIC - 9 slides, 4s, endless, swipe =====
+// ===== CAROUSEL - 10 slides, 8s, endless, PERSISTENT - NO RESET ON REFRESH (same logic as Ads) =====
 (function(){
   var slides=document.querySelectorAll('.carousel-slide');
   var dotsBox=document.getElementById('carouselDots');
   if(!slides.length||!dotsBox) return;
+  var CAR_TIME=8000, CAR_KEY='homeCarousel_state_v1';
   var idx=0, timer=null, startX=0;
-  slides.forEach(function(_,i){ var d=document.createElement('i'); if(i===0) d.className='on'; d.onclick=function(){ show(i); reset(); }; dotsBox.appendChild(d); });
-  function show(i){
-    idx=i; slides.forEach(function(s,j){ s.classList.toggle('active', j===idx); });
+  function saveCar(){ try{ localStorage.setItem(CAR_KEY, JSON.stringify({index:idx, changedAt:Date.now()})); }catch(e){} }
+  function show(i, save){
+    idx=i;
+    slides.forEach(function(s,j){ s.classList.toggle('active', j===idx); });
     dotsBox.querySelectorAll('i').forEach(function(d,j){ d.classList.toggle('on', j===idx); });
+    if(save!==false) saveCar();
   }
+  slides.forEach(function(_,i){
+    var d=document.createElement('i'); if(i===0) d.className='on';
+    d.onclick=function(){ show(i); reset(); };
+    dotsBox.appendChild(d);
+  });
   function next(){ show((idx+1)%slides.length); }
-  function reset(){ clearInterval(timer); timer=setInterval(next,4000); }
+  function reset(){ clearInterval(timer); timer=setInterval(next, CAR_TIME); }
   var card=document.getElementById('carouselCard');
   card.addEventListener('touchstart',function(e){ startX=e.touches[0].clientX; },{passive:true});
-  card.addEventListener('touchend',function(e){ var dx=e.changedTouches[0].clientX-startX; if(dx<-30) { show((idx+1)%slides.length); reset(); } else if(dx>30){ show((idx-1+slides.length)%slides.length); reset(); } },{passive:true});
-  reset();
+  card.addEventListener('touchend',function(e){
+    var dx=e.changedTouches[0].clientX-startX;
+    if(dx<-30){ show((idx+1)%slides.length); reset(); }
+    else if(dx>30){ show((idx-1+slides.length)%slides.length); reset(); }
+  },{passive:true});
+  // --- Persistent init: catch up missed slides while away / refreshed ---
+  try{
+    var raw=localStorage.getItem(CAR_KEY);
+    if(!raw){
+      show(0); // First ever visit: Home slide
+      setTimeout(function(){ next(); reset(); }, CAR_TIME);
+      return;
+    }
+    var saved=JSON.parse(raw);
+    var elapsed=Date.now()-(saved.changedAt||Date.now());
+    var steps=Math.floor(elapsed/CAR_TIME);
+    var startIdx=((saved.index||0)+steps)%slides.length;
+    var remain=CAR_TIME-(elapsed%CAR_TIME);
+    show(startIdx, false);
+    try{ localStorage.setItem(CAR_KEY, JSON.stringify({index:startIdx, changedAt:Date.now()-(elapsed%CAR_TIME)})); }catch(e){}
+    setTimeout(function(){ next(); reset(); }, remain);
+  }catch(e){ show(0); reset(); }
 })();
 </script>
 <script>
@@ -175,76 +206,20 @@ function nextAd(){ adIndex=(adIndex+1)%ADS.length; showAd(adIndex); saveAd(); }
 <script>
 function openDrawer(){document.getElementById('sideDrawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('show');}
 function closeDrawer(){document.getElementById('sideDrawer').classList.remove('open');document.getElementById('drawerOverlay').classList.remove('show');}
-// ===== WATCH / QUIZ / GIFTS / BONUS - INSTANT FROM localStorage - NO FIRESTORE WAIT, NO ⏳, NO 3s =====
-// ARTICLES DELETED - no button, no goArticles, no articles_nextAvail sync
 const BONUS_COOLDOWN=60*60*1000;
 function getNextAvail(key){ return Number(localStorage.getItem(key+'_v1')||0); }
 function setNextAvail(key, ts){ localStorage.setItem(key+'_v1', String(ts)); }
-function fmtShort(ms){
-  if(ms<=0) return "Ready";
-  const h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000), s=Math.floor((ms%60000)/1000);
-  if(h>0) return h+"h"+String(m).padStart(2,"0");
-  if(m>0) return m+"m"+String(s).padStart(2,"0");
-  return s+"s";
-}
+function fmtShort(ms){ if(ms<=0) return "Ready"; const h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000), s=Math.floor((ms%60000)/1000); if(h>0) return h+"h"+String(m).padStart(2,"0"); if(m>0) return m+"m"+String(s).padStart(2,"0"); return s+"s"; }
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3200);}
 window.alert=showToast;
 const btnWatch=document.getElementById('btnWatch'), btnQuiz=document.getElementById('btnQuiz'), btnGifts=document.getElementById('btnGifts'), btnBonus=document.getElementById('btnBonus');
-function setBtnState(btn, state, remainingMs, label){
-  if(!btn) return;
-  let old=btn.querySelector('.badge'); if(old) old.remove();
-  const b=document.createElement('span');
-  b.className = (state==='locked') ? 'badge padlock' : 'badge green';
-  b.textContent = (state==='locked') ? '🔒' : 'Open';
-  if(state==='locked'){
-    b.style.cursor='pointer';
-    b.dataset.remaining = remainingMs;
-    b.dataset.label = label || 'Watch';
-    b.onclick = function(e){
-      e.preventDefault(); e.stopPropagation();
-      showToast(`${this.dataset.label} Live in ${fmtShort(Number(this.dataset.remaining||0))}`);
-      return false;
-    };
-  }
-  btn.appendChild(b);
-}
-function getBonusRemaining(){
-  try{
-    const ud=JSON.parse(localStorage.getItem('userData')||'{}');let ms=0;
-    if(ud.lastBonusTimestamp){const lb=ud.lastBonusTimestamp;if(lb.toMillis) ms=lb.toMillis();else if(lb.seconds) ms=lb.seconds*1000;else if(lb._seconds) ms=lb._seconds*1000;else if(typeof lb==='number') ms=lb;else if(typeof lb==='string') ms=Date.parse(lb)||0;}
-    if(!ms) return 0;
-    return Math.max(0, BONUS_COOLDOWN - (Date.now()-ms));
-  }catch(e){ return 0; }
-}
-function evaluateIndependent(){
-  const now=Date.now();
-  const w=getNextAvail('watch_nextAvail'), q=getNextAvail('quiz_nextAvail'), g=getNextAvail('gifts_nextAvail');
-  setBtnState(btnWatch, (w && now<w)?'locked':'open', w-now, 'Watch');
-  setBtnState(btnQuiz, (q && now<q)?'locked':'open', q-now, 'Quiz');
-  setBtnState(btnGifts, (g && now<g)?'locked':'open', g-now, 'Gifts');
-  const rem=getBonusRemaining();
-  setBtnState(btnBonus, rem>0?'locked':'open', rem, 'Bonus');
-}
-window.goWatch=()=>{
-  const now=Date.now(), w=getNextAvail('watch_nextAvail');
-  if(w && now<w){ showToast(`Watch Live in ${fmtShort(w-now)}`); return; }
-  location.href='./watch.html';
-};
-window.goQuiz=()=>{
-  const now=Date.now(), q=getNextAvail('quiz_nextAvail');
-  if(q && now<q){ showToast(`Quiz Live in ${fmtShort(q-now)}`); return; }
-  location.href='./quiz_earn.html';
-};
-window.goGifts=()=>{
-  const now=Date.now(), g=getNextAvail('gifts_nextAvail');
-  if(g && now<g){ showToast(`Gifts Live in ${fmtShort(g-now)}`); return; }
-  location.href='./gifts.html';
-};
-window.goBonus=()=>{
-  const rem=getBonusRemaining();
-  if(rem>0){ showToast(`Bonus Live in ${fmtShort(rem)}`); return; }
-  location.href='./bonus.html';
-};
+function setBtnState(btn, state, remainingMs, label){ if(!btn) return; let old=btn.querySelector('.badge'); if(old) old.remove(); const b=document.createElement('span'); b.className = (state==='locked') ? 'badge padlock' : 'badge green'; b.textContent = (state==='locked') ? '🔒' : 'Open'; if(state==='locked'){ b.style.cursor='pointer'; b.dataset.remaining = remainingMs; b.dataset.label = label || 'Watch'; b.onclick = function(e){ e.preventDefault(); e.stopPropagation(); showToast(`${this.dataset.label} Live in ${fmtShort(Number(this.dataset.remaining||0))}`); return false; }; } btn.appendChild(b); }
+function getBonusRemaining(){ try{ const ud=JSON.parse(localStorage.getItem('userData')||'{}');let ms=0; if(ud.lastBonusTimestamp){const lb=ud.lastBonusTimestamp;if(lb.toMillis) ms=lb.toMillis();else if(lb.seconds) ms=lb.seconds*1000;else if(lb._seconds) ms=lb._seconds*1000;else if(typeof lb==='number') ms=lb;else if(typeof lb==='string') ms=Date.parse(lb)||0;} if(!ms) return 0; return Math.max(0, BONUS_COOLDOWN - (Date.now()-ms)); }catch(e){ return 0; } }
+function evaluateIndependent(){ const now=Date.now(); const w=getNextAvail('watch_nextAvail'), q=getNextAvail('quiz_nextAvail'), g=getNextAvail('gifts_nextAvail'); setBtnState(btnWatch, (w && now<w)?'locked':'open', w-now, 'Watch'); setBtnState(btnQuiz, (q && now<q)?'locked':'open', q-now, 'Quiz'); setBtnState(btnGifts, (g && now<g)?'locked':'open', g-now, 'Gifts'); const rem=getBonusRemaining(); setBtnState(btnBonus, rem>0?'locked':'open', rem, 'Bonus'); }
+window.goWatch=()=>{ const now=Date.now(), w=getNextAvail('watch_nextAvail'); if(w && now<w){ showToast(`Watch Live in ${fmtShort(w-now)}`); return; } location.href='./watch.html'; };
+window.goQuiz=()=>{ const now=Date.now(), q=getNextAvail('quiz_nextAvail'); if(q && now<q){ showToast(`Quiz Live in ${fmtShort(q-now)}`); return; } location.href='./quiz_earn.html'; };
+window.goGifts=()=>{ const now=Date.now(), g=getNextAvail('gifts_nextAvail'); if(g && now<g){ showToast(`Gifts Live in ${fmtShort(g-now)}`); return; } location.href='./gifts.html'; };
+window.goBonus=()=>{ const rem=getBonusRemaining(); if(rem>0){ showToast(`Bonus Live in ${fmtShort(rem)}`); return; } location.href='./bonus.html'; };
 setInterval(evaluateIndependent,1000); evaluateIndependent();
 </script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
@@ -252,50 +227,8 @@ setInterval(evaluateIndependent,1000); evaluateIndependent();
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};firebase.initializeApp(firebaseConfig);
 try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
 const auth=firebase.auth(),db=firebase.firestore();
-function updateAvatarFromData(d, u){
-  try{
-    let name = d.username || d.name || d.displayName || u?.displayName || '';
-    let photo = d.photoURL || d.photo || d.avatar || d.profilePic || u?.photoURL || '';
-    if(name){ const a = document.getElementById('topUsername'); const b = document.getElementById('drawerUsername'); if(a) a.textContent = name; if(b) b.textContent = name; }
-    if(photo){ const av = document.getElementById('drawerAvatar'); if(av) av.innerHTML = `<img src="${photo}" style="width:100%;height:100%;object-fit:cover" onerror="this.src='./default-avatar.jpg'">`; try{ localStorage.setItem('photoURL', photo); }catch(e){} }
-  }catch(e){}
-}
-function loadData(d){
-  if(!d) return;
-  try{
-    const bal = d.balance ?? d.points ?? 0;
-    document.getElementById('balance').innerText = bal+' Coins';
-    document.getElementById('usdBalance').innerText = '$'+(bal*0.0005).toFixed(4);
-    document.getElementById('usdtBalanceDisplay').innerHTML = Number(d.usdtBalance||0).toFixed(4)+' <span style="color:#059669">USDT</span>';
-    localStorage.setItem('userData', JSON.stringify(d));
-    if(d.username) localStorage.setItem('username', d.username);
-    if(d.email) localStorage.setItem('email', d.email);
-    if(d.uid||d.id) localStorage.setItem('userId', d.uid||d.id);
-    if(d.username) document.getElementById('drawerUsername').innerText = d.username;
-    if(d.email) document.getElementById('drawerEmail').innerText = d.email;
-    if(d.uid||d.id) document.getElementById('drawerId').innerText = 'ID: '+String(d.uid||d.id).slice(0,12);
-    updateAvatarFromData(d, null);
-    // Watch + Quiz + Gifts - Articles removed, not synced
-    ['watch_nextAvail','quiz_nextAvail','gifts_nextAvail'].forEach(k=>{
-      let v = d[k] || (d.chain && d.chain[k]) || 0;
-      v = Number(v)||0;
-      if(v>0){ const cur=getNextAvail(k); if(v>cur) setNextAvail(k, v); }
-    });
-    evaluateIndependent();
-  }catch(e){}
-}
-db.collection("appConfig").doc("main").onSnapshot(s=>{
-  if(s.exists && s.data().maintenanceMode==="on"){ document.getElementById('maint').style.display='flex'; }else{ document.getElementById('maint').style.display='none'; }
-});
-auth.onAuthStateChanged(u=>{
-  if(u){
-    try{
-      if(u.email && !document.getElementById('drawerEmail').textContent) document.getElementById('drawerEmail').innerText = u.email;
-      if(u.uid && !document.getElementById('drawerId').textContent) document.getElementById('drawerId').innerText = 'ID: '+u.uid.slice(0,12);
-      if(u.displayName){ const curTop = document.getElementById('topUsername').textContent; if(!curTop){ document.getElementById('drawerUsername').innerText = u.displayName; document.getElementById('topUsername').innerText = u.displayName; } }
-      updateAvatarFromData({}, u);
-    }catch(e){}
-    db.collection('users').doc(u.uid).onSnapshot(doc=>{ if(doc.exists) loadData(doc.data()); });
-  }else{ location.href='./index.html'; }
-});
+function updateAvatarFromData(d, u){ try{ let name = d.username || d.name || d.displayName || u?.displayName || ''; let photo = d.photoURL || d.photo || d.avatar || d.profilePic || u?.photoURL || ''; if(name){ const a = document.getElementById('topUsername'); const b = document.getElementById('drawerUsername'); if(a) a.textContent = name; if(b) b.textContent = name; } if(photo){ const av = document.getElementById('drawerAvatar'); if(av) av.innerHTML = `<img src="${photo}" style="width:100%;height:100%;object-fit:cover" onerror="this.src='./default-avatar.jpg'">`; try{ localStorage.setItem('photoURL', photo); }catch(e){} } }catch(e){} }
+function loadData(d){ if(!d) return; try{ const bal = d.balance ?? d.points ?? 0; document.getElementById('balance').innerText = bal+' Coins'; document.getElementById('usdBalance').innerText = '$'+(bal*0.0005).toFixed(4); document.getElementById('usdtBalanceDisplay').innerHTML = Number(d.usdtBalance||0).toFixed(4)+' <span style="color:#059669">USDT</span>'; localStorage.setItem('userData', JSON.stringify(d)); if(d.username) localStorage.setItem('username', d.username); if(d.email) localStorage.setItem('email', d.email); if(d.uid||d.id) localStorage.setItem('userId', d.uid||d.id); if(d.username) document.getElementById('drawerUsername').innerText = d.username; if(d.email) document.getElementById('drawerEmail').innerText = d.email; if(d.uid||d.id) document.getElementById('drawerId').innerText = 'ID: '+String(d.uid||d.id).slice(0,12); updateAvatarFromData(d, null); ['watch_nextAvail','quiz_nextAvail','gifts_nextAvail'].forEach(k=>{ let v = d[k] || (d.chain && d.chain[k]) || 0; v = Number(v)||0; if(v>0){ const cur=getNextAvail(k); if(v>cur) setNextAvail(k, v); } }); evaluateIndependent(); }catch(e){} }
+db.collection("appConfig").doc("main").onSnapshot(s=>{ if(s.exists && s.data().maintenanceMode==="on"){ document.getElementById('maint').style.display='flex'; }else{ document.getElementById('maint').style.display='none'; } });
+auth.onAuthStateChanged(u=>{ if(u){ try{ if(u.email && !document.getElementById('drawerEmail').textContent) document.getElementById('drawerEmail').innerText = u.email; if(u.uid && !document.getElementById('drawerId').textContent) document.getElementById('drawerId').innerText = 'ID: '+u.uid.slice(0,12); if(u.displayName){ const curTop = document.getElementById('topUsername').textContent; if(!curTop){ document.getElementById('drawerUsername').innerText = u.displayName; document.getElementById('topUsername').innerText = u.displayName; } } updateAvatarFromData({}, u); }catch(e){} db.collection('users').doc(u.uid).onSnapshot(doc=>{ if(doc.exists) loadData(doc.data()); }); }else{ location.href='./index.html'; } });
 </script></body></html>
