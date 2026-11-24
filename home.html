@@ -34,6 +34,53 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100dvh;mi
 .drawer-sep{height:1px;background:#e5e7eb;margin:10px 18px}
 .drawer-foot{padding:12px 18px;text-align:center;font-size:11px;color:#6b7280;font-weight:700}
 #fairAd{position:absolute;left:10px;right:10px;bottom:38px;z-index:25;background:rgba(255,255,255,0.96);border-radius:12px;padding:8px;box-shadow:0 4px 14px rgba(0,0,0,0.18)}
+/* ===== ONLY NEW: SLIDING CARD IN WHITE SPACE ABOVE BALANCE ===== */
+#homeCarousel{position:absolute;left:50%;top:4%;transform:translateX(-50%);width:88%;max-width:340px;z-index:6}
+.carousel-card{position:relative;height:138px;border-radius:16px;overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.22);cursor:pointer;touch-action:pan-y}
+.carousel-slide{position:absolute;inset:0;padding:12px 14px;display:none;flex-direction:column;justify-content:center;color:#fff}
+.carousel-slide.active{display:flex}
+.carousel-slide .c-emoji{font-size:34px;line-height:1}
+.carousel-slide .c-title{font-size:17px;font-weight:900;margin:4px 0 3px;text-shadow:0 1px 6px rgba(0,0,0,.25)}
+.carousel-slide .c-desc{font-size:11.5px;font-weight:700;line-height:1.35;opacity:.96;max-width:78%}
+.carousel-slide .c-btn{position:absolute;right:12px;bottom:11px;background:#fff;color:#111827;font-size:11px;font-weight:900;padding:6px 12px;border-radius:999px;border:none;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.carousel-slide .c-big{position:absolute;right:8px;top:6px;font-size:46px;opacity:.9}
+/* Different colors */
+.s-watch{background:linear-gradient(135deg,#7c3aed,#a855f7,#ec4899)}
+.s-gifts{background:linear-gradient(135deg,#f97316,#ec4899,#facc15)}
+.s-quiz{background:linear-gradient(135deg,#2563eb,#06b6d4,#3b82f6)}
+.s-refer{background:linear-gradient(135deg,#059669,#22c55e,#84cc16)}
+.s-survey{background:linear-gradient(135deg,#0d9488,#14b8a6,#06b6d4)}
+.s-offers{background:linear-gradient(135deg,#dc2626,#f59e0b,#facc15)}
+.s-ads{background:linear-gradient(135deg,#111827,#4c1d95,#06b6d4)}
+.s-withdraw{background:linear-gradient(135deg,#111827,#ca8a04,#fbbf24);color:#fff}
+.s-help{background:linear-gradient(135deg,#0284c7,#38bdf8,#fff)}
+/* Different motions - each slide animates differently when it appears */
+.carousel-slide.active .c-emoji{animation:cPop .6s ease}
+.carousel-slide.active .c-title{animation:cSlideR .55s ease}
+.carousel-slide.active .c-desc{animation:cFade .7s ease}
+.s-watch.active .c-big{animation:cFly 1.1s ease-in-out infinite}
+.s-gifts.active .c-big{animation:cBounce .8s ease-in-out infinite}
+.s-quiz.active .c-big{animation:cSpin 2.2s linear infinite}
+.s-refer.active .c-big{animation:cWave 1.2s ease-in-out infinite}
+.s-survey.active .c-big{animation:cFloat 1.4s ease-in-out infinite}
+.s-offers.active .c-big{animation:cZoom 1s ease-in-out infinite}
+.s-ads.active .c-big{animation:cSpin 3s linear infinite}
+.s-withdraw.active .c-big{animation:cDrop 1.1s ease-in-out infinite}
+.s-help.active .c-big{animation:cPulse 1.2s ease-in-out infinite}
+@keyframes cPop{0%{transform:scale(.3) rotate(-10deg)}70%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes cSlideR{0%{transform:translateX(40px);opacity:0}100%{transform:translateX(0);opacity:1}}
+@keyframes cFade{0%{opacity:0}100%{opacity:1}}
+@keyframes cFly{0%,100%{transform:translate(0,0) rotate(-8deg)}50%{transform:translate(-8px,-8px) rotate(8deg)}}
+@keyframes cBounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-10px) scale(1.1)}}
+@keyframes cSpin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+@keyframes cWave{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+@keyframes cFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes cZoom{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+@keyframes cDrop{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
+@keyframes cPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+.carousel-dots{display:flex;justify-content:center;gap:5px;margin-top:6px}
+.carousel-dots i{display:block;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.75);box-shadow:0 1px 4px rgba(0,0,0,.25);transition:.3s}
+.carousel-dots i.on{width:18px;border-radius:999px;background:#fff}
 </style></head><body>
 <div id="maint"><div><h1 style="color:#fbbf24">Under Maintenance</h1><button onclick="location.href='index.html'" style="margin-top:20px;padding:12px 24px;border-radius:10px;border:none;font-weight:900">Back</button></div></div>
 <div id="toast"></div>
@@ -62,6 +109,18 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100dvh;mi
 <div class="wrap" id="wrap">
 <div class="top"><button id="menuBtn" onclick="openDrawer()" type="button">☰</button><h2><span style="color:#14532d">Welcome</span> <span style="color:#7c3aed" id="topUsername"></span></h2><div style="width:44px"></div></div>
 <div class="scene">
+<!-- ===== ONLY NEW: CAROUSEL IN WHITE SPACE ABOVE BALANCE ===== -->
+<div id="homeCarousel"><div class="carousel-card" id="carouselCard">
+  <div class="carousel-slide s-watch active" data-link="./watch.html"><div class="c-big">🪙</div><div class="c-emoji">🎬</div><div class="c-title">Watch &amp; Earn</div><div class="c-desc">Watch only 10 videos (35s / 1 video) and get 10 coins + 5 Bonus. See your balance grow! 📈</div><button class="c-btn" onclick="location.href='./watch.html'">▶ Start</button></div>
+  <div class="carousel-slide s-gifts" data-link="./gifts.html"><div class="c-big">🎁</div><div class="c-emoji">🎁</div><div class="c-title">Gifts &amp; Earn</div><div class="c-desc">Pick 5 boxes a day — win up to 3 coins! 🍀 One box could change your day! 😍</div><button class="c-btn" onclick="location.href='./gifts.html'">🎁 Open</button></div>
+  <div class="carousel-slide s-quiz" data-link="./quiz_earn.html"><div class="c-big">🧠</div><div class="c-emoji">🧠</div><div class="c-title">Quiz &amp; Earn</div><div class="c-desc">Smart = Rich! 🤓 Answer easy questions and earn coins for every correct answer.</div><button class="c-btn" onclick="location.href='./quiz_earn.html'">🧠 Play</button></div>
+  <div class="carousel-slide s-refer" data-link="./referrals.html"><div class="c-big">👥</div><div class="c-emoji">👥</div><div class="c-title">Refer &amp; Earn</div><div class="c-desc">Invite friends, earn commissions! 💸 They earn, YOU earn too — forever! 🔥</div><button class="c-btn" onclick="location.href='./referrals.html'">👥 Invite</button></div>
+  <div class="carousel-slide s-survey" data-link="./survey.html"><div class="c-big">💬</div><div class="c-emoji">📋</div><div class="c-title">Survey</div><div class="c-desc">Share your opinion, get rewarded! 🗣️💡 Answer short surveys. Your voice matters!</div><button class="c-btn" onclick="location.href='./survey.html'">📋 Start</button></div>
+  <div class="carousel-slide s-offers" data-link="./offers.html"><div class="c-big">🎯</div><div class="c-emoji">🎯</div><div class="c-title">Offers</div><div class="c-desc">Complete simple offers, unlock big rewards! 🎉 Try apps, sign up, play — more coins!</div><button class="c-btn" onclick="location.href='./offers.html'">🎯 View</button></div>
+  <div class="carousel-slide s-ads" data-link="./more.html"><div class="c-big">🌍</div><div class="c-emoji">📢</div><div class="c-title">Advertisement</div><div class="c-desc">Open them, discover the world! 🌍 E-commerce 🛒, Web3 apps ⛓️, relevant news 📰</div><button class="c-btn" onclick="location.href='./more.html'">🌍 Explore</button></div>
+  <div class="carousel-slide s-withdraw" data-link="./wallet.html"><div class="c-big">💰</div><div class="c-emoji">💰</div><div class="c-title">Withdraw</div><div class="c-desc">Coins are converted into USDT 💵 Withdrawn via methods set in App. Easy &amp; secure! 🔒</div><button class="c-btn" onclick="location.href='./wallet.html'">💰 Wallet</button></div>
+  <div class="carousel-slide s-help" data-link="./help.html"><div class="c-big">🤝</div><div class="c-emoji">🆘</div><div class="c-title">Help / Support</div><div class="c-desc">For any issue or inquiry, do not hesitate getting help via Help / Support option. 🤝💬</div><button class="c-btn" onclick="location.href='./help.html'">🆘 Help</button></div>
+</div><div class="carousel-dots" id="carouselDots"></div></div>
 <div class="monitor"><div class="screen">
 <div style="color:#7c3aed;font-size:20px;font-weight:900;text-shadow:0 2px 8px rgba(255,255,255,0.95)">Balance</div>
 <div style="font-size:14px;font-weight:900;white-space:nowrap;text-shadow:0 1px 4px rgba(255,255,255,0.9)"><span style="color:#fbbf24">⭐</span> <span style="color:#92400e" id="balance">0 Coins</span><span style="color:#111827"> = <span id="usdBalance">$0.0000</span></span></div>
@@ -89,6 +148,26 @@ function saveAd(){ try{ localStorage.setItem(AD_KEY, JSON.stringify({index:adInd
 function showAd(i){ const a=ADS[i]; const link=document.getElementById('adLink'); const t=document.getElementById('adTitle'); const s=document.getElementById('adSub'); const b=document.getElementById('adBtn'); if(!link||!t) return; link.href=a.link; link.style.background=a.bg; t.textContent=a.title; s.textContent=a.sub; b.textContent=a.btn; }
 function nextAd(){ adIndex=(adIndex+1)%ADS.length; showAd(adIndex); saveAd(); }
 (function initAd(){ try{ const raw=localStorage.getItem(AD_KEY); if(!raw){ showAd(0); saveAd(); setTimeout(function(){ nextAd(); setInterval(nextAd, AD_TIME); }, AD_TIME); return; } const saved=JSON.parse(raw); const elapsed=Date.now() - (saved.changedAt||Date.now()); const steps=Math.floor(elapsed / AD_TIME); adIndex=((saved.index||0)+steps)%ADS.length; const remain=AD_TIME - (elapsed % AD_TIME); showAd(adIndex); try{ localStorage.setItem(AD_KEY, JSON.stringify({index:adIndex, changedAt:Date.now()-(elapsed%AD_TIME)})); }catch(e){} setTimeout(function(){ nextAd(); setInterval(nextAd, AD_TIME); }, remain); }catch(e){ showAd(0); saveAd(); setInterval(nextAd, AD_TIME); } })();
+</script>
+<script>
+// ===== ONLY NEW: CAROUSEL LOGIC - 9 slides, 4s, endless, swipe =====
+(function(){
+  var slides=document.querySelectorAll('.carousel-slide');
+  var dotsBox=document.getElementById('carouselDots');
+  if(!slides.length||!dotsBox) return;
+  var idx=0, timer=null, startX=0;
+  slides.forEach(function(_,i){ var d=document.createElement('i'); if(i===0) d.className='on'; d.onclick=function(){ show(i); reset(); }; dotsBox.appendChild(d); });
+  function show(i){
+    idx=i; slides.forEach(function(s,j){ s.classList.toggle('active', j===idx); });
+    dotsBox.querySelectorAll('i').forEach(function(d,j){ d.classList.toggle('on', j===idx); });
+  }
+  function next(){ show((idx+1)%slides.length); }
+  function reset(){ clearInterval(timer); timer=setInterval(next,4000); }
+  var card=document.getElementById('carouselCard');
+  card.addEventListener('touchstart',function(e){ startX=e.touches[0].clientX; },{passive:true});
+  card.addEventListener('touchend',function(e){ var dx=e.changedTouches[0].clientX-startX; if(dx<-30) { show((idx+1)%slides.length); reset(); } else if(dx>30){ show((idx-1+slides.length)%slides.length); reset(); } },{passive:true});
+  reset();
+})();
 </script>
 <script>
 (function(){ try{ let name = localStorage.getItem('username') || ''; let email = localStorage.getItem('email') || ''; let uid = localStorage.getItem('userId') || localStorage.getItem('uid') || ''; let photo = localStorage.getItem('photoURL') || ''; let balance = 0, usdt = 0; try{ const ud = JSON.parse(localStorage.getItem('userData')||'{}'); if(!name) name = ud.username || ud.name || ud.displayName || ''; if(!email) email = ud.email || ''; if(!uid) uid = ud.uid || ud.id || ''; if(!photo) photo = ud.photoURL || ud.photo || ud.avatar || ''; if(ud.balance!=null) balance = ud.balance; if(ud.usdtBalance!=null) usdt = ud.usdtBalance; }catch(e){} if(name){ const el1 = document.getElementById('topUsername'); const el2 = document.getElementById('drawerUsername'); if(el1) el1.textContent = name; if(el2) el2.textContent = name; } if(email){ const e = document.getElementById('drawerEmail'); if(e) e.textContent = email; } if(uid){ const i = document.getElementById('drawerId'); if(i) i.textContent = "ID: "+String(uid).slice(0,12); } if(photo){ const av = document.getElementById('drawerAvatar'); if(av) av.innerHTML = '<img src="'+photo+'" style="width:100%;height:100%;object-fit:cover" onerror="this.src=\'./default-avatar.jpg\'">'; } if(balance){ const b = document.getElementById('balance'); const u = document.getElementById('usdBalance'); if(b) b.textContent = balance+' Coins'; if(u) u.textContent = '$'+(balance*0.0005).toFixed(4); } if(usdt){ const ud = document.getElementById('usdtBalanceDisplay'); if(ud) ud.innerHTML = Number(usdt).toFixed(4)+' <span style="color:#059669">USDT</span>'; } }catch(e){} })();
