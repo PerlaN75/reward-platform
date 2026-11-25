@@ -1,265 +1,226 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
+<!DOCTYPE html><html><head>
+<title>Daily Gifts</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="referrer" content="no-referrer-when-downgrade">
-<title>Gifts & Earn</title>
+<meta name="referrer" content="no-referrer-when-downgrade" />
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:8px 14px;color:#111827}
-.top-bar{background:#6d28d9;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;width:100%;max-width:500px;border-radius:0 0 16px 16px}
-.back-btn{width:45px;height:30px;border-radius:10px;background:#fff;border:2px solid #fecaca;display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0}
-.back-btn .lines{display:flex;flex-direction:column;gap:3px}
-.back-btn .lines i{display:block;width:18px;height:2.5px;background:#000;border-radius:2px}
-.center-pill{background:#fff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap}
-.main-card{width:100%;max-width:500px;background:#fff;border:2px solid #ede9fe;border-radius:20px;padding:8px 12px 10px;margin-top:10px}
-.balance-box{background:linear-gradient(180deg,#1a2e0a,#12230a);border:2px solid #fbbf24;border-radius:14px;padding:8px 12px;color:#fff}
-.balance-value{color:#fbbf24;font-size:18px;font-weight:900}
-.progress-bar{height:6px;background:#ede9fe;border-radius:10px;margin-top:8px;overflow:hidden}
-.progress-fill{height:100%;background:#8b5cf6;width:0%;transition:.3s}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px auto 2px;max-width:250px;width:100%}
-.gift{aspect-ratio:1/0.65;border-radius:12px;border:2px solid #fbcfe8;background:linear-gradient(180deg,#fdf2f8,#fce7f3);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:.2s;box-shadow:0 2px 0 #f9a8d4;padding:2px}
-.gift:active{transform:scale(.96);box-shadow:0 1px 0 #f9a8d4}
-.gift.opened{cursor:default;box-shadow:none}
-.gift.opened.win{background:linear-gradient(180deg,#fef9c3,#fde047);border-color:#eab308}
-.gift.opened.miss{background:#f3f4f6;border-color:#e5e7eb}
-.gift-emoji{font-size:22px;line-height:1}
-.gift.opened .gift-emoji{font-size:22px;animation:pop .35s}
-@keyframes pop{0%{transform:scale(.4)}70%{transform:scale(1.25)}100%{transform:scale(1)}}
-.moving-q{animation:shake .6s infinite}
-@keyframes shake{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(-4px) rotate(-10deg)}75%{transform:translateX(4px) rotate(10deg)}}
-.btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:0;border-radius:12px;padding:11px;font-weight:900;font-size:14px;cursor:pointer;margin-top:8px}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.bubble{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#000;padding:10px 18px;border-radius:999px;font-weight:900;z-index:10000;display:none}
-#fullLock{position:fixed;inset:0;background:#f5f3ff;z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;text-align:center}
-#checking{position:fixed;inset:0;background:#f5f3ff;z-index:9998;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}
-#adGate{position:fixed;inset:0;background:rgba(253,242,248,.92);backdrop-filter:blur(6px);z-index:10001;display:none;align-items:center;justify-content:center;padding:20px}
-.gate-box{background:linear-gradient(180deg,#fff,#fdf2f8);border:2px solid #f9a8d4;border-radius:24px;padding:22px 20px 18px;text-align:center;max-width:360px;width:100%;box-shadow:0 20px 50px rgba(219,39,119,.25);position:relative}
-.gate-icon{width:64px;height:64px;margin:0 auto 10px;background:linear-gradient(180deg,#fce7f3,#f9a8d4);border:3px solid #ec4899;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;animation:shake .8s infinite}
-.gate-title{font-weight:900;font-size:18px;color:#9d174d}
-.gate-sub{font-size:12px;color:#6b7280;margin:8px 0 16px;line-height:1.4;font-weight:600}
-.gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #fbcfe8;font-weight:900;font-size:14px;cursor:pointer}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;align-items:center}
+.top-bar{background:#6d28d9;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100;width:100%}
+.back-btn-checkin{width:45px;height:30px;background:#fff;border:2px solid #fecaca;border-radius:10px;display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0}
+.back-btn-checkin .lines{display:flex;flex-direction:column;gap:3px}
+.back-btn-checkin .lines i{display:block;width:18px;height:2.5px;background:#000;border-radius:2px}
+.center-pill{background:#fff;border:2px solid #ede9fe;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;color:#4c1d95;position:absolute;left:50%;transform:translateX(-50%)}
+.card{width:100%;max-width:380px;background:#fff;border:2px solid #ede9fe;border-radius:24px;padding:16px 14px;text-align:center;position:relative;overflow:hidden;min-height:460px;margin:14px 10px}
+.gift-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.gift{aspect-ratio:1;background:linear-gradient(180deg,#fdf4ff,#f5d0fe);border:2px solid #e879f9;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:32px;transition:.15s}
+.gift:active{transform:scale(.95)}
+.gift.opened{background:#f0fdf4;border-color:#22c55e;cursor:default}
+.gift.opened .gift-emoji{font-size:20px}
+.gift-label{font-size:10px;font-weight:900;color:#a21caf;margin-top:4px}
+.gift-value{font-size:12px;font-weight:900;color:#15803d}
+.btn{width:100%;background:linear-gradient(90deg,#ec4899,#d946ef);color:#fff;border:none;border-radius:12px;padding:14px;font-weight:900;font-size:15px;cursor:pointer;margin-top:14px;box-shadow:0 4px 0 #a21caf}.btn:disabled{background:#e5e7eb;color:#9ca3af;box-shadow:none}
+#adGate{position:fixed;inset:0;background:rgba(17,12,34,.65);backdrop-filter:blur(8px);z-index:10001;display:none;align-items:center;justify-content:center;padding:20px}
+.gate-box{background:linear-gradient(180deg,#fdf4ff,#fae8ff);border:2px solid #e879f9;border-radius:24px;padding:22px 20px;width:100%;max-width:320px;text-align:center;box-shadow:0 20px 40px rgba(168,85,247,.30);position:relative}
+.gate-icon{width:64px;height:64px;margin:0 auto 10px;background:linear-gradient(180deg,#fdf4ff,#f0abfc);border:4px solid #d946ef;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 10px 25px rgba(0,0,0,0.15)}
+.gate-title{font-weight:900;font-size:18px;color:#701a75}
+.gate-sub{font-size:12px;color:#a21caf;margin:8px 0 16px;line-height:1.4;font-weight:700}
+.gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #f0abfc;font-weight:900;font-size:14px;cursor:pointer}
 .gate-btn.watch{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb}
 .gate-btn.watch:disabled{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb}
-.gate-btn.open{background:linear-gradient(180deg,#f472b6,#db2777);color:#fff;border-color:#be185d;box-shadow:0 4px 0 #9d174d;display:none;margin-top:10px}
-#gateTimer2{font-size:13px;font-weight:900;color:#9d174d;margin-top:12px;background:#fdf2f8;border:1.5px solid #fbcfe8;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
+.gate-btn.open{background:linear-gradient(180deg,#ec4899,#d946ef);color:#fff;border-color:#a21caf;box-shadow:0 4px 0 #a21caf,0 8px 20px rgba(217,70,239,0.3);display:none;margin-top:10px}
+#gateTimer2{font-size:13px;font-weight:900;color:#701a75;margin-top:12px;background:#fdf4ff;border:1.5px solid #f0abfc;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
 #gateTimer2:empty{display:none}
-#gateBarWrap{height:6px;background:#fce7f3;border-radius:10px;overflow:hidden;margin-top:12px}
-#gateBar{height:100%;background:linear-gradient(90deg,#f472b6,#db2777);width:0%;transition:width 1s linear}
-.top-ad-wrap{position:sticky;top:56px;z-index:90;background:#f5f3ff;padding:8px 14px 0;width:100%;max-width:500px}
-</style>
-</head>
-<body>
-<div id="bubble" class="bubble"></div>
-<div class="top-bar">
-  <a href="home.html" class="back-btn"><span class="lines"><i></i><i></i><i></i></span></a>
-  <div class="center-pill">🎁 Gifts & Earn</div>
-  <div style="width:45px"></div>
+#gateBarWrap{height:6px;background:#fae8ff;border-radius:10px;overflow:hidden;margin-top:12px}
+#gateBar{height:100%;background:linear-gradient(90deg,#ec4899,#a855f7);width:0%;transition:width 1s linear}
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#fff;border:2px solid #ede9fe;color:#111827;padding:12px 18px;border-radius:12px;font-weight:900;z-index:10000;display:none;max-width:90%;text-align:center}
+</style></head><body>
+<div class="top-bar"><a href="home.html" class="back-btn-checkin"><span class="lines"><i></i><i></i><i></i></span></a><div class="center-pill">🎁 Daily Gifts</div><div style="width:45px"></div></div>
+
+<div class="card">
+  <div style="font-size:12px;color:#8b5cf6;font-weight:700">Pick 5 gifts — Reveal coins inside</div>
+  <div style="font-size:13px;font-weight:900;margin-top:10px">Total: <span id="totalCoins">0</span> coins • Picked: <span id="pickedCount">0</span>/5</div>
+  <div class="gift-grid" id="giftGrid"></div>
+  <div id="statusText" style="font-size:12px;color:#6b7280;font-weight:700;margin-top:6px">Tap a gift to unwrap it</div>
+  <button class="btn" id="claimBtn" disabled>Claim 0 Coins</button>
+  <div style="font-size:11px;color:#9ca3af;margin-top:8px;font-weight:700">Pick all 5 to claim • Gifts reset daily</div>
 </div>
-<div class="top-ad-wrap">
-  <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:.5px">Advertisement</div>
-  <a id="giftsAdLink" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
-    <div style="flex:1"><div id="giftsAdTitle" style="font-weight:900;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div id="giftsAdSub" style="font-size:11px;color:#333">Limited offer • Sponsored</div></div>
-    <div id="giftsAdBtn" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
+
+<div style="max-width:380px;margin:0 auto;padding:0 14px 30px;width:100%">
+  <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:0.5px">Advertisement</div>
+  <a id="giftAdLink" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
+    <div style="flex:1"><div id="giftAdTitle" style="font-weight:900;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div id="giftAdSub" style="font-size:11px;color:#333">Limited offer • Sponsored</div></div>
+    <div id="giftAdBtn" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
   </a>
 </div>
-<div id="checking"><div><div style="font-size:42px">⏳</div><h2 style="color:#4c1d95;margin:10px 0">Checking...</h2><div style="font-weight:800;color:#6b7280">Please wait</div></div></div>
-<div id="fullLock"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Gifts Locked</h2><div id="fullLockMsg" style="font-weight:800;color:#6b7280">Gifts Live in --</div><div style="font-size:12px;color:#9ca3af;margin-top:8px">You used your 5 picks.<br>Come back in 1 hour • Watch / Quiz still open</div><button onclick="location.href='home.html'" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
-<main class="main-card">
-  <section class="balance-box">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div><div style="color:#d1d5db;font-size:11px">Your Balance</div><div class="balance-value" id="bal">-- 🪙</div></div>
-      <div style="text-align:right"><div style="color:#d1d5db;font-size:11px">Picks</div><div style="font-size:16px;font-weight:900;color:#fff"><strong id="today">0/5</strong></div></div>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
-    <div id="status" style="display:none"></div>
-  </section>
-  <div style="text-align:center;margin-top:10px">
-    <div style="font-size:14px;font-weight:900;color:#4c1d95">Tap to open.</div>
-    <div style="font-size:11px;font-weight:800;color:#6b7280;margin-top:1px"><i>You have only 5 picks / hour</i></div>
-  </div>
-  <div class="grid" id="giftGrid"></div>
-  <div id="finalBox" style="display:none;text-align:center;padding:10px;border:2px dashed #fbbf24;background:#fffbeb;border-radius:14px;margin-top:8px">
-    <div style="font-size:28px">🎉</div><h3 style="color:#4c1d95;margin:6px 0;font-weight:900">All 5 Picks Used!</h3>
-    <div id="finalMsg" style="font-size:13px;color:#6b7280;font-weight:700">You used your 5 picks</div>
-    <button id="claimFinalBtn" class="btn">Claim Coins 🪙</button>
-    <div style="font-size:10px;color:#9ca3af;margin-top:6px">Claim locks Gifts for 1h</div>
-  </div>
-</main>
-<div style="max-width:500px;margin:0 auto;padding:8px 14px 30px;width:100%">
-  <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:.5px">Advertisement</div>
-  <a id="giftsAdLinkBottom" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
-    <div style="flex:1"><div id="giftsAdTitleBottom" style="font-weight:900;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div id="giftsAdSubBottom" style="font-size:11px;color:#333">Limited offer • Sponsored</div></div>
-    <div id="giftsAdBtnBottom" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
-  </a>
-</div>
-<div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#9ca3af">✕</button><div class="gate-icon">🎁</div><div class="gate-title" id="gateTitle">Unwrapping your gift...</div><div id="gateSub" class="gate-sub">Please wait, your gift is loading</div><button id="watchAdBtn" class="gate-btn watch" disabled>Loading... 10s</button><div id="gateBarWrap"><div id="gateBar"></div></div><div id="gateTimer2"></div><button id="openBtn" class="gate-btn open">Tap to Reveal 🎁</button><div style="font-size:9px;color:#9ca3af;margin-top:10px;font-weight:700">Advertisement</div></div></div>
+
+<div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#9ca3af">✕</button><div class="gate-icon">🎁</div><div class="gate-title">Unwrapping your gift...</div><div id="gateSub" class="gate-sub">Please wait, your gift is loading</div><button id="watchAdBtn" class="gate-btn watch" disabled>Loading... 10s</button><div id="gateBarWrap"><div id="gateBar"></div></div><div id="gateTimer2"></div><button id="openBtn" class="gate-btn open">Tap to Reveal 🎁</button><div style="font-size:9px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div></div></div>
+<div id="toast"></div>
+
 <script>
-(()=>{ "use strict";
+const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
+firebase.initializeApp(firebaseConfig);
+try{firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
+const auth=firebase.auth(),db=firebase.firestore();
+
+const GIFT_ZONE='12273869';
+const GIFT_PUSH_ZONE='12350692';
+let currentUser=null, totalCoins=0, pickedCount=0, pendingGift=null, giftValues=[], isClaiming=false;
+
+const GIFT_ADS=[
+  {title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Sponsored",btn:"Visit →",bg:"#FFD700",link:"https://uplcm.com/4/12320757"},
+  {title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • Sponsored",btn:"Visit →",bg:"#7CFC00",link:"https://uplcm.com/4/12320757"},
+  {title:"📱 Win Free Airtime Today",sub:"MTN • Airtel • Sponsored",btn:"Visit →",bg:"#00D4FF",link:"https://uplcm.com/4/12320757"},
+  {title:"🔥 Hot Offer - Double Your Coins",sub:"Today only • Sponsored",btn:"Visit →",bg:"#FF9F43",link:"https://uplcm.com/4/12320757"}
+];
+const GIFT_AD_TIME=2*60*1000, GIFT_AD_KEY='giftAd_state_v1';
+let giftAdIndex=0;
+function saveGiftAd(){ try{ localStorage.setItem(GIFT_AD_KEY, JSON.stringify({index:giftAdIndex, changedAt:Date.now()})); }catch(e){} }
+function showGiftAd(i){
+  const a=GIFT_ADS[i]; const link=document.getElementById('giftAdLink'); if(!link) return;
+  link.href=a.link; link.style.background=a.bg;
+  document.getElementById('giftAdTitle').textContent=a.title;
+  document.getElementById('giftAdSub').textContent=a.sub;
+  document.getElementById('giftAdBtn').textContent=a.btn;
+}
+function nextGiftAd(){ giftAdIndex=(giftAdIndex+1)%GIFT_ADS.length; showGiftAd(giftAdIndex); saveGiftAd(); }
+(function initGiftAd(){
+  try{
+    const raw=localStorage.getItem(GIFT_AD_KEY);
+    if(!raw){ showGiftAd(0); saveGiftAd(); setTimeout(function(){ nextGiftAd(); setInterval(nextGiftAd, GIFT_AD_TIME); }, GIFT_AD_TIME); return; }
+    const saved=JSON.parse(raw); const elapsed=Date.now()-(saved.changedAt||Date.now());
+    const steps=Math.floor(elapsed/GIFT_AD_TIME); giftAdIndex=((saved.index||0)+steps)%GIFT_ADS.length;
+    const remain=GIFT_AD_TIME-(elapsed%GIFT_AD_TIME); showGiftAd(giftAdIndex);
+    try{ localStorage.setItem(GIFT_AD_KEY, JSON.stringify({index:giftAdIndex, changedAt:Date.now()-(elapsed%GIFT_AD_TIME)})); }catch(e){}
+    setTimeout(function(){ nextGiftAd(); setInterval(nextGiftAd, GIFT_AD_TIME); }, remain);
+  }catch(e){ showGiftAd(0); saveGiftAd(); setInterval(nextGiftAd, GIFT_AD_TIME); }
+})();
+
+function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',2500);}
+function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
+
 let vignetteLoaded=false;
-function loadCleanVignette(){ if(vignetteLoaded) return; vignetteLoaded=true; const old=document.querySelector('script[src*="vignette.min.js"]'); if(old) old.remove(); (function(s){s.dataset.zone='12273869',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement,document.body].filter(Boolean).pop().appendChild(document.createElement('script'))); setTimeout(()=>{vignetteLoaded=false;},60000); }
-// Gifts In-Page Push - Zone 12350692 - 1 per Claim only, never on page load, never per pick
-let giftsPushLoaded=false;
-function loadGiftsPush(){ if(giftsPushLoaded) return; giftsPushLoaded=true; const old=document.querySelector('script[src*="tag.min.js"][data-zone="12350692"]'); if(old) old.remove(); (function(s){s.dataset.zone='12350692',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script'))); setTimeout(()=>{giftsPushLoaded=false;},60000); }
-const ADS=[{title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Sponsored",btn:"Visit →",bg:"#FFD700",link:"https://uplcm.com/4/12320757"},{title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • Sponsored",btn:"Visit →",bg:"#7CFC00",link:"https://uplcm.com/4/12320757"},{title:"📱 Win Free Airtime Today",sub:"MTN • Airtel • Sponsored",btn:"Visit →",bg:"#00D4FF",link:"https://uplcm.com/4/12320757"},{title:"🔥 Hot Offer - Double Your Coins",sub:"Today only • Sponsored",btn:"Visit →",bg:"#FF9F43",link:"https://uplcm.com/4/12320757"}];
-const AD_TIME=2*60*1000, AD_KEY='giftsAd_state_v1'; let adIndex=0;
-function saveAd(){ try{localStorage.setItem(AD_KEY,JSON.stringify({index:adIndex,changedAt:Date.now()}));}catch(e){} }
-function showAd(i){ const a=ADS[i]; const t=document.getElementById('giftsAdLink'); if(t){t.href=a.link;t.style.background=a.bg;document.getElementById('giftsAdTitle').textContent=a.title;document.getElementById('giftsAdSub').textContent=a.sub;document.getElementById('giftsAdBtn').textContent=a.btn;} const b=document.getElementById('giftsAdLinkBottom'); if(b){b.href=a.link;b.style.background=a.bg;document.getElementById('giftsAdTitleBottom').textContent=a.title;document.getElementById('giftsAdSubBottom').textContent=a.sub;document.getElementById('giftsAdBtnBottom').textContent=a.btn;} }
-function nextAd(){ adIndex=(adIndex+1)%ADS.length; showAd(adIndex); saveAd(); }
-(function initAd(){ try{ const raw=localStorage.getItem(AD_KEY); if(!raw){showAd(0);saveAd();setTimeout(function(){nextAd();setInterval(nextAd,AD_TIME);},AD_TIME);return;} const s=JSON.parse(raw); const el=Date.now()-(s.changedAt||Date.now()); const steps=Math.floor(el/AD_TIME); adIndex=((s.index||0)+steps)%ADS.length; const rem=AD_TIME-(el%AD_TIME); showAd(adIndex); try{localStorage.setItem(AD_KEY,JSON.stringify({index:adIndex,changedAt:Date.now()-(el%AD_TIME)}));}catch(e){} setTimeout(function(){nextAd();setInterval(nextAd,AD_TIME);},rem); }catch(e){showAd(0);saveAd();setInterval(nextAd,AD_TIME);} })();
-let pendingPick=null;
-function openGiftAdGate(boxId){
-  pendingPick=boxId;
+function loadVignette(){
+  if(vignetteLoaded) return; vignetteLoaded=true;
+  const old=document.querySelector('script[src*="vignette.min.js"]'); if(old) old.remove();
+  (function(s){s.dataset.zone=GIFT_ZONE,s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+  setTimeout(()=>{vignetteLoaded=false;}, 60*1000);
+}
+let giftPushLoaded=false;
+function loadGiftPush(){
+  if(giftPushLoaded) return; giftPushLoaded=true;
+  const old=document.querySelector('script[src*="tag.min.js"][data-zone="12350692"]'); if(old) old.remove();
+  (function(s){s.dataset.zone='12350692',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+  setTimeout(()=>{giftPushLoaded=false;}, 60*1000);
+}
+
+function buildGrid(){
+  const grid=document.getElementById('giftGrid'); grid.innerHTML='';
+  // Seeded values for today + user so same user gets same gifts all day, different users different
+  const day=localDayKey();
+  const uid=(currentUser && currentUser.uid) || 'guest';
+  let seed=0; const str=day+'-'+uid; for(let i=0;i<str.length;i++) seed=(seed*31+str.charCodeAt(i))>>>0;
+  const pool=[1,1,2,2,3];
+  giftValues=[];
+  for(let i=0;i<5;i++){ seed=(seed*9301+49297)%233280; let j=seed%pool.length; giftValues.push(pool.splice(j,1)[0]); }
+  giftValues.push(0); // 6th cell = empty / decoy, keep grid 3x2
+  for(let i=0;i<6;i++){
+    const d=document.createElement('div'); d.className='gift'; d.dataset.idx=i;
+    if(i===5){ d.innerHTML='<div>🎁</div><div class="gift-label">Bonus Box</div>'; d.style.opacity='0.5'; d.onclick=()=>showToast('This is decoration — pick the other 5'); }
+    else { d.innerHTML='<div class="gift-emoji">🎁</div><div class="gift-label">Gift '+(i+1)+'</div>'; d.onclick=()=>onGiftClick(d,i); }
+    grid.appendChild(d);
+  }
+}
+function onGiftClick(el, idx){
+  if(el.classList.contains('opened')) return;
+  if(pendingGift!==null) return;
+  pendingGift={el, idx};
+  openGate();
+}
+let gateIv=null;
+function openGate(){
   document.getElementById('adGate').style.display='flex';
   document.getElementById('watchAdBtn').style.display='block';
   document.getElementById('watchAdBtn').disabled=true;
   document.getElementById('watchAdBtn').innerText='Loading... 10s';
   document.getElementById('openBtn').style.display='none';
-  document.getElementById('gateTitle').innerText='Unwrapping your gift...';
-  document.getElementById('gateSub').innerText='Please wait, your gift is loading';
   document.getElementById('gateBar').style.width='0%';
   document.getElementById('gateTimer2').innerText='Loading... 10s';
-  // Auto-start loading countdown - user thinks page is opening
-  let sec=10;
-  const bar=document.getElementById('gateBar');
-  const te=document.getElementById('gateTimer2');
-  const btn=document.getElementById('watchAdBtn');
-  const iv=setInterval(()=>{sec--; bar.style.width=((10-sec)/10*100)+'%'; if(sec>0){te.innerText='Loading... '+sec+'s'; btn.innerText='Loading... '+sec+'s';}else{clearInterval(iv); bar.style.width='100%'; document.getElementById('watchAdBtn').style.display='none'; te.innerText='Ready!'; document.getElementById('openBtn').style.display='block';}},1000);
+  let sec=10; const bar=document.getElementById('gateBar'); const te=document.getElementById('gateTimer2'); const btn=document.getElementById('watchAdBtn');
+  if(gateIv) clearInterval(gateIv);
+  gateIv=setInterval(()=>{sec--; bar.style.width=((10-sec)/10*100)+'%'; if(sec>0){te.innerText='Loading... '+sec+'s'; btn.innerText='Loading... '+sec+'s';} else {clearInterval(gateIv); bar.style.width='100%'; document.getElementById('watchAdBtn').style.display='none'; te.innerText='Ready!'; document.getElementById('openBtn').style.display='block';}},1000);
 }
-document.getElementById('openBtn').onclick=function(){ document.getElementById('adGate').style.display='none'; loadCleanVignette(); const id=pendingPick; pendingPick=null; if(id!==null && id!==undefined) doReveal(id); };
-const MISSES=[
-  {emoji:"🐄", label:"Cow"},
-  {emoji:"🏠", label:"House"},
-  {emoji:"🐐", label:"Goat"},
-  {emoji:"🚗", label:"Car"},
-  {emoji:"❓", label:"Q", moving:true},
-  {emoji:"0", label:"0"},
-  {emoji:"🧦", label:"Sock"},
-  {emoji:"🪨", label:"Stone"},
-  {emoji:"🥕", label:"Carrot"},
-  {emoji:"🍌", label:"Banana"},
-  {emoji:"📦", label:"Empty"},
-  {emoji:"💨", label:"Air"},
-];
-const WINS=[
-  {emoji:"🪙", label:"Coin", coins:1},
-  {emoji:"🪙", label:"Coin", coins:1},
-  {emoji:"🪙", label:"Coin", coins:1},
-];
-function seededShuffle(arr, seedStr){ let seed=0; for(let i=0;i<seedStr.length;i++) seed=(seed*31+seedStr.charCodeAt(i))>>>0; let a=[...arr]; for(let i=a.length-1;i>0;i--){ seed=(seed*9301+49297)%233280; let j=seed%(i+1); [a[i],a[j]]=[a[j],a[i]]; } return a; }
-function localDayKey(d=new Date()){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
-function localHourKey(d=new Date()){ return localDayKey(d)+"-"+String(d.getHours()).padStart(2,"0"); }
-function getTodayBoxes(uid){ const all=[...MISSES.map(m=>({...m,coins:0,type:'miss'})), ...WINS.map(w=>({...w,type:'win'}))]; return seededShuffle(all, localHourKey()+"-gifts-"+(uid||"guest")); }
-let BOXES=getTodayBoxes(null);
-const MAX_PICKS=5, MAX_COINS=3, DAY_MS=60*60*1000;
-const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
-if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth(), db=firebase.firestore();
-const el=id=>document.getElementById(id);
-const balEl=el("bal"), todayEl=el("today"), progFill=el("progFill"), gridEl=el("giftGrid"), finalBox=el("finalBox"), finalMsg=el("finalMsg"), claimBtn=el("claimFinalBtn"), fullLock=el("fullLock"), fullLockMsg=el("fullLockMsg"), checkingEl=el("checking");
-let currentUser=null, balance=0, openedIds=[], wonCoins=0, isClaiming=false, unsubscribe=null, lockTimer=null, firestoreReady=false;
-let justRevealed=-1, hideTimer=null;
-function showBubble(m){ return; }
-function getGiftsNextAvail(){ return Number(localStorage.getItem('gifts_nextAvail_v1')||0); }
-function setGiftsNextAvail(ts){ localStorage.setItem('gifts_nextAvail_v1', String(ts)); }
-function fmtShort(ms){ if(ms<=0) return "Ready"; const h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000), s=Math.floor((ms%60000)/1000); if(h>0) return h+"h"+String(m).padStart(2,"0"); if(m>0) return m+"m"+String(s).padStart(2,"0"); return s+"s"; }
-function saveLocal(){ localStorage.setItem('gifts_session', JSON.stringify({day:localHourKey(), opened:openedIds, won:wonCoins})); }
-function checkLock(){
-  if(!firestoreReady) return true;
-  const now=Date.now(), next=getGiftsNextAvail();
-  if(next && now>=next){ setGiftsNextAvail(0); }
-  if(next && now<next){
-    fullLock.style.display="flex"; fullLockMsg.textContent="Gifts Live in "+fmtShort(next-now);
-    if(lockTimer) clearInterval(lockTimer);
-    lockTimer=setInterval(()=>{ const d=getGiftsNextAvail()-Date.now(); if(d<=0){clearInterval(lockTimer); fullLock.style.display="none"; openedIds=[]; wonCoins=0; BOXES=getTodayBoxes(currentUser?currentUser.uid:null); renderGrid();} else { fullLockMsg.textContent="Gifts Live in "+fmtShort(d); } },1000);
-    return true;
-  }
-  fullLock.style.display="none"; return false;
-}
-function renderGrid(){
-  if(!firestoreReady) return;
-  if(checkLock()) return;
-  gridEl.innerHTML="";
-  BOXES.forEach((box, idx)=>{
-    const isOpen=openedIds.includes(idx);
-    const d=document.createElement('div');
-    if(isOpen && idx===justRevealed){
-      d.className='gift'+(box.type==='win'?' opened win':' opened miss');
-      d.innerHTML=`<span class="gift-emoji ${box.moving?'moving-q':''}">${box.emoji}</span>`;
-    } else {
-      d.className='gift';
-      d.innerHTML=`<span class="gift-emoji">🎁</span>`;
-      if(!isOpen){
-        d.onclick=()=>{ if(openedIds.length>=MAX_PICKS){ return; } openGiftAdGate(idx); };
-      }
-    }
-    gridEl.appendChild(d);
-  });
-  todayEl.textContent=`${openedIds.length}/${MAX_PICKS}`;
-  progFill.style.width=(openedIds.length/MAX_PICKS*100)+'%';
-  if(openedIds.length>=MAX_PICKS){ finalBox.style.display="block"; finalMsg.innerText=`You used your 5 picks`; claimBtn.innerText=`Claim Coins 🪙`; }
-  else { finalBox.style.display="none"; }
-  saveLocal();
-}
-async function doReveal(idx){
-  if(openedIds.includes(idx)) return;
-  if(openedIds.length>=MAX_PICKS) return;
-  const box=BOXES[idx];
-  openedIds.push(idx);
-  if(box.type==='win'){ wonCoins=Math.min(MAX_COINS, wonCoins+box.coins); }
-  if(currentUser){ try{ await db.collection("users").doc(currentUser.uid).set({giftsDay:localHourKey(), giftsOpened:openedIds, giftsWon:wonCoins, giftsCount:openedIds.length}, {merge:true}); }catch(e){} }
-  justRevealed=idx;
-  renderGrid();
-  if(hideTimer) clearTimeout(hideTimer);
-  hideTimer=setTimeout(()=>{
-    justRevealed=-1;
-    renderGrid();
-  }, 3500);
-}
-claimBtn.onclick=async()=>{
-  if(isClaiming) return; isClaiming=true;
-  if(!currentUser) return;
-  loadGiftsPush();
-  const userRef=db.collection("users").doc(currentUser.uid);
-  try{
-    await db.runTransaction(async t=>{
-      const snap=await t.get(userRef); if(!snap.exists) throw new Error("No account");
-      const data=snap.data()||{};
-      const oldBal=Number(data.balance??data.coins??0);
-      const win=Math.min(MAX_COINS, wonCoins);
-      t.update(userRef,{balance:oldBal+win, coins:oldBal+win, giftsDay:localHourKey(), giftsOpened:openedIds, giftsWon:win, giftsCount:openedIds.length, gifts_nextAvail:Date.now()+DAY_MS, lastGiftsDate:firebase.firestore.FieldValue.serverTimestamp()});
-    });
-    setGiftsNextAvail(Date.now()+DAY_MS);
-    localStorage.removeItem('gifts_session');
-    setTimeout(()=>{ location.href='home.html'; },1500);
-  }catch(e){ isClaiming=false; }
+document.getElementById('openBtn').onclick=function(){
+  document.getElementById('adGate').style.display='none';
+  loadVignette();
+  const g=pendingGift; pendingGift=null;
+  if(!g) return;
+  const val=giftValues[g.idx];
+  totalCoins+=val; pickedCount++;
+  g.el.classList.add('opened');
+  g.el.innerHTML='<div class="gift-emoji">🪙</div><div class="gift-value">+'+val+' coins</div>';
+  document.getElementById('totalCoins').innerText=totalCoins;
+  document.getElementById('pickedCount').innerText=pickedCount;
+  document.getElementById('statusText').innerText=pickedCount>=5 ? 'All gifts opened — Claim now!' : 'Nice! +'+val+' coins — Pick next gift';
+  showToast('🎁 +'+val+' coins!');
+  const claimBtn=document.getElementById('claimBtn');
+  claimBtn.innerText='Claim '+totalCoins+' Coins';
+  if(pickedCount>=5){ claimBtn.disabled=false; }
+  saveGiftSession();
 };
-auth.onAuthStateChanged(user=>{
-  if(!user){ location.href="./index.html"; return; }
-  currentUser=user; BOXES=getTodayBoxes(user.uid);
-  try{ const s=JSON.parse(localStorage.getItem('gifts_session')||'null'); if(s && s.day===localHourKey()){ openedIds=s.opened||[]; wonCoins=s.won||0; } }catch(e){}
-  if(unsubscribe) unsubscribe();
-  unsubscribe=db.collection("users").doc(user.uid).onSnapshot(async snap=>{
-    if(!snap.exists){ checkingEl.style.display='none'; firestoreReady=true; renderGrid(); return; }
-    const data=snap.data()||{};
-    const v=Number(data.gifts_nextAvail||0)||0;
-    if(v>0 && v>getGiftsNextAvail()) setGiftsNextAvail(v);
-    if(v>0 && v<Date.now()) setGiftsNextAvail(0);
-    balance=Number(data.balance??data.coins??0);
-    balEl.textContent=`${balance} 🪙 coins`;
-    if(data.giftsDay===localHourKey() && Array.isArray(data.giftsOpened)){
-      if(data.giftsOpened.length>openedIds.length){ openedIds=data.giftsOpened; wonCoins=Number(data.giftsWon||wonCoins); }
+function saveGiftSession(){
+  try{ localStorage.setItem('gift_session_'+localDayKey(), JSON.stringify({totalCoins, pickedCount, opened:[...document.querySelectorAll('.gift.opened')].map(e=>Number(e.dataset.idx)), values:giftValues})); }catch(e){}
+}
+function loadGiftSession(){
+  try{
+    const s=JSON.parse(localStorage.getItem('gift_session_'+localDayKey())||'null');
+    if(!s) return false;
+    totalCoins=s.totalCoins||0; pickedCount=s.pickedCount||0; if(s.values) giftValues=s.values;
+    document.getElementById('totalCoins').innerText=totalCoins;
+    document.getElementById('pickedCount').innerText=pickedCount;
+    (s.opened||[]).forEach(idx=>{
+      const el=document.querySelector('.gift[data-idx="'+idx+'"]'); if(!el) return;
+      const val=giftValues[idx]||0; el.classList.add('opened'); el.innerHTML='<div class="gift-emoji">🪙</div><div class="gift-value">+'+val+' coins</div>';
+    });
+    const claimBtn=document.getElementById('claimBtn'); claimBtn.innerText='Claim '+totalCoins+' Coins';
+    if(pickedCount>=5) claimBtn.disabled=false;
+    return true;
+  }catch(e){ return false; }
+}
+document.getElementById('claimBtn').onclick=async()=>{
+  if(isClaiming) return; if(pickedCount<5) return;
+  isClaiming=true;
+  const btn=document.getElementById('claimBtn'); btn.disabled=true; btn.innerText='Claiming...';
+  try{
+    if(!currentUser) throw new Error('Login required');
+    await db.collection('users').doc(currentUser.uid).set({
+      balance:firebase.firestore.FieldValue.increment(totalCoins),
+      coins:firebase.firestore.FieldValue.increment(totalCoins),
+      points:firebase.firestore.FieldValue.increment(totalCoins),
+      lastEarnAt:firebase.firestore.FieldValue.serverTimestamp(),
+      giftEarn_date:localDayKey(),
+      giftEarn_total:totalCoins
+    },{merge:true});
+    loadGiftPush();
+    showToast('✓ +'+totalCoins+' coins claimed!');
+    localStorage.removeItem('gift_session_'+localDayKey());
+    setTimeout(()=>{location.href='home.html';},1500);
+  }catch(e){ showToast(e.message); isClaiming=false; btn.disabled=false; btn.innerText='Claim '+totalCoins+' Coins'; }
+};
+auth.onAuthStateChanged(async(u)=>{
+  if(!u){location.href='./index.html';return;}
+  currentUser=u;
+  buildGrid();
+  loadGiftSession();
+  try{
+    const doc=await db.collection('users').doc(u.uid).get();
+    if(doc.exists && doc.data().giftEarn_date===localDayKey()){
+      document.getElementById('statusText').innerText='Already claimed today — Come back tomorrow';
+      document.querySelectorAll('.gift').forEach(g=>{g.style.pointerEvents='none'; g.style.opacity='0.6';});
+      document.getElementById('claimBtn').disabled=true; document.getElementById('claimBtn').innerText='Already Claimed Today';
     }
-    firestoreReady=true; checkingEl.style.display='none';
-    renderGrid();
-  }, ()=>{});
-  setInterval(()=>{ if(firestoreReady) checkLock(); },1000);
+  }catch(e){}
 });
-})();
-</script>
-</body>
-</html>
+</script></body></html>
