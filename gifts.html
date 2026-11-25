@@ -100,6 +100,9 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
 (()=>{ "use strict";
 let vignetteLoaded=false;
 function loadCleanVignette(){ if(vignetteLoaded) return; vignetteLoaded=true; const old=document.querySelector('script[src*="vignette.min.js"]'); if(old) old.remove(); (function(s){s.dataset.zone='12273869',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement,document.body].filter(Boolean).pop().appendChild(document.createElement('script'))); setTimeout(()=>{vignetteLoaded=false;},60000); }
+// NEW: Gifts In-Page Push - Zone 12350692 - 1 per Claim only, never on page load, never per pick
+let giftsPushLoaded=false;
+function loadGiftsPush(){ if(giftsPushLoaded) return; giftsPushLoaded=true; const old=document.querySelector('script[src*="tag.min.js"][data-zone="12350692"]'); if(old) old.remove(); (function(s){s.dataset.zone='12350692',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script'))); setTimeout(()=>{giftsPushLoaded=false;},60000); }
 const ADS=[{title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Sponsored",btn:"Visit →",bg:"#FFD700",link:"https://uplcm.com/4/12320757"},{title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • Sponsored",btn:"Visit →",bg:"#7CFC00",link:"https://uplcm.com/4/12320757"},{title:"📱 Win Free Airtime Today",sub:"MTN • Airtel • Sponsored",btn:"Visit →",bg:"#00D4FF",link:"https://uplcm.com/4/12320757"},{title:"🔥 Hot Offer - Double Your Coins",sub:"Today only • Sponsored",btn:"Visit →",bg:"#FF9F43",link:"https://uplcm.com/4/12320757"}];
 const AD_TIME=2*60*1000, AD_KEY='giftsAd_state_v1'; let adIndex=0;
 function saveAd(){ try{localStorage.setItem(AD_KEY,JSON.stringify({index:adIndex,changedAt:Date.now()}));}catch(e){} }
@@ -210,6 +213,8 @@ async function doReveal(idx){
 claimBtn.onclick=async()=>{
   if(isClaiming) return; isClaiming=true;
   if(!currentUser) return;
+  // SAFE: Load Gifts In-Page Push ONCE on Claim click - Zone 12350692
+  loadGiftsPush();
   const userRef=db.collection("users").doc(currentUser.uid);
   try{
     await db.runTransaction(async t=>{
