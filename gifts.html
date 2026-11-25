@@ -66,7 +66,7 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
   </a>
 </div>
 <div id="checking"><div><div style="font-size:42px">⏳</div><h2 style="color:#4c1d95;margin:10px 0">Checking...</h2><div style="font-weight:800;color:#6b7280">Please wait</div></div></div>
-<div id="fullLock"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Gifts Locked</h2><div id="fullLockMsg" style="font-weight:800;color:#6b7280">Gifts Live in --</div><div style="font-size:12px;color:#9ca3af;margin-top:8px">You used your 5 picks today.<br>Come back tomorrow • Watch / Quiz still open</div><button onclick="location.href='home.html'" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
+<div id="fullLock"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Gifts Locked</h2><div id="fullLockMsg" style="font-weight:800;color:#6b7280">Gifts Live in --</div><div style="font-size:12px;color:#9ca3af;margin-top:8px">You used your 5 picks.<br>Come back in 1 hour • Watch / Quiz still open</div><button onclick="location.href='home.html'" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
 <main class="main-card">
   <section class="balance-box">
     <div style="display:flex;justify-content:space-between;align-items:center">
@@ -78,14 +78,14 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
   </section>
   <div style="text-align:center;margin-top:10px">
     <div style="font-size:14px;font-weight:900;color:#4c1d95">Tap to open.</div>
-    <div style="font-size:11px;font-weight:800;color:#6b7280;margin-top:1px"><i>You have only 5 picks / day</i></div>
+    <div style="font-size:11px;font-weight:800;color:#6b7280;margin-top:1px"><i>You have only 5 picks / hour</i></div>
   </div>
   <div class="grid" id="giftGrid"></div>
   <div id="finalBox" style="display:none;text-align:center;padding:10px;border:2px dashed #fbbf24;background:#fffbeb;border-radius:14px;margin-top:8px">
     <div style="font-size:28px">🎉</div><h3 style="color:#4c1d95;margin:6px 0;font-weight:900">All 5 Picks Used!</h3>
     <div id="finalMsg" style="font-size:13px;color:#6b7280;font-weight:700">You used your 5 picks</div>
     <button id="claimFinalBtn" class="btn">Claim Coins 🪙</button>
-    <div style="font-size:10px;color:#9ca3af;margin-top:6px">Claim locks Gifts for 24h</div>
+    <div style="font-size:10px;color:#9ca3af;margin-top:6px">Claim locks Gifts for 1h</div>
   </div>
 </main>
 <div style="max-width:500px;margin:0 auto;padding:8px 14px 30px;width:100%">
@@ -139,9 +139,10 @@ const WINS=[
 ];
 function seededShuffle(arr, seedStr){ let seed=0; for(let i=0;i<seedStr.length;i++) seed=(seed*31+seedStr.charCodeAt(i))>>>0; let a=[...arr]; for(let i=a.length-1;i>0;i--){ seed=(seed*9301+49297)%233280; let j=seed%(i+1); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function localDayKey(d=new Date()){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
-function getTodayBoxes(uid){ const all=[...MISSES.map(m=>({...m,coins:0,type:'miss'})), ...WINS.map(w=>({...w,type:'win'}))]; return seededShuffle(all, localDayKey()+"-gifts-"+(uid||"guest")); }
+function localHourKey(d=new Date()){ return localDayKey(d)+"-"+String(d.getHours()).padStart(2,"0"); }
+function getTodayBoxes(uid){ const all=[...MISSES.map(m=>({...m,coins:0,type:'miss'})), ...WINS.map(w=>({...w,type:'win'}))]; return seededShuffle(all, localHourKey()+"-gifts-"+(uid||"guest")); }
 let BOXES=getTodayBoxes(null);
-const MAX_PICKS=5, MAX_COINS=3, DAY_MS=24*60*60*1000;
+const MAX_PICKS=5, MAX_COINS=3, DAY_MS=60*60*1000;
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore();
@@ -149,12 +150,11 @@ const el=id=>document.getElementById(id);
 const balEl=el("bal"), todayEl=el("today"), progFill=el("progFill"), gridEl=el("giftGrid"), finalBox=el("finalBox"), finalMsg=el("finalMsg"), claimBtn=el("claimFinalBtn"), fullLock=el("fullLock"), fullLockMsg=el("fullLockMsg"), checkingEl=el("checking");
 let currentUser=null, balance=0, openedIds=[], wonCoins=0, isClaiming=false, unsubscribe=null, lockTimer=null, firestoreReady=false;
 let justRevealed=-1, hideTimer=null;
-// POPUP REMOVED - showBubble does nothing now
 function showBubble(m){ return; }
 function getGiftsNextAvail(){ return Number(localStorage.getItem('gifts_nextAvail_v1')||0); }
 function setGiftsNextAvail(ts){ localStorage.setItem('gifts_nextAvail_v1', String(ts)); }
 function fmtShort(ms){ if(ms<=0) return "Ready"; const h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000), s=Math.floor((ms%60000)/1000); if(h>0) return h+"h"+String(m).padStart(2,"0"); if(m>0) return m+"m"+String(s).padStart(2,"0"); return s+"s"; }
-function saveLocal(){ localStorage.setItem('gifts_session', JSON.stringify({day:localDayKey(), opened:openedIds, won:wonCoins})); }
+function saveLocal(){ localStorage.setItem('gifts_session', JSON.stringify({day:localHourKey(), opened:openedIds, won:wonCoins})); }
 function checkLock(){
   if(!firestoreReady) return true;
   const now=Date.now(), next=getGiftsNextAvail();
@@ -162,7 +162,7 @@ function checkLock(){
   if(next && now<next){
     fullLock.style.display="flex"; fullLockMsg.textContent="Gifts Live in "+fmtShort(next-now);
     if(lockTimer) clearInterval(lockTimer);
-    lockTimer=setInterval(()=>{ const d=getGiftsNextAvail()-Date.now(); if(d<=0){clearInterval(lockTimer); fullLock.style.display="none"; renderGrid();} else { fullLockMsg.textContent="Gifts Live in "+fmtShort(d); } },1000);
+    lockTimer=setInterval(()=>{ const d=getGiftsNextAvail()-Date.now(); if(d<=0){clearInterval(lockTimer); fullLock.style.display="none"; openedIds=[]; wonCoins=0; BOXES=getTodayBoxes(currentUser?currentUser.uid:null); renderGrid();} else { fullLockMsg.textContent="Gifts Live in "+fmtShort(d); } },1000);
     return true;
   }
   fullLock.style.display="none"; return false;
@@ -198,7 +198,7 @@ async function doReveal(idx){
   const box=BOXES[idx];
   openedIds.push(idx);
   if(box.type==='win'){ wonCoins=Math.min(MAX_COINS, wonCoins+box.coins); }
-  if(currentUser){ try{ await db.collection("users").doc(currentUser.uid).set({giftsDay:localDayKey(), giftsOpened:openedIds, giftsWon:wonCoins, giftsCount:openedIds.length}, {merge:true}); }catch(e){} }
+  if(currentUser){ try{ await db.collection("users").doc(currentUser.uid).set({giftsDay:localHourKey(), giftsOpened:openedIds, giftsWon:wonCoins, giftsCount:openedIds.length}, {merge:true}); }catch(e){} }
   justRevealed=idx;
   renderGrid();
   if(hideTimer) clearTimeout(hideTimer);
@@ -217,7 +217,7 @@ claimBtn.onclick=async()=>{
       const data=snap.data()||{};
       const oldBal=Number(data.balance??data.coins??0);
       const win=Math.min(MAX_COINS, wonCoins);
-      t.update(userRef,{balance:oldBal+win, coins:oldBal+win, giftsDay:localDayKey(), giftsOpened:openedIds, giftsWon:win, giftsCount:openedIds.length, gifts_nextAvail:Date.now()+DAY_MS, lastGiftsDate:firebase.firestore.FieldValue.serverTimestamp()});
+      t.update(userRef,{balance:oldBal+win, coins:oldBal+win, giftsDay:localHourKey(), giftsOpened:openedIds, giftsWon:win, giftsCount:openedIds.length, gifts_nextAvail:Date.now()+DAY_MS, lastGiftsDate:firebase.firestore.FieldValue.serverTimestamp()});
     });
     setGiftsNextAvail(Date.now()+DAY_MS);
     localStorage.removeItem('gifts_session');
@@ -227,7 +227,7 @@ claimBtn.onclick=async()=>{
 auth.onAuthStateChanged(user=>{
   if(!user){ location.href="./index.html"; return; }
   currentUser=user; BOXES=getTodayBoxes(user.uid);
-  try{ const s=JSON.parse(localStorage.getItem('gifts_session')||'null'); if(s && s.day===localDayKey()){ openedIds=s.opened||[]; wonCoins=s.won||0; } }catch(e){}
+  try{ const s=JSON.parse(localStorage.getItem('gifts_session')||'null'); if(s && s.day===localHourKey()){ openedIds=s.opened||[]; wonCoins=s.won||0; } }catch(e){}
   if(unsubscribe) unsubscribe();
   unsubscribe=db.collection("users").doc(user.uid).onSnapshot(async snap=>{
     if(!snap.exists){ checkingEl.style.display='none'; firestoreReady=true; renderGrid(); return; }
@@ -237,7 +237,7 @@ auth.onAuthStateChanged(user=>{
     if(v>0 && v<Date.now()) setGiftsNextAvail(0);
     balance=Number(data.balance??data.coins??0);
     balEl.textContent=`${balance} 🪙 coins`;
-    if(data.giftsDay===localDayKey() && Array.isArray(data.giftsOpened)){
+    if(data.giftsDay===localHourKey() && Array.isArray(data.giftsOpened)){
       if(data.giftsOpened.length>openedIds.length){ openedIds=data.giftsOpened; wonCoins=Number(data.giftsWon||wonCoins); }
     }
     firestoreReady=true; checkingEl.style.display='none';
