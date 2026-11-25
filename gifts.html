@@ -37,17 +37,19 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
 .bubble{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#000;padding:10px 18px;border-radius:999px;font-weight:900;z-index:10000;display:none}
 #fullLock{position:fixed;inset:0;background:#f5f3ff;z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;text-align:center}
 #checking{position:fixed;inset:0;background:#f5f3ff;z-index:9998;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}
-#adGate{position:fixed;inset:0;background:rgba(17,12,34,.65);backdrop-filter:blur(8px);z-index:10001;display:none;align-items:center;justify-content:center;padding:20px}
-.gate-box{background:linear-gradient(180deg,#fff,#fbf7ff);border:2px solid #fbbf24;border-radius:24px;padding:22px 20px 18px;text-align:center;max-width:360px;width:100%;box-shadow:0 20px 50px rgba(109,40,217,.35);position:relative}
-.gate-icon{width:64px;height:64px;margin:0 auto 10px;background:linear-gradient(180deg,#fef3c7,#fbbf24);border:3px solid #f59e0b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px}
-.gate-title{font-weight:900;font-size:18px;color:#4c1d95}
+#adGate{position:fixed;inset:0;background:rgba(253,242,248,.92);backdrop-filter:blur(6px);z-index:10001;display:none;align-items:center;justify-content:center;padding:20px}
+.gate-box{background:linear-gradient(180deg,#fff,#fdf2f8);border:2px solid #f9a8d4;border-radius:24px;padding:22px 20px 18px;text-align:center;max-width:360px;width:100%;box-shadow:0 20px 50px rgba(219,39,119,.25);position:relative}
+.gate-icon{width:64px;height:64px;margin:0 auto 10px;background:linear-gradient(180deg,#fce7f3,#f9a8d4);border:3px solid #ec4899;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;animation:shake .8s infinite}
+.gate-title{font-weight:900;font-size:18px;color:#9d174d}
 .gate-sub{font-size:12px;color:#6b7280;margin:8px 0 16px;line-height:1.4;font-weight:600}
-.gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #ede9fe;font-weight:900;font-size:14px;cursor:pointer}
-.gate-btn.watch{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 4px 0 #d97706;border-color:#f59e0b}
+.gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #fbcfe8;font-weight:900;font-size:14px;cursor:pointer}
+.gate-btn.watch{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb}
 .gate-btn.watch:disabled{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb}
-.gate-btn.open{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #15803d;display:none;margin-top:10px}
-#gateTimer2{font-size:13px;font-weight:900;color:#92400e;margin-top:12px;background:#fffbeb;border:1.5px solid #fde68a;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
+.gate-btn.open{background:linear-gradient(180deg,#f472b6,#db2777);color:#fff;border-color:#be185d;box-shadow:0 4px 0 #9d174d;display:none;margin-top:10px}
+#gateTimer2{font-size:13px;font-weight:900;color:#9d174d;margin-top:12px;background:#fdf2f8;border:1.5px solid #fbcfe8;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
 #gateTimer2:empty{display:none}
+#gateBarWrap{height:6px;background:#fce7f3;border-radius:10px;overflow:hidden;margin-top:12px}
+#gateBar{height:100%;background:linear-gradient(90deg,#f472b6,#db2777);width:0%;transition:width 1s linear}
 .top-ad-wrap{position:sticky;top:56px;z-index:90;background:#f5f3ff;padding:8px 14px 0;width:100%;max-width:500px}
 </style>
 </head>
@@ -95,12 +97,12 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
     <div id="giftsAdBtnBottom" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
   </a>
 </div>
-<div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button><div class="gate-icon">🎁</div><div class="gate-title" id="gateTitle">Open Gift</div><div id="gateSub" class="gate-sub">Open to reveal what's inside this box</div><button id="watchAdBtn" class="gate-btn watch">Open</button><div id="gateTimer2"></div><button id="openBtn" class="gate-btn open">✅ Open Gift</button><div style="font-size:9px;color:#9ca3af;margin-top:10px;font-weight:700">Advertisement</div></div></div>
+<div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#9ca3af">✕</button><div class="gate-icon">🎁</div><div class="gate-title" id="gateTitle">Unwrapping your gift...</div><div id="gateSub" class="gate-sub">Please wait, your gift is loading</div><button id="watchAdBtn" class="gate-btn watch" disabled>Loading... 10s</button><div id="gateBarWrap"><div id="gateBar"></div></div><div id="gateTimer2"></div><button id="openBtn" class="gate-btn open">Tap to Reveal 🎁</button><div style="font-size:9px;color:#9ca3af;margin-top:10px;font-weight:700">Advertisement</div></div></div>
 <script>
 (()=>{ "use strict";
 let vignetteLoaded=false;
 function loadCleanVignette(){ if(vignetteLoaded) return; vignetteLoaded=true; const old=document.querySelector('script[src*="vignette.min.js"]'); if(old) old.remove(); (function(s){s.dataset.zone='12273869',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement,document.body].filter(Boolean).pop().appendChild(document.createElement('script'))); setTimeout(()=>{vignetteLoaded=false;},60000); }
-// NEW: Gifts In-Page Push - Zone 12350692 - 1 per Claim only, never on page load, never per pick
+// Gifts In-Page Push - Zone 12350692 - 1 per Claim only, never on page load, never per pick
 let giftsPushLoaded=false;
 function loadGiftsPush(){ if(giftsPushLoaded) return; giftsPushLoaded=true; const old=document.querySelector('script[src*="tag.min.js"][data-zone="12350692"]'); if(old) old.remove(); (function(s){s.dataset.zone='12350692',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script'))); setTimeout(()=>{giftsPushLoaded=false;},60000); }
 const ADS=[{title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Sponsored",btn:"Visit →",bg:"#FFD700",link:"https://uplcm.com/4/12320757"},{title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • Sponsored",btn:"Visit →",bg:"#7CFC00",link:"https://uplcm.com/4/12320757"},{title:"📱 Win Free Airtime Today",sub:"MTN • Airtel • Sponsored",btn:"Visit →",bg:"#00D4FF",link:"https://uplcm.com/4/12320757"},{title:"🔥 Hot Offer - Double Your Coins",sub:"Today only • Sponsored",btn:"Visit →",bg:"#FF9F43",link:"https://uplcm.com/4/12320757"}];
@@ -114,12 +116,20 @@ function openGiftAdGate(boxId){
   pendingPick=boxId;
   document.getElementById('adGate').style.display='flex';
   document.getElementById('watchAdBtn').style.display='block';
+  document.getElementById('watchAdBtn').disabled=true;
+  document.getElementById('watchAdBtn').innerText='Loading... 10s';
   document.getElementById('openBtn').style.display='none';
-  document.getElementById('watchAdBtn').disabled=false;
-  document.getElementById('gateTimer2').innerText='';
-  document.getElementById('watchAdBtn').innerText='Open';
+  document.getElementById('gateTitle').innerText='Unwrapping your gift...';
+  document.getElementById('gateSub').innerText='Please wait, your gift is loading';
+  document.getElementById('gateBar').style.width='0%';
+  document.getElementById('gateTimer2').innerText='Loading... 10s';
+  // Auto-start loading countdown - user thinks page is opening
+  let sec=10;
+  const bar=document.getElementById('gateBar');
+  const te=document.getElementById('gateTimer2');
+  const btn=document.getElementById('watchAdBtn');
+  const iv=setInterval(()=>{sec--; bar.style.width=((10-sec)/10*100)+'%'; if(sec>0){te.innerText='Loading... '+sec+'s'; btn.innerText='Loading... '+sec+'s';}else{clearInterval(iv); bar.style.width='100%'; document.getElementById('watchAdBtn').style.display='none'; te.innerText='Ready!'; document.getElementById('openBtn').style.display='block';}},1000);
 }
-document.getElementById('watchAdBtn').onclick=function(){ this.innerText='⏳ Please wait...'; this.disabled=true; let sec=10; const te=document.getElementById('gateTimer2'); te.innerText='⏳ Wait '+sec+'s...'; const iv=setInterval(()=>{sec--; if(sec>0){te.innerText='⏳ Wait '+sec+'s...';}else{clearInterval(iv);document.getElementById('watchAdBtn').style.display='none';te.innerText='✅ Ready!';document.getElementById('openBtn').style.display='block';}},1000); };
 document.getElementById('openBtn').onclick=function(){ document.getElementById('adGate').style.display='none'; loadCleanVignette(); const id=pendingPick; pendingPick=null; if(id!==null && id!==undefined) doReveal(id); };
 const MISSES=[
   {emoji:"🐄", label:"Cow"},
@@ -213,7 +223,6 @@ async function doReveal(idx){
 claimBtn.onclick=async()=>{
   if(isClaiming) return; isClaiming=true;
   if(!currentUser) return;
-  // SAFE: Load Gifts In-Page Push ONCE on Claim click - Zone 12350692
   loadGiftsPush();
   const userRef=db.collection("users").doc(currentUser.uid);
   try{
