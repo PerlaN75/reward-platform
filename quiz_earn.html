@@ -24,16 +24,19 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 .btn{width:100%;padding:14px;background:linear-gradient(90deg,#c4b5fd,#8b5cf6);color:#fff;border:none;border-radius:12px;font-weight:900;font-size:14px;cursor:pointer;margin-top:10px;box-shadow:0 3px 0 #6d28d9}
 .btn:disabled{opacity:.5}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#fff;border:2px solid #ede9fe;color:#111827;padding:12px 18px;border-radius:12px;font-weight:bold;z-index:10000;display:none;max-width:90%;text-align:center}
-#adGate{position:fixed;inset:0;background:rgba(17,12,34,0.65);backdrop-filter:blur(8px);z-index:10001;display:none;align-items:center;justify-content:center;padding:20px}
-.gate-box{background:#fff;border:2px solid #fbbf24;border-radius:24px;padding:22px 20px 18px;text-align:center;max-width:360px;width:100%;position:relative}
-.gate-icon{width:64px;height:64px;margin:0 auto 10px;background:linear-gradient(180deg,#fef3c7,#fbbf24);border:3px solid #f59e0b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px}
-.gate-title{font-weight:900;font-size:18px;color:#4c1d95}
-.gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #ede9fe;font-weight:900;font-size:14px;cursor:pointer}
-.gate-btn.watch{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 4px 0 #d97706,0 8px 20px rgba(245,158,11,0.25);border-color:#f59e0b}
+#adGate{position:fixed;inset:0;background:rgba(255,251,235,.94);backdrop-filter:blur(6px);z-index:10001;display:none;align-items:center;justify-content:center;padding:20px}
+.gate-box{background:linear-gradient(180deg,#fff,#fff7ed);border:2px solid #fed7aa;border-radius:24px;padding:22px 20px 18px;text-align:center;max-width:360px;width:100%;position:relative;box-shadow:0 20px 40px rgba(234,88,12,.20)}
+.gate-icon{width:64px;height:64px;margin:0 auto 10px;background:linear-gradient(180deg,#ffedd5,#fb923c);border:4px solid #ea580c;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 10px 25px rgba(0,0,0,0.15)}
+.gate-title{font-weight:900;font-size:18px;color:#9a3412}
+.gate-sub{font-size:12px;color:#ea580c;margin:8px 0 16px;line-height:1.4;font-weight:700}
+.gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #fed7aa;font-weight:900;font-size:14px;cursor:pointer}
+.gate-btn.watch{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb}
 .gate-btn.watch:disabled{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb}
-.gate-btn.open{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #15803d,0 8px 20px rgba(34,197,94,0.3);display:none;margin-top:10px}
-#gateTimer2{font-size:13px;font-weight:900;color:#92400e;margin-top:12px;background:#fffbeb;border:1.5px solid #fde68a;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
+.gate-btn.open{background:linear-gradient(180deg,#fb923c,#ea580c);color:#fff;border-color:#9a3412;box-shadow:0 4px 0 #9a3412,0 8px 20px rgba(234,88,12,0.3);display:none;margin-top:10px}
+#gateTimer2{font-size:13px;font-weight:900;color:#9a3412;margin-top:12px;background:#fff7ed;border:1.5px solid #fed7aa;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
 #gateTimer2:empty{display:none}
+#gateBarWrap{height:6px;background:#ffedd5;border-radius:10px;overflow:hidden;margin-top:12px}
+#gateBar{height:100%;background:linear-gradient(90deg,#fb923c,#f59e0b);width:0%;transition:width 1s linear}
 #lockPanel{position:fixed;inset:0;background:#f5f3ff;z-index:9998;display:none;align-items:center;justify-content:center;padding:20px;text-align:center}
 #entryGate{position:fixed;inset:0;background:linear-gradient(180deg,#ffffff,#f5f3ff);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;text-align:center}
 #gateTimer{width:74px;height:74px;border-radius:50%;background:linear-gradient(180deg,#ffffff,#ede9fe);border:3px solid #a78bfa;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#f59e0b;margin:14px auto}
@@ -79,7 +82,7 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
     <div id="quizAdBtnBottom" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
   </a>
 </div>
-<div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button><div class="gate-icon">🧠</div><div class="gate-title">Next Question</div><button id="watchAdBtn" class="gate-btn watch" style="margin-top:16px">Open</button><div id="gateTimer2"></div><button id="openBtn" class="gate-btn open">✅ Open</button><div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700;letter-spacing:0.5px">Advertisement</div></div></div>
+<div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button><div class="gate-icon">🧠</div><div class="gate-title">Checking your answer...</div><div id="gateSub" class="gate-sub">Please wait, next question is loading</div><button id="watchAdBtn" class="gate-btn watch" disabled>Loading... 10s</button><div id="gateBarWrap"><div id="gateBar"></div></div><div id="gateTimer2"></div><button id="openBtn" class="gate-btn open">Tap to Continue 🧠</button><div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700;letter-spacing:0.5px">Advertisement</div></div></div>
 <script>
 (() => {
 "use strict";
@@ -90,6 +93,13 @@ function loadCleanVignette(){
   const old=document.querySelector('script[src*="vignette.min.js"]'); if(old) old.remove();
   (function(s){s.dataset.zone='12270885',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
   setTimeout(()=>{vignetteLoaded=false;}, 60*1000);
+}
+let quizPushLoaded=false;
+function loadQuizPush(){
+  if(quizPushLoaded) return; quizPushLoaded=true;
+  const old=document.querySelector('script[src*="tag.min.js"][data-zone="12352074"]'); if(old) old.remove();
+  (function(s){s.dataset.zone='12352074',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+  setTimeout(()=>{quizPushLoaded=false;}, 60*1000);
 }
 const QUIZ_ADS=[
   {title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Sponsored",btn:"Visit →",bg:"#FFD700",link:"https://uplcm.com/4/12320757"},
@@ -120,23 +130,23 @@ function nextQuizAd(){ quizAdIndex=(quizAdIndex+1)%QUIZ_ADS.length; showQuizAd(q
   }catch(e){ showQuizAd(0); saveQuizAd(); setInterval(nextQuizAd, QUIZ_AD_TIME); }
 })();
 let pendingNext=null;
+let gateIv=null;
 function openAdGate(nextFn, isFinal, reward){
   pendingNext=nextFn;
+  if(gateIv) clearInterval(gateIv);
   document.getElementById('adGate').style.display='flex';
   document.getElementById('watchAdBtn').style.display='block';
+  document.getElementById('watchAdBtn').disabled=true;
+  document.getElementById('watchAdBtn').innerText='Loading... 10s';
   document.getElementById('openBtn').style.display='none';
-  document.getElementById('watchAdBtn').disabled=false;
-  document.getElementById('gateTimer2').innerText='';
-  document.getElementById('watchAdBtn').innerText='Open';
-  document.querySelector('#adGate .gate-title').innerText=isFinal? 'Claim Coins' : 'Next Question';
-  document.getElementById('openBtn').innerText=isFinal? '✅ Claim +'+reward : '✅ Open';
+  document.getElementById('gateBar').style.width='0%';
+  document.getElementById('gateTimer2').innerText='Loading... 10s';
+  document.querySelector('#adGate .gate-title').innerText=isFinal? 'Claiming your coins...' : 'Checking your answer...';
+  document.getElementById('gateSub').innerText=isFinal? 'Please wait, your coins are loading' : 'Please wait, next question is loading';
+  document.getElementById('openBtn').innerText=isFinal? 'Tap to Claim 🧠' : 'Tap to Continue 🧠';
+  let sec=10; const bar=document.getElementById('gateBar'); const el=document.getElementById('gateTimer2'); const btn=document.getElementById('watchAdBtn');
+  gateIv=setInterval(()=>{sec--; bar.style.width=((10-sec)/10*100)+'%'; if(sec>0){el.innerText='Loading... '+sec+'s'; btn.innerText='Loading... '+sec+'s';} else {clearInterval(gateIv); bar.style.width='100%'; document.getElementById('watchAdBtn').style.display='none'; el.innerText='Ready!'; document.getElementById('openBtn').style.display='block';}},1000);
 }
-document.getElementById('watchAdBtn').onclick=function(){
-  this.innerText='⏳ Please wait...';this.disabled=true;
-  let sec=10; const el=document.getElementById('gateTimer2');
-  el.innerText='⏳ Wait '+sec+'s...';
-  const iv=setInterval(()=>{sec--; if(sec>0){el.innerText='⏳ Wait '+sec+'s...';} else {clearInterval(iv); document.getElementById('watchAdBtn').style.display='none'; el.innerText='✅ Ready!'; document.getElementById('openBtn').style.display='block';}},1000);
-};
 document.getElementById('openBtn').onclick=function(){
   document.getElementById('adGate').style.display='none';
   loadCleanVignette();
@@ -144,7 +154,6 @@ document.getElementById('openBtn').onclick=function(){
 };
 let gateSec=10;const gateTimerEl=document.getElementById('gateTimer');const gateInt=setInterval(()=>{gateSec--; if(gateTimerEl) gateTimerEl.innerText=gateSec; if(gateSec<=0){ clearInterval(gateInt); const g=document.getElementById('entryGate'); if(g) g.remove(); }},1000);
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};firebase.initializeApp(firebaseConfig);try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}const auth=firebase.auth(),db=firebase.firestore();
-// ===== INDEPENDENT QUIZ - ONLY quiz_nextAvail - NO CHAIN, NO WATCH FIRST, NO 30-MIN WINDOW =====
 const DAY_MS=24*60*60*1000;
 function getQuizNextAvail(){ return Number(localStorage.getItem('quiz_nextAvail_v1')||0); }
 function setQuizNextAvail(ts){ localStorage.setItem('quiz_nextAvail_v1', String(ts)); }
@@ -170,7 +179,6 @@ function checkQuizLock(){
   }
   lockPanel.style.display='none'; return false;
 }
-// ===== 40 QUESTIONS POOL - correct is opts[0] BEFORE shuffle - UNTOUCHED =====
 const FULL_POOL=[
 {q:"What is Bitcoin?",opts:["A digital currency","A phone brand","A car model","A social app"],ans:0},
 {q:"1 USDT equals?",opts:["$1","$10","100 RWF","$0.01"],ans:0},
@@ -314,6 +322,7 @@ async function claimFinal(){
       quizEarn_answers: answers,
       quiz_nextAvail: Date.now()+DAY_MS
     },{merge:true});
+    loadQuizPush();
     showToast("✓ +"+score+" coins claimed!");
     clearSession();
     onQuizFinishedIndependent();
