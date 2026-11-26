@@ -161,12 +161,10 @@ let justRevealed=-1, hideTimer=null;
 function showBubble(m){ return; }
 function getGiftsNextAvail(){ return Number(localStorage.getItem('gifts_nextAvail_v1')||0); }
 function setGiftsNextAvail(ts){ localStorage.setItem('gifts_nextAvail_v1', String(ts)); }
-// ===== BONUS-STYLE COUNTDOWN - COPIED FROM BONUS =====
 const GIFTS_COOLDOWN_MS=60*60*1000;
 let giftsNextAllowed=0;
 function formatRemaining(ms){ if(ms<=0) return "0m"; const m=Math.floor(ms/60000), s=Math.floor((ms%60000)/1000); if(m>0) return `${m}m ${s}s`; return `${s}s`; }
 function fmtShort(ms){ if(ms<=0) return "Ready"; const h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000), s=Math.floor((ms%60000)/1000); if(h>0) return h+"h"+String(m).padStart(2,"0"); if(m>0) return m+"m"+String(s).padStart(2,"0"); return s+"s"; }
-// Convert Bonus-style server timestamp (lastGiftsTimestamp) to nextAllowed
 function giftsNextFromServer(data){
   if(!data) return 0;
   let last=data.lastGiftsTimestamp;
@@ -197,7 +195,6 @@ function startGiftsCountdown(){
 function checkLock(){
   if(!firestoreReady) return true;
   const now=Date.now();
-  // Prefer server-time nextAllowed (Bonus logic), fallback to old local gifts_nextAvail
   let next=giftsNextAllowed || getGiftsNextAvail();
   if(next && now>=next){ if(giftsNextAllowed) giftsNextAllowed=0; setGiftsNextAvail(0); }
   if(next && now<next){
@@ -262,9 +259,13 @@ claimBtn.onclick=async()=>{
       t.update(userRef,{balance:oldBal+win, coins:oldBal+win, giftsDay:localHourKey(), giftsOpened:openedIds, giftsWon:win, giftsCount:openedIds.length, gifts_nextAvail:nextAvail, lastGiftsTimestamp:firebase.firestore.FieldValue.serverTimestamp(), lastGiftsDate:firebase.firestore.FieldValue.serverTimestamp()});
       giftsNextAllowed=nextAvail;
     });
-    setGiftsNextAvail(Date.now()+DAY_MS);
+    const nextAvail2=Date.now()+DAY_MS;
+    giftsNextAllowed=nextAvail2;
+    setGiftsNextAvail(nextAvail2);
     localStorage.removeItem('gifts_session');
-    setTimeout(()=>{ location.href='home.html'; },1500);
+    openedIds=[]; wonCoins=0; finalBox.style.display="none";
+    startGiftsCountdown();
+    isClaiming=false;
   }catch(e){ isClaiming=false; }
 };
 auth.onAuthStateChanged(user=>{
@@ -275,7 +276,6 @@ auth.onAuthStateChanged(user=>{
   unsubscribe=db.collection("users").doc(user.uid).onSnapshot(async snap=>{
     if(!snap.exists){ checkingEl.style.display='none'; firestoreReady=true; renderGrid(); return; }
     const data=snap.data()||{};
-    // Bonus-style: server timestamp wins
     const serverNext=giftsNextFromServer(data);
     if(serverNext>0){
       if(serverNext>Date.now()){ giftsNextAllowed=serverNext; setGiftsNextAvail(serverNext); }
