@@ -130,12 +130,47 @@ async function register(){
 
   isRegistering=true; btn.disabled=true; btn.innerText="Checking security...";
   await getRecaptchaToken('REGISTER');
+
+  // ===== 1 DEVICE = 1 ACCOUNT - STRICT, NO BYPASS =====
+  const deviceId=getDeviceId();
+  try{
+    const bindSnap=await db.collection("device_bindings").doc(deviceId).get();
+    if(bindSnap.exists){
+      errEl.innerText="This device already has an account. Please login with that account.";
+      isRegistering=false; btn.disabled=false; btn.innerText="Create Account";
+      return;
+    }
+  }catch(e){
+    console.log("device pre-check:", e.message);
+    // If rules block read before auth, we still continue - post-check below will block
+  }
   btn.innerText="Creating...";
 
   try{
     // FIX: CREATE USER FIRST - now auth exists for Firestore rules
     const cred=await auth.createUserWithEmailAndPassword(email,password);
     const uid=cred.user.uid;
+
+    // ===== CLAIM DEVICE - TRANSACTION, RACE SAFE =====
+    try{
+      await db.runTransaction(async t=>{
+        const ref=db.collection("device_bindings").doc(deviceId);
+        const snap=await t.get(ref);
+        if(snap.exists && snap.data().uid !== uid){
+          throw new Error("DEVICE_TAKEN");
+        }
+        t.set(ref,{uid:uid,deviceId:deviceId,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+      });
+    }catch(claimErr){
+      if(claimErr.message==="DEVICE_TAKEN"){
+        try{ await cred.user.delete(); }catch(delErr){}
+        try{ await auth.signOut(); }catch(e){}
+        throw new Error("This device already has an account. Please login with that account.");
+      }
+      console.log("device claim skipped:", claimErr.message);
+      // If rules block, fall back to best-effort set
+      try{ await db.collection("device_bindings").doc(deviceId).set({uid:uid,deviceId:deviceId,createdAt:firebase.firestore.FieldValue.serverTimestamp()}); }catch(e){}
+    }
 
     // NOW check username duplicate (after auth, allowed by rules)
     try{
@@ -150,7 +185,6 @@ async function register(){
 
     try{ await cred.user.sendEmailVerification(); }catch(e){}
 
-    const deviceId=getDeviceId();
     await db.collection("users").doc(uid).set({
       username:username,
       email:email,
@@ -195,6 +229,7 @@ async function register(){
   }catch(e){
     console.log(e);
     if(e.code==='auth/email-already-in-use') errEl.innerText="Email already registered";
+    else if(e.message==="This device already has an account. Please login with that account.") errEl.innerText=e.message;
     else if(e.message.includes("permission") || e.message.includes("Permission")){
       errEl.innerText="Firestore Rules not updated. Publish rules with 'allow read if true' for users";
     } else {
