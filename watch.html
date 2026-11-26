@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Watch & Earn</title>
-<!-- MONETAG COMPLIANT: In-Page Push 12266334 after Open, 1 per video, hide during 10s wait, closeable, small - NO DIRECT LINK IN WATCH -->
+<!-- MONETAG COMPLIANT: Vignette 12356040 + In-Page Push 12266334 after Open, 1 per video, hide during 10s wait, closeable - NO DIRECT LINK IN WATCH -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
@@ -14,16 +14,20 @@
 .video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #111827;width:100%;margin-top:10px;position:relative}.player{background:#000;width:100%;min-height:280px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}video{display:block;width:100%;max-height:65vh;background:#000}.placeholder{color:#fff;text-align:center;padding:28px 14px;line-height:1.6;font-weight:800;font-size:18px}.controls{padding:9px;background:#000;display:flex;flex-direction:column;align-items:center}.btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:0;border-radius:12px;padding:12px;font-weight:900;font-size:14px;cursor:pointer;margin-top:8px}.btn:disabled{opacity:.55}.secondary-btn{background:#ede9fe;color:#4c1d95}#nextBtn{width:60%!important;margin:auto}.small-note{color:#6b7280;font-size:11px;text-align:center;margin:10px 4px 2px}.video-title{color:#fff;font-size:13px;font-weight:800;text-align:center;padding:8px 6px 0;background:#000}
 .bubble{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#000;padding:10px 18px;border-radius:999px;font-weight:900;z-index:10000;display:none}.lock-box{background:#fef3c7;border:2px solid #fbbf24;border-radius:14px;padding:14px;text-align:center;margin-top:10px}
 #rewardCircle{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(0);background:radial-gradient(circle at 30% 30%, #fef3c7, #fbbf24 60%, #f59e0b);color:#000;width:72px;height:72px;border-radius:50%;border:2px solid #fff;display:none;flex-direction:column;align-items:center;justify-content:center;font-weight:900;z-index:50;cursor:pointer}#rewardCircle.show{display:flex;animation:popIn .4s forwards}@keyframes popIn{to{transform:translate(-50%,-50%) scale(1)}}.burst-particle{position:absolute;left:50%;top:50%;pointer-events:none;z-index:100;font-size:14px;font-weight:900}@keyframes burstFly{0%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(var(--x), var(--y)) scale(0);opacity:0}}
-#adGate{position:fixed;inset:0;background:rgba(17,12,34,0.55);backdrop-filter:blur(10px);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}
-.gate-box{background:#ffffff;border-radius:28px;padding:22px 20px 18px;text-align:center;max-width:340px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.25);position:relative}
-.gate-pill{position:absolute;top:14px;right:14px;background:#ede9ff;color:#4c1d95;font-weight:800;font-size:12px;padding:6px 12px;border-radius:999px;display:flex;align-items:center;gap:4px}
-.gate-icon{width:72px;height:72px;margin:34px auto 14px;background:linear-gradient(135deg,#8b5cf6,#6366f1);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:36px;box-shadow:0 8px 20px rgba(99,102,241,0.35)}
-.gate-title{font-weight:900;font-size:22px;color:#111827;margin-top:6px}.gate-sub{font-size:14px;color:#6b7280;margin:8px 0 20px;font-weight:500}
-.gate-btn{width:100%;height:52px;border-radius:999px;border:none;font-weight:900;font-size:16px;cursor:pointer}
-.gate-btn.watch{background:linear-gradient(90deg,#6d28d9,#6366f1);color:#fff;box-shadow:0 6px 18px rgba(109,40,217,0.3)}
-.gate-btn.watch:disabled{background:#e5e7eb;color:#9ca3af;box-shadow:none}
-.gate-btn.open{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;display:none;margin-top:10px;box-shadow:0 4px 0 #15803d}
-.gate-footer{margin-top:20px;font-size:12px;color:#6b7280;display:flex;justify-content:center;gap:8px;align-items:center;font-weight:600}
+/* ===== ADGATE - SAME AS BONUS / GIFTS ===== */
+#adGate{position:fixed;inset:0;background:rgba(240,253,244,.94);backdrop-filter:blur(6px);z-index:10001;display:none;align-items:center;justify-content:center;padding:20px}
+.gate-box{background:linear-gradient(180deg,#fff,#f0fdf4);border:2px solid #86efac;border-radius:22px;padding:22px 20px;width:100%;max-width:320px;text-align:center;box-shadow:0 20px 40px rgba(21,128,61,.25);position:relative}
+.gate-icon{width:64px;height:64px;margin:0 auto 10px;background:linear-gradient(180deg,#fef3c7,#fbbf24);border:4px solid #f59e0b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 10px 25px rgba(0,0,0,0.15)}
+.gate-title{font-weight:900;font-size:18px;color:#14532d}
+.gate-sub{font-size:12px;color:#15803d;margin:8px 0 16px;line-height:1.4;font-weight:700}
+.gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #bbf7d0;font-weight:900;font-size:14px;cursor:pointer}
+.gate-btn.watch{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb}
+.gate-btn.watch:disabled{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb}
+.gate-btn.open{background:linear-gradient(180deg,#22c55e,#16a34a);color:#fff;border-color:#15803d;box-shadow:0 4px 0 #14532d,0 8px 20px rgba(34,197,94,0.3);display:none;margin-top:10px}
+#gateTimer2{font-size:13px;font-weight:900;color:#14532d;margin-top:12px;background:#f0fdf4;border:1.5px solid #bbf7d0;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
+#gateTimer2:empty{display:none}
+#gateBarWrap{height:6px;background:#dcfce7;border-radius:10px;overflow:hidden;margin-top:12px}
+#gateBar{height:100%;background:linear-gradient(90deg,#22c55e,#f59e0b);width:0%;transition:width 1s linear}
 </style></head><body>
 <div id="bubble" class="bubble"></div>
 <div class="top-bar"><a href="home.html" class="back-btn-checkin"><span class="lines"><i></i><i></i><i></i></span></a><div class="center-pill">📺 Watch & Earn</div><div style="width:45px"></div></div>
@@ -31,17 +35,8 @@
 <div id="lockPanel" class="lock-box" style="display:none"><div style="font-size:15px;font-weight:900;color:#92400e">🔒 Watch is locked</div><div id="lockMsg" style="font-size:13px;margin-top:6px;font-weight:800">Opens in --</div><div id="lockSub" style="font-size:11px;color:#6b7280;margin-top:6px">Watch locks 24h from finish. You can do Quiz / Articles now.</div></div>
 <section class="video-box" id="videoBox"><div class="video-title" id="videoTitle" style="display:none"></div><div class="player" id="player"><div class="placeholder">Your videos are ready.<br>Press Start to begin.</div><div id="rewardCircle"><div style="font-size:20px">+1</div><div style="font-size:10px">COIN</div></div></div><div class="controls" id="controls"><button class="btn" id="startBtn" disabled>Loading account...</button><button class="btn secondary-btn" id="nextBtn">Next video</button></div></section><p class="small-note">Watch 35s to unlock 1 coin. Watch 10 videos per day.</p>
 </main>
-<!-- NO DIRECT LINK IN WATCH - IN-PAGE PUSH ONLY, AFTER OPEN -->
-<div id="adGate"><div class="gate-box">
-<button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;left:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button>
-<div class="gate-pill" id="gateTimer">🕒 Wait 10s...</div>
-<div class="gate-icon">🎁</div>
-<div class="gate-title" id="gateTitle">Unlock +1 Coin</div>
-<div class="gate-sub" id="gateSub">Open to collect +1 coin</div>
-<button id="watchAdBtn" class="gate-btn watch">Open</button>
-<button id="openBtn" class="gate-btn open">✅ Open</button>
-<div class="gate-footer">Advertisement</div>
-</div></div>
+<!-- NO DIRECT LINK IN WATCH GATE - VIGNETTE + IN-PAGE PUSH ONLY, AFTER OPEN -->
+<div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#9ca3af">✕</button><div class="gate-icon">💰</div><div class="gate-title" id="gateTitle">Opening your vault...</div><div id="gateSub" class="gate-sub">Please wait, your coin is loading</div><button id="watchAdBtn" class="gate-btn watch" disabled>Loading... 10s</button><div id="gateBarWrap"><div id="gateBar"></div></div><div id="gateTimer2"></div><button id="openBtn" class="gate-btn open">Tap to Collect 💰</button><div style="font-size:9px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div></div></div>
 <script>
 (() => {
 "use strict";
@@ -54,25 +49,32 @@ function loadSafeInPagePush(){
   const s=document.createElement('script'); s.id='monetag-inpage'; s.dataset.zone='12266334'; s.src='https://nap5k.com/tag.min.js';
   (document.body || document.documentElement).appendChild(s);
 }
+/* ===== WATCH VIGNETTE - YOUR NEW ZONE 12356040 ===== */
+let watchVignetteLoaded=false;
+function loadWatchVignette(){
+  if(watchVignetteLoaded) return; watchVignetteLoaded=true;
+  const old=document.querySelector('script[src*="vignette.min.js"]'); if(old) old.remove();
+  (function(s){s.dataset.zone='12356040',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+  setTimeout(()=>{watchVignetteLoaded=false;}, 60*1000);
+}
+let gateIv=null;
 function openClaimGate(){
   hideOldAds();
-  document.getElementById('gateTitle').innerText='Unlock +1 Coin';
-  document.getElementById('gateSub').innerText='Open to collect +1 coin';
-  document.getElementById('openBtn').innerText='✅ Open';
+  document.getElementById('gateTitle').innerText='Opening your vault...';
+  document.getElementById('gateSub').innerText='Please wait, your coin is loading';
   document.getElementById('adGate').style.display='flex';
   document.getElementById('watchAdBtn').style.display='block';
+  document.getElementById('watchAdBtn').disabled=true;
+  document.getElementById('watchAdBtn').innerText='Loading... 10s';
   document.getElementById('openBtn').style.display='none';
-  document.getElementById('watchAdBtn').disabled=false;
-  document.getElementById('gateTimer').innerText='🕒 Wait 10s...';
-  document.getElementById('watchAdBtn').innerText='Open';
+  document.getElementById('gateBar').style.width='0%';
+  document.getElementById('gateTimer2').innerText='Loading... 10s';
+  let sec=10; const bar=document.getElementById('gateBar'); const te=document.getElementById('gateTimer2'); const btn=document.getElementById('watchAdBtn');
+  if(gateIv) clearInterval(gateIv);
+  gateIv=setInterval(()=>{sec--; bar.style.width=((10-sec)/10*100)+'%'; if(sec>0){te.innerText='Loading... '+sec+'s'; btn.innerText='Loading... '+sec+'s';} else {clearInterval(gateIv); bar.style.width='100%'; document.getElementById('watchAdBtn').style.display='none'; te.innerText='Ready!'; document.getElementById('openBtn').style.display='block';}},1000);
 }
-document.getElementById('watchAdBtn').onclick=function(){
-  this.disabled=true; let sec=10; const timerEl=document.getElementById('gateTimer');
-  timerEl.innerText='🕒 Wait '+sec+'s...'; this.innerText='⏳ Please wait...';
-  const interval=setInterval(()=>{ sec--; if(sec>0){timerEl.innerText='🕒 Wait '+sec+'s...'; document.getElementById('watchAdBtn').innerText='⏳ Please wait...';} else{clearInterval(interval); document.getElementById('watchAdBtn').style.display='none'; timerEl.innerText='✅ Ready!'; document.getElementById('openBtn').style.display='block';} },1000);
-};
 document.getElementById('openBtn').onclick=function(){
-  document.getElementById('adGate').style.display='none'; loadSafeInPagePush();
+  document.getElementById('adGate').style.display='none'; loadWatchVignette(); loadSafeInPagePush();
   doClaimWithBurst();
 };
 function doClaimWithBurst(){
