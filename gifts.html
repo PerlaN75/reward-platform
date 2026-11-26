@@ -68,7 +68,7 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
   </a>
 </div>
 <div id="checking"><div><div style="font-size:42px">⏳</div><h2 style="color:#4c1d95;margin:10px 0">Checking...</h2><div style="font-weight:800;color:#6b7280">Please wait</div></div></div>
-<div id="fullLock"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Gifts Locked</h2><div id="fullLockMsg" style="font-weight:800;color:#6b7280">Gifts Live in --</div><div style="font-size:12px;color:#9ca3af;margin-top:8px">You used your 5 picks.<br>Come back in 1 hour • Watch / Quiz still open</div><button onclick="location.href='home.html'" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
+<div id="fullLock"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Gifts Locked</h2><div id="fullLockMsg" style="font-weight:800;color:#6b7280">Next gifts in --</div><div style="font-size:12px;color:#9ca3af;margin-top:8px">You used your 5 picks.<br>Come back in 1 hour • Watch / Quiz still open</div><button id="fullLockBtn" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#e5e7eb;color:#9ca3af;font-weight:900" disabled>Wait --</button><br><button onclick="location.href='home.html'" style="margin-top:10px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
 <main class="main-card">
   <section class="balance-box">
     <div style="display:flex;justify-content:space-between;align-items:center">
@@ -155,22 +155,54 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore();
 const el=id=>document.getElementById(id);
-const balEl=el("bal"), todayEl=el("today"), progFill=el("progFill"), gridEl=el("giftGrid"), finalBox=el("finalBox"), finalMsg=el("finalMsg"), claimBtn=el("claimFinalBtn"), fullLock=el("fullLock"), fullLockMsg=el("fullLockMsg"), checkingEl=el("checking");
+const balEl=el("bal"), todayEl=el("today"), progFill=el("progFill"), gridEl=el("giftGrid"), finalBox=el("finalBox"), finalMsg=el("finalMsg"), claimBtn=el("claimFinalBtn"), fullLock=el("fullLock"), fullLockMsg=el("fullLockMsg"), fullLockBtn=el("fullLockBtn"), checkingEl=el("checking");
 let currentUser=null, balance=0, openedIds=[], wonCoins=0, isClaiming=false, unsubscribe=null, lockTimer=null, firestoreReady=false;
 let justRevealed=-1, hideTimer=null;
 function showBubble(m){ return; }
 function getGiftsNextAvail(){ return Number(localStorage.getItem('gifts_nextAvail_v1')||0); }
 function setGiftsNextAvail(ts){ localStorage.setItem('gifts_nextAvail_v1', String(ts)); }
+// ===== BONUS-STYLE COUNTDOWN - COPIED FROM BONUS =====
+const GIFTS_COOLDOWN_MS=60*60*1000;
+let giftsNextAllowed=0;
+function formatRemaining(ms){ if(ms<=0) return "0m"; const m=Math.floor(ms/60000), s=Math.floor((ms%60000)/1000); if(m>0) return `${m}m ${s}s`; return `${s}s`; }
 function fmtShort(ms){ if(ms<=0) return "Ready"; const h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000), s=Math.floor((ms%60000)/1000); if(h>0) return h+"h"+String(m).padStart(2,"0"); if(m>0) return m+"m"+String(s).padStart(2,"0"); return s+"s"; }
+// Convert Bonus-style server timestamp (lastGiftsTimestamp) to nextAllowed
+function giftsNextFromServer(data){
+  if(!data) return 0;
+  let last=data.lastGiftsTimestamp;
+  let ms=0;
+  if(last){ if(last.toMillis) ms=last.toMillis(); else if(last.seconds) ms=last.seconds*1000; else if(last._seconds) ms=last._seconds*1000; else if(typeof last==='number') ms=last; else if(typeof last==='string') ms=Date.parse(last)||0; }
+  if(ms) return ms+GIFTS_COOLDOWN_MS;
+  return 0;
+}
 function saveLocal(){ localStorage.setItem('gifts_session', JSON.stringify({day:localHourKey(), opened:openedIds, won:wonCoins})); }
+function unlockGifts(){
+  if(lockTimer) clearInterval(lockTimer); lockTimer=null;
+  giftsNextAllowed=0; setGiftsNextAvail(0);
+  fullLock.style.display="none"; openedIds=[]; wonCoins=0;
+  BOXES=getTodayBoxes(currentUser?currentUser.uid:null); renderGrid();
+}
+function startGiftsCountdown(){
+  if(lockTimer) clearInterval(lockTimer);
+  function update(){
+    const diff=giftsNextAllowed-Date.now();
+    if(diff<=0){ unlockGifts(); return; }
+    fullLock.style.display="flex";
+    fullLockMsg.textContent=`Next gifts in ${formatRemaining(diff)} — We'll notify you`;
+    if(fullLockBtn){ fullLockBtn.textContent=`Wait ${formatRemaining(diff)}`; fullLockBtn.disabled=true; }
+  }
+  update();
+  lockTimer=setInterval(update,1000);
+}
 function checkLock(){
   if(!firestoreReady) return true;
-  const now=Date.now(), next=getGiftsNextAvail();
-  if(next && now>=next){ setGiftsNextAvail(0); }
+  const now=Date.now();
+  // Prefer server-time nextAllowed (Bonus logic), fallback to old local gifts_nextAvail
+  let next=giftsNextAllowed || getGiftsNextAvail();
+  if(next && now>=next){ if(giftsNextAllowed) giftsNextAllowed=0; setGiftsNextAvail(0); }
   if(next && now<next){
-    fullLock.style.display="flex"; fullLockMsg.textContent="Gifts Live in "+fmtShort(next-now);
-    if(lockTimer) clearInterval(lockTimer);
-    lockTimer=setInterval(()=>{ const d=getGiftsNextAvail()-Date.now(); if(d<=0){clearInterval(lockTimer); fullLock.style.display="none"; openedIds=[]; wonCoins=0; BOXES=getTodayBoxes(currentUser?currentUser.uid:null); renderGrid();} else { fullLockMsg.textContent="Gifts Live in "+fmtShort(d); } },1000);
+    giftsNextAllowed=next; setGiftsNextAvail(next);
+    startGiftsCountdown();
     return true;
   }
   fullLock.style.display="none"; return false;
@@ -226,7 +258,9 @@ claimBtn.onclick=async()=>{
       const data=snap.data()||{};
       const oldBal=Number(data.balance??data.coins??0);
       const win=Math.min(MAX_COINS, wonCoins);
-      t.update(userRef,{balance:oldBal+win, coins:oldBal+win, giftsDay:localHourKey(), giftsOpened:openedIds, giftsWon:win, giftsCount:openedIds.length, gifts_nextAvail:Date.now()+DAY_MS, lastGiftsDate:firebase.firestore.FieldValue.serverTimestamp()});
+      const nextAvail=Date.now()+DAY_MS;
+      t.update(userRef,{balance:oldBal+win, coins:oldBal+win, giftsDay:localHourKey(), giftsOpened:openedIds, giftsWon:win, giftsCount:openedIds.length, gifts_nextAvail:nextAvail, lastGiftsTimestamp:firebase.firestore.FieldValue.serverTimestamp(), lastGiftsDate:firebase.firestore.FieldValue.serverTimestamp()});
+      giftsNextAllowed=nextAvail;
     });
     setGiftsNextAvail(Date.now()+DAY_MS);
     localStorage.removeItem('gifts_session');
@@ -241,9 +275,16 @@ auth.onAuthStateChanged(user=>{
   unsubscribe=db.collection("users").doc(user.uid).onSnapshot(async snap=>{
     if(!snap.exists){ checkingEl.style.display='none'; firestoreReady=true; renderGrid(); return; }
     const data=snap.data()||{};
-    const v=Number(data.gifts_nextAvail||0)||0;
-    if(v>0 && v>getGiftsNextAvail()) setGiftsNextAvail(v);
-    if(v>0 && v<Date.now()) setGiftsNextAvail(0);
+    // Bonus-style: server timestamp wins
+    const serverNext=giftsNextFromServer(data);
+    if(serverNext>0){
+      if(serverNext>Date.now()){ giftsNextAllowed=serverNext; setGiftsNextAvail(serverNext); }
+      else { giftsNextAllowed=0; setGiftsNextAvail(0); }
+    } else {
+      const v=Number(data.gifts_nextAvail||0)||0;
+      if(v>0 && v>getGiftsNextAvail()) setGiftsNextAvail(v);
+      if(v>0 && v<Date.now()) setGiftsNextAvail(0);
+    }
     balance=Number(data.balance??data.coins??0);
     balEl.textContent=`${balance} 🪙 coins`;
     if(data.giftsDay===localHourKey() && Array.isArray(data.giftsOpened)){
