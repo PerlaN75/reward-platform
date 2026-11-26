@@ -41,6 +41,7 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 #entryGate{position:fixed;inset:0;background:linear-gradient(180deg,#ffffff,#f5f3ff);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;text-align:center}
 #gateTimer{width:74px;height:74px;border-radius:50%;background:linear-gradient(180deg,#ffffff,#ede9fe);border:3px solid #a78bfa;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#f59e0b;margin:14px auto}
 .top-ad-wrap{position:sticky;top:62px;z-index:90;background:#f5f3ff;padding:10px 14px 0;width:100%;max-width:430px}
+#quizBannerBox{min-height:90px}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
@@ -75,12 +76,10 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 <button id="claimBtn" class="btn">Claim 0 Coins</button>
 <div style="font-size:10px;color:#9ca3af;margin-top:8px">If you quit before this, circle resets to 0</div>
 </div>
+<!-- IN-PAGE PUSH BANNER - BOTTOM ONLY - 12360849 - NO TOP POPUP -->
 <div style="max-width:400px;margin:0 auto;padding:0 14px 30px;width:100%">
   <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:0.5px">Advertisement</div>
-  <a id="quizAdLinkBottom" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
-    <div style="flex:1"><div id="quizAdTitleBottom" style="font-weight:900;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div id="quizAdSubBottom" style="font-size:11px;color:#333">Limited offer • Sponsored</div></div>
-    <div id="quizAdBtnBottom" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
-  </a>
+  <div id="quizBannerBox"></div>
 </div>
 <div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button><div class="gate-icon">🧠</div><div class="gate-title">Checking your answer...</div><div id="gateSub" class="gate-sub">Please wait, next question is loading</div><button id="watchAdBtn" class="gate-btn watch" disabled>Loading... 10s</button><div id="gateBarWrap"><div id="gateBar"></div></div><div id="gateTimer2"></div><button id="openBtn" class="gate-btn open">Tap to Continue 🧠</button><div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700;letter-spacing:0.5px">Advertisement</div></div></div>
 <script>
@@ -94,13 +93,15 @@ function loadCleanVignette(){
   (function(s){s.dataset.zone='12270885',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
   setTimeout(()=>{vignetteLoaded=false;}, 60*1000);
 }
-let quizPushLoaded=false;
-function loadQuizPush(){
-  if(quizPushLoaded) return; quizPushLoaded=true;
-  const old=document.querySelector('script[src*="tag.min.js"][data-zone="12352074"]'); if(old) old.remove();
-  (function(s){s.dataset.zone='12352074',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
-  setTimeout(()=>{quizPushLoaded=false;}, 60*1000);
-}
+// BANNER 12360849 - load once on page open, inside bottom box only
+(function loadQuizBanner(){
+  const box=document.getElementById('quizBannerBox');
+  if(!box) return;
+  const s=document.createElement('script');
+  s.dataset.zone='12360849';
+  s.src='https://nap5k.com/tag.min.js';
+  box.appendChild(s);
+})();
 const QUIZ_ADS=[
   {title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Sponsored",btn:"Visit →",bg:"#FFD700",link:"https://uplcm.com/4/12320757"},
   {title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • Sponsored",btn:"Visit →",bg:"#7CFC00",link:"https://uplcm.com/4/12320757"},
@@ -114,8 +115,6 @@ function showQuizAd(i){
   const a=QUIZ_ADS[i];
   const top=document.getElementById('quizAdLink');
   if(top){ top.href=a.link; top.style.background=a.bg; document.getElementById('quizAdTitle').textContent=a.title; document.getElementById('quizAdSub').textContent=a.sub; document.getElementById('quizAdBtn').textContent=a.btn; }
-  const bot=document.getElementById('quizAdLinkBottom');
-  if(bot){ bot.href=a.link; bot.style.background=a.bg; document.getElementById('quizAdTitleBottom').textContent=a.title; document.getElementById('quizAdSubBottom').textContent=a.sub; document.getElementById('quizAdBtnBottom').textContent=a.btn; }
 }
 function nextQuizAd(){ quizAdIndex=(quizAdIndex+1)%QUIZ_ADS.length; showQuizAd(quizAdIndex); saveQuizAd(); }
 (function initQuizAd(){
@@ -322,7 +321,6 @@ async function claimFinal(){
       quizEarn_answers: answers,
       quiz_nextAvail: Date.now()+DAY_MS
     },{merge:true});
-    loadQuizPush();
     showToast("✓ +"+score+" coins claimed!");
     clearSession();
     onQuizFinishedIndependent();
