@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Watch & Earn</title>
-<!-- WATCH - REVISED 2 - 3 SESSIONS - 3H GAP - 5s GATE EACH SESSION - Vignette 12268552 + Banner 12273869 -->
+<!-- WATCH - REVISED 3 - AUTO-FIX OLD 24h LOCK - 3 SESSIONS - 3H GAP - 5s GATE - Vignette 12268552 + Banner 12273869 -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
@@ -118,16 +118,16 @@ function shuffleWithSeed(array,seedStr){let arr=array.slice();let seed=hashCode(
 function buildShuffledList(){if(!currentUser)return VIDEOS.slice();const day=localDayKey();shuffledVideos=shuffleWithSeed(VIDEOS,day+"_"+currentUser.uid);return shuffledVideos;}
 function getAvailableVideos(){const list=shuffledVideos.length?shuffledVideos:VIDEOS;return list.filter(v=>!watchedVideoIds.includes(v.id));}
 function formatRemaining(ms){if(ms<=0)return"0m";const h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);if(h>0)return `${h}h ${m}m`;if(m>0)return `${m}m ${s}s`;return `${s}s`;}
-function getWatchNextAvail(){ return Number(localStorage.getItem('watch_nextAvail_v1')||0); }
-function setWatchNextAvail(ts){ localStorage.setItem('watch_nextAvail_v1', String(ts)); }
-function clearWatchNextAvail(){ localStorage.removeItem('watch_nextAvail_v1'); }
+// V2 KEY - old V1 24h lock is ignored
+function getWatchNextAvail(){ return Number(localStorage.getItem('watch_nextAvail_v2')||0); }
+function setWatchNextAvail(ts){ localStorage.setItem('watch_nextAvail_v2', String(ts)); localStorage.removeItem('watch_nextAvail_v1'); }
+function clearWatchNextAvail(){ localStorage.removeItem('watch_nextAvail_v2'); localStorage.removeItem('watch_nextAvail_v1'); }
 function onWatchClaimed(){
   const now=Date.now();
   const next = now + GAP_MS;
   setWatchNextAvail(next);
   if(currentUser) db.collection("users").doc(currentUser.uid).set({watch_nextAvail:next, watch_lastClaim:now, updated:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
 }
-// FIXED: This function ONLY decides lock, it does NOT update balance/progress
 function isLocked(){
   const now=Date.now(), next=getWatchNextAvail();
   if(todayCount>=DAILY_LIMIT) return 'done';
@@ -155,7 +155,6 @@ function checkWatchLocked(){
 function showReward(){if(todayCount>=DAILY_LIMIT)return;if(watchedVideoIds.includes(VIDEOS[currentVideoIndex]?.id))return;rewardCircle.classList.add("show");canClaim=true;}
 function hideReward(){rewardCircle.classList.remove("show");canClaim=false;}
 function showSeeYouSoon(){titleEl.style.display="none";if(todayCount>=DAILY_LIMIT){playerEl.innerHTML='<div class="placeholder">✅ Watch done!<br><small>Go do Quiz / Articles now</small></div>';playerEl.appendChild(rewardCircle);} else {playerEl.innerHTML='<div class="placeholder">✅ Watch done!<br><small>Quiz / Articles still open</small></div>';playerEl.appendChild(rewardCircle);}controlsEl.style.display="none";}
-// FIXED: Update balance + progress FIRST, then check lock
 function updateUI(){
   balanceEl.textContent=`${balance} 🪙 coins`;
   todayEl.textContent=`${Math.min(todayCount,DAILY_LIMIT)}/${DAILY_LIMIT}`;
@@ -198,7 +197,13 @@ startBtn.addEventListener("click",startOrResumeVideo);
 nextBtn.addEventListener("click",()=>{if(videoElement&&!videoElement.paused)videoElement.pause();resetVideoSession();chooseNextVideo();});
 auth.onAuthStateChanged(user=>{if(!user){location.href="./index.html";return;}currentUser=user;buildShuffledList();statusEl.textContent="Loading...";startBtn.disabled=true;if(window.unsubscribeUser) window.unsubscribeUser();window.unsubscribeUser=db.collection("users").doc(user.uid).onSnapshot(async snap=>{if(!snap.exists){statusEl.textContent="No account";return;}const data=snap.data()||{};await refreshDailyProgressIfNeeded(data);if(data.watchDay!==localDayKey()){ todayCount=0; watchedVideoIds=[]; balance=Number(data.balance??data.coins??0); updateUI(); return;}balance=Number(data.balance??data.coins??0);todayCount=Number(data.todayCount||0);watchedVideoIds=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds:[];
 let wv = Number(data.watch_nextAvail||0) || 0;
-// If Firestore says 0 (new day) but phone still has old 24h lock, clear it
+// ===== MIGRATION FIX FOR 17h53 =====
+// New lock is max 3h. If Firestore says >3h left, it's OLD 24h lock. Ignore it.
+if(wv>0 && (wv - Date.now()) > GAP_MS + 5*60*1000){
+  wv = 0;
+  clearWatchNextAvail();
+  db.collection("users").doc(user.uid).update({watch_nextAvail:0}).catch(()=>{});
+}
 if(wv===0) clearWatchNextAvail();
 else if(wv>0 && wv>getWatchNextAvail()) setWatchNextAvail(wv);
 updateUI();if(todayCount>=DAILY_LIMIT){showSeeYouSoon();}else if(!videoElement){chooseNextVideo();}});});
