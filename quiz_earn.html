@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="referrer" content="no-referrer-when-downgrade" />
-<title>Quiz Earn - Profitable</title>
+<meta name="referrer" content="no-referrer-when-downgrade">
+<title>Quiz Earn - 5 Questions</title>
 <style>
 *{ -webkit-tap-highlight-color:transparent; box-sizing:border-box } *:focus{outline:none !important}
 body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh}
@@ -21,25 +21,23 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 .q-title{font-size:14px;font-weight:900;text-align:left;margin:10px 0;line-height:1.4}
 .opt{width:100%;text-align:left;padding:12px;border:1.5px solid #ede9fe;border-radius:12px;margin:6px 0;background:#f9fafb;font-size:13px;font-weight:700;cursor:pointer}
 .opt.correct{background:#dcfce7;border-color:#22c55e} .opt.wrong{background:#fee2e2;border-color:#ef4444}
+.opt:disabled{cursor:default}
 .btn{width:100%;padding:14px;background:linear-gradient(90deg,#c4b5fd,#8b5cf6);color:#fff;border:none;border-radius:12px;font-weight:900;font-size:14px;cursor:pointer;margin-top:10px;box-shadow:0 3px 0 #6d28d9}
 .btn:disabled{opacity:.5}
 #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#fff;border:2px solid #ede9fe;color:#111827;padding:12px 18px;border-radius:12px;font-weight:bold;z-index:10000;display:none;max-width:90%;text-align:center}
 #adGate{position:fixed;inset:0;background:rgba(255,251,235,.94);backdrop-filter:blur(6px);z-index:10001;display:none;align-items:center;justify-content:center;padding:20px}
 .gate-box{background:linear-gradient(180deg,#fff,#fff7ed);border:2px solid #fed7aa;border-radius:24px;padding:22px 20px 18px;text-align:center;max-width:360px;width:100%;position:relative;box-shadow:0 20px 40px rgba(234,88,12,.20)}
-.gate-icon{width:64px;height:64px;margin:0 auto 10px;background:linear-gradient(180deg,#ffedd5,#fb923c);border:4px solid #ea580c;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 10px 25px rgba(0,0,0,0.15)}
+.gate-icon{width:64px;height:64px;margin:0 auto 10px;background:linear-gradient(180deg,#ffedd5,#fb923c);border:4px solid #ea580c;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px}
 .gate-title{font-weight:900;font-size:18px;color:#9a3412}
 .gate-sub{font-size:12px;color:#ea580c;margin:8px 0 16px;line-height:1.4;font-weight:700}
 .gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #fed7aa;font-weight:900;font-size:14px;cursor:pointer}
 .gate-btn.watch{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb}
-.gate-btn.watch:disabled{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb}
 .gate-btn.open{background:linear-gradient(180deg,#fb923c,#ea580c);color:#fff;border-color:#9a3412;box-shadow:0 4px 0 #9a3412,0 8px 20px rgba(234,88,12,0.3);display:none;margin-top:10px}
 #gateTimer2{font-size:13px;font-weight:900;color:#9a3412;margin-top:12px;background:#fff7ed;border:1.5px solid #fed7aa;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
 #gateTimer2:empty{display:none}
 #gateBarWrap{height:6px;background:#ffedd5;border-radius:10px;overflow:hidden;margin-top:12px}
 #gateBar{height:100%;background:linear-gradient(90deg,#fb923c,#f59e0b);width:0%;transition:width 1s linear}
 #lockPanel{position:fixed;inset:0;background:#f5f3ff;z-index:9998;display:none;align-items:center;justify-content:center;padding:20px;text-align:center}
-#entryGate{position:fixed;inset:0;background:linear-gradient(180deg,#ffffff,#f5f3ff);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;text-align:center}
-#gateTimer{width:74px;height:74px;border-radius:50%;background:linear-gradient(180deg,#ffffff,#ede9fe);border:3px solid #a78bfa;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#f59e0b;margin:14px auto}
 .top-ad-wrap{position:sticky;top:62px;z-index:90;background:#f5f3ff;padding:10px 14px 0;width:100%;max-width:430px}
 #quizBannerBox{min-height:90px}
 </style>
@@ -49,42 +47,41 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
-<div id="backBtn" onclick="if(confirm('Quit? Progress will reset to 0 and you get 0 coins')){localStorage.removeItem('quiz_session'); location.href='home.html'}"><span class="lines"><i></i><i></i><i></i></span></div>
-<div class="top-bar"><div class="center-pill">🧠 Quiz Earn — 10×1</div></div>
+<div id="backBtn" onclick="if(confirm('Quit? Progress will reset and you lose this session')){localStorage.removeItem('quiz_session_v2'); location.href='home.html'}"><span class="lines"><i></i><i></i><i></i></span></div>
+<div class="top-bar"><div class="center-pill">🧠 Quiz Earn — 5 Questions</div></div>
 <div class="top-ad-wrap">
-  <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:0.5px">Advertisement</div>
+  <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px">Advertisement</div>
   <a id="quizAdLink" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
     <div style="flex:1"><div id="quizAdTitle" style="font-weight:900;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div id="quizAdSub" style="font-size:11px;color:#333">Limited offer • Sponsored</div></div>
     <div id="quizAdBtn" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
   </a>
 </div>
 <div id="toast"></div>
-<div id="lockPanel"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Quiz Locked</h2><div id="lockMsg" style="font-weight:800;color:#6b7280">Quiz Live in --</div><div style="font-size:12px;color:#9ca3af;margin-top:8px">Quiz locks 6h from finish time.<br>You can do Watch / Articles now.</div><button onclick="location.href='home.html'" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
-<div id="entryGate"><div style="font-size:42px">🧠</div><h3 style="margin:12px 0 6px;font-size:18px;color:#4c1d95;font-weight:900">Quiz is Live</h3><div id="gateTimer">10</div><div style="font-size:12px;color:#8b5cf6;font-weight:800;margin-top:4px">Loading quiz...</div><div style="font-size:10px;color:#9ca3af;font-weight:700;margin-top:6px">Advertisement</div></div>
+<div id="lockPanel"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Quiz Locked</h2><div id="lockMsg" style="font-weight:800;color:#6b7280">Quiz Live in --</div><div id="lockSub" style="font-size:12px;color:#9ca3af;margin-top:8px">Next session in 3 hours.<br>You can do Watch / Articles now.</div><button onclick="location.href='home.html'" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
 <div class="card" id="quizCard">
-<div class="badge" id="progressBadge">Q 1/10 • Score 0</div>
+<div class="badge" id="progressBadge">Session 1/3 • Q 1/5 • Score 0</div>
 <div class="bar"><div class="fill" id="progBar"></div></div>
 <div class="timer" id="timerNum">12</div>
 <div id="quizQ" class="q-title">Loading...</div>
 <div id="quizOpts"></div>
-<div style="font-size:11px;color:#6b7280;margin-top:8px;font-weight:700">Right = +1, Wrong/Timeout = 0 • Quit = reset to 0</div>
+<div style="font-size:11px;color:#6b7280;margin-top:8px;font-weight:700">Need 4/5 correct to get +1 coin • Quit = session lost</div>
 </div>
 <div class="card" id="finalCard" style="display:none">
-<div style="font-size:32px">🎉</div><h3 style="color:#4c1d95;margin:8px 0;font-weight:900">Quiz Finished!</h3>
-<div id="finalScore" style="font-size:18px;font-weight:900;margin:10px 0">You got 0/10 correct</div>
+<div style="font-size:32px">🎉</div><h3 style="color:#4c1d95;margin:8px 0;font-weight:900">Session Finished!</h3>
+<div id="finalScore" style="font-size:18px;font-weight:900;margin:10px 0">You got 0/5 correct</div>
 <div id="finalReward" style="font-size:13px;color:#6b7280;font-weight:700">Reward: 0 coins</div>
 <button id="claimBtn" class="btn">Claim 0 Coins</button>
-<div style="font-size:10px;color:#9ca3af;margin-top:8px">If you quit before this, circle resets to 0</div>
+<div style="font-size:10px;color:#9ca3af;margin-top:8px">Next session in 3 hours • 4000 coins = $1</div>
 </div>
-<!-- IN-PAGE PUSH BANNER - BOTTOM ONLY - 12360849 - NO TOP POPUP -->
 <div style="max-width:400px;margin:0 auto;padding:0 14px 30px;width:100%">
-  <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:0.5px">Advertisement</div>
+  <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px">Advertisement</div>
   <div id="quizBannerBox"></div>
 </div>
-<div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button><div class="gate-icon">🧠</div><div class="gate-title">Checking your answer...</div><div id="gateSub" class="gate-sub">Please wait, next question is loading</div><button id="watchAdBtn" class="gate-btn watch" disabled>Loading... 10s</button><div id="gateBarWrap"><div id="gateBar"></div></div><div id="gateTimer2"></div><button id="openBtn" class="gate-btn open">Tap to Continue 🧠</button><div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700;letter-spacing:0.5px">Advertisement</div></div></div>
+<div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button><div class="gate-icon">🧠</div><div class="gate-title">Loading Quiz...</div><div id="gateSub" class="gate-sub">Please wait, quiz is loading</div><button id="watchAdBtn" class="gate-btn watch" disabled>Loading... 5s</button><div id="gateBarWrap"><div id="gateBar"></div></div><div id="gateTimer2"></div><button id="openBtn" class="gate-btn open">Tap to Continue 🧠</button><div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div></div></div>
 <script>
 (() => {
 "use strict";
+// ===== MONETAG =====
 let vignetteLoaded=false;
 function loadCleanVignette(){
   if(vignetteLoaded) return;
@@ -93,7 +90,7 @@ function loadCleanVignette(){
   (function(s){s.dataset.zone='12270885',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
   setTimeout(()=>{vignetteLoaded=false;}, 60*1000);
 }
-// BANNER 12360849 - load once on page open, inside bottom box only
+// Banner 12360849 - bottom box only, fixed ID
 (function loadQuizBanner(){
   const box=document.getElementById('quizBannerBox');
   if(!box) return;
@@ -111,11 +108,7 @@ const QUIZ_ADS=[
 const QUIZ_AD_TIME=2*60*1000, QUIZ_AD_KEY='quizAd_state_v1';
 let quizAdIndex=0;
 function saveQuizAd(){ try{ localStorage.setItem(QUIZ_AD_KEY, JSON.stringify({index:quizAdIndex, changedAt:Date.now()})); }catch(e){} }
-function showQuizAd(i){
-  const a=QUIZ_ADS[i];
-  const top=document.getElementById('quizAdLink');
-  if(top){ top.href=a.link; top.style.background=a.bg; document.getElementById('quizAdTitle').textContent=a.title; document.getElementById('quizAdSub').textContent=a.sub; document.getElementById('quizAdBtn').textContent=a.btn; }
-}
+function showQuizAd(i){ const a=QUIZ_ADS[i]; const top=document.getElementById('quizAdLink'); if(top){ top.href=a.link; top.style.background=a.bg; document.getElementById('quizAdTitle').textContent=a.title; document.getElementById('quizAdSub').textContent=a.sub; document.getElementById('quizAdBtn').textContent=a.btn; } }
 function nextQuizAd(){ quizAdIndex=(quizAdIndex+1)%QUIZ_ADS.length; showQuizAd(quizAdIndex); saveQuizAd(); }
 (function initQuizAd(){
   try{
@@ -128,34 +121,47 @@ function nextQuizAd(){ quizAdIndex=(quizAdIndex+1)%QUIZ_ADS.length; showQuizAd(q
     setTimeout(function(){ nextQuizAd(); setInterval(nextQuizAd, QUIZ_AD_TIME); }, remain);
   }catch(e){ showQuizAd(0); saveQuizAd(); setInterval(nextQuizAd, QUIZ_AD_TIME); }
 })();
+// ===== QUIZ CONFIG - OPTION B LOCKED =====
+const QUESTIONS_PER_SESSION = 5;
+const SESSIONS_PER_DAY = 3;
+const PASS_SCORE = 4;
+const GAP_MS = 3*60*60*1000;
+const GATE_SECONDS = 5;
 let pendingNext=null;
 let gateIv=null;
-function openAdGate(nextFn, isFinal, reward){
+let gateMode='start'; // 'start' or 'claim'
+function openAdGate(nextFn, mode){
+  gateMode = mode || 'start';
   pendingNext=nextFn;
   if(gateIv) clearInterval(gateIv);
   document.getElementById('adGate').style.display='flex';
   document.getElementById('watchAdBtn').style.display='block';
   document.getElementById('watchAdBtn').disabled=true;
-  document.getElementById('watchAdBtn').innerText='Loading... 10s';
+  document.getElementById('watchAdBtn').innerText='Loading... 5s';
   document.getElementById('openBtn').style.display='none';
   document.getElementById('gateBar').style.width='0%';
-  document.getElementById('gateTimer2').innerText='Loading... 10s';
-  document.querySelector('#adGate .gate-title').innerText=isFinal? 'Claiming your coins...' : 'Checking your answer...';
-  document.getElementById('gateSub').innerText=isFinal? 'Please wait, your coins are loading' : 'Please wait, next question is loading';
-  document.getElementById('openBtn').innerText=isFinal? 'Tap to Claim 🧠' : 'Tap to Continue 🧠';
-  let sec=10; const bar=document.getElementById('gateBar'); const el=document.getElementById('gateTimer2'); const btn=document.getElementById('watchAdBtn');
-  gateIv=setInterval(()=>{sec--; bar.style.width=((10-sec)/10*100)+'%'; if(sec>0){el.innerText='Loading... '+sec+'s'; btn.innerText='Loading... '+sec+'s';} else {clearInterval(gateIv); bar.style.width='100%'; document.getElementById('watchAdBtn').style.display='none'; el.innerText='Ready!'; document.getElementById('openBtn').style.display='block';}},1000);
+  document.getElementById('gateTimer2').innerText='Loading... 5s';
+  if(gateMode==='claim'){
+    document.querySelector('#adGate .gate-title').innerText='Claiming your coin...';
+    document.getElementById('gateSub').innerText='Please wait, your coin is loading';
+    document.getElementById('openBtn').innerText='Tap to Claim 🧠';
+  } else {
+    document.querySelector('#adGate .gate-title').innerText='Loading Quiz...';
+    document.getElementById('gateSub').innerText='Please wait, quiz is loading';
+    document.getElementById('openBtn').innerText='Tap to Start Quiz 🧠';
+  }
+  let sec=GATE_SECONDS; const bar=document.getElementById('gateBar'); const el=document.getElementById('gateTimer2'); const btn=document.getElementById('watchAdBtn');
+  gateIv=setInterval(()=>{sec--; bar.style.width=((GATE_SECONDS-sec)/GATE_SECONDS*100)+'%'; if(sec>0){el.innerText='Loading... '+sec+'s'; btn.innerText='Loading... '+sec+'s';} else {clearInterval(gateIv); bar.style.width='100%'; document.getElementById('watchAdBtn').style.display='none'; el.innerText='Ready!'; document.getElementById('openBtn').style.display='block';}},1000);
 }
 document.getElementById('openBtn').onclick=function(){
   document.getElementById('adGate').style.display='none';
-  loadCleanVignette();
+  loadCleanVignette(); // 1 Vignette per gate - 2 per session total
   const fn=pendingNext; pendingNext=null; if(fn) fn();
 };
-let gateSec=10;const gateTimerEl=document.getElementById('gateTimer');const gateInt=setInterval(()=>{gateSec--; if(gateTimerEl) gateTimerEl.innerText=gateSec; if(gateSec<=0){ clearInterval(gateInt); const g=document.getElementById('entryGate'); if(g) g.remove(); }},1000);
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};firebase.initializeApp(firebaseConfig);try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}const auth=firebase.auth(),db=firebase.firestore();
-const DAY_MS=6*60*60*1000;
-function getQuizNextAvail(){ return Number(localStorage.getItem('quiz_nextAvail_v1')||0); }
-function setQuizNextAvail(ts){ localStorage.setItem('quiz_nextAvail_v1', String(ts)); }
+function getQuizNextAvail(){ return Number(localStorage.getItem('quiz_nextAvail_v2')||0); }
+function setQuizNextAvail(ts){ localStorage.setItem('quiz_nextAvail_v2', String(ts)); localStorage.removeItem('quiz_nextAvail_v1'); }
+function clearQuizNextAvail(){ localStorage.removeItem('quiz_nextAvail_v2'); localStorage.removeItem('quiz_nextAvail_v1'); }
 function localDayKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
 function fmtShort(ms){
   if(ms<=0) return "Ready";
@@ -164,20 +170,24 @@ function fmtShort(ms){
   if(m>0) return m+"m"+String(s).padStart(2,"0");
   return s+"s";
 }
-function onQuizFinishedIndependent(){
-  const now=Date.now(), next=now+DAY_MS;
-  if(getQuizNextAvail()===next) return;
-  setQuizNextAvail(next);
-  if(window.currentUser) db.collection("users").doc(window.currentUser.uid).set({quiz_nextAvail:next, quiz_lastFinish:now, updated:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
-}
+let quizSessionsDone = 0;
 function checkQuizLock(){
   const now=Date.now(), next=getQuizNextAvail();
-  const lockPanel=document.getElementById('lockPanel'); const msg=document.getElementById('lockMsg');
-  if(next && now<next){
-    lockPanel.style.display='flex'; msg.innerText='Quiz Live in '+fmtShort(next-now); return true;
+  const lockPanel=document.getElementById('lockPanel'); const msg=document.getElementById('lockMsg'); const sub=document.getElementById('lockSub');
+  if(quizSessionsDone>=SESSIONS_PER_DAY){
+    lockPanel.style.display='flex'; msg.innerText='Done for today - 3/3'; if(sub) sub.innerText='Come back tomorrow. Watch / Articles still open.'; return true;
+  }
+  if(next && now<next && quizSessionsDone>0){
+    lockPanel.style.display='flex'; msg.innerText='Quiz Live in '+fmtShort(next-now); if(sub) sub.innerText='Next session in 3 hours. You can do Watch / Articles now.'; return true;
   }
   lockPanel.style.display='none'; return false;
 }
+function onQuizSessionFinished(){
+  const now=Date.now(), next=now+GAP_MS;
+  setQuizNextAvail(next);
+  if(window.currentUser) db.collection("users").doc(window.currentUser.uid).set({quiz_nextAvail:next, quiz_lastFinish:now, updated:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+}
+// ===== QUESTIONS - FIXED TO NEW RATE 4000 = $1 =====
 const FULL_POOL=[
 {q:"What is Bitcoin?",opts:["A digital currency","A phone brand","A car model","A social app"],ans:0},
 {q:"1 USDT equals?",opts:["$1","$10","100 RWF","$0.01"],ans:0},
@@ -186,9 +196,9 @@ const FULL_POOL=[
 {q:"What is your seed phrase?",opts:["Master key - keep secret","Public username","Password to share","Email address"],ans:0},
 {q:"Binance P2P is used to?",opts:["Sell USDT for MoMo","Buy airtime only","Play games","Watch videos"],ans:0},
 {q:"Inflation means?",opts:["Prices go up yearly","Prices go down","No change","Money doubles"],ans:0},
-{q:"How much is 3000 coins?",opts:["$1.5","$10","$100","$0.15"],ans:0},
+{q:"How much is 4000 coins?",opts:["$1","$10","$100","$0.15"],ans:0},
 {q:"AI can help Rwandans to?",opts:["Write CV & translate","Replace all jobs","Only play music","Cook food"],ans:0},
-{q:"Saving $1.5 daily for 30 days = ?",opts:["$45","$5","$500","$15"],ans:0},
+{q:"Saving $1 daily for 30 days = ?",opts:["$30","$5","$500","$15"],ans:0},
 {q:"What is MoMo?",opts:["Mobile Money","A game","A bank in USA","A phone"],ans:0},
 {q:"What is private key?",opts:["Secret to control wallet","Email password","Phone number","Username"],ans:0},
 {q:"TRC20 needs what for fee?",opts:["TRX","BTC","ETH","USDT"],ans:0},
@@ -213,7 +223,7 @@ const FULL_POOL=[
 {q:"Which planet is called Red Planet?",opts:["Mars","Venus","Jupiter","Saturn"],ans:0},
 {q:"How many minutes in 2 hours?",opts:["120","100","90","200"],ans:0},
 {q:"What is the main language in Kigali?",opts:["Kinyarwanda","French only","Swahili only","English only"],ans:0},
-{q:"If 1 coin = $0.0005, 2000 coins = ?",opts:["$1","$10","$0.10","$2"],ans:0},
+{q:"If 1 coin = $0.00025, 4000 coins = ?",opts:["$1","$10","$0.10","$2"],ans:0},
 {q:"What should you do if someone asks for your seed phrase?",opts:["Never share it","Share it quickly","Send screenshot","Tell on WhatsApp"],ans:0},
 {q:"Which is a crypto wallet?",opts:["Trust Wallet","Instagram","TikTok","Gmail"],ans:0},
 {q:"What is 2FA?",opts:["Extra security code - Two Factor Auth","Two Facebook Accounts","Second phone","Fast internet"],ans:0},
@@ -226,29 +236,32 @@ function seededShuffle(array, seedStr){
   for(let i=arr.length-1;i>0;i--){ seed=(seed*9301+49297)%233280; let j=seed%(i+1); [arr[i],arr[j]]=[arr[j],arr[i]]; }
   return arr;
 }
-function getTodayPool(){
+function getSessionPool(sessionIdx){
   const day=new Date().toISOString().split('T')[0];
   const uid=(window.currentUser && window.currentUser.uid) || localStorage.getItem('quiz_uid_seed') || 'guest';
-  const picked=seededShuffle(FULL_POOL, day+'-'+uid).slice(0,10);
+  const shuffledAll = seededShuffle(FULL_POOL, day+'-'+uid);
+  const picked = shuffledAll.slice(sessionIdx*QUESTIONS_PER_SESSION, sessionIdx*QUESTIONS_PER_SESSION+QUESTIONS_PER_SESSION);
   return picked.map((qq, idx)=>{
     const correctText=qq.opts[qq.ans];
-    const shuffled=seededShuffle(qq.opts, day+'-'+uid+'-q'+idx);
+    const shuffled=seededShuffle(qq.opts, day+'-'+uid+'-s'+sessionIdx+'-q'+idx);
     return { q:qq.q, opts:shuffled, ans:shuffled.indexOf(correctText) };
   });
 }
-let pool=getTodayPool();
+let pool=[];
 let currentIndex=0, score=0, timer=null, sec=12, answers=[], isClaiming=false;
 let currentUser=null;
+let currentSessionIdx = 0;
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',2500);}
-function saveSession(){localStorage.setItem('quiz_session', JSON.stringify({day:localDayKey(), idx:currentIndex, score:score, answers:answers, pool:pool}));}
-function loadSession(){try{const s=JSON.parse(localStorage.getItem('quiz_session')||'null'); if(s && s.day===localDayKey()){pool=s.pool||pool; currentIndex=s.idx||0; score=s.score||0; answers=s.answers||[]; return true;} }catch(e){} return false;}
-function clearSession(){localStorage.removeItem('quiz_session');}
+function saveSession(){localStorage.setItem('quiz_session_v2', JSON.stringify({day:localDayKey(), session:currentSessionIdx, sessionsDone:quizSessionsDone, idx:currentIndex, score:score, answers:answers, pool:pool}));}
+function loadSession(){try{const s=JSON.parse(localStorage.getItem('quiz_session_v2')||'null'); if(s && s.day===localDayKey()){pool=s.pool||[]; currentIndex=s.idx||0; score=s.score||0; answers=s.answers||[]; currentSessionIdx=s.session||0; quizSessionsDone=s.sessionsDone||0; return true;} }catch(e){} return false;}
+function clearSession(){localStorage.removeItem('quiz_session_v2');}
 function renderQuestion(){
   if(checkQuizLock()) return;
-  if(currentIndex>=10){showFinal(); return;}
+  if(currentIndex>=QUESTIONS_PER_SESSION){showFinal(); return;}
   const q=pool[currentIndex];
-  document.getElementById('progressBadge').innerText=`Q ${currentIndex+1}/10 • Score ${score}`;
-  document.getElementById('progBar').style.width=((currentIndex)/10*100)+'%';
+  if(!q){ showFinal(); return; }
+  document.getElementById('progressBadge').innerText=`Session ${currentSessionIdx+1}/3 • Q ${currentIndex+1}/5 • Score ${score}`;
+  document.getElementById('progBar').style.width=((currentIndex)/QUESTIONS_PER_SESSION*100)+'%';
   document.getElementById('quizQ').innerText=(currentIndex+1)+". "+q.q;
   const optsDiv=document.getElementById('quizOpts'); optsDiv.innerHTML="";
   q.opts.forEach((op,i)=>{
@@ -266,73 +279,76 @@ function renderQuestion(){
 }
 function handleTimeout(){
   answers.push({q:currentIndex, correct:false, timeout:true});
-  showToast("Time over — 0 coin for this question");
-  goNextWithAd();
+  showToast("Time over — 0 for this question");
+  goNextNoAd();
 }
 function answerQuestion(idx){
   if(timer) clearInterval(timer);
   const q=pool[currentIndex];
   const correct=idx===q.ans;
   document.querySelectorAll('.opt').forEach((o,i)=>{o.disabled=true; if(i===q.ans) o.classList.add('correct'); else if(i===idx && !correct) o.classList.add('wrong');});
-  if(correct){score++; showToast("Correct! +1 (will claim at end)");} else {showToast("Wrong — 0 for this question");}
+  if(correct){score++; showToast("Correct!");} else {showToast("Wrong — 0 for this question");}
   answers.push({q:currentIndex, correct:correct});
-  setTimeout(()=>{goNextWithAd();},800);
+  setTimeout(()=>{goNextNoAd();},800);
 }
-function goNextWithAd(){
-  if(currentIndex+1>=10){
+function goNextNoAd(){
+  if(currentIndex+1>=QUESTIONS_PER_SESSION){
     currentIndex++; saveSession(); showFinal(); return;
   }
-  openAdGate(()=>{
-    currentIndex++; renderQuestion();
-  }, false, 0);
+  currentIndex++; renderQuestion();
 }
 function showFinal(){
   if(timer) clearInterval(timer);
   document.getElementById('quizCard').style.display='none';
   const finalCard=document.getElementById('finalCard'); finalCard.style.display='block';
-  document.getElementById('finalScore').innerText=`You got ${score}/10 correct`;
-  document.getElementById('finalReward').innerText=`Reward: ${score} coins (wrong/timeout = 0)`;
-  document.getElementById('claimBtn').innerText=`Claim ${score} Coins`;
+  document.getElementById('finalScore').innerText=`You got ${score}/5 correct`;
+  const reward = score>=PASS_SCORE ? 1 : 0;
+  document.getElementById('finalReward').innerText = reward===1 ? `Reward: +1 coin (Passed 4/5!)` : `Reward: 0 coins - Need 4/5 to pass. Try next session.`;
+  document.getElementById('claimBtn').innerText=`Claim ${reward} Coin`;
   document.getElementById('progBar').style.width='100%';
 }
 document.getElementById('claimBtn').onclick=function(){
   if(isClaiming) return;
-  if(score===0){
-    if(confirm("You got 0 correct = 0 coins. Claim 0 to finish?")){
-      finishWithZero();
-    }
-    return;
-  }
   isClaiming=true;
+  // OPTION B - 2nd Vignette: at Claim
   openAdGate(async ()=>{
     await claimFinal();
-  }, true, score);
+  }, 'claim');
 };
 async function claimFinal(){
-  if(!currentUser) return;
+  if(!currentUser){ isClaiming=false; return; }
+  const reward = score>=PASS_SCORE ? 1 : 0;
+  const nextSession = quizSessionsDone + 1;
   try{
-    await db.collection('users').doc(currentUser.uid).set({
-      balance: firebase.firestore.FieldValue.increment(score),
-      coins: firebase.firestore.FieldValue.increment(score),
-      points: firebase.firestore.FieldValue.increment(score),
-      lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),
-      quizEarn_date: localDayKey(),
-      quizEarn_score: score,
-      quizEarn_answers: answers,
-      quiz_nextAvail: Date.now()+DAY_MS
-    },{merge:true});
-    showToast("✓ +"+score+" coins claimed!");
+    if(reward===1){
+      await db.collection('users').doc(currentUser.uid).set({
+        balance: firebase.firestore.FieldValue.increment(1),
+        coins: firebase.firestore.FieldValue.increment(1),
+        points: firebase.firestore.FieldValue.increment(1),
+        lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),
+        quizEarn_date: localDayKey(),
+        quizSessionsDone: nextSession,
+        quizDay: localDayKey(),
+        quizEarn_score: score,
+        quizEarn_answers: answers,
+        quiz_nextAvail: Date.now()+GAP_MS
+      },{merge:true});
+      showToast("✓ +1 coin claimed!");
+    } else {
+      await db.collection('users').doc(currentUser.uid).set({
+        quizEarn_date: localDayKey(),
+        quizSessionsDone: nextSession,
+        quizDay: localDayKey(),
+        quizEarn_score: score,
+        quiz_nextAvail: Date.now()+GAP_MS
+      },{merge:true});
+      showToast("Session done - 0 coins, need 4/5");
+    }
+    quizSessionsDone = nextSession;
     clearSession();
-    onQuizFinishedIndependent();
+    onQuizSessionFinished();
     setTimeout(()=>{location.href='home.html';},1500);
   }catch(e){showToast(e.message); isClaiming=false;}
-}
-async function finishWithZero(){
-  clearSession();
-  onQuizFinishedIndependent();
-  if(currentUser) db.collection('users').doc(currentUser.uid).set({quizEarn_date:localDayKey(), quizEarn_score:0, quiz_nextAvail:Date.now()+DAY_MS},{merge:true});
-  showToast("Finished — 0 coins");
-  setTimeout(()=>{location.href='home.html';},1500);
 }
 auth.onAuthStateChanged(async u=>{
   if(!u){location.href='./index.html';return;}
@@ -342,24 +358,43 @@ auth.onAuthStateChanged(async u=>{
     const doc=await db.collection('users').doc(u.uid).get();
     if(doc.exists){
       const d=doc.data()||{};
-      const v = Number(d.quiz_nextAvail||0) || Number((d.chain&&d.chain.quiz_nextAvail)||0) || 0;
-      if(v>0 && v>getQuizNextAvail()) setQuizNextAvail(v);
-      if(d.quizEarn_date===localDayKey() && getQuizNextAvail()>Date.now()){
-        checkQuizLock(); return;
+      let v = Number(d.quiz_nextAvail||0) || 0;
+      // Old 6h lock fix: if >3h left, ignore it
+      if(v>0 && (v - Date.now()) > GAP_MS + 5*60*1000){
+        v=0;
+        db.collection('users').doc(u.uid).update({quiz_nextAvail:0}).catch(()=>{});
+        clearQuizNextAvail();
+      } else if(v>0 && v>getQuizNextAvail()) setQuizNextAvail(v);
+      if(d.quizDay !== localDayKey()){
+        quizSessionsDone=0;
+        clearQuizNextAvail();
+      } else {
+        quizSessionsDone = Number(d.quizSessionsDone||0);
       }
     }
   }catch(e){}
-  if(!loadSession()){
-    pool=getTodayPool();
+  const hadSession = loadSession();
+  if(hadSession && pool.length>0 && currentIndex<QUESTIONS_PER_SESSION){
+    document.getElementById('quizCard').style.display='block';
+    renderQuestion();
+    checkQuizLock();
+  } else {
+    if(quizSessionsDone>=SESSIONS_PER_DAY){ checkQuizLock(); return; }
+    if(checkQuizLock()) return;
+    currentSessionIdx = quizSessionsDone;
+    pool=getSessionPool(currentSessionIdx);
     currentIndex=0; score=0; answers=[];
+    document.getElementById('quizCard').style.display='block';
+    // OPTION B - 1st Vignette: at Start
+    openAdGate(()=>{
+      renderQuestion();
+    }, 'start');
   }
-  renderQuestion();
-  checkQuizLock();
 });
 setInterval(()=>{
   if(checkQuizLock()){
     const msg=document.getElementById('lockMsg');
-    if(msg) msg.innerText='Quiz Live in '+fmtShort(Math.max(0,getQuizNextAvail()-Date.now()));
+    if(msg && quizSessionsDone<SESSIONS_PER_DAY) msg.innerText='Quiz Live in '+fmtShort(Math.max(0,getQuizNextAvail()-Date.now()));
   }
 },1000);
 })();
