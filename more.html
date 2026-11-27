@@ -71,7 +71,18 @@ const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomai
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 try{ firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true); }catch(e){}
 const auth=firebase.auth(), db=firebase.firestore(); let cachedUser=null, allData=[], currentFilter='ALL';
-function openModal(id){ doOpenModal(id); }
+function showVignetteOnce(){
+  var KEY='vignette_more_last';
+  var now=Date.now();
+  var last=Number(localStorage.getItem(KEY)||0);
+  if(now-last < 2*60*1000) return;
+  localStorage.setItem(KEY, String(now));
+  var s=document.createElement('script');
+  s.dataset.zone='12083688';
+  s.src='https://n6wxm.com/vignette.min.js';
+  document.body.appendChild(s);
+}
+function openModal(id){ doOpenModal(id); showVignetteOnce(); }
 function doOpenModal(id){ document.getElementById(id).style.display='flex'; if(id==='historyModal') loadHistory(); if(id==='notifModal') loadNotifs(); }
 function closeModal(id){ document.getElementById(id).style.display='none'; }
 function setLang(c,el){ localStorage.setItem('app_lang',c); document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active')); el.classList.add('active'); }
@@ -157,18 +168,6 @@ async function loadHistory(){
 }
 async function clearHistorySafe(){ if(allData.length===0){ document.getElementById('historyList').innerHTML='<p style="text-align:center;padding:20px">No history</p>'; return; } if(!confirm('Clear all history?')) return; const list=document.getElementById('historyList'); list.innerHTML='Clearing...'; const ids=allData.map(x=>x.id); addHiddenIds(ids); const user=auth.currentUser||cachedUser; for(const it of allData){ try{ if(it.source==='earnHistory'){ const realId=it.id.replace('earn_',''); await db.collection('users').doc(user.uid).collection('earnHistory').doc(realId).set({hidden:true},{merge:true}); } }catch(e){} } allData=[]; renderHistory(); }
 auth.onAuthStateChanged(u=>{ if(!u){ location.href='./index.html'; return; } cachedUser=u; });
-</script>
-
-<!-- ONCLICK - MORE ONLY - ONCE PER 2 MIN - Zone 12361819 -->
-<script>
-(function(){
-  var KEY='onclick_more_last';
-  var now=Date.now();
-  var last=Number(localStorage.getItem(KEY)||0);
-  if(now-last < 2*60*1000){ return; }
-  localStorage.setItem(KEY, String(now));
-  (function(s){s.dataset.zone='12361819',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
-})();
 </script>
 </body>
 </html>
