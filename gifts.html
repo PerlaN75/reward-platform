@@ -38,19 +38,15 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
 #fullLock{position:fixed;inset:0;background:#f5f3ff;z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;text-align:center}
 #checking{position:fixed;inset:0;background:#f5f3ff;z-index:9998;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}
 #adGate{position:fixed;inset:0;background:rgba(253,242,248,.94);backdrop-filter:blur(6px);z-index:10001;display:none;align-items:center;justify-content:center;padding:20px}
-.gate-box{background:linear-gradient(180deg,#fdf4ff,#fae8ff);border:2px solid #e879f9;border-radius:24px;padding:22px 20px 18px;text-align:center;max-width:360px;width:100%;box-shadow:0 20px 40px rgba(168,85,247,.30);position:relative}
-.gate-icon{width:64px;height:64px;margin:0 auto 10px;background:linear-gradient(180deg,#fdf4ff,#f0abfc);border:4px solid #d946ef;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 10px 25px rgba(0,0,0,0.15)}
-.gate-title{font-weight:900;font-size:18px;color:#701a75}
-.gate-sub{font-size:12px;color:#a21caf;margin:8px 0 16px;line-height:1.4;font-weight:700}
+.gate-box{background:linear-gradient(180deg,#fdf4ff,#fae8ff);border:2px solid #e879f9;border-radius:24px;padding:24px 20px 18px;text-align:center;max-width:360px;width:100%;box-shadow:0 20px 40px rgba(168,85,247,.30);position:relative}
+.gate-icon{width:64px;height:64px;margin:0 auto 14px;background:linear-gradient(180deg,#fdf4ff,#f0abfc);border:4px solid #d946ef;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 10px 25px rgba(0,0,0,0.15)}
+.gate-title{font-weight:900;font-size:18px;color:#701a75;margin-bottom:16px}
 .gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #f0abfc;font-weight:900;font-size:14px;cursor:pointer}
-.gate-btn.watch{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb}
-.gate-btn.watch:disabled{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb}
-.gate-btn.open{background:linear-gradient(180deg,#ec4899,#d946ef);color:#fff;border-color:#a21caf;box-shadow:0 4px 0 #a21caf,0 8px 20px rgba(217,70,239,0.3);display:none;margin-top:10px}
-#gateTimer2{font-size:13px;font-weight:900;color:#701a75;margin-top:12px;background:#fdf4ff;border:1.5px solid #f0abfc;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
+.gate-btn.open{background:linear-gradient(180deg,#ec4899,#d946ef);color:#fff;border-color:#a21caf;box-shadow:0 4px 0 #a21caf,0 8px 20px rgba(217,70,239,0.3);display:none;margin-top:14px}
+#gateTimer2{font-size:13px;font-weight:900;color:#701a75;margin-top:14px;background:#fdf4ff;border:1.5px solid #f0abfc;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
 #gateTimer2:empty{display:none}
-#gateBarWrap{height:6px;background:#fae8ff;border-radius:10px;overflow:hidden;margin-top:12px}
+#gateBarWrap{height:6px;background:#fae8ff;border-radius:10px;overflow:hidden}
 #gateBar{height:100%;background:linear-gradient(90deg,#ec4899,#a855f7);width:0%;transition:width 1s linear}
-.top-ad-wrap{position:sticky;top:56px;z-index:90;background:#f5f3ff;padding:8px 14px 0;width:100%;max-width:500px}
 </style>
 </head>
 <body>
@@ -59,13 +55,6 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
   <a href="home.html" class="back-btn"><span class="lines"><i></i><i></i><i></i></span></a>
   <div class="center-pill">🎁 Gifts & Earn</div>
   <div style="width:45px"></div>
-</div>
-<div class="top-ad-wrap">
-  <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:.5px">Advertisement</div>
-  <a id="giftsAdLink" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
-    <div style="flex:1"><div id="giftsAdTitle" style="font-weight:900;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div id="giftsAdSub" style="font-size:11px;color:#333">Limited offer • Sponsored</div></div>
-    <div id="giftsAdBtn" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
-  </a>
 </div>
 <div id="checking"><div><div style="font-size:42px">⏳</div><h2 style="color:#4c1d95;margin:10px 0">Checking...</h2><div style="font-weight:800;color:#6b7280">Please wait</div></div></div>
 <div id="fullLock"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Gifts Locked</h2><div id="fullLockMsg" style="font-weight:800;color:#6b7280">Next gifts in --</div><div style="font-size:12px;color:#9ca3af;margin-top:8px">You used your 5 picks.<br>Come back in 1 hour • Watch / Quiz still open</div><button id="fullLockBtn" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#e5e7eb;color:#9ca3af;font-weight:900" disabled>Wait --</button><br><button onclick="location.href='home.html'" style="margin-top:10px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
@@ -97,17 +86,15 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
     <div id="giftsAdBtnBottom" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
   </a>
 </div>
-<div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#9ca3af">✕</button><div class="gate-icon">🎁</div><div class="gate-title" id="gateTitle">Unwrapping your gift...</div><div id="gateSub" class="gate-sub">Please wait, your gift is loading</div><button id="watchAdBtn" class="gate-btn watch" disabled>Loading... 10s</button><div id="gateBarWrap"><div id="gateBar"></div></div><div id="gateTimer2"></div><button id="openBtn" class="gate-btn open">Tap to Reveal 🎁</button><div style="font-size:9px;color:#9ca3af;margin-top:10px;font-weight:700">Advertisement</div></div></div>
+<div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#9ca3af">✕</button><div class="gate-icon">🎁</div><div class="gate-title" id="gateTitle">Unwrapping your gift...</div><div id="gateBarWrap"><div id="gateBar"></div></div><div id="gateTimer2"></div><button id="openBtn" class="gate-btn open">Tap to Reveal 🎁</button><div style="font-size:9px;color:#9ca3af;margin-top:10px;font-weight:700">Advertisement</div></div></div>
 <script>
 (()=>{ "use strict";
 let vignetteLoaded=false;
 function loadCleanVignette(){ if(vignetteLoaded) return; vignetteLoaded=true; const old=document.querySelector('script[src*="vignette.min.js"]'); if(old) old.remove(); (function(s){s.dataset.zone='12273869',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement,document.body].filter(Boolean).pop().appendChild(document.createElement('script'))); setTimeout(()=>{vignetteLoaded=false;},60000); }
-let giftPushLoaded=false;
-function loadGiftPush(){ if(giftPushLoaded) return; giftPushLoaded=true; const old=document.querySelector('script[src*="tag.min.js"][data-zone="12350692"]'); if(old) old.remove(); (function(s){s.dataset.zone='12350692',s.src='https://nap5k.com/tag.min.js'})([document.documentElement,document.body].filter(Boolean).pop().appendChild(document.createElement('script'))); setTimeout(()=>{giftPushLoaded=false;},60000); }
 const ADS=[{title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Sponsored",btn:"Visit →",bg:"#FFD700",link:"https://uplcm.com/4/12320757"},{title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • Sponsored",btn:"Visit →",bg:"#7CFC00",link:"https://uplcm.com/4/12320757"},{title:"📱 Win Free Airtime Today",sub:"MTN • Airtel • Sponsored",btn:"Visit →",bg:"#00D4FF",link:"https://uplcm.com/4/12320757"},{title:"🔥 Hot Offer - Double Your Coins",sub:"Today only • Sponsored",btn:"Visit →",bg:"#FF9F43",link:"https://uplcm.com/4/12320757"}];
 const AD_TIME=2*60*1000, AD_KEY='giftsAd_state_v1'; let adIndex=0;
 function saveAd(){ try{localStorage.setItem(AD_KEY,JSON.stringify({index:adIndex,changedAt:Date.now()}));}catch(e){} }
-function showAd(i){ const a=ADS[i]; const t=document.getElementById('giftsAdLink'); if(t){t.href=a.link;t.style.background=a.bg;document.getElementById('giftsAdTitle').textContent=a.title;document.getElementById('giftsAdSub').textContent=a.sub;document.getElementById('giftsAdBtn').textContent=a.btn;} const b=document.getElementById('giftsAdLinkBottom'); if(b){b.href=a.link;b.style.background=a.bg;document.getElementById('giftsAdTitleBottom').textContent=a.title;document.getElementById('giftsAdSubBottom').textContent=a.sub;document.getElementById('giftsAdBtnBottom').textContent=a.btn;} }
+function showAd(i){ const a=ADS[i]; const b=document.getElementById('giftsAdLinkBottom'); if(b){b.href=a.link;b.style.background=a.bg;document.getElementById('giftsAdTitleBottom').textContent=a.title;document.getElementById('giftsAdSubBottom').textContent=a.sub;document.getElementById('giftsAdBtnBottom').textContent=a.btn;} }
 function nextAd(){ adIndex=(adIndex+1)%ADS.length; showAd(adIndex); saveAd(); }
 (function initAd(){ try{ const raw=localStorage.getItem(AD_KEY); if(!raw){showAd(0);saveAd();setTimeout(function(){nextAd();setInterval(nextAd,AD_TIME);},AD_TIME);return;} const s=JSON.parse(raw); const el=Date.now()-(s.changedAt||Date.now()); const steps=Math.floor(el/AD_TIME); adIndex=((s.index||0)+steps)%ADS.length; const rem=AD_TIME-(el%AD_TIME); showAd(adIndex); try{localStorage.setItem(AD_KEY,JSON.stringify({index:adIndex,changedAt:Date.now()-(el%AD_TIME)}));}catch(e){} setTimeout(function(){nextAd();setInterval(nextAd,AD_TIME);},rem); }catch(e){showAd(0);saveAd();setInterval(nextAd,AD_TIME);} })();
 let pendingPick=null;
@@ -116,14 +103,11 @@ function openGiftAdGate(boxId){
   pendingPick=boxId;
   if(gateIv) clearInterval(gateIv);
   document.getElementById('adGate').style.display='flex';
-  document.getElementById('watchAdBtn').style.display='block';
-  document.getElementById('watchAdBtn').disabled=true;
-  document.getElementById('watchAdBtn').innerText='Loading... 10s';
   document.getElementById('openBtn').style.display='none';
   document.getElementById('gateBar').style.width='0%';
   document.getElementById('gateTimer2').innerText='Loading... 10s';
-  let sec=10; const bar=document.getElementById('gateBar'); const te=document.getElementById('gateTimer2'); const btn=document.getElementById('watchAdBtn');
-  gateIv=setInterval(()=>{sec--; bar.style.width=((10-sec)/10*100)+'%'; if(sec>0){te.innerText='Loading... '+sec+'s'; btn.innerText='Loading... '+sec+'s';} else {clearInterval(gateIv); bar.style.width='100%'; document.getElementById('watchAdBtn').style.display='none'; te.innerText='Ready!'; document.getElementById('openBtn').style.display='block';}},1000);
+  let sec=10; const bar=document.getElementById('gateBar'); const te=document.getElementById('gateTimer2');
+  gateIv=setInterval(()=>{sec--; bar.style.width=((10-sec)/10*100)+'%'; if(sec>0){te.innerText='Loading... '+sec+'s';} else {clearInterval(gateIv); bar.style.width='100%'; te.innerText='Ready!'; document.getElementById('openBtn').style.display='block';}},1000);
 }
 document.getElementById('openBtn').onclick=function(){ document.getElementById('adGate').style.display='none'; loadCleanVignette(); const id=pendingPick; pendingPick=null; if(id!==null && id!==undefined) doReveal(id); };
 const MISSES=[
@@ -247,7 +231,6 @@ async function doReveal(idx){
 claimBtn.onclick=async()=>{
   if(isClaiming) return; isClaiming=true;
   if(!currentUser) return;
-  loadGiftPush();
   const userRef=db.collection("users").doc(currentUser.uid);
   try{
     await db.runTransaction(async t=>{
