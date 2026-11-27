@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Watch & Earn</title>
-<!-- MONETAG COMPLIANT: Vignette 12356040 + In-Page Push 12266334 after Open, 1 per video, hide during 10s wait, closeable - NO DIRECT LINK IN WATCH -->
+<!-- WATCH OPENING GATE ONLY: Gate once on open + Vignette 12268552 + Banner 12320606 - NO IN-PAGE PUSH -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
@@ -14,7 +14,6 @@
 .video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #111827;width:100%;margin-top:10px;position:relative}.player{background:#000;width:100%;min-height:280px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}video{display:block;width:100%;max-height:65vh;background:#000}.placeholder{color:#fff;text-align:center;padding:28px 14px;line-height:1.6;font-weight:800;font-size:18px}.controls{padding:9px;background:#000;display:flex;flex-direction:column;align-items:center}.btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:0;border-radius:12px;padding:12px;font-weight:900;font-size:14px;cursor:pointer;margin-top:8px}.btn:disabled{opacity:.55}.secondary-btn{background:#ede9fe;color:#4c1d95}#nextBtn{width:60%!important;margin:auto}.small-note{color:#6b7280;font-size:11px;text-align:center;margin:10px 4px 2px}.video-title{color:#fff;font-size:13px;font-weight:800;text-align:center;padding:8px 6px 0;background:#000}
 .bubble{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#000;padding:10px 18px;border-radius:999px;font-weight:900;z-index:10000;display:none}.lock-box{background:#fef3c7;border:2px solid #fbbf24;border-radius:14px;padding:14px;text-align:center;margin-top:10px}
 #rewardCircle{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(0);background:radial-gradient(circle at 30% 30%, #fef3c7, #fbbf24 60%, #f59e0b);color:#000;width:72px;height:72px;border-radius:50%;border:2px solid #fff;display:none;flex-direction:column;align-items:center;justify-content:center;font-weight:900;z-index:50;cursor:pointer}#rewardCircle.show{display:flex;animation:popIn .4s forwards}@keyframes popIn{to{transform:translate(-50%,-50%) scale(1)}}.burst-particle{position:absolute;left:50%;top:50%;pointer-events:none;z-index:100;font-size:14px;font-weight:900}@keyframes burstFly{0%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(var(--x), var(--y)) scale(0);opacity:0}}
-/* ===== ADGATE - SAME AS BONUS / GIFTS ===== */
 #adGate{position:fixed;inset:0;background:rgba(240,253,244,.94);backdrop-filter:blur(6px);z-index:10001;display:none;align-items:center;justify-content:center;padding:20px}
 .gate-box{background:linear-gradient(180deg,#fff,#f0fdf4);border:2px solid #86efac;border-radius:22px;padding:22px 20px;width:100%;max-width:320px;text-align:center;box-shadow:0 20px 40px rgba(21,128,61,.25);position:relative}
 .gate-icon{width:64px;height:64px;margin:0 auto 10px;background:linear-gradient(180deg,#fef3c7,#fbbf24);border:4px solid #f59e0b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 10px 25px rgba(0,0,0,0.15)}
@@ -28,38 +27,31 @@
 #gateTimer2:empty{display:none}
 #gateBarWrap{height:6px;background:#dcfce7;border-radius:10px;overflow:hidden;margin-top:12px}
 #gateBar{height:100%;background:linear-gradient(90deg,#22c55e,#f59e0b);width:0%;transition:width 1s linear}
+#watchBannerBox{min-height:90px}
 </style></head><body>
 <div id="bubble" class="bubble"></div>
 <div class="top-bar"><a href="home.html" class="back-btn-checkin"><span class="lines"><i></i><i></i><i></i></span></a><div class="center-pill">📺 Watch & Earn</div><div style="width:45px"></div></div>
 <main class="main-card"><section class="balance-box"><div style="color:#d1d5db;font-size:11px">Your Balance</div><div class="balance-value" id="bal">-- 🪙</div><div style="font-size:12px;color:#e5e7eb;margin-top:3px">Today's progress: <strong id="today">0/10</strong></div><div class="status" id="status">Checking...</div></section>
 <div id="lockPanel" class="lock-box" style="display:none"><div style="font-size:15px;font-weight:900;color:#92400e">🔒 Watch is locked</div><div id="lockMsg" style="font-size:13px;margin-top:6px;font-weight:800">Opens in --</div><div id="lockSub" style="font-size:11px;color:#6b7280;margin-top:6px">Watch locks 24h from finish. You can do Quiz / Articles now.</div></div>
 <section class="video-box" id="videoBox"><div class="video-title" id="videoTitle" style="display:none"></div><div class="player" id="player"><div class="placeholder">Your videos are ready.<br>Press Start to begin.</div><div id="rewardCircle"><div style="font-size:20px">+1</div><div style="font-size:10px">COIN</div></div></div><div class="controls" id="controls"><button class="btn" id="startBtn" disabled>Loading account...</button><button class="btn secondary-btn" id="nextBtn">Next video</button></div></section><p class="small-note">Watch 35s to unlock 1 coin. Watch 10 videos per day.</p>
+<div style="margin-top:12px"><div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px">Advertisement</div><div id="watchBannerBox"></div></div>
 </main>
-<!-- NO DIRECT LINK IN WATCH GATE - VIGNETTE + IN-PAGE PUSH ONLY, AFTER OPEN -->
-<div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#9ca3af">✕</button><div class="gate-icon">💰</div><div class="gate-title" id="gateTitle">Opening your vault...</div><div id="gateSub" class="gate-sub">Please wait, your coin is loading</div><button id="watchAdBtn" class="gate-btn watch" disabled>Loading... 10s</button><div id="gateBarWrap"><div id="gateBar"></div></div><div id="gateTimer2"></div><button id="openBtn" class="gate-btn open">Tap to Collect 💰</button><div style="font-size:9px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div></div></div>
+<div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#9ca3af">✕</button><div class="gate-icon">💰</div><div class="gate-title" id="gateTitle">Opening your vault...</div><div id="gateSub" class="gate-sub">Please wait, your coin is loading</div><button id="watchAdBtn" class="gate-btn watch" disabled>Loading... 10s</button><div id="gateBarWrap"><div id="gateBar"></div></div><div id="gateTimer2"></div><button id="openBtn" class="gate-btn open">Tap to Enter Watch 💰</button><div style="font-size:9px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div></div></div>
 <script>
 (() => {
 "use strict";
-function hideOldAds(){
-  try{ document.querySelectorAll('[id*="monetag"], [class*="monetag"]').forEach(el=>{ if(!el.closest('#adGate')) el.style.display='none'; }); }catch(e){}
-}
-function killInPagePush(){ const old=document.getElementById('monetag-inpage'); if(old) old.remove(); hideOldAds(); }
-function loadSafeInPagePush(){
-  const old=document.getElementById('monetag-inpage'); if(old) old.remove();
-  const s=document.createElement('script'); s.id='monetag-inpage'; s.dataset.zone='12266334'; s.src='https://nap5k.com/tag.min.js';
-  (document.body || document.documentElement).appendChild(s);
-}
-/* ===== WATCH VIGNETTE - YOUR NEW ZONE 12356040 ===== */
+(function loadWatchBanner(){
+  var box=document.getElementById('watchBannerBox'); if(!box) return;
+  var s=document.createElement('script'); s.dataset.zone='12320606'; s.src='https://nap5k.com/tag.min.js'; box.appendChild(s);
+})();
 let watchVignetteLoaded=false;
 function loadWatchVignette(){
   if(watchVignetteLoaded) return; watchVignetteLoaded=true;
-  const old=document.querySelector('script[src*="vignette.min.js"]'); if(old) old.remove();
-  (function(s){s.dataset.zone='12356040',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+  var s=document.createElement('script'); s.dataset.zone='12268552'; s.src='https://n6wxm.com/vignette.min.js'; document.body.appendChild(s);
   setTimeout(()=>{watchVignetteLoaded=false;}, 60*1000);
 }
-let gateIv=null;
+let gateIv=null, openingGateShown=false;
 function openClaimGate(){
-  hideOldAds();
   document.getElementById('gateTitle').innerText='Opening your vault...';
   document.getElementById('gateSub').innerText='Please wait, your coin is loading';
   document.getElementById('adGate').style.display='flex';
@@ -73,9 +65,13 @@ function openClaimGate(){
   if(gateIv) clearInterval(gateIv);
   gateIv=setInterval(()=>{sec--; bar.style.width=((10-sec)/10*100)+'%'; if(sec>0){te.innerText='Loading... '+sec+'s'; btn.innerText='Loading... '+sec+'s';} else {clearInterval(gateIv); bar.style.width='100%'; document.getElementById('watchAdBtn').style.display='none'; te.innerText='Ready!'; document.getElementById('openBtn').style.display='block';}},1000);
 }
+function showOpeningGateOnce(){
+  if(openingGateShown) return; openingGateShown=true;
+  setTimeout(()=>{ openClaimGate(); }, 800);
+}
 document.getElementById('openBtn').onclick=function(){
-  document.getElementById('adGate').style.display='none'; loadWatchVignette(); loadSafeInPagePush();
-  doClaimWithBurst();
+  document.getElementById('adGate').style.display='none';
+  loadWatchVignette();
 };
 function doClaimWithBurst(){
   for(let i=0;i<10;i++){const p=document.createElement("div");p.className="burst-particle";p.textContent="+1";const angle=(i/10)*360,dist=50+Math.random()*70,x=Math.cos(angle*Math.PI/180)*dist,y=Math.sin(angle*Math.PI/180)*dist;p.style.setProperty('--x',x+'px');p.style.setProperty('--y',y+'px');p.style.animation=`burstFly 0.7s ease-out ${i*0.02}s forwards`;playerEl.appendChild(p);setTimeout(()=>p.remove(),800);}rewardCircle.style.transform="translate(-50%,-50%) scale(1.3)";setTimeout(()=>{rewardCircle.style.transform="translate(-50%,-50%) scale(0)";setTimeout(()=>{hideReward();rewardCircle.style.transform="";},200);},120);
@@ -140,7 +136,6 @@ function onWatchFinishedIndependent(){
 function checkWatchLocked(){
   const now=Date.now(), next=getWatchNextAvail();
   if(next && now<next){
-    killInPagePush();
     lockPanelEl.style.display="block";videoBoxEl.style.display="none";
     lockSubEl.textContent="Watch locks 24h from finish. You can do Quiz / Articles now.";
     const update=()=>{const diff=next-Date.now();if(diff<=0){clearInterval(lockTimer);lockPanelEl.style.display="none";videoBoxEl.style.display="block";updateUI();return;}lockMsgEl.textContent=`Opens in ${formatRemaining(diff)}`;};
@@ -160,10 +155,10 @@ function startWatchCounter(){stopWatchCounter();if(!videoElement||canClaim)retur
 async function startOrResumeVideo(){if(!currentUser)return;if(checkWatchLocked())return;if(videoElement){try{await videoElement.play();}catch(e){}return;}if(todayCount>=DAILY_LIMIT){showSeeYouSoon();return;}const video=getAvailableVideos()[0];if(!video){showSeeYouSoon();return;}const v=createVideoElement(video);try{await v.play();}catch(e){}}
 async function claimReward(){if(!currentUser||!canClaim||isSaving)return;const video=VIDEOS[currentVideoIndex];if(!video||watchedVideoIds.includes(video.id)){hideReward();return;}isSaving=true;const userRef=db.collection("users").doc(currentUser.uid),todayKey=localDayKey();try{await db.runTransaction(async t=>{const snap=await t.get(userRef);if(!snap.exists)throw new Error("No account");const data=snap.data()||{},savedDay=data.watchDay||todayKey;let count=Number(data.todayCount||0),ids=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds.slice():[];if(savedDay!==todayKey){count=0;ids=[];}if(count>=DAILY_LIMIT||ids.includes(video.id))throw new Error("Limit");const oldBal=Number(data.balance??data.coins??0);t.update(userRef,{balance:oldBal+COINS_PER_VIDEO,coins:oldBal+COINS_PER_VIDEO,todayCount:count+1,watchedVideoIds:ids.concat(video.id),watchDay:todayKey,lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()});});showBubble("+1 coin added!");}catch(e){showBubble("Already collected");}finally{isSaving=false;}}
 async function refreshDailyProgressIfNeeded(data){const todayKey=localDayKey();if(data.watchDay===todayKey||dayResetInProgress)return;dayResetInProgress=true;const userRef=db.collection("users").doc(currentUser.uid);try{await db.runTransaction(async t=>{const snap=await t.get(userRef);if(!snap.exists)return;const latest=snap.data()||{};if(latest.watchDay===todayKey)return;t.update(userRef,{todayCount:0,watchedVideoIds:[],watchDay:todayKey});});}catch(e){}finally{dayResetInProgress=false;}}
-rewardCircle.addEventListener("click",()=>{openClaimGate();});
+rewardCircle.addEventListener("click",()=>{ loadWatchVignette(); doClaimWithBurst(); });
 startBtn.addEventListener("click",startOrResumeVideo);
 nextBtn.addEventListener("click",()=>{if(videoElement&&!videoElement.paused)videoElement.pause();resetVideoSession();chooseNextVideo();});
-auth.onAuthStateChanged(user=>{if(!user){location.href="./index.html";return;}currentUser=user;buildShuffledList();statusEl.textContent="Loading...";startBtn.disabled=true;if(window.unsubscribeUser) window.unsubscribeUser();window.unsubscribeUser=db.collection("users").doc(user.uid).onSnapshot(async snap=>{if(!snap.exists){statusEl.textContent="No account";return;}const data=snap.data()||{};await refreshDailyProgressIfNeeded(data);if(data.watchDay!==localDayKey()){buildShuffledList();return;}balance=Number(data.balance??data.coins??0);todayCount=Number(data.todayCount||0);watchedVideoIds=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds:[];
+auth.onAuthStateChanged(user=>{if(!user){location.href="./index.html";return;}currentUser=user;buildShuffledList();statusEl.textContent="Loading...";startBtn.disabled=true;showOpeningGateOnce();if(window.unsubscribeUser) window.unsubscribeUser();window.unsubscribeUser=db.collection("users").doc(user.uid).onSnapshot(async snap=>{if(!snap.exists){statusEl.textContent="No account";return;}const data=snap.data()||{};await refreshDailyProgressIfNeeded(data);if(data.watchDay!==localDayKey()){buildShuffledList();return;}balance=Number(data.balance??data.coins??0);todayCount=Number(data.todayCount||0);watchedVideoIds=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds:[];
 let wv = Number(data.watch_nextAvail||0) || Number((data.chain&&data.chain.watch_nextAvail)||0) || 0;
 if(wv>0 && wv>getWatchNextAvail()) setWatchNextAvail(wv);
 checkWatchLocked();updateUI();if(todayCount>=DAILY_LIMIT||watchedVideoIds.length>=DAILY_LIMIT){showSeeYouSoon();}else if(!videoElement){chooseNextVideo();}});});
