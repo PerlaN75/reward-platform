@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Watch & Earn</title>
-<!-- WATCH - 3 SESSIONS - 3H GAP - 5s GATE ON EACH SESSION - Vignette 12268552 + Banner 12273869 -->
+<!-- WATCH - REVISED 2 - 3 SESSIONS - 3H GAP - 5s GATE EACH SESSION - Vignette 12268552 + Banner 12273869 -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
@@ -14,7 +14,6 @@
 .video-box{background:#000;border-radius:16px;overflow:hidden;border:2px solid #111827;width:100%;margin-top:10px;position:relative}.player{background:#000;width:100%;min-height:280px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}video{display:block;width:100%;max-height:65vh;background:#000}.placeholder{color:#fff;text-align:center;padding:28px 14px;line-height:1.6;font-weight:800;font-size:18px}.controls{padding:9px;background:#000;display:flex;flex-direction:column;align-items:center}.btn{width:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:0;border-radius:12px;padding:12px;font-weight:900;font-size:14px;cursor:pointer;margin-top:8px}.btn:disabled{opacity:.55}.secondary-btn{background:#ede9fe;color:#4c1d95}#nextBtn{width:60%!important;margin:auto}.small-note{color:#6b7280;font-size:11px;text-align:center;margin:10px 4px 2px}.video-title{color:#fff;font-size:13px;font-weight:800;text-align:center;padding:8px 6px 0;background:#000}
 .bubble{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#000;padding:10px 18px;border-radius:999px;font-weight:900;z-index:10000;display:none}.lock-box{background:#fef3c7;border:2px solid #fbbf24;border-radius:14px;padding:14px;text-align:center;margin-top:10px}
 #rewardCircle{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(0);background:radial-gradient(circle at 30% 30%, #fef3c7, #fbbf24 60%, #f59e0b);color:#000;width:72px;height:72px;border-radius:50%;border:2px solid #fff;display:none;flex-direction:column;align-items:center;justify-content:center;font-weight:900;z-index:50;cursor:pointer}#rewardCircle.show{display:flex;animation:popIn .4s forwards}@keyframes popIn{to{transform:translate(-50%,-50%) scale(1)}}.burst-particle{position:absolute;left:50%;top:50%;pointer-events:none;z-index:100;font-size:14px;font-weight:900}@keyframes burstFly{0%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(var(--x), var(--y)) scale(0);opacity:0}}
-/* ===== GATE - MIDNIGHT BLUE + ORANGE - 5s ===== */
 #adGate{position:fixed;inset:0;background:rgba(15,23,42,.60);backdrop-filter:blur(6px);z-index:10001;display:none;align-items:center;justify-content:center;padding:20px}
 .gate-box{background:linear-gradient(180deg,#ffffff,#fff7ed);border:2px solid #1e293b;border-radius:22px;padding:22px 20px;width:100%;max-width:320px;text-align:center;box-shadow:0 20px 40px rgba(15,23,42,.40);position:relative}
 .gate-icon{width:64px;height:64px;margin:0 auto 10px;background:linear-gradient(180deg,#fff7ed,#ffedd5);border:4px solid #ff6b00;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 10px 25px rgba(0,0,0,0.15)}
@@ -37,7 +36,6 @@
 <script>
 (() => {
 "use strict";
-// Banner - KEEP YOUR ID
 (function loadWatchBanner(){
   var box=document.getElementById('watchBannerBox'); if(!box) return;
   var s=document.createElement('script'); s.dataset.zone='12273869'; s.src='https://nap5k.com/tag.min.js'; box.appendChild(s);
@@ -48,7 +46,6 @@ function loadWatchVignette(){
   var s=document.createElement('script'); s.dataset.zone='12268552'; s.src='https://n6wxm.com/vignette.min.js'; document.body.appendChild(s);
   setTimeout(()=>{watchVignetteLoaded=false;}, 60*1000);
 }
-// ===== NEW GATE - 5s ON EACH SESSION =====
 let gateIv=null;
 let pendingStartAfterGate=false;
 function openClaimGate(){
@@ -67,7 +64,7 @@ function openClaimGate(){
 }
 document.getElementById('openBtn').onclick=function(){
   document.getElementById('adGate').style.display='none';
-  loadWatchVignette(); // 1 Vignette per session, after 5s gate
+  loadWatchVignette();
   if(pendingStartAfterGate){ pendingStartAfterGate=false; doRealStart(); }
 };
 function doClaimWithBurst(){
@@ -107,7 +104,6 @@ const VIDEOS = [
 {id:"video31",title:"Video 31",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video31.mp4"},
 {id:"video32",title:"Video 32",url:"https://bxyuqkzdslmiofsqqozu.supabase.co/storage/v1/object/public/videos/video32.mp4"}
 ];
-// ===== NEW CONSTANTS - LOCKED =====
 const REQUIRED_WATCH_SECONDS=35,COINS_PER_VIDEO=1,DAILY_LIMIT=3,GAP_MS=3*60*60*1000;
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
@@ -124,26 +120,34 @@ function getAvailableVideos(){const list=shuffledVideos.length?shuffledVideos:VI
 function formatRemaining(ms){if(ms<=0)return"0m";const h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);if(h>0)return `${h}h ${m}m`;if(m>0)return `${m}m ${s}s`;return `${s}s`;}
 function getWatchNextAvail(){ return Number(localStorage.getItem('watch_nextAvail_v1')||0); }
 function setWatchNextAvail(ts){ localStorage.setItem('watch_nextAvail_v1', String(ts)); }
-// After each claim, lock 3h - NOT 24h. If 3/3 done, lock until tomorrow is handled by daily reset, but we still set 3h lock.
+function clearWatchNextAvail(){ localStorage.removeItem('watch_nextAvail_v1'); }
 function onWatchClaimed(){
   const now=Date.now();
   const next = now + GAP_MS;
   setWatchNextAvail(next);
   if(currentUser) db.collection("users").doc(currentUser.uid).set({watch_nextAvail:next, watch_lastClaim:now, updated:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
 }
-function checkWatchLocked(){
+// FIXED: This function ONLY decides lock, it does NOT update balance/progress
+function isLocked(){
   const now=Date.now(), next=getWatchNextAvail();
-  if(next && now<next && todayCount>0 && todayCount<DAILY_LIMIT){
+  if(todayCount>=DAILY_LIMIT) return 'done';
+  if(next && now<next && todayCount>0) return 'gap';
+  return false;
+}
+function checkWatchLocked(){
+  const lockState = isLocked();
+  if(lockState==='gap'){
+    const next=getWatchNextAvail();
     lockPanelEl.style.display="block";videoBoxEl.style.display="none";
     lockSubEl.textContent="Next session in 3 hours. You can do Quiz / Articles now.";
     const update=()=>{const diff=next-Date.now();if(diff<=0){clearInterval(lockTimer);lockPanelEl.style.display="none";videoBoxEl.style.display="block";updateUI();return;}lockMsgEl.textContent=`Opens in ${formatRemaining(diff)}`;};
     update();if(lockTimer)clearInterval(lockTimer);lockTimer=setInterval(update,1000);return true;
   }
-  // If 3/3 done, show done panel, not 3h lock
-  if(todayCount>=DAILY_LIMIT){
+  if(lockState==='done'){
     lockPanelEl.style.display="block";videoBoxEl.style.display="none";
     lockMsgEl.textContent=`Done for today - 3/3`;
     lockSubEl.textContent="Come back tomorrow. Quiz / Articles still open.";
+    if(lockTimer)clearInterval(lockTimer);
     return true;
   }
   lockPanelEl.style.display="none";videoBoxEl.style.display="block";if(lockTimer)clearInterval(lockTimer);return false;
@@ -151,18 +155,27 @@ function checkWatchLocked(){
 function showReward(){if(todayCount>=DAILY_LIMIT)return;if(watchedVideoIds.includes(VIDEOS[currentVideoIndex]?.id))return;rewardCircle.classList.add("show");canClaim=true;}
 function hideReward(){rewardCircle.classList.remove("show");canClaim=false;}
 function showSeeYouSoon(){titleEl.style.display="none";if(todayCount>=DAILY_LIMIT){playerEl.innerHTML='<div class="placeholder">✅ Watch done!<br><small>Go do Quiz / Articles now</small></div>';playerEl.appendChild(rewardCircle);} else {playerEl.innerHTML='<div class="placeholder">✅ Watch done!<br><small>Quiz / Articles still open</small></div>';playerEl.appendChild(rewardCircle);}controlsEl.style.display="none";}
-function updateUI(){if(checkWatchLocked())return;balanceEl.textContent=`${balance} 🪙 coins`;todayEl.textContent=`${Math.min(todayCount,DAILY_LIMIT)}/${DAILY_LIMIT}`;if(todayCount>=DAILY_LIMIT||watchedVideoIds.length>=DAILY_LIMIT){statusEl.textContent="🎉 All done! Quiz / Articles still open";showSeeYouSoon();return;}statusEl.textContent=`Watched ${Math.floor(watchedSeconds)}/${REQUIRED_WATCH_SECONDS}s • ${todayCount}/3 • +1 per video`;controlsEl.style.display="flex";titleEl.style.display="block";if(!videoElement){startBtn.hidden=false;startBtn.textContent="Start watching";startBtn.disabled=false;nextBtn.hidden=false;}else if(videoElement.paused){startBtn.hidden=false;startBtn.textContent="Resume video";}else{startBtn.hidden=true;}}
+// FIXED: Update balance + progress FIRST, then check lock
+function updateUI(){
+  balanceEl.textContent=`${balance} 🪙 coins`;
+  todayEl.textContent=`${Math.min(todayCount,DAILY_LIMIT)}/${DAILY_LIMIT}`;
+  if(checkWatchLocked()){ statusEl.textContent = todayCount>=DAILY_LIMIT ? "🎉 All done! Quiz / Articles still open" : `Session ${todayCount}/3 done. Next in 3h.`; return; }
+  if(todayCount>=DAILY_LIMIT){statusEl.textContent="🎉 All done! Quiz / Articles still open";showSeeYouSoon();return;}
+  statusEl.textContent=`Watched ${Math.floor(watchedSeconds)}/${REQUIRED_WATCH_SECONDS}s • ${todayCount}/3 • +1 per video`;
+  controlsEl.style.display="flex";titleEl.style.display="block";
+  if(!videoElement){startBtn.hidden=false;startBtn.textContent="Start watching";startBtn.disabled=false;nextBtn.hidden=false;}
+  else if(videoElement.paused){startBtn.hidden=false;startBtn.textContent="Resume video";}
+  else{startBtn.hidden=true;}
+}
 function stopWatchCounter(){if(watchInterval)clearInterval(watchInterval);watchInterval=null;lastVideoTime=null;}
 function resetVideoSession(){stopWatchCounter();hideReward();if(videoElement){videoElement.pause();videoElement.removeAttribute("src");videoElement.load();}videoElement=null;watchedSeconds=0;}
 function chooseNextVideo(){const next=getAvailableVideos()[0];if(!next||todayCount>=DAILY_LIMIT){showSeeYouSoon();return;}currentVideoIndex=VIDEOS.findIndex(v=>v.id===next.id);titleEl.style.display="block";titleEl.textContent=`${next.title} • ${todayCount+1} of 3 • ${REQUIRED_WATCH_SECONDS}s`;playerEl.innerHTML='<div class="placeholder">Press Start to load.</div>';playerEl.appendChild(rewardCircle);controlsEl.style.display="flex";startBtn.hidden=false;startBtn.textContent="Start watching";watchedSeconds=0;updateUI();}
 function createVideoElement(video){resetVideoSession();const v=document.createElement("video");v.src=video.url;v.controls=true;v.playsInline=true;v.preload="metadata";v.addEventListener("play",()=>{if(!canClaim)startWatchCounter();updateUI();});v.addEventListener("pause",()=>{stopWatchCounter();updateUI();});v.addEventListener("ended",()=>{if(todayCount<DAILY_LIMIT){v.currentTime=0;v.play().catch(()=>{});}});playerEl.innerHTML="";playerEl.appendChild(v);playerEl.appendChild(rewardCircle);videoElement=v;return v;}
 function startWatchCounter(){stopWatchCounter();if(!videoElement||canClaim)return;lastVideoTime=videoElement.currentTime;watchInterval=setInterval(()=>{if(!videoElement||videoElement.paused||videoElement.ended||videoElement.seeking||videoElement.readyState<2){lastVideoTime=videoElement?videoElement.currentTime:null;return;}const ct=videoElement.currentTime;if(lastVideoTime!==null){const d=ct-lastVideoTime;if(d>0&&d<=1.5)watchedSeconds=Math.min(REQUIRED_WATCH_SECONDS,watchedSeconds+d);}lastVideoTime=ct;statusEl.textContent=`Watched ${Math.floor(watchedSeconds)}/${REQUIRED_WATCH_SECONDS}s • ${todayCount}/3`;if(watchedSeconds>=REQUIRED_WATCH_SECONDS){stopWatchCounter();showReward();}},500);}
-// NEW: Start button = Gate first, then Video
 async function startOrResumeVideo(){
   if(!currentUser)return;if(checkWatchLocked())return;
   if(videoElement){try{await videoElement.play();}catch(e){}return;}
   if(todayCount>=DAILY_LIMIT){showSeeYouSoon();return;}
-  // If no video yet, show 5s gate on EACH session
   pendingStartAfterGate=true;
   openClaimGate();
 }
@@ -172,14 +185,23 @@ async function doRealStart(){
   const v=createVideoElement(video);try{await v.play();}catch(e){}
 }
 async function claimReward(){if(!currentUser||!canClaim||isSaving)return;const video=VIDEOS[currentVideoIndex];if(!video||watchedVideoIds.includes(video.id)){hideReward();return;}isSaving=true;const userRef=db.collection("users").doc(currentUser.uid),todayKey=localDayKey();try{await db.runTransaction(async t=>{const snap=await t.get(userRef);if(!snap.exists)throw new Error("No account");const data=snap.data()||{},savedDay=data.watchDay||todayKey;let count=Number(data.todayCount||0),ids=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds.slice():[];if(savedDay!==todayKey){count=0;ids=[];}if(count>=DAILY_LIMIT||ids.includes(video.id))throw new Error("Limit");const oldBal=Number(data.balance??data.coins??0);t.update(userRef,{balance:oldBal+COINS_PER_VIDEO,coins:oldBal+COINS_PER_VIDEO,todayCount:count+1,watchedVideoIds:ids.concat(video.id),watchDay:todayKey,lastWatchDate:firebase.firestore.FieldValue.serverTimestamp()});});showBubble("+1 coin added!");onWatchClaimed();}catch(e){showBubble("Already collected");}finally{isSaving=false;}}
-async function refreshDailyProgressIfNeeded(data){const todayKey=localDayKey();if(data.watchDay===todayKey||dayResetInProgress)return;dayResetInProgress=true;const userRef=db.collection("users").doc(currentUser.uid);try{await db.runTransaction(async t=>{const snap=await t.get(userRef);if(!snap.exists)return;const latest=snap.data()||{};if(latest.watchDay===todayKey)return;t.update(userRef,{todayCount:0,watchedVideoIds:[],watchDay:todayKey});});}catch(e){}finally{dayResetInProgress=false;}}
+async function refreshDailyProgressIfNeeded(data){
+  const todayKey=localDayKey();
+  if(data.watchDay===todayKey||dayResetInProgress)return;
+  dayResetInProgress=true;
+  clearWatchNextAvail();
+  const userRef=db.collection("users").doc(currentUser.uid);
+  try{await db.runTransaction(async t=>{const snap=await t.get(userRef);if(!snap.exists)return;const latest=snap.data()||{};if(latest.watchDay===todayKey)return;t.update(userRef,{todayCount:0,watchedVideoIds:[],watchDay:todayKey,watch_nextAvail:0});});}catch(e){}finally{dayResetInProgress=false;}
+}
 rewardCircle.addEventListener("click",()=>{ doClaimWithBurst(); });
 startBtn.addEventListener("click",startOrResumeVideo);
 nextBtn.addEventListener("click",()=>{if(videoElement&&!videoElement.paused)videoElement.pause();resetVideoSession();chooseNextVideo();});
-auth.onAuthStateChanged(user=>{if(!user){location.href="./index.html";return;}currentUser=user;buildShuffledList();statusEl.textContent="Loading...";startBtn.disabled=true;if(window.unsubscribeUser) window.unsubscribeUser();window.unsubscribeUser=db.collection("users").doc(user.uid).onSnapshot(async snap=>{if(!snap.exists){statusEl.textContent="No account";return;}const data=snap.data()||{};await refreshDailyProgressIfNeeded(data);if(data.watchDay!==localDayKey()){buildShuffledList();return;}balance=Number(data.balance??data.coins??0);todayCount=Number(data.todayCount||0);watchedVideoIds=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds:[];
+auth.onAuthStateChanged(user=>{if(!user){location.href="./index.html";return;}currentUser=user;buildShuffledList();statusEl.textContent="Loading...";startBtn.disabled=true;if(window.unsubscribeUser) window.unsubscribeUser();window.unsubscribeUser=db.collection("users").doc(user.uid).onSnapshot(async snap=>{if(!snap.exists){statusEl.textContent="No account";return;}const data=snap.data()||{};await refreshDailyProgressIfNeeded(data);if(data.watchDay!==localDayKey()){ todayCount=0; watchedVideoIds=[]; balance=Number(data.balance??data.coins??0); updateUI(); return;}balance=Number(data.balance??data.coins??0);todayCount=Number(data.todayCount||0);watchedVideoIds=Array.isArray(data.watchedVideoIds)?data.watchedVideoIds:[];
 let wv = Number(data.watch_nextAvail||0) || 0;
-if(wv>0 && wv>getWatchNextAvail()) setWatchNextAvail(wv);
-checkWatchLocked();updateUI();if(todayCount>=DAILY_LIMIT||watchedVideoIds.length>=DAILY_LIMIT){showSeeYouSoon();}else if(!videoElement){chooseNextVideo();}});});
+// If Firestore says 0 (new day) but phone still has old 24h lock, clear it
+if(wv===0) clearWatchNextAvail();
+else if(wv>0 && wv>getWatchNextAvail()) setWatchNextAvail(wv);
+updateUI();if(todayCount>=DAILY_LIMIT){showSeeYouSoon();}else if(!videoElement){chooseNextVideo();}});});
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&videoElement&&!videoElement.paused)videoElement.pause();});
 })();
 </script></body></html>
