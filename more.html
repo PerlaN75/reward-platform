@@ -23,16 +23,6 @@
     .card{background:#fff;border:2px solid #ede9fe;border-radius:20px;padding:4px 8px;position:relative;overflow:hidden}
     .menu-list a{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;color:inherit;text-decoration:none;font-size:15px;font-weight:800;border-radius:14px;cursor:pointer}
     .menu-list a:not(:last-child){border-bottom:1px solid #f5f3ff}
-    #moreGate{position:fixed;inset:0;background:rgba(17,12,34,0.65);backdrop-filter:blur(8px);z-index:999;display:none;align-items:center;justify-content:center;padding:20px}
-    #moreGate.show{display:flex}
-    .gate-card{background:linear-gradient(180deg,#ede9fe,#ddd6fe);border:2px solid #c4b5fd;border-radius:22px;padding:22px 20px;width:100%;max-width:320px;text-align:center;box-shadow:0 20px 40px rgba(76,29,149,0.25);position:relative}
-    .gate-btn{width:100%;height:50px;border-radius:14px;border:2px solid #ede9fe;font-weight:900;font-size:14px;cursor:pointer}
-    .gate-btn.watch{background:#f3f4f6;color:#9ca3af;box-shadow:none;border-color:#e5e7eb}
-    .gate-btn.open{background:linear-gradient(180deg,#dcfce7,#22c55e);color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #15803d;display:none;margin-top:10px}
-    #moreTimerBox{font-size:13px;font-weight:900;color:#92400e;margin-top:12px;background:#fffbeb;border:1.5px solid #fde68a;padding:8px 12px;border-radius:999px;display:inline-block;min-width:140px}
-    #moreTimerBox:empty{display:none}
-    #moreBarWrap{height:6px;background:#ede9fe;border-radius:10px;overflow:hidden;margin-top:12px}
-    #moreBar{height:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);width:0%;transition:width 1s linear}
     .modal{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(76,29,149,0.45);justify-content:center;align-items:center;padding:15px}
     .modal-box{background:#fff;width:100%;max-width:420px;border-radius:20px;padding:20px;max-height:85vh;overflow-y:auto;position:relative}
     .close{position:absolute;top:12px;right:15px;font-size:22px;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#f5f3ff;border-radius:50%;color:#6d28d9}
@@ -63,31 +53,10 @@
   <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px">Advertisement</div>
   <div id="moreBannerBox"></div>
 </div>
-<div id="moreGate">
-  <div class="gate-card">
-    <button onclick="closeMoreGate()" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button>
-    <div style="font-size:42px">🪙</div>
-    <div style="font-weight:900;font-size:18px;color:#4c1d95;margin-top:8px">Open More</div>
-    <div style="font-size:12px;color:#6d28d9;margin:8px 0 16px;font-weight:700;line-height:1.4">Please wait 10s to open</div>
-    <button id="moreOpenBtn" class="gate-btn watch" disabled>Loading... 10s</button>
-    <div id="moreBarWrap"><div id="moreBar"></div></div>
-    <div id="moreTimerBox">Loading... 10s</div>
-    <button id="moreOpenBtn2" class="gate-btn open">✅ Tap to Open</button>
-    <div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div>
-  </div>
-</div>
 <div id="notifModal" class="modal" onclick="closeModal('notifModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('notifModal')">×</span><h3 style="text-align:center">🔔 Notifications</h3><div id="notifList" style="margin-top:12px">Loading...</div></div></div>
 <div id="historyModal" class="modal" onclick="closeModal('historyModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('historyModal')">×</span><h3 style="text-align:center">📜 History</h3><div style="display:flex;gap:6px;margin:12px 0;flex-wrap:wrap"><button onclick="filterHistory('ALL')" id="f-ALL" style="padding:7px 10px;border:none;border-radius:20px;background:#6d28d9;color:#fff;font-weight:800;font-size:11px">All</button><button onclick="filterHistory('Watch')" id="f-Watch" style="padding:7px 10px;border:1px solid #ede9fe;border-radius:20px;background:#fff;font-weight:800;font-size:11px">Watch</button><button onclick="filterHistory('Quiz')" id="f-Quiz" style="padding:7px 10px;border:1px solid #ede9fe;border-radius:20px;background:#fff;font-weight:800;font-size:11px">Quiz</button><button onclick="filterHistory('Gifts')" id="f-Gifts" style="padding:7px 10px;border:1px solid #ede9fe;border-radius:20px;background:#fff;font-weight:800;font-size:11px">Gifts</button><button onclick="filterHistory('Bonus')" id="f-Bonus" style="padding:7px 10px;border:1px solid #ede9fe;border-radius:20px;background:#fff;font-weight:800;font-size:11px">Bonus</button><button onclick="filterHistory('Wallet')" id="f-Wallet" style="padding:7px 10px;border:1px solid #ede9fe;border-radius:20px;background:#fff;font-weight:800;font-size:11px">Wallet</button><button onclick="filterHistory('Refer')" id="f-Refer" style="padding:7px 10px;border:1px solid #ede9fe;border-radius:20px;background:#fff;font-weight:800;font-size:11px">Refer</button></div><div style="display:flex;gap:10px;margin:0 0 12px"><button onclick="loadHistory()" style="flex:1;padding:10px;border:none;border-radius:10px;background:#fbbf24;font-weight:800">Refresh</button><button onclick="clearHistorySafe()" style="flex:1;padding:10px;border:none;border-radius:10px;background:#ef4444;color:#fff;font-weight:800">Clear All</button></div><div id="historyList" style="max-height:50vh;overflow-y:auto">Loading...</div></div></div>
 <div id="settingsModal" class="modal" onclick="closeModal('settingsModal')"><div class="modal-box" onclick="event.stopPropagation()"><span class="close" onclick="closeModal('settingsModal')">×</span><h3 style="text-align:center;margin-bottom:14px">⚙️ Settings</h3><div><span style="font-size:13px;font-weight:800">Language</span><div class="lang-option active" id="lang-en" onclick="setLang('en',this)"><span>English 🇺🇸</span><span>✓</span></div></div><div style="margin:16px 0"><span style="font-size:13px;font-weight:800">Appearance</span><div style="display:flex;gap:10px;margin-top:8px"><div class="mode-btn" id="modeLight" onclick="setMode('light')">☀️ Light</div><div class="mode-btn" id="modeDark" onclick="setMode('dark')">🌙 Dark</div></div></div><button onclick="saveSettings()" style="width:70%;margin:18px auto 0;display:block;background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;border:none;padding:12px;border-radius:12px;font-weight:800">Save & Close</button></div></div>
 <script>
-let vignetteLoaded=false;
-function loadVignette(){
-  if(vignetteLoaded) return; vignetteLoaded=true;
-  const old = document.querySelector('script[src*="vignette.min.js"]');
-  if(old) old.remove();
-  (function(s){s.dataset.zone='12268552',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
-  setTimeout(()=>{vignetteLoaded=false;}, 60*1000);
-}
 (function loadMoreBanner(){
   const box=document.getElementById('moreBannerBox');
   if(!box) return;
@@ -96,46 +65,13 @@ function loadVignette(){
   s.src='https://nap5k.com/tag.min.js';
   box.appendChild(s);
 })();
-let moreGateIv=null;
-let pendingModal=null;
-const MORE_COOLDOWN = 2*60*1000;
-function closeMoreGate(){ if(moreGateIv) clearInterval(moreGateIv); document.getElementById('moreGate').style.display='none'; document.getElementById('moreGate').classList.remove('show'); }
-function startMoreGate(){
-  const gate=document.getElementById('moreGate');
-  gate.classList.add('show'); gate.style.display='flex';
-  const btn1=document.getElementById('moreOpenBtn');
-  const btn2=document.getElementById('moreOpenBtn2');
-  const el=document.getElementById('moreTimerBox');
-  const bar=document.getElementById('moreBar');
-  btn1.style.display='block'; btn1.disabled=true; btn1.innerText='Loading... 10s';
-  btn2.style.display='none';
-  bar.style.width='0%'; el.innerText='Loading... 10s';
-  let sec=10;
-  if(moreGateIv) clearInterval(moreGateIv);
-  moreGateIv=setInterval(()=>{
-    sec--; bar.style.width=((10-sec)/10*100)+'%';
-    if(sec>0){ el.innerText='Loading... '+sec+'s'; btn1.innerText='Loading... '+sec+'s'; }
-    else { clearInterval(moreGateIv); bar.style.width='100%'; btn1.style.display='none'; el.innerText='Ready!'; btn2.style.display='block'; }
-  },1000);
-}
-document.getElementById('moreOpenBtn2').onclick=function(){
-  closeMoreGate();
-  localStorage.setItem('moreGateLastShown', String(Date.now()));
-  loadVignette();
-  if(pendingModal){ doOpenModal(pendingModal); pendingModal=null; }
-};
 </script>
 <script>
 const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 try{ firebase.appCheck().activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1', true); }catch(e){}
 const auth=firebase.auth(), db=firebase.firestore(); let cachedUser=null, allData=[], currentFilter='ALL';
-function openModal(id){
-  const last=parseInt(localStorage.getItem('moreGateLastShown')||'0');
-  if(last && (Date.now()-last) < MORE_COOLDOWN){ doOpenModal(id); return; }
-  pendingModal=id;
-  startMoreGate();
-}
+function openModal(id){ doOpenModal(id); }
 function doOpenModal(id){ document.getElementById(id).style.display='flex'; if(id==='historyModal') loadHistory(); if(id==='notifModal') loadNotifs(); }
 function closeModal(id){ document.getElementById(id).style.display='none'; }
 function setLang(c,el){ localStorage.setItem('app_lang',c); document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active')); el.classList.add('active'); }
@@ -221,6 +157,18 @@ async function loadHistory(){
 }
 async function clearHistorySafe(){ if(allData.length===0){ document.getElementById('historyList').innerHTML='<p style="text-align:center;padding:20px">No history</p>'; return; } if(!confirm('Clear all history?')) return; const list=document.getElementById('historyList'); list.innerHTML='Clearing...'; const ids=allData.map(x=>x.id); addHiddenIds(ids); const user=auth.currentUser||cachedUser; for(const it of allData){ try{ if(it.source==='earnHistory'){ const realId=it.id.replace('earn_',''); await db.collection('users').doc(user.uid).collection('earnHistory').doc(realId).set({hidden:true},{merge:true}); } }catch(e){} } allData=[]; renderHistory(); }
 auth.onAuthStateChanged(u=>{ if(!u){ location.href='./index.html'; return; } cachedUser=u; });
+</script>
+
+<!-- ONCLICK - MORE ONLY - ONCE PER 2 MIN - Zone 12361819 -->
+<script>
+(function(){
+  var KEY='onclick_more_last';
+  var now=Date.now();
+  var last=Number(localStorage.getItem(KEY)||0);
+  if(now-last < 2*60*1000){ return; }
+  localStorage.setItem(KEY, String(now));
+  (function(s){s.dataset.zone='12361819',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+})();
 </script>
 </body>
 </html>
