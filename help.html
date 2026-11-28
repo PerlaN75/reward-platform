@@ -67,14 +67,14 @@ body{background:#f5f3ff;min-height:100vh;color:#111827}
 <div class="card"><div style="font-weight:900;font-size:15px">Your Tickets & Replies</div><div id="ticketsList" style="margin-top:10px"><p style="color:#9ca3af;text-align:center;padding:20px 0">Loading...</p></div></div>
 </div>
 
-<div id="adGate"><div class="gate-box"><button onclick="closeHelpGate()" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button><div class="gate-icon">🎁</div><div class="gate-title">Open Answer</div><div class="gate-sub">Please wait 10s to open</div><button id="watchAdBtn" class="gate-btn watch">Open Answer</button><div id="waitText"></div><button id="openBtn" class="gate-btn open">✅ Open</button><div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div></div></div>
+<div id="adGate"><div class="gate-box"><button onclick="closeHelpGate()" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button><div class="gate-icon">🎁</div><div class="gate-title">Open Answer</div><div class="gate-sub">Please wait 5s to open</div><button id="watchAdBtn" class="gate-btn watch">Open Answer</button><div id="waitText"></div><button id="openBtn" class="gate-btn open">✅ Open</button><div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div></div></div>
 <script>
 const FAQS=[
-{q:"💰 How to withdraw?",a:"Go to Wallet > Withdraw. Minimum is <b>3000 coins = $1.5</b>. Payout in USDT (BEP20) within 24-48h. Complete Watch, Quiz, Articles daily."},
-{q:"🪙 Coins not added?",a:"Watch full 35s without skipping. Wait for +1 circle, then watch 10s ad and claim. Clear cache if needed."},
-{q:"📺 Video not playing?",a:"Videos are 30-50MB. Use WiFi or 4G. Click Next Video. 32 videos available."},
-{q:"❓ Quiz locked?",a:"Finish Watch first. Chain: Watch -> Quiz -> Articles. 30 min window each."},
-{q:"🎁 Bonus?",a:"Watch 10 videos = +5 bonus. Claim same day. Resets midnight."},
+{q:"💰 How to withdraw?",a:"Go to Wallet > Withdraw. Minimum is <b>3000 coins = $1.5</b>. Payout in USDT / BNB / XLM within 24-48h. Earn via Watch, Gifts, Bonus, Survey, Referrals, Offers."},
+{q:"🪙 Coins not added?",a:"Watch full <b>35s</b> without skipping. Wait for +1, then claim. Watch is <b>1 video / hour = +1 coin</b>. Clear cache if needed."},
+{q:"📺 Video not playing?",a:"Videos are 30-50MB. Use WiFi or 4G. Click Next Video. If one video fails, wait 1 hour for next video."},
+{q:"🎁 Gifts?",a:"<b>5 picks / hour, max 3 coins / hour</b>. Boxes are blind - average is 1 coin. Pick 5, then Claim. Gifts locks for 1 hour after Claim."},
+{q:"🎁 Bonus?",a:"Bonus is <b>1 coin / hour</b>. It is independent - no need to finish Watch first. Claim every hour."},
 {q:"🤝 Referral?",a:"Friend must sign up with your link + complete 1 Watch. You get 10% lifetime."},
 {q:"⏳ Pending withdraw?",a:"Manual review within 12h. If 48h+, send ticket with wallet address."},
 {q:"📧 Contact?",a:"Use form below. Reply within 24h. One ticket per issue."}
@@ -146,7 +146,7 @@ FAQS.forEach((f,i)=>{
 });
 document.getElementById('watchAdBtn').onclick=function(){
   this.innerText='⏳ Please wait...'; this.disabled=true;
-  let sec=10;
+  let sec=5;
   const waitText=document.getElementById('waitText');
   waitText.innerText=`⏳ Wait ${sec}s...`;
   clearInterval(timerInterval);
