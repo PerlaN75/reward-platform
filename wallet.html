@@ -42,13 +42,6 @@ body{background:#f5f3ff;min-height:100vh;padding:0 0 100px 0;color:#111827}
 </head><body>
 <div id="customToast"></div>
 <div class="top-bar"><a href="home.html" class="back-btn-checkin"><span class="lines"><i></i><i></i><i></i></span></a><div class="center-pill">💰 Wallet</div><div style="width:45px"></div></div>
-<div class="top-ad-wrap">
-  <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:0.5px">Advertisement</div>
-  <a id="walletAdLink" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
-    <div style="flex:1"><div id="walletAdTitle" style="font-weight:900;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div id="walletAdSub" style="font-size:11px;color:#333">Limited offer • Sponsored</div></div>
-    <div id="walletAdBtn" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
-  </a>
-</div>
 <div class="container">
 <div class="card">
 <div style="color:#d1d5db;font-size:11px;font-weight:800">Your Balance</div>
@@ -138,7 +131,6 @@ firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(),db=firebase.firestore();
 function showToast(m){const t=document.getElementById('customToast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',4000);}
 const POINT_RATE=0.0005;
-// --- LIVE PRICES - update these when you want, fallback if fetch fails ---
 let BNB_PRICE=1150, XLM_PRICE=0.38;
 async function loadPrices(){ try{ const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=binancecoin,stellar&vs_currencies=usd'); const j=await r.json(); if(j.binancecoin?.usd) BNB_PRICE=j.binancecoin.usd; if(j.stellar?.usd) XLM_PRICE=j.stellar.usd; calcConvert(); updateWithdrawNote(); }catch(e){} }
 loadPrices();
@@ -247,7 +239,6 @@ async function convertPoints(){
     const field = convertTarget==='USDT'?'usdtBalance': convertTarget==='BNB'?'bnbBalance':'xlmBalance';
     const update={}; update[field]=firebase.firestore.FieldValue.increment(r.val);
     await db.runTransaction(async (tx)=>{const snap=await tx.get(userRef);if(!snap.exists) throw "No user";const data=snap.data();const bal=data.balance ?? data.coins ?? 0;if(bal < pts) throw `Not enough coins`;tx.update(userRef,{balance: firebase.firestore.FieldValue.increment(-pts),coins: firebase.firestore.FieldValue.increment(-pts),points: firebase.firestore.FieldValue.increment(-pts),[field]: firebase.firestore.FieldValue.increment(r.val),lastConvertAt: firebase.firestore.FieldValue.serverTimestamp()});});
-    // Save to History - grouped by type Wallet
     try{ await db.collection('users').doc(currentUser.uid).collection('earnHistory').add({action:'Convert - '+convertTarget, type:'Wallet', coins:pts, desc: pts+' coins → '+r.val.toFixed(4)+' '+convertTarget, timestamp: firebase.firestore.FieldValue.serverTimestamp()}); }catch(e){}
     const dec = convertTarget==='BNB'?6: convertTarget==='XLM'?2:4;
     showToast(`✓ ${pts} coins → ${r.val.toFixed(dec)} ${convertTarget}`);document.getElementById('convertAmount').value=''; calcConvert();
