@@ -47,6 +47,7 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
 #gateTimer2:empty{display:none}
 #gateBarWrap{height:6px;background:#fae8ff;border-radius:10px;overflow:hidden}
 #gateBar{height:100%;background:linear-gradient(90deg,#ec4899,#a855f7);width:0%;transition:width 1s linear}
+#giftsBannerBox{min-height:90px}
 </style>
 </head>
 <body>
@@ -57,7 +58,7 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
   <div style="width:45px"></div>
 </div>
 <div id="checking"><div><div style="font-size:42px">⏳</div><h2 style="color:#4c1d95;margin:10px 0">Checking...</h2><div style="font-weight:800;color:#6b7280">Please wait</div></div></div>
-<div id="fullLock"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Gifts Locked</h2><div id="fullLockMsg" style="font-weight:800;color:#6b7280">Next gifts in --</div><div style="font-size:12px;color:#9ca3af;margin-top:8px">You used your 5 picks.<br>Come back in 1 hour • Watch / Quiz still open</div><button id="fullLockBtn" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#e5e7eb;color:#9ca3af;font-weight:900" disabled>Wait --</button><br><button onclick="location.href='home.html'" style="margin-top:10px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
+<div id="fullLock"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Gifts Locked</h2><div id="fullLockMsg" style="font-weight:800;color:#6b7280">Next gifts in --</div><div style="font-size:12px;color:#9ca3af;margin-top:8px">You used your 5 picks.<br>Come back in 1 hour • Watch / Bonus still open</div><button id="fullLockBtn" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#e5e7eb;color:#9ca3af;font-weight:900" disabled>Wait --</button><br><button onclick="location.href='home.html'" style="margin-top:10px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
 <main class="main-card">
   <section class="balance-box">
     <div style="display:flex;justify-content:space-between;align-items:center">
@@ -69,7 +70,7 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
   </section>
   <div style="text-align:center;margin-top:10px">
     <div style="font-size:14px;font-weight:900;color:#4c1d95">Tap to open.</div>
-    <div style="font-size:11px;font-weight:800;color:#6b7280;margin-top:1px"><i>You have only 5 picks / hour</i></div>
+    <div style="font-size:11px;font-weight:800;color:#6b7280;margin-top:1px"><i>You have 5 picks / hour • Max 3 coins / hour</i></div>
   </div>
   <div class="grid" id="giftGrid"></div>
   <div id="finalBox" style="display:none;text-align:center;padding:10px;border:2px dashed #fbbf24;background:#fffbeb;border-radius:14px;margin-top:8px">
@@ -81,28 +82,27 @@ body{background:#f5f3ff;min-height:100vh;display:flex;flex-direction:column;alig
 </main>
 <div style="max-width:500px;margin:0 auto;padding:8px 14px 30px;width:100%">
   <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:.5px">Advertisement</div>
-  <a id="giftsAdLinkBottom" href="https://uplcm.com/4/12320757" target="_blank" rel="sponsored noopener" style="text-decoration:none;display:flex;align-items:center;gap:8px;background:#FFD700;border-radius:12px;padding:12px">
-    <div style="flex:1"><div id="giftsAdTitleBottom" style="font-weight:900;color:#000;font-size:13px">🎁 Claim Your $100 Bonus</div><div id="giftsAdSubBottom" style="font-size:11px;color:#333">Limited offer • Sponsored</div></div>
-    <div id="giftsAdBtnBottom" style="background:#000;color:#fff;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap">Visit →</div>
-  </a>
+  <div id="giftsBannerBox"></div>
 </div>
 <div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#9ca3af">✕</button><div class="gate-icon">🎁</div><div class="gate-title" id="gateTitle">Unwrapping your gift...</div><div id="gateBarWrap"><div id="gateBar"></div></div><div id="gateTimer2"></div><button id="openBtn" class="gate-btn open">Tap to Reveal 🎁</button><div style="font-size:9px;color:#9ca3af;margin-top:10px;font-weight:700">Advertisement</div></div></div>
 <script>
 (()=>{ "use strict";
-// ===== GIFTS - OPTION B - KEEP OWN ZONE 12273869 =====
+// ===== GIFTS - 2 ADS ONLY: 1 Banner 12273869 + 1 Vignette 12268552 at Claim =====
+(function loadGiftsBanner(){
+  var box=document.getElementById('giftsBannerBox'); if(!box) return;
+  var s=document.createElement('script'); s.dataset.zone='12273869'; s.src='https://nap5k.com/tag.min.js'; box.appendChild(s);
+})();
 let vignetteLoaded=false;
-function loadCleanVignette(){ if(vignetteLoaded) return; vignetteLoaded=true; const old=document.querySelector('script[src*="vignette.min.js"]'); if(old) old.remove(); (function(s){s.dataset.zone='12273869',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement,document.body].filter(Boolean).pop().appendChild(document.createElement('script'))); setTimeout(()=>{vignetteLoaded=false;},60000); }
-const ADS=[{title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Sponsored",btn:"Visit →",bg:"#FFD700",link:"https://uplcm.com/4/12320757"},{title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • Sponsored",btn:"Visit →",bg:"#7CFC00",link:"https://uplcm.com/4/12320757"},{title:"📱 Win Free Airtime Today",sub:"MTN • Airtel • Sponsored",btn:"Visit →",bg:"#00D4FF",link:"https://uplcm.com/4/12320757"},{title:"🔥 Hot Offer - Double Your Coins",sub:"Today only • Sponsored",btn:"Visit →",bg:"#FF9F43",link:"https://uplcm.com/4/12320757"}];
-const AD_TIME=2*60*1000, AD_KEY='giftsAd_state_v1'; let adIndex=0;
-function saveAd(){ try{localStorage.setItem(AD_KEY,JSON.stringify({index:adIndex,changedAt:Date.now()}));}catch(e){} }
-function showAd(i){ const a=ADS[i]; const b=document.getElementById('giftsAdLinkBottom'); if(b){b.href=a.link;b.style.background=a.bg;document.getElementById('giftsAdTitleBottom').textContent=a.title;document.getElementById('giftsAdSubBottom').textContent=a.sub;document.getElementById('giftsAdBtnBottom').textContent=a.btn;} }
-function nextAd(){ adIndex=(adIndex+1)%ADS.length; showAd(adIndex); saveAd(); }
-(function initAd(){ try{ const raw=localStorage.getItem(AD_KEY); if(!raw){showAd(0);saveAd();setTimeout(function(){nextAd();setInterval(nextAd,AD_TIME);},AD_TIME);return;} const s=JSON.parse(raw); const el=Date.now()-(s.changedAt||Date.now()); const steps=Math.floor(el/AD_TIME); adIndex=((s.index||0)+steps)%ADS.length; const rem=AD_TIME-(el%AD_TIME); showAd(adIndex); try{localStorage.setItem(AD_KEY,JSON.stringify({index:adIndex,changedAt:Date.now()-(el%AD_TIME)}));}catch(e){} setTimeout(function(){nextAd();setInterval(nextAd,AD_TIME);},rem); }catch(e){showAd(0);saveAd();setInterval(nextAd,AD_TIME);} })();
+function loadGiftsVignette(){
+  if(vignetteLoaded) return; vignetteLoaded=true;
+  var s=document.createElement('script'); s.dataset.zone='12268552'; s.src='https://n6wxm.com/vignette.min.js'; document.body.appendChild(s);
+  setTimeout(()=>{vignetteLoaded=false;},60000);
+}
 
-// ===== OPTION B GATE - 10s, 2 per session =====
+// ===== GATE - 10s =====
 const GATE_SECONDS = 10;
 let gateIv=null;
-let gateMode='enter'; // 'enter' or 'claim'
+let gateMode='enter';
 let gateNext=null;
 let hasEntered=false;
 function openAdGate(nextFn, mode){
@@ -125,7 +125,8 @@ function openAdGate(nextFn, mode){
 }
 document.getElementById('openBtn').onclick=function(){
   document.getElementById('adGate').style.display='none';
-  loadCleanVignette(); // 1 Vignette per gate - 2 total per hour
+  // Vignette ONLY at Claim - 1 Vignette per hour total. Enter gate = timer only, no ad.
+  if(gateMode==='claim') loadGiftsVignette();
   const fn=gateNext; gateNext=null;
   if(gateMode==='enter') hasEntered=true;
   if(fn) fn();
@@ -183,7 +184,6 @@ function unlockGifts(){
   giftsNextAllowed=0; setGiftsNextAvail(0);
   fullLock.style.display="none"; openedIds=[]; wonCoins=0; hasEntered=false;
   BOXES=getTodayBoxes(currentUser?currentUser.uid:null); renderGrid();
-  // After unlock, show Enter gate again - Option B 1st Vignette
   if(firestoreReady && currentUser){
     openAdGate(()=>{ renderGrid(); }, 'enter');
   }
@@ -226,7 +226,6 @@ function renderGrid(){
       d.className='gift';
       d.innerHTML=`<span class="gift-emoji">🎁</span>`;
       if(!isOpen){
-        // OPTION B: Picks are FREE - no gate, no ad per pick
         d.onclick=()=>{ if(openedIds.length>=MAX_PICKS){ return; } doReveal(idx); };
       }
     }
@@ -253,7 +252,6 @@ async function doReveal(idx){
     renderGrid();
   }, 3500);
 }
-// Claim button -> OPTION B 2nd Vignette at Claim
 claimBtn.onclick=()=>{
   if(isClaiming) return;
   if(!currentUser) return;
@@ -309,7 +307,6 @@ auth.onAuthStateChanged(user=>{
     const wasReady = firestoreReady;
     firestoreReady=true; checkingEl.style.display='none';
     renderGrid();
-    // OPTION B 1st Vignette: Enter gate only once, only if not locked and not already entered
     if(!wasReady && !hasEntered && !checkLock() && openedIds.length<MAX_PICKS){
       openAdGate(()=>{ renderGrid(); }, 'enter');
     }
