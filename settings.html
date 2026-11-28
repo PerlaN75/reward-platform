@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Settings - Rewards</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer-when-downgrade" />
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#f5f3ff;min-height:100vh;color:#111827}
+body.dark{background:#111827;color:#fff}
+body.dark .card{background:#1f2937;border-color:#374151}
+body.dark .row{border-color:#374151;color:#fff}
+body.dark .input{background:#111827;color:#fff;border-color:#374151}
+.top-bar{background:#6d28d9;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100}
+.back-btn{width:45px;height:30px;border-radius:10px;background:#fff;border:2px solid #fecaca;display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0}
+.back-btn .lines{display:flex;flex-direction:column;gap:3px}
+.back-btn .lines i{display:block;width:18px;height:2.5px;background:#000;border-radius:2px}
+.top-pill{font-weight:900;font-size:14px;color:#4c1d95;background:#fff;border:2px solid #ede9fe;border-radius:999px;padding:7px 18px}
+.container{max-width:500px;margin:0 auto;padding:14px 14px 90px}
+.profile-card{background:linear-gradient(135deg,#6d28d9,#9333ea);border-radius:20px;padding:18px;color:#fff;display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.avatar{width:54px;height:54px;border-radius:50%;background:#fff;color:#6d28d9;font-weight:900;font-size:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.card{background:#fff;border:2px solid #ede9fe;border-radius:20px;padding:6px 16px;margin-bottom:14px;overflow:hidden}
+.section-title{font-weight:900;font-size:12px;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px;padding:14px 0 6px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;text-decoration:none;color:inherit}
+.row:last-child{border-bottom:none}
+.row-left{display:flex;align-items:center;gap:12px}
+.row-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.row-title{font-weight:800;font-size:14px}
+.row-sub{font-size:11px;color:#9ca3af;margin-top:1px}
+.row-arrow{color:#d1d5db;font-weight:900}
+.row-value{font-weight:900;font-size:14px;white-space:nowrap}
+.input{width:100%;background:#fff;border:2px solid #e5e7eb;border-radius:12px;padding:12px 14px;font-size:14px;margin:6px 0 10px;outline:none}
+select.input{appearance:none}
+.switch{position:relative;width:48px;height:28px;background:#e5e7eb;border-radius:999px;flex-shrink:0;cursor:pointer;border:none;transition:.2s}
+.switch.on{background:#22c55e}
+.switch::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:.2s}
+.switch.on::after{left:23px}
+.btn{width:100%;border:none;border-radius:13px;padding:14px;font-weight:900;font-size:15px;cursor:pointer;margin-top:6px}
+.btn-yellow{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 4px 0 #d97706}
+.btn-red{background:#fef2f2;color:#dc2626;border:2px solid #fecaca}
+.btn-ghost{background:#f9fafb;color:#374151;border:2px solid #e5e7eb}
+.btn-dark{background:#111827;color:#fff}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:999;display:none;align-items:flex-end;justify-content:center}
+.modal.show{display:flex}
+.modal-box{background:#fff;width:100%;max-width:500px;border-radius:24px 24px 0 0;padding:20px 18px 28px;color:#111827;max-height:85vh;overflow-y:auto}
+.theme-opt{display:flex;gap:10px;margin:10px 0}
+.theme-card{flex:1;border:2px solid #e5e7eb;border-radius:14px;padding:14px;text-align:center;cursor:pointer;font-weight:900;font-size:13px}
+.theme-card.active{border-color:#6d28d9;background:#f5f3ff}
+.danger-box{background:#fef2f2;border:2px solid #fecaca;border-radius:14px;padding:12px;font-size:12px;line-height:1.5;color:#7f1d1d;margin:10px 0}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="home.html" class="back-btn"><span class="lines"><i></i><i></i><i></i></span></a>
+  <div class="top-pill">⚙️ Settings</div>
+  <div style="width:45px"></div>
+</div>
+
+<div class="container">
+  <div class="profile-card" onclick="openModal('profileModal')">
+    <div class="avatar" id="avatarLetter">?</div>
+    <div style="flex:1;min-width:0">
+      <div id="profileName" style="font-weight:900;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Loading...</div>
+      <div id="profileEmail" style="font-size:12px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">...</div>
+    </div>
+    <div style="font-size:12px;background:rgba(255,255,255,.25);padding:6px 10px;border-radius:999px;font-weight:800;white-space:nowrap">Edit ✎</div>
+  </div>
+
+  <!-- 1. ACCOUNT -->
+  <div class="card">
+    <div class="section-title">👤 Account</div>
+    <div class="row" onclick="openModal('profileModal')"><div class="row-left"><div class="row-icon" style="background:#f3e8ff">✎</div><div><div class="row-title">Edit Profile</div><div class="row-sub">Username</div></div></div><div class="row-arrow">›</div></div>
+    <div class="row" onclick="openModal('walletModal')"><div class="row-left"><div class="row-icon" style="background:#dcfce7">👛</div><div><div class="row-title">Payout Wallet</div><div class="row-sub" id="walletLabel">Set USDT / BNB / XLM</div></div></div><div class="row-arrow">›</div></div>
+    <div class="row" onclick="changePassword()"><div class="row-left"><div class="row-icon" style="background:#fee2e2">🔒</div><div><div class="row-title">Change Password</div><div class="row-sub">Send reset link to email</div></div></div><div class="row-arrow">›</div></div>
+    <div class="row" onclick="doLogout()"><div class="row-left"><div class="row-icon" style="background:#eff6ff">🚪</div><div><div class="row-title">Logout</div><div class="row-sub">Sign out on this device</div></div></div><div class="row-arrow">›</div></div>
+    <div class="row" onclick="openModal('deleteModal')" style="border-bottom:none"><div class="row-left"><div class="row-icon" style="background:#fee2e2">🗑️</div><div><div class="row-title" style="color:#dc2626">Delete Account Permanently</div><div class="row-sub">Deletes everything from Firebase</div></div></div><div class="row-arrow" style="color:#dc2626">›</div></div>
+  </div>
+
+  <!-- 2. APPEARANCE -->
+  <div class="card">
+    <div class="section-title">🎨 Appearance</div>
+    <div style="padding:6px 0 14px">
+      <div class="theme-opt">
+        <div class="theme-card" id="themeLight" onclick="setTheme('light')">☀️<br>Light</div>
+        <div class="theme-card" id="themeDark" onclick="setTheme('dark')">🌙<br>Dark</div>
+      </div>
+    </div>
+    <div class="row" style="cursor:default"><div class="row-left"><div class="row-icon" style="background:#eff6ff">🔊</div><div><div class="row-title">Sound</div><div class="row-sub">Coin claim & button sounds</div></div></div><button class="switch on" id="swSound" onclick="toggleSw(this,'sound')"></button></div>
+    <div class="row" style="cursor:default"><div class="row-left"><div class="row-icon" style="background:#fef3c7">📳</div><div><div class="row-title">Vibration</div><div class="row-sub">Vibrate on claim</div></div></div><button class="switch on" id="swVibrate" onclick="toggleSw(this,'vibrate')"></button></div>
+    <div class="row" onclick="openModal('langModal')"><div class="row-left"><div class="row-icon" style="background:#f3e8ff">🌐</div><div><div class="row-title">Language</div><div class="row-sub" id="langLabel">English</div></div></div><div class="row-arrow">›</div></div>
+  </div>
+
+  <!-- 3. NOTIFICATIONS -->
+  <div class="card">
+    <div class="section-title">🔔 Notifications</div>
+    <div class="row" style="cursor:default"><div class="row-left"><div class="row-icon" style="background:#fef3c7">🎁</div><div><div class="row-title">Hourly Bonus Reminder</div><div class="row-sub">Remind every hour to claim</div></div></div><button class="switch on" id="swBonus" onclick="toggleSw(this,'notif_bonus')"></button></div>
+    <div class="row" style="cursor:default"><div class="row-left"><div class="row-icon" style="background:#dcfce7">💰</div><div><div class="row-title">Withdraw Updates</div><div class="row-sub">Approved / Paid / Rejected</div></div></div><button class="switch on" id="swWithdraw" onclick="toggleSw(this,'notif_withdraw')"></button></div>
+    <div class="row" style="cursor:default"><div class="row-left"><div class="row-icon" style="background:#f3e8ff">💎</div><div><div class="row-title">New Offers & Surveys</div><div class="row-sub">High pay offers</div></div></div><button class="switch" id="swOffers" onclick="toggleSw(this,'notif_offers')"></button></div>
+    <div class="row" style="cursor:default"><div class="row-left"><div class="row-icon" style="background:#fee2e2">📢</div><div><div class="row-title">Announcements</div><div class="row-sub">App news & maintenance</div></div></div><button class="switch on" id="swAnnounce" onclick="toggleSw(this,'notif_announce')"></button></div>
+  </div>
+
+  <!-- 4. HISTORY -->
+  <div class="card">
+    <div class="section-title">📜 History</div>
+    <div class="row" onclick="openHistory('watch')"><div class="row-left"><div class="row-icon" style="background:#fef3c7">📺</div><div><div class="row-title">Watch History</div><div class="row-sub">Videos watched & coins</div></div></div><div><span class="row-value" id="hWatch">0</span> <span class="row-arrow">›</span></div></div>
+    <div class="row" onclick="openHistory('gifts')"><div class="row-left"><div class="row-icon" style="background:#f3e8ff">🎁</div><div><div class="row-title">Gifts History</div><div class="row-sub">Gifts claimed</div></div></div><div><span class="row-value" id="hGifts">0</span> <span class="row-arrow">›</span></div></div>
+    <div class="row" onclick="openHistory('bonus')"><div class="row-left"><div class="row-icon" style="background:#dcfce7">💎</div><div><div class="row-title">Bonus History</div><div class="row-sub">Hourly bonus claims</div></div></div><div><span class="row-value" id="hBonus">0</span> <span class="row-arrow">›</span></div></div>
+    <a class="row" href="wallet.html" style="border-bottom:none"><div class="row-left"><div class="row-icon" style="background:#eff6ff">👛</div><div><div class="row-title">Wallet History</div><div class="row-sub" id="walletHistSub">Withdraws & payouts</div></div></div><div><span class="row-value" id="hWallet">0</span> <span class="row-arrow">›</span></div></a>
+  </div>
+
+  <div style="text-align:center;color:#9ca3af;font-size:11px;margin-top:10px;font-weight:700">Version v1.0.0 • Rewards 🇷🇼</div>
+</div>
+
+<!-- PROFILE -->
+<div class="modal" id="profileModal" onclick="if(event.target==this)closeModal('profileModal')"><div class="modal-box"><div style="font-weight:900;font-size:17px">✎ Edit Profile</div><label style="font-size:12px;font-weight:800;color:#6b7280">Username</label><input id="editName" class="input" placeholder="Username"><label style="font-size:12px;font-weight:800;color:#6b7280">Email</label><input id="editEmail" class="input" readonly style="background:#f9fafb"><button class="btn btn-yellow" onclick="saveProfile()">Save</button><button class="btn btn-ghost" onclick="closeModal('profileModal')">Cancel</button></div></div>
+<!-- WALLET -->
+<div class="modal" id="walletModal" onclick="if(event.target==this)closeModal('walletModal')"><div class="modal-box"><div style="font-weight:900;font-size:17px">👛 Payout Wallet</div><label style="font-size:12px;font-weight:800;color:#6b7280">Method</label><select id="walletMethod" class="input"><option value="USDT">USDT (TRC20)</option><option value="BNB">BNB (BEP20)</option><option value="XLM">XLM</option></select><label style="font-size:12px;font-weight:800;color:#6b7280">Wallet Address</label><input id="walletAddr" class="input" placeholder="Paste wallet address"><button class="btn btn-yellow" onclick="saveWallet()">Save Wallet</button><button class="btn btn-ghost" onclick="closeModal('walletModal')">Cancel</button></div></div>
+<!-- LANGUAGE -->
+<div class="modal" id="langModal" onclick="if(event.target==this)closeModal('langModal')"><div class="modal-box"><div style="font-weight:900;font-size:17px">🌐 Language</div><div id="langList" style="margin-top:10px"></div><button class="btn btn-ghost" onclick="closeModal('langModal')">Close</button></div></div>
+<!-- HISTORY -->
+<div class="modal" id="historyModal" onclick="if(event.target==this)closeModal('historyModal')"><div class="modal-box"><div style="font-weight:900;font-size:17px" id="historyTitle">History</div><div id="historyList" style="margin-top:12px"></div><button class="btn btn-ghost" onclick="closeModal('historyModal')">Close</button></div></div>
+<!-- DELETE -->
+<div class="modal" id="deleteModal" onclick="if(event.target==this)closeModal('deleteModal')"><div class="modal-box"><div style="font-weight:900;font-size:17px;color:#dc2626">🗑️ Delete Account Permanently?</div><div class="danger-box"><b>This deletes from Firebase:</b><br>• Profile, coins, balance<br>• Watch / Gifts / Bonus history<br>• Withdraws & wallet<br>• Tickets / Referrals / Surveys<br>• Login account - cannot be undone.<br><br>Pending withdraws will be cancelled.</div><label style="font-size:12px;font-weight:800;color:#6b7280">Type <b>DELETE</b> to confirm</label><input id="deleteConfirm" class="input" placeholder="DELETE" autocomplete="off"><button class="btn btn-red" id="deleteBtn" onclick="doDeletePermanent()">Yes, Delete Everything Permanently</button><button class="btn btn-ghost" onclick="closeModal('deleteModal')">Cancel - Keep My Account</button></div></div>
+
+<script>
+const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(), db=firebase.firestore();
+let currentUser=null, userData={}, historyData={watch:[],gifts:[],bonus:[]};
+const LANGS=[{code:'en',label:'English',flag:'🇬🇧'},{code:'rw',label:'Kinyarwanda',flag:'🇷🇼'},{code:'fr',label:'Français',flag:'🇫🇷'},{code:'sw',label:'Swahili',flag:'🇹🇿'}];
+function getS(k,d){ try{ return localStorage.getItem('setting_'+k) ?? d; }catch(e){ return d; } }
+function setS(k,v){ try{ localStorage.setItem('setting_'+k,v); }catch(e){} }
+function openModal(id){ document.getElementById(id).classList.add('show'); }
+function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+
+// APPEARANCE
+function setTheme(t){ setS('theme',t); applyTheme(); }
+function applyTheme(){ const t=getS('theme','light'); document.body.classList.toggle('dark', t==='dark'); document.getElementById('themeLight').classList.toggle('active', t==='light'); document.getElementById('themeDark').classList.toggle('active', t==='dark'); }
+function toggleSw(el,k){ el.classList.toggle('on'); setS(k, el.classList.contains('on')?'1':'0'); }
+function applySwitches(){ const m={notif_bonus:'swBonus',notif_withdraw:'swWithdraw',notif_offers:'swOffers',notif_announce:'swAnnounce',sound:'swSound',vibrate:'swVibrate'}; const d={notif_bonus:'1',notif_withdraw:'1',notif_offers:'0',notif_announce:'1',sound:'1',vibrate:'1'}; Object.keys(m).forEach(k=>{ const el=document.getElementById(m[k]); if(el) el.classList.toggle('on', getS(k,d[k])==='1'); }); }
+
+// LANGUAGE
+function renderLang(){ const cur=getS('lang','en'); document.getElementById('langLabel').innerText=(LANGS.find(l=>l.code===cur)||LANGS[0]).label; document.getElementById('langList').innerHTML=LANGS.map(l=>`<div class="row" onclick="setLang('${l.code}')"><div class="row-left"><div style="font-size:22px">${l.flag}</div><div class="row-title">${l.label}</div></div><div>${l.code===cur?'✅':''}</div></div>`).join(''); }
+function setLang(c){ setS('lang',c); renderLang(); closeModal('langModal'); }
+
+// HISTORY
+function fmtDate(ts){ if(!ts) return ''; try{ const d=ts.toDate?ts.toDate():new Date(ts); return d.toLocaleDateString()+' '+d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
+function openHistory(type){
+  const titles={watch:'📺 Watch History',gifts:'🎁 Gifts History',bonus:'💎 Bonus History'};
+  document.getElementById('historyTitle').innerText=titles[type];
+  let list=historyData[type]||[];
+  if(!list.length) document.getElementById('historyList').innerHTML=`<div style="text-align:center;color:#9ca3af;padding:20px 0;font-size:13px">No ${type} history yet.</div>`;
+  else document.getElementById('historyList').innerHTML=list.slice(0,30).map(it=>`<div class="row" style="cursor:default"><div><div class="row-title">${it.label||type}</div><div class="row-sub">${fmtDate(it.createdAt||it.date)}</div></div><b style="color:#16a34a">+${it.coins||it.amount||0}</b></div>`).join('');
+  openModal('historyModal');
+}
+async function loadHistory(uid){
+  const tryLoad=async(coll)=>{ try{ const s=await db.collection('users').doc(uid).collection(coll).orderBy('createdAt','desc').limit(30).get(); return s.docs.map(d=>({id:d.id,...d.data()})); }catch(e){ try{ const s=await db.collection('users').doc(uid).collection(coll).limit(30).get(); return s.docs.map(d=>({id:d.id,...d.data()})); }catch(e2){ return []; } } };
+  historyData.watch=await tryLoad('watchHistory');
+  if(!historyData.watch.length) historyData.watch=await tryLoad('watch');
+  historyData.gifts=await tryLoad('giftsHistory');
+  if(!historyData.gifts.length) historyData.gifts=await tryLoad('gifts');
+  historyData.bonus=await tryLoad('bonusHistory');
+  if(!historyData.bonus.length) historyData.bonus=await tryLoad('bonus');
+  // counts + fallback to totals in user doc
+  const wCount=historyData.watch.length||userData.watchCount||0;
+  const gCount=historyData.gifts.length||userData.giftsCount||0;
+  const bCount=historyData.bonus.length||userData.bonusCount||0;
+  document.getElementById('hWatch').innerText=(userData.watchEarned||wCount)+' coins';
+  document.getElementById('hGifts').innerText=(userData.giftsEarned||gCount)+' coins';
+  document.getElementById('hBonus').innerText=(userData.bonusEarned||bCount)+' coins';
+  // wallet
+  try{ const s=await db.collection('users').doc(uid).collection('withdrawals').get(); document.getElementById('hWallet').innerText=s.size+' withdraws'; document.getElementById('walletHistSub').innerText=s.size+' withdraws • View payouts'; }catch(e){ document.getElementById('hWallet').innerText=(userData.totalWithdraws||0)+' withdraws'; }
+}
+
+// ACCOUNT
+auth.onAuthStateChanged(u=>{
+  if(!u){ location.href='./index.html'; return; }
+  currentUser=u;
+  db.collection('users').doc(u.uid).get().then(s=>{
+    if(s.exists) userData=s.data();
+    const name=userData.username||u.displayName||'User';
+    const email=userData.email||u.email||'';
+    document.getElementById('profileName').innerText=name;
+    document.getElementById('profileEmail').innerText=email;
+    document.getElementById('avatarLetter').innerText=name.charAt(0).toUpperCase();
+    document.getElementById('editName').value=name;
+    document.getElementById('editEmail').value=email;
+    const w=userData.walletAddress||userData.wallet||'';
+    document.getElementById('walletLabel').innerText=w ? (userData.walletMethod||'USDT')+' • '+w.slice(0,8)+'...' : 'Set USDT / BNB / XLM';
+    document.getElementById('walletAddr').value=w;
+    if(userData.walletMethod) document.getElementById('walletMethod').value=userData.walletMethod;
+    loadHistory(u.uid);
+  });
+});
+function saveProfile(){ const name=document.getElementById('editName').value.trim(); if(!name){ alert('Enter username'); return; } db.collection('users').doc(currentUser.uid).update({username:name}).then(()=>{ document.getElementById('profileName').innerText=name; document.getElementById('avatarLetter').innerText=name.charAt(0).toUpperCase(); closeModal('profileModal'); alert('Saved ✅'); }); }
+function saveWallet(){ const addr=document.getElementById('walletAddr').value.trim(); const m=document.getElementById('walletMethod').value; if(addr.length<10){ alert('Enter valid wallet address'); return; } db.collection('users').doc(currentUser.uid).update({walletAddress:addr,walletMethod:m,wallet:addr}).then(()=>{ document.getElementById('walletLabel').innerText=m+' • '+addr.slice(0,8)+'...'; closeModal('walletModal'); alert('Wallet saved ✅'); }); }
+function changePassword(){ auth.sendPasswordResetEmail(currentUser.email).then(()=>alert('Reset link sent to '+currentUser.email)).catch(e=>alert(e.message)); }
+function doLogout(){ auth.signOut().then(()=>location.href='./index.html'); }
+
+// DELETE PERMANENTLY - DELETES EVERYTHING FROM FIREBASE
+async function deleteCollection(ref){
+  const snap=await ref.limit(100).get();
+  if(snap.empty) return;
+  const batch=db.batch();
+  snap.docs.forEach(d=>batch.delete(d.ref));
+  await batch.commit();
+  return deleteCollection(ref); // repeat until empty
+}
+async function doDeletePermanent(){
+  const v=document.getElementById('deleteConfirm').value.trim();
+  if(v!=='DELETE'){ alert('Type DELETE exactly to confirm'); return; }
+  const btn=document.getElementById('deleteBtn');
+  btn.disabled=true; btn.innerText='Deleting... Please wait';
+  try{
+    const uid=currentUser.uid;
+    const userRef=db.collection('users').doc(uid);
+    // 1. Delete all subcollections
+    const subs=['withdrawals','watchHistory','watch','giftsHistory','gifts','bonusHistory','bonus','tickets','earnings','referrals','surveys','transactions','notifications','history'];
+    for(const c of subs){ try{ await deleteCollection(userRef.collection(c)); }catch(e){} }
+    // 2. Delete referral docs where this user is referrer / referred (best effort)
+    try{ const r=await db.collection('referrals').where('referrerId','==',uid).get(); const b=db.batch(); r.docs.forEach(d=>b.delete(d.ref)); await b.commit(); }catch(e){}
+    try{ const r=await db.collection('referrals').where('uid','==',uid).get(); const b=db.batch(); r.docs.forEach(d=>b.delete(d.ref)); await b.commit(); }catch(e){}
+    // 3. Delete main user doc
+    await userRef.delete();
+    // 4. Clear local
+    try{ localStorage.clear(); sessionStorage.clear(); }catch(e){}
+    // 5. Delete Auth account
+    await currentUser.delete();
+    alert('Account deleted permanently ✅');
+    location.href='./index.html';
+  }catch(e){
+    btn.disabled=false; btn.innerText='Yes, Delete Everything Permanently';
+    if(e.code==='auth/requires-recent-login'){
+      alert('For security, please Logout → Login again, then Delete. Firebase needs recent login to delete.');
+    } else {
+      alert('Delete failed: '+e.message+'\nTry Logout → Login again, then Delete.');
+    }
+  }
+}
+applyTheme(); applySwitches(); renderLang();
+</script>
+</body>
+</html>
