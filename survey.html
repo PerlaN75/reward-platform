@@ -55,9 +55,7 @@
       <div class="gate-card">
         <button onclick="closeSurveyGate()" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button>
         <div style="font-size:42px">📋</div>
-        <div style="font-weight:900;font-size:18px;color:#4c1d95;margin-top:8px">Open Surveys</div>
-        <div style="font-size:12px;color:#6d28d9;margin:8px 0 16px;font-weight:700;line-height:1.4">Please wait 10s to open</div>
-        <button id="surveyOpenBtn" class="gate-btn watch">Open Surveys</button>
+        <div style="font-weight:900;font-size:18px;color:#4c1d95;margin-top:8px;margin-bottom:16px">Open Surveys</div>
         <div id="surveyTimerBox"></div>
         <button id="surveyOpenBtn2" class="gate-btn open">✅ Open</button>
         <div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div>
@@ -117,9 +115,19 @@ firebase.auth().onAuthStateChanged(user => {
     }
   } else { window.location.href = 'index.html'; }
 });
+let surveyTimerInterval = null;
 function closeSurveyGate(){
+  if(surveyTimerInterval) clearInterval(surveyTimerInterval);
   document.getElementById('surveyGate').style.display='none';
   document.getElementById('surveyGate').classList.remove('show');
+}
+function startSurveyTimer(){
+  if(surveyTimerInterval) clearInterval(surveyTimerInterval);
+  let sec=7; const el=document.getElementById('surveyTimerBox');
+  const openBtn=document.getElementById('surveyOpenBtn2');
+  openBtn.style.display='none';
+  el.innerText='⏳ Wait '+sec+'s...';
+  surveyTimerInterval=setInterval(()=>{ sec--; if(sec>0){ el.innerText='⏳ Wait '+sec+'s...'; } else { clearInterval(surveyTimerInterval); el.innerText='✅ Ready!'; openBtn.style.display='block'; } },1000);
 }
 function initSurveyGate(){
   const gate=document.getElementById('surveyGate');
@@ -132,18 +140,10 @@ function initSurveyGate(){
   }
   gate.classList.add('show');
   gate.style.display='flex';
-  document.getElementById('surveyOpenBtn').style.display='block';
   document.getElementById('surveyOpenBtn2').style.display='none';
-  document.getElementById('surveyOpenBtn').disabled=false;
-  document.getElementById('surveyOpenBtn').innerText='Open Surveys';
   document.getElementById('surveyTimerBox').innerText='';
+  startSurveyTimer();
 }
-document.getElementById('surveyOpenBtn').onclick=function(){
-  this.innerText='⏳ Please wait...'; this.disabled=true;
-  let sec=10; const el=document.getElementById('surveyTimerBox');
-  el.innerText='⏳ Wait '+sec+'s...';
-  const iv=setInterval(()=>{ sec--; if(sec>0){ el.innerText='⏳ Wait '+sec+'s...'; } else { clearInterval(iv); document.getElementById('surveyOpenBtn').style.display='none'; el.innerText='✅ Ready!'; document.getElementById('surveyOpenBtn2').style.display='block'; } },1000);
-};
 // ✅ Open = user clicks himself, then vignette + CPX
 document.getElementById('surveyOpenBtn2').onclick=function(){
   closeSurveyGate();
