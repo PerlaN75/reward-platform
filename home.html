@@ -125,7 +125,7 @@ body{background:#6d28d9;display:flex;justify-content:center;min-height:100dvh;mi
 <div class="scene">
 <div id="homeCarousel"><div class="carousel-card" id="carouselCard">
   <div class="carousel-slide s-home active" data-link=""><div class="home-flex"><div class="home-left"><div class="c-title home-title">Home <span class="home-lines"><i></i><i></i><i></i></span></div><div class="c-desc">👉 Explore everything in App</div></div><div class="v-scroll"><div class="v-track"><span>📺 Watch &amp; Earn</span><span>🎁 Gifts</span><span>🎉 Bonus</span><span>💰 Wallet</span><span>📋 Survey</span><span>🤝 Refer &amp; Earn</span><span>💎 Offers</span><span>❄️ More</span><span>🎧 Help/Support</span><span>📺 Watch &amp; Earn</span><span>🎁 Gifts</span><span>🎉 Bonus</span><span>💰 Wallet</span><span>📋 Survey</span><span>🤝 Refer &amp; Earn</span><span>💎 Offers</span><span>❄️ More</span><span>🎧 Help/Support</span></div></div></div></div>
-  <div class="carousel-slide s-watch" data-link="./watch.html"><div class="c-big">🪙</div><div class="c-emoji">🎬</div><div class="c-title">Watch &amp; Earn</div><div class="c-desc">Watch only 10 videos (35s / 1 video) and get 10 coins + 5 Bonus. See your balance grow! 📈</div><button class="c-btn" onclick="location.href='./watch.html'">▶ Start</button></div>
+  <div class="carousel-slide s-watch" data-link="./watch.html"><div class="c-big">🪙</div><div class="c-emoji">🎬</div><div class="c-title">Watch &amp; Earn</div><div class="c-desc">Watch 1 video every hour (35s) and get +1 coin per video. See your balance grow! 📈</div><button class="c-btn" onclick="location.href='./watch.html'">▶ Start</button></div>
   <div class="carousel-slide s-gifts" data-link="./gifts.html"><div class="c-big">🎁</div><div class="c-emoji">🎁</div><div class="c-title">Gifts &amp; Earn</div><div class="c-desc">Pick 5 boxes a day — win up to 3 coins! 🍀 One box could change your day! 😍</div><button class="c-btn" onclick="location.href='./gifts.html'">🎁 Open</button></div>
   <div class="carousel-slide s-bonus" data-link="./bonus.html"><div class="c-big">🎉</div><div class="c-emoji">🎉</div><div class="c-title">Bonus</div><div class="c-desc">Claim your hourly bonus! ⏰ Come back every hour for free coins! 💰</div><button class="c-btn" onclick="location.href='./bonus.html'">🎉 Claim</button></div>
   <div class="carousel-slide s-withdraw" data-link="./wallet.html"><div class="c-big">💰</div><div class="c-emoji">💰</div><div class="c-title">Withdraw</div><div class="c-desc">Coins are converted into USDT 💵 Withdrawn via methods set in App. Easy &amp; secure! 🔒</div><button class="c-btn" onclick="location.href='./wallet.html'">💰 Wallet</button></div>
@@ -212,8 +212,8 @@ function nextAd(){ adIndex=(adIndex+1)%ADS.length; showAd(adIndex); saveAd(); }
 function openDrawer(){document.getElementById('sideDrawer').classList.add('open');document.getElementById('drawerOverlay').classList.add('show');}
 function closeDrawer(){document.getElementById('sideDrawer').classList.remove('open');document.getElementById('drawerOverlay').classList.remove('show');}
 const BONUS_COOLDOWN=60*60*1000;
-function getNextAvail(key){ return Number(localStorage.getItem(key+'_v1')||0); }
-function setNextAvail(key, ts){ localStorage.setItem(key+'_v1', String(ts)); }
+function getNextAvail(key){ return Number(localStorage.getItem(key+'_v2')||localStorage.getItem(key+'_v1')||0); }
+function setNextAvail(key, ts){ localStorage.setItem(key+'_v2', String(ts)); localStorage.removeItem(key+'_v1'); }
 function fmtShort(ms){ if(ms<=0) return "Ready"; const h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000), s=Math.floor((ms%60000)/1000); if(h>0) return h+"h"+String(m).padStart(2,"0"); if(m>0) return m+"m"+String(s).padStart(2,"0"); return s+"s"; }
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3200);}
 window.alert=showToast;
