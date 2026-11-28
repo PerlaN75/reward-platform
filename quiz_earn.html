@@ -81,19 +81,21 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 <script>
 (() => {
 "use strict";
-let vignetteLoaded=false;
 function loadCleanVignette(){
   const old=document.querySelector('script[src*="vignette.min.js"]'); if(old) old.remove();
   (function(s){s.dataset.zone='12356040',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
 }
-(function loadQuizBanner(){
+let bannerLoaded = false;
+function loadQuizBanner(){
+  if(bannerLoaded) return;
+  bannerLoaded = true;
   const box=document.getElementById('quizBannerBox');
   if(!box) return;
   const s=document.createElement('script');
   s.dataset.zone='12360849';
   s.src='https://nap5k.com/tag.min.js';
   box.appendChild(s);
-})();
+}
 const QUIZ_ADS=[
   {title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Sponsored",btn:"Visit →",bg:"#FFD700",link:"https://uplcm.com/4/12320757"},
   {title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • Sponsored",btn:"Visit →",bg:"#7CFC00",link:"https://uplcm.com/4/12320757"},
@@ -116,7 +118,6 @@ function nextQuizAd(){ quizAdIndex=(quizAdIndex+1)%QUIZ_ADS.length; showQuizAd(q
     setTimeout(function(){ nextQuizAd(); setInterval(nextQuizAd, QUIZ_AD_TIME); }, remain);
   }catch(e){ showQuizAd(0); saveQuizAd(); setInterval(nextQuizAd, QUIZ_AD_TIME); }
 })();
-// YOUR SETTINGS - LOCKED
 const QUESTIONS_PER_SESSION = 1;
 const SESSIONS_PER_DAY = 6;
 const PASS_SCORE = 1;
@@ -251,12 +252,23 @@ function loadSession(){try{const s=JSON.parse(localStorage.getItem('quiz_session
 function clearSession(){localStorage.removeItem('quiz_session_v2');}
 function renderQuestion(){
   if(checkQuizLock()) return;
+  if(!pool || pool.length !== QUESTIONS_PER_SESSION){
+    pool = getSessionPool(currentSessionIdx);
+    currentIndex = 0;
+    score = 0;
+    answers = [];
+  }
   if(currentIndex>=QUESTIONS_PER_SESSION){showFinal(); return;}
   const q=pool[currentIndex];
-  if(!q){ showFinal(); return; }
+  if(!q){
+    pool = getSessionPool(currentSessionIdx);
+    currentIndex = 0;
+    return renderQuestion();
+  }
   document.getElementById('progressBadge').innerText=`Session ${currentSessionIdx+1}/6 • Q ${currentIndex+1}/1 • Score ${score}`;
   document.getElementById('progBar').style.width=((currentIndex)/QUESTIONS_PER_SESSION*100)+'%';
   document.getElementById('quizQ').innerText=(currentIndex+1)+". "+q.q;
+  loadQuizBanner();
   const optsDiv=document.getElementById('quizOpts'); optsDiv.innerHTML="";
   q.opts.forEach((op,i)=>{
     const btn=document.createElement('button'); btn.className='opt'; btn.innerText=op;
@@ -366,11 +378,12 @@ auth.onAuthStateChanged(async u=>{
     }
   }catch(e){}
   const hadSession = loadSession();
-  if(hadSession && pool.length>0 && currentIndex<QUESTIONS_PER_SESSION){
+  if(hadSession && pool.length===QUESTIONS_PER_SESSION && currentIndex<QUESTIONS_PER_SESSION){
     document.getElementById('quizCard').style.display='block';
     renderQuestion();
     checkQuizLock();
   } else {
+    clearSession();
     if(quizSessionsDone>=SESSIONS_PER_DAY){ checkQuizLock(); return; }
     if(checkQuizLock()) return;
     currentSessionIdx = quizSessionsDone;
