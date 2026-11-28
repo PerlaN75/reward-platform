@@ -57,6 +57,7 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
   </a>
 </div>
 <div id="toast"></div>
+<div id="bootMsg" style="margin-top:20px;background:#fff;border:2px solid #ede9fe;border-radius:14px;padding:14px 18px;font-weight:800;color:#4c1d95;font-size:13px">Connecting... Please wait</div>
 <div id="lockPanel"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Quiz Locked</h2><div id="lockMsg" style="font-weight:800;color:#6b7280">Quiz Live in --</div><div id="lockSub" style="font-size:12px;color:#9ca3af;margin-top:8px">Next session in 1 hour.<br>You can do Watch / Articles now.</div><button onclick="location.href='home.html'" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
 <div class="card" id="quizCard" style="display:none">
 <div class="badge" id="progressBadge">Session 1/6 • Q 1/1 • Score 0</div>
@@ -81,6 +82,7 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 <script>
 (() => {
 "use strict";
+function hideBoot(){ var b=document.getElementById('bootMsg'); if(b) b.style.display='none'; }
 function loadCleanVignette(){
   const old=document.querySelector('script[src*="vignette.min.js"]'); if(old) old.remove();
   (function(s){s.dataset.zone='12356040',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
@@ -127,6 +129,7 @@ let pendingNext=null;
 let gateIv=null;
 let gateMode='start';
 function openAdGate(nextFn, mode){
+  hideBoot();
   gateMode = mode || 'start';
   pendingNext=nextFn;
   if(gateIv) clearInterval(gateIv);
@@ -154,7 +157,13 @@ document.getElementById('openBtn').onclick=function(){
   loadCleanVignette();
   const fn=pendingNext; pendingNext=null; if(fn) fn();
 };
-const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};firebase.initializeApp(firebaseConfig);try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}const auth=firebase.auth(),db=firebase.firestore();
+let auth=null, db=null;
+try{
+const firebaseConfig={apiKey:"AIzaSyCm5GiSMg1puUQpteguN5GE34C76M-a0co",authDomain:"reward-platform-rw-2e13d.firebaseapp.com",projectId:"reward-platform-rw-2e13d"};
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+try{const appCheck=firebase.appCheck();appCheck.activate('6LdX8O4tAAAAAIFy3dIGD1YbLbjrIeJIMnJv86r1',true);}catch(e){}
+auth=firebase.auth(); db=firebase.firestore();
+}catch(e){ console.log('firebase init fail', e); }
 function getQuizNextAvail(){ return Number(localStorage.getItem('quiz_nextAvail_v2')||0); }
 function setQuizNextAvail(ts){ localStorage.setItem('quiz_nextAvail_v2', String(ts)); localStorage.removeItem('quiz_nextAvail_v1'); }
 function clearQuizNextAvail(){ localStorage.removeItem('quiz_nextAvail_v2'); localStorage.removeItem('quiz_nextAvail_v1'); }
@@ -171,9 +180,11 @@ function checkQuizLock(){
   const now=Date.now(), next=getQuizNextAvail();
   const lockPanel=document.getElementById('lockPanel'); const msg=document.getElementById('lockMsg'); const sub=document.getElementById('lockSub');
   if(quizSessionsDone>=SESSIONS_PER_DAY){
+    hideBoot();
     lockPanel.style.display='flex'; msg.innerText='Done for today - 6/6'; if(sub) sub.innerText='Come back tomorrow. Watch / Articles still open.'; return true;
   }
   if(next && now<next && quizSessionsDone>0){
+    hideBoot();
     lockPanel.style.display='flex'; msg.innerText='Quiz Live in '+fmtShort(next-now); if(sub) sub.innerText='Next session in 1 hour. You can do Watch / Articles now.'; return true;
   }
   lockPanel.style.display='none'; return false;
@@ -181,7 +192,7 @@ function checkQuizLock(){
 function onQuizSessionFinished(){
   const now=Date.now(), next=now+GAP_MS;
   setQuizNextAvail(next);
-  if(window.currentUser) db.collection("users").doc(window.currentUser.uid).set({quiz_nextAvail:next, quiz_lastFinish:now, updated:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+  if(window.currentUser && window.currentUser.uid && !String(window.currentUser.uid).startsWith('guest') && db) db.collection("users").doc(window.currentUser.uid).set({quiz_nextAvail:next, quiz_lastFinish:now, updated:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(()=>{});
 }
 const FULL_POOL=[
 {q:"What is Bitcoin?",opts:["A digital currency","A phone brand","A car model","A social app"],ans:0},
@@ -252,6 +263,7 @@ function saveSession(){localStorage.setItem('quiz_session_v2', JSON.stringify({d
 function loadSession(){try{const s=JSON.parse(localStorage.getItem('quiz_session_v2')||'null'); if(s && s.day===localDayKey()){pool=s.pool||[]; currentIndex=s.idx||0; score=s.score||0; answers=s.answers||[]; currentSessionIdx=s.session||0; quizSessionsDone=s.sessionsDone||0; return true;} }catch(e){} return false;}
 function clearSession(){localStorage.removeItem('quiz_session_v2');}
 function renderQuestion(){
+  hideBoot();
   if(checkQuizLock()) return;
   if(!pool || pool.length !== QUESTIONS_PER_SESSION){
     pool = getSessionPool(currentSessionIdx);
@@ -323,34 +335,37 @@ document.getElementById('claimBtn').onclick=function(){
   }, 'claim');
 };
 async function claimFinal(){
-  if(!currentUser){ isClaiming=false; return; }
   const reward = score>=PASS_SCORE ? 1 : 0;
   const nextSession = quizSessionsDone + 1;
   try{
-    if(reward===1){
-      await db.collection('users').doc(currentUser.uid).set({
-        balance: firebase.firestore.FieldValue.increment(1),
-        coins: firebase.firestore.FieldValue.increment(1),
-        points: firebase.firestore.FieldValue.increment(1),
-        lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),
-        quizEarn_date: localDayKey(),
-        quizSessionsDone: nextSession,
-        quizDay: localDayKey(),
-        quizEarn_score: score,
-        quizEarn_answers: answers,
-        quiz_nextAvail: Date.now()+GAP_MS
-      },{merge:true});
-      showToast("✓ +1 coin claimed!");
+    if(currentUser && currentUser.uid && !String(currentUser.uid).startsWith('guest') && db){
+      if(reward===1){
+        await db.collection('users').doc(currentUser.uid).set({
+          balance: firebase.firestore.FieldValue.increment(1),
+          coins: firebase.firestore.FieldValue.increment(1),
+          points: firebase.firestore.FieldValue.increment(1),
+          lastEarnAt: firebase.firestore.FieldValue.serverTimestamp(),
+          quizEarn_date: localDayKey(),
+          quizSessionsDone: nextSession,
+          quizDay: localDayKey(),
+          quizEarn_score: score,
+          quizEarn_answers: answers,
+          quiz_nextAvail: Date.now()+GAP_MS
+        },{merge:true});
+      } else {
+        await db.collection('users').doc(currentUser.uid).set({
+          quizEarn_date: localDayKey(),
+          quizSessionsDone: nextSession,
+          quizDay: localDayKey(),
+          quizEarn_score: score,
+          quiz_nextAvail: Date.now()+GAP_MS
+        },{merge:true});
+      }
     } else {
-      await db.collection('users').doc(currentUser.uid).set({
-        quizEarn_date: localDayKey(),
-        quizSessionsDone: nextSession,
-        quizDay: localDayKey(),
-        quizEarn_score: score,
-        quiz_nextAvail: Date.now()+GAP_MS
-      },{merge:true});
-      showToast("Session done - 0 coins, need 1/1");
+      let c = Number(localStorage.getItem('quiz_coins_guest')||0) + reward;
+      localStorage.setItem('quiz_coins_guest', String(c));
     }
+    showToast(reward===1 ? "✓ +1 coin claimed!" : "Session done - 0 coins, need 1/1");
     quizSessionsDone = nextSession;
     clearSession();
     onQuizSessionFinished();
@@ -360,6 +375,7 @@ async function claimFinal(){
 function startQuizFlow(){
   if(authStarted) return;
   authStarted = true;
+  hideBoot();
   const hadSession = loadSession();
   if(hadSession && pool.length===QUESTIONS_PER_SESSION && currentIndex<QUESTIONS_PER_SESSION){
     renderQuestion();
@@ -376,27 +392,46 @@ function startQuizFlow(){
     }, 'start');
   }
 }
-auth.onAuthStateChanged(u=>{
-  if(!u){location.href='./index.html';return;}
-  currentUser=u; window.currentUser=u;
-  try{ localStorage.setItem('quiz_uid_seed', u.uid); }catch(e){}
-  startQuizFlow();
-  db.collection('users').doc(u.uid).get().then(doc=>{
-    if(!doc.exists) return;
-    const d=doc.data()||{};
-    let v = Number(d.quiz_nextAvail||0) || 0;
-    if(v>0 && (v - Date.now()) > GAP_MS + 5*60*1000){
-      db.collection('users').doc(u.uid).update({quiz_nextAvail:0}).catch(()=>{});
-      clearQuizNextAvail();
-    } else if(v>0 && v>getQuizNextAvail()) setQuizNextAvail(v);
-    if(d.quizDay !== localDayKey()){
-      quizSessionsDone=0;
-      clearQuizNextAvail();
+if(auth){
+  auth.onAuthStateChanged(u=>{
+    if(u){
+      currentUser=u; window.currentUser=u;
+      try{ localStorage.setItem('quiz_uid_seed', u.uid); }catch(e){}
+      startQuizFlow();
+      if(db) db.collection('users').doc(u.uid).get().then(doc=>{
+        if(!doc.exists) return;
+        const d=doc.data()||{};
+        let v = Number(d.quiz_nextAvail||0) || 0;
+        if(v>0 && (v - Date.now()) > GAP_MS + 5*60*1000){
+          db.collection('users').doc(u.uid).update({quiz_nextAvail:0}).catch(()=>{});
+          clearQuizNextAvail();
+        } else if(v>0 && v>getQuizNextAvail()) setQuizNextAvail(v);
+        if(d.quizDay !== localDayKey()){
+          quizSessionsDone=0;
+          clearQuizNextAvail();
+        } else {
+          quizSessionsDone = Number(d.quizSessionsDone||0);
+        }
+      }).catch(()=>{});
     } else {
-      quizSessionsDone = Number(d.quizSessionsDone||0);
+      // No logged user - do NOT redirect and hang, start as guest so page never stays blank
+      currentUser={uid:'guest-'+(localStorage.getItem('quiz_uid_seed')||'user')};
+      window.currentUser=currentUser;
+      startQuizFlow();
     }
-  }).catch(()=>{});
-});
+  });
+}
+// EMERGENCY: If Firebase never answers in 3 seconds, start anyway - never blank page
+setTimeout(()=>{
+  if(!authStarted){
+    if(!currentUser){
+      currentUser={uid:'guest-'+(localStorage.getItem('quiz_uid_seed')||'user')};
+      window.currentUser=currentUser;
+    }
+    var b=document.getElementById('bootMsg'); if(b) b.innerText='Starting quiz...';
+    startQuizFlow();
+  }
+}, 3000);
 setInterval(()=>{
   if(checkQuizLock()){
     const msg=document.getElementById('lockMsg');
