@@ -58,7 +58,7 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 </div>
 <div id="toast"></div>
 <div id="lockPanel"><div><div style="font-size:42px">🔒</div><h2 style="color:#4c1d95;margin:10px 0">Quiz Locked</h2><div id="lockMsg" style="font-weight:800;color:#6b7280">Quiz Live in --</div><div id="lockSub" style="font-size:12px;color:#9ca3af;margin-top:8px">Next session in 1 hour.<br>You can do Watch / Articles now.</div><button onclick="location.href='home.html'" style="margin-top:14px;padding:10px 18px;border-radius:10px;border:none;background:#8b5cf6;color:#fff;font-weight:900">Go Home</button></div></div>
-<div class="card" id="quizCard">
+<div class="card" id="quizCard" style="display:none">
 <div class="badge" id="progressBadge">Session 1/6 • Q 1/1 • Score 0</div>
 <div class="bar"><div class="fill" id="progBar"></div></div>
 <div class="timer" id="timerNum">30</div>
@@ -246,6 +246,7 @@ let pool=[];
 let currentIndex=0, score=0, timer=null, sec=30, answers=[], isClaiming=false;
 let currentUser=null;
 let currentSessionIdx = 0;
+let authStarted = false;
 function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',2500);}
 function saveSession(){localStorage.setItem('quiz_session_v2', JSON.stringify({day:localDayKey(), session:currentSessionIdx, sessionsDone:quizSessionsDone, idx:currentIndex, score:score, answers:answers, pool:pool}));}
 function loadSession(){try{const s=JSON.parse(localStorage.getItem('quiz_session_v2')||'null'); if(s && s.day===localDayKey()){pool=s.pool||[]; currentIndex=s.idx||0; score=s.score||0; answers=s.answers||[]; currentSessionIdx=s.session||0; quizSessionsDone=s.sessionsDone||0; return true;} }catch(e){} return false;}
@@ -265,6 +266,7 @@ function renderQuestion(){
     currentIndex = 0;
     return renderQuestion();
   }
+  document.getElementById('quizCard').style.display='block';
   document.getElementById('progressBadge').innerText=`Session ${currentSessionIdx+1}/6 • Q ${currentIndex+1}/1 • Score ${score}`;
   document.getElementById('progBar').style.width=((currentIndex)/QUESTIONS_PER_SESSION*100)+'%';
   document.getElementById('quizQ').innerText=(currentIndex+1)+". "+q.q;
@@ -355,31 +357,11 @@ async function claimFinal(){
     setTimeout(()=>{location.href='home.html';},1500);
   }catch(e){showToast(e.message); isClaiming=false;}
 }
-auth.onAuthStateChanged(async u=>{
-  if(!u){location.href='./index.html';return;}
-  currentUser=u; window.currentUser=u;
-  try{ localStorage.setItem('quiz_uid_seed', u.uid); }catch(e){}
-  try{
-    const doc=await db.collection('users').doc(u.uid).get();
-    if(doc.exists){
-      const d=doc.data()||{};
-      let v = Number(d.quiz_nextAvail||0) || 0;
-      if(v>0 && (v - Date.now()) > GAP_MS + 5*60*1000){
-        v=0;
-        db.collection('users').doc(u.uid).update({quiz_nextAvail:0}).catch(()=>{});
-        clearQuizNextAvail();
-      } else if(v>0 && v>getQuizNextAvail()) setQuizNextAvail(v);
-      if(d.quizDay !== localDayKey()){
-        quizSessionsDone=0;
-        clearQuizNextAvail();
-      } else {
-        quizSessionsDone = Number(d.quizSessionsDone||0);
-      }
-    }
-  }catch(e){}
+function startQuizFlow(){
+  if(authStarted) return;
+  authStarted = true;
   const hadSession = loadSession();
   if(hadSession && pool.length===QUESTIONS_PER_SESSION && currentIndex<QUESTIONS_PER_SESSION){
-    document.getElementById('quizCard').style.display='block';
     renderQuestion();
     checkQuizLock();
   } else {
@@ -389,11 +371,31 @@ auth.onAuthStateChanged(async u=>{
     currentSessionIdx = quizSessionsDone;
     pool=getSessionPool(currentSessionIdx);
     currentIndex=0; score=0; answers=[];
-    document.getElementById('quizCard').style.display='block';
     openAdGate(()=>{
       renderQuestion();
     }, 'start');
   }
+}
+auth.onAuthStateChanged(u=>{
+  if(!u){location.href='./index.html';return;}
+  currentUser=u; window.currentUser=u;
+  try{ localStorage.setItem('quiz_uid_seed', u.uid); }catch(e){}
+  startQuizFlow();
+  db.collection('users').doc(u.uid).get().then(doc=>{
+    if(!doc.exists) return;
+    const d=doc.data()||{};
+    let v = Number(d.quiz_nextAvail||0) || 0;
+    if(v>0 && (v - Date.now()) > GAP_MS + 5*60*1000){
+      db.collection('users').doc(u.uid).update({quiz_nextAvail:0}).catch(()=>{});
+      clearQuizNextAvail();
+    } else if(v>0 && v>getQuizNextAvail()) setQuizNextAvail(v);
+    if(d.quizDay !== localDayKey()){
+      quizSessionsDone=0;
+      clearQuizNextAvail();
+    } else {
+      quizSessionsDone = Number(d.quizSessionsDone||0);
+    }
+  }).catch(()=>{});
 });
 setInterval(()=>{
   if(checkQuizLock()){
