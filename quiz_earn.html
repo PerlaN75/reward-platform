@@ -35,7 +35,6 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 #gateBar{height:100%;background:linear-gradient(90deg,#fb923c,#f59e0b);width:0%;transition:width 1s linear}
 #lockPanel{position:fixed;inset:0;background:#f5f3ff;z-index:9998;display:none;align-items:center;justify-content:center;padding:20px;text-align:center}
 .top-ad-wrap{position:sticky;top:62px;z-index:90;background:#f5f3ff;padding:10px 14px 0;width:100%;max-width:430px}
-#quizBannerBox{min-height:90px}
 </style>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
@@ -69,10 +68,6 @@ body{margin:0;background:#f5f3ff;color:#111827;font-family:Arial,sans-serif;disp
 <button id="claimBtn" class="btn">Claim 0 Coins</button>
 <div style="font-size:10px;color:#9ca3af;margin-top:8px">Next session in 3 hours • 4000 coins = $1</div>
 </div>
-<div style="max-width:400px;margin:0 auto;padding:0 14px 30px;width:100%">
-  <div style="font-size:10px;color:#9ca3af;font-weight:700;text-align:center;margin-bottom:6px">Advertisement</div>
-  <div id="quizBannerBox"></div>
-</div>
 <div id="adGate"><div class="gate-box"><button onclick="document.getElementById('adGate').style.display='none'" style="position:absolute;top:10px;right:12px;border:none;background:none;font-size:18px;font-weight:900;cursor:pointer;color:#6b7280">✕</button><div class="gate-icon">🧠</div><div id="gateStatus">Loading... 10s</div><div id="gateBarWrap"><div id="gateBar"></div></div><button id="openBtn" class="gate-btn open">Tap to Start Quiz 🧠</button><div style="font-size:10px;color:#9ca3af;margin-top:12px;font-weight:700">Advertisement</div></div></div>
 <script>
 (() => {
@@ -85,14 +80,6 @@ function loadCleanVignette(){
   (function(s){s.dataset.zone='12270885',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
   setTimeout(()=>{vignetteLoaded=false;}, 60*1000);
 }
-(function loadQuizBanner(){
-  const box=document.getElementById('quizBannerBox');
-  if(!box) return;
-  const s=document.createElement('script');
-  s.dataset.zone='12360849';
-  s.src='https://nap5k.com/tag.min.js';
-  box.appendChild(s);
-})();
 const QUIZ_ADS=[
   {title:"🎁 Claim Your $100 Bonus",sub:"Limited offer • Sponsored",btn:"Visit →",bg:"#FFD700",link:"https://uplcm.com/4/12320757"},
   {title:"💰 Earn $50 Daily - Easy Tasks",sub:"New users • Sponsored",btn:"Visit →",bg:"#7CFC00",link:"https://uplcm.com/4/12320757"},
