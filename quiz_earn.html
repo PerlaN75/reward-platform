@@ -31,40 +31,34 @@
   <span class="pill" id="sessionPill">Session 1 of 6 today</span>
   <h1>Quiz</h1>
   <p class="sub">Answer quizzes and earn coins for correct answers.</p>
-
   <div class="card center">
     <div style="font-size:32px">🪙</div>
     <div style="font-size:22px;font-weight:800"><span id="coins">0</span> Coins</div>
     <div class="muted">1 correct answer = 1 coin</div>
   </div>
-
   <div class="card center" id="lockCard" style="display:none">
     <div style="font-size:36px">⏳</div>
     <h2 style="margin:8px 0">Next session in</h2>
     <div class="lock" id="lockTimer">59:59</div>
     <p class="muted">Take a break. Your next quiz unlocks in 1 hour.</p>
   </div>
-
   <div class="card center" id="doneCard" style="display:none">
     <div style="font-size:36px">🎉</div>
     <h2>You completed 6 sessions today</h2>
     <p class="muted">Great work! Come back tomorrow for 6 more sessions.</p>
   </div>
-
   <div class="card center" id="startCard">
     <h2 style="margin:0">Ready for 1 question?</h2>
     <p class="muted">You have <b>30 seconds</b> to think and answer.<br>Complete this quiz to earn your reward.</p>
     <button class="btn" id="startBtn">Start Session</button>
     <p class="muted" style="font-size:12px;margin-top:10px">Loading your quiz...</p>
   </div>
-
   <div class="card" id="quizCard" style="display:none">
     <div class="timer"><span id="qTimer">30</span><small>seconds to answer</small></div>
     <div class="q" id="questionText"></div>
     <div id="options"></div>
     <button class="btn" id="submitBtn" disabled>Submit Answer</button>
   </div>
-
   <div class="card center" id="resultCard" style="display:none">
     <div id="resultIcon" style="font-size:40px"></div>
     <div id="resultTitle"></div>
@@ -73,16 +67,11 @@
     <p class="muted" style="font-size:12px">Loading your reward...</p>
   </div>
 </div>
-
 <script>
-// ============ YOUR SETTINGS - LOCKED ============
-const QUESTIONS_PER_SESSION = 1;
 const TIME_PER_QUESTION = 30;
 const COIN_IF_CORRECT = 1;
 const GAP_MINUTES = 60;
 const MAX_SESSIONS_PER_DAY = 6;
-// ===============================================
-
 const QUESTIONS = [
   { q: "What is the capital of Rwanda?", options: ["Kigali", "Musanze", "Huye", "Rubavu"], answer: 0 },
   { q: "What is 5 + 7?", options: ["10", "11", "12", "13"], answer: 2 },
@@ -91,37 +80,26 @@ const QUESTIONS = [
   { q: "What is the largest planet?", options: ["Mars", "Earth", "Jupiter", "Venus"], answer: 2 },
   { q: "What is 10 x 2?", options: ["15", "20", "25", "30"], answer: 1 },
 ];
-
-// ============ MONETAG ONLY - YOUR ZONE 12356040 ============
-// Your code you sent me:
-// <script>(function(s){s.dataset.zone='12356040',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-// We load it fresh each time so we get 2 Vignettes per session.
-
 function loadMonetagVignette() {
   return new Promise((resolve) => {
-    // Remove old Monetag script if exists, so it can show again
-    const old = document.querySelector('script[src*="n6wxm.com/vignette"]');
+    const old = document.querySelector('script[data-monetag-vignette]');
     if (old) old.remove();
     const s = document.createElement('script');
+    s.setAttribute('data-monetag-vignette', '1');
     s.dataset.zone = '12356040';
     s.src = 'https://n6wxm.com/vignette.min.js';
     document.body.appendChild(s);
-    // Give Vignette time to show, then continue
-    // User can close it, we don't force click
     setTimeout(resolve, 2500);
   });
 }
-function showMonetagAd1() { return loadMonetagVignette(); } // Ad 1 - On Start
-function showMonetagAd2() { return loadMonetagVignette(); } // Ad 2 - On Claim
-// ===========================================================
-
+function showMonetagAd1() { return loadMonetagVignette(); }
+function showMonetagAd2() { return loadMonetagVignette(); }
 let coins = parseInt(localStorage.getItem('quiz_coins') || '0');
 let selected = -1;
 let currentQ = null;
 let timerInt = null;
 let timeLeft = TIME_PER_QUESTION;
 let isCorrect = false;
-
 function todayKey(){ return new Date().toDateString(); }
 function getState(){
   let s = JSON.parse(localStorage.getItem('quiz_state') || '{}');
@@ -129,11 +107,10 @@ function getState(){
   return s;
 }
 function saveState(s){ localStorage.setItem('quiz_state', JSON.stringify(s)); }
-
 function updateUI(){
   document.getElementById('coins').textContent = coins;
   const s = getState();
-  document.getElementById('sessionPill').textContent = `Session ${Math.min(s.sessionsDone+1, MAX_SESSIONS_PER_DAY)} of ${MAX_SESSIONS_PER_DAY} today`;
+  document.getElementById('sessionPill').textContent = 'Session ' + Math.min(s.sessionsDone+1, MAX_SESSIONS_PER_DAY) + ' of ' + MAX_SESSIONS_PER_DAY + ' today';
   const now = Date.now();
   const unlockAt = s.lastEnd + GAP_MINUTES*60*1000;
   document.getElementById('lockCard').style.display='none';
@@ -150,20 +127,18 @@ function updateUI(){
   }
   document.getElementById('startCard').style.display='block';
 }
-
 function startLockCountdown(unlockAt){
   clearInterval(window._lockInt);
   function tick(){
     const left = Math.max(0, unlockAt - Date.now());
     const m = Math.floor(left/60000);
     const sec = Math.floor((left%60000)/1000);
-    document.getElementById('lockTimer').textContent = `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+    document.getElementById('lockTimer').textContent = String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
     if(left<=0){ clearInterval(window._lockInt); updateUI(); }
   }
   tick();
   window._lockInt = setInterval(tick, 1000);
 }
-
 document.getElementById('startBtn').onclick = async () => {
   const btn = document.getElementById('startBtn');
   btn.disabled = true; btn.textContent = "Loading your quiz...";
@@ -189,8 +164,7 @@ document.getElementById('startBtn').onclick = async () => {
     if(timeLeft<=0){ clearInterval(timerInt); submitAnswer(true); }
   },1000);
 };
-
-function submitAnswer(timeout=false){
+function submitAnswer(timeout){
   clearInterval(timerInt);
   document.querySelectorAll('.opt').forEach(x=>x.disabled=true);
   document.getElementById('submitBtn').disabled=true;
@@ -209,7 +183,6 @@ function submitAnswer(timeout=false){
   }
 }
 document.getElementById('submitBtn').onclick = ()=> submitAnswer(false);
-
 document.getElementById('claimBtn').onclick = async () => {
   const btn = document.getElementById('claimBtn');
   btn.disabled=true; btn.textContent="Loading your reward...";
@@ -223,7 +196,6 @@ document.getElementById('claimBtn').onclick = async () => {
   btn.disabled=false; btn.textContent="Claim Reward";
   updateUI();
 };
-
 updateUI();
 </script>
 </body>
